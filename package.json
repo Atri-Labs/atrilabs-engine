@@ -9,5 +9,8 @@
 		"eslint-config-prettier": "^8.5.0",
 		"lerna": "^4.0.0",
 		"prettier": "^2.6.2"
+	},
+	"dependencies": {
+		"typescript": "4.6.3"
 	}
 }
