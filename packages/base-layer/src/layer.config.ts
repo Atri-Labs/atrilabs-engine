@@ -1,5 +1,5 @@
 export default {
-  modulePath: "resolveOwn(./index.ts)",
+  modulePath: "./index.ts",
   exports: {
     menu: {},
     containers: {},
