@@ -5,3 +5,7 @@ export function setApp(_app: JsxElement) {}
 export type ToolConfig = {
   layers: { modulePath: string }[];
 };
+
+export type LayerConfig = {
+  modulePath: string;
+};

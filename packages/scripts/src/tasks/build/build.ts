@@ -2,7 +2,7 @@
 
 import fs from "fs";
 import path from "path";
-import { ToolConfig } from "@atrilabs/core";
+import { LayerConfig, ToolConfig } from "@atrilabs/core";
 
 // this script is expected to be run via a package manager like npm, yarn
 const toolDir = process.cwd();
@@ -19,7 +19,16 @@ function toolConfigExists() {
 toolConfigExists();
 
 async function processLayer(layerConfigPath: string) {
-  import(layerConfigPath);
+  import(layerConfigPath).then((mod: { default: LayerConfig }) => {
+    let layerEntry = mod.default.modulePath;
+    if (!path.isAbsolute(mod.default.modulePath)) {
+      layerEntry = path.resolve(layerConfigPath, mod.default.modulePath);
+    }
+    // check if layerEntry file exists
+    if (fs.existsSync(layerEntry) && !fs.statSync(layerEntry).isDirectory()) {
+      // add this to layer entries
+    }
+  });
 }
 
 import(toolConfigFile).then((mod: { default: ToolConfig }) => {
@@ -29,6 +38,9 @@ import(toolConfigFile).then((mod: { default: ToolConfig }) => {
     /**
      * layer.config.js file is searched at following locations:
      * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
+     * if path is absolute package path.
+     *
+     * 2. Relative path
      */
     const layerConfigPaths = [require.resolve(`${layer}/lib/layer.config.js`)];
     let layerConfigPath: string | undefined = undefined;
@@ -45,7 +57,6 @@ import(toolConfigFile).then((mod: { default: ToolConfig }) => {
       // skip the layer
       continue;
     }
-    console.log("layer config found", layerConfigPath);
     processLayer(layerConfigPath);
   }
 });
