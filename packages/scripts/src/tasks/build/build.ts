@@ -8,6 +8,13 @@ import { LayerConfig, ToolConfig } from "@atrilabs/core";
 const toolDir = process.cwd();
 const toolSrc = path.resolve(toolDir, "src");
 const toolConfigFile = path.resolve(toolSrc, "tool.config.js");
+const toolNodeModule = path.resolve(toolDir, "node_modules");
+const cacheDirectory = path.resolve(
+  toolNodeModule,
+  ".cache",
+  "@atrilabs",
+  "build"
+);
 
 function toolConfigExists() {
   // <toolDir>/src/tool.config.(ts|js) should exist
@@ -18,20 +25,55 @@ function toolConfigExists() {
 }
 toolConfigExists();
 
-async function processLayer(layerConfigPath: string) {
-  import(layerConfigPath).then((mod: { default: LayerConfig }) => {
-    let layerEntry = mod.default.modulePath;
-    if (!path.isAbsolute(mod.default.modulePath)) {
-      layerEntry = path.resolve(layerConfigPath, mod.default.modulePath);
-    }
-    // check if layerEntry file exists
-    if (fs.existsSync(layerEntry) && !fs.statSync(layerEntry).isDirectory()) {
-      // add this to layer entries
-    }
+type LayerEntry = {
+  layerPackageName: string;
+  layerPath: string;
+  layerConfigPath: string;
+  layerEntry: string;
+  isRoot: boolean;
+};
+const layerEntries: {
+  [layerConfigPath: string]: LayerEntry;
+} = {};
+
+async function getLayerEntry(layerConfigPath: string) {
+  return new Promise<string>((res, rej) => {
+    import(layerConfigPath).then((mod: { default: LayerConfig }) => {
+      let layerEntry = mod.default.modulePath;
+      if (!path.isAbsolute(mod.default.modulePath)) {
+        layerEntry = path.resolve(layerConfigPath, mod.default.modulePath);
+      }
+      // check if layerEntry file exists
+      if (!fs.existsSync(layerEntry) || fs.statSync(layerEntry).isDirectory()) {
+        // add this to layer entries
+        rej();
+      }
+      res(layerEntry);
+    });
   });
 }
 
-import(toolConfigFile).then((mod: { default: ToolConfig }) => {
+function resetBuildCache() {
+  if (fs.existsSync(cacheDirectory)) {
+    fs.rmSync(cacheDirectory, { force: true });
+  }
+  fs.mkdirSync(cacheDirectory, { recursive: true });
+}
+
+function createGlobalModuleForLayer(layerEntry: LayerEntry) {
+  const lines: string[] = [];
+  if (layerEntry) {
+    lines.push(`export const currentLayer = "root"`);
+  } else {
+    lines.push(`export const currentLayer = "child"`);
+  }
+  fs.writeFileSync(
+    path.resolve(cacheDirectory, layerEntry.layerPackageName, "index.js"),
+    lines.join("\n")
+  );
+}
+
+import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
   const layers = mod.default.layers;
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i]!.modulePath;
@@ -40,7 +82,6 @@ import(toolConfigFile).then((mod: { default: ToolConfig }) => {
      * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
      * if path is absolute package path.
      *
-     * 2. Relative path
      */
     const layerConfigPaths = [require.resolve(`${layer}/lib/layer.config.js`)];
     let layerConfigPath: string | undefined = undefined;
@@ -57,6 +98,16 @@ import(toolConfigFile).then((mod: { default: ToolConfig }) => {
       // skip the layer
       continue;
     }
-    processLayer(layerConfigPath);
+    try {
+      const layerEntry = await getLayerEntry(layerConfigPath);
+      const isRoot = i === 0 ? true : false;
+      layerEntries[layerConfigPath] = {
+        layerEntry,
+        isRoot,
+        layerConfigPath,
+        layerPath: require.resolve(layer),
+        layerPackageName: layer,
+      };
+    } catch (err) {}
   }
 });
