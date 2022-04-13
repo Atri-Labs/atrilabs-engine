@@ -1,3 +1,4 @@
-import { setApp } from "@atrilabs/core";
-
-export default function () {}
+export default function () {
+  if (currentLayer === "root") {
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "plugins": ["atrilabs"],
+  "extends": ["plugin:atrilabs/layer"]
+}
