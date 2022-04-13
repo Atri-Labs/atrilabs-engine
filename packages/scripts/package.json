@@ -5,13 +5,15 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "lib/index.js",
+  "bin": {
+    "build-atri-tool": "bin/tasks/build/build.js"
+  },
   "directories": {
-    "lib": "lib",
+    "bin": "bin",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "bin"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,9 +23,15 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "tsc"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23"
+  },
+  "dependencies": {
+    "@atrilabs/core": "^0.0.0"
   }
 }

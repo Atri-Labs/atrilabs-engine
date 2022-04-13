@@ -20,11 +20,14 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "build-atri-tool"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/base-layer": "^0.0.0"
+    "@atrilabs/base-layer": "^0.0.0",
+    "@atrilabs/scripts": "^0.0.0"
   }
 }
