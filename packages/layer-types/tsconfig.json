@@ -1,0 +1,10 @@
+{
+  "extends": "../../configs/node.internal.tsconfig.json",
+  "compilerOptions": {
+    "outDir": "bin",
+    "rootDir": "src",
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

@@ -32,6 +32,7 @@
     "typescript": "4.6.3"
   },
   "devDependencies": {
+    "@atrilabs/layer-types": "^0.0.0",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
