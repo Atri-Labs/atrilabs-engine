@@ -1,20 +1,29 @@
 /**
  *
  * @param {*} babel
- * @param {{importStatements: {path: string, namedImports: string[]}[]}} options
+ * @param {{getImports: (filename: string)=>{namedImports: string[], path: string}[]}} options
  */
 module.exports = function (babel, options) {
   return {
     visitor: {
       Program(path, parent) {
-        // TODO: check file path and add only imports from it's package
-        var result = parent.file.code + "\n";
-        options.importStatements.forEach(function (statement) {
-          result += `import {${statement.namedImports.join(", ")}} from "${
-            statement.path
-          }"\n`;
-        });
-        path.replaceWith(babel.parse(code).program);
+        if (options.getImports === undefined) {
+          return;
+        }
+        const importDefs = options.getImports(parent.filename);
+        // schema check
+        if (importDefs && Array.isArray(importDefs) && importDefs.length > 0) {
+          let result = parent.file.code + "\n";
+          importDefs.forEach((importDef) => {
+            // schema check
+            if (importDef.path && Array.isArray(importDef.namedImports)) {
+              result += `import {${importDef.namedImports.join(", ")}} from "${
+                importDef.path
+              }"`;
+            }
+          });
+          path.replaceWith(babel.parse(result).program);
+        }
         path.skip();
       },
     },
