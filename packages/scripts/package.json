@@ -32,6 +32,11 @@
     "@types/node": "^17.0.23"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.0"
+    "@atrilabs/core": "^0.0.0",
+    "webpack": "^5.72.0"
+  },
+  "peerDependencies": {
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
   }
 }

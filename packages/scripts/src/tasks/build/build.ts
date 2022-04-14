@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { LayerConfig, ToolConfig } from "@atrilabs/core";
+import { Configuration, webpack } from "webpack";
 
 // this script is expected to be run via a package manager like npm, yarn
 const toolDir = process.cwd();
@@ -138,5 +139,30 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
   const layerConfigPaths = Object.keys(layerEntries);
   layerConfigPaths.forEach((layerConfigPath) => {
     createGlobalModuleForLayer(layerEntries[layerConfigPath]!);
+  });
+
+  // bundle ui
+  const webpackConfig: Configuration = {
+    entry: {
+      core: { import: "@atrilabs/core", dependOn: "shared" },
+      shared: ["react", "react-dom"],
+    },
+    output: {
+      path: path.resolve(toolDir, mod.default.output),
+    },
+  };
+  webpack(webpackConfig, (err, stats) => {
+    let buildFailed = false;
+    if (err) {
+      buildFailed = true;
+      console.error(err);
+    }
+    if (stats?.hasErrors()) {
+      buildFailed = true;
+      console.log(stats?.toJson().errors);
+    }
+    if (!buildFailed) {
+      console.log(`Build completed!`);
+    }
   });
 });
