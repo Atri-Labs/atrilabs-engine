@@ -81,15 +81,19 @@ function createGlobalModuleForLayer(layerEntry: LayerEntry) {
   } else {
     lines.push(`export const currentLayer = "child"`);
   }
+  if (!fs.existsSync(path.dirname(layerEntry.globalModulePath))) {
+    fs.mkdirSync(path.dirname(layerEntry.globalModulePath), {
+      recursive: true,
+    });
+  }
   fs.writeFileSync(layerEntry.globalModulePath, lines.join("\n"));
 }
 
 import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
   const layers = mod.default.layers;
-  console.log(JSON.stringify(layers, null, 2));
   // create all layer entries
   for (let i = 0; i < layers.length; i++) {
-    const layer = layers[i]!.modulePath;
+    const layer = layers[i]!.pkg;
     /**
      * layer.config.js file is searched at following locations:
      * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
@@ -103,7 +107,6 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
         layerConfigPath = layerConfigPaths[i]!;
       }
     }
-    console.log("layerconfigpath", layerConfigPath);
     if (layerConfigPath === undefined) {
       console.error(
         "Error: layer config not found at following location\n",
@@ -117,7 +120,6 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       const layerPackageName = layer;
       const globalModulePath = path.resolve(cacheDirectory, layer, "index.js");
       const layerEntry = await getLayerEntry(layerConfigPath);
-      console.log("layerEntry", layerEntry);
       const isRoot = i === 0 ? true : false;
       layerEntries[layerConfigPath] = {
         layerEntry,
@@ -134,9 +136,7 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
 
   // create global module for each layer
   const layerConfigPaths = Object.keys(layerEntries);
-  console.log(JSON.stringify(layerEntries, null, 2));
   layerConfigPaths.forEach((layerConfigPath) => {
-    console.log("createModuleLayer to be called");
     createGlobalModuleForLayer(layerEntries[layerConfigPath]!);
   });
 });

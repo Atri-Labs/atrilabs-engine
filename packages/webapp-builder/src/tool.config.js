@@ -1,3 +1,3 @@
 module.exports = {
-  layers: [{ modulePath: "@atrilabs/base-layer" }],
+  layers: [{ pkg: "@atrilabs/base-layer" }],
 };
