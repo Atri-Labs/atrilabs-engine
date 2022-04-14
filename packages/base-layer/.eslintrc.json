@@ -1,4 +1,4 @@
 {
   "plugins": ["atrilabs"],
-  "extends": ["plugin:atrilabs/layer"]
+  "extends": ["plugin:atrilabs/layer", "react-app", "prettier"]
 }
