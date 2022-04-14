@@ -1,5 +1,5 @@
 export default {
-  modulePath: "./index.ts",
+  modulePath: "./index",
   exports: {
     menu: {},
     containers: {},
