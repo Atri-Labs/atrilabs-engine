@@ -25,5 +25,12 @@
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.5"
+  },
+  "peerDependencies": {
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
   }
 }
