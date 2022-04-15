@@ -1,6 +1,6 @@
 export default {
   modulePath: "./index",
-  exports: {
+  exposes: {
     menu: {
       AppMenu: "AppMenu",
       PageMenu: "PageMenu",
