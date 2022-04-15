@@ -69,6 +69,12 @@ export type ToolConfig = {
   output: string;
 };
 
+/**
+ * map of a name local to a layer with it's global name
+ */
+export type NameMap = { [localName: string]: string };
+
 export type LayerConfig = {
   modulePath: string;
+  exports: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
 };
