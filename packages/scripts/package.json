@@ -33,6 +33,9 @@
   },
   "dependencies": {
     "@atrilabs/core": "^0.0.0",
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.4",
     "webpack": "^5.72.0"
   },
   "peerDependencies": {

@@ -150,6 +150,37 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
     output: {
       path: path.resolve(toolDir, mod.default.output),
     },
+    module: {
+      rules: [
+        {
+          oneOf: [
+            {
+              test: /\.(js|mjs|jsx|ts|tsx)$/,
+              loader: require.resolve("babel-loader"),
+              options: {
+                plugins: [
+                  [
+                    path.resolve(
+                      __dirname,
+                      "..",
+                      "..",
+                      "babel",
+                      "add-meta-to-core.js"
+                    ),
+                    {
+                      menu: ["BaseHeaderMenu", "BaseFooterMenu"],
+                      containers: ["Logo"],
+                    },
+                  ],
+                ],
+                babelrc: false,
+                configFile: false,
+              },
+            },
+          ],
+        },
+      ],
+    },
   };
   webpack(webpackConfig, (err, stats) => {
     let buildFailed = false;
