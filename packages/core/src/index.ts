@@ -1,6 +1,7 @@
 import { JsxElement } from "typescript";
 import { menuRegistry, containerRegistry, tabsRegistry } from "./layerDetails";
 import { Container, MenuItem, TabItem } from "./types";
+import "./layers";
 
 export function setApp(_app: JsxElement) {}
 
