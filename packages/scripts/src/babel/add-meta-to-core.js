@@ -1,62 +1,35 @@
 const InternalVisitor = {
-  VariableDeclarator(path) {
-    if (this.skip) {
-      return;
-    }
-    console.log("not skipping");
-    if (path.node.id.name === "menuRegistry") {
-      console.log("found menuRegistry");
+  AssignmentExpression(path) {
+    const left = path.get("left");
+    const right = path.get("right");
+    if (left.type === "MemberExpression" && right.type === "ObjectExpression") {
+      const obj = left.get("object");
+      const prop = left.get("property");
       if (
-        options.menu &&
-        Array.isArray(options.menu) &&
-        options.menu.length > 0
+        obj.type === "Identifier" &&
+        obj.node.name === "exports" &&
+        prop.type === "Identifier"
       ) {
-        console.log("options has menu");
-        const items = options.menu.map((name) => {
-          return `${name}: {items: []},`;
-        });
-        path.get("init").replaceWithSourceString(`{${items.join("\n")}}`);
+        if (prop.node.name === "menuRegistry") {
+          const items = this.options.menu.map((name) => {
+            return `${name}: {items: []},`;
+          });
+          right.replaceWithSourceString(`{${items.join("\n")}}`);
+        }
+        if (prop.node.name === "containerRegistry") {
+          const items = this.options.containers.map((name) => {
+            return `${name}: {items: []},`;
+          });
+          right.replaceWithSourceString(`{${items.join("\n")}}`);
+        }
+        if (prop.node.name === "tabsRegistry") {
+          const items = this.options.tabs.map((name) => {
+            return `${name}: {items: []},`;
+          });
+          right.replaceWithSourceString(`{${items.join("\n")}}`);
+        }
       }
     }
-    if (path.node.id.name === "containerRegistry") {
-      if (
-        options.containers &&
-        Array.isArray(options.menu) &&
-        options.containers.length > 0
-      ) {
-        const items = options.containers.map((name) => {
-          return `${name}: {items: []},`;
-        });
-        path.get("init").replaceWithSourceString(`{${items.join("\n")}}`);
-      }
-    }
-    if (path.node.id.name === "tabsRegistry") {
-      if (
-        options.tabs &&
-        Array.isArray(options.menu) &&
-        options.tabs.length > 0
-      ) {
-        const items = options.tabs.map((name) => {
-          return `${name}: {items: []},`;
-        });
-        path.get("init").replaceWithSourceString(`{${items.join("\n")}}`);
-      }
-    }
-  },
-};
-const externalVisitor = {
-  Program(path, parent) {
-    const skip = parent.filename.match(
-      require.resolve("@atrilabs/core/lib/layerDetails.js")
-    )
-      ? false
-      : true;
-    if (!skip) {
-      console.log("matched");
-    }
-    path.traverse(InternalVisitor, {
-      skip,
-    });
   },
 };
 /**
@@ -66,6 +39,17 @@ const externalVisitor = {
  */
 module.exports = function (babel, options) {
   return {
-    visitor: externalVisitor,
+    visitor: {
+      Program(path, parent) {
+        const skip = parent.filename.match(
+          require.resolve("@atrilabs/core/lib/layerDetails.js")
+        )
+          ? false
+          : true;
+        if (!skip) {
+          path.traverse(InternalVisitor, { options });
+        }
+      },
+    },
   };
 };
