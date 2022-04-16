@@ -37,13 +37,20 @@ type LayerEntry = {
   globalModulePath: string;
   // flag root layer
   isRoot: boolean;
+  // info
+  exposes: LayerConfig["exposes"];
+  requires: LayerConfig["requires"];
 };
 const layerEntries: {
   [layerConfigPath: string]: LayerEntry;
 } = {};
 
-async function getLayerEntry(layerConfigPath: string) {
-  return new Promise<string>((res, rej) => {
+async function getLayerInfo(layerConfigPath: string) {
+  return new Promise<{
+    layerEntry: string;
+    requires: LayerConfig["requires"];
+    exposes: LayerConfig["exposes"];
+  }>((res, rej) => {
     import(layerConfigPath).then((mod: { default: LayerConfig }) => {
       let layerEntry = mod.default.modulePath;
       if (!path.isAbsolute(mod.default.modulePath)) {
@@ -58,7 +65,11 @@ async function getLayerEntry(layerConfigPath: string) {
         const filename = `${layerEntry}.${ext}`;
         if (fs.existsSync(filename) && !fs.statSync(filename).isDirectory()) {
           // add this to layer entries
-          res(layerEntry);
+          res({
+            layerEntry,
+            requires: mod.default.requires,
+            exposes: mod.default.exposes,
+          });
           return;
         }
       }
@@ -120,7 +131,9 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       const layerPath = path.dirname(require.resolve(`${layer}/package.json`));
       const layerPackageName = layer;
       const globalModulePath = path.resolve(cacheDirectory, layer, "index.js");
-      const layerEntry = await getLayerEntry(layerConfigPath);
+      const { layerEntry, exposes, requires } = await getLayerInfo(
+        layerConfigPath
+      );
       const isRoot = i === 0 ? true : false;
       layerEntries[layerConfigPath] = {
         layerEntry,
@@ -129,16 +142,43 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
         layerPath,
         globalModulePath,
         layerPackageName,
+        exposes,
+        requires,
       };
     } catch (err) {
       console.log(err);
     }
   }
 
-  // create global module for each layer
   const layerConfigPaths = Object.keys(layerEntries);
+  const exposedLayers: {
+    [k in keyof Required<LayerConfig["exposes"]>]: Set<string>;
+  } = {
+    menu: new Set(),
+    containers: new Set(),
+    tabs: new Set(),
+  };
   layerConfigPaths.forEach((layerConfigPath) => {
+    // create global module for each layer
     createGlobalModuleForLayer(layerEntries[layerConfigPath]!);
+    // prepare input for babel plugins
+    layerEntries[layerConfigPath]!.exposes["menu"]
+      ? Object.values(layerEntries[layerConfigPath]!.exposes["menu"]!).forEach(
+          exposedLayers["menu"].add,
+          exposedLayers["menu"]
+        )
+      : null;
+    layerEntries[layerConfigPath]!.exposes["containers"]
+      ? Object.values(
+          layerEntries[layerConfigPath]!.exposes["containers"]!
+        ).forEach(exposedLayers["containers"].add, exposedLayers["containers"])
+      : null;
+    layerEntries[layerConfigPath]!.exposes["tabs"]
+      ? Object.values(layerEntries[layerConfigPath]!.exposes["tabs"]!).forEach(
+          exposedLayers["tabs"].add,
+          exposedLayers["tabs"]
+        )
+      : null;
   });
 
   // bundle ui

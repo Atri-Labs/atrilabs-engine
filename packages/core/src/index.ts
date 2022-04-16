@@ -86,11 +86,18 @@ export type NameMap = { [localName: string]: string };
 
 export type LayerConfig = {
   modulePath: string;
+  requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
   exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
 };
 
 export type ToolConfig = {
-  layers: { pkg: string; remap?: LayerConfig["exposes"] }[];
+  layers: {
+    pkg: string;
+    remap?: Partial<{
+      requires: LayerConfig["requires"];
+      exposes: LayerConfig["exposes"];
+    }>;
+  }[];
   /**
    * directory where editor code will be emitted.
    * web    - contains ui of editor

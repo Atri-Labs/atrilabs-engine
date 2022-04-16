@@ -1,5 +1,6 @@
 export default {
   modulePath: "./index",
+  requires: {},
   exposes: {
     menu: {
       BaseHeaderMenu: "BaseHeaderMenu",
