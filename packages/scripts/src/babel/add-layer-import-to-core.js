@@ -17,11 +17,17 @@ module.exports = function (babel, options) {
         }
         if (options && options.layers && Array.isArray(options.layers)) {
           const importStrings = options.layers
-            .map((layer) => {
-              return `import "${layer.path}";\n`;
+            .map((layer, index) => {
+              return `import layer${index} from "${layer.path}";\n`;
             })
             .join("");
-          path.replaceWith(babel.parse(importStrings).program);
+          const callLayers = options.layers
+            .map((_, index) => {
+              return `layer${index}()\n`;
+            })
+            .join("");
+          const newCode = importStrings + callLayers;
+          path.replaceWith(babel.parse(newCode).program);
           path.skip();
         }
       },

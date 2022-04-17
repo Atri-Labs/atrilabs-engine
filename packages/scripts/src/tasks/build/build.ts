@@ -197,7 +197,6 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       return { path: value.layerEntry };
     })
   );
-  console.log(JSON.stringify(layerList));
 
   // bundle ui
   const webpackConfig: Configuration = {
