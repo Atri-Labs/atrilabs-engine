@@ -1,6 +1,9 @@
 {
   "extends": "../../configs/node.internal.tsconfig.json",
   "compilerOptions": {
+    // please do not change module field
+    // babel plugins assume modules to be in es6 format
+    "module": "es6",
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,

@@ -1,6 +1,9 @@
 {
   "extends": "../../configs/node.internal.tsconfig.json",
   "compilerOptions": {
+    // please do not change the module field
+    // compilers assume the layer packages to be in es6
+    "module": "es6",
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
