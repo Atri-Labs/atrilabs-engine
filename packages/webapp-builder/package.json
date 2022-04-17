@@ -27,6 +27,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/app-design-layer": "^0.0.0",
     "@atrilabs/base-layer": "^0.0.0",
     "@atrilabs/scripts": "^0.0.0",
     "react": "18.0.0",

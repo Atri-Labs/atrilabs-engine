@@ -208,8 +208,9 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
                       "add-meta-to-core.js"
                     ),
                     {
-                      menu: ["BaseHeaderMenu", "BaseFooterMenu"],
-                      containers: ["Logo"],
+                      menu: Array.from(exposedLayers["menu"]),
+                      containers: Array.from(exposedLayers["containers"]),
+                      tabs: Array.from(exposedLayers["tabs"]),
                     },
                   ],
                 ],
