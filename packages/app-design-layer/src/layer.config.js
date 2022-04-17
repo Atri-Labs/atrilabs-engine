@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   modulePath: "./index",
   requires: {
     menu: {

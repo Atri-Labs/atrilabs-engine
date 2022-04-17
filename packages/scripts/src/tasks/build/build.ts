@@ -16,8 +16,8 @@ const cacheDirectory = path.resolve(
   "@atrilabs",
   "build"
 );
-// layer modules must have extenion .js or .jsx
-const layerModuleExtensions = ["js", "jsx"];
+
+const moduleFileExtensions = ["js", "jsx"];
 
 function toolConfigExists() {
   // <toolDir>/src/tool.config.(ts|js) should exist
@@ -29,6 +29,7 @@ function toolConfigExists() {
 toolConfigExists();
 
 type LayerEntry = {
+  index: number;
   layerPackageName: string;
   layerPath: string;
   layerConfigPath: string;
@@ -60,8 +61,8 @@ async function getLayerInfo(layerConfigPath: string) {
         );
       }
       // check if layerEntry file exists with extensions .js .jsx
-      for (let i = 0; i < layerModuleExtensions.length; i++) {
-        const ext = layerModuleExtensions[i];
+      for (let i = 0; i < moduleFileExtensions.length; i++) {
+        const ext = moduleFileExtensions[i];
         const filename = `${layerEntry}.${ext}`;
         if (fs.existsSync(filename) && !fs.statSync(filename).isDirectory()) {
           // add this to layer entries
@@ -88,7 +89,7 @@ resetBuildCache();
 
 function createGlobalModuleForLayer(layerEntry: LayerEntry) {
   const lines: string[] = [];
-  if (layerEntry) {
+  if (layerEntry.isRoot) {
     lines.push(`export const currentLayer = "root"`);
   } else {
     lines.push(`export const currentLayer = "child"`);
@@ -136,6 +137,7 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       );
       const isRoot = i === 0 ? true : false;
       layerEntries[layerConfigPath] = {
+        index: i,
         layerEntry,
         isRoot,
         layerConfigPath,
@@ -151,40 +153,60 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
   }
 
   const layerConfigPaths = Object.keys(layerEntries);
-  const exposedLayers: {
+  const exposedSockets: {
     [k in keyof Required<LayerConfig["exposes"]>]: Set<string>;
   } = {
     menu: new Set(),
     containers: new Set(),
     tabs: new Set(),
   };
+  const layerList: { path: string }[] = [];
   layerConfigPaths.forEach((layerConfigPath) => {
     // create global module for each layer
     createGlobalModuleForLayer(layerEntries[layerConfigPath]!);
     // prepare input for babel plugins
+    // input to for add-to-meta-core.js
     layerEntries[layerConfigPath]!.exposes["menu"]
       ? Object.values(layerEntries[layerConfigPath]!.exposes["menu"]!).forEach(
-          exposedLayers["menu"].add,
-          exposedLayers["menu"]
+          exposedSockets["menu"].add,
+          exposedSockets["menu"]
         )
       : null;
     layerEntries[layerConfigPath]!.exposes["containers"]
       ? Object.values(
           layerEntries[layerConfigPath]!.exposes["containers"]!
-        ).forEach(exposedLayers["containers"].add, exposedLayers["containers"])
+        ).forEach(
+          exposedSockets["containers"].add,
+          exposedSockets["containers"]
+        )
       : null;
     layerEntries[layerConfigPath]!.exposes["tabs"]
       ? Object.values(layerEntries[layerConfigPath]!.exposes["tabs"]!).forEach(
-          exposedLayers["tabs"].add,
-          exposedLayers["tabs"]
+          exposedSockets["tabs"].add,
+          exposedSockets["tabs"]
         )
       : null;
   });
+  // input for add-layer-import-to-core.js
+  const layerEntryValues = Object.values(layerEntries);
+  layerEntryValues.sort((a, b) => {
+    return a.index - b.index;
+  });
+  layerList.push(
+    ...layerEntryValues.map((value) => {
+      return { path: value.layerEntry };
+    })
+  );
+  console.log(JSON.stringify(layerList));
 
   // bundle ui
   const webpackConfig: Configuration = {
+    target: "web",
     entry: {
-      core: { import: "@atrilabs/core", dependOn: "shared" },
+      layers: {
+        import: require.resolve("@atrilabs/core/lib/layers.js"),
+        dependOn: "shared",
+      },
       shared: ["react", "react-dom"],
     },
     output: {
@@ -192,6 +214,12 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
     },
     module: {
       rules: [
+        {
+          enforce: "pre",
+          exclude: /@babel(?:\/|\\{1,2})runtime/,
+          test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+          loader: require.resolve("source-map-loader"),
+        },
         {
           oneOf: [
             {
@@ -205,12 +233,24 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
                       "..",
                       "..",
                       "babel",
+                      "add-layer-import-to-core.js"
+                    ),
+                    {
+                      layers: layerList,
+                    },
+                  ],
+                  [
+                    path.resolve(
+                      __dirname,
+                      "..",
+                      "..",
+                      "babel",
                       "add-meta-to-core.js"
                     ),
                     {
-                      menu: Array.from(exposedLayers["menu"]),
-                      containers: Array.from(exposedLayers["containers"]),
-                      tabs: Array.from(exposedLayers["tabs"]),
+                      menu: Array.from(exposedSockets["menu"]),
+                      containers: Array.from(exposedSockets["containers"]),
+                      tabs: Array.from(exposedSockets["tabs"]),
                     },
                   ],
                 ],
@@ -221,6 +261,9 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
           ],
         },
       ],
+    },
+    resolve: {
+      extensions: moduleFileExtensions.map((ext) => `.${ext}`),
     },
   };
   webpack(webpackConfig, (err, stats) => {
