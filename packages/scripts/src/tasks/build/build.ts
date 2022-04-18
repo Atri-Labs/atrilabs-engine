@@ -197,6 +197,19 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       return { path: value.layerEntry };
     })
   );
+  // input for add-layer-import.js
+  const getImports = (filename: string) => {
+    for (let i = 0; i < layerConfigPaths.length; i++) {
+      const currLayerConfigPath = layerConfigPaths[i]!;
+      const currLayer = layerEntries[currLayerConfigPath]!;
+      if (filename.match(currLayer.layerPath)) {
+        return [
+          { namedImports: ["currentLayer"], path: currLayer.globalModulePath },
+        ];
+      }
+    }
+    return;
+  };
 
   // bundle ui
   const webpackConfig: Configuration = {
@@ -250,6 +263,18 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
                       menu: Array.from(exposedSockets["menu"]),
                       containers: Array.from(exposedSockets["containers"]),
                       tabs: Array.from(exposedSockets["tabs"]),
+                    },
+                  ],
+                  [
+                    path.resolve(
+                      __dirname,
+                      "..",
+                      "..",
+                      "babel",
+                      "add-layer-import.js"
+                    ),
+                    {
+                      getImports,
                     },
                   ],
                 ],
