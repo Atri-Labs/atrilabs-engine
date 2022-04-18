@@ -259,11 +259,19 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
       },
       shared: ["react", "react-dom"],
     },
+    /**
+     * Inlcude source map in the bundle for devtools.
+     */
+    devtool: "source-map",
     output: {
       path: path.resolve(toolDir, mod.default.output),
     },
     module: {
       rules: [
+        /**
+         * Loads source maps for packages in node_modules.
+         * Layers will generally be located in node_modules.
+         */
         {
           enforce: "pre",
           exclude: /@babel(?:\/|\\{1,2})runtime/,
