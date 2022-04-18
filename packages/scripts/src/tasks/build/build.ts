@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { LayerConfig, ToolConfig } from "@atrilabs/core";
 import { Configuration, webpack } from "webpack";
+import { merge } from "lodash";
 
 // this script is expected to be run via a package manager like npm, yarn
 const toolDir = process.cwd();
@@ -41,6 +42,7 @@ type LayerEntry = {
   // info
   exposes: LayerConfig["exposes"];
   requires: LayerConfig["requires"];
+  remap: ToolConfig["layers"]["0"]["remap"];
 };
 const layerEntries: {
   [layerConfigPath: string]: LayerEntry;
@@ -107,6 +109,7 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
   // create all layer entries
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i]!.pkg;
+    const remap = layers[i]!.remap;
     /**
      * layer.config.js file is searched at following locations:
      * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
@@ -146,6 +149,7 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
         layerPackageName,
         exposes,
         requires,
+        remap,
       };
     } catch (err) {
       console.log(err);
@@ -161,6 +165,9 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
     tabs: new Set(),
   };
   const layerList: { path: string }[] = [];
+  const layerNameMap: {
+    [layerPath: string]: LayerConfig["exposes"] & LayerConfig["requires"];
+  } = {};
   layerConfigPaths.forEach((layerConfigPath) => {
     // create global module for each layer
     createGlobalModuleForLayer(layerEntries[layerConfigPath]!);
@@ -186,6 +193,27 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
           exposedSockets["tabs"]
         )
       : null;
+
+    /**
+     * Create name map for all layers
+     * ------------------------------
+     * Name map is a map between local name and global name.
+     *
+     * Step 1. Merge exposes and requires of layer. This step is necessary
+     * because it might happen that the layer itself is using the menu etc. that
+     * it has exposed.
+     *
+     * Step 2. Merge remap of the layer with the layer config with precedence to
+     * remap in tool config.
+     */
+    let namemap: any = {};
+    merge(
+      namemap,
+      layerEntries[layerConfigPath]!.exposes,
+      layerEntries[layerConfigPath]!.requires
+    );
+    merge(namemap, layerEntries[layerConfigPath]!.remap || {});
+    layerNameMap[layerEntries[layerConfigPath]!.layerPath] = namemap;
   });
   // input for add-layer-import-to-core.js
   const layerEntryValues = Object.values(layerEntries);
@@ -210,7 +238,17 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
     }
     return;
   };
-
+  // input for replace-local-with-global.js
+  const getNameMap = (filename: string) => {
+    for (let i = 0; i < layerConfigPaths.length; i++) {
+      const currLayerConfigPath = layerConfigPaths[i]!;
+      const currLayer = layerEntries[currLayerConfigPath]!;
+      if (filename.match(currLayer.layerPath)) {
+        return layerNameMap[currLayer.layerPath];
+      }
+    }
+    return;
+  };
   // bundle ui
   const webpackConfig: Configuration = {
     target: "web",
@@ -275,6 +313,18 @@ import(toolConfigFile).then(async (mod: { default: ToolConfig }) => {
                     ),
                     {
                       getImports,
+                    },
+                  ],
+                  [
+                    path.resolve(
+                      __dirname,
+                      "..",
+                      "..",
+                      "babel",
+                      "replace-local-with-global.js"
+                    ),
+                    {
+                      getNameMap,
                     },
                   ],
                 ],

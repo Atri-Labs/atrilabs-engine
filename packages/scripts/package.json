@@ -29,6 +29,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.181",
     "@types/node": "^17.0.23"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
     "babel-loader": "^8.2.4",
+    "lodash": "^4.17.21",
     "source-map-loader": "^3.0.1",
     "webpack": "^5.72.0"
   },

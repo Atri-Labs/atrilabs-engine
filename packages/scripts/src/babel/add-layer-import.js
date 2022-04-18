@@ -4,9 +4,16 @@
  * @param {{getImports: (filename: string)=>{namedImports: string[], path: string}[]}} options
  */
 module.exports = function (babel, options) {
+  const visited = {};
   return {
     visitor: {
       Program(path, parent) {
+        // visit only once
+        if (visited[parent.filename] === undefined) {
+          visited[parent.filename] = true;
+        } else {
+          return;
+        }
         if (options.getImports === undefined) {
           return;
         }
@@ -24,7 +31,6 @@ module.exports = function (babel, options) {
           });
           path.replaceWith(babel.parse(result).program);
         }
-        path.skip();
       },
     },
   };
