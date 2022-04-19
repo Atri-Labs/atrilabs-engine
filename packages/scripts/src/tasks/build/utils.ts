@@ -1,0 +1,185 @@
+import path from "path";
+import fs from "fs";
+import { LayerConfig, ToolConfig } from "@atrilabs/core";
+import { merge } from "lodash";
+import { LayerEntry, ToolPkgInfo } from "./types";
+
+// NOTE: this script is expected to be run via a package manager like npm, yarn
+
+export function getToolPkgInfo(): ToolPkgInfo {
+  const toolDir = process.cwd();
+  const toolSrc = path.resolve(toolDir, "src");
+  const toolConfigFile = path.resolve(toolSrc, "tool.config.js");
+  const toolNodeModule = path.resolve(toolDir, "node_modules");
+  const cacheDir = path.resolve(toolNodeModule, ".cache", "@atrilabs", "build");
+  return {
+    dir: toolDir,
+    src: toolSrc,
+    configFile: toolConfigFile,
+    nodeModule: toolNodeModule,
+    cacheDir,
+  };
+}
+
+/**
+ * importToolConfig will re-import tool.config.js on every call.
+ * Reloading is needed in case tool.config.js has any changes during
+ * development.
+ */
+export function importToolConfig(toolConfigFile: string): Promise<ToolConfig> {
+  function toolConfigExists() {
+    // <toolDir>/src/tool.config.(ts|js) should exist
+    if (fs.existsSync(toolConfigFile)) {
+      return true;
+    }
+    return false;
+  }
+
+  if (toolConfigExists()) {
+    delete require.cache[toolConfigFile];
+    // TODO: do schema check before returning
+    return import(toolConfigFile).then((mod) => mod.default);
+  } else {
+    throw Error(`Module Not Found: ${toolConfigFile}`);
+  }
+}
+
+/**
+ * extractLayerEntries will re-import layer.config.js on every call.
+ * Reloading is needed in case layer.config.js has any changes during
+ * development.
+ */
+export async function extractLayerEntries(
+  toolConfig: ToolConfig,
+  toolPkgInfo: ToolPkgInfo
+) {
+  const layerEntries: LayerEntry[] = [];
+
+  // packaged layers will always have js/jsx extension
+  const moduleFileExtensions = ["js", "jsx"];
+
+  async function getLayerInfo(layerConfigPath: string) {
+    return new Promise<{
+      layerEntry: string;
+      requires: LayerConfig["requires"];
+      exposes: LayerConfig["exposes"];
+    }>((res, rej) => {
+      // delete cache to re-import layer.config.js module
+      delete require.cache[layerConfigPath];
+      import(layerConfigPath).then((mod: { default: LayerConfig }) => {
+        let layerEntry = mod.default.modulePath;
+        if (!path.isAbsolute(mod.default.modulePath)) {
+          layerEntry = path.resolve(
+            path.dirname(layerConfigPath),
+            mod.default.modulePath
+          );
+        }
+        // check if layerEntry file exists with extensions .js .jsx
+        for (let i = 0; i < moduleFileExtensions.length; i++) {
+          const ext = moduleFileExtensions[i];
+          const filename = `${layerEntry}.${ext}`;
+          if (fs.existsSync(filename) && !fs.statSync(filename).isDirectory()) {
+            // add this to layer entries
+            res({
+              layerEntry,
+              requires: mod.default.requires,
+              exposes: mod.default.exposes,
+            });
+            return;
+          }
+        }
+        rej(`${layerEntry} not found`);
+      });
+    });
+  }
+
+  const layers = toolConfig.layers;
+  // create all layer entries
+  for (let i = 0; i < layers.length; i++) {
+    const layer = layers[i]!.pkg;
+    const remap = layers[i]!.remap;
+    /**
+     * layer.config.js file is searched at following locations:
+     * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
+     * if path is absolute package path.
+     */
+    const layerConfigPaths = [require.resolve(`${layer}/lib/layer.config.js`)];
+    let layerConfigPath: string | undefined = undefined;
+    for (let i = 0; i < layerConfigPaths.length; i++) {
+      if (fs.existsSync(layerConfigPaths[i]!)) {
+        layerConfigPath = layerConfigPaths[i]!;
+      }
+    }
+    if (layerConfigPath === undefined) {
+      console.error(
+        "Error: layer config not found at following location\n",
+        layerConfigPaths.join("\n")
+      );
+      // skip the layer
+      continue;
+    }
+    try {
+      const layerPath = path.dirname(require.resolve(`${layer}/package.json`));
+      const layerPackageName = layer;
+      const globalModulePath = path.resolve(
+        toolPkgInfo.cacheDir,
+        layer,
+        "index.js"
+      );
+      const { layerEntry, exposes, requires } = await getLayerInfo(
+        layerConfigPath
+      );
+      const isRoot = i === 0 ? true : false;
+      layerEntries.push({
+        index: i,
+        layerEntry,
+        isRoot,
+        layerConfigPath,
+        layerPath,
+        globalModulePath,
+        layerPackageName,
+        exposes,
+        requires,
+        remap,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  return layerEntries;
+}
+
+export function getNameMapForLayer(layerEntry: LayerEntry) {
+  /**
+   * Create name map for all layers
+   * ------------------------------
+   * Name map is a map between local name and global name.
+   *
+   * Step 1. Merge exposes and requires of layer. This step is necessary
+   * because it might happen that the layer itself is using the menu etc. that
+   * it has exposed.
+   *
+   * Step 2. Merge remap of the layer with the layer config with precedence to
+   * remap in tool config.
+   */
+  let namemap: any = {};
+  merge(namemap, layerEntry.exposes, layerEntry!.requires);
+  merge(namemap, layerEntry!.remap || {});
+  return namemap;
+}
+
+export function detectLayerForFile(
+  filename: string,
+  layerEntries: LayerEntry[]
+) {
+  for (let i = 0; i < layerEntries.length; i++) {
+    const currLayer = layerEntries[i]!;
+    if (filename.match(currLayer.layerPath)) {
+      return [
+        { namedImports: ["currentLayer"], path: currLayer.globalModulePath },
+      ];
+    }
+  }
+  return;
+}
