@@ -163,7 +163,8 @@ export function getNameMapForLayer(layerEntry: LayerEntry) {
    * Step 2. Merge remap of the layer with the layer config with precedence to
    * remap in tool config.
    */
-  let namemap: any = {};
+  let namemap: LayerConfig["exposes"] = {};
+
   merge(namemap, layerEntry.exposes, layerEntry!.requires);
   merge(namemap, layerEntry!.remap || {});
   return namemap;
@@ -176,9 +177,7 @@ export function detectLayerForFile(
   for (let i = 0; i < layerEntries.length; i++) {
     const currLayer = layerEntries[i]!;
     if (filename.match(currLayer.layerPath)) {
-      return [
-        { namedImports: ["currentLayer"], path: currLayer.globalModulePath },
-      ];
+      return currLayer;
     }
   }
   return;
@@ -192,4 +191,12 @@ export function resetBuildCache(toolPkgInfo: ToolPkgInfo) {
     fs.rmSync(toolPkgInfo.cacheDir, { force: true, recursive: true });
   }
   fs.mkdirSync(toolPkgInfo.cacheDir, { recursive: true });
+}
+
+export function sortLayerEntriesInImportOrder(layerEntries: LayerEntry[]) {
+  const sorted = [...layerEntries];
+  sorted.sort((a, b) => {
+    return a.index - b.index;
+  });
+  return sorted;
 }
