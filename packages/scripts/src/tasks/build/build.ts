@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 import { webpack, Configuration } from "webpack";
 import path from "path";
-import { extractLayerEntries, getToolPkgInfo, importToolConfig } from "./utils";
-import emitBabelLoader from "./emitBabelLoader";
-import { createGlobalModuleForLayer } from "./processLayer";
+import {
+  extractLayerEntries,
+  getToolPkgInfo,
+  importToolConfig,
+} from "../../shared/utils";
+import emitBabelLoader from "../../shared/emitBabelLoader";
+import { createGlobalModuleForLayer } from "../../shared/processLayer";
 
 const toolPkgInfo = getToolPkgInfo();
 

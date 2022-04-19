@@ -93,7 +93,6 @@ export default function emitBabelLoader(
               path.resolve(
                 __dirname,
                 "..",
-                "..",
                 "babel",
                 "add-layer-import-to-core.js"
               ),
@@ -102,23 +101,11 @@ export default function emitBabelLoader(
               },
             ],
             [
-              path.resolve(
-                __dirname,
-                "..",
-                "..",
-                "babel",
-                "add-meta-to-core.js"
-              ),
+              path.resolve(__dirname, "..", "babel", "add-meta-to-core.js"),
               getExposedSockets(),
             ],
             [
-              path.resolve(
-                __dirname,
-                "..",
-                "..",
-                "babel",
-                "add-layer-import.js"
-              ),
+              path.resolve(__dirname, "..", "babel", "add-layer-import.js"),
               {
                 getImports,
               },
@@ -126,7 +113,6 @@ export default function emitBabelLoader(
             [
               path.resolve(
                 __dirname,
-                "..",
                 "..",
                 "babel",
                 "replace-local-with-global.js"

@@ -126,6 +126,11 @@ export async function extractLayerEntries(
         layer,
         "index.js"
       );
+      const layerConfigSymlink = path.resolve(
+        toolPkgInfo.cacheDir,
+        layer,
+        "layer.config.js"
+      );
       const { layerEntry, exposes, requires } = await getLayerInfo(
         layerConfigPath
       );
@@ -137,6 +142,7 @@ export async function extractLayerEntries(
         layerConfigPath,
         layerPath,
         globalModulePath,
+        layerConfigSymlink,
         layerPackageName,
         exposes,
         requires,

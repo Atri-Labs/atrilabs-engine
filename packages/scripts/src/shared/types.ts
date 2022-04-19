@@ -16,6 +16,7 @@ export type LayerEntry = {
   layerEntry: string;
   // the path where layer specific module is written
   globalModulePath: string;
+  layerConfigSymlink: string;
   // flag root layer
   isRoot: boolean;
   // info

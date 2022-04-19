@@ -21,3 +21,21 @@ export function createGlobalModuleForLayer(layerEntry: LayerEntry) {
   }
   fs.writeFileSync(layerEntry.globalModulePath, lines.join("\n"));
 }
+
+/**
+ * Symlink all layer's config file in cache directory. It is required
+ * so that when a new layer is added to tool.config.js, re-compilation kicks in.
+ * Watching this directory will be equivalent of watching all layer.config.js file.
+ */
+export function symlinkLayerConfigFile(layerEntry: LayerEntry) {
+  if (!fs.existsSync(path.dirname(layerEntry.layerConfigSymlink))) {
+    fs.mkdirSync(path.dirname(layerEntry.layerConfigSymlink), {
+      recursive: true,
+    });
+  }
+  fs.symlinkSync(
+    layerEntry.layerConfigPath,
+    layerEntry.layerConfigSymlink,
+    "file"
+  );
+}
