@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-console.log("lern dev");
 import { webpack } from "webpack";
 import {
   extractLayerEntries,
