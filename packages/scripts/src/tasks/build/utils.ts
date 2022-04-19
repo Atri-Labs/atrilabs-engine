@@ -183,3 +183,13 @@ export function detectLayerForFile(
   }
   return;
 }
+
+/**
+ * clear the cache directory.
+ */
+export function resetBuildCache(toolPkgInfo: ToolPkgInfo) {
+  if (fs.existsSync(toolPkgInfo.cacheDir)) {
+    fs.rmSync(toolPkgInfo.cacheDir, { force: true, recursive: true });
+  }
+  fs.mkdirSync(toolPkgInfo.cacheDir, { recursive: true });
+}
