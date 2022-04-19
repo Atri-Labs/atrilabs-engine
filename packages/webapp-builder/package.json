@@ -21,7 +21,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-atri-tool"
+    "build": "build-atri-tool",
+    "start": "dev-atri-tool"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
