@@ -31,6 +31,7 @@ importToolConfig(toolPkgInfo.configFile)
     webpackConfig["devServer"] = {
       watchFiles: { paths: [toolPkgInfo.configFile] },
     };
+    webpackConfig["mode"] = "development";
     const compiler = webpack(webpackConfig);
 
     // create dev server
@@ -52,6 +53,11 @@ importToolConfig(toolPkgInfo.configFile)
         devServer.close();
         process.exit();
       });
+    });
+
+    process.stdin.on("end", function () {
+      devServer.close();
+      process.exit();
     });
   })
   .catch((err) => {
