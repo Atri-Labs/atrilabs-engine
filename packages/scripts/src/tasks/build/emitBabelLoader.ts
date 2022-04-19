@@ -18,7 +18,7 @@ export default function emitBabelLoader(
   const getLayerList = (): { path: string }[] => {
     const sortedLayers = sortLayerEntriesInImportOrder(layerEntries);
     return sortedLayers.map((layer) => {
-      return { path: layer.layerPath };
+      return { path: layer.layerEntry };
     });
   };
   // read all name maps at once to reduce computation
