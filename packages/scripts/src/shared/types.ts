@@ -39,3 +39,8 @@ export type CorePkgInfo = {
 export type ToolEnv = {
   PUBLIC_URL: string;
 };
+
+export type ServerConfig = {
+  host: string;
+  port: number;
+};

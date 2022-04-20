@@ -8,10 +8,12 @@ import { isInteractive } from "../../shared/terminal";
 import addCompilerHooks from "./addCompilerHooks";
 import forceRecompile from "./forceRecompile";
 import { processToolConfig } from "./processToolConfig";
+import getServerConfig from "./getServerConfig";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
 const toolEnv = getToolEnv();
+const serverConfig = getServerConfig();
 
 processToolConfig(toolPkgInfo)
   .then(async ({ toolConfig, layerEntries }) => {
@@ -36,10 +38,7 @@ processToolConfig(toolPkgInfo)
     addCompilerHooks(compiler);
 
     // create dev server
-    const devServer = new WebpackDevServer(
-      { host: "localhost", port: 4000 },
-      compiler
-    );
+    const devServer = new WebpackDevServer({ ...serverConfig }, compiler);
 
     // launch WebpackDevServer
     devServer.startCallback(() => {
