@@ -9,7 +9,8 @@ import {
   importToolConfig,
 } from "../../shared/utils";
 import createWebpackConfig from "../../shared/webpack.config";
-import { clearConsole, isInteractive } from "../../shared/terminal";
+import { isInteractive, clearConsole } from "../../shared/terminal";
+import addCompilerHooks from "./addCompilerHooks";
 console.log("dev called");
 const toolPkgInfo = getToolPkgInfo();
 
@@ -28,11 +29,12 @@ importToolConfig(toolPkgInfo.configFile)
       toolConfig,
       layerEntries
     );
-    webpackConfig["devServer"] = {
-      watchFiles: { paths: [toolPkgInfo.configFile] },
+    webpackConfig["watchOptions"] = {
+      ignored: /node_modules/,
     };
     webpackConfig["mode"] = "development";
     const compiler = webpack(webpackConfig);
+    addCompilerHooks(compiler);
 
     // create dev server
     const devServer = new WebpackDevServer(
