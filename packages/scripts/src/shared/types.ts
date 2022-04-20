@@ -24,3 +24,11 @@ export type LayerEntry = {
   requires: LayerConfig["requires"];
   remap: ToolConfig["layers"]["0"]["remap"];
 };
+
+export type CorePkgInfo = {
+  dir: string;
+  // file that is used as webpack entry point
+  entryFile: string;
+  // file that gets imported when core package is imported
+  indexFile: string;
+};

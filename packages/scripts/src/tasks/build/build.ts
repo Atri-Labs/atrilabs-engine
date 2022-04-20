@@ -2,6 +2,7 @@
 import { webpack } from "webpack";
 import {
   extractLayerEntries,
+  getCorePkgInfo,
   getToolPkgInfo,
   importToolConfig,
 } from "../../shared/utils";
@@ -9,6 +10,7 @@ import { createGlobalModuleForLayer } from "../../shared/processLayer";
 import createWebpackConfig from "../../shared/webpack.config";
 
 const toolPkgInfo = getToolPkgInfo();
+const corePkgInfo = getCorePkgInfo();
 
 importToolConfig(toolPkgInfo.configFile)
   .then(async (toolConfig) => {
@@ -21,6 +23,7 @@ importToolConfig(toolPkgInfo.configFile)
 
     // bundle ui
     const webpackConfig = createWebpackConfig(
+      corePkgInfo,
       toolPkgInfo,
       toolConfig,
       layerEntries

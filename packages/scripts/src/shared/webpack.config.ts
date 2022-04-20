@@ -1,10 +1,11 @@
 import { ToolConfig } from "@atrilabs/core";
 import path from "path";
 import { Configuration } from "webpack";
-import { LayerEntry, ToolPkgInfo } from "./types";
+import { CorePkgInfo, LayerEntry, ToolPkgInfo } from "./types";
 import emitBabelLoader from "./emitBabelLoader";
 
 export default function createWebpackConfig(
+  corePkgInfo: CorePkgInfo,
   toolPkgInfo: ToolPkgInfo,
   toolConfig: ToolConfig,
   layerEntries: LayerEntry[]
@@ -13,7 +14,7 @@ export default function createWebpackConfig(
     target: "web",
     entry: {
       layers: {
-        import: require.resolve("@atrilabs/core/lib/layers.js"),
+        import: corePkgInfo.entryFile,
         dependOn: "shared",
       },
       shared: ["react", "react-dom"],

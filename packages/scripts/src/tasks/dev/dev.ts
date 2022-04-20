@@ -5,14 +5,17 @@ import chalk from "chalk";
 import { createGlobalModuleForLayer } from "../../shared/processLayer";
 import {
   extractLayerEntries,
+  getCorePkgInfo,
   getToolPkgInfo,
   importToolConfig,
 } from "../../shared/utils";
 import createWebpackConfig from "../../shared/webpack.config";
 import { isInteractive, clearConsole } from "../../shared/terminal";
 import addCompilerHooks from "./addCompilerHooks";
+import forceRecompile from "./forceRecompile";
 
 const toolPkgInfo = getToolPkgInfo();
+const corePkgInfo = getCorePkgInfo();
 
 importToolConfig(toolPkgInfo.configFile)
   .then(async (toolConfig) => {
@@ -23,8 +26,12 @@ importToolConfig(toolPkgInfo.configFile)
       createGlobalModuleForLayer(layerEntry);
     });
 
-    // create webpack config and compiler
+    // force compile when tool.config.js file changes
+    forceRecompile(corePkgInfo, toolPkgInfo);
+
+    // create webpack config
     const webpackConfig = createWebpackConfig(
+      corePkgInfo,
       toolPkgInfo,
       toolConfig,
       layerEntries
@@ -33,6 +40,8 @@ importToolConfig(toolPkgInfo.configFile)
       ignored: /node_modules/,
     };
     webpackConfig["mode"] = "development";
+
+    // create compiler
     const compiler = webpack(webpackConfig);
     addCompilerHooks(compiler);
 
