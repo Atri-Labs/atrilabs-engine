@@ -32,6 +32,11 @@ processToolConfig(toolPkgInfo)
       ignored: /node_modules/,
     };
     webpackConfig["mode"] = "development";
+    webpackConfig["devServer"] = {
+      client: {
+        overlay: true,
+      },
+    };
 
     // create compiler
     const compiler = webpack(webpackConfig);

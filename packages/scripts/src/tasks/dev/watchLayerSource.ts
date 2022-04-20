@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import chokidar from "chokidar";
+import { stdout } from "process";
 import { LayerEntry } from "../../shared/types";
 
 const watcher = chokidar.watch([]);
@@ -10,7 +11,17 @@ watcher.on("change", (path) => {
   srcDirs.forEach((srcDir) => {
     if (path.match(srcDir)) {
       try {
-        exec("tsc", { cwd: watchedSrcDirs[srcDir] });
+        exec("tsc", { cwd: watchedSrcDirs[srcDir] }, (err, _stdout, stderr) => {
+          if (err) {
+            console.error("Failed to run tsc", err.message);
+          }
+          if (stderr) {
+            console.error(`stderr: ${stderr}`);
+          }
+          if (stdout) {
+            console.log(`stdout: ${stdout}`);
+          }
+        });
       } catch (err) {
         console.log(err);
       }
