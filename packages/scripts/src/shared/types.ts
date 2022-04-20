@@ -6,6 +6,8 @@ export type ToolPkgInfo = {
   configFile: string;
   nodeModule: string;
   cacheDir: string;
+  publicDir: string;
+  toolHtml: string;
 };
 
 export type LayerEntry = {
@@ -31,4 +33,8 @@ export type CorePkgInfo = {
   entryFile: string;
   // file that gets imported when core package is imported
   indexFile: string;
+};
+
+export type ToolEnv = {
+  PUBLIC_URL: string;
 };

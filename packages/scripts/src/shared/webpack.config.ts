@@ -1,14 +1,17 @@
 import { ToolConfig } from "@atrilabs/core";
 import path from "path";
 import { Configuration } from "webpack";
-import { CorePkgInfo, LayerEntry, ToolPkgInfo } from "./types";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
+import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
 import emitBabelLoader from "./emitBabelLoader";
 
 export default function createWebpackConfig(
   corePkgInfo: CorePkgInfo,
   toolPkgInfo: ToolPkgInfo,
   toolConfig: ToolConfig,
-  layerEntries: LayerEntry[]
+  layerEntries: LayerEntry[],
+  toolEnv: ToolEnv
 ) {
   const webpackConfig: Configuration = {
     target: "web",
@@ -48,6 +51,10 @@ export default function createWebpackConfig(
         },
       ],
     },
+    plugins: [
+      new HtmlWebpackPlugin({ inject: true, template: toolPkgInfo.toolHtml }),
+      new InterpolateHtmlPlugin(HtmlWebpackPlugin, toolEnv),
+    ],
   };
   return webpackConfig;
 }

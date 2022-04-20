@@ -3,6 +3,7 @@ import { webpack } from "webpack";
 import {
   extractLayerEntries,
   getCorePkgInfo,
+  getToolEnv,
   getToolPkgInfo,
   importToolConfig,
 } from "../../shared/utils";
@@ -11,6 +12,7 @@ import createWebpackConfig from "../../shared/webpack.config";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
+const toolEnv = getToolEnv();
 
 importToolConfig(toolPkgInfo.configFile)
   .then(async (toolConfig) => {
@@ -26,7 +28,8 @@ importToolConfig(toolPkgInfo.configFile)
       corePkgInfo,
       toolPkgInfo,
       toolConfig,
-      layerEntries
+      layerEntries,
+      toolEnv
     );
     webpack(webpackConfig, (err, stats) => {
       let buildFailed = false;

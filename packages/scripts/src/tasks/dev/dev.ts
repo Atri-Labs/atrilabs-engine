@@ -2,7 +2,7 @@
 import { webpack } from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import chalk from "chalk";
-import { getCorePkgInfo, getToolPkgInfo } from "../../shared/utils";
+import { getCorePkgInfo, getToolEnv, getToolPkgInfo } from "../../shared/utils";
 import createWebpackConfig from "../../shared/webpack.config";
 import { isInteractive } from "../../shared/terminal";
 import addCompilerHooks from "./addCompilerHooks";
@@ -11,6 +11,7 @@ import { processToolConfig } from "./processToolConfig";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
+const toolEnv = getToolEnv();
 
 processToolConfig(toolPkgInfo)
   .then(async ({ toolConfig, layerEntries }) => {
@@ -22,7 +23,8 @@ processToolConfig(toolPkgInfo)
       corePkgInfo,
       toolPkgInfo,
       toolConfig,
-      layerEntries
+      layerEntries,
+      toolEnv
     );
     webpackConfig["watchOptions"] = {
       ignored: /node_modules/,

@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import { LayerConfig, ToolConfig } from "@atrilabs/core";
 import { merge } from "lodash";
-import { CorePkgInfo, LayerEntry, ToolPkgInfo } from "./types";
+import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
 
 // NOTE: this script is expected to be run via a package manager like npm, yarn
 
@@ -12,12 +12,16 @@ export function getToolPkgInfo(): ToolPkgInfo {
   const toolConfigFile = path.resolve(toolSrc, "tool.config.js");
   const toolNodeModule = path.resolve(toolDir, "node_modules");
   const cacheDir = path.resolve(toolNodeModule, ".cache", "@atrilabs", "build");
+  const publicDir = path.resolve(toolDir, "public");
+  const toolHtml = path.resolve(publicDir, "index.html");
   return {
     dir: toolDir,
     src: toolSrc,
     configFile: toolConfigFile,
     nodeModule: toolNodeModule,
     cacheDir,
+    publicDir,
+    toolHtml,
   };
 }
 
@@ -26,6 +30,12 @@ export function getCorePkgInfo(): CorePkgInfo {
     dir: path.dirname(require.resolve("@atrilabs/core/package.json")),
     entryFile: require.resolve("@atrilabs/core/lib/layers.js"),
     indexFile: require.resolve("@atrilabs/core/lib/index.js"),
+  };
+}
+
+export function getToolEnv(): ToolEnv {
+  return {
+    PUBLIC_URL: "",
   };
 }
 
