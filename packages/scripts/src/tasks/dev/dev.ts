@@ -49,6 +49,7 @@ processToolConfig(toolPkgInfo)
       console.log(chalk.cyan("Starting the development server...\n"));
     });
 
+    // wait for kill signals
     ["SIGINT", "SIGTERM"].forEach(function (sig) {
       process.on(sig, function () {
         devServer.close();
@@ -56,6 +57,7 @@ processToolConfig(toolPkgInfo)
       });
     });
 
+    // wait for input on stdin (hold the terminal)
     process.stdin.on("end", function () {
       devServer.close();
       process.exit();
