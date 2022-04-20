@@ -2,30 +2,18 @@
 import { webpack } from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import chalk from "chalk";
-import { createGlobalModuleForLayer } from "../../shared/processLayer";
-import {
-  extractLayerEntries,
-  getCorePkgInfo,
-  getToolPkgInfo,
-  importToolConfig,
-} from "../../shared/utils";
+import { getCorePkgInfo, getToolPkgInfo } from "../../shared/utils";
 import createWebpackConfig from "../../shared/webpack.config";
-import { isInteractive, clearConsole } from "../../shared/terminal";
+import { isInteractive } from "../../shared/terminal";
 import addCompilerHooks from "./addCompilerHooks";
 import forceRecompile from "./forceRecompile";
+import { processToolConfig } from "./processToolConfig";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
 
-importToolConfig(toolPkgInfo.configFile)
-  .then(async (toolConfig) => {
-    const layerEntries = await extractLayerEntries(toolConfig, toolPkgInfo);
-
-    // create global module and symlink for each layer
-    layerEntries.forEach((layerEntry) => {
-      createGlobalModuleForLayer(layerEntry);
-    });
-
+processToolConfig(toolPkgInfo)
+  .then(async ({ toolConfig, layerEntries }) => {
     // force compile when tool.config.js file changes
     forceRecompile(corePkgInfo, toolPkgInfo);
 
@@ -54,7 +42,7 @@ importToolConfig(toolPkgInfo.configFile)
     // launch WebpackDevServer
     devServer.startCallback(() => {
       if (isInteractive) {
-        clearConsole();
+        // clearConsole();
       }
       console.log(chalk.cyan("Starting the development server...\n"));
     });

@@ -1,5 +1,5 @@
 import { Compiler } from "webpack";
-import { clearConsole, isInteractive } from "../../shared/terminal";
+import { isInteractive, clearConsole } from "../../shared/terminal";
 
 export default function addCompilerHooks(compiler: Compiler) {
   compiler.hooks.invalid.tap("invalid", () => {
