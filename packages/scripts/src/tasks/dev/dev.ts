@@ -11,7 +11,7 @@ import {
 import createWebpackConfig from "../../shared/webpack.config";
 import { isInteractive, clearConsole } from "../../shared/terminal";
 import addCompilerHooks from "./addCompilerHooks";
-console.log("dev called");
+
 const toolPkgInfo = getToolPkgInfo();
 
 importToolConfig(toolPkgInfo.configFile)
