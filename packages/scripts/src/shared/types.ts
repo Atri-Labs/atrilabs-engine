@@ -16,6 +16,7 @@ export type LayerEntry = {
   layerPath: string;
   layerConfigPath: string;
   layerEntry: string;
+  layerSrcDir: string;
   // the path where layer specific module is written
   globalModulePath: string;
   layerConfigSymlink: string;

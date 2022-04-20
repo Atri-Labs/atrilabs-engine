@@ -138,6 +138,7 @@ export async function extractLayerEntries(
     }
     try {
       const layerPath = path.dirname(require.resolve(`${layer}/package.json`));
+      const layerSrcDir = path.resolve(layerPath, "src");
       const layerPackageName = layer;
       const globalModulePath = path.resolve(
         toolPkgInfo.cacheDir,
@@ -165,6 +166,7 @@ export async function extractLayerEntries(
         exposes,
         requires,
         remap,
+        layerSrcDir,
       });
     } catch (err) {
       console.log(err);
