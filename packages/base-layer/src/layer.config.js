@@ -3,7 +3,7 @@ module.exports = {
   requires: {},
   exposes: {
     menu: {
-      BaseHeaderMenu: "BaseHeaderMenu2",
+      BaseHeaderMenu: "BaseHeaderMenu",
       BaseFooterMenu: "BaseFooterMenu",
     },
     containers: {
