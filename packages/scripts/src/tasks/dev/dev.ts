@@ -9,16 +9,27 @@ import addCompilerHooks from "./addCompilerHooks";
 import forceRecompile from "./forceRecompile";
 import { processToolConfig } from "./processToolConfig";
 import getServerConfig from "./getServerConfig";
+import watchCorePkg from "./watchCorePkg";
+import buildLayer from "./buildLayer";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
 const toolEnv = getToolEnv();
 const serverConfig = getServerConfig();
 
+// watch @atrilabs/core package if it's not inside node_modules
+watchCorePkg(corePkgInfo);
+
 processToolConfig(toolPkgInfo)
   .then(async ({ toolConfig, layerEntries }) => {
     // force compile when tool.config.js file changes
     forceRecompile(corePkgInfo, toolPkgInfo);
+
+    // build all layers once in the beginning
+    // TODO: handle failed compilation.
+    // failed compilation should lead to watching for changes so that
+    // when error gets fixed, compilation resumes.
+    layerEntries.forEach((layerEntry) => buildLayer(layerEntry));
 
     // create webpack config
     const webpackConfig = createWebpackConfig(
