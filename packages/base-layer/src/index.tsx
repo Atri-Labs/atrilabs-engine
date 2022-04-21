@@ -1,12 +1,10 @@
 import { setApp, menu } from "@atrilabs/core";
+import { App } from "./App";
 
 export default function () {
   console.log("base-layer loaded");
   if (currentLayer === "root") {
-    const App: React.FC = () => {
-      return <div className="App"></div>;
-    };
-    console.log(setApp, App);
+    setApp(<App />);
     console.log(menu("BaseHeaderMenu"));
   }
 }
