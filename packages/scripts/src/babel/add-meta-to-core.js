@@ -27,16 +27,14 @@ const InternalVisitor = {
 /**
  *
  * @param {*} babel
- * @param {{menu?: string[], containers?: string[], tabs?: string[]}} options
+ * @param {{menu?: string[], containers?: string[], tabs?: string[], layerDetailsFile: string}} options
  */
 module.exports = function (babel, options) {
   return {
     visitor: {
       Program: {
         enter: (path, parent) => {
-          const skip = parent.filename.match(
-            require.resolve("@atrilabs/core/lib/layerDetails.js")
-          )
+          const skip = parent.filename.match(options.layerDetailsFile)
             ? false
             : true;
           if (!skip) {

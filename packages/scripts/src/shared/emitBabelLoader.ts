@@ -1,7 +1,7 @@
 import { LayerConfig } from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
-import { LayerEntry } from "./types";
+import { LayerEntry, CorePkgInfo } from "./types";
 import {
   detectLayerForFile,
   getNameMapForLayer,
@@ -13,7 +13,8 @@ import {
  * It generates name maps etc. on every call.
  */
 export default function emitBabelLoader(
-  layerEntries: LayerEntry[]
+  layerEntries: LayerEntry[],
+  corePkgInfo: CorePkgInfo
 ): Exclude<RuleSetRule["use"], undefined> {
   const getLayerList = (): { path: string }[] => {
     const sortedLayers = sortLayerEntriesInImportOrder(layerEntries);
@@ -98,11 +99,15 @@ export default function emitBabelLoader(
               ),
               {
                 layers: getLayerList(),
+                coreEntry: corePkgInfo.entryFile,
               },
             ],
             [
               path.resolve(__dirname, "..", "babel", "add-meta-to-core.js"),
-              getExposedSockets(),
+              {
+                ...getExposedSockets(),
+                layerDetailsFile: corePkgInfo.layerDetailsFile,
+              },
             ],
             [
               path.resolve(__dirname, "..", "babel", "add-layer-import.js"),

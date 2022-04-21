@@ -45,7 +45,7 @@ export default function createWebpackConfig(
           oneOf: [
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              use: emitBabelLoader(layerEntries),
+              use: emitBabelLoader(layerEntries, corePkgInfo),
             },
           ],
         },

@@ -34,6 +34,9 @@ export type CorePkgInfo = {
   entryFile: string;
   // file that gets imported when core package is imported
   indexFile: string;
+  // file that contains information spanning and applicable to all layers
+  // such as global name map for menu, tab, containers etc.
+  layerDetailsFile: string;
 };
 
 export type ToolEnv = {

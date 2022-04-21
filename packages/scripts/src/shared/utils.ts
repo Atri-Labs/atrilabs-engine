@@ -1,10 +1,33 @@
 import path from "path";
 import fs from "fs";
+import chalk from "chalk";
 import { LayerConfig, ToolConfig } from "@atrilabs/core";
 import { merge } from "lodash";
 import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
 
 // NOTE: this script is expected to be run via a package manager like npm, yarn
+
+// packaged layers will always have js/jsx extension
+const moduleFileExtensions = ["js", "jsx"];
+
+/**
+ *
+ * @param filename file name without extension
+ */
+function findFileWithoutExtension(filename: string) {
+  for (let i = 0; i < moduleFileExtensions.length; i++) {
+    const ext = moduleFileExtensions[i];
+    const filenameWithExt = `${filename}.${ext}`;
+    if (
+      fs.existsSync(filenameWithExt) &&
+      !fs.statSync(filenameWithExt).isDirectory()
+    ) {
+      // add this to layer entries
+      return filenameWithExt;
+    }
+  }
+  return;
+}
 
 export function getToolPkgInfo(): ToolPkgInfo {
   const toolDir = process.cwd();
@@ -26,10 +49,26 @@ export function getToolPkgInfo(): ToolPkgInfo {
 }
 
 export function getCorePkgInfo(): CorePkgInfo {
+  const dir = path.dirname(require.resolve("@atrilabs/core/package.json"));
+  const entryFile = findFileWithoutExtension(
+    path.resolve(dir, "lib", "layers")
+  );
+  const indexFile = findFileWithoutExtension(path.resolve(dir, "lib", "index"));
+  const layerDetailsFile = findFileWithoutExtension(
+    path.resolve(dir, "lib", "layerDetails")
+  );
+  if (
+    entryFile === undefined ||
+    indexFile === undefined ||
+    layerDetailsFile === undefined
+  ) {
+    throw Error(chalk.red(`Missing entryFile or indexFile in @atrilabs/core`));
+  }
   return {
     dir: path.dirname(require.resolve("@atrilabs/core/package.json")),
-    entryFile: require.resolve("@atrilabs/core/lib/layers.js"),
-    indexFile: require.resolve("@atrilabs/core/lib/index.js"),
+    entryFile,
+    indexFile,
+    layerDetailsFile,
   };
 }
 
@@ -73,9 +112,6 @@ export async function extractLayerEntries(
 ) {
   const layerEntries: LayerEntry[] = [];
 
-  // packaged layers will always have js/jsx extension
-  const moduleFileExtensions = ["js", "jsx"];
-
   async function getLayerInfo(layerConfigPath: string) {
     return new Promise<{
       layerEntry: string;
@@ -86,25 +122,21 @@ export async function extractLayerEntries(
       delete require.cache[layerConfigPath];
       import(layerConfigPath).then((mod: { default: LayerConfig }) => {
         let layerEntry = mod.default.modulePath;
+        // layerEntry must be converted to absolute path
         if (!path.isAbsolute(mod.default.modulePath)) {
           layerEntry = path.resolve(
             path.dirname(layerConfigPath),
             mod.default.modulePath
           );
         }
-        // check if layerEntry file exists with extensions .js .jsx
-        for (let i = 0; i < moduleFileExtensions.length; i++) {
-          const ext = moduleFileExtensions[i];
-          const filename = `${layerEntry}.${ext}`;
-          if (fs.existsSync(filename) && !fs.statSync(filename).isDirectory()) {
-            // add this to layer entries
-            res({
-              layerEntry,
-              requires: mod.default.requires,
-              exposes: mod.default.exposes,
-            });
-            return;
-          }
+        const filenameWithExt = findFileWithoutExtension(layerEntry);
+        if (filenameWithExt) {
+          res({
+            layerEntry: filenameWithExt,
+            requires: mod.default.requires,
+            exposes: mod.default.exposes,
+          });
+          return;
         }
         rej(`${layerEntry} not found`);
       });
