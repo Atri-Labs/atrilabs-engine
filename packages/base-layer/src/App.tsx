@@ -1,4 +1,7 @@
 import { gray800 } from "@atrilabs/design-system";
+import { useFooterMenu } from "./hooks/useFooterMenu";
+import { useHeaderMenu } from "./hooks/useHeaderMenu";
+import { useLogo } from "./hooks/useLogo";
 
 const adjustRootCSS = () => {
   const body = document.body;
@@ -41,13 +44,26 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const App: React.FC = () => {
+  const logoItem = useLogo();
+  const headerMenuItems = useHeaderMenu();
+  const footerMenuItems = useFooterMenu();
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPanel}>
-        <div style={styles.logo}></div>
+        <div style={styles.logo}>
+          {logoItem ? <logoItem.comp {...logoItem.props} /> : null}
+        </div>
         <div style={styles.menuContainer}>
-          <div style={styles.headerMenu}></div>
-          <div style={styles.footerMenu}></div>
+          <div style={styles.headerMenu}>
+            {headerMenuItems.map((item) => {
+              return <item.comp {...item.props} />;
+            })}
+          </div>
+          <div style={styles.footerMenu}>
+            {footerMenuItems.map((item) => {
+              return <item.comp {...item.props} />;
+            })}
+          </div>
         </div>
       </div>
       <div style={styles.containerPanel}></div>

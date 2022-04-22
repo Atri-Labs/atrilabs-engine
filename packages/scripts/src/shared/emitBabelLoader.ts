@@ -48,14 +48,14 @@ export default function emitBabelLoader(
       }
       if (value.containers) {
         Object.values(value.containers).forEach(
-          exposedSockets.menu.add,
-          exposedSockets.menu
+          exposedSockets.containers.add,
+          exposedSockets.containers
         );
       }
       if (value.tabs) {
         Object.values(value.tabs).forEach(
-          exposedSockets.menu.add,
-          exposedSockets.menu
+          exposedSockets.tabs.add,
+          exposedSockets.tabs
         );
       }
     });

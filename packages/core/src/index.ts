@@ -2,6 +2,8 @@ import { menuRegistry, containerRegistry, tabsRegistry } from "./layerDetails";
 import { Container, MenuItem, TabItem } from "./types";
 import "./layers";
 
+export * from "./types";
+
 type App = React.ReactChild | Iterable<React.ReactNode>;
 
 const setAppSubscribers: ((app: App) => void)[] = [];
@@ -231,32 +233,3 @@ export function tab(name: string) {
 
   return { register, listen, items, unregister };
 }
-
-// types
-
-/**
- * map of a name local to a layer with it's global name
- */
-export type NameMap = { [localName: string]: string };
-
-export type LayerConfig = {
-  modulePath: string;
-  requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
-  exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
-};
-
-export type ToolConfig = {
-  layers: {
-    pkg: string;
-    remap?: Partial<{
-      requires: LayerConfig["requires"];
-      exposes: LayerConfig["exposes"];
-    }>;
-  }[];
-  /**
-   * directory where editor code will be emitted.
-   * web    - contains ui of editor
-   * server - contains backend of editor
-   */
-  output: string;
-};
