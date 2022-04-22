@@ -4,6 +4,9 @@ module.exports = {
     menu: {
       BaseHeaderMenu: "BaseHeaderMenu",
     },
+    containers: {
+      BaseContainer: "BaseContainer",
+    },
   },
   exposes: {
     menu: {
