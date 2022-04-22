@@ -1,4 +1,5 @@
 import { gray800 } from "@atrilabs/design-system";
+import { useBaseContainer } from "./hooks/useBaseContainer";
 import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
 import { useLogo } from "./hooks/useLogo";
@@ -47,6 +48,7 @@ export const App: React.FC = () => {
   const logoItem = useLogo();
   const headerMenuItems = useHeaderMenu();
   const footerMenuItems = useFooterMenu();
+  const baseContainer = useBaseContainer();
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPanel}>
@@ -66,7 +68,9 @@ export const App: React.FC = () => {
           </div>
         </div>
       </div>
-      <div style={styles.containerPanel}></div>
+      <div style={styles.containerPanel}>
+        {baseContainer ? <baseContainer.comp {...baseContainer.props} /> : null}
+      </div>
     </div>
   );
 };
