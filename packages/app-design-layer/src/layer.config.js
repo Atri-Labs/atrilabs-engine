@@ -17,6 +17,7 @@ module.exports = {
     },
     containers: {
       Canvas: "Canvas",
+      Drop: "Drop",
     },
     tabs: { PropertiesTab: "PropertiesTab" },
   },

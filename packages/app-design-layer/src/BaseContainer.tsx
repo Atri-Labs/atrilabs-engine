@@ -1,54 +1,96 @@
 import { gray800 } from "@atrilabs/design-system";
+import { useAppMenu } from "./hooks/useAppMenu";
+import { useCanvasMenu } from "./hooks/useCanvasMenu";
+import { usePageMenu } from "./hooks/usePageMenu";
+import { usePublishMenu } from "./hooks/usePublishMenu";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
     height: "100%",
     width: "100%",
     display: "flex",
-    flexDirection: "column",
   },
 
   // children of outerDiv
+  leftPart: {
+    height: "100%",
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+  rightPart: { height: "100%", width: "15rem", display: "flex" },
+
+  // children of leftPart
   header: {
     height: "2.5rem",
     background: gray800,
     display: "flex",
     justifyContent: "space-between",
   },
-  body: {},
+  body: { display: "flex", flexGrow: 1 },
+
+  // children of body
+  dropContainer: {},
+  canvasContainer: {},
 
   // chilren of header
-  leftHeader: {},
-  middleHeader: {},
-  rightHeader: {},
+  leftHeader: { display: "flex" },
+  middleHeader: { display: "flex" },
+  rightHeader: { display: "flex" },
 
   // chilren of leftHeader
-  appMenu: {},
-  pageMenu: {},
+  appMenu: { display: "flex" },
+  pageMenu: { display: "flex" },
 
   // children of  middleHeader
-  canvasMenu: {},
+  canvasMenu: { display: "flex" },
 
   // children of rightHeader
-  publishMenu: {},
+  publishMenu: { display: "flex" },
 };
 
 export const BaseContainer: React.FC = () => {
+  const appMenuItems = useAppMenu();
+  const pageMenuItems = usePageMenu();
+  const canvasMenuItems = useCanvasMenu();
+  const publishMenuItems = usePublishMenu();
   return (
     <div style={styles.outerDiv}>
-      <div style={styles.header}>
-        <div style={styles.leftHeader}>
-          <div style={styles.appMenu}></div>
-          <div style={styles.pageMenu}></div>
+      <div style={styles.leftPart}>
+        <div style={styles.header}>
+          <div style={styles.leftHeader}>
+            <div style={styles.appMenu}>
+              {appMenuItems.map((item) => (
+                <item.comp {...item.props} />
+              ))}
+            </div>
+            <div style={styles.pageMenu}>
+              {pageMenuItems.map((item) => (
+                <item.comp {...item.props} />
+              ))}
+            </div>
+          </div>
+          <div style={styles.middleHeader}>
+            <div style={styles.canvasMenu}>
+              {canvasMenuItems.map((item) => (
+                <item.comp {...item.props} />
+              ))}
+            </div>
+          </div>
+          <div style={styles.rightHeader}>
+            <div style={styles.publishMenu}>
+              {publishMenuItems.map((item) => (
+                <item.comp {...item.props} />
+              ))}
+            </div>
+          </div>
         </div>
-        <div style={styles.middleHeader}>
-          <div style={styles.canvasMenu}></div>
-        </div>
-        <div style={styles.rightHeader}>
-          <div style={styles.publishMenu}></div>
+        <div style={styles.body}>
+          <div style={styles.dropContainer}></div>
+          <div style={styles.canvasContainer}></div>
         </div>
       </div>
-      <div style={styles.body}></div>
+      <div style={styles.rightPart}></div>
     </div>
   );
 };
