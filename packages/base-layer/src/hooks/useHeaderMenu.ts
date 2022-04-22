@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { headerMenu } from "../exposed";
 
 export const useHeaderMenu = () => {
-  const [items, setItems] = useState<MenuItem<any>[]>([]);
+  const [items, setItems] = useState<MenuItem<any>[]>(headerMenu.items());
   useEffect(() => {
     headerMenu.listen(() => {
       setItems(headerMenu.items());
