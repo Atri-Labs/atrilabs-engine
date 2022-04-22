@@ -1,3 +1,5 @@
+import { gray800 } from "@atrilabs/design-system";
+
 const adjustRootCSS = () => {
   const body = document.body;
   const root = document.getElementById("root");
@@ -24,12 +26,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   containerPanel: { flexGrow: 1 },
 
   // leftPanel children
-  logo: { width: "2.5rem", height: "2.5rem" },
+  logo: { width: "2.5rem", height: "2.5rem", backgroundColor: gray800 },
   menuContainer: {
     flexGrow: 1,
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "column",
+    backgroundColor: gray800,
   },
 
   // menuContainer children
