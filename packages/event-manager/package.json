@@ -1,0 +1,37 @@
+{
+  "name": "@atrilabs/event-manager",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "typescript": "4.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.27",
+    "ts-node": "10.7.0",
+    "ts-node-dev": "1.1.8"
+  }
+}
