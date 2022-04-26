@@ -52,9 +52,9 @@ export type AnyEvent =
   | LinkEvent
   | UnlinkEvent;
 
-export type EventManager = () => {
+export type EventManager = {
   // takes page name and page route and returns page id
-  createPage: (name: string, route: string) => PageId;
+  createPage: (id: PageId, name: string, route: string) => void;
   // rename an existing page
   renamePage: (id: PageId, name: string) => void;
   // change router of a page
@@ -63,8 +63,12 @@ export type EventManager = () => {
   // store an event for a page
   storeEvent: (pageId: PageId, event: AnyEvent) => void;
   // fetch all events for a page
-  fetchEvent: (pageId: PageId) => AnyEvent[];
+  fetchEvents: (pageId: PageId) => AnyEvent[];
+  // compress events
+  compressEvents: (pageId: PageId) => AnyEvent[];
+  // write back compressed events
+  writeBackCompressedEvents: (pageId: PageId) => void;
 
-  // takes prefix and returns an alias
-  createAlias: (prefix: string) => string;
+  // takes prefix and returns next number for the prefix
+  incrementAlias: (prefix: string) => number;
 };
