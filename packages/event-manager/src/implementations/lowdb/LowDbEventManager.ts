@@ -1,7 +1,8 @@
+import { AnyEvent } from "@atrilabs/forest";
 import Lowdb, { LowdbSync } from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import path from "path";
-import { AnyEvent, EventManager, PageId } from "../../types";
+import { EventManager, PageId } from "../../types";
 import { AliasDbSchema, PagesDbSchema, EvensDbSchema } from "./types";
 
 export type LowDbEventManagerOptions = {
