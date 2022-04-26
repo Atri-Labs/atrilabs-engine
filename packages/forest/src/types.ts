@@ -49,3 +49,12 @@ export type AnyEvent =
   | DeleteEvent
   | LinkEvent
   | UnlinkEvent;
+
+export type ForestDef = {
+  name: string;
+  trees: {
+    pkg: string;
+    modulePath: string;
+    name: string;
+  }[];
+};
