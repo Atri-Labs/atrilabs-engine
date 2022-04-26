@@ -23,6 +23,7 @@ export default async function createForest(def: ForestDef) {
 
   function tree(name: string) {}
 
+  // store event
   function store(event: AnyEvent) {}
 
   return { tree, store };
