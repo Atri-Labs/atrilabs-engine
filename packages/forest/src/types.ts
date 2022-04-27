@@ -16,8 +16,6 @@ export type TreeLink = {
   refId: string;
   /** id of the node in the child tree */
   childId: string;
-  /** annotation for the relation */
-  rel: string;
 };
 
 export type EventDto = {
@@ -57,4 +55,10 @@ export type ForestDef = {
     modulePath: string;
     name: string;
   }[];
+};
+
+export type TreeDefReturnType = {
+  validateCreate: (event: CreateEvent) => boolean;
+  validatePatch: (event: PatchEvent) => boolean;
+  onCreate: (event: CreateEvent) => void;
 };

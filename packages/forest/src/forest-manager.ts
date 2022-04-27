@@ -1,12 +1,21 @@
 // manages multiple forests in a user session
-import createForest from "./forest";
-import { AnyEvent, ForestDef } from "./types";
+import createForest, { Forest } from "./forest";
+import {
+  CreateEvent,
+  DeleteEvent,
+  ForestDef,
+  LinkEvent,
+  PatchEvent,
+  UnlinkEvent,
+} from "./types";
 
-type FromPromise<T extends Promise<any>> = T extends Promise<infer U>
-  ? U
-  : never;
+type Callback = () => void;
 
-type Forest = FromPromise<ReturnType<typeof createForest>>;
+type Unsubscribe = () => void;
+
+type CurrentForest = Forest & {
+  on: (event: "reset", cb: Callback) => Unsubscribe;
+};
 
 export default function createForestManager(defs: ForestDef[]) {
   const forestMap: { [name: string]: { [page: string]: Forest } } = {};
@@ -31,13 +40,45 @@ export default function createForestManager(defs: ForestDef[]) {
     return forestMap[name]![pageId]!;
   }
 
+  // create current forest
+  const onResetListeners: Callback[] = [];
+  const createUnsubscriber = (arr: Callback[], cb: Callback) => {
+    return () => {
+      const index = arr.findIndex((curr) => curr === cb);
+      if (index >= 0) {
+        arr.splice(index, 1);
+      }
+    };
+  };
   // implement the same api as forest
-  const currentForest: Forest = {
+  const currentForest: CurrentForest = {
+    get name() {
+      return _currentForest.name;
+    },
     tree: (name: string) => {
       return _currentForest.tree(name);
     },
-    store: (event: AnyEvent) => {
-      return _currentForest.store(event);
+    create: (event: CreateEvent) => {
+      return _currentForest.create(event);
+    },
+    patch: (event: PatchEvent) => {
+      return _currentForest.patch(event);
+    },
+    del: (event: DeleteEvent) => {
+      return _currentForest.del(event);
+    },
+    link: (event: LinkEvent) => {
+      return _currentForest.link(event);
+    },
+    unlink: (event: UnlinkEvent) => {
+      return _currentForest.unlink(event);
+    },
+    on: (event, cb) => {
+      if (event === "reset") {
+        onResetListeners.push(cb);
+        return createUnsubscriber(onResetListeners, cb);
+      }
+      throw Error(`CurrentForest doesn't support event of type ${event}`);
     },
   };
 

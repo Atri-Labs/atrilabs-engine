@@ -27,6 +27,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "lodash": "4.17.21",
     "typescript": "4.6.3"
   }
 }
