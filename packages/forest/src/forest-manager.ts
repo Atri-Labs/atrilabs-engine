@@ -1,6 +1,7 @@
 // manages multiple forests in a user session
 import createForest, { Forest } from "./forest";
 import {
+  AnyEvent,
   CreateEvent,
   DeleteEvent,
   ForestDef,
@@ -72,6 +73,9 @@ export default function createForestManager(defs: ForestDef[]) {
     },
     unlink: (event: UnlinkEvent) => {
       return _currentForest.unlink(event);
+    },
+    handleEvent: (event: AnyEvent) => {
+      return _currentForest.handleEvent(event);
     },
     on: (event, cb) => {
       if (event === "reset") {

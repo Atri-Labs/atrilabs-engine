@@ -132,18 +132,26 @@ export default async function createForest(def: ForestDef) {
   }
 
   // patch a node
-  function patch(event: PatchEvent) {}
+  function patch(event: PatchEvent) {
+    handleEvent(event);
+  }
 
   // delete a node
-  function del(event: DeleteEvent) {}
+  function del(event: DeleteEvent) {
+    handleEvent(event);
+  }
 
   // link nodes between two trees
-  function link(event: LinkEvent) {}
+  function link(event: LinkEvent) {
+    handleEvent(event);
+  }
 
   // unlink nodes between two trees
-  function unlink(event: UnlinkEvent) {}
+  function unlink(event: UnlinkEvent) {
+    handleEvent(event);
+  }
 
-  const forest = { name, tree, create, patch, del, link, unlink };
+  const forest = { name, tree, create, patch, del, link, unlink, handleEvent };
 
   // create trees and add it to the map
   treeDefs.forEach((def) => {
