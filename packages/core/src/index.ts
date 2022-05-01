@@ -7,3 +7,5 @@ export { setApp } from "./setApp";
 export * from "./layerSockets";
 
 export * from "./setCurrentForest";
+
+export * from "./useTree";
