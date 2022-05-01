@@ -1,5 +1,5 @@
 import { merge } from "lodash";
-import { createTree, Tree } from "./tree";
+import { createTree } from "./tree";
 import {
   CreateEvent,
   ForestDef,
@@ -9,6 +9,7 @@ import {
   DeleteEvent,
   TreeDefReturnType,
   AnyEvent,
+  Tree,
 } from "./types";
 
 type FromPromise<T> = T extends Promise<infer U> ? U : never;
@@ -24,7 +25,7 @@ async function importAllTrees(treeDefs: ForestDef["trees"]) {
   return await Promise.all(importedModules);
 }
 
-export default async function createForest(def: ForestDef) {
+export async function createForest(def: ForestDef) {
   const treeDefs = def.trees;
 
   if (treeDefs.length === 0) {

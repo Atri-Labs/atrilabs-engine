@@ -18,6 +18,16 @@ export type TreeLink = {
   childId: string;
 };
 
+export type Tree = {
+  nodes: { [id: string]: TreeNode };
+  links: { [refId: string]: TreeLink };
+  create: (event: Omit<CreateEvent, "type">) => void;
+  patch: (event: Omit<PatchEvent, "type">) => void;
+  del: (event: Omit<DeleteEvent, "type">) => void;
+  link: (event: Omit<LinkEvent, "type">) => void;
+  unlink: (event: Omit<UnlinkEvent, "type">) => void;
+};
+
 export type EventDto = {
   type: string;
 };

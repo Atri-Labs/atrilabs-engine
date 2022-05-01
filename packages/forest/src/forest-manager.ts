@@ -1,5 +1,5 @@
 // manages multiple forests in a user session
-import createForest, { Forest } from "./forest";
+import { Forest, createForest } from "./forest";
 import {
   AnyEvent,
   CreateEvent,
@@ -18,7 +18,7 @@ type CurrentForest = Forest & {
   on: (event: "reset", cb: Callback) => Unsubscribe;
 };
 
-export default function createForestManager(defs: ForestDef[]) {
+export function createForestManager(defs: ForestDef[]) {
   const forestMap: { [name: string]: { [page: string]: Forest } } = {};
 
   let _currentForest: Forest;
