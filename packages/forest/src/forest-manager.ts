@@ -34,6 +34,8 @@ export function createForestManager(defs: ForestDef[]) {
         if (def) {
           const forest = await createForest(def);
           forestMap[name]![pageId] = forest;
+        } else {
+          console.error(`A forest definition with name ${name} not found`);
         }
       } catch (err) {
         console.error(`Failed to load page with id ${pageId}`);

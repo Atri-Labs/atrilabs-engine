@@ -13,15 +13,6 @@ import {
   Forest,
 } from "./types";
 
-async function importAllTrees(treeDefs: ForestDef["trees"]) {
-  const importedModules = treeDefs.map((def) => {
-    return import(require.resolve(`${def.pkg}/${def.modulePath}`)).then(
-      (mod) => mod.default
-    );
-  });
-  return await Promise.all(importedModules);
-}
-
 export async function createForest(def: ForestDef): Promise<Forest> {
   const treeDefs = def.trees;
 
@@ -30,15 +21,13 @@ export async function createForest(def: ForestDef): Promise<Forest> {
   }
   const rootDef = def.trees[0]!;
 
-  // import all trees from definition
-  const defaultFns = await importAllTrees(treeDefs);
-
   // create a map for easily accessing a tree when an event arrives
-  const defaultFnMap: { [id: string]: TreeDefReturnType } = {};
-  const shortNameMap: { [id: string]: string } = {};
-  treeDefs.forEach((def, index) => {
+  const defaultFnMap: { [treeId: string]: TreeDefReturnType } = {};
+  // key = treeId, value = short name
+  const shortNameMap: { [treeId: string]: string } = {};
+  treeDefs.forEach((def) => {
     const id = `${def.modulePath}$$${def.pkg}`;
-    defaultFnMap[id] = defaultFns[index]() as TreeDefReturnType;
+    defaultFnMap[id] = def.defFn();
     shortNameMap[id] = def.name;
   });
 

@@ -69,19 +69,20 @@ export type AnyEvent =
   | LinkEvent
   | UnlinkEvent;
 
+export type TreeDefReturnType = {
+  validateCreate: (event: CreateEvent) => boolean;
+  validatePatch: (event: PatchEvent) => boolean;
+  onCreate: (event: CreateEvent) => void;
+};
+
 export type TreeDef = {
   pkg: string;
   modulePath: string;
   name: string;
+  defFn: () => TreeDefReturnType;
 };
 
 export type ForestDef = {
   name: string;
   trees: TreeDef[];
-};
-
-export type TreeDefReturnType = {
-  validateCreate: (event: CreateEvent) => boolean;
-  validatePatch: (event: PatchEvent) => boolean;
-  onCreate: (event: CreateEvent) => void;
 };
