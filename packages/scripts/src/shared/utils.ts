@@ -57,10 +57,14 @@ export function getCorePkgInfo(): CorePkgInfo {
   const layerDetailsFile = findFileWithoutExtension(
     path.resolve(dir, "lib", "layerDetails")
   );
+  const setCurrentForestFile = findFileWithoutExtension(
+    path.resolve(dir, "lib", "setCurrentForest")
+  );
   if (
     entryFile === undefined ||
     indexFile === undefined ||
-    layerDetailsFile === undefined
+    layerDetailsFile === undefined ||
+    setCurrentForestFile === undefined
   ) {
     throw Error(chalk.red(`Missing entryFile or indexFile in @atrilabs/core`));
   }
@@ -69,6 +73,7 @@ export function getCorePkgInfo(): CorePkgInfo {
     entryFile,
     indexFile,
     layerDetailsFile,
+    setCurrentForestFile,
   };
 }
 

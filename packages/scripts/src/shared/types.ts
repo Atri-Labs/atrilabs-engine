@@ -37,6 +37,8 @@ export type CorePkgInfo = {
   // file that contains information spanning and applicable to all layers
   // such as global name map for menu, tab, containers etc.
   layerDetailsFile: string;
+  // file that contains setCurrentForest function
+  setCurrentForestFile: string;
 };
 
 export type ToolEnv = {
