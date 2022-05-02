@@ -10,11 +10,8 @@ import {
   TreeDefReturnType,
   AnyEvent,
   Tree,
+  Forest,
 } from "./types";
-
-type FromPromise<T> = T extends Promise<infer U> ? U : never;
-
-export type Forest = FromPromise<ReturnType<typeof createForest>>;
 
 async function importAllTrees(treeDefs: ForestDef["trees"]) {
   const importedModules = treeDefs.map((def) => {
@@ -25,7 +22,7 @@ async function importAllTrees(treeDefs: ForestDef["trees"]) {
   return await Promise.all(importedModules);
 }
 
-export async function createForest(def: ForestDef) {
+export async function createForest(def: ForestDef): Promise<Forest> {
   const treeDefs = def.trees;
 
   if (treeDefs.length === 0) {

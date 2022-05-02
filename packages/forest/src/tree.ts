@@ -1,7 +1,4 @@
-import { Forest } from "./forest";
-import { Tree, ForestDef } from "./types";
-
-export type TreeDef = ForestDef["trees"][0];
+import { Tree, TreeDef, Forest } from "./types";
 
 export function createTree(treeDef: TreeDef, forest: Forest) {
   const eventSuffix = `$$${treeDef.pkg}$$${treeDef.modulePath}`;

@@ -28,6 +28,17 @@ export type Tree = {
   unlink: (event: Omit<UnlinkEvent, "type">) => void;
 };
 
+export type Forest = {
+  name: string;
+  tree: (name: string) => Tree | undefined;
+  create: (event: CreateEvent) => void;
+  patch: (event: PatchEvent) => void;
+  del: (event: DeleteEvent) => void;
+  link: (event: LinkEvent) => void;
+  unlink: (event: UnlinkEvent) => void;
+  handleEvent: (event: AnyEvent) => void;
+};
+
 export type EventDto = {
   type: string;
 };
@@ -58,13 +69,15 @@ export type AnyEvent =
   | LinkEvent
   | UnlinkEvent;
 
+export type TreeDef = {
+  pkg: string;
+  modulePath: string;
+  name: string;
+};
+
 export type ForestDef = {
   name: string;
-  trees: {
-    pkg: string;
-    modulePath: string;
-    name: string;
-  }[];
+  trees: TreeDef[];
 };
 
 export type TreeDefReturnType = {

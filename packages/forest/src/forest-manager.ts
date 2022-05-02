@@ -1,5 +1,5 @@
 // manages multiple forests in a user session
-import { Forest, createForest } from "./forest";
+import { createForest } from "./forest";
 import {
   AnyEvent,
   CreateEvent,
@@ -8,6 +8,7 @@ import {
   LinkEvent,
   PatchEvent,
   UnlinkEvent,
+  Forest,
 } from "./types";
 
 type Callback = () => void;
