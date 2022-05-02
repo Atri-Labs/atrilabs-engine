@@ -7,7 +7,7 @@ const path = require("path");
  * @returns {string}
  */
 function treeId(tree) {
-  return tree.pkg + path.resolve("/lib", tree.modulePath);
+  return tree.pkg + "/" + tree.modulePath;
 }
 
 /**
@@ -65,8 +65,8 @@ function generateTreeDefArray(t, forest, treeImportMap) {
       t.stringLiteral(tree.pkg)
     );
     const modulePathProp = t.objectProperty(
-      t.identifier("modulePathProp"),
-      t.stringLiteral(tree.modulePathProp)
+      t.identifier("modulePath"),
+      t.stringLiteral(tree.modulePath)
     );
     const id = treeId(tree);
     const treeIdentifier = t.identifier(treeImportMap[id]);
@@ -106,7 +106,7 @@ function generateForestDefArray(t, forests, treeImportMap) {
       t.identifier("trees"),
       generateTreeDefArray(t, trees, treeImportMap)
     );
-    return t.objectExpression(forestProps);
+    return t.objectExpression([nameProp, treesProp]);
   });
 
   // create object expression
@@ -118,9 +118,15 @@ const InternalVisitor = {
     const id = path.get("id");
     if (id.type === "Identifier" && id.node.name === "defs") {
       const init = path.get("init");
-      init.replaceWith(
-        generateForestDefArray(this.t, this.options.forests, this.treeImportMap)
+      const forestDefs = generateForestDefArray(
+        this.t,
+        this.options.forests,
+        this.treeImportMap
       );
+      // console.log(
+      //   forestDefs.elements[0].properties[1].value.elements[0].properties
+      // );
+      init.replaceWith(forestDefs);
     }
   },
 };
@@ -152,9 +158,10 @@ module.exports = function (babel, options) {
           babel.types,
           treeImportMap
         );
-        treeImportMap.forEach((treeImportMap) => {
-          path.unshiftContainer("body", treeImportMap);
+        importStatements.forEach((statement) => {
+          path.unshiftContainer("body", statement);
         });
+        console.log(treeImportMap);
         path.traverse(InternalVisitor, {
           options,
           t: babel.types,
