@@ -8,11 +8,12 @@ import { currentForest } from "./setCurrentForest";
  */
 export const useTree = (name: string) => {
   const getTree = (name: string) => {
-    if (currentForest.tree(name)) return currentForest.tree(name)!;
-    else
-      throw Error(
-        `Tree with name ${name} not found in currentForest with name ${currentForest.name}`
-      );
+    try {
+      return currentForest.tree(name)!;
+    } catch (err) {
+      console.log(err);
+      throw Error(`Tree with name ${name} not found in currentForest`);
+    }
   };
   const [tree, setTree] = useState<Tree>(getTree(name));
 

@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
+import { currentForest, setCurrentForest } from "@atrilabs/core";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -54,6 +56,16 @@ export const BaseContainer: React.FC = () => {
   const pageMenuItems = usePageMenu();
   const canvasMenuItems = useCanvasMenu();
   const publishMenuItems = usePublishMenu();
+  useEffect(() => {
+    currentForest.on("reset", () => {
+      console.log("current foreset reset");
+    });
+  }, []);
+  useEffect(() => {
+    setCurrentForest("page", "1").then((forest) => {
+      console.log(forest);
+    });
+  }, []);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>

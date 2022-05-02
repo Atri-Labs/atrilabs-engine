@@ -36,11 +36,17 @@ export function createForestManager(defs: ForestDef[]) {
           forestMap[name]![pageId] = forest;
         } else {
           console.error(`A forest definition with name ${name} not found`);
+          return;
         }
       } catch (err) {
         console.error(`Failed to load page with id ${pageId}`);
+        return;
       }
     }
+    _currentForest = forestMap[name]![pageId]!;
+    onResetListeners.forEach((cb) => {
+      cb();
+    });
     return forestMap[name]![pageId]!;
   }
 
