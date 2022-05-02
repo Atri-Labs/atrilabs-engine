@@ -1,5 +1,3 @@
-const path = require("path");
-
 // treeId is the import path of the tree's default function
 /**
  *
@@ -17,7 +15,7 @@ function treeId(tree) {
  */
 function generateImportMap(forests) {
   const forestNames = Object.keys(forests);
-  const treeCount = 1;
+  let treeCount = 1;
   const treeImportMap = {};
   forestNames.forEach((name) => {
     const forest = forests[name];
@@ -69,8 +67,7 @@ function generateTreeDefArray(t, forest, treeImportMap) {
       t.stringLiteral(tree.modulePath)
     );
     const id = treeId(tree);
-    const treeIdentifier = t.identifier(treeImportMap[id]);
-    const defFn = t.callExpression(treeIdentifier, []);
+    const defFn = t.identifier(treeImportMap[id]);
     const defFnProp = t.objectProperty(t.identifier("defFn"), defFn);
 
     const treeDefObject = t.objectExpression([
@@ -123,9 +120,6 @@ const InternalVisitor = {
         this.options.forests,
         this.treeImportMap
       );
-      // console.log(
-      //   forestDefs.elements[0].properties[1].value.elements[0].properties
-      // );
       init.replaceWith(forestDefs);
     }
   },
@@ -161,7 +155,6 @@ module.exports = function (babel, options) {
         importStatements.forEach((statement) => {
           path.unshiftContainer("body", statement);
         });
-        console.log(treeImportMap);
         path.traverse(InternalVisitor, {
           options,
           t: babel.types,

@@ -2,13 +2,13 @@ module.exports = {
   forests: {
     page: [
       {
-        pkg: "@atrilabs/web-app-canvas",
-        modulePath: "./componentTree",
+        pkg: "@atrilabs/basic-trees",
+        modulePath: "lib/componentTree.js",
         name: "componentTree",
       },
       {
-        pkg: "@atrilabs/web-app-css",
-        modulePath: "./cssTree",
+        pkg: "@atrilabs/basic-trees",
+        modulePath: "lib/cssTree.js",
         name: "cssTree",
       },
     ],
