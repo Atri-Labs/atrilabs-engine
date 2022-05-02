@@ -26,7 +26,12 @@ export type LayerConfig = {
   exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
 };
 
+export type ForestsConfig = {
+  [forestName: string]: { pkg: string; modulePath: string; name: string }[];
+};
+
 export type ToolConfig = {
+  forests: ForestsConfig;
   layers: {
     pkg: string;
     remap?: Partial<{

@@ -1,4 +1,4 @@
-import { LayerConfig } from "@atrilabs/core";
+import { LayerConfig, ForestsConfig } from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
 import { LayerEntry, CorePkgInfo } from "./types";
@@ -14,6 +14,7 @@ import {
  */
 export default function emitBabelLoader(
   layerEntries: LayerEntry[],
+  forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo
 ): Exclude<RuleSetRule["use"], undefined> {
   const getLayerList = (): { path: string }[] => {
@@ -124,6 +125,13 @@ export default function emitBabelLoader(
               ),
               {
                 getNameMap,
+              },
+            ],
+            [
+              path.resolve(__dirname, "..", "babel", "add-forest-defs.js"),
+              {
+                setCurrentForestFile: corePkgInfo.setCurrentForestFile,
+                forests: forestsConfig,
               },
             ],
           ],
