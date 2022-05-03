@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { gray800 } from "@atrilabs/design-system";
+import { gray700 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
@@ -25,7 +25,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   // children of leftPart
   header: {
     height: "2.5rem",
-    background: gray800,
+    background: gray700,
     display: "flex",
     justifyContent: "space-between",
   },

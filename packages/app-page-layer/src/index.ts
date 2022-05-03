@@ -1,7 +1,7 @@
-import { Pages } from "./Pages";
+import { PageSelector } from "./PageSelector";
 import { appMenu } from "./required";
 
 export default function () {
   console.log("app-page-layer working");
-  appMenu.register({ comp: Pages, props: {} });
+  appMenu.register({ comp: PageSelector, props: {} });
 }
