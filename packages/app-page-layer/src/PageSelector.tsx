@@ -1,4 +1,4 @@
-import { gray300, gray400, h4Heading } from "@atrilabs/design-system";
+import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
 import React from "react";
 import { ArrowDown } from "./ArrowDown";
 
@@ -11,6 +11,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray400,
     alignItems: "center",
     alignSelf: "center",
+    paddingLeft: "1rem",
+    borderRight: `1px solid ${gray800}`,
+    height: "100%",
   },
   span: {
     display: "flex",

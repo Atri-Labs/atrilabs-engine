@@ -28,6 +28,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     background: gray700,
     display: "flex",
     justifyContent: "space-between",
+    boxSizing: "border-box",
   },
   body: { display: "flex", flexGrow: 1 },
 
