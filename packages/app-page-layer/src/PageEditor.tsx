@@ -1,9 +1,11 @@
 import {
   agastyaLine,
+  amber300,
   gray200,
   gray300,
   gray500,
   gray700,
+  gray800,
   gray900,
   h1Heading,
   h4Heading,
@@ -13,6 +15,7 @@ import { useState } from "react";
 import { Cross } from "./icons/Cross";
 import { DownArrow } from "./icons/DownArrow";
 import { Folder } from "./icons/Folder";
+import { LinkIcon } from "./icons/LinkIcon";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
@@ -23,6 +26,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "15rem",
     height: `100%`,
     backgroundColor: gray700,
+    // position is set to relative to display dialog box next to it
+    position: "relative",
+    boxSizing: "border-box",
   },
   pageContHeader: {
     padding: `0.5rem 1rem`,
@@ -95,6 +101,52 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "space-between",
     borderBottom: `1px solid ${agastyaLine}`,
+  },
+  // ================create page dialog box=====
+  createPage: {
+    position: "absolute",
+    left: "100%",
+    top: 0,
+    width: "15rem",
+    background: gray700,
+    borderLeft: `1px solid ${gray800}`,
+    display: "flex",
+    flexDirection: "column",
+  },
+  createPageHeader: {
+    display: "flex",
+    padding: `0.5rem 1rem`,
+    justifyContent: "space-between",
+    borderBottom: `1px solid ${gray800}`,
+    paddingBottom: "0.5rem",
+  },
+  createPageFormField: {
+    display: "flex",
+    justifyContent: "space-between",
+    ...smallText,
+    color: gray300,
+    alignItems: "center",
+    padding: `1rem 1rem 0 1rem`,
+  },
+  slugContainer: {
+    padding: `1rem 1rem 0 1rem`,
+  },
+  slugContent: {
+    display: "flex",
+    background: gray500,
+    alignItems: "center",
+    ...smallText,
+    color: gray300,
+    borderRadius: "2px",
+  },
+  // ================create folder dialog box===
+  createFolder: {
+    position: "absolute",
+    padding: `0.5rem 1rem`,
+    left: "100%",
+    top: 0,
+    width: "15rem",
+    background: gray700,
   },
 };
 
@@ -183,6 +235,78 @@ export const PageEditor = () => {
           )}
         </main>
       </section>
+
+      <div style={styles.createPage}>
+        <div style={styles.createPageHeader}>
+          <h4 style={styles.pageContHeaderH4}>Create new page</h4>
+          <span style={styles.iconsSpan}>
+            <Cross />
+          </span>
+        </div>
+        <div style={styles.createPageFormField}>
+          <span>Folder</span>
+          <select
+            style={{
+              width: "10rem",
+              outline: `${amber300} solid 1px`,
+              height: "1.4rem",
+              background: `${gray800}`,
+              color: gray300,
+              borderRadius: "4px",
+              padding: "0.2rem",
+            }}
+          >
+            <option>Folder 1</option>
+            <option>Folder 2</option>
+          </select>
+        </div>
+        <div style={styles.createPageFormField}>
+          <span>Page</span>
+          <input
+            style={{
+              width: "10rem",
+              boxSizing: "border-box",
+              outline: `${amber300} solid 1px`,
+              height: "1.4rem",
+              background: `${gray800}`,
+              color: gray300,
+              borderRadius: "4px",
+              padding: "0.2rem",
+            }}
+          />
+        </div>
+        <div style={styles.slugContainer}>
+          <div style={styles.slugContent}>
+            <div
+              style={{
+                padding: "0.5rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <LinkIcon />
+            </div>
+            <div>/folder1/page1</div>
+          </div>
+        </div>
+        <div
+          style={{ display: "flex", justifyContent: "center", padding: "1rem" }}
+        >
+          <button
+            style={{
+              borderRadius: "4px",
+              backgroundColor: amber300,
+              color: gray900,
+              border: "none",
+              padding: "0.2rem 0.6rem 0.2rem 0.6rem",
+            }}
+          >
+            Create
+          </button>
+        </div>
+      </div>
+
+      {/* <div style={styles.createFolder}></div> */}
     </div>
   );
 };
