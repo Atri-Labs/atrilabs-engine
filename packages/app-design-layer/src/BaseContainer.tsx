@@ -72,27 +72,27 @@ export const BaseContainer: React.FC = () => {
         <div style={styles.header}>
           <div style={styles.leftHeader}>
             <div style={styles.appMenu}>
-              {appMenuItems.map((item) => (
-                <item.comp {...item.props} />
+              {appMenuItems.map((item, index) => (
+                <item.comp {...item.props} key={index} />
               ))}
             </div>
             <div style={styles.pageMenu}>
-              {pageMenuItems.map((item) => (
-                <item.comp {...item.props} />
+              {pageMenuItems.map((item, index) => (
+                <item.comp {...item.props} key={index} />
               ))}
             </div>
           </div>
           <div style={styles.middleHeader}>
             <div style={styles.canvasMenu}>
-              {canvasMenuItems.map((item) => (
-                <item.comp {...item.props} />
+              {canvasMenuItems.map((item, index) => (
+                <item.comp {...item.props} key={index} />
               ))}
             </div>
           </div>
           <div style={styles.rightHeader}>
             <div style={styles.publishMenu}>
-              {publishMenuItems.map((item) => (
-                <item.comp {...item.props} />
+              {publishMenuItems.map((item, index) => (
+                <item.comp {...item.props} key={index} />
               ))}
             </div>
           </div>
