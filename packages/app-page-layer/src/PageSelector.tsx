@@ -1,6 +1,8 @@
 import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
 import React from "react";
-import { ArrowDown } from "./ArrowDown";
+import { ArrowDown } from "./icons/ArrowDown";
+import { PageEditor } from "./PageEditor";
+import { dropContainer } from "./required";
 
 interface PageSelectorProps {}
 
@@ -31,7 +33,12 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 export const PageSelector: React.FC<PageSelectorProps> = () => {
   return (
-    <div style={styles.page}>
+    <div
+      style={styles.page}
+      onClick={() => {
+        dropContainer.register({ comp: PageEditor, props: {} });
+      }}
+    >
       <div>Page:</div>
       <div style={styles.p}>Home</div>
       <span style={styles.span}>

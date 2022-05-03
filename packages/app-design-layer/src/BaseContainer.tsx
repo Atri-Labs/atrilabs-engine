@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { gray700 } from "@atrilabs/design-system";
+import { gray700, gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
 import { currentForest, setCurrentForest } from "@atrilabs/core";
+import { useDropContainer } from "./hooks/useDropContainer";
+import { useCanvasContainer } from "./hooks/useCanvasContainer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -29,6 +31,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "space-between",
     boxSizing: "border-box",
+    borderBottom: `1px solid ${gray800}`,
   },
   body: { display: "flex", flexGrow: 1 },
 
@@ -57,6 +60,8 @@ export const BaseContainer: React.FC = () => {
   const pageMenuItems = usePageMenu();
   const canvasMenuItems = useCanvasMenu();
   const publishMenuItems = usePublishMenu();
+  const dropContainerItem = useDropContainer();
+  const canvasContainerItem = useCanvasContainer();
   useEffect(() => {
     currentForest.on("reset", () => {
       console.log("current foreset reset");
@@ -99,8 +104,16 @@ export const BaseContainer: React.FC = () => {
           </div>
         </div>
         <div style={styles.body}>
-          <div style={styles.dropContainer}></div>
-          <div style={styles.canvasContainer}></div>
+          <div style={styles.dropContainer}>
+            {dropContainerItem ? (
+              <dropContainerItem.comp {...dropContainerItem.props} />
+            ) : null}
+          </div>
+          <div style={styles.canvasContainer}>
+            {canvasContainerItem ? (
+              <canvasContainerItem.comp {...canvasContainerItem.props} />
+            ) : null}
+          </div>
         </div>
       </div>
       <div style={styles.rightPart}></div>
