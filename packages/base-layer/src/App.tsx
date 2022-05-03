@@ -1,4 +1,4 @@
-import { gray700 } from "@atrilabs/design-system";
+import { gray700, gray800 } from "@atrilabs/design-system";
 import { useBaseContainer } from "./hooks/useBaseContainer";
 import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
@@ -37,6 +37,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     flexDirection: "column",
     backgroundColor: gray700,
+    borderRight: `1px solid ${gray800}`,
+    boxSizing: "border-box",
   },
 
   // menuContainer children

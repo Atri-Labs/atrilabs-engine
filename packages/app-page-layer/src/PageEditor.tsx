@@ -20,6 +20,7 @@ import { Setting } from "./icons/Setting";
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
   pageCont: {
+    width: "15rem",
     height: `100%`,
     backgroundColor: gray700,
   },
@@ -32,6 +33,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   pageContHeaderH4: {
     ...h1Heading,
     color: gray300,
+    margin: 0,
   },
   searchBox: {
     ...smallText,
@@ -74,6 +76,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    boxSizing: "border-box",
   },
   folderHeaderSpan: {
     display: "flex",
@@ -83,6 +86,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   folderHeaderP: {
     ...h4Heading,
     color: gray300,
+    margin: 0,
   },
   // ================page===============
   page: {
@@ -154,6 +158,7 @@ export const PageEditor = () => {
                     style={{
                       marginRight: `0.5rem`,
                       display: "flex",
+                      alignItems: "center",
                     }}
                   >
                     <PageIcon />
@@ -162,6 +167,7 @@ export const PageEditor = () => {
                     style={{
                       ...smallText,
                       color: gray200,
+                      margin: 0,
                     }}
                   >
                     Page Name
