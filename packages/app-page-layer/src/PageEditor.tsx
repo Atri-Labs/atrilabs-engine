@@ -19,6 +19,7 @@ import { LinkIcon } from "./icons/LinkIcon";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
+import styleModule from "./styles.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -248,13 +249,13 @@ export const PageEditor = () => {
           <select
             style={{
               width: "10rem",
-              outline: `${amber300} solid 1px`,
               height: "1.4rem",
               background: `${gray800}`,
               color: gray300,
               borderRadius: "4px",
               padding: "0.2rem",
             }}
+            className={styleModule["form-field"]}
           >
             <option>Folder 1</option>
             <option>Folder 2</option>
@@ -266,13 +267,13 @@ export const PageEditor = () => {
             style={{
               width: "10rem",
               boxSizing: "border-box",
-              outline: `${amber300} solid 1px`,
               height: "1.4rem",
               background: `${gray800}`,
               color: gray300,
               borderRadius: "4px",
               padding: "0.2rem",
             }}
+            className={styleModule["form-field"]}
           />
         </div>
         <div style={styles.slugContainer}>
