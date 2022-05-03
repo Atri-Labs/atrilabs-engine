@@ -37,7 +37,9 @@ processToolConfig(toolPkgInfo)
       toolPkgInfo,
       toolConfig,
       layerEntries,
-      toolEnv
+      toolEnv,
+      "development",
+      true
     );
     webpackConfig["watchOptions"] = {
       ignored: /node_modules/,

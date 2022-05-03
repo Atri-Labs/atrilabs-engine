@@ -29,7 +29,9 @@ importToolConfig(toolPkgInfo.configFile)
       toolPkgInfo,
       toolConfig,
       layerEntries,
-      toolEnv
+      toolEnv,
+      "production",
+      false
     );
     webpack(webpackConfig, (err, stats) => {
       let buildFailed = false;
