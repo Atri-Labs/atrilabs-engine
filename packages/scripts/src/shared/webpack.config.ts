@@ -80,6 +80,7 @@ export default function createWebpackConfig(
 
   const webpackConfig: Configuration = {
     target: "web",
+    mode: env,
     entry: {
       layers: {
         import: corePkgInfo.entryFile,
@@ -198,7 +199,12 @@ export default function createWebpackConfig(
     plugins: [
       new HtmlWebpackPlugin({ inject: true, template: toolPkgInfo.toolHtml }),
       new InterpolateHtmlPlugin(HtmlWebpackPlugin, toolEnv),
-    ],
+      isEnvProduction &&
+        new MiniCssExtractPlugin({
+          filename: "static/css/[name].[contenthash:8].css",
+          chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+        }),
+    ].filter(Boolean),
   };
   return webpackConfig;
 }
