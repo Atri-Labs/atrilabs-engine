@@ -20,6 +20,7 @@ import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
 import styleModule from "./styles.module.css";
+import { ReactComponent as Park } from "./park.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -304,6 +305,7 @@ export const PageEditor = () => {
           >
             Create
           </button>
+          <Park />
         </div>
       </div>
 

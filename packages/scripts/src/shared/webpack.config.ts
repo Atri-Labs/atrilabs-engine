@@ -13,6 +13,10 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+const imageInlineSizeLimit = parseInt(
+  process.env["IMAGE_INLINE_SIZE_LIMIT"] || "10000"
+);
+
 export default function createWebpackConfig(
   corePkgInfo: CorePkgInfo,
   toolPkgInfo: ToolPkgInfo,
@@ -94,6 +98,13 @@ export default function createWebpackConfig(
     devtool: "source-map",
     output: {
       path: path.resolve(toolPkgInfo.dir, toolConfig.output),
+      filename: isEnvProduction
+        ? "static/js/[name].[contenthash:8].js"
+        : "static/js/[name].bundle.js",
+      chunkFilename: isEnvProduction
+        ? "static/js/[name].[contenthash:8].chunk.js"
+        : "static/js/[name].chunk.js",
+      assetModuleFilename: "static/media/[name].[hash][ext]",
     },
     module: {
       rules: [
@@ -109,6 +120,51 @@ export default function createWebpackConfig(
         },
         {
           oneOf: [
+            {
+              test: [/\.avif$/],
+              type: "asset",
+              mimetype: "image/avif",
+              parser: {
+                dataUrlCondition: {
+                  maxSize: imageInlineSizeLimit,
+                },
+              },
+            },
+            {
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              type: "asset",
+              parser: {
+                dataUrlCondition: {
+                  maxSize: imageInlineSizeLimit,
+                },
+              },
+            },
+            {
+              test: /\.svg$/,
+              use: [
+                {
+                  loader: require.resolve("@svgr/webpack"),
+                  options: {
+                    prettier: false,
+                    svgo: false,
+                    svgoConfig: {
+                      plugins: [{ removeViewBox: false }],
+                    },
+                    titleProp: true,
+                    ref: true,
+                  },
+                },
+                {
+                  loader: require.resolve("file-loader"),
+                  options: {
+                    name: "static/media/[name].[hash].[ext]",
+                  },
+                },
+              ],
+              issuer: {
+                and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
+              },
+            },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               use: emitBabelLoader(
