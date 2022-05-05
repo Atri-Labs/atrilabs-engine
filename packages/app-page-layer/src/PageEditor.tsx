@@ -20,6 +20,7 @@ import { Folder } from "./icons/Folder";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
+import { dropContainer } from "./required";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -119,6 +120,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const PageEditor = () => {
   const [showPages, setShowPages] = useState<boolean>(true);
+  const closeContainer = useCallback(() => {
+    dropContainer.pop();
+  }, []);
   const [sideDialog, setSideDialog] = useState<{
     comp: React.FC<any>;
     props: any;
@@ -149,7 +153,7 @@ export const PageEditor = () => {
           <span style={styles.iconsSpan} onClick={openCreatePage}>
             <PageIcon />
           </span>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={closeContainer}>
             <Cross />
           </span>
         </div>

@@ -4,13 +4,11 @@ import { dropContainer } from "../exposed";
 
 export const useDropContainer = () => {
   const [container, setContainer] = useState<Container<any> | null>(
-    dropContainer.items()[0]
+    dropContainer.items()[dropContainer.items().length - 1]
   );
   useEffect(() => {
-    const { unsubscribe } = dropContainer.listen(({ item, event }) => {
-      if (event === "registered") {
-        setContainer(item);
-      }
+    const { unsubscribe } = dropContainer.listen(() => {
+      setContainer(dropContainer.items()[dropContainer.items().length - 1]);
     });
     return () => {
       unsubscribe();
