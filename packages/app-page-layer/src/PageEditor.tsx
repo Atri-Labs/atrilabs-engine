@@ -9,8 +9,7 @@ import {
   h4Heading,
   smallText,
 } from "@atrilabs/design-system";
-import React, { useCallback, useEffect, useState } from "react";
-import { ConfirmDelete } from "./components/ConfirmDelete";
+import React, { useCallback, useState } from "react";
 import { CreateFolder } from "./components/CreateFolder";
 import { CreatePage } from "./components/CreatePage";
 import { UpdateFolder } from "./components/UpdateFolder";
@@ -21,7 +20,6 @@ import { Folder } from "./icons/Folder";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
-import { overlayContainer } from "./required";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -133,9 +131,6 @@ export const PageEditor = () => {
   }, []);
   const openUpdatePage = useCallback(() => {
     setSideDialog(UpdatePage);
-  }, []);
-  useEffect(() => {
-    overlayContainer.register({ comp: ConfirmDelete, props: {} });
   }, []);
   return (
     <div style={styles.pageCont}>

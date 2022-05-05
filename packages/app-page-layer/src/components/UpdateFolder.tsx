@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   amber300,
   gray300,
@@ -13,6 +13,9 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
+import { ReactComponent as Trash } from "../icons/trash.svg";
+import { overlayContainer } from "../required";
+import { ConfirmDelete } from "./ConfirmDelete";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -67,13 +70,21 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const UpdateFolder: React.FC = React.memo(() => {
+  const openConfirmDelete = useCallback(() => {
+    overlayContainer.register({ comp: ConfirmDelete, props: {} });
+  }, []);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Folder settings</h4>
-        <span style={styles.iconsSpan}>
-          <Cross />
-        </span>
+        <div style={{ display: "flex" }}>
+          <span style={styles.iconsSpan} onClick={openConfirmDelete}>
+            <Trash />
+          </span>
+          <span style={styles.iconsSpan}>
+            <Cross />
+          </span>
+        </div>
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>

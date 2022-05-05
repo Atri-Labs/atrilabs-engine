@@ -14,6 +14,7 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
+import { ReactComponent as Trash } from "../icons/trash.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -72,9 +73,14 @@ export const UpdatePage: React.FC = React.memo(() => {
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Page settings</h4>
-        <span style={styles.iconsSpan}>
-          <Cross />
-        </span>
+        <div style={{ display: "flex" }}>
+          <span style={styles.iconsSpan}>
+            <Trash />
+          </span>
+          <span style={styles.iconsSpan}>
+            <Cross />
+          </span>
+        </div>
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
