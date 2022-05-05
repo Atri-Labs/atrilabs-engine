@@ -4,13 +4,13 @@ import { overlayContainer } from "../exposed";
 
 export const useOverlayContainer = () => {
   const [container, setContainer] = useState<Container<any> | null>(
-    overlayContainer.items()[0]
+    overlayContainer.items()[overlayContainer.items().length - 1]
   );
   useEffect(() => {
-    const { unsubscribe } = overlayContainer.listen(({ item, event }) => {
-      if (event === "registered") {
-        setContainer(item);
-      }
+    const { unsubscribe } = overlayContainer.listen(() => {
+      setContainer(
+        overlayContainer.items()[overlayContainer.items().length - 1]
+      );
     });
     return () => {
       unsubscribe();

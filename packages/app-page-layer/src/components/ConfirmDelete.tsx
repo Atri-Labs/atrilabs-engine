@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   body,
   gray300,
@@ -10,6 +10,7 @@ import {
 } from "@atrilabs/design-system";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as AlertIcon } from "../icons/alert-triangle.svg";
+import { overlayContainer } from "../required";
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
     height: "100%",
@@ -48,12 +49,16 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const ConfirmDelete: React.FC = React.memo(() => {
+  const closeDialog = useCallback(() => {
+    console.log("clicked");
+    overlayContainer.pop();
+  }, []);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.dialogBox}>
         <div style={styles.headerContainer}>
           <h4 style={styles.headerH4}>Confirm</h4>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={closeDialog}>
             <Cross />
           </span>
         </div>

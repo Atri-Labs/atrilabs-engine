@@ -122,6 +122,15 @@ export function container(name: string) {
     }
   };
 
+  const pop = () => {
+    const item = containerRegistry[name]!.items.pop();
+    if (subscribers.containers[name] && item) {
+      subscribers.containers[name].forEach((cb) =>
+        cb({ item, event: "unregistered" })
+      );
+    }
+  };
+
   const items = () => {
     return containerRegistry[name].items;
   };
@@ -147,7 +156,7 @@ export function container(name: string) {
     };
   };
 
-  return { register, listen, items, unregister };
+  return { register, listen, items, unregister, pop };
 }
 
 /**
