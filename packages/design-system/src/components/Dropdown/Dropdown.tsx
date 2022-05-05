@@ -33,10 +33,11 @@ export const Dropdown: React.FC<DropdownProps> = React.memo((props) => {
             e.target.selectedIndex
           );
       }}
+      value={props.options[selectedIndex]}
     >
       {props.options.map((opt, index) => {
         return (
-          <option selected={selectedIndex === index} value={opt}>
+          <option value={opt} key={opt + index}>
             {opt}
           </option>
         );
