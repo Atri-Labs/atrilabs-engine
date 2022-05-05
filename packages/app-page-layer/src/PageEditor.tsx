@@ -9,8 +9,11 @@ import {
   h4Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { CreateFolder } from "./components/CreateFolder";
 import { CreatePage } from "./components/CreatePage";
+import { UpdateFolder } from "./components/UpdateFolder";
+import { UpdatePage } from "./components/UpdatePage";
 import { Cross } from "./icons/Cross";
 import { DownArrow } from "./icons/DownArrow";
 import { Folder } from "./icons/Folder";
@@ -82,15 +85,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     boxSizing: "border-box",
   },
-  folderHeaderSpan: {
+  folderArrowSpan: {
     display: "flex",
     marginRight: "0.5rem",
     cursor: "pointer",
   },
-  folderHeaderP: {
+  folderNameDiv: {
     ...h4Heading,
     color: gray300,
     margin: 0,
+    display: "flex",
+    flexGrow: 1,
+    justifyContent: "space-between",
   },
   // ================page===============
   page: {
@@ -113,15 +119,28 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const PageEditor = () => {
   const [showPages, setShowPages] = useState<boolean>(true);
+  const [SideDialog, setSideDialog] = useState<React.FC<any> | null>(null);
+  const openCreateFolder = useCallback(() => {
+    setSideDialog(CreateFolder);
+  }, []);
+  const openCreatePage = useCallback(() => {
+    setSideDialog(CreatePage);
+  }, []);
+  const openUpdateFolder = useCallback(() => {
+    setSideDialog(UpdateFolder);
+  }, []);
+  const openUpdatePage = useCallback(() => {
+    setSideDialog(UpdatePage);
+  }, []);
   return (
     <div style={styles.pageCont}>
       <header style={styles.pageContHeader}>
         <h4 style={styles.pageContHeaderH4}>Pages</h4>
         <div style={styles.icons}>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={openCreateFolder}>
             <Folder />
           </span>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={openCreatePage}>
             <PageIcon />
           </span>
           <span style={styles.iconsSpan}>
@@ -152,16 +171,21 @@ export const PageEditor = () => {
         <main style={styles.folder}>
           <header style={styles.folderHeader}>
             <span
-              style={styles.folderHeaderSpan}
+              style={styles.folderArrowSpan}
               onClick={() => setShowPages((prev) => !prev)}
             >
               <DownArrow />
             </span>
-            <p style={styles.folderHeaderP}>Folder-1</p>
+            <div style={styles.folderNameDiv}>
+              Folder-1
+              <span onClick={openUpdateFolder}>
+                <Setting />
+              </span>
+            </div>
           </header>
           {showPages && (
             <div>
-              <main style={styles.page} className="__page">
+              <main style={styles.page}>
                 <div
                   style={{
                     display: "flex",
@@ -186,8 +210,8 @@ export const PageEditor = () => {
                     Page Name
                   </p>
                 </div>
-                <div className="__end">
-                  <span className="__hoverIcon">
+                <div>
+                  <span onClick={openUpdatePage}>
                     <Setting />
                   </span>
                 </div>
@@ -196,8 +220,7 @@ export const PageEditor = () => {
           )}
         </main>
       </section>
-
-      <CreatePage />
+      {SideDialog ? <SideDialog /> : null}
     </div>
   );
 };
