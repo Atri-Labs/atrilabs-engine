@@ -80,7 +80,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 export const PageEditor = () => {
   const [pageTableData] = useState<{ folder: string; pages: string[] }[]>([
     { folder: "Folder 1", pages: ["Page 1"] },
-    { folder: "Folder 2", pages: ["Page 1"] },
+    { folder: "Folder 2", pages: ["Page 2"] },
   ]);
   const closeContainer = useCallback(() => {
     dropContainer.pop();

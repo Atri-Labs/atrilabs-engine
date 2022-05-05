@@ -89,41 +89,45 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
           </span>
         </div>
       </header>
-      {showPages && (
-        <div>
-          <main style={styles.page}>
-            <div
-              style={{
-                display: "flex",
-              }}
-            >
-              <span
-                style={{
-                  marginRight: `0.5rem`,
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <PageIcon />
-              </span>
-              <p
-                style={{
-                  ...smallText,
-                  color: gray200,
-                  margin: 0,
-                }}
-              >
-                Page Name
-              </p>
-            </div>
-            <div>
-              <span onClick={openUpdatePage}>
-                <Setting />
-              </span>
-            </div>
-          </main>
-        </div>
-      )}
+      {showPages
+        ? props.data.pages.map((page) => {
+            return (
+              <div>
+                <main style={styles.page}>
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <span
+                      style={{
+                        marginRight: `0.5rem`,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <PageIcon />
+                    </span>
+                    <p
+                      style={{
+                        ...smallText,
+                        color: gray200,
+                        margin: 0,
+                      }}
+                    >
+                      {page}
+                    </p>
+                  </div>
+                  <div>
+                    <span onClick={openUpdatePage}>
+                      <Setting />
+                    </span>
+                  </div>
+                </main>
+              </div>
+            );
+          })
+        : null}
     </div>
   );
 });
