@@ -91,6 +91,9 @@ async function _copyAssetsFromSrc(rootDir: string, outDir: string) {
   toBeCopied.forEach((f) => {
     const promise = fs.promises.readFile(f).then((buf) => {
       const dest = path.resolve(outDir, path.relative(rootDir, f));
+      if (!fs.existsSync(path.dirname(dest))) {
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+      }
       return fs.promises.writeFile(dest, buf);
     });
     copyPromises.push(promise);
