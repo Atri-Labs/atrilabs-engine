@@ -4,6 +4,10 @@ module.exports = {
     menu: {
       AppMenu: "AppMenu",
     },
+    containers: {
+      Drop: "Drop",
+      OverlayContainer: "OverlayContainer",
+    },
   },
   exposes: {},
 };
