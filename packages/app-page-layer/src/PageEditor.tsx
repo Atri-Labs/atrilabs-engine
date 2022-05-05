@@ -1,4 +1,5 @@
 import {
+  gray200,
   gray300,
   gray500,
   gray700,
@@ -14,6 +15,7 @@ import { Folder } from "./icons/Folder";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { dropContainer } from "./required";
+import formStyle from "./stylesheets/formfield.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -41,7 +43,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     border: "none",
     backgroundColor: "transparent",
-    color: gray300,
+    color: gray200,
     outline: "none",
   },
   // =============icons====================
@@ -124,7 +126,7 @@ export const PageEditor = () => {
         </div>
         <input
           type="text"
-          className="search-box"
+          className={formStyle["forminput"]}
           style={styles.searchBox}
           placeholder="Search Pages"
         />
@@ -135,12 +137,13 @@ export const PageEditor = () => {
           flexDirection: "column",
         }}
       >
-        {pageTableData.map((data) => {
+        {pageTableData.map((data, index) => {
           return (
             <PageTable
               setSideDialog={setSideDialog}
               closeSubContainer={closeSubContainer}
               data={data}
+              key={index}
             />
           );
         })}

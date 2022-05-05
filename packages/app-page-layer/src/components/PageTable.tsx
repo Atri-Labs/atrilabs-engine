@@ -90,9 +90,9 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
         </div>
       </header>
       {showPages
-        ? props.data.pages.map((page) => {
+        ? props.data.pages.map((page, index) => {
             return (
-              <div>
+              <div key={index}>
                 <main style={styles.page}>
                   <div
                     style={{
