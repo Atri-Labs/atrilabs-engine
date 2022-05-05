@@ -1,0 +1,9 @@
+.formfield {
+  border: none;
+}
+.formfield:active {
+  outline: #fcd34d solid 1px;
+}
+.formfield:focus-visible {
+  outline: #fcd34d solid 1px;
+}

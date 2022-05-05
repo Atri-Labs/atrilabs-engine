@@ -10,6 +10,8 @@ import {
   h1Heading,
   h4Heading,
   smallText,
+  Input,
+  Dropdown,
 } from "@atrilabs/design-system";
 import { useState } from "react";
 import { Cross } from "./icons/Cross";
@@ -19,7 +21,6 @@ import { LinkIcon } from "./icons/LinkIcon";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { Setting } from "./icons/Setting";
-import styleModule from "./styles.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -246,37 +247,11 @@ export const PageEditor = () => {
         </div>
         <div style={styles.createPageFormField}>
           <span>Folder</span>
-          <select
-            style={{
-              width: "10rem",
-              height: "1.4rem",
-              background: `${gray800}`,
-              ...smallText,
-              color: gray300,
-              borderRadius: "4px",
-              padding: "0.2rem",
-            }}
-            className={styleModule["formfield"]}
-          >
-            <option>Folder 1</option>
-            <option>Folder 2</option>
-          </select>
+          <Dropdown options={["Folder 1", "Folder 2"]} />
         </div>
         <div style={styles.createPageFormField}>
           <span>Page</span>
-          <input
-            style={{
-              width: "10rem",
-              boxSizing: "border-box",
-              height: "1.4rem",
-              background: `${gray800}`,
-              ...smallText,
-              color: gray300,
-              borderRadius: "4px",
-              padding: "0.2rem",
-            }}
-            className={styleModule["formfield"]}
-          />
+          <Input />
         </div>
         <div style={styles.slugContainer}>
           <div style={styles.slugContent}>
