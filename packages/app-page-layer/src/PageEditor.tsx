@@ -256,7 +256,7 @@ export const PageEditor = () => {
               borderRadius: "4px",
               padding: "0.2rem",
             }}
-            className={styleModule["form-field"]}
+            className={styleModule["formfield"]}
           >
             <option>Folder 1</option>
             <option>Folder 2</option>
@@ -274,7 +274,7 @@ export const PageEditor = () => {
               borderRadius: "4px",
               padding: "0.2rem",
             }}
-            className={styleModule["form-field"]}
+            className={styleModule["formfield"]}
           />
         </div>
         <div style={styles.slugContainer}>
