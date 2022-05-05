@@ -78,6 +78,10 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const PageEditor = () => {
+  const [pageTableData] = useState<{ folder: string; pages: string[] }[]>([
+    { folder: "Folder 1", pages: ["Page 1"] },
+    { folder: "Folder 2", pages: ["Page 1"] },
+  ]);
   const closeContainer = useCallback(() => {
     dropContainer.pop();
   }, []);
@@ -128,12 +132,18 @@ export const PageEditor = () => {
       <section
         style={{
           display: "flex",
+          flexDirection: "column",
         }}
       >
-        <PageTable
-          setSideDialog={setSideDialog}
-          closeSubContainer={closeSubContainer}
-        />
+        {pageTableData.map((data) => {
+          return (
+            <PageTable
+              setSideDialog={setSideDialog}
+              closeSubContainer={closeSubContainer}
+              data={data}
+            />
+          );
+        })}
       </section>
       {sideDialog ? <sideDialog.comp {...sideDialog.props} /> : null}
     </div>

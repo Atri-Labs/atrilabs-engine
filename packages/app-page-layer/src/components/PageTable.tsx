@@ -56,6 +56,7 @@ export type PageTableProps = {
     } | null>
   >;
   closeSubContainer: () => void;
+  data: { folder: string; pages: string[] };
 };
 
 export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
@@ -82,7 +83,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
           <DownArrow />
         </span>
         <div style={styles.folderNameDiv}>
-          Folder-1
+          {props.data.folder}
           <span onClick={openUpdateFolder}>
             <Setting />
           </span>
