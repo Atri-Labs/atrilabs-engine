@@ -119,19 +119,25 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const PageEditor = () => {
   const [showPages, setShowPages] = useState<boolean>(true);
-  const [SideDialog, setSideDialog] = useState<React.FC<any> | null>(null);
+  const [sideDialog, setSideDialog] = useState<{
+    comp: React.FC<any>;
+    props: any;
+  } | null>(null);
+  const closeSubContainer = useCallback(() => {
+    setSideDialog(null);
+  }, [setSideDialog]);
   const openCreateFolder = useCallback(() => {
-    setSideDialog(CreateFolder);
-  }, []);
+    setSideDialog({ comp: CreateFolder, props: { close: closeSubContainer } });
+  }, [setSideDialog, closeSubContainer]);
   const openCreatePage = useCallback(() => {
-    setSideDialog(CreatePage);
-  }, []);
+    setSideDialog({ comp: CreatePage, props: { close: closeSubContainer } });
+  }, [setSideDialog, closeSubContainer]);
   const openUpdateFolder = useCallback(() => {
-    setSideDialog(UpdateFolder);
-  }, []);
+    setSideDialog({ comp: UpdateFolder, props: { close: closeSubContainer } });
+  }, [setSideDialog, closeSubContainer]);
   const openUpdatePage = useCallback(() => {
-    setSideDialog(UpdatePage);
-  }, []);
+    setSideDialog({ comp: UpdatePage, props: { close: closeSubContainer } });
+  }, [setSideDialog, closeSubContainer]);
   return (
     <div style={styles.pageCont}>
       <header style={styles.pageContHeader}>
@@ -220,7 +226,7 @@ export const PageEditor = () => {
           )}
         </main>
       </section>
-      {SideDialog ? <SideDialog /> : null}
+      {sideDialog ? <sideDialog.comp {...sideDialog.props} /> : null}
     </div>
   );
 };

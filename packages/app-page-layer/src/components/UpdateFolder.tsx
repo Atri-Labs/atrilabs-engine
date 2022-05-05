@@ -69,7 +69,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const UpdateFolder: React.FC = React.memo(() => {
+export type UpdateFolderProps = {
+  close: () => void;
+};
+
+export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   const openConfirmDelete = useCallback(() => {
     overlayContainer.register({ comp: ConfirmDelete, props: {} });
   }, []);
@@ -81,7 +85,7 @@ export const UpdateFolder: React.FC = React.memo(() => {
           <span style={styles.iconsSpan} onClick={openConfirmDelete}>
             <Trash />
           </span>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={props.close}>
             <Cross />
           </span>
         </div>

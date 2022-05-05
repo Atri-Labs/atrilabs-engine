@@ -68,7 +68,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const UpdatePage: React.FC = React.memo(() => {
+export type UpdatePageProps = {
+  close: () => void;
+};
+
+export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -77,7 +81,7 @@ export const UpdatePage: React.FC = React.memo(() => {
           <span style={styles.iconsSpan}>
             <Trash />
           </span>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={props.close}>
             <Cross />
           </span>
         </div>

@@ -66,12 +66,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const CreateFolder: React.FC = React.memo(() => {
+export type CreateFolderProps = {
+  close: () => void;
+};
+
+export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Create new folder</h4>
-        <span style={styles.iconsSpan}>
+        <span style={styles.iconsSpan} onClick={props.close}>
           <Cross />
         </span>
       </div>
