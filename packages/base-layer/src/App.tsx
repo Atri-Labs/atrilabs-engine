@@ -3,6 +3,7 @@ import { useBaseContainer } from "./hooks/useBaseContainer";
 import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
 import { useLogo } from "./hooks/useLogo";
+import { useOverlayContainer } from "./hooks/useOverlayContainer";
 
 const adjustRootCSS = () => {
   const body = document.body;
@@ -18,9 +19,25 @@ const adjustRootCSS = () => {
 adjustRootCSS();
 
 const styles: { [key: string]: React.CSSProperties } = {
-  outerDiv: { height: "100%", width: "100%", display: "flex" },
+  outerDiv: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    position: "relative",
+  },
 
   // outerDiv children
+  overlayContainer: {
+    position: "fixed",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+  },
+
   leftPanel: {
     width: "2.5rem",
     height: "100%",
@@ -51,8 +68,14 @@ export const App: React.FC = () => {
   const headerMenuItems = useHeaderMenu();
   const footerMenuItems = useFooterMenu();
   const baseContainer = useBaseContainer();
+  const overlayContainer = useOverlayContainer();
   return (
     <div style={styles.outerDiv}>
+      {overlayContainer ? (
+        <div style={styles.overlayContainer}>
+          <overlayContainer.comp {...overlayContainer.props} />
+        </div>
+      ) : null}
       <div style={styles.leftPanel}>
         <div style={styles.logo}>
           {logoItem ? <logoItem.comp {...logoItem.props} /> : null}

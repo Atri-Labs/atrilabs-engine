@@ -9,6 +9,7 @@ module.exports = {
     containers: {
       Logo: "Logo",
       BaseContainer: "BaseContainer",
+      OverlayContainer: "OverlayContainer",
     },
   },
   decorators: [],
