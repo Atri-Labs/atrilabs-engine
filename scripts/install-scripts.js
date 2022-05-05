@@ -8,21 +8,6 @@ const packagesRegex = /(-layer)|(design-system)|(webapp-builder)/;
 const packagesDir = path.resolve("packages");
 const scriptsPackage = "@atrilabs/scripts";
 
-function findPackages(regex) {
-  const dirents = fs.readdirSync(packagesDir, {
-    withFileTypes: true,
-  });
-  const result = dirents.filter((dirent) => {
-    if (dirent.isDirectory()) {
-      if (dirent.name.match(regex)) {
-        return true;
-      }
-    }
-    return false;
-  });
-  return result.map((value) => path.resolve(packagesDir, value.name));
-}
-
 function packageDetails(pkg) {
   const pkgJSON = JSON.parse(
     fs.readFileSync(path.resolve(pkg, "package.json")).toString()
@@ -30,7 +15,6 @@ function packageDetails(pkg) {
   const name = pkgJSON["name"];
   const deps = merge(pkgJSON["dependencies"], pkgJSON["devDependencies"]);
   const keys = Object.keys(deps);
-  console.log(keys);
   let isScriptInstalled = false;
   keys.every((key) => {
     if (key.match(scriptsPackage)) {
@@ -44,18 +28,41 @@ function packageDetails(pkg) {
   return { name, deps, isScriptInstalled };
 }
 
+function findPackages(regex) {
+  const dirents = fs.readdirSync(packagesDir, {
+    withFileTypes: true,
+  });
+  const result = dirents.filter((dirent) => {
+    if (dirent.isDirectory()) {
+      if (dirent.name.match(regex)) {
+        return true;
+      }
+    }
+    return false;
+  });
+  return result.map((value) => {
+    const dirname = path.resolve(packagesDir, value.name);
+    return {
+      dirname,
+      details: packageDetails(dirname),
+    };
+  });
+}
+
 // uninstall @atrilabs/scripts
 const pkgs = findPackages(packagesRegex);
 const uninstallPromises = [];
 pkgs.forEach((pkg) => {
-  const details = packageDetails(pkg);
+  const dirname = pkg.dirname;
+  const details = pkg.details;
   if (details.isScriptInstalled) {
     uninstallPromises.push(
       new Promise((res) => {
-        exec(`yarn remove ${scriptsPackage}`, { cwd: pkg }, (err) => {
+        exec(`yarn remove ${scriptsPackage}`, { cwd: dirname }, (err) => {
           if (err) {
             console.log(err);
           }
+          console.log("removed from", dirname);
           res();
         });
       })
@@ -67,9 +74,9 @@ pkgs.forEach((pkg) => {
 Promise.all(uninstallPromises).then(() => {
   // install @atrilabs/scripts
   pkgs.forEach((pkg) => {
-    const details = packageDetails(pkg);
+    const details = pkg.details;
     if (details.isScriptInstalled) {
-      exec(`lerna add ${scriptsPackage} --scope="${details.name}"`, (err) => {
+      exec(`lerna add ${scriptsPackage} --scope=${details.name}`, (err) => {
         if (err) {
           console.log(err);
         }

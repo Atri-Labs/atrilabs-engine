@@ -1,3 +1,5 @@
 node_modules/
 lib/
 bin/
+yarn-error.log
+lerna-debug.log
