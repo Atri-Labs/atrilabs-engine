@@ -5,6 +5,8 @@ import {
   gray700,
   gray800,
   h1Heading,
+  DangerButton,
+  CancelButton,
 } from "@atrilabs/design-system";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as AlertIcon } from "../icons/alert-triangle.svg";
@@ -66,8 +68,8 @@ export const ConfirmDelete: React.FC = React.memo(() => {
               Are you sure you want to delete this page?
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <button>Cancel</button>
-              <button>Delete</button>
+              <CancelButton text={"Cancel"} onClick={() => {}} />
+              <DangerButton text={"Delete"} onClick={() => {}} />
             </div>
           </div>
         </div>
