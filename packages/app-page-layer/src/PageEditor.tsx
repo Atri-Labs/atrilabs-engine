@@ -1,11 +1,8 @@
 import {
-  agastyaLine,
   gray300,
   gray500,
   gray700,
-  gray900,
   h1Heading,
-  h4Heading,
   smallText,
 } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
@@ -68,40 +65,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.2rem 0.5rem",
     display: "flex",
     borderRadius: "2px",
-  },
-  // ==================folder======================
-  folder: {
-    width: "100%",
-  },
-  folderHeader: {
-    width: "100%",
-    padding: "0.75rem 1rem",
-    backgroundColor: gray900,
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    boxSizing: "border-box",
-  },
-  folderArrowSpan: {
-    display: "flex",
-    marginRight: "0.5rem",
-    cursor: "pointer",
-  },
-  folderNameDiv: {
-    ...h4Heading,
-    color: gray300,
-    margin: 0,
-    display: "flex",
-    flexGrow: 1,
-    justifyContent: "space-between",
-  },
-  // ================page===============
-  page: {
-    display: "flex",
-    padding: "0.5rem 1rem",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottom: `1px solid ${agastyaLine}`,
   },
   // ================create folder dialog box===
   createFolder: {
