@@ -251,6 +251,7 @@ export const PageEditor = () => {
               width: "10rem",
               height: "1.4rem",
               background: `${gray800}`,
+              ...smallText,
               color: gray300,
               borderRadius: "4px",
               padding: "0.2rem",
@@ -269,6 +270,7 @@ export const PageEditor = () => {
               boxSizing: "border-box",
               height: "1.4rem",
               background: `${gray800}`,
+              ...smallText,
               color: gray300,
               borderRadius: "4px",
               padding: "0.2rem",
@@ -297,6 +299,7 @@ export const PageEditor = () => {
             style={{
               borderRadius: "4px",
               backgroundColor: amber300,
+              ...h4Heading,
               color: gray900,
               border: "none",
               padding: "0.2rem 0.6rem 0.2rem 0.6rem",
