@@ -1,6 +1,5 @@
 import {
   agastyaLine,
-  gray200,
   gray300,
   gray500,
   gray700,
@@ -12,14 +11,11 @@ import {
 import React, { useCallback, useState } from "react";
 import { CreateFolder } from "./components/CreateFolder";
 import { CreatePage } from "./components/CreatePage";
-import { UpdateFolder } from "./components/UpdateFolder";
-import { UpdatePage } from "./components/UpdatePage";
+import { PageTable } from "./components/PageTable";
 import { Cross } from "./icons/Cross";
-import { DownArrow } from "./icons/DownArrow";
 import { Folder } from "./icons/Folder";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
-import { Setting } from "./icons/Setting";
 import { dropContainer } from "./required";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -119,7 +115,6 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const PageEditor = () => {
-  const [showPages, setShowPages] = useState<boolean>(true);
   const closeContainer = useCallback(() => {
     dropContainer.pop();
   }, []);
@@ -135,12 +130,6 @@ export const PageEditor = () => {
   }, [setSideDialog, closeSubContainer]);
   const openCreatePage = useCallback(() => {
     setSideDialog({ comp: CreatePage, props: { close: closeSubContainer } });
-  }, [setSideDialog, closeSubContainer]);
-  const openUpdateFolder = useCallback(() => {
-    setSideDialog({ comp: UpdateFolder, props: { close: closeSubContainer } });
-  }, [setSideDialog, closeSubContainer]);
-  const openUpdatePage = useCallback(() => {
-    setSideDialog({ comp: UpdatePage, props: { close: closeSubContainer } });
   }, [setSideDialog, closeSubContainer]);
   return (
     <div style={styles.pageCont}>
@@ -178,57 +167,10 @@ export const PageEditor = () => {
           display: "flex",
         }}
       >
-        <main style={styles.folder}>
-          <header style={styles.folderHeader}>
-            <span
-              style={styles.folderArrowSpan}
-              onClick={() => setShowPages((prev) => !prev)}
-            >
-              <DownArrow />
-            </span>
-            <div style={styles.folderNameDiv}>
-              Folder-1
-              <span onClick={openUpdateFolder}>
-                <Setting />
-              </span>
-            </div>
-          </header>
-          {showPages && (
-            <div>
-              <main style={styles.page}>
-                <div
-                  style={{
-                    display: "flex",
-                  }}
-                >
-                  <span
-                    style={{
-                      marginRight: `0.5rem`,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <PageIcon />
-                  </span>
-                  <p
-                    style={{
-                      ...smallText,
-                      color: gray200,
-                      margin: 0,
-                    }}
-                  >
-                    Page Name
-                  </p>
-                </div>
-                <div>
-                  <span onClick={openUpdatePage}>
-                    <Setting />
-                  </span>
-                </div>
-              </main>
-            </div>
-          )}
-        </main>
+        <PageTable
+          setSideDialog={setSideDialog}
+          closeSubContainer={closeSubContainer}
+        />
       </section>
       {sideDialog ? <sideDialog.comp {...sideDialog.props} /> : null}
     </div>
