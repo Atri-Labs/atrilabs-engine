@@ -49,6 +49,7 @@ processToolConfig(toolPkgInfo)
       client: {
         overlay: true,
       },
+      hot: true,
     };
 
     // create compiler

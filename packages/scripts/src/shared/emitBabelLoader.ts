@@ -15,8 +15,11 @@ import {
 export default function emitBabelLoader(
   layerEntries: LayerEntry[],
   forestsConfig: ForestsConfig,
-  corePkgInfo: CorePkgInfo
+  corePkgInfo: CorePkgInfo,
+  env: "production" | "development"
 ): Exclude<RuleSetRule["use"], undefined> {
+  const isEnvDevelopment = env === "development";
+
   const getLayerList = (): { path: string }[] => {
     const sortedLayers = sortLayerEntriesInImportOrder(layerEntries);
     return sortedLayers.map((layer) => {
@@ -134,7 +137,8 @@ export default function emitBabelLoader(
                 forests: forestsConfig,
               },
             ],
-          ],
+            isEnvDevelopment && require("react-refresh/babel"),
+          ].filter(Boolean),
           babelrc: false,
           configFile: false,
         },

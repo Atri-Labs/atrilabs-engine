@@ -5,6 +5,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
 import emitBabelLoader from "./emitBabelLoader";
 
@@ -170,7 +171,8 @@ export default function createWebpackConfig(
               use: emitBabelLoader(
                 layerEntries,
                 toolConfig.forests,
-                corePkgInfo
+                corePkgInfo,
+                env
               ),
             },
             {
@@ -259,6 +261,10 @@ export default function createWebpackConfig(
         new MiniCssExtractPlugin({
           filename: "static/css/[name].[contenthash:8].css",
           chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+        }),
+      isEnvDevelopment &&
+        new ReactRefreshWebpackPlugin({
+          overlay: false,
         }),
     ].filter(Boolean),
   };
