@@ -50,7 +50,6 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const ConfirmDelete: React.FC = React.memo(() => {
   const closeDialog = useCallback(() => {
-    console.log("clicked");
     overlayContainer.pop();
   }, []);
   return (
