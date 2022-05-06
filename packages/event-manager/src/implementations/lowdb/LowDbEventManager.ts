@@ -2,18 +2,180 @@ import { AnyEvent } from "@atrilabs/forest";
 import Lowdb, { LowdbSync } from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import path from "path";
+import fs from "fs";
 import { EventManager, PageId } from "../../types";
-import { AliasDbSchema, PagesDbSchema, EvensDbSchema } from "./types";
+import {
+  AliasDbSchema,
+  PagesDbSchema,
+  EvensDbSchema,
+  LayoutErrorReport,
+  LayoutErrorType,
+} from "./types";
 
 export type LowDbEventManagerOptions = {
   dbDir: string;
 };
 
-function checkFileLayout(dbDir: string): boolean {
-  return false;
+function metaFile(dbDir: string) {
+  return path.resolve(dbDir, "meta.json");
 }
 
-function createFileLayout(dbDir: string) {}
+function pagesFile(dbDir: string) {
+  return path.resolve(dbDir, "pages.json");
+}
+
+function aliasFile(dbDir: string) {
+  return path.resolve(dbDir, "alias.json");
+}
+
+function eventFile(dbDir: string, pageId: string) {
+  return path.resolve(dbDir, "events", pageId + ".json");
+}
+/**
+ * <rootDir>
+ * - meta.json (the schema of this file is decided by the server-client using this implementation)
+ * - pages.json (contains page-id and it's name)
+ * - alias.json (contains alias and it's count)
+ * - events/ (contains one file for each page)
+ *    - xxx-pageid-events.json
+ *
+ * Initial state of these files:
+ * meta.json              <- empty
+ * pages.json             <- {}
+ * alias.json             <- {}
+ * xxx-pageid-events.json <- []
+ * @param dbDir root directory where all the files will be saved
+ * @returns true if file layout is valid
+ */
+function checkFileLayout(dbDir: string): {
+  hasError: boolean;
+  report: LayoutErrorReport;
+} {
+  const hasError = false;
+  const report: LayoutErrorReport = {};
+  if (!fs.existsSync(metaFile(dbDir))) {
+    report.meta = LayoutErrorType.missing;
+  }
+  if (!fs.existsSync(aliasFile(dbDir))) {
+    report.alias = LayoutErrorType.missing;
+  } else {
+    const data = fs.readFileSync(aliasFile(dbDir)).toString();
+    if (data.match(/^\s\s*\s$/)) {
+      report.alias = LayoutErrorType.empty;
+    }
+  }
+  if (!fs.existsSync(pagesFile(dbDir))) {
+    report.pages = LayoutErrorType.missing;
+  } else {
+    const data = fs.readFileSync(pagesFile(dbDir)).toString();
+    if (data.match(/^\s\s*\s$/)) {
+      report.pages = LayoutErrorType.empty;
+    } else {
+      try {
+        const json = JSON.parse(fs.readFileSync(pagesFile(dbDir)).toString());
+        if (typeof json !== "object")
+          report.pages = LayoutErrorType.invalidData;
+      } catch {
+        report.pages = LayoutErrorType.invalidData;
+      }
+    }
+  }
+  // check for event files only if there are no errors for pages
+  if (report.pages === undefined) {
+    const json = JSON.parse(fs.readFileSync(pagesFile(dbDir)).toString());
+    const pageIds = Object.keys(json);
+    pageIds.forEach((pageId) => {
+      if (!fs.existsSync(eventFile(dbDir, pageId))) {
+        if (report.events === undefined) {
+          report.events = {};
+        }
+        report.events[pageId] = LayoutErrorType.missing;
+      } else {
+        const data = fs.readFileSync(eventFile(dbDir, pageId)).toString();
+        if (data.match(/^\s\s*\s$/)) {
+          if (report.events === undefined) {
+            report.events = {};
+          }
+          report.events[pageId] = LayoutErrorType.empty;
+        } else {
+          try {
+            const json = JSON.parse(data);
+            if (typeof json !== "object" && !Array.isArray(json)) {
+              if (report.events === undefined) {
+                report.events = {};
+              }
+              report.events[pageId] = LayoutErrorType.invalidData;
+            }
+          } catch {
+            if (report.events === undefined) {
+              report.events = {};
+            }
+            report.events[pageId] = LayoutErrorType.invalidData;
+          }
+        }
+      }
+    });
+  }
+  return { hasError, report };
+}
+
+/**
+ * It fixes the dbDir in following ways:
+ * - Create any missing file with it's initial value
+ * - It also ensures that all pages mentioned in pages.json have a events file in events directory
+ * @param dbDir root directory where all the files will be saved
+ */
+function fixFileLayout(dbDir: string, report: LayoutErrorReport) {
+  let hasUnfixedErrors = false;
+  const reportAfterFixes: LayoutErrorReport = {};
+  if (report.meta) {
+    if (report.meta.valueOf() === LayoutErrorType.missing.valueOf())
+      fs.writeFileSync(metaFile(dbDir), "");
+    else {
+      hasUnfixedErrors = true;
+      reportAfterFixes.meta = report.meta;
+    }
+  }
+  if (report.alias) {
+    if (report.alias.valueOf() === LayoutErrorType.missing.valueOf())
+      fs.writeFileSync(aliasFile(dbDir), "{}");
+    else {
+      hasUnfixedErrors = true;
+      reportAfterFixes.alias = report.alias;
+    }
+  }
+  if (report.pages) {
+    if (report.pages.valueOf() === LayoutErrorType.missing.valueOf())
+      fs.writeFileSync(pagesFile(dbDir), "{}");
+    else {
+      hasUnfixedErrors = true;
+      reportAfterFixes.pages = report.pages;
+    }
+  }
+  if (report.events) {
+    const pageIds = Object.keys(report.events!);
+    pageIds.forEach((pageId) => {
+      const error = report.events![pageId]!;
+      if (error.valueOf() === LayoutErrorType.missing.valueOf()) {
+        fs.writeFileSync(eventFile(dbDir, pageId), "[]");
+      } else {
+        hasUnfixedErrors = true;
+        if (reportAfterFixes.events === undefined) {
+          reportAfterFixes.events = {};
+        }
+        reportAfterFixes.events[pageId] = error;
+      }
+    });
+  }
+  return { hasUnfixedErrors, reportAfterFixes };
+}
+
+function openMetaDb(dbDir: string): LowdbSync<any> {
+  const metaFile = path.resolve(dbDir, "meta.json");
+  const metaDb = Lowdb(new FileSync<AliasDbSchema>(metaFile));
+  metaDb.read();
+  return metaDb;
+}
 
 function openAliasDb(dbDir: string): LowdbSync<AliasDbSchema> {
   const aliasFile = path.resolve(dbDir, "alias.json");
@@ -42,9 +204,19 @@ export default function createLowDbEventManager(
   const dbDir = options.dbDir;
 
   // create files with default content if file doesn't exists already
-  if (!checkFileLayout(dbDir)) {
-    createFileLayout(dbDir);
+  const { hasError, report } = checkFileLayout(dbDir);
+  if (hasError) {
+    const { hasUnfixedErrors, reportAfterFixes } = fixFileLayout(dbDir, report);
+    if (hasUnfixedErrors) {
+      console.log(
+        "Found errors in lowdb that cannot be fixed automatically\n",
+        JSON.stringify(reportAfterFixes, null, 2)
+      );
+      process.exit(-1);
+    }
   }
+
+  const metaDb = openMetaDb(dbDir);
 
   const pagesDb = openPagesDb(dbDir);
 
@@ -55,6 +227,10 @@ export default function createLowDbEventManager(
       eventsDb: LowdbSync<AnyEvent[]>;
     };
   } = {};
+
+  function updateMeta(data: any) {
+    metaDb.setState(data);
+  }
 
   function createPage(id: PageId, name: string, route: string) {
     // do nothing if a page with id PageId already exists
@@ -103,7 +279,9 @@ export default function createLowDbEventManager(
     return openPages[pageId]!.eventsDb.getState();
   }
 
-  function compressEvents(pageId: PageId): AnyEvent[] {}
+  function compressEvents(pageId: PageId): AnyEvent[] {
+    return [];
+  }
 
   function writeBackCompressedEvents(pageId: PageId) {}
 
@@ -119,6 +297,7 @@ export default function createLowDbEventManager(
   }
 
   return {
+    updateMeta,
     createPage,
     renamePage,
     changeRoute,
