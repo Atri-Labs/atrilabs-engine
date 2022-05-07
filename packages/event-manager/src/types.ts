@@ -24,3 +24,7 @@ export type EventManager = {
   // takes prefix and returns next number for the prefix
   incrementAlias: (prefix: string) => number;
 };
+
+export type ForestManager = {
+  getEventManager: (name: string) => EventManager;
+};
