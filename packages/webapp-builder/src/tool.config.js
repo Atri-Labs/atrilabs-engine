@@ -20,7 +20,7 @@ module.exports = {
       "@atrilabs/forest/lib/implementations/lowdb/LowDbForestManager"
     ),
     options: {
-      forestDir: "",
+      forestDir: "localdb",
       forestsConfig: forestsConfig,
     },
   },

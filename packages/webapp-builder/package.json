@@ -22,7 +22,8 @@
   },
   "scripts": {
     "build": "build-atri-tool",
-    "start": "dev-atri-tool"
+    "start": "dev-atri-tool",
+    "server": "bootstrap-atri-services"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
