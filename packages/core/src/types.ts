@@ -51,4 +51,14 @@ export type ToolConfig = {
    * server - contains backend of editor
    */
   output: string;
+  /**
+   * All the services must export a default function
+   * The args for the function will be -
+   * 1. ToolConfig - default export from tool.config.json file
+   * 2. options - custom options
+   */
+  services: {
+    eventServer: { path: string; options: any };
+    codeGenerators: { path: string; options: any }[];
+  };
 };
