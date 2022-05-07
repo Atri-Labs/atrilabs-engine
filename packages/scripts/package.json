@@ -8,7 +8,8 @@
   "bin": {
     "build-atri-tool": "bin/tasks/build/build.js",
     "dev-atri-tool": "bin/tasks/dev/dev.js",
-    "build-atri-layer": "bin/tasks/build-layer/index.js"
+    "build-atri-layer": "bin/tasks/build-layer/index.js",
+    "bootstrap-atri-services": "bin/tasks/bootstrap-services/bootstrap-services.js"
   },
   "directories": {
     "bin": "bin",
