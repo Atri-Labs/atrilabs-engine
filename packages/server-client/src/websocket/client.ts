@@ -21,43 +21,47 @@ function handleSuccess(
 }
 
 export function createFolder(
+  forestname: string,
   folder: Folder,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("createFolder", folder, (success) => {
+  socket.emit("createFolder", forestname, folder, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function updateFolder(
+  forestname: string,
   id: string,
   update: Partial<Omit<Folder, "id">>,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("updateFolder", id, update, (success) => {
+  socket.emit("updateFolder", forestname, id, update, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function createPage(
+  forestname: string,
   page: Page,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("createPage", page, (success) => {
+  socket.emit("createPage", forestname, page, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function updatePage(
+  forestname: string,
   id: string,
   update: Partial<Omit<Page, "id">>,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("updatePage", id, update, (success) => {
+  socket.emit("updatePage", forestname, id, update, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }

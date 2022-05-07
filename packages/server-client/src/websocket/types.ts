@@ -1,5 +1,3 @@
-import { TreeDef } from "@atrilabs/forest";
-
 export type Folder = {
   id: string;
   name: string;
@@ -42,7 +40,3 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
-
-export type ForestsConfig = {
-  [name: string]: Pick<TreeDef, "modulePath" | "name" | "pkg">[];
-};

@@ -1,6 +1,6 @@
+import { ForestsConfig } from "@atrilabs/forest";
 import fs from "fs";
 import { getToolConfigFile } from "./cmdargs";
-import { ForestsConfig } from "./types";
 
 export function readForests() {
   const toolConfigFile = getToolConfigFile();

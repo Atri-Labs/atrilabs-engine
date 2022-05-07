@@ -1,6 +1,5 @@
-import { AnyEvent } from "@atrilabs/forest";
 import { LowdbSync } from "lowdb";
-import { PageId } from "../../types";
+import { AnyEvent, PageId } from "../../types";
 
 export type PagesDbSchema = { [id: PageId]: { name: string; route: string } };
 

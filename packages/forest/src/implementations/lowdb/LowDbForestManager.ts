@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { EventManager, ForestManager } from "../../types";
-import { ForestsConfig } from "../../server-client/websocket/types";
+import { EventManager, ForestManager, ForestsConfig } from "../../types";
 import createLowDbEventManager from "./LowDbEventManager";
 
 export type LowDbForestManagerOptions = {
