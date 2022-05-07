@@ -33,7 +33,9 @@
     "@atrilabs/atri-icon-layer": "^0.0.0",
     "@atrilabs/base-layer": "^0.0.0",
     "@atrilabs/basic-trees": "^0.0.0",
+    "@atrilabs/forest": "^0.0.0",
     "@atrilabs/scripts": "^0.0.0",
+    "@atrilabs/server-client": "^0.0.0",
     "react": "18.0.0",
     "react-dom": "18.0.0"
   },
