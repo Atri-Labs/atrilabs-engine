@@ -3,6 +3,7 @@ import { AnyEvent } from "@atrilabs/forest";
 export type PageId = string;
 
 export type EventManager = {
+  meta: () => any;
   updateMeta: (data: any) => void;
 
   // takes page name and page route and returns page id

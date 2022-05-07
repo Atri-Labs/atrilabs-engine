@@ -1,3 +1,5 @@
+import { TreeDef } from "@atrilabs/forest";
+
 export type Folder = {
   id: string;
   name: string;
@@ -13,14 +15,24 @@ export type Page = {
 export interface ServerToClientEvents {}
 
 export interface ClientToServerEvents {
-  createFolder: (folder: Folder, callback: (success: boolean) => void) => void;
+  createFolder: (
+    forestName: string,
+    folder: Folder,
+    callback: (success: boolean) => void
+  ) => void;
   updateFolder: (
+    forestName: string,
     id: Folder["id"],
     update: Partial<Omit<Folder, "id">>,
     callback: (success: boolean) => void
   ) => void;
-  createPage: (page: Page, callback: (success: boolean) => void) => void;
+  createPage: (
+    forestName: string,
+    page: Page,
+    callback: (success: boolean) => void
+  ) => void;
   updatePage: (
+    forestName: string,
     pageId: Page["id"],
     update: Partial<Omit<Page, "id">>,
     callback: (success: boolean) => void
@@ -30,3 +42,7 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
+
+export type ForestsConfig = {
+  [name: string]: Pick<TreeDef, "modulePath" | "name" | "pkg">[];
+};

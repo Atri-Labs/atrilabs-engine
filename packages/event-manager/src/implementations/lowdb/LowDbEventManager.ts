@@ -243,6 +243,10 @@ export default function createLowDbEventManager(
 
   const aliasDb = getAliasDb(dbDir);
 
+  function meta() {
+    return metaDb.getState();
+  }
+
   function updateMeta(data: any) {
     metaDb.setState(data);
   }
@@ -328,6 +332,7 @@ export default function createLowDbEventManager(
   }
 
   const api = {
+    meta,
     updateMeta,
     createPage,
     renamePage,
