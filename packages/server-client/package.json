@@ -21,12 +21,13 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "build": "tsc"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/core": "^0.0.0",
     "@atrilabs/forest": "^0.0.0",
     "socket.io": "^4.5.0",
     "socket.io-client": "^4.5.0",

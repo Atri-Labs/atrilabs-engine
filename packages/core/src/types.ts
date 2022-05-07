@@ -32,6 +32,12 @@ export type ForestsConfig = {
 
 export type ToolConfig = {
   forests: ForestsConfig;
+  forestManager: {
+    // path to module implementing forest manager for backend
+    path: string;
+    // options will be passed on to the forest manager ctr fn as argument
+    options: any;
+  };
   layers: {
     pkg: string;
     remap?: Partial<{
