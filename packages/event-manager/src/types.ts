@@ -16,10 +16,9 @@ export type EventManager = {
   storeEvent: (pageId: PageId, event: AnyEvent) => void;
   // fetch all events for a page
   fetchEvents: (pageId: PageId) => AnyEvent[];
-  // compress events
-  compressEvents: (pageId: PageId) => AnyEvent[];
+
   // write back compressed events
-  writeBackCompressedEvents: (pageId: PageId) => void;
+  writeBackCompressedEvents: (pageId: PageId, events: AnyEvent[]) => void;
 
   // takes prefix and returns next number for the prefix
   incrementAlias: (prefix: string) => number;

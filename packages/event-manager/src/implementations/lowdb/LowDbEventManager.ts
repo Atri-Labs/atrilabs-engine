@@ -10,6 +10,7 @@ import {
   EvensDbSchema,
   LayoutErrorReport,
   LayoutErrorType,
+  OpenDbs,
 } from "./types";
 
 export type LowDbEventManagerOptions = {
@@ -170,31 +171,51 @@ function fixFileLayout(dbDir: string, report: LayoutErrorReport) {
   return { hasUnfixedErrors, reportAfterFixes };
 }
 
-function openMetaDb(dbDir: string): LowdbSync<any> {
+const openDbs: OpenDbs = {
+  events: {},
+};
+
+function getMetaDb(dbDir: string): LowdbSync<any> {
+  if (openDbs.meta) {
+    return openDbs.meta;
+  }
   const metaFile = path.resolve(dbDir, "meta.json");
   const metaDb = Lowdb(new FileSync<AliasDbSchema>(metaFile));
   metaDb.read();
+  openDbs.meta = metaDb;
   return metaDb;
 }
 
-function openAliasDb(dbDir: string): LowdbSync<AliasDbSchema> {
+function getAliasDb(dbDir: string): LowdbSync<AliasDbSchema> {
+  if (openDbs.alias) {
+    return openDbs.alias;
+  }
   const aliasFile = path.resolve(dbDir, "alias.json");
   const aliasDb = Lowdb(new FileSync<AliasDbSchema>(aliasFile));
   aliasDb.read();
+  openDbs.alias = aliasDb;
   return aliasDb;
 }
 
-function openPagesDb(dbDir: string): LowdbSync<PagesDbSchema> {
+function getPagesDb(dbDir: string): LowdbSync<PagesDbSchema> {
+  if (openDbs.pages) {
+    return openDbs.pages;
+  }
   const pagesFile = path.resolve(dbDir, "pages.json");
   const pagesDb = Lowdb(new FileSync<PagesDbSchema>(pagesFile));
   pagesDb.read();
+  openDbs.pages = pagesDb;
   return pagesDb;
 }
 
-function openEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
+function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
+  if (openDbs.events![pageId]) {
+    return openDbs.events![pageId]!;
+  }
   const eventsFile = path.resolve(dbDir, pageId, "events.json");
   const eventsDb = Lowdb(new FileSync<EvensDbSchema>(eventsFile));
   eventsDb.read();
+  openDbs.events![pageId] = eventsDb;
   return eventsDb;
 }
 
@@ -216,17 +237,11 @@ export default function createLowDbEventManager(
     }
   }
 
-  const metaDb = openMetaDb(dbDir);
+  const metaDb = getMetaDb(dbDir);
 
-  const pagesDb = openPagesDb(dbDir);
+  const pagesDb = getPagesDb(dbDir);
 
-  const aliasDb = openAliasDb(dbDir);
-
-  const openPages: {
-    [id: string]: {
-      eventsDb: LowdbSync<AnyEvent[]>;
-    };
-  } = {};
+  const aliasDb = getAliasDb(dbDir);
 
   function updateMeta(data: any) {
     metaDb.setState(data);
@@ -262,28 +277,20 @@ export default function createLowDbEventManager(
   }
 
   function storeEvent(pageId: PageId, event: AnyEvent) {
-    if (!openPages[pageId]) {
-      const eventsDb = openEventsDb(dbDir, pageId);
-      openPages[pageId] = { eventsDb };
-    }
-    const eventsDb = openPages[pageId]!["eventsDb"];
+    const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.getState().push(event);
   }
 
   function fetchEvents(pageId: PageId): AnyEvent[] {
     // open pages db if not already open
-    if (!openPages[pageId]) {
-      const eventsDb = openEventsDb(dbDir, pageId);
-      openPages[pageId] = { eventsDb };
-    }
-    return openPages[pageId]!.eventsDb.getState();
+    const eventsDb = getEventsDb(dbDir, pageId);
+    return eventsDb.getState();
   }
 
-  function compressEvents(pageId: PageId): AnyEvent[] {
-    return [];
+  function writeBackCompressedEvents(pageId: PageId, events: AnyEvent[]) {
+    const eventsDb = getEventsDb(dbDir, pageId);
+    eventsDb.setState(events);
   }
-
-  function writeBackCompressedEvents(pageId: PageId) {}
 
   function incrementAlias(prefix: string): number {
     if (aliasDb.getState()[prefix] !== undefined) {
@@ -296,15 +303,46 @@ export default function createLowDbEventManager(
     return aliasDb.getState()[prefix]!;
   }
 
-  return {
+  function createWriteProxy<T extends (...args: any) => any>(fn: T) {
+    const proxyFn = new Proxy(fn, {
+      apply(target, _thisArg, args) {
+        const returnValue = fn(...args);
+        // TODO: maybe we should debounce write operation and move it inside a promise as well
+        if ([updateMeta].includes(target)) {
+          metaDb.write();
+        }
+        if ([createPage, renamePage, changeRoute].includes(target)) {
+          pagesDb.write();
+        }
+        if ([incrementAlias].includes(target)) {
+          aliasDb.write();
+        }
+        if ([storeEvent].includes(target)) {
+          const eventsDb = getEventsDb(dbDir, args[0]);
+          eventsDb.write();
+        }
+        return returnValue;
+      },
+    });
+    return proxyFn;
+  }
+
+  const api = {
     updateMeta,
     createPage,
     renamePage,
     changeRoute,
     storeEvent,
     fetchEvents,
-    compressEvents,
     writeBackCompressedEvents,
     incrementAlias,
   };
+
+  const apiProxy = { ...api };
+
+  Object.keys(apiProxy).forEach((key) => {
+    (apiProxy as any)[key] = createWriteProxy((apiProxy as any)[key]);
+  });
+
+  return apiProxy;
 }

@@ -1,4 +1,5 @@
 import { AnyEvent } from "@atrilabs/forest";
+import { LowdbSync } from "lowdb";
 import { PageId } from "../../types";
 
 export type PagesDbSchema = { [id: PageId]: { name: string; route: string } };
@@ -18,4 +19,11 @@ export type LayoutErrorReport = Partial<{
   pages: LayoutErrorType;
   alias: LayoutErrorType;
   events: { [pageId: PageId]: LayoutErrorType };
+}>;
+
+export type OpenDbs = Partial<{
+  meta: LowdbSync<any>;
+  pages: LowdbSync<PagesDbSchema>;
+  alias: LowdbSync<AliasDbSchema>;
+  events: { [pageId: PageId]: LowdbSync<EvensDbSchema> };
 }>;
