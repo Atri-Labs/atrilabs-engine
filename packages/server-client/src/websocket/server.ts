@@ -8,7 +8,11 @@ import {
   SocketData,
 } from "./types";
 
-export default function (toolConfig: ToolConfig) {
+export type EventServerOptions = {
+  port?: number;
+};
+
+export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   const io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
@@ -60,6 +64,6 @@ export default function (toolConfig: ToolConfig) {
     });
   });
 
-  const port = 4001;
+  const port = (options && options.port) || 4001;
   io.listen(port);
 }
