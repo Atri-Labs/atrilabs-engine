@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/server-client",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.0",
-    "@atrilabs/forest": "^0.0.0",
+    "@atrilabs/core": "^0.0.1",
+    "@atrilabs/forest": "^0.0.1",
     "socket.io": "^4.5.0",
     "socket.io-client": "^4.5.0",
     "typescript": "4.6.3"

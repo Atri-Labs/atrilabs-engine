@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/scripts",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -37,7 +37,7 @@
     "@types/node": "^17.0.23"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.0",
+    "@atrilabs/core": "^0.0.1",
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
