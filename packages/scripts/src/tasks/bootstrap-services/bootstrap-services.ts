@@ -2,26 +2,46 @@
 import { fork } from "child_process";
 import path from "path";
 
-const runEventServerFile = path.resolve(__dirname, "runEventServer.js");
+function startEventServer() {
+  const runEventServerFile = path.resolve(__dirname, "runEventServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const eventServer = fork(runEventServerFile, [], { signal });
+  eventServer.on("error", (err) => {
+    if (!err.toString().match("AbortError"))
+      console.log(`Event Server exited with error\n${err}`);
+  });
+  return controller;
+}
 
-const controller = new AbortController();
-const { signal } = controller;
+function startFileServer() {
+  const fileServerFile = path.resolve(__dirname, "runFileServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const fileServer = fork(fileServerFile, [], { signal });
+  fileServer.on("error", (err) => {
+    if (!err.toString().match("AbortError"))
+      console.log(`File Server exited with error\n${err}`);
+  });
+  return controller;
+}
 
-const eventServer = fork(runEventServerFile, [], { signal });
-eventServer.on("error", (err) => {
-  console.log(`Child exited with error\n${err}`);
-});
+const controllers = [startEventServer(), startFileServer()];
 
 // wait for kill signals
 ["SIGINT", "SIGTERM"].forEach(function (sig) {
   process.on(sig, function () {
-    controller.abort();
+    controllers.forEach((controller) => {
+      controller.abort();
+    });
     process.exit();
   });
 });
 
 // wait for input on stdin (hold the terminal)
 process.stdin.on("end", function () {
-  controller.abort();
+  controllers.forEach((controller) => {
+    controller.abort();
+  });
   process.exit();
 });

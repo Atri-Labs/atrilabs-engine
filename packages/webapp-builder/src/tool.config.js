@@ -1,3 +1,5 @@
+const path = require("path");
+
 const forestsConfig = {
   page: [
     {
@@ -32,6 +34,12 @@ module.exports = {
   ],
   output: "lib",
   services: {
+    fileServer: {
+      path: require.resolve("@atrilabs/server-client/lib/file-server"),
+      options: {
+        dir: path.resolve("lib"),
+      },
+    },
     eventServer: {
       path: require.resolve("@atrilabs/server-client/lib/websocket/server"),
     },

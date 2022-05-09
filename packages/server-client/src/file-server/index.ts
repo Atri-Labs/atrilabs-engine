@@ -17,6 +17,7 @@ export default function (_toolConfig: ToolConfig, options: FileServerOptions) {
   const port = (options && options.port) || 4002;
   const exe = path.resolve(
     path.dirname(require.resolve("http-server/package.json")),
+    "..",
     ".bin",
     "http-server"
   );

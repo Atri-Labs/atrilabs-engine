@@ -58,6 +58,7 @@ export type ToolConfig = {
    * 2. options - custom options
    */
   services: {
+    fileServer: { path: string; options: any };
     eventServer: { path: string; options: any };
     codeGenerators: { path: string; options: any }[];
   };
