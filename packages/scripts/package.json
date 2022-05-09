@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
+    "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.181",
     "@types/node": "^17.0.23"
   },
@@ -49,6 +50,7 @@
     "command-exists": "^1.2.9",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
+    "fs-extra": "^10.1.0",
     "html-webpack-plugin": "^5.5.0",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.0",

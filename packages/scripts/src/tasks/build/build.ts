@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { webpack } from "webpack";
+import path from "path";
+import { copySync } from "fs-extra";
 import {
   extractLayerEntries,
   getCorePkgInfo,
@@ -44,9 +46,22 @@ importToolConfig(toolPkgInfo.configFile)
         console.log(stats?.toJson().errors);
       }
       if (!buildFailed) {
+        console.log("Copying public directory");
+        copyPublicDirectory();
         console.log(`Build completed!`);
       }
     });
+
+    function copyPublicDirectory() {
+      copySync(
+        toolPkgInfo.publicDir,
+        path.resolve(toolPkgInfo.dir, toolConfig.output),
+        {
+          dereference: true,
+          filter: (file) => file !== toolPkgInfo.toolHtml,
+        }
+      );
+    }
   })
   .catch((err) => {
     console.log(err);
