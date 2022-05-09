@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/webapp-builder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -30,14 +30,14 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-layer": "^0.0.1",
-    "@atrilabs/app-page-layer": "^0.0.1",
-    "@atrilabs/atri-icon-layer": "^0.0.1",
-    "@atrilabs/base-layer": "^0.0.1",
-    "@atrilabs/basic-trees": "^0.0.1",
-    "@atrilabs/forest": "^0.0.1",
-    "@atrilabs/scripts": "^0.0.1",
-    "@atrilabs/server-client": "^0.0.1",
+    "@atrilabs/app-design-layer": "^0.0.2",
+    "@atrilabs/app-page-layer": "^0.0.2",
+    "@atrilabs/atri-icon-layer": "^0.0.2",
+    "@atrilabs/base-layer": "^0.0.2",
+    "@atrilabs/basic-trees": "^0.0.2",
+    "@atrilabs/forest": "^0.0.2",
+    "@atrilabs/scripts": "^0.0.2",
+    "@atrilabs/server-client": "^0.0.2",
     "react": "18.0.0",
     "react-dom": "18.0.0"
   },
