@@ -9,6 +9,8 @@ click = "*"
 [dev-packages]
 setuptools = "*"
 pipenv = "*"
+build = "*"
+twine = "*"
 
 [requires]
 python_version = "3.8"

@@ -25,7 +25,7 @@ LONG_DESCRIPTION = (
     "It (semi-)automates many things out of the box such as CDN caching, browser caching etc."
 )
 
-pipfile = Project(chdir=False).parsed_pipfile
+pipfile = Project().parsed_pipfile
 packages = pipfile["packages"].copy()
 requirements = convert_deps_to_pip(packages, r=False)
 
