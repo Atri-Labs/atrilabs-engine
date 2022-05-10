@@ -31,12 +31,12 @@ def open():
 @click.option('--wport', default=4002, help='port on which file server will be attached to serve static files')
 @click.option('--atri-dir', default='atri', help='directory that contains events/')
 @click.option('--generated', default='generated', help='directory that contains generated web app code')
-def open_editor(eport, wport, atri_dir):
+def open_editor(eport, wport, atri_dir, generated):
     """Open up editor in browser using command -
 
         $ atri open editor --port 4000
     """
-    print(eport, wport, atri_dir)
+    print(eport, wport, atri_dir, generated)
 
 @main.group('run')
 @click.option('--controllers', default='controllers', help='directory that contains controller scripts')
