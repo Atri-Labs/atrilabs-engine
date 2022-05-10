@@ -1,5 +1,3 @@
-from gettext import install
-from importlib.metadata import entry_points
 import sys
 import setuptools
 
