@@ -27,14 +27,14 @@ def open():
     pass
 
 @open.command('editor')
-@click.option('--eport', default=4001, help='port on which event server will be attached')
-@click.option('--wport', default=4002, help='port on which file server will be attached to serve static files')
+@click.option('--e-port', default=4001, help='port on which event server will be attached')
+@click.option('--w-port', default=4002, help='port on which file server will be attached to serve static files')
 @click.option('--atri-dir', default='atri', help='directory that contains events/')
 @click.option('--generated', default='generated', help='directory that contains generated web app code')
 def open_editor(eport, wport, atri_dir, generated):
     """Open up editor in browser using command -
 
-        $ atri open editor --port 4000
+        $ atri open editor --e-port 4001 --w-port 4002 --atri-dir atri --generated generated
     """
     print(eport, wport, atri_dir, generated)
 
