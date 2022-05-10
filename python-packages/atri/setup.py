@@ -27,7 +27,7 @@ LONG_DESCRIPTION = (
 
 pipfile = Project(chdir=False).parsed_pipfile
 packages = pipfile["packages"].copy()
-requirements = convert_deps_to_pip(packages, r = False)
+requirements = convert_deps_to_pip(packages, r=False)
 
 setuptools.setup(
     name=NAME,
@@ -42,7 +42,7 @@ setuptools.setup(
     author_email="shyam.swaroop@atrilabs.com",
     python_requires=">=3.6",
     license="GPLv3",
-    package_dir="src",
+    package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     install_requires=requirements,
     zip_safe=False,
