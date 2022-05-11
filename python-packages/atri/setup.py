@@ -13,9 +13,33 @@ except:
     err_msg = "Please install pipenv and try again."
     sys.exit(err_msg)
 
+import subprocess
+import re
+
+def get_git_tag():
+    try:
+        git_tag = str(
+            subprocess.check_output(
+                ['git', 'describe', '--exact-match', '--abbrev=0'], stderr=subprocess.STDOUT
+            )
+        ).strip('\'b\\n')
+    except subprocess.CalledProcessError as exc_info:
+        match = re.search(
+            'fatal: no tag exactly matches \'(?P<commit>[a-z0-9]+)\'', str(exc_info.output)
+        )
+        if match:
+            raise Exception(
+                'Bailing: there is no git tag for the current commit, {commit}'.format(
+                    commit=match.group('commit')
+                )
+            )
+        raise Exception(str(exc_info.output))
+
+    return git_tag
+
 NAME = "atri"
 
-VERSION = "0.0.1"
+VERSION = get_git_tag()[1:]
 
 DESCRIPTION = "The best tools to build better and fast apps"
 
