@@ -1,5 +1,6 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
 import click
+from commands.open_editor import run as exe_open_editor
 
 @click.group()
 def main():
@@ -37,6 +38,7 @@ def open_editor(e_port, w_port, atri_dir, generated):
         $ atri open editor --e-port 4001 --w-port 4002 --atri-dir atri --generated generated
     """
     print(e_port, w_port, atri_dir, generated)
+    exe_open_editor()
 
 @main.group('run')
 @click.option('--controllers', default='controllers', help='directory that contains controller scripts')
