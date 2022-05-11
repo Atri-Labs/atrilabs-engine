@@ -37,6 +37,10 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       meta["pages"] = { home: "root" };
       initMeta = true;
     }
+    if (meta["pages"] && meta["pages"]["home"] !== "root") {
+      meta["pages"]["home"] = "root";
+      initMeta = true;
+    }
     if (initMeta) {
       eventManager.updateMeta(meta);
     }

@@ -76,20 +76,24 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
   }, [props]);
   return (
     <div style={styles.folder}>
-      <header style={styles.folderHeader}>
-        <span
-          style={styles.folderArrowSpan}
-          onClick={() => setShowPages((prev) => !prev)}
-        >
-          <DownArrow />
-        </span>
-        <div style={styles.folderNameDiv}>
-          {props.data.folder.name}
-          <span onClick={openUpdateFolder}>
-            <Setting />
+      {/**Show folder name only if it's not root */}
+      {props.data.folder.id !== "root" ? (
+        <header style={styles.folderHeader}>
+          <span
+            style={styles.folderArrowSpan}
+            onClick={() => setShowPages((prev) => !prev)}
+          >
+            <DownArrow />
           </span>
-        </div>
-      </header>
+          <div style={styles.folderNameDiv}>
+            {props.data.folder.name}
+            <span onClick={openUpdateFolder}>
+              <Setting />
+            </span>
+          </div>
+        </header>
+      ) : null}
+
       {showPages
         ? props.data.pages.map((page, index) => {
             return (

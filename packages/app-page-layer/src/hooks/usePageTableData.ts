@@ -51,7 +51,7 @@ export const usePageTableData = () => {
         const data: PageTableData = [];
         const pageMapRev = reversePageMap(pageMap);
         console.log(reverseMap(folders));
-        // TODO: create a home page in root folder
+        // root folder might not have any child folder, hence, []
         const childFolderIds = reverseMap(folders)["root"] || [];
         childFolderIds.forEach((childId) => {
           const pageData = pageMapRev[childId]!.map((pageId) => {
@@ -69,7 +69,16 @@ export const usePageTableData = () => {
             return a.name < b.name ? -1 : 0;
           }),
         ]);
-        setData(data);
+        // handle pages directly inside home
+        const rootData: PageTableData["0"] = {
+          folder: folders["root"],
+          pages: [],
+        };
+        pageMapRev["root"]!.forEach((pageId) => {
+          rootData.pages.push({ ...pages[pageId]!, id: pageId });
+        });
+        // prepend root folder as it should be displayed at top
+        setData([rootData, ...data]);
       });
     });
   }, [setData]);
