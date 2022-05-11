@@ -33,7 +33,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       initMeta = true;
     }
     if (meta["pages"] === undefined) {
-      meta["pages"] = {};
+      // make home a direct child of root
+      meta["pages"] = { home: "root" };
       initMeta = true;
     }
     if (initMeta) {
@@ -44,6 +45,11 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
 
   function getPages(forestname: string) {
     const eventManager = getEventManager(forestname)!;
+    const pages = eventManager.pages();
+    if (pages["home"] === undefined) {
+      // create home page if not already created
+      eventManager.createPage("home", "Home", "");
+    }
     return eventManager.pages();
   }
 

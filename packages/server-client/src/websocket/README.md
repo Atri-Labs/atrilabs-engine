@@ -5,3 +5,5 @@ This server-client uses event manager from `implementation/lowdb`. This server-c
 # Schema for meta.json
 
 `{ folders: { folderId: { name: "", id: "", parentId: "" } }, pages: {pageId: "folderId"} }`
+
+A folder with id root is auto-created. A page with id home is auto-created as a child of root folder.
