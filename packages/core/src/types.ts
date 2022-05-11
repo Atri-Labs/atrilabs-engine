@@ -62,4 +62,7 @@ export type ToolConfig = {
     eventServer: { path: string; options: any };
     codeGenerators: { path: string; options: any }[];
   };
+  env: {
+    [key: string]: number | string | boolean;
+  };
 };

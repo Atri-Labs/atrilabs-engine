@@ -45,4 +45,7 @@ module.exports = {
     },
     codeGenerators: [],
   },
+  env: {
+    EVENT_SERVER_CLIENT: "http://localhost:4001",
+  },
 };

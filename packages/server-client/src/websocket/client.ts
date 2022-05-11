@@ -7,7 +7,7 @@ import {
 } from "./types";
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  "http://localhost:4001"
+  process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
 );
 
 function handleSuccess(

@@ -1,6 +1,6 @@
 import { ToolConfig } from "@atrilabs/core";
 import path from "path";
-import { Configuration } from "webpack";
+import { Configuration, DefinePlugin } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -18,17 +18,27 @@ const imageInlineSizeLimit = parseInt(
   process.env["IMAGE_INLINE_SIZE_LIMIT"] || "10000"
 );
 
+const prepareEnv = (raw: ToolConfig["env"]) => {
+  const stringified = {
+    "process.env": Object.keys(raw).reduce((env: any, key) => {
+      env["ATRI_TOOL_" + key] = JSON.stringify(raw[key]);
+      return env;
+    }, {}),
+  };
+  return stringified;
+};
+
 export default function createWebpackConfig(
   corePkgInfo: CorePkgInfo,
   toolPkgInfo: ToolPkgInfo,
   toolConfig: ToolConfig,
   layerEntries: LayerEntry[],
   toolEnv: ToolEnv,
-  env: "production" | "development",
+  mode: "production" | "development",
   shouldUseSourceMap: boolean
 ) {
-  const isEnvDevelopment = env === "development";
-  const isEnvProduction = env === "production";
+  const isEnvDevelopment = mode === "development";
+  const isEnvProduction = mode === "production";
 
   const getStyleLoaders = (cssOptions: any, preProcessor?: string): any => {
     const loaders = [
@@ -85,7 +95,7 @@ export default function createWebpackConfig(
 
   const webpackConfig: Configuration = {
     target: "web",
-    mode: env,
+    mode: mode,
     entry: {
       layers: {
         import: corePkgInfo.entryFile,
@@ -172,7 +182,7 @@ export default function createWebpackConfig(
                 layerEntries,
                 toolConfig.forests,
                 corePkgInfo,
-                env
+                mode
               ),
             },
             {
@@ -257,6 +267,7 @@ export default function createWebpackConfig(
     plugins: [
       new HtmlWebpackPlugin({ inject: true, template: toolPkgInfo.toolHtml }),
       new InterpolateHtmlPlugin(HtmlWebpackPlugin, toolEnv),
+      new DefinePlugin(prepareEnv(toolConfig.env)),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           filename: "static/css/[name].[contenthash:8].css",
