@@ -18,7 +18,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     ServerToClientEvents,
     InterServerEvents,
     SocketData
-  >();
+  >({ cors: { origin: "*" } });
 
   // create one directory and event manager for each of forest
   const getEventManager = createForestMgr(toolConfig).getEventManager;
@@ -35,6 +35,10 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   }
 
   io.on("connection", (socket) => {
+    socket.on("getMeta", (forestname, callback) => {
+      const meta = getMeta(forestname);
+      callback(meta);
+    });
     socket.on("createFolder", (forestname, folder, callback) => {
       console.log(folder);
       if (getEventManager(forestname)) {

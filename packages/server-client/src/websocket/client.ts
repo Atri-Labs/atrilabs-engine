@@ -6,7 +6,9 @@ import {
   ServerToClientEvents,
 } from "./types";
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
+export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+  "http://localhost:4001"
+);
 
 function handleSuccess(
   success: boolean,
@@ -18,6 +20,10 @@ function handleSuccess(
   } else {
     onFailure();
   }
+}
+
+export function getMeta(forestname: string, onData: (meta: any) => void) {
+  socket.emit("getMeta", forestname, onData);
 }
 
 export function createFolder(

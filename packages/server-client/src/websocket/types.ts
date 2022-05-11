@@ -13,6 +13,7 @@ export type Page = {
 export interface ServerToClientEvents {}
 
 export interface ClientToServerEvents {
+  getMeta: (forestName: string, callback: (meta: any) => void) => void;
   createFolder: (
     forestName: string,
     folder: Folder,
