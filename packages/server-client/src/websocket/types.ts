@@ -1,3 +1,5 @@
+import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
+
 export type Folder = {
   id: string;
   name: string;
@@ -24,6 +26,10 @@ export interface ClientToServerEvents {
     id: Folder["id"],
     update: Partial<Omit<Folder, "id">>,
     callback: (success: boolean) => void
+  ) => void;
+  getPages: (
+    forestname: string,
+    callback: (page: PagesDbSchema) => void
   ) => void;
   createPage: (
     forestName: string,

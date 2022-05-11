@@ -24,20 +24,37 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   const getEventManager = createForestMgr(toolConfig).getEventManager;
 
   function getMeta(forestname: string) {
-    const meta = getEventManager(forestname)!.meta();
+    const eventManager = getEventManager(forestname)!;
+    const meta = eventManager.meta();
+    // a flag to indicate update of meta
+    let initMeta = false;
     if (meta["folders"] === undefined) {
       meta["folders"] = { root: { id: "root", name: "/", parentId: "" } };
+      initMeta = true;
     }
     if (meta["pages"] === undefined) {
       meta["pages"] = {};
+      initMeta = true;
+    }
+    if (initMeta) {
+      eventManager.updateMeta(meta);
     }
     return meta;
+  }
+
+  function getPages(forestname: string) {
+    const eventManager = getEventManager(forestname)!;
+    return eventManager.pages();
   }
 
   io.on("connection", (socket) => {
     socket.on("getMeta", (forestname, callback) => {
       const meta = getMeta(forestname);
       callback(meta);
+    });
+    socket.on("getPages", (forestname, callback) => {
+      const pages = getPages(forestname);
+      callback(pages);
     });
     socket.on("createFolder", (forestname, folder, callback) => {
       console.log(folder);

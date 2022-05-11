@@ -1,3 +1,4 @@
+import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 import { io, Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
@@ -24,6 +25,13 @@ function handleSuccess(
 
 export function getMeta(forestname: string, onData: (meta: any) => void) {
   socket.emit("getMeta", forestname, onData);
+}
+
+export function getPages(
+  forestname: string,
+  onData: (pages: PagesDbSchema) => void
+) {
+  socket.emit("getPages", forestname, onData);
 }
 
 export function createFolder(

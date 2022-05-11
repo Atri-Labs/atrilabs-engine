@@ -250,6 +250,10 @@ export default function createLowDbEventManager(
     metaDb.setState(data);
   }
 
+  function pages() {
+    return pagesDb.getState();
+  }
+
   function createPage(id: PageId, name: string, route: string) {
     // do nothing if a page with id PageId already exists
     if (pagesDb.getState()[id]) {
@@ -333,6 +337,7 @@ export default function createLowDbEventManager(
   const api = {
     meta,
     updateMeta,
+    pages,
     createPage,
     renamePage,
     changeRoute,

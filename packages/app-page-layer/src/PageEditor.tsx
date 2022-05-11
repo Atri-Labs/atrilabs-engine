@@ -16,7 +16,7 @@ import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
 import { dropContainer } from "./required";
 import formStyle from "./stylesheets/formfield.module.css";
-import { getMeta } from "@atrilabs/server-client/lib/websocket";
+import { getMeta, getPages } from "@atrilabs/server-client/lib/websocket";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
@@ -83,6 +83,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 export const PageEditor = () => {
   getMeta("page", (meta) => {
     console.log("meta", meta);
+  });
+  getPages("page", (pages) => {
+    console.log("pages", pages);
   });
   const [pageTableData] = useState<{ folder: string; pages: string[] }[]>([
     { folder: "Folder 1", pages: ["Page 1"] },

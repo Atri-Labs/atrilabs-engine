@@ -93,6 +93,7 @@ export type EventManager = {
   meta: () => any;
   updateMeta: (data: any) => void;
 
+  pages: () => { [id: PageId]: { name: string; route: string } };
   // takes page name and page route and returns page id
   createPage: (id: PageId, name: string, route: string) => void;
   // rename an existing page
