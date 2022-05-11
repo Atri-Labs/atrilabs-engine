@@ -7,6 +7,7 @@ import {
   smallText,
 } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
+import { PageTableData } from "../hooks/usePageTableData";
 import { DownArrow } from "../icons/DownArrow";
 import { PageIcon } from "../icons/PageIcon";
 import { Setting } from "../icons/Setting";
@@ -56,7 +57,7 @@ export type PageTableProps = {
     } | null>
   >;
   closeSubContainer: () => void;
-  data: { folder: string; pages: string[] };
+  data: PageTableData["0"];
 };
 
 export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
@@ -83,7 +84,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
           <DownArrow />
         </span>
         <div style={styles.folderNameDiv}>
-          {props.data.folder}
+          {props.data.folder.name}
           <span onClick={openUpdateFolder}>
             <Setting />
           </span>
@@ -115,7 +116,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
                         margin: 0,
                       }}
                     >
-                      {page}
+                      {page.name}
                     </p>
                   </div>
                   <div>
