@@ -98,7 +98,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Input onChange={onFolderNameChange} />
+        <Input onChange={onFolderNameChange} initialValue={foldername} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>

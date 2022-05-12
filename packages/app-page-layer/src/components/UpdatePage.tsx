@@ -83,14 +83,18 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       return d.folder.name;
     })
   );
-  const [selectedFolder, setSelectedFolder] = useState<
-    PageTableData["0"]["folder"]
-  >(props.data[props.folderIndex].folder);
+  const [selectedFolder, setSelectedFolder] = useState<{
+    folder: PageTableData["0"]["folder"];
+    index: number;
+  }>({
+    folder: props.data[props.folderIndex].folder,
+    index: props.folderIndex,
+  });
   const onSelect = useCallback(
     (_option: string, index: number) => {
-      setSelectedFolder(props.data[index].folder);
+      setSelectedFolder({ folder: props.data[index].folder, index });
     },
-    [props, setSelectedFolder]
+    [props]
   );
   const [pageName, setPageName] = useState<string>(
     props.data[props.folderIndex].pages[props.pageIndex].name
@@ -102,7 +106,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   const onUpdateClick = useCallback(() => {
     updatePage(
       props.data[props.folderIndex].pages[props.pageIndex].id,
-      { folderId: selectedFolder.id, name: pageName },
+      { folderId: selectedFolder.folder.id, name: pageName },
       () => {},
       () => {}
     );
@@ -114,7 +118,10 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
         return d.folder.name;
       })
     );
-    setSelectedFolder(props.data[props.folderIndex].folder);
+    setSelectedFolder({
+      folder: props.data[props.folderIndex].folder,
+      index: props.folderIndex,
+    });
     setPageName(props.data[props.folderIndex].pages[props.pageIndex].name);
   }, [props]);
   return (
@@ -135,7 +142,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
         <Dropdown
           options={folders}
           onSelect={onSelect}
-          initialSelectedIndex={props.folderIndex}
+          initialSelectedIndex={selectedFolder.index}
         />
       </div>
       <div style={styles.createPageFormField}>
@@ -155,7 +162,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
           </div>
           <div>
             {(
-              `/${selectedFolder.name.replace("/", "")}` +
+              `/${selectedFolder.folder.name.replace("/", "")}` +
               (pageName ? `/${pageName}` : "")
             ).replace("//", "/")}
           </div>

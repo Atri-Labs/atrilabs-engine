@@ -80,12 +80,13 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
       return d.folder.name;
     })
   );
-  const [selectedFolder, setSelectedFolder] = useState<
-    PageTableData["0"]["folder"]
-  >(props.data[0].folder);
+  const [selectedFolder, setSelectedFolder] = useState<{
+    folder: PageTableData["0"]["folder"];
+    index: number;
+  }>({ folder: props.data[0].folder, index: 0 });
   const onSelect = useCallback(
     (_option: string, index: number) => {
-      setSelectedFolder(props.data[index].folder);
+      setSelectedFolder({ folder: props.data[index].folder, index });
     },
     [props, setSelectedFolder]
   );
@@ -97,7 +98,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
   const onCreateClick = useCallback(() => {
     createPage(
       pageName,
-      selectedFolder.id,
+      selectedFolder.folder.id,
       () => {},
       () => {}
     );
@@ -113,11 +114,15 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Dropdown options={folders} onSelect={onSelect} />
+        <Dropdown
+          options={folders}
+          onSelect={onSelect}
+          initialSelectedIndex={selectedFolder.index}
+        />
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
-        <Input onChange={onPageNameChange} />
+        <Input onChange={onPageNameChange} initialValue={pageName} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -131,7 +136,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
             <LinkIcon />
           </div>
           <div>
-            {`/${selectedFolder.name.replace("/", "")}` +
+            {`/${selectedFolder.folder.name.replace("/", "")}` +
               (pageName ? `/${pageName}` : "")}
           </div>
         </div>
