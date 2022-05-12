@@ -130,7 +130,10 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
           >
             <LinkIcon />
           </div>
-          <div>{`/${selectedFolder.name.replace("/", "")}`}</div>
+          <div>
+            {`/${selectedFolder.name.replace("/", "")}` +
+              (pageName ? `/${pageName}` : "")}
+          </div>
         </div>
       </div>
       <div
