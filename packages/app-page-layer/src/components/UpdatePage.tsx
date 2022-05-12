@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   amber300,
   Dropdown,
@@ -78,7 +78,7 @@ export type UpdatePageProps = {
 };
 
 export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
-  const [folders] = useState<string[]>(
+  const [folders, setFolders] = useState<string[]>(
     props.data.map((d) => {
       return d.folder.name;
     })
@@ -108,6 +108,15 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
     );
     props.close();
   }, [props, selectedFolder, pageName, updatePage]);
+  useEffect(() => {
+    setFolders(
+      props.data.map((d) => {
+        return d.folder.name;
+      })
+    );
+    setSelectedFolder(props.data[props.folderIndex].folder);
+    setPageName(props.data[props.folderIndex].pages[props.pageIndex].name);
+  }, [props]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>

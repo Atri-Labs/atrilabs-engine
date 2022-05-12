@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { gray300, gray800 } from "../../consts/colors";
 import { smallText } from "../../consts/typography";
 import styles from "../../stylesheets/form-field.module.css";
@@ -10,6 +10,9 @@ export type InputProps = {
 
 export const Input: React.FC<InputProps> = React.memo((props) => {
   const [value, setValue] = useState<string>(props.initialValue || "");
+  useEffect(() => {
+    setValue(props.initialValue || "");
+  }, [props]);
   return (
     <input
       style={{

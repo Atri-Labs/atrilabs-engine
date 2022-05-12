@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   amber300,
   gray300,
@@ -81,6 +81,9 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
     overlayContainer.register({ comp: ConfirmDelete, props: {} });
   }, []);
   const [foldername, setFoldername] = useState<string>(props.data.name);
+  useEffect(() => {
+    setFoldername(props.data.name);
+  }, [props]);
   const onChange = useCallback(
     (value: string) => {
       setFoldername(value);

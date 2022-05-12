@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { gray300, gray800 } from "../../consts/colors";
 import { smallText } from "../../consts/typography";
 import styles from "../../stylesheets/form-field.module.css";
@@ -13,6 +13,9 @@ export const Dropdown: React.FC<DropdownProps> = React.memo((props) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(
     props.initialSelectedIndex || 0
   );
+  useEffect(() => {
+    setSelectedIndex(props.initialSelectedIndex || 0);
+  }, [props]);
   return (
     <select
       style={{
