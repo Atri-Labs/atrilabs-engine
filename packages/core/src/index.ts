@@ -9,3 +9,5 @@ export * from "./layerSockets";
 export * from "./setCurrentForest";
 
 export * from "./useTree";
+
+export * from "./getId";

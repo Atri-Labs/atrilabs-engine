@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   amber300,
   gray300,
@@ -13,6 +13,7 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
+import { useCreateFolder } from "../hooks/useCreateFolder";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -71,6 +72,22 @@ export type CreateFolderProps = {
 };
 
 export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
+  const createFolder = useCreateFolder();
+  const [foldername, setFoldername] = useState<string>("");
+  const onFolderNameChange = useCallback(
+    (value: string) => {
+      setFoldername(value);
+    },
+    [setFoldername]
+  );
+  const onCreateClick = useCallback(() => {
+    createFolder(
+      foldername,
+      () => {},
+      () => {}
+    );
+    props.close();
+  }, [createFolder, foldername, props]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -81,7 +98,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Input />
+        <Input onChange={onFolderNameChange} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -94,7 +111,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
           >
             <LinkIcon />
           </div>
-          <div>/folder1/page1</div>
+          <div>{`/${foldername}`}</div>
         </div>
       </div>
       <div
@@ -109,6 +126,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
             border: "none",
             padding: "0.2rem 0.6rem 0.2rem 0.6rem",
           }}
+          onClick={onCreateClick}
         >
           Create
         </button>

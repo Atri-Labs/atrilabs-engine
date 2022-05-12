@@ -81,7 +81,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const PageEditor = () => {
-  const pageTableData = usePageTableData();
+  const { pageTableData, loadData } = usePageTableData();
   const closeContainer = useCallback(() => {
     dropContainer.pop();
   }, []);
@@ -91,7 +91,8 @@ export const PageEditor = () => {
   } | null>(null);
   const closeSubContainer = useCallback(() => {
     setSideDialog(null);
-  }, [setSideDialog]);
+    loadData();
+  }, [setSideDialog, loadData]);
   const openCreateFolder = useCallback(() => {
     setSideDialog({ comp: CreateFolder, props: { close: closeSubContainer } });
   }, [setSideDialog, closeSubContainer]);

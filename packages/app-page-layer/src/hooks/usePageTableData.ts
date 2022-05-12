@@ -1,6 +1,6 @@
 import { currentForest } from "@atrilabs/core";
 import { getMeta, getPages } from "@atrilabs/server-client/lib/websocket";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export type PageTableData = {
   // only root's direct children are included as of now
@@ -42,7 +42,7 @@ function reversePageMap(raw: RawPageMap) {
 
 export const usePageTableData = () => {
   const [data, setData] = useState<PageTableData>([]);
-  useEffect(() => {
+  const loadData = useCallback(() => {
     getMeta(currentForest.name, (meta) => {
       const folders: RawFolders = meta.folders;
       const pageMap: RawPageMap = meta.pages;
@@ -54,21 +54,22 @@ export const usePageTableData = () => {
         // root folder might not have any child folder, hence, []
         const childFolderIds = reverseMap(folders)["root"] || [];
         childFolderIds.forEach((childId) => {
-          const pageData = pageMapRev[childId]!.map((pageId) => {
-            return { ...pages[pageId]!, id: pageId };
-          });
+          const pageData =
+            pageMapRev[childId]?.map((pageId) => {
+              return { ...pages[pageId]!, id: pageId };
+            }) || [];
           data.push({ folder: folders[childId]!, pages: pageData });
         });
         // sort folders alphabetically
         data.sort((a, b) => {
           return a.folder.name < b.folder.name ? -1 : 0;
         });
-        data.forEach((subdata) => [
+        data.forEach((subdata) => {
           subdata.pages.sort((a, b) => {
             // sort pages alphabetically
             return a.name < b.name ? -1 : 0;
-          }),
-        ]);
+          });
+        });
         // handle pages directly inside home
         const rootData: PageTableData["0"] = {
           folder: folders["root"],
@@ -82,5 +83,8 @@ export const usePageTableData = () => {
       });
     });
   }, [setData]);
-  return data;
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+  return { pageTableData: data, loadData };
 };
