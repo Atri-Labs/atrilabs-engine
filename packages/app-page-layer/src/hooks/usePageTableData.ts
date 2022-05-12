@@ -47,10 +47,8 @@ export const usePageTableData = () => {
       const folders: RawFolders = meta.folders;
       const pageMap: RawPageMap = meta.pages;
       getPages(currentForest.name, (pages) => {
-        console.log(pages);
         const data: PageTableData = [];
         const pageMapRev = reversePageMap(pageMap);
-        console.log(reverseMap(folders));
         // root folder might not have any child folder, hence, []
         const childFolderIds = reverseMap(folders)["root"] || [];
         childFolderIds.forEach((childId) => {

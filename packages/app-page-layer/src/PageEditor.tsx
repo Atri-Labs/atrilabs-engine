@@ -97,8 +97,11 @@ export const PageEditor = () => {
     setSideDialog({ comp: CreateFolder, props: { close: closeSubContainer } });
   }, [setSideDialog, closeSubContainer]);
   const openCreatePage = useCallback(() => {
-    setSideDialog({ comp: CreatePage, props: { close: closeSubContainer } });
-  }, [setSideDialog, closeSubContainer]);
+    setSideDialog({
+      comp: CreatePage,
+      props: { close: closeSubContainer, data: pageTableData },
+    });
+  }, [setSideDialog, closeSubContainer, pageTableData]);
   return (
     <div style={styles.pageCont}>
       <header style={styles.pageContHeader}>

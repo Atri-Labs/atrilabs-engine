@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   amber300,
   Dropdown,
@@ -14,6 +14,8 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
+import { PageTableData } from "../hooks/usePageTableData";
+import { useCreatePage } from "../hooks/useCreatePage";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -69,9 +71,38 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export type CreatePageProps = {
   close: () => void;
+  data: PageTableData;
 };
 
 export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
+  const [folders] = useState<string[]>(
+    props.data.map((d) => {
+      return d.folder.name;
+    })
+  );
+  const [selectedFolder, setSelectedFolder] = useState<
+    PageTableData["0"]["folder"]
+  >(props.data[0].folder);
+  const onSelect = useCallback(
+    (_option: string, index: number) => {
+      setSelectedFolder(props.data[index].folder);
+    },
+    [props, setSelectedFolder]
+  );
+  const [pageName, setPageName] = useState<string>("");
+  const onPageNameChange = useCallback((value: string) => {
+    setPageName(value);
+  }, []);
+  const createPage = useCreatePage();
+  const onCreateClick = useCallback(() => {
+    createPage(
+      pageName,
+      selectedFolder.id,
+      () => {},
+      () => {}
+    );
+    props.close();
+  }, [props, selectedFolder, pageName, createPage]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -82,11 +113,11 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Dropdown options={["Folder 1", "Folder 2"]} />
+        <Dropdown options={folders} onSelect={onSelect} />
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
-        <Input />
+        <Input onChange={onPageNameChange} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -99,7 +130,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
           >
             <LinkIcon />
           </div>
-          <div>/folder1/page1</div>
+          <div>{`/${selectedFolder.name.replace("/", "")}`}</div>
         </div>
       </div>
       <div
@@ -114,6 +145,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
             border: "none",
             padding: "0.2rem 0.6rem 0.2rem 0.6rem",
           }}
+          onClick={onCreateClick}
         >
           Create
         </button>
