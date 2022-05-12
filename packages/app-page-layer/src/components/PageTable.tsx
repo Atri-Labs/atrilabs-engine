@@ -57,7 +57,8 @@ export type PageTableProps = {
     } | null>
   >;
   closeSubContainer: () => void;
-  data: PageTableData["0"];
+  data: PageTableData;
+  index: number;
 };
 
 export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
@@ -65,19 +66,30 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
   const openUpdateFolder = useCallback(() => {
     props.setSideDialog({
       comp: UpdateFolder,
-      props: { close: props.closeSubContainer },
+      props: {
+        close: props.closeSubContainer,
+        data: props.data[props.index].folder,
+      },
     });
   }, [props]);
-  const openUpdatePage = useCallback(() => {
-    props.setSideDialog({
-      comp: UpdatePage,
-      props: { close: props.closeSubContainer },
-    });
-  }, [props]);
+  const openUpdatePage = useCallback(
+    (pageIndex: number) => {
+      props.setSideDialog({
+        comp: UpdatePage,
+        props: {
+          close: props.closeSubContainer,
+          data: props.data,
+          folderIndex: props.index,
+          pageIndex: pageIndex,
+        },
+      });
+    },
+    [props]
+  );
   return (
     <div style={styles.folder}>
       {/**Show folder name only if it's not root */}
-      {props.data.folder.id !== "root" ? (
+      {props.data[props.index].folder.id !== "root" ? (
         <header style={styles.folderHeader}>
           <span
             style={styles.folderArrowSpan}
@@ -86,7 +98,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
             <DownArrow />
           </span>
           <div style={styles.folderNameDiv}>
-            {props.data.folder.name}
+            {props.data[props.index].folder.name}
             <span onClick={openUpdateFolder}>
               <Setting />
             </span>
@@ -95,7 +107,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
       ) : null}
 
       {showPages
-        ? props.data.pages.map((page, index) => {
+        ? props.data[props.index].pages.map((page, index) => {
             return (
               <div key={index}>
                 <main style={styles.page}>
@@ -124,7 +136,11 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
                     </p>
                   </div>
                   <div>
-                    <span onClick={openUpdatePage}>
+                    <span
+                      onClick={() => {
+                        openUpdatePage(index);
+                      }}
+                    >
                       <Setting />
                     </span>
                   </div>

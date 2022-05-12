@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   amber300,
   gray300,
@@ -16,6 +16,7 @@ import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
+import { PageTableData } from "../hooks/usePageTableData";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -71,12 +72,20 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export type UpdateFolderProps = {
   close: () => void;
+  data: PageTableData["0"]["folder"];
 };
 
 export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   const openConfirmDelete = useCallback(() => {
     overlayContainer.register({ comp: ConfirmDelete, props: {} });
   }, []);
+  const [foldername, setFoldername] = useState<string>(props.data.name);
+  const onChange = useCallback(
+    (value: string) => {
+      setFoldername(value);
+    },
+    [setFoldername]
+  );
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -92,7 +101,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Input />
+        <Input initialValue={foldername} onChange={onChange} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -105,7 +114,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
           >
             <LinkIcon />
           </div>
-          <div>/folder1/page1</div>
+          <div>{`/${foldername.replace("/", "")}`}</div>
         </div>
       </div>
       <div

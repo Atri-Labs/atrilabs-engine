@@ -139,13 +139,14 @@ export const PageEditor = () => {
           flexDirection: "column",
         }}
       >
-        {pageTableData.map((data, index) => {
+        {pageTableData.map((_data, index) => {
           return (
             <PageTable
               setSideDialog={setSideDialog}
               closeSubContainer={closeSubContainer}
-              data={data}
+              data={pageTableData}
               key={index}
+              index={index}
             />
           );
         })}
