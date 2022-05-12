@@ -17,6 +17,7 @@ import { ReactComponent as Trash } from "../icons/trash.svg";
 import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { PageTableData } from "../hooks/usePageTableData";
+import { useUpdateFolder } from "../hooks/useUpdateFolder";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -86,6 +87,16 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
     },
     [setFoldername]
   );
+  const updateFolder = useUpdateFolder();
+  const onUpdateClick = useCallback(() => {
+    updateFolder(
+      props.data.id,
+      { name: foldername },
+      () => {},
+      () => {}
+    );
+    props.close();
+  }, [props, foldername, updateFolder]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -129,6 +140,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
             border: "none",
             padding: "0.2rem 0.6rem 0.2rem 0.6rem",
           }}
+          onClick={onUpdateClick}
         >
           Update
         </button>

@@ -93,6 +93,25 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         }
       }
     });
+    socket.on("updateFolder", (forestname, id, update, callback) => {
+      const eventManager = getEventManager(forestname)!;
+      const meta = eventManager.meta();
+      meta["folders"][id] = { ...meta["folders"][id], ...update };
+      eventManager.updateMeta(meta);
+      callback(true);
+    });
+    socket.on("updatePage", (forestname, id, update, callback) => {
+      const eventManager = getEventManager(forestname)!;
+      if (update.folderId) {
+        const meta = eventManager.meta();
+        meta["pages"][id] = update.folderId;
+        eventManager.updateMeta(meta);
+      }
+      if (update.name) {
+        eventManager.renamePage(id, update.name);
+      }
+      callback(true);
+    });
   });
 
   const port = (options && options.port) || 4001;

@@ -16,6 +16,7 @@ import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { PageTableData } from "../hooks/usePageTableData";
+import { useUpdatePage } from "../hooks/useUpdatePage";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -97,10 +98,16 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   const onPageNameChange = useCallback((value: string) => {
     setPageName(value);
   }, []);
-
+  const updatePage = useUpdatePage();
   const onUpdateClick = useCallback(() => {
+    updatePage(
+      props.data[props.folderIndex].pages[props.pageIndex].id,
+      { folderId: selectedFolder.id, name: pageName },
+      () => {},
+      () => {}
+    );
     props.close();
-  }, [props, selectedFolder, pageName]);
+  }, [props, selectedFolder, pageName, updatePage]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -116,7 +123,11 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Dropdown options={folders} onSelect={onSelect} />
+        <Dropdown
+          options={folders}
+          onSelect={onSelect}
+          initialSelectedIndex={props.folderIndex}
+        />
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
