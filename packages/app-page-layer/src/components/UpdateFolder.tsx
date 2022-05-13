@@ -78,7 +78,16 @@ export type UpdateFolderProps = {
 
 export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   const openConfirmDelete = useCallback(() => {
-    overlayContainer.register({ comp: ConfirmDelete, props: {} });
+    const onCancel = () => {
+      overlayContainer.pop();
+    };
+    const onDelete = () => {
+      overlayContainer.pop();
+    };
+    overlayContainer.register({
+      comp: ConfirmDelete,
+      props: { onCancel, onDelete, onCross: onCancel },
+    });
   }, []);
 
   // Internal State for UI pattern

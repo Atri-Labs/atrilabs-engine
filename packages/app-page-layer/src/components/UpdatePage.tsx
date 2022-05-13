@@ -17,6 +17,8 @@ import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { PageTableData } from "../types";
 import { useSocketApi } from "../hooks/useUpdatePage";
+import { overlayContainer } from "../required";
+import { ConfirmDelete } from "./ConfirmDelete";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -78,6 +80,19 @@ export type UpdatePageProps = {
 };
 
 export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
+  const openConfirmDelete = useCallback(() => {
+    const onCancel = () => {
+      overlayContainer.pop();
+    };
+    const onDelete = () => {
+      overlayContainer.pop();
+    };
+    overlayContainer.register({
+      comp: ConfirmDelete,
+      props: { onCancel, onDelete, onCross: onCancel },
+    });
+  }, []);
+
   // Props and useMeme
   const folders = useMemo<string[]>(() => {
     return props.data.map((d) => {
@@ -131,7 +146,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Page settings</h4>
         <div style={{ display: "flex" }}>
-          <span style={styles.iconsSpan}>
+          <span style={styles.iconsSpan} onClick={openConfirmDelete}>
             <Trash />
           </span>
           <span style={styles.iconsSpan} onClick={props.close}>

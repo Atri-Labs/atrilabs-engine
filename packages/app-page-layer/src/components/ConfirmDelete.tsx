@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   body,
   gray300,
@@ -10,7 +10,6 @@ import {
 } from "@atrilabs/design-system";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as AlertIcon } from "../icons/alert-triangle.svg";
-import { overlayContainer } from "../required";
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
     height: "100%",
@@ -48,36 +47,42 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const ConfirmDelete: React.FC = React.memo(() => {
-  const closeDialog = useCallback(() => {
-    overlayContainer.pop();
-  }, []);
-  return (
-    <div style={styles.outerDiv}>
-      <div style={styles.dialogBox}>
-        <div style={styles.headerContainer}>
-          <h4 style={styles.headerH4}>Confirm</h4>
-          <span style={styles.iconsSpan} onClick={closeDialog}>
-            <Cross />
-          </span>
-        </div>
+export type ConfirmDeleteProps = {
+  onCross: () => void;
+  onDelete: () => void;
+  onCancel: () => void;
+};
 
-        <div style={styles.contentContainer}>
-          <div style={styles.leftContent}>
-            <AlertIcon />
+// Controlled Component
+export const ConfirmDelete: React.FC<ConfirmDeleteProps> = React.memo(
+  (props) => {
+    return (
+      <div style={styles.outerDiv}>
+        <div style={styles.dialogBox}>
+          <div style={styles.headerContainer}>
+            <h4 style={styles.headerH4}>Confirm</h4>
+            <span style={styles.iconsSpan} onClick={props.onCross}>
+              <Cross />
+            </span>
           </div>
-          <div style={styles.rightContent}>
-            <div style={{ paddingBottom: "1rem" }}>
-              {" "}
-              Are you sure you want to delete this page?
+
+          <div style={styles.contentContainer}>
+            <div style={styles.leftContent}>
+              <AlertIcon />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <CancelButton text={"Cancel"} onClick={() => {}} />
-              <DangerButton text={"Delete"} onClick={() => {}} />
+            <div style={styles.rightContent}>
+              <div style={{ paddingBottom: "1rem" }}>
+                {" "}
+                Are you sure you want to delete this page?
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <CancelButton text={"Cancel"} onClick={props.onCancel} />
+                <DangerButton text={"Delete"} onClick={props.onDelete} />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
