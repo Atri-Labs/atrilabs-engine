@@ -17,6 +17,7 @@ import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { PageTableData } from "../types";
 import { useSocketApi } from "../hooks/useUpdatePage";
+import { useSocketApi as useDeletePageApi } from "../hooks/useDeletePage";
 import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
 
@@ -80,18 +81,26 @@ export type UpdatePageProps = {
 };
 
 export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
+  const deletePage = useDeletePageApi();
   const openConfirmDelete = useCallback(() => {
     const onCancel = () => {
       overlayContainer.pop();
+      props.close();
     };
     const onDelete = () => {
+      deletePage(
+        props.data[props.folderIndex].pages[props.pageIndex].id,
+        () => {},
+        () => {}
+      );
       overlayContainer.pop();
+      props.close();
     };
     overlayContainer.register({
       comp: ConfirmDelete,
       props: { onCancel, onDelete, onCross: onCancel },
     });
-  }, []);
+  }, [props, deletePage]);
 
   // Props and useMeme
   const folders = useMemo<string[]>(() => {

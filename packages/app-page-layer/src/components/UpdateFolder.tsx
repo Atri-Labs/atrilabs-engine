@@ -18,6 +18,7 @@ import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { PageTableData } from "../types";
 import { useSocketApi } from "../hooks/useUpdateFolder";
+import { useSocketApi as useDeleteFolderApi } from "../hooks/useDeleteFolder";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -77,18 +78,26 @@ export type UpdateFolderProps = {
 };
 
 export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
+  const deleteFolder = useDeleteFolderApi();
   const openConfirmDelete = useCallback(() => {
     const onCancel = () => {
       overlayContainer.pop();
+      props.close();
     };
     const onDelete = () => {
+      deleteFolder(
+        props.data.id,
+        () => {},
+        () => {}
+      );
       overlayContainer.pop();
+      props.close();
     };
     overlayContainer.register({
       comp: ConfirmDelete,
       props: { onCancel, onDelete, onCross: onCancel },
     });
-  }, []);
+  }, [props, deleteFolder]);
 
   // Internal State for UI pattern
   const [foldername, setFoldername] = useState<string | null>(null);

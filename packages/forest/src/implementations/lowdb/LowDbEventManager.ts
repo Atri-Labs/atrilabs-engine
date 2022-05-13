@@ -290,8 +290,9 @@ export default function createLowDbEventManager(
   }
 
   function deletePage(id: PageId) {
-    const pagesDb = getPagesDb(dbDir);
-    delete pagesDb.getState()[id];
+    const pages = pagesDb.getState();
+    delete pages[id];
+    pagesDb.setState(pages);
     deleteEventsDb(dbDir, id);
   }
 

@@ -126,8 +126,9 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
           pages?.forEach((page) => {
             delete meta["pages"][page];
           });
-          eventManager.updateMeta(meta);
         }
+        delete meta["folders"][id];
+        eventManager.updateMeta(meta);
         // delete file events/xxx-pageid.json
         eventManager.deletePage(id);
         callback(true);
@@ -140,6 +141,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       const meta = eventManager.meta();
       if (meta["pages"][id]) {
         delete meta["pages"][id];
+        eventManager.updateMeta(meta);
         eventManager.deletePage(id);
         callback(true);
       } else {
