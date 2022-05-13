@@ -290,6 +290,8 @@ export default function createLowDbEventManager(
   }
 
   function deletePage(id: PageId) {
+    const pagesDb = getPagesDb(dbDir);
+    delete pagesDb.getState()[id];
     deleteEventsDb(dbDir, id);
   }
 
@@ -328,7 +330,9 @@ export default function createLowDbEventManager(
         if ([updateMeta].includes(target)) {
           metaDb.write();
         }
-        if ([createPage, renamePage, changeRoute].includes(target)) {
+        if (
+          [createPage, renamePage, changeRoute, deletePage].includes(target)
+        ) {
           pagesDb.write();
         }
         if ([incrementAlias].includes(target)) {
