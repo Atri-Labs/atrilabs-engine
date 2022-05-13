@@ -27,6 +27,11 @@ export interface ClientToServerEvents {
     update: Partial<Omit<Folder, "id">>,
     callback: (success: boolean) => void
   ) => void;
+  deleteFolder: (
+    forestName: string,
+    id: Folder["id"],
+    callback: (success: boolean) => void
+  ) => void;
   getPages: (
     forestname: string,
     callback: (page: PagesDbSchema) => void
@@ -40,6 +45,11 @@ export interface ClientToServerEvents {
     forestName: string,
     pageId: Page["id"],
     update: Partial<Omit<Page, "id">>,
+    callback: (success: boolean) => void
+  ) => void;
+  deletePage: (
+    forestName: string,
+    id: Page["id"],
     callback: (success: boolean) => void
   ) => void;
 }

@@ -100,6 +100,8 @@ export type EventManager = {
   renamePage: (id: PageId, name: string) => void;
   // change router of a page
   changeRoute: (id: PageId, route: string) => void;
+  // delete a page
+  deletePage: (id: PageId) => void;
 
   // store an event for a page
   storeEvent: (pageId: PageId, event: AnyEvent) => void;

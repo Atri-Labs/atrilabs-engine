@@ -29,7 +29,7 @@ function aliasFile(dbDir: string) {
 }
 
 function eventFile(dbDir: string, pageId: string) {
-  return path.resolve(dbDir, "events", pageId + ".json");
+  return path.resolve(dbDir, "events", pageId, "events.json");
 }
 /**
  * <rootDir>
@@ -178,8 +178,7 @@ function getMetaDb(dbDir: string): LowdbSync<any> {
   if (openDbs.meta) {
     return openDbs.meta;
   }
-  const metaFile = path.resolve(dbDir, "meta.json");
-  const metaDb = Lowdb(new FileSync<AliasDbSchema>(metaFile));
+  const metaDb = Lowdb(new FileSync<AliasDbSchema>(metaFile(dbDir)));
   metaDb.read();
   openDbs.meta = metaDb;
   return metaDb;
@@ -189,8 +188,7 @@ function getAliasDb(dbDir: string): LowdbSync<AliasDbSchema> {
   if (openDbs.alias) {
     return openDbs.alias;
   }
-  const aliasFile = path.resolve(dbDir, "alias.json");
-  const aliasDb = Lowdb(new FileSync<AliasDbSchema>(aliasFile));
+  const aliasDb = Lowdb(new FileSync<AliasDbSchema>(aliasFile(dbDir)));
   aliasDb.read();
   openDbs.alias = aliasDb;
   return aliasDb;
@@ -200,8 +198,7 @@ function getPagesDb(dbDir: string): LowdbSync<PagesDbSchema> {
   if (openDbs.pages) {
     return openDbs.pages;
   }
-  const pagesFile = path.resolve(dbDir, "pages.json");
-  const pagesDb = Lowdb(new FileSync<PagesDbSchema>(pagesFile));
+  const pagesDb = Lowdb(new FileSync<PagesDbSchema>(pagesFile(dbDir)));
   pagesDb.read();
   openDbs.pages = pagesDb;
   return pagesDb;
@@ -216,6 +213,15 @@ function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
   eventsDb.read();
   openDbs.events![pageId] = eventsDb;
   return eventsDb;
+}
+
+function deleteEventsDb(dbDir: string, pageId: string) {
+  if (openDbs.events![pageId]) {
+    delete openDbs.events![pageId];
+    const eventsFilename = eventFile(dbDir, pageId);
+    if (fs.existsSync(eventsFilename))
+      fs.rmSync(path.dirname(eventsFilename), { force: true });
+  }
 }
 
 export default function createLowDbEventManager(
@@ -283,6 +289,10 @@ export default function createLowDbEventManager(
     pagesDb.getState()[id]!["route"] = route;
   }
 
+  function deletePage(id: PageId) {
+    deleteEventsDb(dbDir, id);
+  }
+
   function storeEvent(pageId: PageId, event: AnyEvent) {
     const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.getState().push(event);
@@ -341,6 +351,7 @@ export default function createLowDbEventManager(
     createPage,
     renamePage,
     changeRoute,
+    deletePage,
     storeEvent,
     fetchEvents,
     writeBackCompressedEvents,

@@ -7,6 +7,7 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "./types";
+import { reversePageMap } from "./utils";
 
 export type EventServerOptions = {
   port?: number;
@@ -111,6 +112,39 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         eventManager.renamePage(id, update.name);
       }
       callback(true);
+    });
+    socket.on("deleteFolder", (forestname, id, callback) => {
+      const eventManager = getEventManager(forestname)!;
+      const meta = eventManager.meta();
+      const folders = meta["folders"];
+      if (folders[id]) {
+        // delete from meta.json
+        const pageMap = meta["pages"];
+        const pageMapRev = reversePageMap(pageMap);
+        if (pageMapRev[id]) {
+          const pages = pageMapRev[id];
+          pages?.forEach((page) => {
+            delete meta["pages"][page];
+          });
+          eventManager.updateMeta(meta);
+        }
+        // delete file events/xxx-pageid.json
+        eventManager.deletePage(id);
+        callback(true);
+      } else {
+        callback(false);
+      }
+    });
+    socket.on("deletePage", (forestname, id, callback) => {
+      const eventManager = getEventManager(forestname)!;
+      const meta = eventManager.meta();
+      if (meta["pages"][id]) {
+        delete meta["pages"][id];
+        eventManager.deletePage(id);
+        callback(true);
+      } else {
+        callback(false);
+      }
     });
   });
 

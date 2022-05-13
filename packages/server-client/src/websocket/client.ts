@@ -79,3 +79,25 @@ export function updatePage(
     handleSuccess(success, onSuccess, onFailure);
   });
 }
+
+export function deletePage(
+  forestname: string,
+  id: string,
+  onSuccess: () => void,
+  onFailure: () => void
+) {
+  socket.emit("deletePage", forestname, id, (success) => {
+    handleSuccess(success, onSuccess, onFailure);
+  });
+}
+
+export function deleteFolder(
+  forestname: string,
+  id: string,
+  onSuccess: () => void,
+  onFailure: () => void
+) {
+  socket.emit("deleteFolder", forestname, id, (success) => {
+    handleSuccess(success, onSuccess, onFailure);
+  });
+}
