@@ -4,15 +4,12 @@ import { smallText } from "../../consts/typography";
 import styles from "../../stylesheets/form-field.module.css";
 
 export type InputProps = {
-  onChange?: (value: string) => void;
-  initialValue?: string;
+  onChange: (value: string) => void;
+  value: string;
 };
 
+// Controlled Component
 export const Input: React.FC<InputProps> = React.memo((props) => {
-  const [value, setValue] = useState<string>(props.initialValue || "");
-  useEffect(() => {
-    setValue(props.initialValue || "");
-  }, [props]);
   return (
     <input
       style={{
@@ -27,10 +24,9 @@ export const Input: React.FC<InputProps> = React.memo((props) => {
       }}
       className={styles["formfield"]}
       onChange={(e) => {
-        setValue(e.target.value);
         if (props.onChange) props.onChange(e.target.value);
       }}
-      value={value}
+      value={props.value}
     />
   );
 });

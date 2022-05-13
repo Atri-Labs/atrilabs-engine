@@ -117,12 +117,12 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
         <Dropdown
           options={folders}
           onSelect={onSelect}
-          initialSelectedIndex={selectedFolder.index}
+          selectedIndex={selectedFolder.index}
         />
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
-        <Input onChange={onPageNameChange} initialValue={pageName} />
+        <Input onChange={onPageNameChange} value={pageName} />
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>

@@ -5,17 +5,12 @@ import styles from "../../stylesheets/form-field.module.css";
 
 export type DropdownProps = {
   options: string[];
-  onSelect?: (option: string, index: number) => void;
-  initialSelectedIndex?: number;
+  onSelect: (option: string, index: number) => void;
+  selectedIndex: number;
 };
 
+// Controlled Component
 export const Dropdown: React.FC<DropdownProps> = React.memo((props) => {
-  const [selectedIndex, setSelectedIndex] = useState<number>(
-    props.initialSelectedIndex || 0
-  );
-  useEffect(() => {
-    setSelectedIndex(props.initialSelectedIndex || 0);
-  }, [props]);
   return (
     <select
       style={{
@@ -29,14 +24,13 @@ export const Dropdown: React.FC<DropdownProps> = React.memo((props) => {
       }}
       className={styles["formfield"]}
       onChange={(e) => {
-        setSelectedIndex(e.target.selectedIndex);
         if (props.onSelect)
           props.onSelect(
             props.options[e.target.selectedIndex],
             e.target.selectedIndex
           );
       }}
-      value={props.options[selectedIndex]}
+      value={props.options[props.selectedIndex]}
     >
       {props.options.map((opt, index) => {
         return (

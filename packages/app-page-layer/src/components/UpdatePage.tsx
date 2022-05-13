@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   amber300,
   Dropdown,
@@ -78,52 +78,54 @@ export type UpdatePageProps = {
 };
 
 export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
-  const [folders, setFolders] = useState<string[]>(
-    props.data.map((d) => {
+  // Props and useMeme
+  const folders = useMemo<string[]>(() => {
+    return props.data.map((d) => {
       return d.folder.name;
-    })
-  );
+    });
+  }, [props]);
+
+  // Internal State for UI pattern
   const [selectedFolder, setSelectedFolder] = useState<{
     folder: PageTableData["0"]["folder"];
     index: number;
-  }>({
-    folder: props.data[props.folderIndex].folder,
-    index: props.folderIndex,
-  });
+  } | null>(null);
+  useEffect(() => {
+    setSelectedFolder({
+      folder: props.data[props.folderIndex].folder,
+      index: props.folderIndex,
+    });
+  }, [props]);
+
   const onSelect = useCallback(
     (_option: string, index: number) => {
       setSelectedFolder({ folder: props.data[index].folder, index });
     },
     [props]
   );
-  const [pageName, setPageName] = useState<string>(
-    props.data[props.folderIndex].pages[props.pageIndex].name
-  );
+
+  // Internal State for UI pattern
+  const [pageName, setPageName] = useState<string | null>(null);
+  useEffect(() => {
+    setPageName(props.data[props.folderIndex].pages[props.pageIndex].name);
+  }, [props]);
+
   const onPageNameChange = useCallback((value: string) => {
     setPageName(value);
   }, []);
+
   const updatePage = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    updatePage(
-      props.data[props.folderIndex].pages[props.pageIndex].id,
-      { folderId: selectedFolder.folder.id, name: pageName },
-      () => {},
-      () => {}
-    );
+    if (selectedFolder && pageName)
+      updatePage(
+        props.data[props.folderIndex].pages[props.pageIndex].id,
+        { folderId: selectedFolder.folder.id, name: pageName },
+        () => {},
+        () => {}
+      );
     props.close();
   }, [props, selectedFolder, pageName, updatePage]);
-  useEffect(() => {
-    setFolders(
-      props.data.map((d) => {
-        return d.folder.name;
-      })
-    );
-    setSelectedFolder({
-      folder: props.data[props.folderIndex].folder,
-      index: props.folderIndex,
-    });
-    setPageName(props.data[props.folderIndex].pages[props.pageIndex].name);
-  }, [props]);
+
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -139,15 +141,19 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Dropdown
-          options={folders}
-          onSelect={onSelect}
-          initialSelectedIndex={selectedFolder.index}
-        />
+        {selectedFolder ? (
+          <Dropdown
+            options={folders}
+            onSelect={onSelect}
+            selectedIndex={selectedFolder.index}
+          />
+        ) : null}
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
-        <Input onChange={onPageNameChange} initialValue={pageName} />
+        {pageName ? (
+          <Input onChange={onPageNameChange} value={pageName} />
+        ) : null}
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -161,10 +167,12 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
             <LinkIcon />
           </div>
           <div>
-            {(
-              `/${selectedFolder.folder.name.replace("/", "")}` +
-              (pageName ? `/${pageName}` : "")
-            ).replace("//", "/")}
+            {selectedFolder
+              ? (
+                  `/${selectedFolder.folder.name.replace("/", "")}` +
+                  (pageName ? `/${pageName}` : "")
+                ).replace("//", "/")
+              : `/`}
           </div>
         </div>
       </div>

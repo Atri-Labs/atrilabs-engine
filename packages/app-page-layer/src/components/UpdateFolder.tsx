@@ -80,24 +80,29 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   const openConfirmDelete = useCallback(() => {
     overlayContainer.register({ comp: ConfirmDelete, props: {} });
   }, []);
-  const [foldername, setFoldername] = useState<string>(props.data.name);
+
+  // Internal State for UI pattern
+  const [foldername, setFoldername] = useState<string | null>(null);
   useEffect(() => {
     setFoldername(props.data.name);
   }, [props]);
+
   const onChange = useCallback(
     (value: string) => {
       setFoldername(value);
     },
     [setFoldername]
   );
+
   const updateFolder = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    updateFolder(
-      props.data.id,
-      { name: foldername },
-      () => {},
-      () => {}
-    );
+    if (foldername)
+      updateFolder(
+        props.data.id,
+        { name: foldername },
+        () => {},
+        () => {}
+      );
     props.close();
   }, [props, foldername, updateFolder]);
   return (
@@ -115,7 +120,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        <Input initialValue={foldername} onChange={onChange} />
+        {foldername ? <Input value={foldername} onChange={onChange} /> : null}
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -128,7 +133,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
           >
             <LinkIcon />
           </div>
-          <div>{`/${foldername.replace("/", "")}`}</div>
+          {foldername ? <div>{`/${foldername.replace("/", "")}`}</div> : null}
         </div>
       </div>
       <div
