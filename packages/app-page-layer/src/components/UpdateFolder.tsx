@@ -16,8 +16,8 @@ import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
-import { PageTableData } from "../hooks/usePageTableData";
-import { useUpdateFolder } from "../hooks/useUpdateFolder";
+import { PageTableData } from "../types";
+import { useSocketApi } from "../hooks/useUpdateFolder";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -90,7 +90,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
     },
     [setFoldername]
   );
-  const updateFolder = useUpdateFolder();
+  const updateFolder = useSocketApi();
   const onUpdateClick = useCallback(() => {
     updateFolder(
       props.data.id,

@@ -15,8 +15,8 @@ import {
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
-import { PageTableData } from "../hooks/usePageTableData";
-import { useUpdatePage } from "../hooks/useUpdatePage";
+import { PageTableData } from "../types";
+import { useSocketApi } from "../hooks/useUpdatePage";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -102,7 +102,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   const onPageNameChange = useCallback((value: string) => {
     setPageName(value);
   }, []);
-  const updatePage = useUpdatePage();
+  const updatePage = useSocketApi();
   const onUpdateClick = useCallback(() => {
     updatePage(
       props.data[props.folderIndex].pages[props.pageIndex].id,

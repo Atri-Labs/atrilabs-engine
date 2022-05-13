@@ -2,7 +2,7 @@ import { currentForest, getId } from "@atrilabs/core";
 import { createFolder } from "@atrilabs/server-client/lib/websocket";
 import { useCallback } from "react";
 
-export const useCreateFolder = () => {
+export const useSocketApi = () => {
   const createFolderCb = useCallback(
     (name: string, onSuccess: () => void, onFailure: () => void) => {
       createFolder(

@@ -14,8 +14,8 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
-import { PageTableData } from "../hooks/usePageTableData";
-import { useCreatePage } from "../hooks/useCreatePage";
+import { PageTableData } from "../types";
+import { useSocketApi } from "../hooks/useCreatePage";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -94,7 +94,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
   const onPageNameChange = useCallback((value: string) => {
     setPageName(value);
   }, []);
-  const createPage = useCreatePage();
+  const createPage = useSocketApi();
   const onCreateClick = useCallback(() => {
     createPage(
       pageName,

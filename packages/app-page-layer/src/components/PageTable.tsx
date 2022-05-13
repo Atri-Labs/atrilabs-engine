@@ -7,7 +7,7 @@ import {
   smallText,
 } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
-import { PageTableData } from "../hooks/usePageTableData";
+import { PageTableData } from "../types";
 import { DownArrow } from "../icons/DownArrow";
 import { PageIcon } from "../icons/PageIcon";
 import { Setting } from "../icons/Setting";

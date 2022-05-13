@@ -2,7 +2,7 @@ import { currentForest, getId } from "@atrilabs/core";
 import { createPage } from "@atrilabs/server-client/lib/websocket";
 import { useCallback } from "react";
 
-export const useCreatePage = () => {
+export const useSocketApi = () => {
   const createPageCb = useCallback(
     (
       name: string,

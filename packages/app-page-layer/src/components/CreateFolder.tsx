@@ -13,7 +13,7 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
-import { useCreateFolder } from "../hooks/useCreateFolder";
+import { useSocketApi } from "../hooks/useCreateFolder";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -72,7 +72,7 @@ export type CreateFolderProps = {
 };
 
 export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
-  const createFolder = useCreateFolder();
+  const createFolder = useSocketApi();
   const [foldername, setFoldername] = useState<string>("");
   const onFolderNameChange = useCallback(
     (value: string) => {
