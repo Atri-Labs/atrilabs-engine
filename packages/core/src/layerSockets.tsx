@@ -49,7 +49,7 @@ export function menu(name: string) {
     const foundIndex = menuRegistry[name]!.items.findIndex(
       (value) => value === item
     );
-    if (foundIndex) {
+    if (foundIndex >= 0) {
       menuRegistry[name]!.items.splice(foundIndex, 1);
       if (subscribers.menu[name]) {
         subscribers.menu[name].forEach((cb) =>
@@ -113,7 +113,7 @@ export function container(name: string) {
     const foundIndex = containerRegistry[name]!.items.findIndex(
       (value) => value === item
     );
-    if (foundIndex) {
+    if (foundIndex >= 0) {
       containerRegistry[name]!.items.splice(foundIndex, 1);
       if (subscribers.containers[name]) {
         subscribers.containers[name].forEach((cb) =>
@@ -184,7 +184,7 @@ export function tab(name: string) {
     const foundIndex = tabsRegistry[name]!.items.findIndex(
       (value) => value === item
     );
-    if (foundIndex) {
+    if (foundIndex >= 0) {
       tabsRegistry[name]!.items.splice(foundIndex, 1);
       if (subscribers.tabs[name]) {
         subscribers.tabs[name].forEach((cb) =>
@@ -244,6 +244,62 @@ export const Container: React.FC<ContainerProps> = (props) => {
         });
       } else {
         namedContainer?.unregister(props.children);
+      }
+    };
+  }, [props]);
+  return <></>;
+};
+
+export type MenuProps = {
+  children: ReactNode | ReactNode[];
+  name: string;
+};
+
+export const Menu: React.FC<MenuProps> = (props) => {
+  useEffect(() => {
+    const namedMenu = menu(props.name);
+    if (Array.isArray(props.children)) {
+      props.children.forEach((child) => {
+        namedMenu?.register(child);
+      });
+    } else {
+      namedMenu?.register(props.children);
+    }
+    return () => {
+      if (Array.isArray(props.children)) {
+        props.children.forEach((child) => {
+          namedMenu?.unregister(child);
+        });
+      } else {
+        namedMenu?.unregister(props.children);
+      }
+    };
+  }, [props]);
+  return <></>;
+};
+
+export type TabProps = {
+  children: ReactNode | ReactNode[];
+  name: string;
+};
+
+export const Tab: React.FC<TabProps> = (props) => {
+  useEffect(() => {
+    const namedTab = tab(props.name);
+    if (Array.isArray(props.children)) {
+      props.children.forEach((child) => {
+        namedTab?.register(child);
+      });
+    } else {
+      namedTab?.register(props.children);
+    }
+    return () => {
+      if (Array.isArray(props.children)) {
+        props.children.forEach((child) => {
+          namedTab?.unregister(child);
+        });
+      } else {
+        namedTab?.unregister(props.children);
       }
     };
   }, [props]);

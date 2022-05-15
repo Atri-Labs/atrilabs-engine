@@ -16,7 +16,6 @@ import { Cross } from "./icons/Cross";
 import { Folder } from "./icons/Folder";
 import { Maginfier } from "./icons/Magnifier";
 import { PageIcon } from "./icons/PageIcon";
-import { dropContainer } from "./required";
 import formStyle from "./stylesheets/formfield.module.css";
 import { PageTableData } from "./types";
 
@@ -161,11 +160,15 @@ const useSocketApi = () => {
   return { pageTableData: data, loadData };
 };
 
-export const PageEditor = () => {
+export type PageEditorProps = {
+  close: () => void;
+};
+
+export const PageEditor: React.FC<PageEditorProps> = (props) => {
   const { pageTableData, loadData } = useSocketApi();
   const closeContainer = useCallback(() => {
-    dropContainer.pop();
-  }, []);
+    props.close();
+  }, [props]);
   const [sideDialog, setSideDialog] = useState<{
     comp: React.FC<any>;
     props: any;

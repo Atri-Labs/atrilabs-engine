@@ -18,8 +18,8 @@ import { ReactComponent as Trash } from "../icons/trash.svg";
 import { PageTableData } from "../types";
 import { useSocketApi } from "../hooks/useUpdatePage";
 import { useSocketApi as useDeletePageApi } from "../hooks/useDeletePage";
-import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
+import { Container } from "@atrilabs/core";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -82,25 +82,23 @@ export type UpdatePageProps = {
 
 export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   const deletePage = useDeletePageApi();
-  const openConfirmDelete = useCallback(() => {
-    const onCancel = () => {
-      overlayContainer.pop();
-      props.close();
-    };
-    const onDelete = () => {
-      deletePage(
-        props.data[props.folderIndex].pages[props.pageIndex].id,
-        () => {},
-        () => {}
-      );
-      overlayContainer.pop();
-      props.close();
-    };
-    overlayContainer.register({
-      comp: ConfirmDelete,
-      props: { onCancel, onDelete, onCross: onCancel },
-    });
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const onCancel = useCallback(() => {
+    setShowDeleteDialog(false);
+    props.close();
+  }, [props]);
+  const onDelete = useCallback(() => {
+    deletePage(
+      props.data[props.folderIndex].pages[props.pageIndex].id,
+      () => {},
+      () => {}
+    );
+    setShowDeleteDialog(false);
+    props.close();
   }, [props, deletePage]);
+  const openConfirmDelete = useCallback(() => {
+    setShowDeleteDialog(true);
+  }, []);
 
   // Props and useMeme
   const folders = useMemo<string[]>(() => {
@@ -152,6 +150,15 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
 
   return (
     <div style={styles.createPage}>
+      {showDeleteDialog ? (
+        <Container name="OverlayContainer">
+          <ConfirmDelete
+            onCancel={onCancel}
+            onDelete={onDelete}
+            onCross={onCancel}
+          />
+        </Container>
+      ) : null}
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Page settings</h4>
         <div style={{ display: "flex" }}>

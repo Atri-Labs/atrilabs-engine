@@ -1,8 +1,8 @@
+import { Container } from "@atrilabs/core";
 import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { ArrowDown } from "./icons/ArrowDown";
 import { PageEditor } from "./PageEditor";
-import { dropContainer } from "./required";
 
 interface PageSelectorProps {}
 
@@ -32,11 +32,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 export const PageSelector: React.FC<PageSelectorProps> = () => {
+  const [showPageEditor, setShowPageEditor] = useState<boolean>(false);
+  const closePageEditor = useCallback(() => {
+    setShowPageEditor(false);
+  }, []);
   return (
     <div
       style={styles.page}
       onClick={() => {
-        dropContainer.register({ comp: PageEditor, props: {} });
+        setShowPageEditor(true);
       }}
     >
       <div>Page:</div>
@@ -44,6 +48,11 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       <span style={styles.span}>
         <ArrowDown />
       </span>
+      {showPageEditor ? (
+        <Container name="Drop">
+          <PageEditor close={closePageEditor} />
+        </Container>
+      ) : null}
     </div>
   );
 };

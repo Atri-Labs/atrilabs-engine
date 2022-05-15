@@ -14,11 +14,11 @@ import {
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
-import { overlayContainer } from "../required";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { PageTableData } from "../types";
 import { useSocketApi } from "../hooks/useUpdateFolder";
 import { useSocketApi as useDeleteFolderApi } from "../hooks/useDeleteFolder";
+import { Container } from "@atrilabs/core";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -79,25 +79,23 @@ export type UpdateFolderProps = {
 
 export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   const deleteFolder = useDeleteFolderApi();
-  const openConfirmDelete = useCallback(() => {
-    const onCancel = () => {
-      overlayContainer.pop();
-      props.close();
-    };
-    const onDelete = () => {
-      deleteFolder(
-        props.data.id,
-        () => {},
-        () => {}
-      );
-      overlayContainer.pop();
-      props.close();
-    };
-    overlayContainer.register({
-      comp: ConfirmDelete,
-      props: { onCancel, onDelete, onCross: onCancel },
-    });
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const onCancel = useCallback(() => {
+    setShowDeleteDialog(false);
+    props.close();
+  }, [props]);
+  const onDelete = useCallback(() => {
+    deleteFolder(
+      props.data.id,
+      () => {},
+      () => {}
+    );
+    setShowDeleteDialog(false);
+    props.close();
   }, [props, deleteFolder]);
+  const openConfirmDelete = useCallback(() => {
+    setShowDeleteDialog(true);
+  }, []);
 
   // Internal State for UI pattern
   const [foldername, setFoldername] = useState<string | null>(null);
@@ -125,6 +123,15 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   }, [props, foldername, updateFolder]);
   return (
     <div style={styles.createPage}>
+      {showDeleteDialog ? (
+        <Container name="OverlayContainer">
+          <ConfirmDelete
+            onCancel={onCancel}
+            onDelete={onDelete}
+            onCross={onCancel}
+          />
+        </Container>
+      ) : null}
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Folder settings</h4>
         <div style={{ display: "flex" }}>
