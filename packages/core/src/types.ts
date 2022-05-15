@@ -1,19 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
-export type MenuItem<PropTypes> = {
-  comp: React.FC<PropTypes>;
-  props: PropTypes;
-};
+export type MenuItem = ReactNode | ReactNode[];
 
-export type Container<PropTypes> = {
-  comp: React.FC<PropTypes>;
-  props: PropTypes;
-};
+export type ContainerItem = ReactNode | ReactNode[];
 
-export type TabItem<PropTypes> = {
-  comp: React.FC<PropTypes>;
-  props: PropTypes;
-};
+export type TabItem = ReactNode | ReactNode[];
 
 /**
  * map of a name local to a layer with it's global name

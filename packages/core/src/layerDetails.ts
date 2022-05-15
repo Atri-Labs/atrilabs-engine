@@ -1,4 +1,4 @@
-import { MenuItem, Container, TabItem } from "./types";
+import { MenuItem, ContainerItem, TabItem } from "./types";
 
 /**
  * The layer details such as menuRegistry etc. is expected
@@ -6,11 +6,11 @@ import { MenuItem, Container, TabItem } from "./types";
  */
 
 export const menuRegistry: {
-  [name: string]: { items: MenuItem<any>[] };
+  [name: string]: { items: MenuItem[] };
 } = {};
 
 export const containerRegistry: {
-  [name: string]: { items: Container<any>[] };
+  [name: string]: { items: ContainerItem[] };
 } = {};
 
-export const tabsRegistry: { [name: string]: { items: TabItem<any>[] } } = {};
+export const tabsRegistry: { [name: string]: { items: TabItem[] } } = {};

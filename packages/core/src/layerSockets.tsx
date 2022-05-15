@@ -1,24 +1,25 @@
+import React, { PropsWithChildren, ReactNode, useEffect } from "react";
 import { menuRegistry, containerRegistry, tabsRegistry } from "./layerDetails";
-import { Container, MenuItem, TabItem } from "./types";
+import { ContainerItem, MenuItem, TabItem } from "./types";
 
 type SubscribeEvent = "registered" | "unregistered";
 
 const subscribers: {
   menu: {
     [name: string]: ((payload: {
-      item: MenuItem<any>;
+      item: MenuItem;
       event: SubscribeEvent;
     }) => void)[];
   };
   tabs: {
     [name: string]: ((payload: {
-      item: TabItem<any>;
+      item: TabItem;
       event: SubscribeEvent;
     }) => void)[];
   };
   containers: {
     [name: string]: ((payload: {
-      item: Container<any>;
+      item: ContainerItem;
       event: SubscribeEvent;
     }) => void)[];
   };
@@ -37,14 +38,14 @@ export function menu(name: string) {
     return;
   }
 
-  const register = (item: MenuItem<any>): void => {
+  const register = (item: MenuItem): void => {
     menuRegistry[name]!.items.push(item);
     if (subscribers.menu[name]) {
       subscribers.menu[name].forEach((cb) => cb({ item, event: "registered" }));
     }
   };
 
-  const unregister = (item: MenuItem<any>): void => {
+  const unregister = (item: MenuItem): void => {
     const foundIndex = menuRegistry[name]!.items.findIndex(
       (value) => value === item
     );
@@ -63,7 +64,7 @@ export function menu(name: string) {
   };
 
   const listen = (
-    cb: (payload: { item: MenuItem<any>; event: SubscribeEvent }) => void
+    cb: (payload: { item: MenuItem; event: SubscribeEvent }) => void
   ) => {
     if (subscribers.menu[name]) {
       subscribers.menu[name].push(cb);
@@ -99,7 +100,7 @@ export function container(name: string) {
     return;
   }
 
-  const register = (item: Container<any>): void => {
+  const register = (item: ContainerItem): void => {
     containerRegistry[name]!.items.push(item);
     if (subscribers.containers[name]) {
       subscribers.containers[name].forEach((cb) =>
@@ -108,7 +109,7 @@ export function container(name: string) {
     }
   };
 
-  const unregister = (item: Container<any>): void => {
+  const unregister = (item: ContainerItem): void => {
     const foundIndex = containerRegistry[name]!.items.findIndex(
       (value) => value === item
     );
@@ -136,7 +137,7 @@ export function container(name: string) {
   };
 
   const listen = (
-    cb: (payload: { item: Container<any>; event: SubscribeEvent }) => void
+    cb: (payload: { item: ContainerItem; event: SubscribeEvent }) => void
   ) => {
     if (subscribers.containers[name]) {
       subscribers.containers[name].push(cb);
@@ -172,14 +173,14 @@ export function tab(name: string) {
     return;
   }
 
-  const register = (item: MenuItem<any>): void => {
+  const register = (item: MenuItem): void => {
     tabsRegistry[name]!.items.push(item);
     if (subscribers.tabs[name]) {
       subscribers.tabs[name].forEach((cb) => cb({ item, event: "registered" }));
     }
   };
 
-  const unregister = (item: Container<any>): void => {
+  const unregister = (item: TabItem): void => {
     const foundIndex = tabsRegistry[name]!.items.findIndex(
       (value) => value === item
     );
@@ -198,7 +199,7 @@ export function tab(name: string) {
   };
 
   const listen = (
-    cb: (payload: { item: TabItem<any>; event: SubscribeEvent }) => void
+    cb: (payload: { item: TabItem; event: SubscribeEvent }) => void
   ) => {
     if (subscribers.tabs[name]) {
       subscribers.tabs[name].push(cb);
@@ -220,3 +221,31 @@ export function tab(name: string) {
 
   return { register, listen, items, unregister };
 }
+
+export type ContainerProps = {
+  children: ReactNode | ReactNode[];
+  name: string;
+};
+
+export const Container: React.FC<ContainerProps> = (props) => {
+  useEffect(() => {
+    const namedContainer = container(props.name);
+    if (Array.isArray(props.children)) {
+      props.children.forEach((child) => {
+        namedContainer?.register(child);
+      });
+    } else {
+      namedContainer?.register(props.children);
+    }
+    return () => {
+      if (Array.isArray(props.children)) {
+        props.children.forEach((child) => {
+          namedContainer?.unregister(child);
+        });
+      } else {
+        namedContainer?.unregister(props.children);
+      }
+    };
+  }, [props]);
+  return <></>;
+};
