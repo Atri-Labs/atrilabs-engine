@@ -27,16 +27,19 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run build",
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.16.7",
     "@types/command-exists": "^1.2.0",
     "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.181",
-    "@types/node": "^17.0.23"
+    "@types/node": "^17.0.23",
+    "jest": "^28.1.0"
   },
   "dependencies": {
     "@atrilabs/core": "^0.0.3",

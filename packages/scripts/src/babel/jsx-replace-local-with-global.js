@@ -1,29 +1,27 @@
 const AttributeVisitor = {
-  JSXAttribute: (path) => {
-    const options = this.opt.options;
-    const filename = this.opt.filename;
-    const map = options.getNameMap(filename);
+  JSXAttribute: (path, options) => {
+    const getNameMap = options.getNameMap;
+    const filename = options.filename;
+    const map = getNameMap(filename);
     // check if name attribute exists
     if (path.get("name").node.name === "name") {
       // the name attribute must have a string literal value
-      if (this.opt.types.isStringLiteral(path.get("value"))) {
+      if (options.types.isStringLiteral(path.get("value"))) {
         const strValue = path.get("value").node.value;
         // key can menu, container, tab
-        const key = this.compName.toLowerCase();
+        const key = options.compName.toLowerCase();
         if (map[key] && map[key][strValue]) {
           path.get("value").replaceWithSourceString(`"${map[key][strValue]}"`);
         }
       }
-      if (this.opt.types.isJSXExpressionContainer(path.get("value"))) {
+      if (options.types.isJSXExpressionContainer(path.get("value"))) {
         const expr = path.get("value").get("expression");
-        if (this.opt.types.isStringLiteral(expr)) {
+        if (options.types.isStringLiteral(expr)) {
           const strValue = expr.node.value;
           // key can menu, container, tab
-          const key = this.compName.toLowerCase();
+          const key = options.compName.toLowerCase();
           if (map[key] && map[key][strValue]) {
-            path
-              .get("value")
-              .replaceWithSourceString(`"${map[key][strValue]}"`);
+            expr.replaceWithSourceString(`"${map[key][strValue]}"`);
           }
         }
       }
@@ -32,20 +30,32 @@ const AttributeVisitor = {
 };
 
 const JSXElementVisitor = {
-  JSXElement: (path) => {
+  JSXElement: (path, options) => {
     // Menu, Container, Tab
     const compName = path.get("openingElement").get("name").node.name;
     if (compName === "Menu") {
-      console.log(compName);
-      path.traverse(AttributeVisitor, { opt: this, compName: "Menu" });
+      path.traverse(AttributeVisitor, {
+        getNameMap: options.getNameMap,
+        filename: options.filename,
+        types: options.types,
+        compName: "menu",
+      });
     }
     if (compName === "Tab") {
-      console.log(compName);
-      path.traverse(AttributeVisitor, { opt: this, compName: "Tab" });
+      path.traverse(AttributeVisitor, {
+        getNameMap: options.getNameMap,
+        filename: options.filename,
+        types: options.types,
+        compName: "tabs",
+      });
     }
     if (compName === "Container") {
-      console.log(compName);
-      path.traverse(AttributeVisitor, { opt: this, compName: "Container" });
+      path.traverse(AttributeVisitor, {
+        getNameMap: options.getNameMap,
+        filename: options.filename,
+        types: options.types,
+        compName: "containers",
+      });
     }
   },
 };
@@ -63,7 +73,7 @@ module.exports = function (babel, options) {
         enter: (path, parent) => {
           const filename = parent.filename;
           path.traverse(JSXElementVisitor, {
-            options,
+            getNameMap: options.getNameMap,
             filename,
             types: babel.types,
           });
