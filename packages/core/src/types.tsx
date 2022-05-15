@@ -1,4 +1,12 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+
+/**
+ * NOTE: A layer entry function must return Container, Menu, Tab
+ * or a React.Fragment with Container, Menu, Tab.
+ *
+ * A runtime entry function must take layers as children.
+ * The runtime entry function must manage the layers as deemed fit.
+ */
 
 export type MenuItem = ReactNode | ReactNode[];
 
@@ -12,6 +20,13 @@ export type TabItem = ReactNode | ReactNode[];
 export type NameMap = { [localName: string]: string };
 
 export type LayerConfig = {
+  modulePath: string;
+  requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
+  exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
+  runtime?: { pkg: string };
+};
+
+export type RuntimeConfig = {
   modulePath: string;
   requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
   exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
@@ -56,4 +71,5 @@ export type ToolConfig = {
   env: {
     [key: string]: number | string | boolean;
   };
+  runtimes: { pkg: string }[];
 };
