@@ -4,23 +4,11 @@ import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
 import { useLogo } from "./hooks/useLogo";
 import { useOverlayContainer } from "./hooks/useOverlayContainer";
-
-const adjustRootCSS = () => {
-  const body = document.body;
-  const root = document.getElementById("root");
-  if (root) {
-    body.style.margin = "0px";
-    body.style.padding = "0px";
-    root.style.height = "100vh";
-    root.style.width = "100%";
-  }
-};
-
-adjustRootCSS();
+import "./styles.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
-    height: "100%",
+    height: "100vh",
     width: "100%",
     display: "flex",
     position: "relative",

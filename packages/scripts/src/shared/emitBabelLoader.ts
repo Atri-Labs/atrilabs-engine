@@ -99,7 +99,7 @@ export default function emitBabelLoader(
                 __dirname,
                 "..",
                 "babel",
-                "add-layer-import-to-core.js"
+                "add-layer-jsx-import-to-core.js"
               ),
               {
                 layers: getLayerList(),
@@ -124,7 +124,7 @@ export default function emitBabelLoader(
                 __dirname,
                 "..",
                 "babel",
-                "replace-local-with-global.js"
+                "jsx-replace-local-with-global.js"
               ),
               {
                 getNameMap,
