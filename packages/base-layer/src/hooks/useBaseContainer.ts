@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container } from "@atrilabs/core";
+import { ContainerItem } from "@atrilabs/core";
 import { baseContainer } from "../exposed";
 
 export const useBaseContainer = () => {
-  const [container, setContainer] = useState<Container<any> | null>(
+  const [container, setContainer] = useState<ContainerItem | null>(
     baseContainer.items()[0]
   );
   useEffect(() => {

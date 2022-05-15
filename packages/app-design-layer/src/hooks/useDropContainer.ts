@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container } from "@atrilabs/core";
+import { ContainerItem } from "@atrilabs/core";
 import { dropContainer } from "../exposed";
 
 export const useDropContainer = () => {
-  const [container, setContainer] = useState<Container<any> | null>(
+  const [container, setContainer] = useState<ContainerItem | null>(
     dropContainer.items()[dropContainer.items().length - 1]
   );
   useEffect(() => {

@@ -1,4 +1,5 @@
 import { gray700, gray800 } from "@atrilabs/design-system";
+import React from "react";
 import { useBaseContainer } from "./hooks/useBaseContainer";
 import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
@@ -60,29 +61,25 @@ export const App: React.FC = () => {
   return (
     <div style={styles.outerDiv}>
       {overlayContainer ? (
-        <div style={styles.overlayContainer}>
-          <overlayContainer.comp {...overlayContainer.props} />
-        </div>
+        <div style={styles.overlayContainer}>{overlayContainer}</div>
       ) : null}
       <div style={styles.leftPanel}>
-        <div style={styles.logo}>
-          {logoItem ? <logoItem.comp {...logoItem.props} /> : null}
-        </div>
+        <div style={styles.logo}>{logoItem ? logoItem : null}</div>
         <div style={styles.menuContainer}>
           <div style={styles.headerMenu}>
-            {headerMenuItems.map((item) => {
-              return <item.comp {...item.props} />;
+            {headerMenuItems.flat().map((Item, index) => {
+              return <React.Fragment key={index}>{Item}</React.Fragment>;
             })}
           </div>
           <div style={styles.footerMenu}>
-            {footerMenuItems.map((item) => {
-              return <item.comp {...item.props} />;
+            {footerMenuItems.flat().map((Item, index) => {
+              return <React.Fragment key={index}>{Item}</React.Fragment>;
             })}
           </div>
         </div>
       </div>
       <div style={styles.containerPanel}>
-        {baseContainer ? <baseContainer.comp {...baseContainer.props} /> : null}
+        {baseContainer ? baseContainer : null}
       </div>
     </div>
   );

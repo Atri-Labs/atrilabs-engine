@@ -29,8 +29,8 @@ module.exports = {
   layers: [
     { pkg: "@atrilabs/base-layer" },
     { pkg: "@atrilabs/app-design-layer" },
-    { pkg: "@atrilabs/atri-icon-layer" },
-    { pkg: "@atrilabs/app-page-layer" },
+    // { pkg: "@atrilabs/atri-icon-layer" },
+    // { pkg: "@atrilabs/app-page-layer" },
   ],
   output: "lib",
   services: {

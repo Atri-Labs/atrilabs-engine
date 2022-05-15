@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { gray700, gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
@@ -78,41 +78,37 @@ export const BaseContainer: React.FC = () => {
         <div style={styles.header}>
           <div style={styles.leftHeader}>
             <div style={styles.appMenu}>
-              {appMenuItems.map((item, index) => (
-                <item.comp {...item.props} key={index} />
-              ))}
+              {appMenuItems.flat().map((Item, index) => {
+                return <React.Fragment key={index}>{Item}</React.Fragment>;
+              })}
             </div>
             <div style={styles.pageMenu}>
-              {pageMenuItems.map((item, index) => (
-                <item.comp {...item.props} key={index} />
-              ))}
+              {pageMenuItems.flat().map((Item, index) => {
+                return <React.Fragment key={index}>{Item}</React.Fragment>;
+              })}
             </div>
           </div>
           <div style={styles.middleHeader}>
             <div style={styles.canvasMenu}>
-              {canvasMenuItems.map((item, index) => (
-                <item.comp {...item.props} key={index} />
-              ))}
+              {canvasMenuItems.flat().map((Item, index) => {
+                return <React.Fragment key={index}>{Item}</React.Fragment>;
+              })}
             </div>
           </div>
           <div style={styles.rightHeader}>
             <div style={styles.publishMenu}>
-              {publishMenuItems.map((item, index) => (
-                <item.comp {...item.props} key={index} />
-              ))}
+              {publishMenuItems.flat().map((Item, index) => {
+                return <React.Fragment key={index}>{Item}</React.Fragment>;
+              })}
             </div>
           </div>
         </div>
         <div style={styles.body}>
           <div style={styles.dropContainer}>
-            {dropContainerItem ? (
-              <dropContainerItem.comp {...dropContainerItem.props} />
-            ) : null}
+            {dropContainerItem ? dropContainerItem : null}
           </div>
           <div style={styles.canvasContainer}>
-            {canvasContainerItem ? (
-              <canvasContainerItem.comp {...canvasContainerItem.props} />
-            ) : null}
+            {canvasContainerItem ? canvasContainerItem : null}
           </div>
         </div>
       </div>

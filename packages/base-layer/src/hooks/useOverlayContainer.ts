@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container } from "@atrilabs/core";
+import { ContainerItem } from "@atrilabs/core";
 import { overlayContainer } from "../exposed";
 
 export const useOverlayContainer = () => {
-  const [container, setContainer] = useState<Container<any> | null>(
+  const [container, setContainer] = useState<ContainerItem | null>(
     overlayContainer.items()[overlayContainer.items().length - 1]
   );
   useEffect(() => {

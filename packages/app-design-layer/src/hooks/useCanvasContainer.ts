@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container } from "@atrilabs/core";
+import { ContainerItem } from "@atrilabs/core";
 import { canvasContainer } from "../exposed";
 
 export const useCanvasContainer = () => {
-  const [container, setContainer] = useState<Container<any> | null>(
+  const [container, setContainer] = useState<ContainerItem | null>(
     canvasContainer.items()[0]
   );
   useEffect(() => {
