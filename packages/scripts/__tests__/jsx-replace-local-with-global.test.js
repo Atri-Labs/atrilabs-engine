@@ -20,6 +20,25 @@ function replaceAll(map) {
   return { code, output };
 }
 
+function replaceAllLocalName(map) {
+  function createSnippet(map, prefix) {
+    return `
+    import { Menu as SomeMenu, Container as SomeContainer, Tab } from "@atrilabs/core";
+
+    function SomeLayer() {
+      let a = 5;
+      return <>
+            <SomeMenu name="${prefix}${map["menu"]}"></SomeMenu>
+            <SomeContainer name={"${prefix}${map["containers"]}"}></SomeContainer>
+            {a > 10 ? <Tab name="${prefix}${map["tabs"]}"></Tab> : null}
+            </>;
+    }`;
+  }
+  const code = createSnippet(map, "Local");
+  const output = createSnippet(map, "Global");
+  return { code, output };
+}
+
 pluginTester.default({
   plugin: jsxReplacePlugin,
   pluginOptions: {
@@ -35,6 +54,11 @@ pluginTester.default({
   pluginName: "jsx-replace-local-with-global",
   tests: {
     replaceAll: replaceAll({
+      menu: "AppMenu",
+      containers: "Canvas",
+      tabs: "PropertyTab",
+    }),
+    replaceAllLocalName: replaceAllLocalName({
       menu: "AppMenu",
       containers: "Canvas",
       tabs: "PropertyTab",

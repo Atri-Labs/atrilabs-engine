@@ -33,28 +33,67 @@ const JSXElementVisitor = {
   JSXElement: (path, options) => {
     // Menu, Container, Tab
     const compName = path.get("openingElement").get("name").node.name;
-    if (compName === "Menu") {
-      path.traverse(AttributeVisitor, {
+    if (compName === options.localname) {
+      let curr = path.scope;
+      while (curr) {
+        if (!curr.hasOwnBinding(options.localname)) {
+          curr = curr.parent;
+        } else {
+          if (curr === curr.getProgramParent()) {
+            // found a refernce in JSX
+            path.traverse(AttributeVisitor, {
+              getNameMap: options.getNameMap,
+              filename: options.filename,
+              types: options.types,
+              compName: options.compName,
+            });
+          }
+          break;
+        }
+      }
+    }
+  },
+};
+
+const ImportSpecifierVisitor = {
+  ImportSpecifier: (path, options) => {
+    if (
+      path.parentPath.get("source").node.value === "@atrilabs/core" &&
+      path.get("imported").node.name === "Menu"
+    ) {
+      // path.traverse with local name
+      path.getStatementParent().parentPath.traverse(JSXElementVisitor, {
         getNameMap: options.getNameMap,
         filename: options.filename,
         types: options.types,
         compName: "menu",
+        localname: path.get("local").node.name,
       });
     }
-    if (compName === "Tab") {
-      path.traverse(AttributeVisitor, {
+    if (
+      path.parentPath.get("source").node.value === "@atrilabs/core" &&
+      path.get("imported").node.name === "Tab"
+    ) {
+      // path.traverse with local name
+      path.getStatementParent().parentPath.traverse(JSXElementVisitor, {
         getNameMap: options.getNameMap,
         filename: options.filename,
         types: options.types,
         compName: "tabs",
+        localname: path.get("local").node.name,
       });
     }
-    if (compName === "Container") {
-      path.traverse(AttributeVisitor, {
+    if (
+      path.parentPath.get("source").node.value === "@atrilabs/core" &&
+      path.get("imported").node.name === "Container"
+    ) {
+      // path.traverse with local name
+      path.getStatementParent().parentPath.traverse(JSXElementVisitor, {
         getNameMap: options.getNameMap,
         filename: options.filename,
         types: options.types,
         compName: "containers",
+        localname: path.get("local").node.name,
       });
     }
   },
@@ -72,7 +111,7 @@ module.exports = function (babel, options) {
       Program: {
         enter: (path, parent) => {
           const filename = parent.filename;
-          path.traverse(JSXElementVisitor, {
+          path.traverse(ImportSpecifierVisitor, {
             getNameMap: options.getNameMap,
             filename,
             types: babel.types,
