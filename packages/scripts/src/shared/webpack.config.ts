@@ -6,7 +6,13 @@ const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
+import {
+  CorePkgInfo,
+  LayerEntry,
+  RuntimeEntry,
+  ToolEnv,
+  ToolPkgInfo,
+} from "./types";
 import emitBabelLoader from "./emitBabelLoader";
 
 const cssRegex = /\.css$/;
@@ -33,6 +39,7 @@ export default function createWebpackConfig(
   toolPkgInfo: ToolPkgInfo,
   toolConfig: ToolConfig,
   layerEntries: LayerEntry[],
+  runtimeEntries: RuntimeEntry[],
   toolEnv: ToolEnv,
   mode: "production" | "development",
   shouldUseSourceMap: boolean
@@ -180,10 +187,10 @@ export default function createWebpackConfig(
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               use: emitBabelLoader(
                 layerEntries,
+                runtimeEntries,
                 toolConfig.forests,
                 corePkgInfo,
-                mode,
-                toolConfig.runtimes.map((rt) => rt.pkg)
+                mode
               ),
             },
             {

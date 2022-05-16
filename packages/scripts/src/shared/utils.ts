@@ -222,7 +222,7 @@ export async function extractLayerEntries(
   return layerEntries;
 }
 
-export function getNameMapForLayer(layerEntry: LayerEntry) {
+export function getNameMapForPackage(entry: LayerEntry | RuntimeEntry) {
   /**
    * Create name map for all layers
    * ------------------------------
@@ -235,10 +235,10 @@ export function getNameMapForLayer(layerEntry: LayerEntry) {
    * Step 2. Merge remap of the layer with the layer config with precedence to
    * remap in tool config.
    */
-  let namemap: LayerConfig["exposes"] = {};
+  let namemap: LayerConfig["exposes"] | RuntimeConfig["exposes"] = {};
 
-  merge(namemap, layerEntry.exposes, layerEntry!.requires);
-  merge(namemap, layerEntry!.remap || {});
+  merge(namemap, entry.exposes, entry!.requires);
+  merge(namemap, entry!.remap || {});
   return namemap;
 }
 
@@ -250,6 +250,19 @@ export function detectLayerForFile(
     const currLayer = layerEntries[i]!;
     if (filename.match(currLayer.layerPath)) {
       return currLayer;
+    }
+  }
+  return;
+}
+
+export function detectRuntimeForFile(
+  filename: string,
+  runtimeEntries: RuntimeEntry[]
+) {
+  for (let i = 0; i < runtimeEntries.length; i++) {
+    const currRuntime = runtimeEntries[i]!;
+    if (filename.match(currRuntime.runtimePath)) {
+      return currRuntime;
     }
   }
   return;

@@ -1,10 +1,11 @@
-import { LayerConfig, ForestsConfig } from "@atrilabs/core";
+import { LayerConfig, ForestsConfig, RuntimeConfig } from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
-import { LayerEntry, CorePkgInfo } from "./types";
+import { LayerEntry, CorePkgInfo, RuntimeEntry } from "./types";
 import {
   detectLayerForFile,
-  getNameMapForLayer,
+  detectRuntimeForFile,
+  getNameMapForPackage,
   sortLayerEntriesInImportOrder,
 } from "./utils";
 
@@ -14,10 +15,10 @@ import {
  */
 export default function emitBabelLoader(
   layerEntries: LayerEntry[],
+  runtimeEntries: RuntimeEntry[],
   forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo,
-  env: "production" | "development",
-  runtimes: string[]
+  env: "production" | "development"
 ): Exclude<RuleSetRule["use"], undefined> {
   const isEnvDevelopment = env === "development";
 
@@ -29,14 +30,22 @@ export default function emitBabelLoader(
   };
   // read all name maps at once to reduce computation
   const nameMaps: {
-    [layerPath: string]: ReturnType<typeof getNameMapForLayer>;
+    // path can be layerPath or runtimePath
+    [path: string]: ReturnType<typeof getNameMapForPackage>;
   } = {};
   layerEntries.forEach((layer) => {
-    nameMaps[layer.layerPath] = getNameMapForLayer(layer);
+    nameMaps[layer.layerPath] = getNameMapForPackage(layer);
+  });
+  runtimeEntries.forEach((rt) => {
+    nameMaps[rt.runtimePath] = getNameMapForPackage(rt);
   });
 
+  // collect all exposed sockets from layers and runtimes
+  // these exposed sockets are entered into core package's layerDetails.js file
   const getExposedSockets = (): {
-    [k in keyof Required<LayerConfig["exposes"]>]: Array<string>;
+    [k in keyof Required<
+      LayerConfig["exposes"] | RuntimeConfig["exposes"]
+    >]: Array<string>;
   } => {
     const exposedSockets = {
       menu: new Set<string>(),
@@ -71,6 +80,9 @@ export default function emitBabelLoader(
     };
   };
 
+  // we insert (import) global values like currentLayer etc.
+  // to all the modules in a layer. We do this by importing the globalModulePath
+  // for each layer.
   const getImports = (
     filename: string
   ): { namedImports: string[]; path: string }[] | undefined => {
@@ -85,6 +97,10 @@ export default function emitBabelLoader(
     const layer = detectLayerForFile(filename, layerEntries);
     if (layer) {
       return nameMaps[layer.layerPath];
+    }
+    const runtime = detectRuntimeForFile(filename, runtimeEntries);
+    if (runtime) {
+      return nameMaps[runtime.runtimePath];
     }
     return;
   };
@@ -105,7 +121,7 @@ export default function emitBabelLoader(
               {
                 layers: getLayerList(),
                 coreEntry: corePkgInfo.entryFile,
-                runtimes,
+                runtimes: runtimeEntries.map((rt) => rt.runtimeEntry),
               },
             ],
             [
