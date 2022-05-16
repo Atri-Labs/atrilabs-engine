@@ -48,5 +48,5 @@ module.exports = {
   env: {
     EVENT_SERVER_CLIENT: "http://localhost:4001",
   },
-  runtimes: [],
+  runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
 };

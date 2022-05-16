@@ -35,6 +35,7 @@
     "@atrilabs/atri-icon-layer": "^0.0.3",
     "@atrilabs/base-layer": "^0.0.3",
     "@atrilabs/basic-trees": "^0.0.3",
+    "@atrilabs/canvas-runtime": "^0.0.3",
     "@atrilabs/forest": "^0.0.3",
     "@atrilabs/scripts": "^0.0.3",
     "@atrilabs/server-client": "^0.0.3",
