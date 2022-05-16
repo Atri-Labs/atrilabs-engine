@@ -1,5 +1,5 @@
 module.exports = {
-  modulePath: "",
+  modulePath: "./index",
   exposes: {},
   requires: {},
 };
