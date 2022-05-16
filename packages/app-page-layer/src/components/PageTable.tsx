@@ -17,6 +17,7 @@ import { UpdatePage } from "./UpdatePage";
 const styles: { [key: string]: React.CSSProperties } = {
   folder: {
     width: "100%",
+    zIndex: 1,
   },
   folderHeader: {
     width: "100%",

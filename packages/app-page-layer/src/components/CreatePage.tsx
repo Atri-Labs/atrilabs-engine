@@ -27,6 +27,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderLeft: `1px solid ${gray800}`,
     display: "flex",
     flexDirection: "column",
+    zIndex: 1,
   },
   createPageHeader: {
     display: "flex",
