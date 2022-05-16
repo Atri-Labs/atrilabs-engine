@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 type CanvasRuntimeProps = {
+  // layers are children of runtime
   children: ReactNode | ReactNode[];
 };
 
