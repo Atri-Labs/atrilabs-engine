@@ -100,18 +100,6 @@ export default function emitBabelLoader(
                 __dirname,
                 "..",
                 "babel",
-                "add-layer-import-to-core.js"
-              ),
-              {
-                layers: getLayerList(),
-                coreEntry: corePkgInfo.entryFile,
-              },
-            ],
-            [
-              path.resolve(
-                __dirname,
-                "..",
-                "babel",
                 "add-layer-jsx-import-to-core.js"
               ),
               {
@@ -139,6 +127,17 @@ export default function emitBabelLoader(
                 "..",
                 "babel",
                 "jsx-replace-local-with-global.js"
+              ),
+              {
+                getNameMap,
+              },
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "replace-local-with-global.js"
               ),
               {
                 getNameMap,
