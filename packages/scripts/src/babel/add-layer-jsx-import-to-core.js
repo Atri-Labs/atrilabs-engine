@@ -80,7 +80,8 @@ module.exports = function (babel, options) {
 
           const renderString = `root.render(<div>${callIndependentLayers}${callRuntimeAndLayers}</div>)`;
 
-          const newCode = oldCode + importLayerString + renderString;
+          const newCode =
+            oldCode + importRuntimeString + importLayerString + renderString;
           const compiledCode = ts.transpileModule(newCode, {
             compilerOptions: {
               target: "es5",
