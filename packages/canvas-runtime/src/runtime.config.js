@@ -1,5 +1,9 @@
 module.exports = {
   modulePath: "./index",
   exposes: {},
-  requires: {},
+  requires: {
+    containers: {
+      Canvas: "Canvas",
+    },
+  },
 };
