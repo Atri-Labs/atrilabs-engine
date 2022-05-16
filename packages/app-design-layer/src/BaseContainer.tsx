@@ -37,7 +37,11 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   // children of body
   dropContainer: {},
-  canvasContainer: {},
+  canvasContainer: {
+    position: "relative",
+    flexGrow: 1,
+    flexShrink: 1,
+  },
 
   // chilren of header
   leftHeader: { display: "flex" },
