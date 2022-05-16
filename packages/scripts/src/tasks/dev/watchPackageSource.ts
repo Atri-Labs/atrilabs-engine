@@ -1,18 +1,30 @@
 import chokidar from "chokidar";
 import { LayerEntry, RuntimeEntry } from "../../shared/types";
 import buildLayer from "./buildLayer";
+import buildRuntime from "./buildRuntime";
 
 const watcher = chokidar.watch([]);
 const watchedLayerSrcDirs: { [key: string]: LayerEntry } = {};
 const watchedRuntimeSrcDirs: { [key: string]: RuntimeEntry } = {};
 
 watcher.on("change", (path) => {
-  const srcDirs = Object.keys(watchedLayerSrcDirs);
-  srcDirs.forEach((srcDir) => {
+  let changeWasInLayer = false;
+  const layerSrcDirs = Object.keys(watchedLayerSrcDirs);
+  layerSrcDirs.forEach((srcDir) => {
     if (path.match(srcDir)) {
+      changeWasInLayer = true;
       buildLayer(watchedLayerSrcDirs[srcDir]!);
     }
   });
+  // check if the changes were in a runtime package
+  if (!changeWasInLayer) {
+    const runtimeSrcDirs = Object.keys(watchedRuntimeSrcDirs);
+    runtimeSrcDirs.forEach((srcDir) => {
+      if (path.match(srcDir)) {
+        buildRuntime(watchedRuntimeSrcDirs[srcDir]!);
+      }
+    });
+  }
 });
 
 /**
