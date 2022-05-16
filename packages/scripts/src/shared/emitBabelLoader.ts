@@ -16,7 +16,8 @@ export default function emitBabelLoader(
   layerEntries: LayerEntry[],
   forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo,
-  env: "production" | "development"
+  env: "production" | "development",
+  runtimes: string[]
 ): Exclude<RuleSetRule["use"], undefined> {
   const isEnvDevelopment = env === "development";
 
@@ -99,11 +100,24 @@ export default function emitBabelLoader(
                 __dirname,
                 "..",
                 "babel",
+                "add-layer-import-to-core.js"
+              ),
+              {
+                layers: getLayerList(),
+                coreEntry: corePkgInfo.entryFile,
+              },
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
                 "add-layer-jsx-import-to-core.js"
               ),
               {
                 layers: getLayerList(),
                 coreEntry: corePkgInfo.entryFile,
+                runtimes,
               },
             ],
             [

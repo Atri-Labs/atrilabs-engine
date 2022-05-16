@@ -182,7 +182,8 @@ export default function createWebpackConfig(
                 layerEntries,
                 toolConfig.forests,
                 corePkgInfo,
-                mode
+                mode,
+                toolConfig.runtimes.map((rt) => rt.pkg)
               ),
             },
             {

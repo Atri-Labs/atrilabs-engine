@@ -26,6 +26,7 @@ export type LayerEntry = {
   exposes: LayerConfig["exposes"];
   requires: LayerConfig["requires"];
   remap: ToolConfig["layers"]["0"]["remap"];
+  runtime: LayerConfig["runtime"];
 };
 
 export type CorePkgInfo = {

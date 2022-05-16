@@ -122,6 +122,7 @@ export async function extractLayerEntries(
       layerEntry: string;
       requires: LayerConfig["requires"];
       exposes: LayerConfig["exposes"];
+      runtime: LayerConfig["runtime"];
     }>((res, rej) => {
       // delete cache to re-import layer.config.js module
       delete require.cache[layerConfigPath];
@@ -140,6 +141,7 @@ export async function extractLayerEntries(
             layerEntry: filenameWithExt,
             requires: mod.default.requires,
             exposes: mod.default.exposes,
+            runtime: mod.default.runtime,
           });
           return;
         }
@@ -187,7 +189,7 @@ export async function extractLayerEntries(
         layer,
         "layer.config.js"
       );
-      const { layerEntry, exposes, requires } = await getLayerInfo(
+      const { layerEntry, exposes, requires, runtime } = await getLayerInfo(
         layerConfigPath
       );
       const isRoot = i === 0 ? true : false;
@@ -204,6 +206,7 @@ export async function extractLayerEntries(
         requires,
         remap,
         layerSrcDir,
+        runtime,
       });
     } catch (err) {
       console.log(err);
