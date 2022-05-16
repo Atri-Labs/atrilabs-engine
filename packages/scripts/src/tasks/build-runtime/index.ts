@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { buildLayer } from "../../shared/build-packages";
+import { buildRuntime } from "../../shared/build-packages";
 
 // NOTE: assuming this script is run from inside a layer
-buildLayer(process.cwd())
+buildRuntime(process.cwd())
   .then(() => {})
   .catch((err) => {
     console.log(err);

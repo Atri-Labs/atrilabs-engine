@@ -134,3 +134,25 @@ export function buildLayer(cwd: string) {
     );
   }
 }
+
+export function buildRuntime(cwd: string) {
+  if (findLocal()) {
+    const cmd = `node ${require.resolve("typescript/bin/tsc")}`;
+    return runTsc(cwd, cmd)
+      .then(() => {
+        copyAssetsFromSrc(cwd);
+      })
+      .catch((err) => console.log(err));
+  } else if (findGlobal()) {
+    const cmd = "tsc";
+    return runTsc(cwd, cmd)
+      .then(() => {
+        copyAssetsFromSrc(cwd);
+      })
+      .catch((err) => console.log(err));
+  } else {
+    throw Error(
+      "'typescript' package is missing. Please install typescript package."
+    );
+  }
+}

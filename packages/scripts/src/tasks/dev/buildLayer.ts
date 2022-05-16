@@ -1,5 +1,5 @@
 import { LayerEntry } from "../../shared/types";
-import { buildLayer } from "../../shared/build-layer";
+import { buildLayer } from "../../shared/build-packages";
 
 /**
  * Build layers that are not inside node_modules

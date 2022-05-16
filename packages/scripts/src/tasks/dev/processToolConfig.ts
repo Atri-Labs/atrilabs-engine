@@ -1,7 +1,11 @@
 import { createGlobalModuleForLayer } from "../../shared/processLayer";
 import { ToolPkgInfo } from "../../shared/types";
-import { extractLayerEntries, importToolConfig } from "../../shared/utils";
-import watchLayerSource from "./watchLayerSource";
+import {
+  extractLayerEntries,
+  extractRuntimeEntries,
+  importToolConfig,
+} from "../../shared/utils";
+import { watchLayerSource, watchRuntimeSource } from "./watchPackageSource";
 
 export function processToolConfig(toolPkgInfo: ToolPkgInfo) {
   return importToolConfig(toolPkgInfo.configFile).then(async (toolConfig) => {
@@ -12,9 +16,14 @@ export function processToolConfig(toolPkgInfo: ToolPkgInfo) {
       createGlobalModuleForLayer(layerEntry);
     });
 
+    const runtimeEntries = await extractRuntimeEntries(toolConfig);
+
     // Watch layer src directory. It does nothing if the directory is already under watch.
     watchLayerSource(layerEntries);
 
-    return { layerEntries, toolConfig };
+    // Wathc runtime src directory.
+    watchRuntimeSource(runtimeEntries);
+
+    return { layerEntries, toolConfig, runtimeEntries };
   });
 }

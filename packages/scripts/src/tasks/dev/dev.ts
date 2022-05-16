@@ -11,6 +11,7 @@ import { processToolConfig } from "./processToolConfig";
 import getServerConfig from "./getServerConfig";
 import watchCorePkg from "./watchCorePkg";
 import buildLayer from "./buildLayer";
+import buildRuntime from "./buildRuntime";
 
 const toolPkgInfo = getToolPkgInfo();
 const corePkgInfo = getCorePkgInfo();
@@ -21,7 +22,7 @@ const serverConfig = getServerConfig();
 watchCorePkg(corePkgInfo);
 
 processToolConfig(toolPkgInfo)
-  .then(async ({ toolConfig, layerEntries }) => {
+  .then(async ({ toolConfig, layerEntries, runtimeEntries }) => {
     // force compile when tool.config.js file changes
     forceRecompile(corePkgInfo, toolPkgInfo);
 
@@ -31,12 +32,17 @@ processToolConfig(toolPkgInfo)
     // when error gets fixed, compilation resumes.
     layerEntries.forEach((layerEntry) => buildLayer(layerEntry));
 
+    // build all runtimes once in the beginning
+    // TODO: handle failed compilation.
+    runtimeEntries.forEach((runtimeEntry) => buildRuntime(runtimeEntry));
+
     // create webpack config
     const webpackConfig = createWebpackConfig(
       corePkgInfo,
       toolPkgInfo,
       toolConfig,
       layerEntries,
+      runtimeEntries,
       toolEnv,
       "development",
       true
