@@ -71,5 +71,11 @@ export type ToolConfig = {
   env: {
     [key: string]: number | string | boolean;
   };
-  runtimes: { pkg: string }[];
+  runtimes: {
+    pkg: string;
+    remap?: Partial<{
+      requires: RuntimeConfig["requires"];
+      exposes: RuntimeConfig["exposes"];
+    }>;
+  }[];
 };

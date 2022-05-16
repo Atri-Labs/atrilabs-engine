@@ -1,9 +1,15 @@
 import path from "path";
 import fs from "fs";
 import chalk from "chalk";
-import { LayerConfig, ToolConfig } from "@atrilabs/core";
+import { LayerConfig, RuntimeConfig, ToolConfig } from "@atrilabs/core";
 import { merge } from "lodash";
-import { CorePkgInfo, LayerEntry, ToolEnv, ToolPkgInfo } from "./types";
+import {
+  CorePkgInfo,
+  LayerEntry,
+  RuntimeEntry,
+  ToolEnv,
+  ToolPkgInfo,
+} from "./types";
 
 // NOTE: this script is expected to be run via a package manager like npm, yarn
 
@@ -265,4 +271,94 @@ export function sortLayerEntriesInImportOrder(layerEntries: LayerEntry[]) {
     return a.index - b.index;
   });
   return sorted;
+}
+
+export async function extractRuntimeEntries(
+  toolConfig: ToolConfig
+): Promise<RuntimeEntry[]> {
+  const runtimeEntries: RuntimeEntry[] = [];
+
+  function getRuntimeInfo(runtimeConfigPath: string) {
+    return new Promise<{
+      runtimeEntry: string;
+      requires: RuntimeConfig["requires"];
+      exposes: RuntimeConfig["exposes"];
+    }>((res, rej) => {
+      // delete cache to re-import layer.config.js module
+      delete require.cache[runtimeConfigPath];
+      import(runtimeConfigPath).then((mod: { default: RuntimeConfig }) => {
+        let runtimeEntry = mod.default.modulePath;
+        // layerEntry must be converted to absolute path
+        if (!path.isAbsolute(mod.default.modulePath)) {
+          runtimeEntry = path.resolve(
+            path.dirname(runtimeConfigPath),
+            mod.default.modulePath
+          );
+        }
+        const filenameWithExt = findFileWithoutExtension(runtimeEntry);
+        if (filenameWithExt) {
+          res({
+            runtimeEntry: filenameWithExt,
+            requires: mod.default.requires,
+            exposes: mod.default.exposes,
+          });
+          return;
+        }
+        rej(`${runtimeEntry} not found`);
+      });
+    });
+  }
+
+  const runtimes = toolConfig.runtimes;
+  for (let i = 0; i < runtimes.length; i++) {
+    const runtime = runtimes[i]!.pkg;
+    const remap = runtimes[i]!.remap;
+
+    /**
+     * layer.config.js file is searched at following locations:
+     * 1. <toolDir>/node_modules/<modulePath>/lib/layer.config.js
+     * if path is absolute package path.
+     */
+    const runtimeConfigPaths = [
+      require.resolve(`${runtime}/lib/runtime.config.js`),
+    ];
+    let runtimeConfigPath: string | undefined = undefined;
+    for (let i = 0; i < runtimeConfigPaths.length; i++) {
+      if (fs.existsSync(runtimeConfigPaths[i]!)) {
+        runtimeConfigPath = runtimeConfigPaths[i]!;
+      }
+    }
+    if (runtimeConfigPath === undefined) {
+      console.error(
+        "Error: layer config not found at following location\n",
+        runtimeConfigPaths.join("\n")
+      );
+      // skip the layer
+      continue;
+    }
+    try {
+      const runtimePath = path.dirname(
+        require.resolve(`${runtime}/package.json`)
+      );
+      const runtimeSrcDir = path.resolve(runtimePath, "src");
+      const runtimePackageName = runtime;
+      const { runtimeEntry, exposes, requires } = await getRuntimeInfo(
+        runtimeConfigPath
+      );
+      runtimeEntries.push({
+        index: i,
+        runtimeEntry,
+        runtimeConfigPath,
+        runtimePath,
+        runtimePackageName,
+        exposes,
+        requires,
+        remap,
+        runtimeSrcDir,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return runtimeEntries;
 }

@@ -1,4 +1,4 @@
-import { LayerConfig, ToolConfig } from "@atrilabs/core";
+import { LayerConfig, RuntimeConfig, ToolConfig } from "@atrilabs/core";
 
 export type ToolPkgInfo = {
   dir: string;
@@ -27,6 +27,19 @@ export type LayerEntry = {
   requires: LayerConfig["requires"];
   remap: ToolConfig["layers"]["0"]["remap"];
   runtime: LayerConfig["runtime"];
+};
+
+export type RuntimeEntry = {
+  index: number;
+  runtimePackageName: string;
+  runtimePath: string;
+  runtimeConfigPath: string;
+  runtimeEntry: string;
+  runtimeSrcDir: string;
+  // info
+  exposes: RuntimeConfig["exposes"];
+  requires: RuntimeConfig["requires"];
+  remap: ToolConfig["runtimes"]["0"]["remap"];
 };
 
 export type CorePkgInfo = {
