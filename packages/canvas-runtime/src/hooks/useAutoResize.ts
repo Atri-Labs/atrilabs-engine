@@ -1,6 +1,9 @@
 import { RefObject, useEffect, useState } from "react";
 
-export const useAutoResize = (parent: RefObject<HTMLElement>) => {
+export const useAutoResize = (
+  parent: RefObject<HTMLElement>,
+  breakpoint: { min: number; max: number }
+) => {
   const [dimension, setDimension] = useState<{
     width: string;
     scale: number;
@@ -12,8 +15,8 @@ export const useAutoResize = (parent: RefObject<HTMLElement>) => {
         const width = container.getBoundingClientRect().width;
         // if container is less than 900px then scale = width/900
         // if contianer is not less than 900px then scale = 1
-        if (width < 900) {
-          setDimension({ width: `${width}px`, scale: width / 900 });
+        if (width < breakpoint.min) {
+          setDimension({ width: `${width}px`, scale: width / breakpoint.min });
         } else {
           setDimension({ width: `${width}px`, scale: 1 });
         }
@@ -37,6 +40,6 @@ export const useAutoResize = (parent: RefObject<HTMLElement>) => {
         window.removeEventListener("resize", rescale);
       };
     }
-  }, [parent]);
+  }, [parent, breakpoint]);
   return dimension;
 };
