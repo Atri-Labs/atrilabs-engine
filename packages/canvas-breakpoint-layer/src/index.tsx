@@ -1,6 +1,6 @@
 import { Menu } from "@atrilabs/core";
 import { CanvasController } from "@atrilabs/canvas-runtime";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { gray800, IconMenu } from "@atrilabs/design-system";
 import { Breakpoint } from "@atrilabs/canvas-runtime/lib/types";
 import { ReactComponent as Desktop } from "./assets/desktop.svg";
@@ -14,36 +14,56 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+const breakpoints = {
+  desktop: { min: 900, max: 1200 },
+  tablet: { min: 800, max: 991 },
+  landscape: { min: 550, max: 767 },
+  portrait: { min: 300, max: 478 },
+};
+
 export default function () {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>();
+
+  // set initial breakpoint at Desktop
+  useEffect(() => {
+    setBreakpoint(breakpoints.desktop);
+  }, []);
+
   const setDesktop = useCallback(() => {
-    setBreakpoint({ min: 900, max: 1100 });
+    setBreakpoint(breakpoints.desktop);
   }, []);
   const setTab = useCallback(() => {
-    setBreakpoint({ min: 600, max: 800 });
+    setBreakpoint(breakpoints.tablet);
   }, []);
   const setLandscape = useCallback(() => {
-    setBreakpoint({ min: 900, max: 1100 });
+    setBreakpoint(breakpoints.landscape);
   }, []);
   const setProtrait = useCallback(() => {
-    setBreakpoint({ min: 600, max: 800 });
+    setBreakpoint(breakpoints.portrait);
   }, []);
+  console.log(breakpoint === breakpoints.tablet);
   return (
     <>
       {breakpoint ? <CanvasController breakpoint={breakpoint} /> : null}
       <Menu name="CanvasMenu">
         <div style={styles.iconContainer}>
-          <IconMenu onClick={setDesktop}>
+          <IconMenu
+            onClick={setDesktop}
+            active={breakpoint === breakpoints.desktop}
+          >
             <Desktop />
           </IconMenu>
         </div>
         <div style={styles.iconContainer}>
-          <IconMenu onClick={setTab}>
+          <IconMenu onClick={setTab} active={breakpoint === breakpoints.tablet}>
             <Tab />
           </IconMenu>
         </div>
         <div style={styles.iconContainer}>
-          <IconMenu onClick={setLandscape}>
+          <IconMenu
+            onClick={setLandscape}
+            active={breakpoint === breakpoints.landscape}
+          >
             <Landscape />
           </IconMenu>
         </div>
@@ -53,7 +73,10 @@ export default function () {
             borderRight: `1px solid ${gray800}`,
           }}
         >
-          <IconMenu onClick={setProtrait}>
+          <IconMenu
+            onClick={setProtrait}
+            active={breakpoint === breakpoints.portrait}
+          >
             <Portrait />
           </IconMenu>
         </div>
