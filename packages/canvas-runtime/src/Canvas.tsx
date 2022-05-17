@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useAutoResize } from "./hooks/useAutoResize";
+import { useBreakpoint } from "./hooks/useBreakpoint";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -17,10 +18,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const Canvas: React.FC = () => {
-  const [breakpoint] = useState<{ min: number; max: number }>({
-    min: 600,
-    max: 900,
-  });
+  const breakpoint = useBreakpoint();
   const ref = useRef<HTMLDivElement>(null);
   const dimension = useAutoResize(ref, breakpoint);
   return (
@@ -34,46 +32,48 @@ export const Canvas: React.FC = () => {
         backgroundColor: "#6b7280",
       }}
     >
-      <div
-        // this div is used to limit the max-width
-        // this div also acts as anchor to detect changes in sizes
-        style={{
-          ...styles["canvas-container"],
-          maxWidth: breakpoint.max,
-          width: "100%",
-        }}
-        ref={ref}
-      >
-        {dimension ? (
-          <div
-            // this div is used to scale up when the screen size is too small as compared to breakpoint.min
-            style={{
-              ...styles["canvas-subcontainer"],
-              transform: `scale(${dimension.scale})`,
-              minWidth:
-                dimension.scale !== 1 ? `${100 / dimension.scale}%` : "",
-              height: dimension.scale ? `${100 / dimension.scale}%` : "",
-              transformOrigin: "0 0",
-            }}
-          >
+      {breakpoint ? (
+        <div
+          // this div is used to limit the max-width
+          // this div also acts as anchor to detect changes in sizes
+          style={{
+            ...styles["canvas-container"],
+            maxWidth: breakpoint.max,
+            width: "100%",
+          }}
+          ref={ref}
+        >
+          {dimension ? (
             <div
-              // this div actually contains all dropped elements
+              // this div is used to scale up when the screen size is too small as compared to breakpoint.min
               style={{
-                // absolute prevents the height of page to increase when content increases
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
+                ...styles["canvas-subcontainer"],
+                transform: `scale(${dimension.scale})`,
+                minWidth:
+                  dimension.scale !== 1 ? `${100 / dimension.scale}%` : "",
+                height: dimension.scale ? `${100 / dimension.scale}%` : "",
+                transformOrigin: "0 0",
               }}
             >
-              {Array.from(Array(1000).keys()).map((i) => (
-                <div key={i}>Content goes here</div>
-              ))}
+              <div
+                // this div actually contains all dropped elements
+                style={{
+                  // absolute prevents the height of page to increase when content increases
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                }}
+              >
+                {Array.from(Array(1000).keys()).map((i) => (
+                  <div key={i}>Content goes here</div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null}
-      </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 };

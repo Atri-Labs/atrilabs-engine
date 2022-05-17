@@ -2,13 +2,15 @@ import { RefObject, useEffect, useState } from "react";
 
 export const useAutoResize = (
   parent: RefObject<HTMLElement>,
-  breakpoint: { min: number; max: number }
+  breakpoint: { min: number; max: number } | undefined
 ) => {
   const [dimension, setDimension] = useState<{
     width: string;
     scale: number;
   }>();
   useEffect(() => {
+    if (breakpoint === undefined) return;
+
     const rescale = () => {
       if (parent.current) {
         const container = parent.current;
