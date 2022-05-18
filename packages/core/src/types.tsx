@@ -69,7 +69,12 @@ export type ToolConfig = {
     fileServer: { path: string; options: any };
     eventServer: { path: string; options: any };
     codeGenerators: { path: string; options: any }[];
+    manifestServer: { path: string; options: any };
   };
+  /**
+   * env is generally used to supply port to clients for their
+   * respective servers.
+   */
   env: {
     [key: string]: number | string | boolean;
   };
@@ -80,6 +85,12 @@ export type ToolConfig = {
       exposes: RuntimeConfig["exposes"];
     }>;
   }[];
+  /**
+   * This client will be embedded into the codebase.
+   * This client will be responsible to manage manifestRegistry
+   * by communicating with manifestServer
+   */
+  manifestClient: { pkg: string };
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
 };
