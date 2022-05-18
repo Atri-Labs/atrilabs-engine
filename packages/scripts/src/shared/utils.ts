@@ -6,6 +6,7 @@ import { merge } from "lodash";
 import {
   CorePkgInfo,
   LayerEntry,
+  ManifestSchemaPkgInfo,
   RuntimeEntry,
   ToolEnv,
   ToolPkgInfo,
@@ -374,4 +375,24 @@ export async function extractRuntimeEntries(
     }
   }
   return runtimeEntries;
+}
+
+export function getManifestSchemaPkgInfo(pkg: string): ManifestSchemaPkgInfo {
+  const schemaPath = require.resolve(pkg);
+  const srcDir = path.resolve(schemaPath, "src");
+  const configFile = path.resolve(srcDir, "manifest.schema.config.js");
+  const manifestId = pkg;
+  return { pkg, schemaPath, srcDir, configFile, manifestId };
+}
+
+export function extractManifestSchema(schema: ToolConfig["manifestSchema"]): {
+  [pkg: string]: ManifestSchemaPkgInfo;
+} {
+  const result: { [pkg: string]: ManifestSchemaPkgInfo } = {};
+  for (let i = 0; i < schema.length; i++) {
+    const pkg = schema[i]!.pkg;
+    const manifestSchemaPkgInfo = getManifestSchemaPkgInfo(pkg);
+    result[pkg] = manifestSchemaPkgInfo;
+  }
+  return result;
 }

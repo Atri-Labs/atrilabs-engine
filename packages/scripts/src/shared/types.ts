@@ -55,6 +55,14 @@ export type CorePkgInfo = {
   setCurrentForestFile: string;
 };
 
+export type ManifestSchemaPkgInfo = {
+  pkg: string;
+  schemaPath: string;
+  srcDir: string;
+  configFile: string;
+  manifestId: string;
+};
+
 export type ToolEnv = {
   PUBLIC_URL: string;
 };
