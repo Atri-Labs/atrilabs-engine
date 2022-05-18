@@ -24,12 +24,14 @@ export type LayerConfig = {
   requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
   exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
   runtime?: { pkg: string };
+  manifestSchema?: { pkg: string }[];
 };
 
 export type RuntimeConfig = {
   modulePath: string;
   requires: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
   exposes: Partial<{ menu: NameMap; containers: NameMap; tabs: NameMap }>;
+  manifestSchema?: { pkg: string }[];
 };
 
 export type ForestsConfig = {
@@ -78,4 +80,21 @@ export type ToolConfig = {
       exposes: RuntimeConfig["exposes"];
     }>;
   }[];
+  manifestSchema: { pkg: string }[];
+  manifestDirs: { pkg: string }[];
+};
+
+// type for manifest.schema.config.js
+export type ManifestSchemaConfig = {
+  modulePath: string;
+};
+
+// type for manifest.config.js
+export type ManifestConfig = {
+  // all the modules will be searched in dir
+  // files with .js, .jsx, .ts, .tsx will be selected
+  dir: string;
+  // a package can contain manifest for more than one manifest schema
+  // hence array of manifestSchema
+  manifestSchema: { pkg: string }[];
 };
