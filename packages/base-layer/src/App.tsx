@@ -1,12 +1,13 @@
 import { gray700, gray800 } from "@atrilabs/design-system";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { jsx, jsxs } from "react/jsx-runtime";
 import { useBaseContainer } from "./hooks/useBaseContainer";
 import { useFooterMenu } from "./hooks/useFooterMenu";
 import { useHeaderMenu } from "./hooks/useHeaderMenu";
 import { useLogo } from "./hooks/useLogo";
 import { useOverlayContainer } from "./hooks/useOverlayContainer";
 import "./styles.css";
-
+declare var manifestcomps: any;
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
     height: "100vh",
@@ -58,8 +59,31 @@ export const App: React.FC = () => {
   const footerMenuItems = useFooterMenu();
   const baseContainer = useBaseContainer();
   const overlayContainer = useOverlayContainer();
+  const [Comp, setComp] = useState<React.FC>();
+  useEffect(() => {
+    setTimeout(() => {
+      var script = document.createElement("script");
+      script.onload = function () {
+        //do stuff with the script
+        console.log("loaded", manifestcomps.setup);
+        manifestcomps.setup(
+          (comps: React.FC[]) => {
+            console.log("registry called", comps);
+            console.log(comps[0]);
+            setComp(() => comps[0]);
+          },
+          React,
+          { jsx, jsxs }
+        );
+      };
+      script.src = "http://localhost:4003/main.js";
+      document.head.appendChild(script);
+    }, 3000);
+  }, [setComp]);
+  console.log(Comp);
   return (
     <div style={styles.outerDiv}>
+      {Comp ? <Comp /> : null}
       {overlayContainer ? (
         <div style={styles.overlayContainer}>{overlayContainer}</div>
       ) : null}
