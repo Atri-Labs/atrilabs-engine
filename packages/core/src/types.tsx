@@ -89,6 +89,13 @@ export type ManifestSchemaConfig = {
   modulePath: string;
 };
 
+export type ManifestSchema = {
+  validate: (manifest: any) => boolean;
+  // libs indicates the libraries that's needed to build injectables
+  // for ex: react implies running tsc, babel and webpack to create injectable
+  libs: "react"[];
+};
+
 // type for manifest.config.js
 export type ManifestConfig = {
   // all the modules will be searched in dir
