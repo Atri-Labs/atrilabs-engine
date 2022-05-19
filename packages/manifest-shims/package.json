@@ -1,0 +1,22 @@
+{
+  "name": "manifest-shims",
+  "version": "0.0.3",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  }
+}
