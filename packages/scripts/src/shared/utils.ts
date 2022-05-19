@@ -497,3 +497,37 @@ export async function extractManifestPkgBuildInfo(
   const exports: string[] = [];
   return { buildType, exports };
 }
+
+/**
+ * The Manifest server might put a watch on a manifest package cache directory
+ * hence, manifest package's cache directory will be needed.
+ * This function just returns the path and doesn't actually creates it.
+ */
+export function getManifestPkgCacheDir(
+  manifestPkgfInfo: ManifestPkgInfo
+): string {
+  const cacheDir = getToolPkgInfo()["cacheDir"];
+  return path.resolve(cacheDir, "manifests", manifestPkgfInfo.pkg);
+}
+
+/**
+ * manifest server might have to copy manifest template to the cache directory
+ * and treat it as an entry point for webpack build.
+ */
+export function copyManifestEntryTemplate(dest: string) {}
+
+/**
+ * manifest server will compile a typescript based manifest package.
+ * the compiled assets will be put in outDir which is some location in cache dir.
+ */
+export function compileTypescriptManifestPkg(outDir: string) {}
+
+/**
+ * manifest server will bundle the manifest package. The generated bundle will be sent
+ * over to the manifest client.
+ */
+export function bundleManifestPkg(
+  entryPoint: string,
+  outDir: string,
+  packageName: string
+) {}

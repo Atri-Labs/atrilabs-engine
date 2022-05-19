@@ -5,12 +5,13 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
+  "main": "build/index.js",
   "bin": {
-    "build-atri-tool": "bin/tasks/build/build.js",
-    "dev-atri-tool": "bin/tasks/dev/dev.js",
-    "build-atri-layer": "bin/tasks/build-layer/index.js",
-    "build-atri-runtime": "bin/tasks/build-runtime/index.js",
-    "bootstrap-atri-services": "bin/tasks/bootstrap-services/bootstrap-services.js"
+    "build-atri-tool": "build/tasks/build/build.js",
+    "dev-atri-tool": "build/tasks/dev/dev.js",
+    "build-atri-layer": "build/tasks/build-layer/index.js",
+    "build-atri-runtime": "build/tasks/build-runtime/index.js",
+    "bootstrap-atri-services": "build/tasks/bootstrap-services/bootstrap-services.js"
   },
   "directories": {
     "bin": "bin",
