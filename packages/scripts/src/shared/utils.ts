@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import * as ts from "typescript";
+import { webpack } from "webpack";
 import {
   LayerConfig,
   ManifestConfig,
@@ -19,6 +20,7 @@ import {
   ToolEnv,
   ToolPkgInfo,
 } from "./types";
+import createManifestWebpackConfig from "./manifest.webpack.config";
 
 // NOTE: this script is expected to be run via a package manager like npm, yarn
 
@@ -632,4 +634,28 @@ export function bundleManifestPkg(
   entryPoint: string,
   output: { path: string; filename: string },
   scriptName: string
-) {}
+) {
+  const webpackConfig = createManifestWebpackConfig(
+    entryPoint,
+    output,
+    scriptName
+  );
+  return new Promise<void>((res, rej) => {
+    webpack(webpackConfig, (err, stats) => {
+      let buildFailed = false;
+      if (err) {
+        buildFailed = true;
+        console.error(err);
+      }
+      if (stats?.hasErrors()) {
+        buildFailed = true;
+        console.log(stats?.toJson().errors);
+      }
+      if (!buildFailed) {
+        res();
+      } else {
+        rej();
+      }
+    });
+  });
+}

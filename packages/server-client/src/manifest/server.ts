@@ -83,10 +83,10 @@ export default function (
           });
         }
         // compile typescript if manifest pkg contains tsconfig.json file
-        compileTypescriptManifestPkg(cacheSrcDir, firstBuild);
+        await compileTypescriptManifestPkg(cacheSrcDir, firstBuild);
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build
-        bundleManifestPkg(
+        await bundleManifestPkg(
           entryPoint,
           { path: finalBuild, filename: "bundle.js" },
           "manifestscript"
