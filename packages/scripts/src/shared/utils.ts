@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import chalk from "chalk";
+import * as ts from "typescript";
 import {
   LayerConfig,
   ManifestConfig,
@@ -514,13 +515,114 @@ export function getManifestPkgCacheDir(
  * manifest server might have to copy manifest template to the cache directory
  * and treat it as an entry point for webpack build.
  */
-export function copyManifestEntryTemplate(dest: string) {}
+export function copyManifestEntryTemplate(
+  buildType: ManifestSchemaConfig["libs"]["0"],
+  dest: string
+) {
+  if (buildType === "react") {
+    const shimPath = path.dirname(
+      require.resolve("@atrilabs/manifest-shims/package.json")
+    );
+    const reactShimDir = path.resolve(shimPath, "src", "react");
+    const files = getFiles(reactShimDir);
+    files.forEach((file) => {
+      copyFileSync(file, dest);
+    });
+  }
+}
 
+function getFiles(dir: string): string[] {
+  const files: string[] = [];
+  const dirents = fs.readdirSync(dir, { withFileTypes: true });
+  dirents.forEach((dirent) => {
+    if (dirent.isDirectory()) {
+      files.push(...getFiles(path.resolve(dir, dirent.name)));
+    } else {
+      files.push(path.resolve(dir, dirent.name));
+    }
+  });
+  return files;
+}
+
+function copyFileSync(src: string, destDir: string) {
+  const filename = path.basename(src);
+  const destPath = path.resolve(destDir, filename);
+  if (!fs.existsSync(path.dirname(destPath))) {
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+  }
+  fs.writeFileSync(destPath, fs.readFileSync(src));
+}
 /**
- * manifest server will compile a typescript based manifest package.
+ * The manifest server will compile a typescript based manifest package.
  * the compiled assets will be put in outDir which is some location in cache dir.
+ * All the files from srcDir that do not end with .ts, .tsx will be copied as is to outDir.
  */
-export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {}
+export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
+  const files = getFiles(srcDir);
+  const tsFiles: string[] = [];
+  const otherFiles: string[] = [];
+
+  // divide files into two parts to be processed differently
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]!;
+    const ext = path.extname(file);
+    if (ext.endsWith(".ts") || ext.endsWith(".tsx")) {
+      tsFiles.push(file);
+    } else {
+      otherFiles.push(file);
+    }
+  }
+
+  // compile using typescript compiler api
+  const compilePromises: Promise<void>[] = [];
+  for (let i = 0; i < tsFiles.length; i++) {
+    const file = tsFiles[i]!;
+    const relativePath = path.relative(srcDir, file);
+    const ext = path.extname(relativePath);
+    const relativeWithoutExt = path.basename(relativePath, ext);
+    const outputPath = path.resolve(outDir, relativeWithoutExt + ".js");
+    const outputDir = path.dirname(outputPath);
+    const compilePromise = new Promise<void>((res) => {
+      fs.readFile(file, async (err, data) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        const newCode = ts.transpileModule(data.toString(), {}).outputText;
+        const stat = await fs.promises.stat(outputDir);
+        if (stat === undefined) {
+          fs.promises.mkdir(outputDir, { recursive: true });
+        }
+        fs.writeFile(outputPath, newCode, () => {
+          res();
+        });
+      });
+    });
+    compilePromises.push(compilePromise);
+  }
+
+  // copy files that aren't compiler
+  const copyPromsies: Promise<void>[] = [];
+  for (let i = 0; i < otherFiles.length; i++) {
+    const file = otherFiles[i]!;
+    const relativePath = path.relative(srcDir, file);
+    const copyDest = path.resolve(outDir, relativePath);
+    const copyDestDir = path.dirname(copyDest);
+    const copyPromise = new Promise<void>((res) => {
+      fs.promises.stat(copyDestDir).then((stat) => {
+        if (stat === undefined) {
+          fs.promises.mkdir(copyDestDir, { recursive: true });
+        }
+        fs.promises.writeFile(file, copyDest).then(() => {
+          res();
+        });
+      });
+    });
+    copyPromsies.push(copyPromise);
+  }
+
+  return Promise.all([...compilePromises, ...copyPromsies]);
+}
 
 /**
  * manifest server will bundle the manifest package. The generated bundle will be sent
