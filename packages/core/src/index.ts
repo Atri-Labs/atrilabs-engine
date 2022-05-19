@@ -11,3 +11,5 @@ export * from "./setCurrentForest";
 export * from "./useTree";
 
 export * from "./getId";
+
+export * from "./manifestRegistry";

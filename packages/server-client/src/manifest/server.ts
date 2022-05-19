@@ -55,6 +55,7 @@ export default function (
   io.on("connection", (socket) => {
     socket.on("sendManifestScripts", async (cb) => {
       const manifestPkgBundles: ManifestPkgBundle[] = [];
+      const scriptName = "manifestscript";
       // TODO: build script
       for (let i = 0; i < manifestDirs.length; i++) {
         const dir = manifestDirs[i]!;
@@ -89,12 +90,13 @@ export default function (
         await bundleManifestPkg(
           entryPoint,
           { path: finalBuild, filename: "bundle.js" },
-          "manifestscript"
+          scriptName
         );
         manifestPkgBundles.push({
           src: fs
             .readFileSync(path.resolve(finalBuild, "bundle.js"))
             .toString(),
+          scriptName,
           pkg: pkg,
         });
       }

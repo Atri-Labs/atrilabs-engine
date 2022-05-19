@@ -4,7 +4,10 @@ import { ManifestSchema } from "./types";
 // schema will be imported and mapped
 // components will be left as empty array to be filled during runtime
 const manifestRegistry: {
-  [manifestId: string]: { schema: ManifestSchema; components: any[] };
+  [manifestId: string]: {
+    schema: ManifestSchema;
+    components: { pkg: string; component: any }[];
+  };
 } = {};
 
 const manifestRegistrySubscribers: (() => void)[] = [];

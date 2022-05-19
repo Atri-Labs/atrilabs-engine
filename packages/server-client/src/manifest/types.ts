@@ -1,5 +1,6 @@
 export type Script = {
   src: string;
+  scriptName: string;
 };
 
 export type ManifestPkg = {
