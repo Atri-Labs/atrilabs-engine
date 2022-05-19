@@ -1,11 +1,18 @@
 import path from "path";
 import fs from "fs";
 import chalk from "chalk";
-import { LayerConfig, RuntimeConfig, ToolConfig } from "@atrilabs/core";
+import {
+  LayerConfig,
+  ManifestConfig,
+  ManifestSchemaConfig,
+  RuntimeConfig,
+  ToolConfig,
+} from "@atrilabs/core";
 import { merge } from "lodash";
 import {
   CorePkgInfo,
   LayerEntry,
+  ManifestPkgInfo,
   ManifestSchemaPkgInfo,
   RuntimeEntry,
   ToolEnv,
@@ -378,21 +385,115 @@ export async function extractRuntimeEntries(
 }
 
 export function getManifestSchemaPkgInfo(pkg: string): ManifestSchemaPkgInfo {
-  const schemaPath = require.resolve(pkg);
+  const schemaPath = path.dirname(require.resolve(`${pkg}/package.json`));
   const srcDir = path.resolve(schemaPath, "src");
   const configFile = path.resolve(srcDir, "manifest.schema.config.js");
   const manifestId = pkg;
   return { pkg, schemaPath, srcDir, configFile, manifestId };
 }
 
-export function extractManifestSchema(schema: ToolConfig["manifestSchema"]): {
-  [pkg: string]: ManifestSchemaPkgInfo;
-} {
-  const result: { [pkg: string]: ManifestSchemaPkgInfo } = {};
-  for (let i = 0; i < schema.length; i++) {
-    const pkg = schema[i]!.pkg;
-    const manifestSchemaPkgInfo = getManifestSchemaPkgInfo(pkg);
-    result[pkg] = manifestSchemaPkgInfo;
+export function getManifestPkgInfo(pkg: string): ManifestPkgInfo {
+  const manifestPath = path.dirname(require.resolve(`${pkg}/package.json`));
+  const srcDir = path.resolve(manifestPath, "src");
+  const configFile = path.resolve(srcDir, "manifest.config.js");
+  return { pkg, manifestPath, srcDir, configFile };
+}
+
+export async function importManifestConfig(
+  manifestConfigFile: string
+): Promise<ManifestConfig> {
+  function manifestConfigExists() {
+    // <toolDir>/src/tool.config.(ts|js) should exist
+    if (fs.existsSync(manifestConfigFile)) {
+      return true;
+    }
+    return false;
   }
-  return result;
+
+  if (manifestConfigExists()) {
+    delete require.cache[manifestConfigFile];
+    // TODO: do schema check before returning
+    return import(manifestConfigFile).then((mod) => mod.default);
+  } else {
+    throw Error(`Module Not Found: ${manifestConfigFile}`);
+  }
+}
+
+export async function importManifestSchemaConfig(
+  manfiestSchemaConfigFile: string
+): Promise<ManifestSchemaConfig> {
+  function manifestConfigExists() {
+    // <toolDir>/src/tool.config.(ts|js) should exist
+    if (fs.existsSync(manfiestSchemaConfigFile)) {
+      return true;
+    }
+    return false;
+  }
+
+  if (manifestConfigExists()) {
+    delete require.cache[manfiestSchemaConfigFile];
+    // TODO: do schema check before returning
+    return import(manfiestSchemaConfigFile).then((mod) => mod.default);
+  } else {
+    throw Error(`Module Not Found: ${manfiestSchemaConfigFile}`);
+  }
+}
+
+// extract build type (libs) for a manifest pkg
+export async function extractManifestPkgBuildType(
+  manifestPkgfInfo: ManifestPkgInfo
+) {
+  const manifestConfig = await importManifestConfig(
+    manifestPkgfInfo.configFile
+  );
+  const buildTypes = new Set<ManifestSchemaConfig["libs"]["0"]>();
+  for (let i = 0; i < manifestConfig.manifestSchema.length; i++) {
+    const manifestSchemaPkg = manifestConfig.manifestSchema[i]!;
+    const manifestSchemaPkgInfo = getManifestSchemaPkgInfo(
+      manifestSchemaPkg.pkg
+    );
+    const manifestSchemaConfig = await importManifestSchemaConfig(
+      manifestSchemaPkgInfo.configFile
+    );
+    if (manifestSchemaConfig.libs) {
+      if (Array.isArray(manifestSchemaConfig.libs)) {
+        manifestSchemaConfig.libs.forEach((buildType) => {
+          buildTypes.add(buildType);
+        });
+      } else {
+        throw Error(
+          `Invalid manifest schema config in ${manifestSchemaPkgInfo.configFile}. Libs field must be an array of string.`
+        );
+      }
+    } else {
+      throw Error(
+        `Invalid manifest schema config in ${manifestSchemaPkgInfo.configFile}. Missing libs field.`
+      );
+    }
+  }
+  return buildTypes;
+}
+
+// extract build type (libs) and collect default exports from manifest dir
+export async function extractManifestPkgBuildInfo(
+  manifestPkgInfo: ManifestPkgInfo
+): Promise<{
+  buildType: ManifestSchemaConfig["libs"]["0"];
+  exports: string[];
+}> {
+  const buildTypes = await extractManifestPkgBuildType(manifestPkgInfo);
+  if (buildTypes.size > 1) {
+    throw Error(
+      "We currently don't support manifest schemas of more than one build type in a single package."
+    );
+  }
+  if (buildTypes.size === 0) {
+    throw Error(
+      `Build type cannot be inferred for the manifest package ${manifestPkgInfo.pkg}`
+    );
+  }
+  const buildType = Array.from(buildTypes)[0]!;
+  // TODO: loop throug manifest dir and collect all file names
+  const exports: string[] = [];
+  return { buildType, exports };
 }

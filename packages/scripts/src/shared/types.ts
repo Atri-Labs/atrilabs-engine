@@ -57,10 +57,19 @@ export type CorePkgInfo = {
 
 export type ManifestSchemaPkgInfo = {
   pkg: string;
+  // path to the root of the manifest schema package
   schemaPath: string;
   srcDir: string;
   configFile: string;
   manifestId: string;
+};
+
+export type ManifestPkgInfo = {
+  pkg: string;
+  // path to the root directory of package
+  manifestPath: string;
+  srcDir: string;
+  configFile: string;
 };
 
 export type ToolEnv = {

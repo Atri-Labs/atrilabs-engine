@@ -98,13 +98,13 @@ export type ToolConfig = {
 // type for manifest.schema.config.js
 export type ManifestSchemaConfig = {
   modulePath: string;
+  // libs indicates the libraries that's needed to build injectables
+  // for ex: react implies running tsc, babel and webpack to create injectable
+  libs: "react"[];
 };
 
 export type ManifestSchema = {
   validate: (manifest: any) => boolean;
-  // libs indicates the libraries that's needed to build injectables
-  // for ex: react implies running tsc, babel and webpack to create injectable
-  libs: "react"[];
 };
 
 // type for manifest.config.js
