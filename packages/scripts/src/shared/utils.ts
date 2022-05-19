@@ -520,7 +520,7 @@ export function copyManifestEntryTemplate(dest: string) {}
  * manifest server will compile a typescript based manifest package.
  * the compiled assets will be put in outDir which is some location in cache dir.
  */
-export function compileTypescriptManifestPkg(outDir: string) {}
+export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {}
 
 /**
  * manifest server will bundle the manifest package. The generated bundle will be sent
@@ -528,6 +528,6 @@ export function compileTypescriptManifestPkg(outDir: string) {}
  */
 export function bundleManifestPkg(
   entryPoint: string,
-  outDir: string,
-  packageName: string
+  output: { path: string; filename: string },
+  scriptName: string
 ) {}

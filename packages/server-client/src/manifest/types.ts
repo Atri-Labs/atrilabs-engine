@@ -6,16 +6,19 @@ export type ManifestPkg = {
   pkg: string;
 };
 
+export type ManifestPkgBundle = ManifestPkg & Script;
+
 export interface ServerToClientEvents {
   updateManifestPkg: (
-    manifest: ManifestPkg,
-    script: Script,
+    bundle: ManifestPkgBundle,
     callback: (success: boolean) => void
   ) => void;
 }
 
 export interface ClientToServerEvents {
-  sendManifestScripts: (callback: (script: Script) => void) => void;
+  sendManifestScripts: (
+    callback: (bundles: ManifestPkgBundle[]) => void
+  ) => void;
 }
 
 export interface InterServerEvents {}

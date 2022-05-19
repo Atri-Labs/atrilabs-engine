@@ -30,6 +30,8 @@
   "dependencies": {
     "@atrilabs/core": "^0.0.3",
     "@atrilabs/forest": "^0.0.3",
+    "@atrilabs/manifest-shims": "^0.0.3",
+    "@atrilabs/scripts": "^0.0.3",
     "http-server": "^14.1.0",
     "socket.io": "^4.5.0",
     "socket.io-client": "^4.5.0",
