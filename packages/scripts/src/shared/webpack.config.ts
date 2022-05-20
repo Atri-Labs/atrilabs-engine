@@ -99,13 +99,16 @@ export default function createWebpackConfig(
     }
     return loaders;
   };
-
   const webpackConfig: Configuration = {
     target: "web",
     mode: mode,
     entry: {
       layers: {
         import: corePkgInfo.entryFile,
+        dependOn: "shared",
+      },
+      manifestClinet: {
+        import: toolConfig.manifestClient.path,
         dependOn: "shared",
       },
       shared: ["react", "react-dom"],

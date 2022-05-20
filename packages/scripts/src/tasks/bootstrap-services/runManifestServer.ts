@@ -4,11 +4,11 @@ const toolPkgInfo = getToolPkgInfo();
 
 importToolConfig(toolPkgInfo.configFile)
   .then((toolConfig) => {
-    const fileServerConfig = toolConfig.services.fileServer;
-    if (fileServerConfig) {
+    const manifestServerConfig = toolConfig.services.manifestServer;
+    if (manifestServerConfig) {
       // toolConfig is passed as first arg, options as second
-      const fileServer = require(fileServerConfig.path)["default"];
-      fileServer(toolConfig, fileServerConfig.options);
+      const manifestServer = require(manifestServerConfig.path)["default"];
+      manifestServer(toolConfig, manifestServerConfig.options);
     }
   })
   .catch((err) => console.log(err));

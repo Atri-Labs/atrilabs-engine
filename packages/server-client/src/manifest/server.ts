@@ -104,6 +104,6 @@ export default function (
     });
   });
 
-  const port = (options && options.port) || 4002;
+  const port = (options && options.port) || 4003;
   io.listen(port);
 }

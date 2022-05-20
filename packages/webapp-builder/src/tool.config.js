@@ -45,9 +45,21 @@ module.exports = {
       path: require.resolve("@atrilabs/server-client/lib/websocket/server"),
     },
     codeGenerators: [],
+    manifestServer: {
+      path: require.resolve("@atrilabs/server-client/lib/manifest/server"),
+      options: {
+        port: 4003,
+      },
+    },
   },
   env: {
     EVENT_SERVER_CLIENT: "http://localhost:4001",
+    MANIFEST_SERVER_CLIENT: "http://localhost:4003",
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
+  manifestClient: {
+    path: require.resolve("@atrilabs/server-client/lib/manifest/client"),
+  },
+  manifestSchema: [],
+  manifestDirs: [],
 };

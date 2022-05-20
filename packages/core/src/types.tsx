@@ -90,7 +90,7 @@ export type ToolConfig = {
    * This client will be responsible to manage manifestRegistry
    * by communicating with manifestServer
    */
-  manifestClient: { pkg: string };
+  manifestClient: { path: string };
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
 };
