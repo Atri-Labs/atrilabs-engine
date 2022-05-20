@@ -61,8 +61,8 @@ module.exports = {
     path: require.resolve("@atrilabs/server-client/lib/manifest/client"),
   },
   manifestSchema: [
-    "@atrilabs/component-icon-manifest-schema",
-    "@atrilabs/react-component-manifest-schema",
+    { pkg: "@atrilabs/component-icon-manifest-schema" },
+    { pkg: "@atrilabs/react-component-manifest-schema" },
   ],
-  manifestDirs: ["@atrilabs/react-component-manifests"],
+  manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
 };

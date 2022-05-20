@@ -444,11 +444,8 @@ export async function importManifestSchemaConfig(
 
 // extract build type (libs) for a manifest pkg
 export async function extractManifestPkgBuildType(
-  manifestPkgfInfo: ManifestPkgInfo
+  manifestConfig: ManifestConfig
 ) {
-  const manifestConfig = await importManifestConfig(
-    manifestPkgfInfo.configFile
-  );
   const buildTypes = new Set<ManifestSchemaConfig["libs"]["0"]>();
   for (let i = 0; i < manifestConfig.manifestSchema.length; i++) {
     const manifestSchemaPkg = manifestConfig.manifestSchema[i]!;
@@ -482,9 +479,10 @@ export async function extractManifestPkgBuildInfo(
   manifestPkgInfo: ManifestPkgInfo
 ): Promise<{
   buildType: ManifestSchemaConfig["libs"]["0"];
-  exports: string[];
+  dir: string;
 }> {
-  const buildTypes = await extractManifestPkgBuildType(manifestPkgInfo);
+  const manifestConfig = await importManifestConfig(manifestPkgInfo.configFile);
+  const buildTypes = await extractManifestPkgBuildType(manifestConfig);
   if (buildTypes.size > 1) {
     throw Error(
       "We currently don't support manifest schemas of more than one build type in a single package."
@@ -496,9 +494,11 @@ export async function extractManifestPkgBuildInfo(
     );
   }
   const buildType = Array.from(buildTypes)[0]!;
-  // TODO: loop throug manifest dir and collect all file names
-  const exports: string[] = [];
-  return { buildType, exports };
+  const dir = path.resolve(
+    path.dirname(manifestPkgInfo.configFile),
+    manifestConfig.dir
+  );
+  return { buildType, dir };
 }
 
 /**

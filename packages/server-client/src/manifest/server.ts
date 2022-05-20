@@ -33,6 +33,9 @@ function getFiles(dir: string): string[] {
 function copyFileSync(src: string, destDir: string) {
   const filename = path.basename(src);
   const destPath = path.resolve(destDir, filename);
+  if (!fs.existsSync(path.dirname(destPath))) {
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+  }
   fs.writeFileSync(destPath, fs.readFileSync(src));
 }
 
@@ -84,7 +87,7 @@ export default function (
           });
         }
         // compile typescript if manifest pkg contains tsconfig.json file
-        await compileTypescriptManifestPkg(cacheSrcDir, firstBuild);
+        await compileTypescriptManifestPkg(buildInfo.dir, firstBuild);
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build
         await bundleManifestPkg(
