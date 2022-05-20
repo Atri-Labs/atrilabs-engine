@@ -36,6 +36,14 @@ export default function createManifestWebpackConfig(
                           "add-shims-in-manifest.js"
                         ),
                       ],
+                      [
+                        path.resolve(
+                          __dirname,
+                          "..",
+                          "babel",
+                          "replace-import-with-id.js"
+                        ),
+                      ],
                     ],
                   },
                 },

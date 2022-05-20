@@ -166,6 +166,14 @@ export default function emitBabelLoader(
                 forests: forestsConfig,
               },
             ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "replace-import-with-id.js"
+              ),
+            ],
             isEnvDevelopment && require("react-refresh/babel"),
           ].filter(Boolean),
           babelrc: false,
