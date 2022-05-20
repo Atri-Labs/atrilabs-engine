@@ -60,6 +60,9 @@ module.exports = {
   manifestClient: {
     path: require.resolve("@atrilabs/server-client/lib/manifest/client"),
   },
-  manifestSchema: [],
-  manifestDirs: [],
+  manifestSchema: [
+    "@atrilabs/component-icon-manifest-schema",
+    "@atrilabs/react-component-manifest-schema",
+  ],
+  manifestDirs: ["@atrilabs/react-component-manifests"],
 };
