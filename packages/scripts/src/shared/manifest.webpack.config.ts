@@ -1,3 +1,4 @@
+import path from "path";
 import { WebpackConfiguration } from "webpack-dev-server";
 
 export default function createManifestWebpackConfig(
@@ -26,6 +27,16 @@ export default function createManifestWebpackConfig(
                     presets: ["@babel/preset-env"],
                     babelrc: false,
                     configFile: false,
+                    plugins: [
+                      [
+                        path.resolve(
+                          __dirname,
+                          "..",
+                          "babel",
+                          "add-shims-in-manifest.js"
+                        ),
+                      ],
+                    ],
                   },
                 },
               ],
