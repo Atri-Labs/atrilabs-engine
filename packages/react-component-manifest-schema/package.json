@@ -1,5 +1,5 @@
 {
-  "name": "@atrilabs/component-icon-manifest-schema",
+  "name": "@atrilabs/react-component-manifest-schema",
   "version": "0.0.3",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
@@ -12,9 +12,6 @@
   "files": [
     "lib"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
