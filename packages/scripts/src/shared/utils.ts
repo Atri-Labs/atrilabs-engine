@@ -590,9 +590,33 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
           console.log(err);
           return;
         }
-        const newCode = ts.transpileModule(data.toString(), {}).outputText;
-        const stat = await fs.promises.stat(outputDir);
-        if (stat === undefined) {
+        const newCode = ts.transpileModule(data.toString(), {
+          compilerOptions: {
+            target: ts.ScriptTarget.ES5,
+            lib: ["dom", "dom.iterable", "esnext"],
+            allowJs: true,
+            skipLibCheck: true,
+            esModuleInterop: true,
+            allowSyntheticDefaultImports: true,
+            strict: true,
+            forceConsistentCasingInFileNames: true,
+            noFallthroughCasesInSwitch: true,
+            module: ts.ModuleKind.ES2020,
+            moduleResolution: ts.ModuleResolutionKind.NodeJs,
+            resolveJsonModule: true,
+            isolatedModules: true,
+            noEmit: false,
+            jsx: ts.JsxEmit.ReactJSX,
+            declaration: true,
+            declarationMap: true,
+            sourceMap: true,
+            rootDir: "src",
+            outDir: "lib",
+          },
+        }).outputText;
+        try {
+          await fs.promises.stat(outputDir);
+        } catch (err) {
           fs.promises.mkdir(outputDir, { recursive: true });
         }
         fs.writeFile(outputPath, newCode, () => {

@@ -1,7 +1,7 @@
 import { Shims } from "./shims";
 
 export function setup(
-  registry: (comps: any[]) => void,
+  registry: (comps: any) => void,
   React: any,
   ReactRuntime: any
 ) {

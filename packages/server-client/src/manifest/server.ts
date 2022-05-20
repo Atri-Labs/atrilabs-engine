@@ -73,8 +73,12 @@ export default function (
         if (!fs.existsSync(cacheDir)) {
           fs.mkdirSync(cacheDir, { recursive: true });
         }
+        console.log(`cacheDir created - ${cacheDir}`);
         // get build info for the manifest package
         const buildInfo = await extractManifestPkgBuildInfo(manifestPkgInfo);
+        console.log(
+          `manifest package build info - ${JSON.stringify(buildInfo, null, 2)}`
+        );
         // copy shim to cache directory
         if (buildInfo["buildType"] === "react") {
           const shimPath = path.dirname(
@@ -86,6 +90,7 @@ export default function (
             copyFileSync(file, cacheSrcDir);
           });
         }
+        console.log(`shim files copied`);
         // compile typescript if manifest pkg contains tsconfig.json file
         await compileTypescriptManifestPkg(buildInfo.dir, firstBuild);
         // TODO: if no tsconfig.js file, then do a babel build
