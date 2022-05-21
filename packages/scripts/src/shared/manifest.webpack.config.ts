@@ -4,7 +4,8 @@ import { WebpackConfiguration } from "webpack-dev-server";
 export default function createManifestWebpackConfig(
   entryPoint: string,
   output: { path: string; filename: string },
-  scriptName: string
+  scriptName: string,
+  publicPath: string
 ): WebpackConfiguration {
   return {
     mode: "production",
@@ -13,6 +14,7 @@ export default function createManifestWebpackConfig(
       path: output.path,
       filename: output.filename,
       library: scriptName,
+      publicPath,
     },
     module: {
       rules: [

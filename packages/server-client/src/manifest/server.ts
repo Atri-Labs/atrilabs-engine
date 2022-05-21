@@ -67,7 +67,8 @@ export default function (
         await bundleManifestPkg(
           entryPoint,
           { path: finalBuild, filename: "bundle.js" },
-          scriptName
+          scriptName,
+          `http://localhost:${port}/assets/${encodeURI(pkg)}`
         );
         manifestPkgBundles.push({
           src: fs

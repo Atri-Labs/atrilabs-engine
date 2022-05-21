@@ -665,12 +665,14 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
 export function bundleManifestPkg(
   entryPoint: string,
   output: { path: string; filename: string },
-  scriptName: string
+  scriptName: string,
+  publicPath: string
 ) {
   const webpackConfig = createManifestWebpackConfig(
     entryPoint,
     output,
-    scriptName
+    scriptName,
+    publicPath
   );
   return new Promise<void>((res, rej) => {
     webpack(webpackConfig, (err, stats) => {
