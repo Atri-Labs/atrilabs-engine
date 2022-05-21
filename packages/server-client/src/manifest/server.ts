@@ -13,6 +13,7 @@ import {
   bundleManifestPkg,
   copyManifestEntryTemplate,
   ManifestPkgInfo,
+  installManifestPkgDependencies,
 } from "@atrilabs/scripts";
 import {
   ClientToServerEvents,
@@ -131,6 +132,10 @@ export default function (
         console.log(
           "compiled ts files",
           JSON.stringify(compiledFiles, null, 2)
+        );
+        await installManifestPkgDependencies(
+          manifestPkgInfo,
+          toolConfig.pkgManager
         );
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build

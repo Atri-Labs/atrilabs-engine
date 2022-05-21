@@ -16,6 +16,7 @@ const forestsConfig = {
 };
 
 module.exports = {
+  pkgManager: "yarn",
   forests: forestsConfig,
   forestManager: {
     path: require.resolve(

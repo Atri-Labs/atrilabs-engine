@@ -536,46 +536,49 @@ export function copyManifestEntryTemplate(
 }
 
 // deps is map of package name and version
-export function installDependencies(
+export async function installDependencies(
   deps: { [pkg: string]: string },
   pkgManager: ToolConfig["pkgManager"]
 ) {
-  const stringified = Object.keys(deps)
-    .map((key) => {
-      const version = deps[key];
-      return `${key}@${version}`;
-    })
-    .join(" ");
-  const callback = (
-    err: ExecException | null,
-    stdout: string,
-    stderr: string
-  ) => {
-    if (err) {
-      console.log(`Error:\n${err}`);
+  return new Promise<void>((res) => {
+    const stringified = Object.keys(deps)
+      .map((key) => {
+        const version = deps[key];
+        return `${key}@${version}`;
+      })
+      .join(" ");
+    const callback = (
+      err: ExecException | null,
+      stdout: string,
+      stderr: string
+    ) => {
+      if (err) {
+        console.log(`Error:\n${err}`);
+      }
+      if (stdout) {
+        console.log(`stdout:\n${stdout}`);
+      }
+      if (stderr) {
+        console.log(`stdout:\n${stderr}`);
+      }
+      res();
+    };
+    if (pkgManager === "npm") {
+      exec(`${pkgManager} install ${stringified}`, callback);
     }
-    if (stdout) {
-      console.log(`stdout:\n${stdout}`);
+    if (pkgManager === "yarn") {
+      exec(`${pkgManager} add ${stringified}`, callback);
     }
-    if (stderr) {
-      console.log(`stdout:\n${stderr}`);
-    }
-  };
-  if (pkgManager === "npm") {
-    exec(`${pkgManager} install ${stringified}`, callback);
-  }
-  if (pkgManager === "yarn") {
-    exec(`${pkgManager} add ${stringified}`, callback);
-  }
+  });
 }
 
-export function installManifestPkgDependencies(
+export async function installManifestPkgDependencies(
   manifestPkgfInfo: ManifestPkgInfo,
   pkgManager: ToolConfig["pkgManager"]
 ) {
   if (fs.existsSync(manifestPkgfInfo.packageJSON)) {
     const dependencies = require(manifestPkgfInfo.packageJSON)["dependencies"];
-    installDependencies(dependencies, pkgManager);
+    await installDependencies(dependencies, pkgManager);
   }
 }
 
