@@ -15,7 +15,7 @@ function defaultImportsToRegistry() {
   const manifests: { [manifestId: string]: { components: any[] } } = {};
   for (let i = 0; i < defaultImports.length; i++) {
     const defaultImport = defaultImports[i]!;
-    if (defaultImport["manifests"]) {
+    if (defaultImport && defaultImport["manifests"]) {
       const currManifests = defaultImport["manifests"];
       const manifestIds = Object.keys(currManifests);
       manifestIds.forEach((manifestId) => {
