@@ -668,7 +668,9 @@ export function bundleManifestPkg(
   scriptName: string,
   publicPath: string,
   manifestJsPath: string,
-  manifests: string[]
+  manifests: string[],
+  shimsPath: string,
+  ignoreShimsDir: string
 ) {
   const webpackConfig = createManifestWebpackConfig(
     entryPoint,
@@ -676,7 +678,9 @@ export function bundleManifestPkg(
     scriptName,
     publicPath,
     manifestJsPath,
-    manifests
+    manifests,
+    shimsPath,
+    ignoreShimsDir
   );
   return new Promise<void>((res, rej) => {
     webpack(webpackConfig, (err, stats) => {

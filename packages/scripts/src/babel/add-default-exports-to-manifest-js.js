@@ -29,7 +29,7 @@ module.exports = function (babel, options) {
           path.traverse(defaultImportsVisitor);
           options.manifests.forEach((m, index) => {
             const importNode = babel.template.statement.ast(
-              `import man${index} from "${m};"`
+              `import man${index} from "${m}";`
             );
             path.unshiftContainer("body", importNode);
           });

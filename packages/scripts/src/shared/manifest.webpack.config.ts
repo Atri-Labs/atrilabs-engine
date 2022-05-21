@@ -7,7 +7,9 @@ export default function createManifestWebpackConfig(
   scriptName: string,
   publicPath: string,
   manifestJsPath: string,
-  manifests: string[]
+  manifests: string[],
+  shimsPath: string,
+  ignoreShimsDir: string
 ): WebpackConfiguration {
   return {
     mode: "production",
@@ -39,6 +41,10 @@ export default function createManifestWebpackConfig(
                           "babel",
                           "add-shims-in-manifest.js"
                         ),
+                        {
+                          shimsPath,
+                          ignoreShimsDir,
+                        },
                       ],
                       [
                         path.resolve(

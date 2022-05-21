@@ -38,7 +38,8 @@ function getAllPaths(manifestPkgInfo: ManifestPkgInfo) {
   const firstBuild = path.resolve(cacheDir, "first-build");
   const finalBuild = path.resolve(cacheDir, "final-build");
   const entryPoint = path.resolve(cacheSrcDir, "index.js");
-  const manifestJsPath = path.resolve(cacheDir, "manifest.js");
+  const manifestJsPath = path.resolve(cacheSrcDir, "manifests.js");
+  const shimsPath = path.resolve(cacheSrcDir, "shims.js");
   return {
     cacheDir,
     cacheSrcDir,
@@ -46,6 +47,7 @@ function getAllPaths(manifestPkgInfo: ManifestPkgInfo) {
     finalBuild,
     entryPoint,
     manifestJsPath,
+    shimsPath,
   };
 }
 
@@ -108,6 +110,7 @@ export default function (
           finalBuild,
           entryPoint,
           manifestJsPath,
+          shimsPath,
         } = getAllPaths(manifestPkgInfo);
         if (!fs.existsSync(cacheDir)) {
           fs.mkdirSync(cacheDir, { recursive: true });
@@ -125,6 +128,10 @@ export default function (
           buildInfo.dir,
           firstBuild
         );
+        console.log(
+          "compiled ts files",
+          JSON.stringify(compiledFiles, null, 2)
+        );
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build
         await bundleManifestPkg(
@@ -133,7 +140,11 @@ export default function (
           scriptName,
           `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
           manifestJsPath,
-          compiledFiles
+          compiledFiles,
+          shimsPath,
+          // ignore putting import {Shims} from "path/to/shims.js"
+          // in all files from cache src dir
+          cacheSrcDir
         );
         manifestPkgBundles.push({
           src: fs

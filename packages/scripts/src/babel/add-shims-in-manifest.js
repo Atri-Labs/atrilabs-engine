@@ -39,10 +39,6 @@ function replaceWithShim(shimPrefix, importList) {
   return strs;
 }
 
-function importShimStr() {
-  return `import { Shim } from "./shims";`;
-}
-
 /**
  * This plugin converts the following:
  * Source - import {useState} from "react";
@@ -53,36 +49,43 @@ function importShimStr() {
  * Output - import {Shim} from "./shims";
  *          const _jsx = Shim.ReactRuntime.jsx;
  * @param {babel} babel
+ * @param {{shimsPath: string, ignoreShimsDir: string}} options
  * @returns
  */
-module.exports = function (babel) {
+module.exports = function (babel, options) {
+  const shimsImportStatement = `import { Shims } from "${options.shimsPath}";`;
+  const childVisitor = {
+    ImportDeclaration: (path) => {
+      if (path.get("source").node.value === "react") {
+        const specifiers = path.get("specifiers");
+        const importList = generateImportList(specifiers, babel.types);
+        // add new nodes
+        replaceWithShim("Shims.React", importList).forEach((curr) => {
+          const newNode = babel.template.statement.ast(curr);
+          path.insertAfter(newNode);
+        });
+        // remove import ... "react";
+        path.remove();
+      } else if (path.get("source").node.value === "react/jsx-runtime") {
+        const specifiers = path.get("specifiers");
+        const importList = generateImportList(specifiers, babel.types);
+        // add new nodes
+        replaceWithShim("Shims.ReactRuntime", importList).forEach((curr) => {
+          const newNode = babel.template.statement.ast(curr);
+          path.insertAfter(newNode);
+        });
+        // remove import ... "react/runtime";
+        path.remove();
+      }
+    },
+  };
   return {
     visitor: {
-      Program: (path) => {
-        const ast = babel.template.statement.ast(importShimStr());
-        path.unshiftContainer("body", ast);
-      },
-      ImportDeclaration: (path) => {
-        if (path.get("source").node.value === "react") {
-          const specifiers = path.get("specifiers");
-          const importList = generateImportList(specifiers, babel.types);
-          // add new nodes
-          replaceWithShim("Shim.React", importList).forEach((curr) => {
-            const newNode = babel.template.statement.ast(curr);
-            path.insertAfter(newNode);
-          });
-          // remove import ... "react";
-          path.remove();
-        } else if (path.get("source").node.value === "react/jsx-runtime") {
-          const specifiers = path.get("specifiers");
-          const importList = generateImportList(specifiers, babel.types);
-          // add new nodes
-          replaceWithShim("Shim.ReactRuntime", importList).forEach((curr) => {
-            const newNode = babel.template.statement.ast(curr);
-            path.insertAfter(newNode);
-          });
-          // remove import ... "react/runtime";
-          path.remove();
+      Program: (path, parent) => {
+        if (!parent.filename.match(options.ignoreShimsDir)) {
+          const ast = babel.template.statement.ast(shimsImportStatement);
+          path.unshiftContainer("body", ast);
+          path.traverse(childVisitor);
         }
       },
     },
