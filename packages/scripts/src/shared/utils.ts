@@ -666,13 +666,17 @@ export function bundleManifestPkg(
   entryPoint: string,
   output: { path: string; filename: string },
   scriptName: string,
-  publicPath: string
+  publicPath: string,
+  manifestJsPath: string,
+  manifests: string[]
 ) {
   const webpackConfig = createManifestWebpackConfig(
     entryPoint,
     output,
     scriptName,
-    publicPath
+    publicPath,
+    manifestJsPath,
+    manifests
   );
   return new Promise<void>((res, rej) => {
     webpack(webpackConfig, (err, stats) => {

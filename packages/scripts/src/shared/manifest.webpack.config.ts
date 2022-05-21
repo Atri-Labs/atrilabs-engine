@@ -5,7 +5,9 @@ export default function createManifestWebpackConfig(
   entryPoint: string,
   output: { path: string; filename: string },
   scriptName: string,
-  publicPath: string
+  publicPath: string,
+  manifestJsPath: string,
+  manifests: string[]
 ): WebpackConfiguration {
   return {
     mode: "production",
@@ -45,6 +47,18 @@ export default function createManifestWebpackConfig(
                           "babel",
                           "replace-import-with-id.js"
                         ),
+                      ],
+                      [
+                        path.resolve(
+                          __dirname,
+                          "..",
+                          "babel",
+                          "add-default-exports-to-manifest-js.js"
+                        ),
+                        {
+                          manifestJsPath,
+                          manifests,
+                        },
                       ],
                     ],
                   },

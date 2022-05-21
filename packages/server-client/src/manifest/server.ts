@@ -38,7 +38,15 @@ function getAllPaths(manifestPkgInfo: ManifestPkgInfo) {
   const firstBuild = path.resolve(cacheDir, "first-build");
   const finalBuild = path.resolve(cacheDir, "final-build");
   const entryPoint = path.resolve(cacheSrcDir, "index.js");
-  return { cacheDir, cacheSrcDir, firstBuild, finalBuild, entryPoint };
+  const manifestJsPath = path.resolve(cacheDir, "manifest.js");
+  return {
+    cacheDir,
+    cacheSrcDir,
+    firstBuild,
+    finalBuild,
+    entryPoint,
+    manifestJsPath,
+  };
 }
 
 export default function (
@@ -93,8 +101,14 @@ export default function (
         const pkg = dir.pkg;
         const manifestPkgInfo = getManifestPkgInfo(pkg);
         // create cache directory if not already created
-        const { cacheDir, cacheSrcDir, firstBuild, finalBuild, entryPoint } =
-          getAllPaths(manifestPkgInfo);
+        const {
+          cacheDir,
+          cacheSrcDir,
+          firstBuild,
+          finalBuild,
+          entryPoint,
+          manifestJsPath,
+        } = getAllPaths(manifestPkgInfo);
         if (!fs.existsSync(cacheDir)) {
           fs.mkdirSync(cacheDir, { recursive: true });
         }
@@ -107,14 +121,19 @@ export default function (
         copyManifestEntryTemplate("react", cacheSrcDir);
         console.log(`shim files copied`);
         // compile typescript if manifest pkg contains tsconfig.json file
-        await compileTypescriptManifestPkg(buildInfo.dir, firstBuild);
+        const compiledFiles = await compileTypescriptManifestPkg(
+          buildInfo.dir,
+          firstBuild
+        );
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build
         await bundleManifestPkg(
           entryPoint,
           { path: finalBuild, filename: "bundle.js" },
           scriptName,
-          `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`
+          `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
+          manifestJsPath,
+          compiledFiles
         );
         manifestPkgBundles.push({
           src: fs
