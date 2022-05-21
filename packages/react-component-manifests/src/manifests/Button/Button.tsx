@@ -10,6 +10,8 @@ const compManifest = {};
 const iconManifest = {};
 
 export default {
-  [reactSchemaId]: compManifest,
-  [iconSchemaId]: iconManifest,
+  manifests: {
+    [reactSchemaId]: [compManifest],
+    [iconSchemaId]: [iconManifest],
+  },
 };
