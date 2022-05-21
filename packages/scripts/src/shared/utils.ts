@@ -525,7 +525,7 @@ export function copyManifestEntryTemplate(
     const shimPath = path.dirname(
       require.resolve("@atrilabs/manifest-shims/package.json")
     );
-    const reactShimDir = path.resolve(shimPath, "src", "react");
+    const reactShimDir = path.resolve(shimPath, "lib", "react");
     const files = getFiles(reactShimDir);
     files.forEach((file) => {
       copyFileSync(file, dest);
@@ -576,15 +576,19 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
   }
 
   // compile using typescript compiler api
-  const compilePromises: Promise<void>[] = [];
+  const compilePromises: Promise<string>[] = [];
   for (let i = 0; i < tsFiles.length; i++) {
     const file = tsFiles[i]!;
-    const relativePath = path.relative(srcDir, file);
-    const ext = path.extname(relativePath);
-    const relativeWithoutExt = path.basename(relativePath, ext);
-    const outputPath = path.resolve(outDir, relativeWithoutExt + ".js");
+    const relativePath = path.dirname(path.relative(srcDir, file));
+    const ext = path.extname(file);
+    const filenameWithoutExt = path.basename(file, ext);
+    const outputPath = path.resolve(
+      outDir,
+      relativePath,
+      filenameWithoutExt + ".js"
+    );
     const outputDir = path.dirname(outputPath);
-    const compilePromise = new Promise<void>((res) => {
+    const compilePromise = new Promise<string>((res) => {
       fs.readFile(file, async (err, data) => {
         if (err) {
           console.log(err);
@@ -620,7 +624,7 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
           fs.promises.mkdir(outputDir, { recursive: true });
         }
         fs.writeFile(outputPath, newCode, () => {
-          res();
+          res(outputPath);
         });
       });
     });
@@ -647,7 +651,11 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
     copyPromsies.push(copyPromise);
   }
 
-  return Promise.all([...compilePromises, ...copyPromsies]);
+  // return a promise that waits for both copy and compilation to finish
+  // finally, returning an array of string output paths
+  return Promise.all([...compilePromises, ...copyPromsies]).then(() =>
+    Promise.all(compilePromises)
+  );
 }
 
 /**

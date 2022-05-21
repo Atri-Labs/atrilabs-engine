@@ -54,7 +54,7 @@ export default function createManifestWebpackConfig(
       ],
     },
     resolve: {
-      extensions: [".ts", ".tsx", ".js", ".jsx"],
+      extensions: [".js", ".jsx"],
     },
   };
 }

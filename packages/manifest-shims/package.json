@@ -6,17 +6,22 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "directories": {
-    "lib": "src"
+    "lib": "lib"
   },
   "files": [
-    "src"
+    "lib"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "typescript": "^4.6.4"
   }
 }
