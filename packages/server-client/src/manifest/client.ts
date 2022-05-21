@@ -8,23 +8,26 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_MANIFEST_SERVER_CLIENT"] as string
 );
 
+function registerComponents(scriptName: string) {
+  //do stuff with the script
+  const handle = (window as any)[scriptName];
+  console.log("loaded", handle.setup);
+  handle.setup(
+    (registry: { [manifestId: string]: { components: any[] } }) => {
+      console.log("registry received", registry);
+    },
+    React,
+    ReactRuntime
+  );
+}
+
 socket.emit("sendManifestScripts", (bundles) => {
+  console.log("received bundles", bundles);
   bundles.forEach((bundle) => {
     const scriptName = bundle.scriptName;
     const script = document.createElement("script");
-    const handle = (window as any)[scriptName];
-    script.onload = function () {
-      //do stuff with the script
-      console.log("loaded", handle.setup);
-      handle.setup(
-        (registry: { [manifestId: string]: { components: any[] } }) => {
-          console.log("registry received", registry);
-        },
-        React,
-        ReactRuntime
-      );
-    };
     script.innerHTML = bundle.src;
-    document.head.appendChild(script);
+    document.body.appendChild(script);
+    registerComponents(scriptName);
   });
 });
