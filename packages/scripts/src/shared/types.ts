@@ -70,6 +70,7 @@ export type ManifestPkgInfo = {
   manifestPath: string;
   srcDir: string;
   configFile: string;
+  packageJSON: string;
 };
 
 export type ToolEnv = {

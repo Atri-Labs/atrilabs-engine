@@ -21,6 +21,7 @@ import {
   ToolPkgInfo,
 } from "./types";
 import createManifestWebpackConfig from "./manifest.webpack.config";
+import { exec, ExecException } from "child_process";
 
 // NOTE: this script is expected to be run via a package manager like npm, yarn
 
@@ -396,10 +397,11 @@ export function getManifestSchemaPkgInfo(pkg: string): ManifestSchemaPkgInfo {
 }
 
 export function getManifestPkgInfo(pkg: string): ManifestPkgInfo {
-  const manifestPath = path.dirname(require.resolve(`${pkg}/package.json`));
+  const packageJSON = require.resolve(`${pkg}/package.json`);
+  const manifestPath = path.dirname(packageJSON);
   const srcDir = path.resolve(manifestPath, "src");
   const configFile = path.resolve(srcDir, "manifest.config.js");
-  return { pkg, manifestPath, srcDir, configFile };
+  return { pkg, manifestPath, srcDir, configFile, packageJSON };
 }
 
 export async function importManifestConfig(
@@ -530,6 +532,50 @@ export function copyManifestEntryTemplate(
     files.forEach((file) => {
       copyFileSync(file, dest);
     });
+  }
+}
+
+// deps is map of package name and version
+export function installDependencies(
+  deps: { [pkg: string]: string },
+  pkgManager: ToolConfig["pkgManager"]
+) {
+  const stringified = Object.keys(deps)
+    .map((key) => {
+      const version = deps[key];
+      return `${key}@${version}`;
+    })
+    .join(" ");
+  const callback = (
+    err: ExecException | null,
+    stdout: string,
+    stderr: string
+  ) => {
+    if (err) {
+      console.log(`Error:\n${err}`);
+    }
+    if (stdout) {
+      console.log(`stdout:\n${stdout}`);
+    }
+    if (stderr) {
+      console.log(`stdout:\n${stderr}`);
+    }
+  };
+  if (pkgManager === "npm") {
+    exec(`${pkgManager} install ${stringified}`, callback);
+  }
+  if (pkgManager === "yarn") {
+    exec(`${pkgManager} add ${stringified}`, callback);
+  }
+}
+
+export function installManifestPkgDependencies(
+  manifestPkgfInfo: ManifestPkgInfo,
+  pkgManager: ToolConfig["pkgManager"]
+) {
+  if (fs.existsSync(manifestPkgfInfo.packageJSON)) {
+    const dependencies = require(manifestPkgfInfo.packageJSON)["dependencies"];
+    installDependencies(dependencies, pkgManager);
   }
 }
 

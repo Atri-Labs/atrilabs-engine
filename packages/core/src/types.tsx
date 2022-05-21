@@ -39,6 +39,7 @@ export type ForestsConfig = {
 };
 
 export type ToolConfig = {
+  pkgManager: "npm" | "yarn";
   forests: ForestsConfig;
   forestManager: {
     // path to module implementing forest manager for backend
@@ -118,7 +119,7 @@ export type ManifestConfig = {
 };
 
 export type ManifestRegistry = {
-  // packageId of the package containing manifest schema
+  // manifestId of the package containing manifest schema
   // mapped to array of manifests (added after validation)
-  [packageId: string]: any[];
+  [manifestId: string]: { component: any; pkg: string }[];
 };
