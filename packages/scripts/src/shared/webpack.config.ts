@@ -107,7 +107,7 @@ export default function createWebpackConfig(
         import: corePkgInfo.entryFile,
         dependOn: "shared",
       },
-      manifestClinet: {
+      manifestClient: {
         import: toolConfig.manifestClient.path,
         dependOn: "shared",
       },
