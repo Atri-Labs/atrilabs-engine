@@ -140,6 +140,8 @@ export default function (
         // TODO: if no tsconfig.js file, then do a babel build
         // use the built assets from previous step, to create a webpack build
         await bundleManifestPkg(
+          "development",
+          true,
           entryPoint,
           { path: finalBuild, filename: "bundle.js" },
           scriptName,

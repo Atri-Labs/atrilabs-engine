@@ -663,9 +663,10 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
             declaration: true,
             declarationMap: true,
             sourceMap: true,
-            rootDir: "src",
-            outDir: "lib",
+            inlineSourceMap: true,
+            inlineSources: true,
           },
+          fileName: path.basename(file),
         }).outputText;
         try {
           await fs.promises.stat(outputDir);
@@ -692,8 +693,10 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
         if (stat === undefined) {
           fs.promises.mkdir(copyDestDir, { recursive: true });
         }
-        fs.promises.writeFile(file, copyDest).then(() => {
-          res();
+        fs.promises.readFile(file).then((value) => {
+          fs.promises.writeFile(copyDest, value).then(() => {
+            res();
+          });
         });
       });
     });
@@ -712,6 +715,8 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
  * over to the manifest client.
  */
 export function bundleManifestPkg(
+  mode: "development" | "production",
+  shouldUseSourceMap: boolean,
   entryPoint: string,
   output: { path: string; filename: string },
   scriptName: string,
@@ -722,6 +727,8 @@ export function bundleManifestPkg(
   ignoreShimsDir: string
 ) {
   const webpackConfig = createManifestWebpackConfig(
+    mode,
+    shouldUseSourceMap,
     entryPoint,
     output,
     scriptName,

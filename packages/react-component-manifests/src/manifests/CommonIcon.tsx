@@ -1,3 +1,5 @@
+import "./styles.css";
+
 export type CommonIconsProps = {
   name: string;
   svg: React.FC;
