@@ -1,14 +1,9 @@
-import { ManifestSchema } from "./types";
+import { ManifestRegistry } from "./types";
 
 // The object will be filled during build time automatically
 // schema will be imported and mapped
 // components will be left as empty array to be filled during runtime
-const manifestRegistry: {
-  [manifestId: string]: {
-    schema: ManifestSchema;
-    components: { pkg: string; component: any }[];
-  };
-} = {};
+const manifestRegistry: ManifestRegistry = {};
 
 const manifestRegistrySubscribers: (() => void)[] = [];
 
@@ -28,9 +23,16 @@ function readManifestRegistry() {
   return copy;
 }
 
-function writeComponents(manifestId: string, components: []) {
+function writeComponents(
+  manifestId: string,
+  components: ManifestRegistry["0"]["components"]
+) {
   manifestRegistry[manifestId].components = components;
   manifestRegistrySubscribers.forEach((cb) => cb());
 }
 
-export default { readManifestRegistry, writeComponents, subscribe };
+export const manifestRegistryController = {
+  readManifestRegistry,
+  writeComponents,
+  subscribe,
+};

@@ -121,5 +121,8 @@ export type ManifestConfig = {
 export type ManifestRegistry = {
   // manifestId of the package containing manifest schema
   // mapped to array of manifests (added after validation)
-  [manifestId: string]: { component: any; pkg: string }[];
+  [manifestId: string]: {
+    schema: ManifestSchema;
+    components: { pkg: string; component: any }[];
+  };
 };
