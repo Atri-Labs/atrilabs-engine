@@ -33,6 +33,7 @@ module.exports = {
     { pkg: "@atrilabs/atri-icon-layer" },
     { pkg: "@atrilabs/app-page-layer" },
     { pkg: "@atrilabs/canvas-breakpoint-layer" },
+    { pkg: "@atrilabs/component-list-layer" },
   ],
   output: "lib",
   services: {
