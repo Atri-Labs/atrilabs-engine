@@ -22,71 +22,79 @@ const serverConfig = getServerConfig();
 watchCorePkg(corePkgInfo);
 
 processToolConfig(toolPkgInfo)
-  .then(async ({ toolConfig, layerEntries, runtimeEntries }) => {
-    // force compile when tool.config.js file changes
-    forceRecompile(corePkgInfo, toolPkgInfo);
-
-    // build all layers once in the beginning
-    // TODO: handle failed compilation.
-    // failed compilation should lead to watching for changes so that
-    // when error gets fixed, compilation resumes.
-    layerEntries.forEach((layerEntry) => buildLayer(layerEntry));
-
-    // build all runtimes once in the beginning
-    // TODO: handle failed compilation.
-    runtimeEntries.forEach((runtimeEntry) => buildRuntime(runtimeEntry));
-
-    // create webpack config
-    const webpackConfig = createWebpackConfig(
-      corePkgInfo,
-      toolPkgInfo,
+  .then(
+    async ({
       toolConfig,
       layerEntries,
       runtimeEntries,
-      toolEnv,
-      "development",
-      true
-    );
-    webpackConfig["watchOptions"] = {
-      ignored: /node_modules/,
-    };
-    webpackConfig["mode"] = "development";
-    webpackConfig["devServer"] = {
-      client: {
-        overlay: true,
-      },
-      hot: true,
-    };
+      manifestSchemaEntries,
+    }) => {
+      // force compile when tool.config.js file changes
+      forceRecompile(corePkgInfo, toolPkgInfo);
 
-    // create compiler
-    const compiler = webpack(webpackConfig);
-    addCompilerHooks(compiler);
+      // build all layers once in the beginning
+      // TODO: handle failed compilation.
+      // failed compilation should lead to watching for changes so that
+      // when error gets fixed, compilation resumes.
+      layerEntries.forEach((layerEntry) => buildLayer(layerEntry));
 
-    // create dev server
-    const devServer = new WebpackDevServer({ ...serverConfig }, compiler);
+      // build all runtimes once in the beginning
+      // TODO: handle failed compilation.
+      runtimeEntries.forEach((runtimeEntry) => buildRuntime(runtimeEntry));
 
-    // launch WebpackDevServer
-    devServer.startCallback(() => {
-      if (isInteractive) {
-        // clearConsole();
-      }
-      console.log(chalk.cyan("Starting the development server...\n"));
-    });
+      // create webpack config
+      const webpackConfig = createWebpackConfig(
+        corePkgInfo,
+        toolPkgInfo,
+        toolConfig,
+        layerEntries,
+        runtimeEntries,
+        manifestSchemaEntries,
+        toolEnv,
+        "development",
+        true
+      );
+      webpackConfig["watchOptions"] = {
+        ignored: /node_modules/,
+      };
+      webpackConfig["mode"] = "development";
+      webpackConfig["devServer"] = {
+        client: {
+          overlay: true,
+        },
+        hot: true,
+      };
 
-    // wait for kill signals
-    ["SIGINT", "SIGTERM"].forEach(function (sig) {
-      process.on(sig, function () {
+      // create compiler
+      const compiler = webpack(webpackConfig);
+      addCompilerHooks(compiler);
+
+      // create dev server
+      const devServer = new WebpackDevServer({ ...serverConfig }, compiler);
+
+      // launch WebpackDevServer
+      devServer.startCallback(() => {
+        if (isInteractive) {
+          // clearConsole();
+        }
+        console.log(chalk.cyan("Starting the development server...\n"));
+      });
+
+      // wait for kill signals
+      ["SIGINT", "SIGTERM"].forEach(function (sig) {
+        process.on(sig, function () {
+          devServer.close();
+          process.exit();
+        });
+      });
+
+      // wait for input on stdin (hold the terminal)
+      process.stdin.on("end", function () {
         devServer.close();
         process.exit();
       });
-    });
-
-    // wait for input on stdin (hold the terminal)
-    process.stdin.on("end", function () {
-      devServer.close();
-      process.exit();
-    });
-  })
+    }
+  )
   .catch((err) => {
     console.log(err);
   });

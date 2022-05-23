@@ -1,7 +1,12 @@
 import { LayerConfig, ForestsConfig, RuntimeConfig } from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
-import { LayerEntry, CorePkgInfo, RuntimeEntry } from "./types";
+import {
+  LayerEntry,
+  CorePkgInfo,
+  RuntimeEntry,
+  ManifestSchemaEntry,
+} from "./types";
 import {
   detectLayerForFile,
   detectRuntimeForFile,
@@ -16,6 +21,7 @@ import {
 export default function emitBabelLoader(
   layerEntries: LayerEntry[],
   runtimeEntries: RuntimeEntry[],
+  manifestSchemaEntries: ManifestSchemaEntry[],
   forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo,
   env: "production" | "development"
@@ -173,6 +179,23 @@ export default function emitBabelLoader(
                 "babel",
                 "replace-import-with-id.js"
               ),
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "populate-manifest-registry-in-core.js"
+              ),
+              {
+                manifestRegistryFile: corePkgInfo.manifestRegistryFile,
+                manifests: manifestSchemaEntries.map((entry) => {
+                  return {
+                    manifestId: entry.manifestId,
+                    schemaModulePath: entry.modulePath,
+                  };
+                }),
+              },
             ],
             isEnvDevelopment && require("react-refresh/babel"),
           ].filter(Boolean),

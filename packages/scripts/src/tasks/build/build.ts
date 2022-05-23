@@ -4,6 +4,7 @@ import path from "path";
 import { copySync } from "fs-extra";
 import {
   extractLayerEntries,
+  extractManifestSchemaEntries,
   extractRuntimeEntries,
   getCorePkgInfo,
   getToolEnv,
@@ -21,6 +22,9 @@ importToolConfig(toolPkgInfo.configFile)
   .then(async (toolConfig) => {
     const layerEntries = await extractLayerEntries(toolConfig, toolPkgInfo);
     const runtimeEntries = await extractRuntimeEntries(toolConfig);
+    const manifestSchemaEntries = await extractManifestSchemaEntries(
+      toolConfig
+    );
 
     // create global module for each layer
     layerEntries.forEach((layerEntry) => {
@@ -34,6 +38,7 @@ importToolConfig(toolPkgInfo.configFile)
       toolConfig,
       layerEntries,
       runtimeEntries,
+      manifestSchemaEntries,
       toolEnv,
       "production",
       false

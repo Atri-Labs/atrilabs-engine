@@ -9,6 +9,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 import {
   CorePkgInfo,
   LayerEntry,
+  ManifestSchemaEntry,
   RuntimeEntry,
   ToolEnv,
   ToolPkgInfo,
@@ -40,6 +41,7 @@ export default function createWebpackConfig(
   toolConfig: ToolConfig,
   layerEntries: LayerEntry[],
   runtimeEntries: RuntimeEntry[],
+  manifestSchemaEntries: ManifestSchemaEntry[],
   toolEnv: ToolEnv,
   mode: "production" | "development",
   shouldUseSourceMap: boolean
@@ -191,6 +193,7 @@ export default function createWebpackConfig(
               use: emitBabelLoader(
                 layerEntries,
                 runtimeEntries,
+                manifestSchemaEntries,
                 toolConfig.forests,
                 corePkgInfo,
                 mode
@@ -289,6 +292,9 @@ export default function createWebpackConfig(
           overlay: false,
         }),
     ].filter(Boolean),
+    resolve: {
+      extensions: [".js", ".jsx"],
+    },
   };
   return webpackConfig;
 }

@@ -1,4 +1,9 @@
-import { LayerConfig, RuntimeConfig, ToolConfig } from "@atrilabs/core";
+import {
+  LayerConfig,
+  ManifestSchemaConfig,
+  RuntimeConfig,
+  ToolConfig,
+} from "@atrilabs/core";
 
 export type ToolPkgInfo = {
   dir: string;
@@ -53,6 +58,8 @@ export type CorePkgInfo = {
   layerDetailsFile: string;
   // file that contains setCurrentForest function
   setCurrentForestFile: string;
+  // file that contains manifestRegistry
+  manifestRegistryFile: string;
 };
 
 export type ManifestSchemaPkgInfo = {
@@ -63,6 +70,8 @@ export type ManifestSchemaPkgInfo = {
   configFile: string;
   manifestId: string;
 };
+
+export type ManifestSchemaEntry = ManifestSchemaPkgInfo & ManifestSchemaConfig;
 
 export type ManifestPkgInfo = {
   pkg: string;

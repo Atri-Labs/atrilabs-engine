@@ -15,6 +15,7 @@ import {
   CorePkgInfo,
   LayerEntry,
   ManifestPkgInfo,
+  ManifestSchemaEntry,
   ManifestSchemaPkgInfo,
   RuntimeEntry,
   ToolEnv,
@@ -78,13 +79,19 @@ export function getCorePkgInfo(): CorePkgInfo {
   const setCurrentForestFile = findFileWithoutExtension(
     path.resolve(dir, "lib", "setCurrentForest")
   );
+  const manifestRegistryFile = findFileWithoutExtension(
+    path.resolve(dir, "lib", "manifestRegistry")
+  );
   if (
     entryFile === undefined ||
     indexFile === undefined ||
     layerDetailsFile === undefined ||
-    setCurrentForestFile === undefined
+    setCurrentForestFile === undefined ||
+    manifestRegistryFile === undefined
   ) {
-    throw Error(chalk.red(`Missing entryFile or indexFile in @atrilabs/core`));
+    throw Error(
+      chalk.red(`Missing a entryFile or indexFile in @atrilabs/core`)
+    );
   }
   return {
     dir: path.dirname(require.resolve("@atrilabs/core/package.json")),
@@ -92,6 +99,7 @@ export function getCorePkgInfo(): CorePkgInfo {
     indexFile,
     layerDetailsFile,
     setCurrentForestFile,
+    manifestRegistryFile,
   };
 }
 
@@ -390,7 +398,7 @@ export async function extractRuntimeEntries(
 
 export function getManifestSchemaPkgInfo(pkg: string): ManifestSchemaPkgInfo {
   const schemaPath = path.dirname(require.resolve(`${pkg}/package.json`));
-  const srcDir = path.resolve(schemaPath, "src");
+  const srcDir = path.resolve(schemaPath, "lib");
   const configFile = path.resolve(srcDir, "manifest.schema.config.js");
   const manifestId = pkg;
   return { pkg, schemaPath, srcDir, configFile, manifestId };
@@ -756,4 +764,23 @@ export function bundleManifestPkg(
       }
     });
   });
+}
+
+export async function extractManifestSchemaEntry(
+  manifestSchemaPkg: string
+): Promise<ManifestSchemaEntry> {
+  const manifestSchemaPkgInfo = getManifestSchemaPkgInfo(manifestSchemaPkg);
+  const manifestSchemaConfig = await importManifestSchemaConfig(
+    manifestSchemaPkgInfo.configFile
+  );
+  const modulePath = path.resolve(
+    path.dirname(manifestSchemaPkgInfo.configFile),
+    manifestSchemaConfig.modulePath
+  );
+  return { ...manifestSchemaConfig, modulePath, ...manifestSchemaPkgInfo };
+}
+
+export async function extractManifestSchemaEntries(toolConfig: ToolConfig) {
+  const pkgs = toolConfig.manifestSchema.map((schema) => schema.pkg);
+  return Promise.all(pkgs.map((pkg) => extractManifestSchemaEntry(pkg)));
 }
