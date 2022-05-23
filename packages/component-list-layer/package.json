@@ -25,6 +25,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/canvas-runtime": "^0.0.3",
     "@atrilabs/core": "^0.0.3",
     "@atrilabs/design-system": "^0.0.3",
     "@atrilabs/scripts": "^0.0.3",

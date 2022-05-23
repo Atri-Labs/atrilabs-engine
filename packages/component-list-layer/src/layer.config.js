@@ -10,4 +10,5 @@ module.exports = {
   },
   exposes: {},
   decorators: [],
+  runtime: "@atrilabs/canvas-runtime",
 };
