@@ -10,5 +10,6 @@ module.exports = {
   },
   exposes: {},
   decorators: [],
-  runtime: "@atrilabs/canvas-runtime",
+  runtime: { pkg: "@atrilabs/canvas-runtime" },
+  manifestSchema: [{ pkg: "@atrilabs/component-icon-manifest-schema" }],
 };
