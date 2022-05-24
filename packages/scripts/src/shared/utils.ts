@@ -697,16 +697,18 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
     const copyDest = path.resolve(outDir, relativePath);
     const copyDestDir = path.dirname(copyDest);
     const copyPromise = new Promise<void>((res) => {
-      fs.promises.stat(copyDestDir).then((stat) => {
-        if (stat === undefined) {
+      fs.promises
+        .stat(copyDestDir)
+        .catch(() => {
           fs.promises.mkdir(copyDestDir, { recursive: true });
-        }
-        fs.promises.readFile(file).then((value) => {
-          fs.promises.writeFile(copyDest, value).then(() => {
-            res();
+        })
+        .finally(() => {
+          fs.promises.readFile(file).then((value) => {
+            fs.promises.writeFile(copyDest, value).then(() => {
+              res();
+            });
           });
         });
-      });
     });
     copyPromsies.push(copyPromise);
   }

@@ -4,6 +4,7 @@ import {
   gray300,
   gray700,
   gray800,
+  gray900,
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
@@ -33,7 +34,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray300,
     margin: 0,
   },
-  // =============icons====================
+  // =============header icons====================
   icons: {
     display: "flex",
     alignItems: "center",
@@ -46,6 +47,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "pointer",
     width: "1.3rem",
     height: "100% !important",
+  },
+  // ===============main layout=====================
+  mainContainer: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+  },
+  compContainer: {
+    border: `1px solid ${gray900}`,
+    padding: "1rem 0",
   },
 };
 
@@ -79,14 +89,17 @@ export default function () {
                 </span>
               </div>
             </header>
-            {components.map((comp, index) => {
-              return (
-                <comp.component.panel.icon
-                  {...comp.component.panel.props}
-                  key={comp.pkg + index}
-                />
-              );
-            })}
+            <div style={styles.mainContainer}>
+              {components.map((comp, index) => {
+                return (
+                  <div style={styles.compContainer} key={comp.pkg + index}>
+                    <comp.component.panel.icon
+                      {...comp.component.panel.props}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </Container>
       ) : null}
