@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { gray700, gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
-import { currentForest, setCurrentForest } from "@atrilabs/core";
 import { useDropContainer } from "./hooks/useDropContainer";
 import { useCanvasContainer } from "./hooks/useCanvasContainer";
 
@@ -66,16 +65,6 @@ export const BaseContainer: React.FC = () => {
   const publishMenuItems = usePublishMenu();
   const dropContainerItem = useDropContainer();
   const canvasContainerItem = useCanvasContainer();
-  useEffect(() => {
-    currentForest.on("reset", () => {
-      console.log("current foreset reset");
-    });
-  }, []);
-  useEffect(() => {
-    setCurrentForest("page", "1").then((forest) => {
-      console.log(forest);
-    });
-  }, []);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
