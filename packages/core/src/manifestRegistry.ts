@@ -9,6 +9,14 @@ const manifestRegistrySubscribers: (() => void)[] = [];
 
 function subscribe(cb: () => void) {
   manifestRegistrySubscribers.push(cb);
+  return () => {
+    const index = manifestRegistrySubscribers.findIndex((curr) => {
+      return curr === cb;
+    });
+    if (index >= 0) {
+      manifestRegistrySubscribers.splice(index, 1);
+    }
+  };
 }
 
 function readManifestRegistry() {

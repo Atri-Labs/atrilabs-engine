@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Container, Menu, manifestRegistryController } from "@atrilabs/core";
+import { Container, Menu } from "@atrilabs/core";
 import {
   gray300,
   gray700,
@@ -9,6 +9,7 @@ import {
 } from "@atrilabs/design-system";
 import { ReactComponent as Insert } from "./assets/insert.svg";
 import { Cross } from "./assets/Cross";
+import { useManifestRegistry } from "./hooks/useManifestRegistry";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -56,7 +57,8 @@ export default function () {
   const closeContainer = useCallback(() => {
     setShowInsertPanel(false);
   }, []);
-  console.log(manifestRegistryController.readManifestRegistry());
+
+  const components = useManifestRegistry();
   return (
     <>
       <Menu name="PageMenu">
@@ -77,6 +79,14 @@ export default function () {
                 </span>
               </div>
             </header>
+            {components.map((comp, index) => {
+              return (
+                <comp.component.panel.icon
+                  {...comp.component.panel.props}
+                  key={comp.pkg + index}
+                />
+              );
+            })}
           </div>
         </Container>
       ) : null}
