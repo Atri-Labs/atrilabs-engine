@@ -30,11 +30,11 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/app-design-forest": "^0.0.3",
     "@atrilabs/app-design-layer": "^0.0.3",
     "@atrilabs/app-page-layer": "^0.0.3",
     "@atrilabs/atri-icon-layer": "^0.0.3",
     "@atrilabs/base-layer": "^0.0.3",
-    "@atrilabs/basic-trees": "^0.0.3",
     "@atrilabs/canvas-runtime": "^0.0.3",
     "@atrilabs/component-icon-manifest-schema": "^0.0.3",
     "@atrilabs/component-list-layer": "^0.0.3",

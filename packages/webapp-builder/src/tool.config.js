@@ -3,12 +3,12 @@ const path = require("path");
 const forestsConfig = {
   page: [
     {
-      pkg: "@atrilabs/basic-trees",
+      pkg: "@atrilabs/app-design-forest",
       modulePath: "lib/componentTree.js",
       name: "componentTree",
     },
     {
-      pkg: "@atrilabs/basic-trees",
+      pkg: "@atrilabs/app-design-forest",
       modulePath: "lib/cssTree.js",
       name: "cssTree",
     },
