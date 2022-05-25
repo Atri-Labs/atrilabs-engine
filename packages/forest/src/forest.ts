@@ -23,32 +23,28 @@ export async function createForest(def: ForestDef): Promise<Forest> {
 
   // create a map for easily accessing a tree when an event arrives
   const defaultFnMap: { [treeId: string]: TreeDefReturnType } = {};
-  // key = treeId, value = short name
-  const shortNameMap: { [treeId: string]: string } = {};
   treeDefs.forEach((def) => {
-    const id = `${def.pkg}$$${def.modulePath}`;
+    const id = def.modulePath;
     defaultFnMap[id] = def.defFn();
-    shortNameMap[id] = def.name;
   });
 
   const isRootTree = (treeId: string) => {
-    if (treeId === `${rootDef.pkg}$$${rootDef.modulePath}`) {
+    if (treeId === rootDef.modulePath) {
       return true;
     }
     return false;
   };
 
   // create an empty map of trees to be filled once API for forest is ready below
-  const treeMap: { [name: string]: Tree } = {};
+  const treeMap: { [treeId: string]: Tree } = {};
 
   /**
    * EXPOSE API
    */
-  const name = def.name;
 
   // get a tree by it's name
-  function tree(name: string) {
-    return treeMap[name];
+  function tree(treeId: string) {
+    return treeMap[treeId];
   }
 
   // record all link events in the forest to process unlink
@@ -60,8 +56,7 @@ export async function createForest(def: ForestDef): Promise<Forest> {
       const createEvent = event as CreateEvent;
       const treeId = createEvent.type.slice(0, "CREATE$$".length);
       if (defaultFnMap[treeId]!.validateCreate(createEvent)) {
-        const shortName = shortNameMap[treeId]!;
-        treeMap[shortName]!.nodes[createEvent.id] = {
+        treeMap[treeId]!.nodes[createEvent.id] = {
           id: createEvent.id,
           meta: createEvent.meta,
           state: createEvent.state,
@@ -72,9 +67,8 @@ export async function createForest(def: ForestDef): Promise<Forest> {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice(0, "PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
-        const shortName = shortNameMap[treeId]!;
         merge(
-          treeMap[shortName]!.nodes[patchEvent.id]!["state"],
+          treeMap[treeId]!.nodes[patchEvent.id]!["state"],
           patchEvent.slice
         );
       }
@@ -91,8 +85,7 @@ export async function createForest(def: ForestDef): Promise<Forest> {
           });
         }
       }
-      const shortName = shortNameMap[treeId]!;
-      delete treeMap[shortName]!.nodes[delEvent.id];
+      delete treeMap[treeId]!.nodes[delEvent.id];
     }
     if (event.type.startsWith("LINK")) {
       const linkEvent = event as LinkEvent;
@@ -138,12 +131,12 @@ export async function createForest(def: ForestDef): Promise<Forest> {
     handleEvent(event);
   }
 
-  const forest = { name, tree, create, patch, del, link, unlink, handleEvent };
+  const forest = { tree, create, patch, del, link, unlink, handleEvent };
 
   // create trees and add it to the map
   treeDefs.forEach((def) => {
     const tree = createTree(def, forest);
-    treeMap[def.name] = tree;
+    treeMap[def.modulePath] = tree;
   });
 
   return forest;

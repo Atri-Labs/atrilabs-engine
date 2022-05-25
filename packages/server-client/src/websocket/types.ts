@@ -6,6 +6,8 @@ export type Folder = {
   parentId: string;
 };
 
+// A Page is an actual instance of forest
+// Page["id"] === forestId
 export type Page = {
   id: string;
   name: string;
@@ -15,41 +17,41 @@ export type Page = {
 export interface ServerToClientEvents {}
 
 export interface ClientToServerEvents {
-  getMeta: (forestName: string, callback: (meta: any) => void) => void;
+  getMeta: (forestPkgId: string, callback: (meta: any) => void) => void;
   createFolder: (
-    forestName: string,
+    forestPkgId: string,
     folder: Folder,
     callback: (success: boolean) => void
   ) => void;
   updateFolder: (
-    forestName: string,
+    forestPkgId: string,
     id: Folder["id"],
     update: Partial<Omit<Folder, "id">>,
     callback: (success: boolean) => void
   ) => void;
   deleteFolder: (
-    forestName: string,
+    forestPkgId: string,
     id: Folder["id"],
     callback: (success: boolean) => void
   ) => void;
   getPages: (
-    forestname: string,
+    forestPkgId: string,
     callback: (page: PagesDbSchema) => void
   ) => void;
   createPage: (
-    forestName: string,
+    forestPkgId: string,
     page: Page,
     callback: (success: boolean) => void
   ) => void;
   updatePage: (
-    forestName: string,
+    forestPkgId: string,
     pageId: Page["id"],
     update: Partial<Omit<Page, "id">>,
     callback: (success: boolean) => void
   ) => void;
   deletePage: (
-    forestName: string,
-    id: Page["id"],
+    forestPkgId: string,
+    pageId: Page["id"],
     callback: (success: boolean) => void
   ) => void;
 }

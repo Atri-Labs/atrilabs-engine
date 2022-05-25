@@ -29,7 +29,6 @@ export type Tree = {
 };
 
 export type Forest = {
-  name: string;
   tree: (name: string) => Tree | undefined;
   create: (event: CreateEvent) => void;
   patch: (event: PatchEvent) => void;
@@ -76,14 +75,16 @@ export type TreeDefReturnType = {
 };
 
 export type TreeDef = {
-  pkg: string;
+  // id will be computed from modulePath
+  id: string;
   modulePath: string;
-  name: string;
   defFn: () => TreeDefReturnType;
 };
 
 export type ForestDef = {
-  name: string;
+  // id will be computed from pkg
+  id: string;
+  pkg: string;
   trees: TreeDef[];
 };
 
@@ -120,5 +121,5 @@ export type ForestManager = {
 };
 
 export type ForestsConfig = {
-  [name: string]: Pick<TreeDef, "name" | "pkg" | "modulePath">[];
+  [name: string]: TreeDef[];
 };

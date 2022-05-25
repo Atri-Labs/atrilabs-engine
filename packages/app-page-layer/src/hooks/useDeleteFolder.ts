@@ -5,7 +5,7 @@ import { useCallback } from "react";
 export const useSocketApi = () => {
   const onDeleteFolderCb = useCallback(
     (id: string, onSuccess: () => void, onFailure: () => void) => {
-      deleteFolder(currentForest.name, id, onSuccess, onFailure);
+      deleteFolder(currentForest.forestPkg, id, onSuccess, onFailure);
     },
     []
   );

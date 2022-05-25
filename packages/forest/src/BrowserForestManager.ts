@@ -16,38 +16,40 @@ type Callback = () => void;
 type Unsubscribe = () => void;
 
 type CurrentForest = Forest & {
+  forestPkgId: string;
   on: (event: "reset", cb: Callback) => Unsubscribe;
 };
 
 export function createBrowserForestManager(defs: ForestDef[]) {
-  const forestMap: { [name: string]: { [page: string]: Forest } } = {};
+  const forestMap: { [forestPkgId: string]: { [forestId: string]: Forest } } =
+    {};
 
-  let _currentForest: Forest;
+  let _currentForest: Forest & { forestPkgId: string };
 
-  async function setCurrentForest(name: string, pageId: string) {
-    if (forestMap[name] === undefined) {
-      forestMap[name] = {};
+  async function setCurrentForest(forestPkgId: string, forestId: string) {
+    if (forestMap[forestPkgId] === undefined) {
+      forestMap[forestPkgId] = {};
     }
-    if (forestMap[name]![pageId] === undefined) {
+    if (forestMap[forestPkgId]![forestId] === undefined) {
       try {
-        const def = defs.find((def) => def.name === name);
+        const def = defs.find((def) => def.pkg === forestPkgId);
         if (def) {
           const forest = await createForest(def);
-          forestMap[name]![pageId] = forest;
+          forestMap[forestPkgId]![forestId] = forest;
         } else {
-          console.error(`A forest definition with name ${name} not found`);
+          console.error(`Forest package with id ${forestPkgId} not found`);
           return;
         }
       } catch (err) {
-        console.error(`Failed to load page with id ${pageId}`);
+        console.error(`Failed to load forest with id ${forestId}`);
         return;
       }
     }
-    _currentForest = forestMap[name]![pageId]!;
+    _currentForest = { ...forestMap[forestPkgId]![forestId]!, forestPkgId };
     onResetListeners.forEach((cb) => {
       cb();
     });
-    return forestMap[name]![pageId]!;
+    return forestMap[forestPkgId]![forestId]!;
   }
 
   // create current forest
@@ -62,11 +64,11 @@ export function createBrowserForestManager(defs: ForestDef[]) {
   };
   // implement the same api as forest
   const currentForest: CurrentForest = {
-    get name() {
-      return _currentForest.name;
+    get forestPkgId() {
+      return _currentForest.forestPkgId;
     },
-    tree: (name: string) => {
-      return _currentForest.tree(name);
+    tree: (treeId: string) => {
+      return _currentForest.tree(treeId);
     },
     create: (event: CreateEvent) => {
       return _currentForest.create(event);

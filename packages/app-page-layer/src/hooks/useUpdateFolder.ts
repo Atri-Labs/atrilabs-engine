@@ -10,7 +10,7 @@ export const useSocketApi = () => {
       onSuccess: () => void,
       onFailure: () => void
     ) => {
-      updateFolder(currentForest.name, id, update, onSuccess, onFailure);
+      updateFolder(currentForest.forestPkg, id, update, onSuccess, onFailure);
     },
     []
   );

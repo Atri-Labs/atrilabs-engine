@@ -35,7 +35,7 @@ export type RuntimeConfig = {
 };
 
 export type ForestsConfig = {
-  [forestName: string]: { pkg: string; modulePath: string; name: string }[];
+  [forestId: string]: { pkg: string }[];
 };
 
 export type ToolConfig = {

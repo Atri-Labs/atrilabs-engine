@@ -116,10 +116,10 @@ function reversePageMap(raw: RawPageMap) {
 const useSocketApi = () => {
   const [data, setData] = useState<PageTableData>([]);
   const loadData = useCallback(() => {
-    getMeta(currentForest.name, (meta) => {
+    getMeta(currentForest.forestPkg, (meta) => {
       const folders: RawFolders = meta.folders;
       const pageMap: RawPageMap = meta.pages;
-      getPages(currentForest.name, (pages) => {
+      getPages(currentForest.forestPkg, (pages) => {
         const data: PageTableData = [];
         const pageMapRev = reversePageMap(pageMap);
         // root folder might not have any child folder, hence, []

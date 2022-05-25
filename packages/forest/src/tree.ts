@@ -1,7 +1,7 @@
 import { Tree, TreeDef, Forest } from "./types";
 
 export function createTree(treeDef: TreeDef, forest: Forest) {
-  const eventSuffix = `$$${treeDef.pkg}$$${treeDef.modulePath}`;
+  const eventSuffix = treeDef.id;
   const tree: Tree = {
     nodes: {},
     links: {},
