@@ -7,23 +7,24 @@ const path = require("path");
  * @return <package_name>/<relative_path_to_module> or <package_name>
  */
 function generateModuleId(source) {
-  const sourcePath = require.resolve(source);
-  const packageJSONfinder = finder(sourcePath).next();
-  const packageJSONPath = packageJSONfinder.filename;
-  const packageJSON = packageJSONfinder.value;
-  const packageName = packageJSON["name"];
-  const relativeSourcePath = path.relative(
-    path.dirname(packageJSONPath),
-    sourcePath
-  );
-  const unixRelativeSourcePath = relativeSourcePath
-    .split(path.sep)
-    .join(path.posix.sep);
-  // if a package is referred instead of a module, then use package name as id
-  if (source === packageName) {
-    return packageName;
+  try {
+    const sourcePath = require.resolve(source);
+    const packageJSONfinder = finder(sourcePath).next();
+    const packageJSONPath = packageJSONfinder.filename;
+    const packageJSON = packageJSONfinder.value;
+    const packageName = packageJSON["name"];
+    const relativeSourcePath = path.relative(
+      path.dirname(packageJSONPath),
+      sourcePath
+    );
+    const unixRelativeSourcePath = relativeSourcePath
+      .split(path.sep)
+      .join(path.posix.sep);
+    return `${packageName}/${unixRelativeSourcePath}`;
+  } catch (err) {
+    // if a package is referred instead of a module, then use package name as id
+    return source;
   }
-  return `${packageName}/${unixRelativeSourcePath}`;
 }
 
 module.exports = generateModuleId;

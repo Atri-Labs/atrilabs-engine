@@ -20,15 +20,15 @@ function treeId(tree) {
 
 /**
  *
- * @param {{[forestPkgId: string]: {modulePath: string;}[]}} forests
+ * @param {{[forestPkg: string]: {modulePath: string;}[]}} forests
  * @returns {{[modulePath: string]: {localIdentifier: string, treeId: string}}}
  */
 function generateImportMap(forests) {
-  const forestNames = Object.keys(forests);
+  const forestPkgs = Object.keys(forests);
   let treeCount = 1;
   const treeImportMap = {};
-  forestNames.forEach((forestPkgId) => {
-    const forest = forests[forestPkgId];
+  forestPkgs.forEach((forestPkg) => {
+    const forest = forests[forestPkg];
     forest.forEach((tree) => {
       treeImportMap[tree.modulePath] = {
         localIdentifier: "tree" + treeCount++,
@@ -109,7 +109,7 @@ function generateForestDefArray(t, forests, treeImportMap) {
       t.identifier("pkg"),
       t.stringLiteral(forestPkg)
     );
-    const trees = forests[forestName];
+    const trees = forests[forestPkg];
     const treesProp = t.objectProperty(
       t.identifier("trees"),
       generateTreeDefArray(t, trees, treeImportMap)

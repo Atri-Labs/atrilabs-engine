@@ -4,6 +4,7 @@ import { currentForest, setCurrentForest } from "@atrilabs/core";
 import { Container, Menu } from "@atrilabs/core";
 import { ReactComponent as DesignIcon } from "./assets/design-icon.svg";
 import { gray800, IconMenu } from "@atrilabs/design-system";
+import AppDesginForestId from "@atrilabs/app-design-forest?id";
 
 export default function () {
   console.log("app-design-layer loaded");
@@ -13,7 +14,7 @@ export default function () {
     });
   }, []);
   useEffect(() => {
-    setCurrentForest("page", "home").then((forest) => {
+    setCurrentForest(AppDesginForestId, "home").then((forest) => {
       console.log(forest);
     });
   }, []);
