@@ -23,81 +23,81 @@ function handleSuccess(
   }
 }
 
-export function getMeta(forestname: string, onData: (meta: any) => void) {
-  socket.emit("getMeta", forestname, onData);
+export function getMeta(forestPkgId: string, onData: (meta: any) => void) {
+  socket.emit("getMeta", forestPkgId, onData);
 }
 
 export function getPages(
-  forestname: string,
+  forestPkgId: string,
   onData: (pages: PagesDbSchema) => void
 ) {
-  socket.emit("getPages", forestname, onData);
+  socket.emit("getPages", forestPkgId, onData);
 }
 
 export function createFolder(
-  forestname: string,
+  forestPkgId: string,
   folder: Folder,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("createFolder", forestname, folder, (success) => {
+  socket.emit("createFolder", forestPkgId, folder, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function updateFolder(
-  forestname: string,
+  forestPkgId: string,
   id: string,
   update: Partial<Omit<Folder, "id">>,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("updateFolder", forestname, id, update, (success) => {
+  socket.emit("updateFolder", forestPkgId, id, update, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function createPage(
-  forestname: string,
+  forestPkgId: string,
   page: Page,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("createPage", forestname, page, (success) => {
+  socket.emit("createPage", forestPkgId, page, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function updatePage(
-  forestname: string,
+  forestPkgId: string,
   id: string,
   update: Partial<Omit<Page, "id">>,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("updatePage", forestname, id, update, (success) => {
+  socket.emit("updatePage", forestPkgId, id, update, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function deletePage(
-  forestname: string,
+  forestPkgId: string,
   id: string,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("deletePage", forestname, id, (success) => {
+  socket.emit("deletePage", forestPkgId, id, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }
 
 export function deleteFolder(
-  forestname: string,
+  forestPkgId: string,
   id: string,
   onSuccess: () => void,
   onFailure: () => void
 ) {
-  socket.emit("deleteFolder", forestname, id, (success) => {
+  socket.emit("deleteFolder", forestPkgId, id, (success) => {
     handleSuccess(success, onSuccess, onFailure);
   });
 }

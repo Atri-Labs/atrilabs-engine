@@ -17,6 +17,7 @@ type Unsubscribe = () => void;
 
 type CurrentForest = Forest & {
   forestPkgId: string;
+  forestId: string;
   on: (event: "reset", cb: Callback) => Unsubscribe;
 };
 
@@ -24,7 +25,7 @@ export function createBrowserForestManager(defs: ForestDef[]) {
   const forestMap: { [forestPkgId: string]: { [forestId: string]: Forest } } =
     {};
 
-  let _currentForest: Forest & { forestPkgId: string };
+  let _currentForest: Forest & { forestPkgId: string; forestId: string };
 
   async function setCurrentForest(forestPkgId: string, forestId: string) {
     if (forestMap[forestPkgId] === undefined) {
@@ -45,7 +46,11 @@ export function createBrowserForestManager(defs: ForestDef[]) {
         return;
       }
     }
-    _currentForest = { ...forestMap[forestPkgId]![forestId]!, forestPkgId };
+    _currentForest = {
+      ...forestMap[forestPkgId]![forestId]!,
+      forestPkgId,
+      forestId,
+    };
     onResetListeners.forEach((cb) => {
       cb();
     });
@@ -66,6 +71,9 @@ export function createBrowserForestManager(defs: ForestDef[]) {
   const currentForest: CurrentForest = {
     get forestPkgId() {
       return _currentForest.forestPkgId;
+    },
+    get forestId() {
+      return _currentForest.forestId;
     },
     tree: (treeId: string) => {
       return _currentForest.tree(treeId);
