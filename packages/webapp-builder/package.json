@@ -38,6 +38,7 @@
     "@atrilabs/canvas-runtime": "^0.0.3",
     "@atrilabs/component-icon-manifest-schema": "^0.0.3",
     "@atrilabs/component-list-layer": "^0.0.3",
+    "@atrilabs/design-system": "^0.0.3",
     "@atrilabs/forest": "^0.0.3",
     "@atrilabs/layer-types": "^0.0.3",
     "@atrilabs/react-component-manifest-schema": "^0.0.3",
