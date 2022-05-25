@@ -59,50 +59,52 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   }
 
   io.on("connection", (socket) => {
-    socket.on("getMeta", (forestname, callback) => {
-      const meta = getMeta(forestname);
+    socket.on("getMeta", (forestPkgId, callback) => {
+      const meta = getMeta(forestPkgId);
+      // pre-call getPages to do a first time setup if needed
+      getPages(forestPkgId);
       callback(meta);
     });
-    socket.on("getPages", (forestname, callback) => {
-      const pages = getPages(forestname);
+    socket.on("getPages", (forestPkgId, callback) => {
+      const pages = getPages(forestPkgId);
       callback(pages);
     });
-    socket.on("createFolder", (forestname, folder, callback) => {
+    socket.on("createFolder", (forestPkgId, folder, callback) => {
       console.log(folder);
-      if (getEventManager(forestname)) {
-        const meta = getMeta(forestname);
+      if (getEventManager(forestPkgId)) {
+        const meta = getMeta(forestPkgId);
         meta["folders"][folder.id] = folder;
-        getEventManager(forestname)!.updateMeta(meta);
+        getEventManager(forestPkgId)!.updateMeta(meta);
         callback(true);
       } else {
         callback(false);
       }
     });
-    socket.on("createPage", (forestname, page, callback) => {
-      if (getEventManager(forestname)) {
-        const meta = getMeta(forestname);
+    socket.on("createPage", (forestPkgId, page, callback) => {
+      if (getEventManager(forestPkgId)) {
+        const meta = getMeta(forestPkgId);
         // folder should exist already
         if (meta["folders"][page.folderId]) {
           const foldername = meta["folders"][page.folderId].name;
           // TODO: route must follow the hierarchy of folders, not just the immidiate folder
           const route = `/${foldername}/${page.name}`;
           meta["pages"][page.id] = page.folderId;
-          getEventManager(forestname)!.createPage(page.id, page.name, route);
+          getEventManager(forestPkgId)!.createPage(page.id, page.name, route);
           callback(true);
         } else {
           callback(false);
         }
       }
     });
-    socket.on("updateFolder", (forestname, id, update, callback) => {
-      const eventManager = getEventManager(forestname)!;
+    socket.on("updateFolder", (forestPkgId, id, update, callback) => {
+      const eventManager = getEventManager(forestPkgId)!;
       const meta = eventManager.meta();
       meta["folders"][id] = { ...meta["folders"][id], ...update };
       eventManager.updateMeta(meta);
       callback(true);
     });
-    socket.on("updatePage", (forestname, id, update, callback) => {
-      const eventManager = getEventManager(forestname)!;
+    socket.on("updatePage", (forestPkgId, id, update, callback) => {
+      const eventManager = getEventManager(forestPkgId)!;
       if (update.folderId) {
         const meta = eventManager.meta();
         meta["pages"][id] = update.folderId;
@@ -113,8 +115,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       }
       callback(true);
     });
-    socket.on("deleteFolder", (forestname, id, callback) => {
-      const eventManager = getEventManager(forestname)!;
+    socket.on("deleteFolder", (forestPkgId, id, callback) => {
+      const eventManager = getEventManager(forestPkgId)!;
       const meta = eventManager.meta();
       const folders = meta["folders"];
       if (folders[id]) {
@@ -136,8 +138,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         callback(false);
       }
     });
-    socket.on("deletePage", (forestname, id, callback) => {
-      const eventManager = getEventManager(forestname)!;
+    socket.on("deletePage", (forestPkgId, id, callback) => {
+      const eventManager = getEventManager(forestPkgId)!;
       const meta = eventManager.meta();
       if (meta["pages"][id]) {
         delete meta["pages"][id];

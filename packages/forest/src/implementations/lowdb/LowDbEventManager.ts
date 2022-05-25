@@ -208,7 +208,7 @@ function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
   if (openDbs.events![pageId]) {
     return openDbs.events![pageId]!;
   }
-  const eventsFile = path.resolve(dbDir, pageId, "events.json");
+  const eventsFile = eventFile(dbDir, pageId);
   const eventsDb = Lowdb(new FileSync<EvensDbSchema>(eventsFile));
   eventsDb.read();
   openDbs.events![pageId] = eventsDb;
@@ -221,6 +221,15 @@ function deleteEventsDb(dbDir: string, pageId: string) {
     const eventsFilename = eventFile(dbDir, pageId);
     if (fs.existsSync(eventsFilename))
       fs.rmSync(path.dirname(eventsFilename), { force: true });
+  }
+}
+
+function createEventsFile(filePath: string, content: string) {
+  if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync(path.dirname(filePath))) {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    }
+    fs.writeFileSync(filePath, content);
   }
 }
 
@@ -269,6 +278,8 @@ export default function createLowDbEventManager(
       return;
     }
     pagesDb.getState()[id] = { name, route };
+    const eventsFile = eventFile(dbDir, id);
+    createEventsFile(eventsFile, "[]");
   }
 
   function renamePage(id: PageId, name: string) {
