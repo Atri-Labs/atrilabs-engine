@@ -10,7 +10,7 @@ export const useSocketApi = () => {
       onSuccess: () => void,
       onFailure: () => void
     ) => {
-      updatePage(currentForest.forestPkg, id, update, onSuccess, onFailure);
+      updatePage(currentForest.forestPkgId, id, update, onSuccess, onFailure);
     },
     []
   );

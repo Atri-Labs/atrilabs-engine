@@ -6,7 +6,7 @@ export const useSocketApi = () => {
   const createFolderCb = useCallback(
     (name: string, onSuccess: () => void, onFailure: () => void) => {
       createFolder(
-        currentForest.forestPkg,
+        currentForest.forestPkgId,
         { name: name, id: getId(), parentId: "root" },
         onSuccess,
         onFailure

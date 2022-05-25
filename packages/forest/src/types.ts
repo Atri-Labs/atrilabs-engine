@@ -121,5 +121,5 @@ export type ForestManager = {
 };
 
 export type ForestsConfig = {
-  [name: string]: TreeDef[];
+  [forestPkg: string]: Pick<TreeDef, "modulePath">[];
 };

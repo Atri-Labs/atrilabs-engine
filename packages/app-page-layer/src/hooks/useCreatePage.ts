@@ -11,7 +11,7 @@ export const useSocketApi = () => {
       onFailure: () => void
     ) => {
       createPage(
-        currentForest.forestPkg,
+        currentForest.forestPkgId,
         { name: name, id: getId(), folderId: folderId },
         onSuccess,
         onFailure
