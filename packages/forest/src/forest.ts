@@ -26,13 +26,13 @@ export async function createForest(def: ForestDef): Promise<Forest> {
   // key = treeId, value = short name
   const shortNameMap: { [treeId: string]: string } = {};
   treeDefs.forEach((def) => {
-    const id = `${def.modulePath}$$${def.pkg}`;
+    const id = `${def.pkg}$$${def.modulePath}`;
     defaultFnMap[id] = def.defFn();
     shortNameMap[id] = def.name;
   });
 
   const isRootTree = (treeId: string) => {
-    if (treeId === `${rootDef.modulePath}$$${rootDef.pkg}`) {
+    if (treeId === `${rootDef.pkg}$$${rootDef.modulePath}`) {
       return true;
     }
     return false;

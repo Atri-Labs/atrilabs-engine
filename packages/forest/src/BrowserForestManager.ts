@@ -19,7 +19,7 @@ type CurrentForest = Forest & {
   on: (event: "reset", cb: Callback) => Unsubscribe;
 };
 
-export function createForestManager(defs: ForestDef[]) {
+export function createBrowserForestManager(defs: ForestDef[]) {
   const forestMap: { [name: string]: { [page: string]: Forest } } = {};
 
   let _currentForest: Forest;
