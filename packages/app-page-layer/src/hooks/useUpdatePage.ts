@@ -1,6 +1,7 @@
 import { BrowserForestManager } from "@atrilabs/core";
-import { Page, updatePage } from "@atrilabs/server-client/lib/websocket";
+import { updatePage } from "@atrilabs/server-client/lib/websocket";
 import { useCallback } from "react";
+import { Page } from "@atrilabs/forest";
 
 export const useSocketApi = () => {
   const updatePageCb = useCallback(

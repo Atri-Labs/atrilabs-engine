@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
+import { Folder } from "@atrilabs/forest";
 
 /**
  * NOTE: A layer entry function must return Container, Menu, Tab
@@ -125,4 +127,18 @@ export type ManifestRegistry = {
     schema: ManifestSchema;
     components: { pkg: string; component: any }[];
   };
+};
+
+export type BrowserClient = {
+  getMeta: (forestPkgId: string, onData: (meta: any) => void) => void;
+  getPage: (
+    forestPkgId: string,
+    onData: (pages: PagesDbSchema) => void
+  ) => void;
+  createFolder: (
+    forestPkgId: string,
+    folder: Folder,
+    onSuccess: () => void,
+    onFailure: () => void
+  ) => void;
 };

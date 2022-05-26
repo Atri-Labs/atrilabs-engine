@@ -1,19 +1,5 @@
-import { AnyEvent } from "@atrilabs/forest";
+import { AnyEvent, Folder, Page } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
-
-export type Folder = {
-  id: string;
-  name: string;
-  parentId: string;
-};
-
-// A Page is an actual instance of forest
-// Page["id"] === forestId
-export type Page = {
-  id: string;
-  name: string;
-  folderId: string;
-};
 
 export interface ServerToClientEvents {
   newEvent: (

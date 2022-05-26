@@ -1,12 +1,7 @@
-import { AnyEvent } from "@atrilabs/forest";
+import { AnyEvent, Folder, Page } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 import { io, Socket } from "socket.io-client";
-import {
-  ClientToServerEvents,
-  Folder,
-  Page,
-  ServerToClientEvents,
-} from "./types";
+import { ClientToServerEvents, ServerToClientEvents } from "./types";
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string

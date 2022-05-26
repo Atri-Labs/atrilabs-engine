@@ -2,7 +2,7 @@ import Lowdb, { LowdbSync } from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import path from "path";
 import fs from "fs";
-import { AnyEvent, EventManager, PageId } from "../../types";
+import { AnyEvent, EventManager, Page } from "../../types";
 import {
   AliasDbSchema,
   PagesDbSchema,
@@ -269,8 +269,8 @@ export default function createLowDbEventManager(
     return pagesDb.getState();
   }
 
-  function createPage(id: PageId, name: string, route: string) {
-    // do nothing if a page with id PageId already exists
+  function createPage(id: Page["id"], name: string, route: string) {
+    // do nothing if a page with id Page["id"] already exists
     if (pagesDb.getState()[id]) {
       console.log(
         `Error: Page with id ${id} already exists. Cannot create a new page.`
@@ -282,7 +282,7 @@ export default function createLowDbEventManager(
     createEventsFile(eventsFile, "[]");
   }
 
-  function renamePage(id: PageId, name: string) {
+  function renamePage(id: Page["id"], name: string) {
     if (!pagesDb.getState()[id]) {
       console.log(`Error: Page with id ${id} does not exist. Cannot rename.`);
       return;
@@ -290,7 +290,7 @@ export default function createLowDbEventManager(
     pagesDb.getState()[id]!["name"] = name;
   }
 
-  function changeRoute(id: PageId, route: string) {
+  function changeRoute(id: Page["id"], route: string) {
     if (!pagesDb.getState()[id]) {
       console.log(
         `Error: Page with id ${id} does not exist. Cannot change route.`
@@ -300,25 +300,25 @@ export default function createLowDbEventManager(
     pagesDb.getState()[id]!["route"] = route;
   }
 
-  function deletePage(id: PageId) {
+  function deletePage(id: Page["id"]) {
     const pages = pagesDb.getState();
     delete pages[id];
     pagesDb.setState(pages);
     deleteEventsDb(dbDir, id);
   }
 
-  function storeEvent(pageId: PageId, event: AnyEvent) {
+  function storeEvent(pageId: Page["id"], event: AnyEvent) {
     const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.getState().push(event);
   }
 
-  function fetchEvents(pageId: PageId): AnyEvent[] {
+  function fetchEvents(pageId: Page["id"]): AnyEvent[] {
     // open pages db if not already open
     const eventsDb = getEventsDb(dbDir, pageId);
     return eventsDb.getState();
   }
 
-  function writeBackCompressedEvents(pageId: PageId, events: AnyEvent[]) {
+  function writeBackCompressedEvents(pageId: Page["id"], events: AnyEvent[]) {
     const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.setState(events);
   }

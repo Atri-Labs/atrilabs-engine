@@ -85,7 +85,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         const meta = getMeta(forestPkgId);
         // folder should exist already
         if (meta["folders"][page.folderId]) {
-          const foldername = meta["folders"][page.folderId].name;
+          const foldername = meta["folders"][page.folderId]!.name;
           // TODO: route must follow the hierarchy of folders, not just the immidiate folder
           const route = `/${foldername}/${page.name}`;
           meta["pages"][page.id] = page.folderId;
@@ -99,9 +99,11 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     socket.on("updateFolder", (forestPkgId, id, update, callback) => {
       const eventManager = getEventManager(forestPkgId)!;
       const meta = eventManager.meta();
-      meta["folders"][id] = { ...meta["folders"][id], ...update };
-      eventManager.updateMeta(meta);
-      callback(true);
+      if (meta["folders"][id]) {
+        meta["folders"][id] = { ...meta["folders"][id]!, ...update };
+        eventManager.updateMeta(meta);
+        callback(true);
+      } else callback(false);
     });
     socket.on("updatePage", (forestPkgId, id, update, callback) => {
       const eventManager = getEventManager(forestPkgId)!;
