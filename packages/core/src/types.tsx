@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
-import { Folder } from "@atrilabs/forest";
+import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 
 /**
  * NOTE: A layer entry function must return Container, Menu, Tab
@@ -129,16 +128,58 @@ export type ManifestRegistry = {
   };
 };
 
+export type EventSubscriber = (
+  forestPkgId: string,
+  pageId: string,
+  event: AnyEvent
+) => void;
+
 export type BrowserClient = {
-  getMeta: (forestPkgId: string, onData: (meta: any) => void) => void;
-  getPage: (
+  getMeta(forestPkgId: string, onData: (meta: any) => void): void;
+  getPages(
     forestPkgId: string,
-    onData: (pages: PagesDbSchema) => void
-  ) => void;
-  createFolder: (
+    onData: (pages: { [pageId: string]: PageDetails }) => void
+  ): void;
+  createFolder(
     forestPkgId: string,
     folder: Folder,
-    onSuccess: () => void,
-    onFailure: () => void
-  ) => void;
+    callback: (success: boolean) => void
+  ): void;
+  updateFolder(
+    forestPkgId: string,
+    id: string,
+    update: Partial<Omit<Folder, "id">>,
+    callback: (success: boolean) => void
+  ): void;
+  createPage(
+    forestPkgId: string,
+    page: Page,
+    callback: (success: boolean) => void
+  ): void;
+  updatePage(
+    forestPkgId: string,
+    id: string,
+    update: Partial<Omit<Page, "id">>,
+    callback: (success: boolean) => void
+  ): void;
+  deletePage(
+    forestPkgId: string,
+    id: string,
+    callback: (success: boolean) => void
+  ): void;
+  deleteFolder(
+    forestPkgId: string,
+    id: string,
+    callback: (success: boolean) => void
+  ): void;
+  fetchEvents(forestPkgId: string, pageId: string): Promise<void>;
+  postNewEvent(
+    forestPkgId: string,
+    pageId: string,
+    event: AnyEvent,
+    callback: (success: boolean) => void
+  ): void;
+  subscribeEvents(cb: EventSubscriber): () => void;
+  subscribeExternalEvents(cb: EventSubscriber): () => void;
+  subscribeOwnEvents(cb: EventSubscriber): () => void;
 };

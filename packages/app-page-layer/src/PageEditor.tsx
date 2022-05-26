@@ -6,7 +6,7 @@ import {
   h1Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
+import { PageDetails } from "@atrilabs/forest";
 import React, { useCallback, useState } from "react";
 import { CreateFolder } from "./components/CreateFolder";
 import { CreatePage } from "./components/CreatePage";
@@ -85,7 +85,7 @@ export type PageEditorProps = {
   pageTableData: PageTableData;
   loadData: () => void;
   changePageCb: (pageId: string) => void;
-  selectedPage: PagesDbSchema["0"] | null;
+  selectedPage: PageDetails;
 };
 
 export const PageEditor: React.FC<PageEditorProps> = (props) => {

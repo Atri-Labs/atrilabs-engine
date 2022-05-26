@@ -1,119 +1,86 @@
-import { AnyEvent, Folder, Page } from "@atrilabs/forest";
-import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
+import { BrowserClient } from "@atrilabs/core";
+import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 import { io, Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "./types";
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
 );
 
-function handleSuccess(
-  success: boolean,
-  onSuccess: () => void,
-  onFailure: () => void
-) {
-  if (success) {
-    onSuccess();
-  } else {
-    onFailure();
-  }
-}
-
-export function getMeta(forestPkgId: string, onData: (meta: any) => void) {
+function getMeta(forestPkgId: string, onData: (meta: any) => void) {
   socket.emit("getMeta", forestPkgId, onData);
 }
 
-export function getPages(
+function getPages(
   forestPkgId: string,
-  onData: (pages: PagesDbSchema) => void
+  onData: (pages: { [pageId: string]: PageDetails }) => void
 ) {
   socket.emit("getPages", forestPkgId, onData);
 }
 
-export function createFolder(
+function createFolder(
   forestPkgId: string,
   folder: Folder,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("createFolder", forestPkgId, folder, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("createFolder", forestPkgId, folder, callback);
 }
 
-export function updateFolder(
+function updateFolder(
   forestPkgId: string,
   id: string,
   update: Partial<Omit<Folder, "id">>,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("updateFolder", forestPkgId, id, update, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("updateFolder", forestPkgId, id, update, callback);
 }
 
-export function createPage(
+function createPage(
   forestPkgId: string,
   page: Page,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("createPage", forestPkgId, page, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("createPage", forestPkgId, page, callback);
 }
 
-export function updatePage(
+function updatePage(
   forestPkgId: string,
   id: string,
   update: Partial<Omit<Page, "id">>,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("updatePage", forestPkgId, id, update, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("updatePage", forestPkgId, id, update, callback);
 }
 
-export function deletePage(
+function deletePage(
   forestPkgId: string,
   id: string,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("deletePage", forestPkgId, id, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("deletePage", forestPkgId, id, callback);
 }
 
-export function deleteFolder(
+function deleteFolder(
   forestPkgId: string,
   id: string,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("deleteFolder", forestPkgId, id, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("deleteFolder", forestPkgId, id, callback);
 }
 
-export async function fetchEvents(forestPkgId: string, pageId: string) {
+async function fetchEvents(forestPkgId: string, pageId: string) {
   socket.emit("fetchEvents", forestPkgId, pageId, (events) => {
     return events;
   });
 }
 
-export function postNewEvent(
+function postNewEvent(
   forestPkgId: string,
   pageId: string,
   event: AnyEvent,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("postNewEvent", forestPkgId, pageId, event, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("postNewEvent", forestPkgId, pageId, event, callback);
 }
 
 type EventSubscriber = (
@@ -122,7 +89,7 @@ type EventSubscriber = (
   event: AnyEvent
 ) => void;
 const eventSubscribers: EventSubscriber[] = [];
-export function subscribeEvents(cb: EventSubscriber) {
+function subscribeEvents(cb: EventSubscriber) {
   eventSubscribers.push(cb);
   return () => {
     const index = eventSubscribers.findIndex((curr) => curr === cb);
@@ -132,7 +99,7 @@ export function subscribeEvents(cb: EventSubscriber) {
   };
 }
 const externalEventSubscribers: EventSubscriber[] = [];
-export function subscribeExternalEvents(cb: EventSubscriber) {
+function subscribeExternalEvents(cb: EventSubscriber) {
   externalEventSubscribers.push(cb);
   return () => {
     const index = externalEventSubscribers.findIndex((curr) => curr === cb);
@@ -142,7 +109,7 @@ export function subscribeExternalEvents(cb: EventSubscriber) {
   };
 }
 const ownEventSubscribers: EventSubscriber[] = [];
-export function subscribeOwnEvents(cb: EventSubscriber) {
+function subscribeOwnEvents(cb: EventSubscriber) {
   ownEventSubscribers.push(cb);
   return () => {
     const index = ownEventSubscribers.findIndex((curr) => curr === cb);
@@ -160,3 +127,21 @@ socket.on("newEvent", (forestPkgId, pageId, event, socketId) => {
     ownEventSubscribers.forEach((cb) => cb(forestPkgId, pageId, event));
   }
 });
+
+const client: BrowserClient = {
+  getMeta,
+  getPages,
+  createFolder,
+  updateFolder,
+  createPage,
+  updatePage,
+  deletePage,
+  deleteFolder,
+  fetchEvents,
+  postNewEvent,
+  subscribeEvents,
+  subscribeExternalEvents,
+  subscribeOwnEvents,
+};
+
+export default client;

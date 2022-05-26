@@ -14,11 +14,13 @@ export default function () {
     });
   }, []);
   useEffect(() => {
-    BrowserForestManager.setCurrentForest(AppDesginForestId, "home").then(
-      (forest) => {
-        console.log(forest);
-      }
+    const forest = BrowserForestManager.setCurrentForest(
+      AppDesginForestId,
+      "home"
     );
+    if (forest) {
+      console.log(AppDesginForestId, "forestId: home", forest);
+    }
   }, []);
   return (
     <>

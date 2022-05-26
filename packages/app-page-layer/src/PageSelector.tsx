@@ -54,7 +54,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       <span style={styles.span}>
         <ArrowDown />
       </span>
-      {showPageEditor ? (
+      {showPageEditor && selectedPage ? (
         <Container name="Drop">
           <PageEditor
             close={closePageEditor}

@@ -27,7 +27,7 @@ export function createBrowserForestManager(defs: ForestDef[]) {
 
   let _currentForest: Forest & { forestPkgId: string; forestId: string };
 
-  async function setCurrentForest(forestPkgId: string, forestId: string) {
+  function getForest(forestPkgId: string, forestId: string) {
     if (forestMap[forestPkgId] === undefined) {
       forestMap[forestPkgId] = {};
     }
@@ -35,7 +35,7 @@ export function createBrowserForestManager(defs: ForestDef[]) {
       try {
         const def = defs.find((def) => def.pkg === forestPkgId);
         if (def) {
-          const forest = await createForest(def);
+          const forest = createForest(def);
           forestMap[forestPkgId]![forestId] = forest;
         } else {
           console.error(`Forest package with id ${forestPkgId} not found`);
@@ -46,15 +46,22 @@ export function createBrowserForestManager(defs: ForestDef[]) {
         return;
       }
     }
-    _currentForest = {
-      ...forestMap[forestPkgId]![forestId]!,
-      forestPkgId,
-      forestId,
-    };
+    return forestMap[forestPkgId]![forestId];
+  }
+
+  function setCurrentForest(forestPkgId: string, forestId: string) {
+    const forest = getForest(forestPkgId, forestId);
+    if (forest) {
+      _currentForest = {
+        ...forest,
+        forestPkgId,
+        forestId,
+      };
+    }
     onResetListeners.forEach((cb) => {
       cb();
     });
-    return forestMap[forestPkgId]![forestId]!;
+    return forest;
   }
 
   // create current forest
@@ -105,5 +112,5 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     },
   };
 
-  return { setCurrentForest, currentForest };
+  return { getForest, setCurrentForest, currentForest };
 }

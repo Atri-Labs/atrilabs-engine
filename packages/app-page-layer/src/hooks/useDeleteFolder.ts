@@ -1,15 +1,19 @@
-import { BrowserForestManager } from "@atrilabs/core";
-import { deleteFolder } from "@atrilabs/server-client/lib/websocket";
+import { api, BrowserForestManager } from "@atrilabs/core";
 import { useCallback } from "react";
 
 export const useSocketApi = () => {
   const onDeleteFolderCb = useCallback(
     (id: string, onSuccess: () => void, onFailure: () => void) => {
-      deleteFolder(
+      api.deleteFolder(
         BrowserForestManager.currentForest.forestPkgId,
         id,
-        onSuccess,
-        onFailure
+        (success) => {
+          if (success) {
+            onSuccess();
+          } else {
+            onFailure();
+          }
+        }
       );
     },
     []

@@ -1,6 +1,5 @@
-import { BrowserForestManager } from "@atrilabs/core";
+import { api, BrowserForestManager } from "@atrilabs/core";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
-import { getMeta, getPages } from "@atrilabs/server-client/lib/websocket";
 import { useCallback, useEffect, useState } from "react";
 import { PageTableData } from "../types";
 
@@ -39,10 +38,10 @@ function reversePageMap(raw: RawPageMap) {
 export const useGetPageTableData = () => {
   const [data, setData] = useState<PageTableData>([]);
   const loadData = useCallback(() => {
-    getMeta(BrowserForestManager.currentForest.forestPkgId, (meta) => {
+    api.getMeta(BrowserForestManager.currentForest.forestPkgId, (meta) => {
       const folders: RawFolders = meta.folders;
       const pageMap: RawPageMap = meta.pages;
-      getPages(BrowserForestManager.currentForest.forestPkgId, (pages) => {
+      api.getPages(BrowserForestManager.currentForest.forestPkgId, (pages) => {
         const data: PageTableData = [];
         const pageMapRev = reversePageMap(pageMap);
         // root folder might not have any child folder, hence, []
@@ -88,7 +87,7 @@ export const useGetPageTableData = () => {
   useEffect(() => {
     function pageDetailSetter() {
       if (BrowserForestManager.currentForest) {
-        getPages(BrowserForestManager.currentForest.forestPkgId, (data) => {
+        api.getPages(BrowserForestManager.currentForest.forestPkgId, (data) => {
           const pageDetails = data[BrowserForestManager.currentForest.forestId];
           if (pageDetails) {
             setSelectedPage(pageDetails);

@@ -13,7 +13,7 @@ import {
   Forest,
 } from "./types";
 
-export async function createForest(def: ForestDef): Promise<Forest> {
+export function createForest(def: ForestDef): Forest {
   const treeDefs = def.trees;
 
   if (treeDefs.length === 0) {
