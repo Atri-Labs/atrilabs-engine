@@ -1,4 +1,4 @@
-import { currentForest, setCurrentForest } from "@atrilabs/core";
+import { BrowserForestManager } from "@atrilabs/core";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 import { getMeta, getPages } from "@atrilabs/server-client/lib/websocket";
 import { useCallback, useEffect, useState } from "react";
@@ -39,10 +39,10 @@ function reversePageMap(raw: RawPageMap) {
 export const useGetPageTableData = () => {
   const [data, setData] = useState<PageTableData>([]);
   const loadData = useCallback(() => {
-    getMeta(currentForest.forestPkgId, (meta) => {
+    getMeta(BrowserForestManager.currentForest.forestPkgId, (meta) => {
       const folders: RawFolders = meta.folders;
       const pageMap: RawPageMap = meta.pages;
-      getPages(currentForest.forestPkgId, (pages) => {
+      getPages(BrowserForestManager.currentForest.forestPkgId, (pages) => {
         const data: PageTableData = [];
         const pageMapRev = reversePageMap(pageMap);
         // root folder might not have any child folder, hence, []
@@ -87,9 +87,9 @@ export const useGetPageTableData = () => {
   );
   useEffect(() => {
     function pageDetailSetter() {
-      if (currentForest) {
-        getPages(currentForest.forestPkgId, (data) => {
-          const pageDetails = data[currentForest.forestId];
+      if (BrowserForestManager.currentForest) {
+        getPages(BrowserForestManager.currentForest.forestPkgId, (data) => {
+          const pageDetails = data[BrowserForestManager.currentForest.forestId];
           if (pageDetails) {
             setSelectedPage(pageDetails);
           }
@@ -99,7 +99,7 @@ export const useGetPageTableData = () => {
     // set page details if current forest is already set
     pageDetailSetter();
     // subscribe to change page details when currentForest changes
-    const unsub = currentForest.on("reset", () => {
+    const unsub = BrowserForestManager.currentForest.on("reset", () => {
       pageDetailSetter();
     });
     return unsub;
@@ -107,7 +107,10 @@ export const useGetPageTableData = () => {
 
   // a callback to set current forest
   const changePageCb = useCallback((pageId: string) => {
-    setCurrentForest(currentForest.forestPkgId, pageId);
+    BrowserForestManager.setCurrentForest(
+      BrowserForestManager.currentForest.forestPkgId,
+      pageId
+    );
   }, []);
   return { pageTableData: data, loadData, changePageCb, selectedPage };
 };

@@ -4,7 +4,7 @@ export * from "./types";
 
 export * from "./layerSockets";
 
-export * from "./setCurrentForest";
+export * from "./browserForestManager";
 
 export * from "./useTree";
 

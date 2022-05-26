@@ -1,6 +1,6 @@
 import { Tree } from "@atrilabs/forest";
 import { useEffect, useState } from "react";
-import { currentForest } from "./setCurrentForest";
+import { BrowserForestManager } from "./browserForestManager";
 
 /**
  *
@@ -9,7 +9,7 @@ import { currentForest } from "./setCurrentForest";
 export const useTree = (name: string) => {
   const getTree = (name: string) => {
     try {
-      return currentForest.tree(name)!;
+      return BrowserForestManager.currentForest.tree(name)!;
     } catch (err) {
       console.log(err);
       throw Error(`Tree with name ${name} not found in currentForest`);
@@ -19,7 +19,7 @@ export const useTree = (name: string) => {
 
   // listen for reset of current forest
   useEffect(() => {
-    const unsubscribe = currentForest.on("reset", () => {
+    const unsubscribe = BrowserForestManager.currentForest.on("reset", () => {
       setTree(getTree(name));
     });
     return () => {

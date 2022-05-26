@@ -139,14 +139,14 @@ const InternalVisitor = {
 /**
  * The path to layer can be without extension.
  * @param {*} babel
- * @param {{forests: {[pkg: string]: {modulePath: string;}[]}, setCurrentForestFile: string}} options
+ * @param {{forests: {[pkg: string]: {modulePath: string;}[]}, browserForestManagerFile: string}} options
  * @returns
  */
 module.exports = function (babel, options) {
   // check options
   if (
     options.forests === undefined ||
-    options.setCurrentForestFile === undefined
+    options.browserForestManagerFile === undefined
   ) {
     // do nothing if options are incorrect
     return { visitor: {} };
@@ -154,7 +154,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program(path, parent) {
-        if (!parent.filename.match(options.setCurrentForestFile)) {
+        if (!parent.filename.match(options.browserForestManagerFile)) {
           return;
         }
         // add import statements for each tree

@@ -76,8 +76,8 @@ export function getCorePkgInfo(): CorePkgInfo {
   const layerDetailsFile = findFileWithoutExtension(
     path.resolve(dir, "lib", "layerDetails")
   );
-  const setCurrentForestFile = findFileWithoutExtension(
-    path.resolve(dir, "lib", "setCurrentForest")
+  const browserForestManagerFile = findFileWithoutExtension(
+    path.resolve(dir, "lib", "browserForestManager")
   );
   const manifestRegistryFile = findFileWithoutExtension(
     path.resolve(dir, "lib", "manifestRegistry")
@@ -86,7 +86,7 @@ export function getCorePkgInfo(): CorePkgInfo {
     entryFile === undefined ||
     indexFile === undefined ||
     layerDetailsFile === undefined ||
-    setCurrentForestFile === undefined ||
+    browserForestManagerFile === undefined ||
     manifestRegistryFile === undefined
   ) {
     throw Error(
@@ -98,7 +98,7 @@ export function getCorePkgInfo(): CorePkgInfo {
     entryFile,
     indexFile,
     layerDetailsFile,
-    setCurrentForestFile,
+    browserForestManagerFile,
     manifestRegistryFile,
   };
 }

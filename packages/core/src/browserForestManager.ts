@@ -3,5 +3,4 @@ import { ForestDef, createBrowserForestManager } from "@atrilabs/forest";
 // This array is filled by a babel-loader
 const defs: ForestDef[] = [];
 
-export const { setCurrentForest, currentForest } =
-  createBrowserForestManager(defs);
+export const BrowserForestManager = createBrowserForestManager(defs);

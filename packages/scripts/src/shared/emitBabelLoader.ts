@@ -168,7 +168,7 @@ export default function emitBabelLoader(
             [
               path.resolve(__dirname, "..", "babel", "add-forest-defs.js"),
               {
-                setCurrentForestFile: corePkgInfo.setCurrentForestFile,
+                browserForestManagerFile: corePkgInfo.browserForestManagerFile,
                 forests: forestsConfig,
               },
             ],

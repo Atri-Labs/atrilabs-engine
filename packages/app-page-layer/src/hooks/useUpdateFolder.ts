@@ -1,4 +1,4 @@
-import { currentForest } from "@atrilabs/core";
+import { BrowserForestManager } from "@atrilabs/core";
 import { Folder, updateFolder } from "@atrilabs/server-client/lib/websocket";
 import { useCallback } from "react";
 
@@ -10,7 +10,13 @@ export const useSocketApi = () => {
       onSuccess: () => void,
       onFailure: () => void
     ) => {
-      updateFolder(currentForest.forestPkgId, id, update, onSuccess, onFailure);
+      updateFolder(
+        BrowserForestManager.currentForest.forestPkgId,
+        id,
+        update,
+        onSuccess,
+        onFailure
+      );
     },
     []
   );

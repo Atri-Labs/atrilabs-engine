@@ -56,8 +56,9 @@ export type CorePkgInfo = {
   // file that contains information spanning and applicable to all layers
   // such as global name map for menu, tab, containers etc.
   layerDetailsFile: string;
-  // file that contains setCurrentForest function
-  setCurrentForestFile: string;
+  // file that exports browserForestManager function
+  // needed to fill in forest def from tool.config.js
+  browserForestManagerFile: string;
   // file that contains manifestRegistry
   manifestRegistryFile: string;
 };

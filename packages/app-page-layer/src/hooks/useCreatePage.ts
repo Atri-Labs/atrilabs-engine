@@ -1,4 +1,4 @@
-import { currentForest, getId } from "@atrilabs/core";
+import { BrowserForestManager, getId } from "@atrilabs/core";
 import { createPage } from "@atrilabs/server-client/lib/websocket";
 import { useCallback } from "react";
 
@@ -11,7 +11,7 @@ export const useSocketApi = () => {
       onFailure: () => void
     ) => {
       createPage(
-        currentForest.forestPkgId,
+        BrowserForestManager.currentForest.forestPkgId,
         { name: name, id: getId(), folderId: folderId },
         onSuccess,
         onFailure
