@@ -6,7 +6,7 @@ export const usePageMenu = () => {
   const [items, setItems] = useState<MenuItem[]>(pageMenu.items());
   useEffect(() => {
     pageMenu.listen(() => {
-      setItems(pageMenu.items());
+      setItems([...pageMenu.items()]);
     });
   }, [setItems]);
   return items;

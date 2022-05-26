@@ -6,7 +6,7 @@ export const usePublishMenu = () => {
   const [items, setItems] = useState<MenuItem[]>(publishMenu.items());
   useEffect(() => {
     publishMenu.listen(() => {
-      setItems(publishMenu.items());
+      setItems([...publishMenu.items()]);
     });
   }, [setItems]);
   return items;

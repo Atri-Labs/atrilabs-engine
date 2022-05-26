@@ -6,7 +6,7 @@ export const useHeaderMenu = () => {
   const [items, setItems] = useState<MenuItem[]>(headerMenu.items());
   useEffect(() => {
     headerMenu.listen(() => {
-      setItems(headerMenu.items());
+      setItems([...headerMenu.items()]);
     });
   }, [setItems]);
   return items;
