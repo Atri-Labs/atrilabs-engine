@@ -150,6 +150,19 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         callback(false);
       }
     });
+
+    socket.on("fetchEvents", (forestPkgId, pageId, callback) => {
+      const eventManager = getEventManager(forestPkgId);
+      const events = eventManager.fetchEvents(pageId);
+      callback(events);
+    });
+    socket.on("postNewEvent", (forestPkgId, pageId, event, callback) => {
+      const eventManager = getEventManager(forestPkgId);
+      eventManager.storeEvent(pageId, event);
+      callback(true);
+      // send this event to all connected sockets
+      io.emit("newEvent", forestPkgId, pageId, event, socket.id);
+    });
   });
 
   const port = (options && options.port) || 4001;

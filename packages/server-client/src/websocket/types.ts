@@ -1,3 +1,4 @@
+import { AnyEvent } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 
 export type Folder = {
@@ -14,7 +15,15 @@ export type Page = {
   folderId: string;
 };
 
-export interface ServerToClientEvents {}
+export interface ServerToClientEvents {
+  newEvent: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    event: AnyEvent,
+    // the socket id from which this event originated
+    socketId: string
+  ) => void;
+}
 
 export interface ClientToServerEvents {
   getMeta: (forestPkgId: string, callback: (meta: any) => void) => void;
@@ -52,6 +61,18 @@ export interface ClientToServerEvents {
   deletePage: (
     forestPkgId: string,
     pageId: Page["id"],
+    callback: (success: boolean) => void
+  ) => void;
+
+  fetchEvents: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+  postNewEvent: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    event: AnyEvent,
     callback: (success: boolean) => void
   ) => void;
 }
