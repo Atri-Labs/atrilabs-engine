@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Container, Menu } from "@atrilabs/core";
 import {
   gray300,
@@ -8,6 +8,7 @@ import {
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
+import { startDrag } from "@atrilabs/canvas-runtime";
 import { ReactComponent as Insert } from "./assets/insert.svg";
 import { Cross } from "./assets/Cross";
 import { useManifestRegistry } from "./hooks/useManifestRegistry";
@@ -69,6 +70,10 @@ export default function () {
   }, []);
 
   const components = useManifestRegistry();
+
+  const startDargCb = useCallback((...args: Parameters<typeof startDrag>) => {
+    startDrag(...args);
+  }, []);
   return (
     <>
       <Menu name="PageMenu">
@@ -92,7 +97,17 @@ export default function () {
             <div style={styles.mainContainer}>
               {components.map((comp, index) => {
                 return (
-                  <div style={styles.compContainer} key={comp.pkg + index}>
+                  <div
+                    style={styles.compContainer}
+                    key={comp.pkg + index}
+                    onMouseDown={() => {
+                      console.log("mouse down");
+                      startDargCb(comp.component.drag, {
+                        type: "component",
+                        data: comp.component.drag,
+                      });
+                    }}
+                  >
                     <comp.component.panel.icon
                       {...comp.component.panel.props}
                     />

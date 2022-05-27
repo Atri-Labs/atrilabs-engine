@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { gray700, gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
@@ -6,6 +6,7 @@ import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
 import { useDropContainer } from "./hooks/useDropContainer";
 import { useCanvasContainer } from "./hooks/useCanvasContainer";
+import { attachRef } from "@atrilabs/core";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -65,6 +66,8 @@ export const BaseContainer: React.FC = () => {
   const publishMenuItems = usePublishMenu();
   const dropContainerItem = useDropContainer();
   const canvasContainerItem = useCanvasContainer();
+  const dragZoneRef = useRef<HTMLDivElement>(null);
+  attachRef("Dragzone", dragZoneRef);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
@@ -96,7 +99,7 @@ export const BaseContainer: React.FC = () => {
             </div>
           </div>
         </div>
-        <div style={styles.body}>
+        <div style={styles.body} ref={dragZoneRef}>
           <div style={styles.dropContainer}>
             {dropContainerItem ? dropContainerItem : null}
           </div>

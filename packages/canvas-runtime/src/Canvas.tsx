@@ -1,6 +1,8 @@
+import { getRef } from "@atrilabs/core";
 import { useRef } from "react";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
+import { useDragDrop } from "./hooks/useDragDrop";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -21,6 +23,8 @@ export const Canvas: React.FC = () => {
   const breakpoint = useBreakpoint();
   const ref = useRef<HTMLDivElement>(null);
   const dimension = useAutoResize(ref, breakpoint);
+  const dragzoneRef = getRef("Dragzone");
+  useDragDrop(dragzoneRef);
   return (
     <div
       // this div helps center everything
