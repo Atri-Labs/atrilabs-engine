@@ -21,8 +21,11 @@ const compManifest = {
 };
 
 const iconManifest = {
-  panel: { icon: CommonIcon, props: { name: "Button" } },
-  drag: { icon: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Button" } },
+  drag: {
+    comp: CommonIcon,
+    props: { name: "Button", containerStyle: { padding: "1rem" } },
+  },
   renderSchema: compManifest,
 };
 

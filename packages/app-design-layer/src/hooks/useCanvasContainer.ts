@@ -7,10 +7,8 @@ export const useCanvasContainer = () => {
     canvasContainer.items()[0]
   );
   useEffect(() => {
-    const { unsubscribe } = canvasContainer.listen(({ item, event }) => {
-      if (event === "registered") {
-        setContainer(item);
-      }
+    const { unsubscribe } = canvasContainer.listen(() => {
+      setContainer(canvasContainer.items()[canvasContainer.items().length - 1]);
     });
     return () => {
       unsubscribe();

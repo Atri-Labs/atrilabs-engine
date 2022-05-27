@@ -101,14 +101,13 @@ export default function () {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      console.log("mouse down");
                       startDargCb(comp.component.drag, {
                         type: "component",
                         data: comp.component.drag,
                       });
                     }}
                   >
-                    <comp.component.panel.icon
+                    <comp.component.panel.comp
                       {...comp.component.panel.props}
                     />
                   </div>

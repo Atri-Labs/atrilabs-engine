@@ -6,6 +6,7 @@ module.exports = {
     },
     containers: {
       BaseContainer: "BaseContainer",
+      PlaygroundOverlayContainer: "PlaygroundOverlayContainer",
     },
   },
   exposes: {

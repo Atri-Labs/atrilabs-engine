@@ -7,6 +7,7 @@ import { usePublishMenu } from "./hooks/usePublishMenu";
 import { useDropContainer } from "./hooks/useDropContainer";
 import { useCanvasContainer } from "./hooks/useCanvasContainer";
 import { attachRef } from "@atrilabs/core";
+import { usePlaygroundContainer } from "./hooks/usePlaygroundOverlayContainer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -33,7 +34,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     borderBottom: `1px solid ${gray800}`,
   },
-  body: { display: "flex", flexGrow: 1 },
+  body: { display: "flex", flexGrow: 1, position: "relative" },
 
   // children of body
   dropContainer: {},
@@ -68,6 +69,7 @@ export const BaseContainer: React.FC = () => {
   const canvasContainerItem = useCanvasContainer();
   const dragZoneRef = useRef<HTMLDivElement>(null);
   attachRef("Dragzone", dragZoneRef);
+  const playgroundContainerItem = usePlaygroundContainer();
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
@@ -106,6 +108,7 @@ export const BaseContainer: React.FC = () => {
           <div style={styles.canvasContainer}>
             {canvasContainerItem ? canvasContainerItem : null}
           </div>
+          {playgroundContainerItem ? playgroundContainerItem : null}
         </div>
       </div>
       <div style={styles.rightPart}></div>
