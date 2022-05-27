@@ -196,7 +196,8 @@ export default function createWebpackConfig(
                 manifestSchemaEntries,
                 toolConfig.forests,
                 corePkgInfo,
-                mode
+                mode,
+                toolConfig.clients
               ),
             },
             {

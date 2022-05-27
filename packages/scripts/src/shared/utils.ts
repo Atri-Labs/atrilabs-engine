@@ -82,12 +82,14 @@ export function getCorePkgInfo(): CorePkgInfo {
   const manifestRegistryFile = findFileWithoutExtension(
     path.resolve(dir, "lib", "manifestRegistry")
   );
+  const apiFile = findFileWithoutExtension(path.resolve(dir, "lib", "api"));
   if (
     entryFile === undefined ||
     indexFile === undefined ||
     layerDetailsFile === undefined ||
     browserForestManagerFile === undefined ||
-    manifestRegistryFile === undefined
+    manifestRegistryFile === undefined ||
+    apiFile === undefined
   ) {
     throw Error(
       chalk.red(`Missing a entryFile or indexFile in @atrilabs/core`)
@@ -100,6 +102,7 @@ export function getCorePkgInfo(): CorePkgInfo {
     layerDetailsFile,
     browserForestManagerFile,
     manifestRegistryFile,
+    apiFile,
   };
 }
 

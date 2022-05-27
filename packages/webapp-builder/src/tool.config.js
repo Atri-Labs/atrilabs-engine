@@ -50,6 +50,13 @@ module.exports = {
       },
     },
   },
+  clients: {
+    eventClient: {
+      modulePath: require.resolve(
+        "@atrilabs/server-client/lib/websocket/client"
+      ),
+    },
+  },
   env: {
     EVENT_SERVER_CLIENT: "http://localhost:4001",
     MANIFEST_SERVER_CLIENT: "http://localhost:4003",

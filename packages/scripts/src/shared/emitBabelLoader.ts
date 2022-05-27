@@ -1,4 +1,9 @@
-import { LayerConfig, ForestsConfig, RuntimeConfig } from "@atrilabs/core";
+import {
+  LayerConfig,
+  ForestsConfig,
+  RuntimeConfig,
+  ToolConfig,
+} from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
 import {
@@ -24,7 +29,8 @@ export default function emitBabelLoader(
   manifestSchemaEntries: ManifestSchemaEntry[],
   forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo,
-  env: "production" | "development"
+  env: "production" | "development",
+  clients: ToolConfig["clients"]
 ): Exclude<RuleSetRule["use"], undefined> {
   const isEnvDevelopment = env === "development";
 
@@ -195,6 +201,18 @@ export default function emitBabelLoader(
                     schemaModulePath: entry.modulePath,
                   };
                 }),
+              },
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "add-event-client-to-core.js"
+              ),
+              {
+                apiFile: corePkgInfo.apiFile,
+                eventClient: clients.eventClient.modulePath,
               },
             ],
             isEnvDevelopment && require("react-refresh/babel"),

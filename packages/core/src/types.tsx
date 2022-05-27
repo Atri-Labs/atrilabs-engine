@@ -74,6 +74,17 @@ export type ToolConfig = {
     manifestServer: { path: string; options: any };
   };
   /**
+   * All the clients must default export their API.
+   */
+  clients: {
+    /**
+     * The eventClient is counterpart of eventServer that gets bundled in the core package.
+     * Please use env field to pass on options to the client like host & port.
+     * modulePath must resolve to the client module when used with require.resolve.
+     */
+    eventClient: { modulePath: string };
+  };
+  /**
    * env is generally used to supply port to clients for their
    * respective servers.
    */

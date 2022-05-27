@@ -61,6 +61,8 @@ export type CorePkgInfo = {
   browserForestManagerFile: string;
   // file that contains manifestRegistry
   manifestRegistryFile: string;
+  // file that exposes event API
+  apiFile: string;
 };
 
 export type ManifestSchemaPkgInfo = {
