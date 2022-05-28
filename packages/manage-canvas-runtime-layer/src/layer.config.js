@@ -13,4 +13,6 @@ module.exports = {
     },
   },
   decorators: [],
+  runtime: { pkg: "@atrilabs/canvas-runtime" },
+  manifestSchema: [{ pkg: "@atrilabs/react-component-manifest-schema" }],
 };
