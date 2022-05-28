@@ -128,6 +128,9 @@ export type ManifestConfig = {
   // a package can contain manifest for more than one manifest schema
   // hence array of manifestSchema
   manifestSchema: { pkg: string }[];
+  componentMap: {
+    [key: string]: { modulePath: string; exportedVarName: string };
+  };
 };
 
 export type ManifestRegistry = {
