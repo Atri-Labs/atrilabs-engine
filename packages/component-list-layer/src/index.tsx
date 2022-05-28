@@ -103,7 +103,10 @@ export default function () {
                     onMouseDown={() => {
                       startDargCb(comp.component.drag, {
                         type: "component",
-                        data: comp.component.drag,
+                        data: {
+                          key: comp.component.renderSchema.meta.key,
+                          pkg: comp.pkg,
+                        },
                       });
                     }}
                   >

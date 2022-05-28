@@ -7,4 +7,5 @@ module.exports = {
       PlaygroundOverlayContainer: "PlaygroundOverlayContainer",
     },
   },
+  manifestSchema: [{ pkg: "@atrilabs/react-component-manifest-schema" }],
 };

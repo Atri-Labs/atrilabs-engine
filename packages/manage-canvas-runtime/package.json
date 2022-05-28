@@ -1,16 +1,17 @@
 {
-  "name": "@atrilabs/runtime-types",
+  "name": "@atrilabs/manage-canvas-runtime",
   "version": "0.0.3",
-  "description": "Contains types for globally available identifiers in a runtime package",
+  "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "types": "./src/index.d.ts",
+  "main": "lib/manage-canvas-runtime.js",
   "directories": {
-    "lib": "src"
+    "lib": "lib",
+    "test": "__tests__"
   },
   "files": [
-    "src"
+    "lib"
   ],
   "publishConfig": {
     "access": "public"
@@ -19,7 +20,9 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   }

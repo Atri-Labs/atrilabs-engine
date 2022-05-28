@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { createMachine, assign, Action, interpret } from "xstate";
-import getCoords from "../utils";
+import { getCoords } from "../utils";
 
 type DragComp = { comp: React.FC; props: any };
 
 type DragData =
-  | { type: "component"; data: { comp: React.FC; props: any } }
+  | { type: "component"; data: { pkg: string; key: string } }
   | { type: "src"; data: { src: string } };
 
 type StartDragArgs = {
@@ -23,6 +23,7 @@ type DragDropMachineContext = {
 const START_DRAG_CALLED = "START_DRAG_CALLED" as "START_DRAG_CALLED";
 const MOUSE_MOVE = "MOUSE_MOVE" as "MOUSE_MOVE";
 const MOUSE_UP = "MOUSE_UP" as "MOUSE_UP";
+const RESTART = "RESTART" as "RESTART"; // event emitted to signal that we can start over
 
 // event type
 type DragDropMachineEvent =
@@ -31,7 +32,8 @@ type DragDropMachineEvent =
       args: StartDragArgs;
     }
   | { type: "MOUSE_MOVE"; loc: Location }
-  | { type: "MOUSE_UP"; loc: Location };
+  | { type: "MOUSE_UP"; loc: Location }
+  | { type: "RESTART" };
 
 // states
 const idle = "idle";
@@ -71,7 +73,6 @@ const dragDropMachine = createMachine<
           actions: [onStartDragCalled],
         },
       },
-      entry: [resetContextAction],
     },
     [DRAG_START]: {
       on: { [MOUSE_MOVE]: { target: DRAG } },
@@ -82,17 +83,33 @@ const dragDropMachine = createMachine<
       },
     },
     [DRAG_END]: {
-      always: idle,
+      on: {
+        [RESTART]: { target: idle, actions: [resetContextAction] },
+      },
     },
   },
 });
 
 const service = interpret(dragDropMachine);
 
+// ============ API exposed to layers ====================================
 export function startDrag(dragComp: DragComp, dragData: DragData) {
   service.send({ type: START_DRAG_CALLED, args: { dragComp, dragData } });
 }
 
+type DropSubscriber = (args: StartDragArgs) => void;
+const dropSubscribers: DropSubscriber[] = [];
+export function subscribeDrop(cb: DropSubscriber) {
+  dropSubscribers.push(cb);
+  return () => {
+    const index = dropSubscribers.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      dropSubscribers.splice(index, 1);
+    }
+  };
+}
+
+// =============== hook used in Canvas component to enable drag & drop mechanism ==
 export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
   // start and end the service alongwith canvas runtime
   useEffect(() => {
@@ -148,7 +165,12 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
       // remove child from containerRef
       setOverlay(null);
     };
+
+    const callDropSubscribers = (args: StartDragArgs) => {
+      dropSubscribers.forEach((cb) => cb(args));
+    };
     service.onTransition((state, event) => {
+      console.log("STATE VALUE", state.value);
       if (
         state.value === DRAG &&
         event.type === MOUSE_MOVE &&
@@ -156,8 +178,14 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
       ) {
         displayDragComponent(state.context.startDragArgs, event.loc);
       }
-      if (state.value === idle) {
+      if (state.value === DRAG_END) {
+        // remove the icon created during dragging
         removeDragComponent();
+        if (state.context.startDragArgs) {
+          // inform drop subscribers
+          callDropSubscribers(state.context.startDragArgs);
+        }
+        service.send({ type: RESTART });
       }
     });
   }, [containerRef, setOverlay]);

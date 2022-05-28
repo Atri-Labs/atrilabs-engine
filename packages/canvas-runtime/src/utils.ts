@@ -1,4 +1,4 @@
-export default function getCoords(elem: HTMLElement) {
+export function getCoords(elem: HTMLElement) {
   // crossbrowser version
   var box = elem.getBoundingClientRect();
 

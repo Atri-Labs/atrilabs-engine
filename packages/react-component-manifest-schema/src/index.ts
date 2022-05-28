@@ -1,5 +1,20 @@
 import Joi from "joi";
 import { ManifestSchema } from "@atrilabs/core";
+import type { FC } from "react";
+
+export type ReactComponentManifestSchema = {
+  meta: { key: string };
+  render: {
+    comp: FC;
+    props: any;
+  };
+  dev: {
+    decorators: FC<any>[];
+    attachProps: { [key: string]: any };
+    attachCallbacks: { [key: string]: any };
+    acceptsChild: boolean;
+  };
+};
 
 const schema = Joi.object({
   meta: Joi.object({ key: Joi.string() }),
