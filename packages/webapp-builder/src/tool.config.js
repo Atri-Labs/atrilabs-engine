@@ -30,6 +30,7 @@ module.exports = {
     { pkg: "@atrilabs/app-page-layer" },
     { pkg: "@atrilabs/canvas-breakpoint-layer" },
     { pkg: "@atrilabs/component-list-layer" },
+    { pkg: "@atrilabs/manage-canvas-runtime-layer" },
   ],
   output: "lib",
   services: {

@@ -5,7 +5,10 @@ import { getCoords } from "../utils";
 type DragComp = { comp: React.FC; props: any };
 
 type DragData =
-  | { type: "component"; data: { pkg: string; key: string } }
+  | {
+      type: "component";
+      data: { pkg: string; key: string; manifestSchema: string };
+    }
   | { type: "src"; data: { src: string } };
 
 type StartDragArgs = {
