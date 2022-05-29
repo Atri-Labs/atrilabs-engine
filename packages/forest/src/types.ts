@@ -36,6 +36,7 @@ export type Forest = {
   link: (event: LinkEvent) => void;
   unlink: (event: UnlinkEvent) => void;
   handleEvent: (event: AnyEvent) => void;
+  subscribeForest: (cb: ForestUpdateSubscriber) => ForestUpdateUnsubscriber;
 };
 
 export type EventDto = {
@@ -142,3 +143,51 @@ export type ForestManager = {
 export type ForestsConfig = {
   [forestPkg: string]: Pick<TreeDef, "modulePath">[];
 };
+
+export type WireUpdate = {
+  type: "wire";
+  id: string;
+  parentId: string;
+};
+
+export type DewireUpdate = {
+  type: "dewire";
+  childId: string;
+  parentId: string;
+};
+
+export type RewireUpdate = {
+  type: "rewire";
+  childId: string;
+  oldParentId: string;
+  newParentId: string;
+};
+
+export type ChangeUpdate = {
+  type: "change";
+  id: string;
+};
+
+export type LinkUpdate = {
+  type: "link";
+  refId: string;
+  childId: string;
+};
+
+export type UnlinkUpdate = {
+  type: "unlink";
+  refId: string;
+  childId: string;
+};
+
+export type ForestUpdate =
+  | WireUpdate
+  | DewireUpdate
+  | RewireUpdate
+  | ChangeUpdate
+  | LinkEvent
+  | UnlinkUpdate;
+
+export type ForestUpdateSubscriber = (update: ForestUpdate) => void;
+
+export type ForestUpdateUnsubscriber = () => void;

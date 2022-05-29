@@ -11,6 +11,7 @@ import {
   AnyEvent,
   Tree,
   Forest,
+  ForestUpdateSubscriber,
 } from "./types";
 
 export function createForest(def: ForestDef): Forest {
@@ -38,6 +39,8 @@ export function createForest(def: ForestDef): Forest {
   // create an empty map of trees to be filled once API for forest is ready below
   const treeMap: { [treeId: string]: Tree } = {};
 
+  const forestUpdateSubscribers: ForestUpdateSubscriber[] = [];
+
   /**
    * EXPOSE API
    */
@@ -61,6 +64,13 @@ export function createForest(def: ForestDef): Forest {
           meta: createEvent.meta,
           state: createEvent.state,
         };
+        forestUpdateSubscribers.forEach((cb) => {
+          cb({
+            type: "wire",
+            id: createEvent.id,
+            parentId: createEvent.state.parent.id,
+          });
+        });
       }
     }
     if (event.type.startsWith("PATCH")) {
@@ -71,6 +81,9 @@ export function createForest(def: ForestDef): Forest {
           treeMap[treeId]!.nodes[patchEvent.id]!["state"],
           patchEvent.slice
         );
+        forestUpdateSubscribers.forEach((cb) => {
+          cb({ type: "change", id: patchEvent.id });
+        });
       }
     }
     if (event.type.startsWith("DELETE")) {
@@ -85,7 +98,11 @@ export function createForest(def: ForestDef): Forest {
           });
         }
       }
+      const parentId = treeMap[treeId]!.nodes[delEvent.id]!.state.parent.id;
       delete treeMap[treeId]!.nodes[delEvent.id];
+      forestUpdateSubscribers.forEach((cb) => {
+        cb({ type: "dewire", childId: delEvent.id, parentId });
+      });
     }
     if (event.type.startsWith("LINK")) {
       const linkEvent = event as LinkEvent;
@@ -96,11 +113,25 @@ export function createForest(def: ForestDef): Forest {
       linkEvents[linkEvent.refId]
         ? linkEvents[linkEvent.refId]?.push(linkEvent)
         : (linkEvents[linkEvent.refId] = [linkEvent]);
+      forestUpdateSubscribers.forEach((cb) => {
+        cb({
+          type: "unlink",
+          refId: linkEvent.refId,
+          childId: linkEvent.childId,
+        });
+      });
     }
     if (event.type.startsWith("UNLINK")) {
       const unlinkEvent = event as UnlinkEvent;
       const treeId = unlinkEvent.type.slice(0, "UNLINK$$".length);
       delete treeMap[treeId]!.links[unlinkEvent.refId];
+      forestUpdateSubscribers.forEach((cb) => {
+        cb({
+          type: "unlink",
+          refId: unlinkEvent.refId,
+          childId: unlinkEvent.childId,
+        });
+      });
     }
   }
 
@@ -131,7 +162,27 @@ export function createForest(def: ForestDef): Forest {
     handleEvent(event);
   }
 
-  const forest = { tree, create, patch, del, link, unlink, handleEvent };
+  // subscibe forest
+  function subscribeForest(cb: ForestUpdateSubscriber) {
+    forestUpdateSubscribers.push(cb);
+    return () => {
+      const index = forestUpdateSubscribers.findIndex((curr) => curr === cb);
+      if (index >= 0) {
+        forestUpdateSubscribers.splice(index, 1);
+      }
+    };
+  }
+
+  const forest = {
+    tree,
+    create,
+    patch,
+    del,
+    link,
+    unlink,
+    handleEvent,
+    subscribeForest,
+  };
 
   // create trees and add it to the map
   treeDefs.forEach((def) => {

@@ -9,6 +9,7 @@ import {
   PatchEvent,
   UnlinkEvent,
   Forest,
+  ForestUpdateSubscriber,
 } from "./types";
 
 type Callback = () => void;
@@ -26,6 +27,17 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     {};
 
   let _currentForest: Forest & { forestPkgId: string; forestId: string };
+  /**
+   *
+   * If the currentForest changes, all the listeners will automatically start
+   * listening updates from the newly set current forest.
+   *
+   * To actually achieve this, this module implements it's own observer pattern.
+   * On any event from currently set forest, the variable _currentForestSubscribers is looped through.
+   * On setting current forest, the variable _forestUnsubscriber is updated.
+   */
+  let _currentForestSubscribers: ForestUpdateSubscriber[] = [];
+  let _forestUnsubscriber: Unsubscribe;
 
   function getForest(forestPkgId: string, forestId: string) {
     if (forestMap[forestPkgId] === undefined) {
@@ -58,6 +70,11 @@ export function createBrowserForestManager(defs: ForestDef[]) {
         forestId,
       };
     }
+    if (_forestUnsubscriber) _forestUnsubscriber();
+    // call all current forest subscribers & update forest unsubscriber
+    _forestUnsubscriber = _currentForest.subscribeForest((update) => {
+      _currentForestSubscribers.forEach((cb) => cb(update));
+    });
     onResetListeners.forEach((cb) => {
       cb();
     });
@@ -109,6 +126,17 @@ export function createBrowserForestManager(defs: ForestDef[]) {
         return createUnsubscriber(onResetListeners, cb);
       }
       throw Error(`CurrentForest doesn't support event of type ${event}`);
+    },
+    subscribeForest: (cb) => {
+      _currentForestSubscribers.push(cb);
+      return () => {
+        const index = _currentForestSubscribers.findIndex(
+          (curr) => curr === cb
+        );
+        if (index >= 0) {
+          _currentForestSubscribers.splice(index, 1);
+        }
+      };
     },
   };
 
