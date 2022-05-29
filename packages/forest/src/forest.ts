@@ -57,7 +57,7 @@ export function createForest(def: ForestDef): Forest {
   function handleEvent(event: AnyEvent) {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
-      const treeId = createEvent.type.slice(0, "CREATE$$".length);
+      const treeId = createEvent.type.slice("CREATE$$".length);
       if (defaultFnMap[treeId]!.validateCreate(createEvent)) {
         treeMap[treeId]!.nodes[createEvent.id] = {
           id: createEvent.id,
@@ -75,7 +75,7 @@ export function createForest(def: ForestDef): Forest {
     }
     if (event.type.startsWith("PATCH")) {
       const patchEvent = event as PatchEvent;
-      const treeId = patchEvent.type.slice(0, "PATCH$$".length);
+      const treeId = patchEvent.type.slice("PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
         merge(
           treeMap[treeId]!.nodes[patchEvent.id]!["state"],
@@ -88,7 +88,7 @@ export function createForest(def: ForestDef): Forest {
     }
     if (event.type.startsWith("DELETE")) {
       const delEvent = event as DeleteEvent;
-      const treeId = delEvent.type.slice(0, "DELETE$$".length);
+      const treeId = delEvent.type.slice("DELETE$$".length);
       // if event is from a root tree, call unlink on all child tree
       if (isRootTree(treeId)) {
         if (linkEvents[delEvent.id]) {
@@ -106,7 +106,7 @@ export function createForest(def: ForestDef): Forest {
     }
     if (event.type.startsWith("LINK")) {
       const linkEvent = event as LinkEvent;
-      const treeId = linkEvent.type.slice(0, "LINK$$".length);
+      const treeId = linkEvent.type.slice("LINK$$".length);
       treeMap[treeId]!.links[linkEvent.refId] = linkEvent;
       // record all link events in the forest to process unlink
       // called as a result of deleting something in root tree
@@ -123,7 +123,7 @@ export function createForest(def: ForestDef): Forest {
     }
     if (event.type.startsWith("UNLINK")) {
       const unlinkEvent = event as UnlinkEvent;
-      const treeId = unlinkEvent.type.slice(0, "UNLINK$$".length);
+      const treeId = unlinkEvent.type.slice("UNLINK$$".length);
       delete treeMap[treeId]!.links[unlinkEvent.refId];
       forestUpdateSubscribers.forEach((cb) => {
         cb({
@@ -137,7 +137,7 @@ export function createForest(def: ForestDef): Forest {
 
   // create a node
   function create(event: CreateEvent) {
-    const type = event.type.slice(0, "CREATE$$".length);
+    const type = event.type.slice("CREATE$$".length);
     handleEvent(event);
     defaultFnMap[type]!.onCreate(event);
   }

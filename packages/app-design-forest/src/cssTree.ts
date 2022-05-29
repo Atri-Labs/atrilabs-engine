@@ -1,6 +1,12 @@
 export default function () {
-  const validateCreate = () => {};
-  const validatePatch = () => {};
-  const onCreate = () => {};
+  const validateCreate = () => {
+    return true;
+  };
+  const validatePatch = () => {
+    return true;
+  };
+  const onCreate = () => {
+    return true;
+  };
   return { validateCreate, validatePatch, onCreate };
 }
