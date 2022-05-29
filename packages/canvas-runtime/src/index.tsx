@@ -4,6 +4,7 @@ import { Canvas } from "./Canvas";
 export { CanvasController } from "./CanvasController";
 export { startDrag, subscribeDrop } from "./hooks/useDragDrop";
 export * from "./CanvasAPI";
+export * from "./types";
 
 type CanvasRuntimeProps = {
   // layers are children of runtime
