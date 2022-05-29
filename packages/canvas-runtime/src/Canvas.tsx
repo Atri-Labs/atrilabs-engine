@@ -1,5 +1,6 @@
 import { Container, getRef } from "@atrilabs/core";
 import { useRef } from "react";
+import { ComponentRenderer } from "./ComponentRenderer";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
@@ -71,9 +72,7 @@ export const Canvas: React.FC = () => {
                     height: "100%",
                   }}
                 >
-                  {Array.from(Array(1000).keys()).map((i) => (
-                    <div key={i}>Content goes here</div>
-                  ))}
+                  <ComponentRenderer compId="body" />
                 </div>
               </div>
             ) : null}

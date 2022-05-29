@@ -5,7 +5,7 @@ import { manifestRegistryController } from "@atrilabs/core";
 
 export const useSubscribeDrop = () => {
   useEffect(() => {
-    const unsub = subscribeDrop((args) => {
+    const unsub = subscribeDrop((args, loc, caughtBy) => {
       console.log("listened subscribe drop", args);
       if (args.dragData.type === "component") {
         const dragData = args.dragData;
@@ -28,9 +28,11 @@ export const useSubscribeDrop = () => {
             createComponent(
               component.comp,
               component.props,
-              // TODO: get result from catcher
-              { id: "body", index: 0 },
+              // TODO: get index from manifest schema
+              { id: caughtBy, index: 0 },
               // TODO: get decorators from manifest schema
+              [],
+              // TODO: create catchers from manifest schema
               []
             );
           }

@@ -27,7 +27,7 @@ export type Catcher = (dragData: DragData, loc: Location) => boolean;
 export type CanvasComponent = {
   id: string;
   ref: React.RefObject<any>;
-  comp: React.FC;
+  comp: React.FC<any>;
   props: any;
   parent: { id: string; index: number };
   decorators: React.FC<any>[];
