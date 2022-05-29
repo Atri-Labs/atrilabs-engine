@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { createMachine, assign, Action, interpret } from "xstate";
-import { getCoords } from "../utils";
-
-type DragComp = { comp: React.FC; props: any };
-
-type DragData =
-  | {
-      type: "component";
-      data: { pkg: string; key: string; manifestSchema: string };
-    }
-  | { type: "src"; data: { src: string } };
-
-type StartDragArgs = {
-  dragComp: DragComp;
-  dragData: DragData;
-};
-
-type Location = { pageX: number; pageY: number };
+import { bubbleUp, getCoords, triangulate } from "../utils";
+import type { StartDragArgs, DragComp, DragData, Location } from "../types";
+import {
+  canvasComponentStore,
+  canvasComponentTree,
+} from "../CanvasComponentData";
 
 type DragDropMachineContext = {
   startDragArgs: StartDragArgs | null;
@@ -100,7 +89,11 @@ export function startDrag(dragComp: DragComp, dragData: DragData) {
   service.send({ type: START_DRAG_CALLED, args: { dragComp, dragData } });
 }
 
-type DropSubscriber = (args: StartDragArgs) => void;
+type DropSubscriber = (
+  args: StartDragArgs,
+  loc: Location,
+  caughtBy: string
+) => void;
 const dropSubscribers: DropSubscriber[] = [];
 export function subscribeDrop(cb: DropSubscriber) {
   dropSubscribers.push(cb);
@@ -164,16 +157,21 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
         setOverlay({ ...args.dragComp, style });
       }
     };
+
     const removeDragComponent = () => {
       // remove child from containerRef
       setOverlay(null);
     };
 
-    const callDropSubscribers = (args: StartDragArgs) => {
-      dropSubscribers.forEach((cb) => cb(args));
+    const callDropSubscribers = (
+      args: StartDragArgs,
+      loc: Location,
+      caughtBy: string
+    ) => {
+      dropSubscribers.forEach((cb) => cb(args, loc, caughtBy));
     };
+
     service.onTransition((state, event) => {
-      console.log("STATE VALUE", state.value);
       if (
         state.value === DRAG &&
         event.type === MOUSE_MOVE &&
@@ -181,12 +179,34 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
       ) {
         displayDragComponent(state.context.startDragArgs, event.loc);
       }
-      if (state.value === DRAG_END) {
+
+      if (state.value === DRAG_END && event.type === MOUSE_UP) {
         // remove the icon created during dragging
         removeDragComponent();
+
         if (state.context.startDragArgs) {
-          // inform drop subscribers
-          callDropSubscribers(state.context.startDragArgs);
+          const triangulatedBy = triangulate(
+            canvasComponentTree,
+            canvasComponentStore,
+            event.loc
+          );
+          if (triangulatedBy) {
+            const triangulatedByComp = canvasComponentStore[triangulatedBy]!;
+            const caughtBy = bubbleUp(
+              triangulatedByComp,
+              state.context.startDragArgs.dragData,
+              event.loc,
+              canvasComponentStore
+            );
+            if (caughtBy) {
+              // inform drop subscribers
+              callDropSubscribers(
+                state.context.startDragArgs,
+                event.loc,
+                caughtBy!.id
+              );
+            }
+          }
         }
         service.send({ type: RESTART });
       }

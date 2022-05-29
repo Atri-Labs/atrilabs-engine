@@ -3,6 +3,7 @@ import { Container } from "@atrilabs/core";
 import { Canvas } from "./Canvas";
 export { CanvasController } from "./CanvasController";
 export { startDrag, subscribeDrop } from "./hooks/useDragDrop";
+export * from "./CanvasAPI";
 
 type CanvasRuntimeProps = {
   // layers are children of runtime
