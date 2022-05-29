@@ -1,5 +1,9 @@
 import React from "react";
-import { canvasComponentStore } from "./CanvasComponentData";
+import {
+  canvasComponentStore,
+  callCanvasUpdateSubscribers,
+  canvasComponentTree,
+} from "./CanvasComponentData";
 import { Catcher } from "./types";
 
 export const createComponent = (
@@ -11,6 +15,7 @@ export const createComponent = (
   catchers: Catcher[]
 ) => {
   const ref = React.createRef();
+  // update component store
   canvasComponentStore[id] = {
     id,
     ref,
@@ -20,4 +25,23 @@ export const createComponent = (
     decorators,
     catchers,
   };
+  // update component tree
+  if (canvasComponentTree[parent.id]) {
+    const index = canvasComponentTree[parent.id].findIndex((curr) => {
+      const currComp = canvasComponentStore[curr]!;
+      if (currComp.parent.index >= parent.index) {
+        return true;
+      }
+      return false;
+    });
+    if (index >= 0) {
+      canvasComponentTree[parent.id].splice(index, 0, id);
+    } else {
+      canvasComponentTree[parent.id].push(id);
+    }
+  } else {
+    canvasComponentTree[parent.id] = [id];
+  }
+  // call internal subscribers of the event
+  callCanvasUpdateSubscribers(parent.id);
 };
