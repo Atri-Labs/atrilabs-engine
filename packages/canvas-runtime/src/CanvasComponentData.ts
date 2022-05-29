@@ -1,5 +1,5 @@
 import { createRef } from "react";
-import { BodyComponent } from "./BodyComponent";
+import { BodyComponent, bodyCatchers } from "./BodyComponent";
 import { CanvasComponentStore, CanvasComponentTree } from "./types";
 
 export const canvasComponentStore: CanvasComponentStore = {
@@ -10,7 +10,7 @@ export const canvasComponentStore: CanvasComponentStore = {
     ref: createRef(),
     parent: { id: "", index: 0 },
     decorators: [],
-    catchers: [],
+    catchers: bodyCatchers,
   },
 };
 

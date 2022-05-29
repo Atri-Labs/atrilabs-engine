@@ -32,12 +32,12 @@ export function getCoords(elem: HTMLElement): ElementCoords {
   return { top: top, left: left, width: box.width, height: box.height };
 }
 
-function insideBox(loc: Location, coords: ElementCoords): boolean {
+function insideBox(loc: Location, box: ElementCoords): boolean {
   if (
-    coords.left >= loc.pageX &&
-    coords.left + coords.width <= loc.pageX &&
-    coords.top >= loc.pageY &&
-    coords.top + coords.height <= loc.pageY
+    box.left <= loc.pageX &&
+    box.left + box.width >= loc.pageX &&
+    box.top <= loc.pageY &&
+    box.top + box.height >= loc.pageY
   ) {
     return true;
   }
