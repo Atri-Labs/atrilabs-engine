@@ -28,6 +28,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/app-design-forest": "^0.0.3",
     "@atrilabs/canvas-runtime": "^0.0.3",
     "@atrilabs/core": "^0.0.3",
     "@atrilabs/design-system": "^0.0.3",
