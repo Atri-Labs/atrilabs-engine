@@ -5,7 +5,7 @@ import {
   useTree,
 } from "@atrilabs/core";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { createComponent } from "@atrilabs/canvas-runtime";
+import { clearCanvas, createComponent } from "@atrilabs/canvas-runtime";
 import type { WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 
@@ -14,7 +14,7 @@ export const useSubscribeEvents = () => {
 
   useEffect(() => {
     const currentForest = BrowserForestManager.currentForest;
-    currentForest.subscribeForest((update) => {
+    const unsub = currentForest.subscribeForest((update) => {
       if (update.type === "wire") {
         const id = (update as WireUpdate).id;
         const node = tree.nodes[id]!;
@@ -51,5 +51,13 @@ export const useSubscribeEvents = () => {
         }
       }
     });
+    return unsub;
   }, [tree]);
+
+  useEffect(() => {
+    const currentForest = BrowserForestManager.currentForest;
+    currentForest.on("reset", () => {
+      clearCanvas();
+    });
+  }, []);
 };

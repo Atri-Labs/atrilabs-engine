@@ -47,3 +47,20 @@ export const createComponent = (
   // call internal subscribers of the event
   callCanvasUpdateSubscribers(parent.id);
 };
+
+/**
+ * clearCanvas is expected to be called when currentForest changes
+ */
+export function clearCanvas() {
+  const storeKeys = Object.keys(canvasComponentStore);
+  // delete everything apart from body
+  storeKeys.forEach((storeKey) => {
+    if (storeKey !== "body") delete canvasComponentStore[storeKey];
+  });
+  const treeKeys = Object.keys(canvasComponentTree);
+  treeKeys.forEach((treeKey) => {
+    delete canvasComponentTree[treeKey];
+  });
+  // only call body subscribers
+  callCanvasUpdateSubscribers("body");
+}

@@ -26,6 +26,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
         if (childrenId) {
           // set children array again
           setChildrenId([...childrenId]);
+        } else {
+          // set to empty array if no children
+          setChildrenId([]);
         }
       }
       forceUpdate();
