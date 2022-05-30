@@ -148,12 +148,14 @@ export type WireUpdate = {
   type: "wire";
   id: string;
   parentId: string;
+  treeId: string;
 };
 
 export type DewireUpdate = {
   type: "dewire";
   childId: string;
   parentId: string;
+  treeId: string;
 };
 
 export type RewireUpdate = {
@@ -161,23 +163,29 @@ export type RewireUpdate = {
   childId: string;
   oldParentId: string;
   newParentId: string;
+  treeId: string;
 };
 
 export type ChangeUpdate = {
   type: "change";
   id: string;
+  treeId: string;
 };
 
 export type LinkUpdate = {
   type: "link";
   refId: string;
   childId: string;
+  treeId: string;
+  rootTreeId: string;
 };
 
 export type UnlinkUpdate = {
   type: "unlink";
   refId: string;
   childId: string;
+  treeId: string;
+  rootTreeId: string;
 };
 
 export type ForestUpdate =
@@ -185,7 +193,7 @@ export type ForestUpdate =
   | DewireUpdate
   | RewireUpdate
   | ChangeUpdate
-  | LinkEvent
+  | LinkUpdate
   | UnlinkUpdate;
 
 export type ForestUpdateSubscriber = (update: ForestUpdate) => void;

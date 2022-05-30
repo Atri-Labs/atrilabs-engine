@@ -69,6 +69,7 @@ export function createForest(def: ForestDef): Forest {
             type: "wire",
             id: createEvent.id,
             parentId: createEvent.state.parent.id,
+            treeId,
           });
         });
       }
@@ -82,7 +83,7 @@ export function createForest(def: ForestDef): Forest {
           patchEvent.slice
         );
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "change", id: patchEvent.id });
+          cb({ type: "change", id: patchEvent.id, treeId });
         });
       }
     }
@@ -101,7 +102,7 @@ export function createForest(def: ForestDef): Forest {
       const parentId = treeMap[treeId]!.nodes[delEvent.id]!.state.parent.id;
       delete treeMap[treeId]!.nodes[delEvent.id];
       forestUpdateSubscribers.forEach((cb) => {
-        cb({ type: "dewire", childId: delEvent.id, parentId });
+        cb({ type: "dewire", childId: delEvent.id, parentId, treeId });
       });
     }
     if (event.type.startsWith("LINK")) {
@@ -115,9 +116,11 @@ export function createForest(def: ForestDef): Forest {
         : (linkEvents[linkEvent.refId] = [linkEvent]);
       forestUpdateSubscribers.forEach((cb) => {
         cb({
-          type: "unlink",
+          type: "link",
           refId: linkEvent.refId,
           childId: linkEvent.childId,
+          treeId: treeId,
+          rootTreeId: rootDef.id,
         });
       });
     }
@@ -130,6 +133,8 @@ export function createForest(def: ForestDef): Forest {
           type: "unlink",
           refId: unlinkEvent.refId,
           childId: unlinkEvent.childId,
+          treeId: treeId,
+          rootTreeId: rootDef.id,
         });
       });
     }

@@ -20,6 +20,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/app-design-forest": "^0.0.3",
     "@atrilabs/component-icon-manifest-schema": "^0.0.3",
     "@atrilabs/design-system": "^0.0.3",
     "@atrilabs/layer-types": "^0.0.3",

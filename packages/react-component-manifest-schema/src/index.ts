@@ -5,12 +5,11 @@ import type { FC } from "react";
 export type ReactComponentManifestSchema = {
   meta: { key: string };
   render: {
-    comp: FC;
-    props: any;
+    comp: FC<any>;
   };
   dev: {
     decorators: FC<any>[];
-    attachProps: { [key: string]: any };
+    attachProps: { [key: string]: { treeId: string; initialValue: any } };
     attachCallbacks: { [key: string]: any };
     acceptsChild: boolean;
   };
@@ -20,7 +19,6 @@ const schema = Joi.object({
   meta: Joi.object({ key: Joi.string() }),
   render: Joi.object({
     comp: Joi.function(),
-    props: Joi.object(),
   }),
   dev: Joi.object({
     // TODO: add more details to make schema validation better
