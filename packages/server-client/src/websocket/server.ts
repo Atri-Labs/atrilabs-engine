@@ -24,8 +24,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   // create one directory and event manager for each of forest
   const getEventManager = createForestMgr(toolConfig).getEventManager;
 
-  function getMeta(forestname: string) {
-    const eventManager = getEventManager(forestname)!;
+  function getMeta(forestPkgId: string) {
+    const eventManager = getEventManager(forestPkgId)!;
     const meta = eventManager.meta();
     // a flag to indicate update of meta
     let initMeta = false;
@@ -48,8 +48,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     return meta;
   }
 
-  function getPages(forestname: string) {
-    const eventManager = getEventManager(forestname)!;
+  function getPages(forestPkgId: string) {
+    const eventManager = getEventManager(forestPkgId)!;
     const pages = eventManager.pages();
     if (pages["home"] === undefined) {
       // create home page if not already created
@@ -58,14 +58,20 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     return eventManager.pages();
   }
 
+  // this will ensure that home page is created with proper meta set
+  function initialLoadForest(forestPkgId: string) {
+    getMeta(forestPkgId);
+    getPages(forestPkgId);
+  }
+
   io.on("connection", (socket) => {
     socket.on("getMeta", (forestPkgId, callback) => {
+      initialLoadForest(forestPkgId);
       const meta = getMeta(forestPkgId);
-      // pre-call getPages to do a first time setup if needed
-      getPages(forestPkgId);
       callback(meta);
     });
     socket.on("getPages", (forestPkgId, callback) => {
+      initialLoadForest(forestPkgId);
       const pages = getPages(forestPkgId);
       callback(pages);
     });
@@ -154,6 +160,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     });
 
     socket.on("fetchEvents", (forestPkgId, pageId, callback) => {
+      initialLoadForest(forestPkgId);
       const eventManager = getEventManager(forestPkgId);
       const events = eventManager.fetchEvents(pageId);
       callback(events);

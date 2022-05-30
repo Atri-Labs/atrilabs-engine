@@ -56,8 +56,15 @@ export const useSubscribeEvents = () => {
 
   useEffect(() => {
     const currentForest = BrowserForestManager.currentForest;
-    currentForest.on("reset", () => {
+    // TODO
+    // if currentForest is already set when this hook is called,
+    // then, send all the event to the canvas
+
+    // handle when current forest is changed in future
+    const unsub = currentForest.on("reset", () => {
       clearCanvas();
+      // TODO: send new forest data to canvas
     });
+    return unsub;
   }, []);
 };
