@@ -1,5 +1,5 @@
 import { BaseContainer } from "./BaseContainer";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { BrowserForestManager } from "@atrilabs/core";
 import { Container, Menu } from "@atrilabs/core";
 import { ReactComponent as DesignIcon } from "./assets/design-icon.svg";
@@ -13,13 +13,17 @@ export default function () {
       console.log("current foreset reset");
     });
   }, []);
-  useEffect(() => {
+  // We need to use a hook that will run once everytime this layer is created.
+  // Also this hook need to run before JSX is processed.
+  useMemo(() => {
     const forest = BrowserForestManager.setCurrentForest(
       AppDesginForestId,
       "home"
     );
-    if (forest) {
-      console.log(AppDesginForestId, "forestId: home", forest);
+    if (!forest) {
+      console.error(
+        `Unable to load forest home from forest type ${AppDesginForestId}`
+      );
     }
   }, []);
   return (

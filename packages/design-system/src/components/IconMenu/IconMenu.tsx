@@ -9,7 +9,6 @@ export type IconMenuProps = {
 
 // controlled component
 export const IconMenu: React.FC<IconMenuProps> = (props) => {
-  console.log("prop active", props.active);
   return (
     <div
       onClick={props.onClick}
