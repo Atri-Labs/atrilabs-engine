@@ -1,10 +1,11 @@
+import { forwardRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 
-export const Button: React.FC = () => {
-  return <button>Click Me!</button>;
-};
+export const Button: React.FC = forwardRef<HTMLButtonElement>((props, ref) => {
+  return <button ref={ref}>Click Me!</button>;
+});
 
 const compManifest = {
   meta: { key: "Button" },

@@ -18,6 +18,7 @@ export const canvasComponentStore: CanvasComponentStore = {
     parent: { id: "", index: 0 },
     decorators: [],
     catchers: bodyCatchers,
+    acceptsChild: true,
   },
 };
 

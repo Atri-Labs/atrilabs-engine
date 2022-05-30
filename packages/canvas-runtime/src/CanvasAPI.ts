@@ -12,7 +12,8 @@ export const createComponent = (
   props: any,
   parent: { id: string; index: number },
   decorators: React.FC<any>[],
-  catchers: Catcher[]
+  catchers: Catcher[],
+  acceptsChild: boolean
 ) => {
   const ref = React.createRef();
   // update component store
@@ -24,6 +25,7 @@ export const createComponent = (
     parent,
     decorators,
     catchers,
+    acceptsChild,
   };
   // update component tree
   if (canvasComponentTree[parent.id]) {

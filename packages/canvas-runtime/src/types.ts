@@ -32,6 +32,7 @@ export type CanvasComponent = {
   parent: { id: string; index: number };
   decorators: React.FC<any>[];
   catchers: Catcher[];
+  acceptsChild: boolean;
 };
 
 export type CanvasComponentStore = {

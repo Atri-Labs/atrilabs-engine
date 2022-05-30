@@ -4,6 +4,7 @@ import {
   canvasComponentTree,
   subscribeCanvasUpdate,
 } from "./CanvasComponentData";
+import { DecoratorRenderer } from "./DecoratorRenderer";
 export type ComponentRendererProps = {
   compId: string;
 };
@@ -20,15 +21,17 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
 
   useEffect(() => {
     const unsub = subscribeCanvasUpdate(props.compId, () => {
-      /**
-       * re-read all the properties from state
-       */
-      // set children array again
-      setChildrenId([...canvasComponentTree[props.compId]]);
+      if (component.acceptsChild) {
+        const childrenId = canvasComponentTree[props.compId];
+        if (childrenId) {
+          // set children array again
+          setChildrenId([...childrenId]);
+        }
+      }
       forceUpdate();
     });
     return unsub;
-  }, [props]);
+  }, [props, component]);
 
   /**
    * create component, assign props, link it with it's ref
@@ -38,7 +41,30 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
       {
         <component.comp {...component.props} ref={component.ref}>
           {childrenId.map((childId) => {
-            return childId;
+            const childComp = canvasComponentStore[childId];
+            const decorators = childComp.decorators;
+            const ref = childComp.ref;
+            if (childComp.acceptsChild) {
+              return (
+                <DecoratorRenderer
+                  compId={childId}
+                  decorators={decorators}
+                  key={childId}
+                >
+                  <ComponentRenderer compId={childId} />
+                </DecoratorRenderer>
+              );
+            } else {
+              return (
+                <DecoratorRenderer
+                  compId={childId}
+                  decorators={decorators}
+                  key={childId}
+                >
+                  <childComp.comp {...childComp.props} ref={ref} />
+                </DecoratorRenderer>
+              );
+            }
           })}
         </component.comp>
       }

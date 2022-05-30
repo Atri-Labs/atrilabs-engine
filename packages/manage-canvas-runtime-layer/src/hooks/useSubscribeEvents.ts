@@ -37,13 +37,15 @@ export const useSubscribeEvents = () => {
             const component = manifest.component;
             createComponent(
               id,
-              component.comp,
-              component.props,
+              component.render.comp,
+              component.render.props,
               parent,
-              // TODO: get decorators from manifest schema
+              // TODO: get decorators from manifest
               [],
-              // TODO: create catchers from manifest schema
-              []
+              // TODO: create catchers from manifest
+              [],
+              // TODO: get acceptsChild from manifest
+              false
             );
           }
         }

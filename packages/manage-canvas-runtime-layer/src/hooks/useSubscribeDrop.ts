@@ -36,7 +36,6 @@ function getComponentIndex(parentId: string, loc: Location): number {
 export const useSubscribeDrop = () => {
   useEffect(() => {
     const unsub = subscribeDrop((args, loc, caughtBy) => {
-      console.log("listened subscribe drop", args);
       if (args.dragData.type === "component") {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;
