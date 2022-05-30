@@ -186,7 +186,7 @@ export type BrowserClient = {
     id: string,
     callback: (success: boolean) => void
   ): void;
-  fetchEvents(forestPkgId: string, pageId: string): Promise<void>;
+  fetchEvents(forestPkgId: string, pageId: string): Promise<AnyEvent[]>;
   postNewEvent(
     forestPkgId: string,
     pageId: string,

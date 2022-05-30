@@ -41,6 +41,7 @@
     "@atrilabs/design-system": "^0.0.3",
     "@atrilabs/forest": "^0.0.3",
     "@atrilabs/layer-types": "^0.0.3",
+    "@atrilabs/load-forest-data-layer": "^0.0.3",
     "@atrilabs/manage-canvas-runtime-layer": "^0.0.3",
     "@atrilabs/react-component-manifest-schema": "^0.0.3",
     "@atrilabs/react-component-manifests": "^0.0.3",

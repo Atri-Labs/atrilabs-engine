@@ -69,8 +69,10 @@ function deleteFolder(
 }
 
 async function fetchEvents(forestPkgId: string, pageId: string) {
-  socket.emit("fetchEvents", forestPkgId, pageId, (events) => {
-    return events;
+  return new Promise<AnyEvent[]>((res) => {
+    socket.emit("fetchEvents", forestPkgId, pageId, (events) => {
+      res(events);
+    });
   });
 }
 
