@@ -32,6 +32,7 @@ module.exports = {
     { pkg: "@atrilabs/canvas-breakpoint-layer" },
     { pkg: "@atrilabs/component-list-layer" },
     { pkg: "@atrilabs/manage-canvas-runtime-layer" },
+    { pkg: "@atrilabs/component-style-layer" },
   ],
   output: "lib",
   services: {

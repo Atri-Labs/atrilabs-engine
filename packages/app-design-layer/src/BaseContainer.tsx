@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { gray700, gray800 } from "@atrilabs/design-system";
+import { gray700, gray800, gray900 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
@@ -139,9 +139,13 @@ export const BaseContainer: React.FC = () => {
       <div style={styles.rightPart}>
         <div style={styles.propertyTabHeader}>
           {propertyTabItems.map((item, index) => {
+            const style = { ...styles.propertyTabHeaderItem };
+            if (index === selectedTab) {
+              style.background = gray900;
+            }
             return (
               <div
-                style={styles.propertyTabHeaderItem}
+                style={style}
                 onClick={() => {
                   setSelectedTab(index);
                 }}
