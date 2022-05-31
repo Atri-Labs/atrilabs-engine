@@ -9,6 +9,10 @@ export type ComponentRendererProps = {
   compId: string;
 };
 
+/**
+ * ComponentRenderer wraps around components that take children.
+ * You can consider it kind of similar to a decorator with some differences.
+ */
 export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
   // whenver there is a change in the component such as prop change, or new child added etc.
   // the component is force re-rendered

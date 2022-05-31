@@ -4,6 +4,7 @@ import {
   callCanvasUpdateSubscribers,
   canvasComponentTree,
 } from "./CanvasComponentData";
+import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher } from "./types";
 
 export const createComponent = (
@@ -16,6 +17,10 @@ export const createComponent = (
   acceptsChild: boolean
 ) => {
   const ref = React.createRef();
+  // prepend default decorators
+  if (!acceptsChild) {
+    decorators.unshift(MutationDecorator);
+  }
   // update component store
   canvasComponentStore[id] = {
     id,
@@ -64,3 +69,17 @@ export function clearCanvas() {
   // only call body subscribers
   callCanvasUpdateSubscribers("body");
 }
+
+export function getComponentProps(compId: string) {
+  return { ...canvasComponentStore[compId].props };
+}
+
+export function updateComponentProps(compId: string, props: any) {
+  canvasComponentStore[compId].props = props;
+  callCanvasUpdateSubscribers(compId);
+}
+
+export function updateComponentParent(
+  compId: string,
+  newParent: { id: string; index: number }
+) {}

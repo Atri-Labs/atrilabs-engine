@@ -5,7 +5,12 @@ import {
   useTree,
 } from "@atrilabs/core";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { clearCanvas, createComponent } from "@atrilabs/canvas-runtime";
+import {
+  clearCanvas,
+  createComponent,
+  getComponentProps,
+  updateComponentProps,
+} from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
@@ -100,7 +105,6 @@ export const useSubscribeEvents = () => {
             if (manifest) {
               const component = manifest.component;
               const propsKeys = Object.keys(component.dev.attachProps);
-              let props: { [key: string]: any } = {};
               for (let i = 0; i < propsKeys.length; i++) {
                 const propKey = propsKeys[i];
                 if (component.dev.attachProps[propKey].treeId !== CssTreeId) {
@@ -119,12 +123,13 @@ export const useSubscribeEvents = () => {
                     tree.links[compId] &&
                     tree.links[compId].childId === propId
                   ) {
-                    const value = tree.nodes[propId].state.property;
-                    props = value;
+                    const props = tree.nodes[propId].state.property;
+                    console.log("Created props during link event", props);
+                    const oldProps = getComponentProps(compId);
+                    updateComponentProps(compId, { ...oldProps, ...props });
                   }
                 }
               }
-              console.log("Created props during link event", props);
             }
           }
         }
