@@ -11,9 +11,92 @@ import {
   getComponentProps,
   updateComponentProps,
 } from "@atrilabs/canvas-runtime";
-import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
+import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+
+/**
+ * This function is an escape hatch and should be removed with urgency.
+ * It waits till manifestRegistry has react manfiest loaded.
+ */
+function tryUntilManifestRegistryHasReactComponentManifestSchemaId() {
+  return new Promise<void>((res) => {
+    const manifestRegistry = manifestRegistryController.readManifestRegistry();
+    if (
+      manifestRegistry[ReactComponentManifestSchemaId].components.length > 0
+    ) {
+      res();
+      return;
+    }
+    const timer = setInterval(() => {
+      const manifestRegistry =
+        manifestRegistryController.readManifestRegistry();
+      if (
+        manifestRegistry[ReactComponentManifestSchemaId].components.length > 0
+      ) {
+        res();
+        clearInterval(timer);
+      }
+      console.log("interval tried");
+    }, 1000);
+  });
+}
+
+function createPropsFromManifestComponent(
+  compId: string,
+  manifetComponent: any
+) {
+  const propsKeys = Object.keys(manifetComponent.dev.attachProps);
+  const props: { [key: string]: any } = {};
+  for (let i = 0; i < propsKeys.length; i++) {
+    const propKey = propsKeys[i];
+    const treeId = manifetComponent.dev.attachProps[propKey].treeId;
+    const tree = BrowserForestManager.currentForest.tree(treeId);
+    if (tree) {
+      if (tree.links[compId] && tree.links[compId].childId) {
+        const propNodeId = tree.links[compId].childId;
+        // convention that state.property field in tree contains the value
+        const value = tree.nodes[propNodeId].state.property;
+        if (value) props[propKey] = value[propKey];
+      }
+    }
+  }
+  return props;
+}
+
+function createComponentFromNode(node: TreeNode) {
+  const id = node.id;
+  const meta = node.meta;
+  const manifestSchemaId = meta.manifestSchemaId;
+  const pkg = meta.pkg;
+  const key = meta.key;
+  const parent = node.state.parent;
+  if (manifestSchemaId === ReactComponentManifestSchemaId) {
+    // find manifest from manifest registry
+    const manifestRegistry = manifestRegistryController.readManifestRegistry();
+    const manifest = manifestRegistry[manifestSchemaId].components.find(
+      (curr) => {
+        return curr.pkg === pkg && curr.component.meta.key === key;
+      }
+    );
+    // use CanvasAPI to create component
+    if (manifest) {
+      const component = manifest.component;
+      const props = createPropsFromManifestComponent(id, component);
+      createComponent(
+        id,
+        component.render.comp,
+        props,
+        parent,
+        // TODO: get decorators from manifest
+        [],
+        // TODO: create catchers from manifest
+        [],
+        // TODO: get acceptsChild from manifest
+        false
+      );
+    }
+  }
+}
 
 export const useSubscribeEvents = () => {
   const tree = useTree(ComponentTreeId);
@@ -30,59 +113,12 @@ export const useSubscribeEvents = () => {
         }
         const id = wireUpdate.id;
         const node = tree.nodes[id]!;
-        const meta = node.meta;
-        const manifestSchemaId = meta.manifestSchemaId;
-        const pkg = meta.pkg;
-        const key = meta.key;
-        const parent = node.state.parent;
-        if (manifestSchemaId === ReactComponentManifestSchemaId) {
-          // find manifest from manifest registry
-          const manifestRegistry =
-            manifestRegistryController.readManifestRegistry();
-          const manifest = manifestRegistry[manifestSchemaId].components.find(
-            (curr) => {
-              return curr.pkg === pkg && curr.component.meta.key === key;
-            }
-          );
-          // use CanvasAPI to create component
-          if (manifest) {
-            const component = manifest.component;
-            const propsKeys = Object.keys(component.dev.attachProps);
-            const props: { [key: string]: any } = {};
-            for (let i = 0; i < propsKeys.length; i++) {
-              const propKey = propsKeys[i];
-              const treeId = component.dev.attachProps[propKey].treeId;
-              const tree = BrowserForestManager.getForest(
-                currentForest.forestPkgId,
-                currentForest.forestId
-              )?.tree(treeId);
-              if (tree) {
-                if (tree.links[id] && tree.links[id].childId) {
-                  const propNodeId = tree.links[id].childId;
-                  const value = tree.nodes[propNodeId].state.property;
-                  props[propKey] = value;
-                }
-              }
-            }
-            console.log("Created props during create event", props);
-            createComponent(
-              id,
-              component.render.comp,
-              props,
-              parent,
-              // TODO: get decorators from manifest
-              [],
-              // TODO: create catchers from manifest
-              [],
-              // TODO: get acceptsChild from manifest
-              false
-            );
-          }
-        }
+        createComponentFromNode(node);
       }
 
       if (update.type === "link") {
         const linkUpdate = update as LinkUpdate;
+        // updates prop from the tree that is newly linked
         if (linkUpdate.rootTreeId === ComponentTreeId) {
           const treeId = linkUpdate.treeId;
           const compId = linkUpdate.refId;
@@ -106,27 +142,22 @@ export const useSubscribeEvents = () => {
               const component = manifest.component;
               const propsKeys = Object.keys(component.dev.attachProps);
               for (let i = 0; i < propsKeys.length; i++) {
-                const propKey = propsKeys[i];
-                if (component.dev.attachProps[propKey].treeId !== CssTreeId) {
-                  console.log(
-                    `Some other tree than cssTree`,
-                    component.dev.attachProps[propKey].treeId
-                  );
-                  return;
-                }
                 const tree = BrowserForestManager.getForest(
                   currentForest.forestPkgId,
                   currentForest.forestId
                 )?.tree(treeId);
+                // update prop from the tree whose link update we received
                 if (tree) {
                   if (
                     tree.links[compId] &&
                     tree.links[compId].childId === propId
                   ) {
                     const props = tree.nodes[propId].state.property;
-                    console.log("Created props during link event", props);
-                    const oldProps = getComponentProps(compId);
-                    updateComponentProps(compId, { ...oldProps, ...props });
+                    if (props) {
+                      const oldProps = getComponentProps(compId);
+                      updateComponentProps(compId, { ...oldProps, ...props });
+                    }
+                    break;
                   }
                 }
               }
@@ -139,16 +170,24 @@ export const useSubscribeEvents = () => {
   }, [tree]);
 
   useEffect(() => {
-    const currentForest = BrowserForestManager.currentForest;
     // TODO
     // if currentForest is already set when this hook is called,
     // then, send all the event to the canvas
-
-    // handle when current forest is changed in future
-    const unsub = currentForest.on("reset", () => {
-      clearCanvas();
-      // TODO: send new forest data to canvas
+    tryUntilManifestRegistryHasReactComponentManifestSchemaId().then(() => {
+      function nodesToEvents() {
+        const nodes = tree.nodes;
+        const nodeIds = Object.keys(nodes);
+        nodeIds.forEach((nodeId) => {
+          const node = nodes[nodeId]!;
+          createComponentFromNode(node);
+        });
+      }
+      try {
+        clearCanvas();
+        nodesToEvents();
+      } catch {
+        console.log("caught error during nodeToEvents");
+      }
     });
-    return unsub;
-  }, []);
+  }, [tree]);
 };

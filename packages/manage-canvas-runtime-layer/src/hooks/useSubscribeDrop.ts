@@ -10,7 +10,6 @@ import {
 } from "@atrilabs/core";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 function getComponentIndex(parentId: string, loc: Location): number {
   if (parentId === "body") {
@@ -62,7 +61,6 @@ export const useSubscribeDrop = () => {
         api.postNewEvent(forestPkgId, forestId, event);
 
         if (manifestSchemaId === ReactComponentManifestSchemaId) {
-          console.log("manifest schema matches");
           // find manifest from manifest registry
           const manifestRegistry =
             manifestRegistryController.readManifestRegistry();
@@ -72,20 +70,11 @@ export const useSubscribeDrop = () => {
             }
           );
           if (manifest) {
-            console.log("manifest found");
             const component = manifest.component;
             const propsKeys = Object.keys(component.dev.attachProps);
-            console.log("propkeys", propsKeys);
             for (let i = 0; i < propsKeys.length; i++) {
               const propKey = propsKeys[i];
               const treeId = component.dev.attachProps[propKey].treeId;
-              if (treeId !== CssTreeId) {
-                console.log(
-                  "Found unknown tree, hence, skipping.\n",
-                  "manage-canvas-runtime-layer only handles component tree, css tree."
-                );
-              }
-              console.log("found treeId", treeId);
               const initialValue =
                 component.dev.attachProps[propKey].initialValue;
               const propCompId = getId();
