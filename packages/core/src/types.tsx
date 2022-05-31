@@ -13,7 +13,7 @@ export type MenuItem = ReactNode | ReactNode[];
 
 export type ContainerItem = ReactNode | ReactNode[];
 
-export type TabItem = ReactNode | ReactNode[];
+export type TabItem = { header: ReactNode; body: ReactNode };
 
 /**
  * map of a name local to a layer with it's global name

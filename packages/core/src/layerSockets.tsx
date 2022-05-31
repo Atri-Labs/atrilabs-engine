@@ -173,7 +173,7 @@ export function tab(name: string) {
     return;
   }
 
-  const register = (item: MenuItem): void => {
+  const register = (item: TabItem): void => {
     tabsRegistry[name]!.items.push(item);
     if (subscribers.tabs[name]) {
       subscribers.tabs[name].forEach((cb) => cb({ item, event: "registered" }));
@@ -279,28 +279,15 @@ export const Menu: React.FC<MenuProps> = (props) => {
 };
 
 export type TabProps = {
-  children: ReactNode | ReactNode[];
   name: string;
-};
+} & TabItem;
 
 export const Tab: React.FC<TabProps> = (props) => {
   useEffect(() => {
     const namedTab = tab(props.name);
-    if (Array.isArray(props.children)) {
-      props.children.forEach((child) => {
-        namedTab?.register(child);
-      });
-    } else {
-      namedTab?.register(props.children);
-    }
+    namedTab?.register(props);
     return () => {
-      if (Array.isArray(props.children)) {
-        props.children.forEach((child) => {
-          namedTab?.unregister(child);
-        });
-      } else {
-        namedTab?.unregister(props.children);
-      }
+      namedTab?.unregister(props);
     };
   }, [props]);
   return <></>;

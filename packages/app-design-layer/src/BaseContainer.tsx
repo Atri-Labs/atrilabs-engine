@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { gray700, gray800 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
@@ -6,6 +6,7 @@ import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
 import { useDropContainer } from "./hooks/useDropContainer";
 import { useCanvasContainer } from "./hooks/useCanvasContainer";
+import { usePropertiesTab } from "./hooks/usePropertiesTab";
 import { attachRef } from "@atrilabs/core";
 import { usePlaygroundContainer } from "./hooks/usePlaygroundOverlayContainer";
 
@@ -23,7 +24,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
   },
-  rightPart: { height: "100%", width: "15rem", display: "flex" },
+  rightPart: {
+    height: "100%",
+    width: "15rem",
+    display: "flex",
+    background: gray700,
+    flexDirection: "column",
+  },
 
   // children of leftPart
   header: {
@@ -58,6 +65,22 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   // children of rightHeader
   publishMenu: { display: "flex" },
+
+  // children of rightPart
+  propertyTabHeader: {
+    display: "flex",
+    height: "2.5rem",
+    boxSizing: "border-box",
+    border: `1px solid ${gray800}`,
+  },
+  propertyTabHeaderItem: {
+    width: "2.5rem",
+    height: "100%",
+  },
+  propertyTabBody: {
+    width: "100%",
+    height: `calc(100% - 2.5rem)`,
+  },
 };
 
 export const BaseContainer: React.FC = () => {
@@ -67,6 +90,8 @@ export const BaseContainer: React.FC = () => {
   const publishMenuItems = usePublishMenu();
   const dropContainerItem = useDropContainer();
   const canvasContainerItem = useCanvasContainer();
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const propertyTabItems = usePropertiesTab();
   const dragZoneRef = useRef<HTMLDivElement>(null);
   attachRef("Dragzone", dragZoneRef);
   const playgroundContainerItem = usePlaygroundContainer();
@@ -111,7 +136,28 @@ export const BaseContainer: React.FC = () => {
           {playgroundContainerItem ? playgroundContainerItem : null}
         </div>
       </div>
-      <div style={styles.rightPart}></div>
+      <div style={styles.rightPart}>
+        <div style={styles.propertyTabHeader}>
+          {propertyTabItems.map((item, index) => {
+            return (
+              <div
+                style={styles.propertyTabHeaderItem}
+                onClick={() => {
+                  setSelectedTab(index);
+                }}
+                key={index}
+              >
+                {item.header}
+              </div>
+            );
+          })}
+        </div>
+        <div style={styles.propertyTabBody}>
+          {propertyTabItems[selectedTab]
+            ? propertyTabItems[selectedTab].body
+            : null}
+        </div>
+      </div>
     </div>
   );
 };
