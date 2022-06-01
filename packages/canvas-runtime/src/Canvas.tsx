@@ -30,6 +30,7 @@ export const Canvas: React.FC = React.memo(() => {
   const dragzoneRef = getRef("Dragzone");
   const overlay = useDragDrop(dragzoneRef);
   const hintOverlays = useHintOverlays(dimension);
+  console.log(hintOverlays);
   return (
     <>
       <div

@@ -1,10 +1,32 @@
 import { useEffect } from "react";
-import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
+import {
+  addOrModifyHintOverlays,
+  subscribeCanvasActivity,
+} from "@atrilabs/canvas-runtime";
+import { getId } from "@atrilabs/core";
 
 export default function () {
   useEffect(() => {
     const unsub = subscribeCanvasActivity("hover", (context, event) => {
       console.log("hovered", context, event);
+      const overlayId = getId();
+      addOrModifyHintOverlays({
+        [overlayId]: {
+          compId: context.hover?.id!,
+          comp: (
+            <div
+              style={{ background: "black", height: "100%", width: "100%" }}
+            ></div>
+          ),
+          overlayId: overlayId,
+          box: (dim) => {
+            return {
+              dimension: { width: 100, height: 100 },
+              position: { top: 0, left: 0 },
+            };
+          },
+        },
+      });
     });
     return unsub;
   }, []);

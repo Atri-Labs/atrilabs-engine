@@ -40,28 +40,42 @@ export function removeHintOverlays(overlayIds: string[]) {
   }
 }
 
-const HintOverlayBox: React.FC<HintOverlay> = (props) => {
+const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
   const [box, setBox] = useState<ReturnType<HintOverlay["box"]> | null>(null);
+  const [bodyPosition, setBodyPosition] = useState<Position | null>(null);
   const [compPosition, setCompPosition] = useState<Position | null>(null);
-  if (canvasComponentStore[props.compId]) {
-    if (canvasComponentStore[props.compId].ref.current) {
-      const { height, width, top, left } = getCoords(
+  useEffect(() => {
+    if (canvasComponentStore[props.compId]) {
+      if (
+        canvasComponentStore["body"].ref.current &&
         canvasComponentStore[props.compId].ref.current
-      );
-      const box = props.box({ dimension: { height, width } });
-      setBox(box);
-      setCompPosition({ top, left });
+      ) {
+        const body = canvasComponentStore["body"].ref.current;
+        const comp = canvasComponentStore[props.compId].ref.current;
+        const bodyCoords = getCoords(body);
+        const compCoords = getCoords(comp);
+        const box = props.box({
+          dimension: { height: compCoords.height, width: compCoords.width },
+        });
+        setBox(box);
+        setBodyPosition({ top: bodyCoords.top, left: bodyCoords.left });
+        setCompPosition({ top: compCoords.top, left: compCoords.top });
+      }
     }
-  }
+  }, [props]);
+
   return (
-    <>
-      {box && compPosition ? (
+    <React.Fragment>
+      {box && compPosition && bodyPosition ? (
         <div
-          key={props.overlayId}
           style={{
             position: "absolute",
-            top: compPosition.top + box.position.top,
-            left: compPosition.left + box.position.left,
+            top:
+              (compPosition.top - bodyPosition.top) / props.scale +
+              box.position.top,
+            left:
+              (compPosition.left - bodyPosition.left) / props.scale +
+              box.position.left,
             width: box.dimension.width,
             height: box.dimension.height,
           }}
@@ -69,7 +83,7 @@ const HintOverlayBox: React.FC<HintOverlay> = (props) => {
           {props.comp}
         </div>
       ) : null}
-    </>
+    </React.Fragment>
   );
 };
 
@@ -77,13 +91,21 @@ export const useHintOverlays = (dimension: Dimension | undefined) => {
   const [hintNodes, setHintNodes] = useState<React.ReactNode[]>([]);
 
   const setNodesCb = useCallback(() => {
-    const hintNodeIds = Object.keys(hintOverlays);
-    const hintNodes = hintNodeIds.map((hintNodeId) => {
-      const hintOverlay = hintOverlays[hintNodeId]!;
-      return <HintOverlayBox {...hintOverlay} />;
-    });
-    setHintNodes(hintNodes);
-  }, []);
+    if (dimension) {
+      const hintNodeIds = Object.keys(hintOverlays);
+      const hintNodes = hintNodeIds.map((hintNodeId) => {
+        const hintOverlay = hintOverlays[hintNodeId]!;
+        return (
+          <HintOverlayBox
+            {...hintOverlay}
+            scale={dimension.scale}
+            key={hintOverlay.overlayId}
+          />
+        );
+      });
+      setHintNodes(hintNodes);
+    }
+  }, [dimension]);
 
   useEffect(() => {
     // set nodes whenever a overlay data structure is changed
@@ -95,6 +117,6 @@ export const useHintOverlays = (dimension: Dimension | undefined) => {
   useEffect(() => {
     // set nodes whenever dimension of screen changes
     setNodesCb();
-  }, [dimension, setNodesCb]);
+  }, [setNodesCb]);
   return hintNodes;
 };
