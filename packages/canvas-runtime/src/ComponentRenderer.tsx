@@ -50,7 +50,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
           {childrenId.map((childId) => {
             const childComp = canvasComponentStore[childId];
             const decorators = childComp.decorators;
-            const ref = childComp.ref;
             if (childComp.acceptsChild) {
               return (
                 <DecoratorRenderer
@@ -62,6 +61,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
                 </DecoratorRenderer>
               );
             } else {
+              const ref = childComp.ref;
               return (
                 <DecoratorRenderer
                   compId={childId}

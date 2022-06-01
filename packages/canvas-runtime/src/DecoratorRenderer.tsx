@@ -1,11 +1,13 @@
 export type DecoratorProps = {
   compId: string;
+  // a Decorator's children is always a DecoratorRenderer
   children: React.ReactNode;
 };
 
 export type DecoratorRendererProps = {
   compId: string;
   decorators: React.FC<DecoratorProps>[];
+  // A DecoratorRenderer's children is either a Decorator or a Component
   children: React.ReactNode;
 };
 

@@ -247,13 +247,12 @@ const canvasActivityMachine = createMachine<
       },
     },
     [dragend]: {
-      on: {
-        "": { target: idle, actions: [dragEndHandler] },
-      },
+      always: { target: idle, actions: [dragEndHandler] },
     },
     [dragcancel]: {
-      on: {
-        "": { target: idle, actions: [dragCancelHandler] },
+      always: {
+        target: idle,
+        actions: [dragCancelHandler],
       },
     },
   },
@@ -398,6 +397,7 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
     }
     return;
   }, [props]);
+
   return <>{props.children}</>;
 };
 

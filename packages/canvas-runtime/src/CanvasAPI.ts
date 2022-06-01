@@ -4,6 +4,7 @@ import {
   callCanvasUpdateSubscribers,
   canvasComponentTree,
 } from "./CanvasComponentData";
+import { CanvasActivityDecorator } from "./decorators/CanvasActivityDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher } from "./types";
 
@@ -19,7 +20,7 @@ export const createComponent = (
   const ref = React.createRef();
   // prepend default decorators
   if (!acceptsChild) {
-    decorators.unshift(MutationDecorator);
+    decorators.unshift(MutationDecorator, CanvasActivityDecorator);
   }
   // update component store
   canvasComponentStore[id] = {
@@ -57,6 +58,7 @@ export const createComponent = (
  * clearCanvas is expected to be called when currentForest changes
  */
 export function clearCanvas() {
+  console.log("clearCanvas called", { ...canvasComponentStore });
   const storeKeys = Object.keys(canvasComponentStore);
   // delete everything apart from body
   storeKeys.forEach((storeKey) => {

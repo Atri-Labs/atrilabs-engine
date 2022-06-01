@@ -1,5 +1,7 @@
 import { createRef } from "react";
-import { BodyComponent, bodyCatchers } from "./BodyComponent";
+import { BodyComponent } from "./body/BodyComponent";
+import { bodyCatchers } from "./body/bodyCatchers";
+import { bodyDecorators } from "./body/bodyDecorators";
 import { CanvasComponentStore, CanvasComponentTree } from "./types";
 
 /**
@@ -16,7 +18,7 @@ export const canvasComponentStore: CanvasComponentStore = {
     props: { children: [] },
     ref: createRef(),
     parent: { id: "", index: 0 },
-    decorators: [],
+    decorators: bodyDecorators,
     catchers: bodyCatchers,
     acceptsChild: true,
   },

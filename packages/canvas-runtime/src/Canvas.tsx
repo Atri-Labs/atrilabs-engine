@@ -1,6 +1,8 @@
 import { Container, getRef } from "@atrilabs/core";
 import { useRef } from "react";
+import { bodyDecorators } from "./body/bodyDecorators";
 import { ComponentRenderer } from "./ComponentRenderer";
+import { DecoratorRenderer } from "./DecoratorRenderer";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
@@ -72,7 +74,9 @@ export const Canvas: React.FC = () => {
                     height: "100%",
                   }}
                 >
-                  <ComponentRenderer compId="body" />
+                  <DecoratorRenderer compId="body" decorators={bodyDecorators}>
+                    <ComponentRenderer compId="body" />
+                  </DecoratorRenderer>
                 </div>
               </div>
             ) : null}

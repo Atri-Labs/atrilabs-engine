@@ -1,6 +1,5 @@
 import type { FC, ReactNode } from "react";
 import { forwardRef } from "react";
-import { Catcher } from "./types";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -25,11 +24,3 @@ export const BodyComponent: FC<BodyComponentProps> = forwardRef<
     </div>
   );
 });
-
-const componentCatcher: Catcher = (dragData, _loc) => {
-  if (dragData.type === "component") {
-    return true;
-  }
-  return false;
-};
-export const bodyCatchers: Catcher[] = [componentCatcher];
