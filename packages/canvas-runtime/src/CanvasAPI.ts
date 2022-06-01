@@ -85,3 +85,5 @@ export function updateComponentParent(
   compId: string,
   newParent: { id: string; index: number }
 ) {}
+
+export { subscribe as subscribeCanvasActivity } from "./decorators/CanvasActivityDecorator";
