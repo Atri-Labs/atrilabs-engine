@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createMachine, assign, interpret, InterpreterStatus } from "xstate";
+import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps } from "../DecoratorRenderer";
 
@@ -8,10 +8,10 @@ const idle = "idle" as "idle";
 const hover = "hover" as "hover";
 const pressed = "pressed" as "pressed";
 const select = "select" as "select";
+const selectIdle = "selectIdle" as "selectIdle";
 const dragstart = "dragstart" as "dragstart";
+const dragstartIdle = "dragstartIdle" as "dragstartIdle";
 const drag = "drag" as "drag";
-const dragend = "dragend" as "dragend";
-const dragcancel = "dragcancel" as "dragcancel";
 const hoverWhileSelected = "hoverWhileSelected" as "hoverWhileSelected";
 
 // events
@@ -52,11 +52,11 @@ type CanvasActivityContext = {
     id: string;
   };
   // component hovered over during drag
-  dragover?: {
+  currentDropzone?: {
     id: string;
   };
   // component where drop happens at the end of drag
-  dropzone?: {
+  finalDropzone?: {
     id: string;
   };
   hover?: {
@@ -75,6 +75,13 @@ const overNotSelected = (context: CanvasActivityContext, event: OverEvent) => {
   return context.select?.id !== event.id;
 };
 
+const hoverWhileSelectedGuard = (
+  context: CanvasActivityContext,
+  event: OverEvent
+) => {
+  return overAnother(context, event) && overNotSelected(context, event);
+};
+
 const notOverDragged = (context: CanvasActivityContext, event: OverEvent) => {
   return context.dragged?.id !== event.id;
 };
@@ -83,7 +90,14 @@ const overNotLastDragOver = (
   context: CanvasActivityContext,
   event: OverEvent
 ) => {
-  return context.dragover?.id !== event.id && context.dragover?.id !== event.id;
+  return (
+    context.currentDropzone?.id !== event.id &&
+    context.currentDropzone?.id !== event.id
+  );
+};
+
+const dragOverGuard = (context: CanvasActivityContext, event: OverEvent) => {
+  return overNotLastDragOver(context, event) && notOverDragged(context, event);
 };
 
 // mouse up on component other than the dragged
@@ -118,7 +132,7 @@ const onDragStart = assign<CanvasActivityContext, OverEvent>({
 });
 
 const onDragOverStart = assign<CanvasActivityContext, OverEvent>({
-  dragover: (_context, event) => {
+  currentDropzone: (_context, event) => {
     return {
       id: event.id,
     };
@@ -126,34 +140,41 @@ const onDragOverStart = assign<CanvasActivityContext, OverEvent>({
 });
 
 const onDragEnd = assign<CanvasActivityContext, UpEvent>({
-  dropzone: (_context, event) => {
+  finalDropzone: (_context, event) => {
     return {
       id: event.id,
+    };
+  },
+  select: (context) => {
+    if (context.dragged === undefined) {
+      console.error(
+        "The context.dragged was expected to be defined at drag end. Please report this error as it might be some problem in Canvas Runtime"
+      );
+    }
+    return {
+      id: context.dragged!.id,
     };
   },
 });
 
 const onDragCancel = assign<CanvasActivityContext, UpEvent>({
-  dropzone: (_context, event) => {
+  finalDropzone: (_context, event) => {
     return {
       id: event.id,
     };
   },
+
+  select: (context) => {
+    if (context.dragged === undefined) {
+      console.error(
+        "The context.dragged was expected to be defined at drag end. Please report this error as it might be some problem in Canvas Runtime"
+      );
+    }
+    return {
+      id: context.dragged!.id,
+    };
+  },
 });
-
-const dragEndHandler = (
-  context: CanvasActivityContext,
-  event: AutoTransitionEvent
-) => {
-  dragEndCbs.forEach((cb) => cb(context, event));
-};
-
-const dragCancelHandler = (
-  context: CanvasActivityContext,
-  event: AutoTransitionEvent
-) => {
-  dragCancelCbs.forEach((cb) => cb(context, event));
-};
 
 const canvasActivityMachine = createMachine<
   CanvasActivityContext,
@@ -167,6 +188,7 @@ const canvasActivityMachine = createMachine<
       on: {
         OVER: { target: hover, actions: [onHoverStart] },
       },
+      entry: assign({}),
     },
     [hover]: {
       on: {
@@ -185,18 +207,55 @@ const canvasActivityMachine = createMachine<
         UP: { target: select, actions: [onSelect] },
         OVER: { target: dragstart, actions: [onDragStart] },
       },
+      entry: () => {
+        console.log("entered pressed state");
+      },
+      exit: () => {
+        console.log("exiting pressed state");
+      },
     },
     [select]: {
       on: {
-        OVER: {
-          target: hoverWhileSelected,
-          cond: overNotSelected,
-          actions: [onHoverStart],
-        },
         // use might do mouse down on the selected component
         // maybe to start dragging
         DOWN: {
           target: pressed,
+        },
+      },
+      type: "compound",
+      initial: selectIdle,
+      states: {
+        [selectIdle]: {
+          on: {
+            OVER: {
+              target: hoverWhileSelected,
+              cond: overNotSelected,
+              actions: [onHoverStart],
+            },
+          },
+        },
+        [hoverWhileSelected]: {
+          on: {
+            OVER: [
+              {
+                target: hoverWhileSelected,
+                cond: hoverWhileSelectedGuard,
+                actions: [onHoverStart],
+              },
+              {
+                target: selectIdle,
+                cond: (context, event) => {
+                  return !overNotSelected(context, event);
+                },
+              },
+            ],
+          },
+          entry: (context, event) => {
+            hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
+          },
+          exit: (context, event) => {
+            hoverWhileSelectedEndCbs.forEach((cb) => cb(context, event));
+          },
         },
       },
       entry: (context, event) => {
@@ -206,53 +265,65 @@ const canvasActivityMachine = createMachine<
         selectEndCbs.forEach((cb) => cb(context, event));
       },
     },
-    [hoverWhileSelected]: {
+    [dragstart]: {
+      type: "compound",
+      initial: dragstartIdle,
       on: {
-        OVER: {
-          target: hoverWhileSelected,
-          cond: overAnother,
-          actions: [onHoverStart],
+        // mouse up on the same component before starting drag (moving to other component)
+        UP: [
+          // TODO: dragend and dragcancel, both should lead to select state with dragged as selected
+          { target: select, cond: dropOnNotDragged, actions: [onDragEnd] },
+          {
+            target: select,
+            cond: dropOnDragged,
+            actions: [onDragCancel],
+          },
+        ],
+      },
+      states: {
+        [dragstartIdle]: {
+          on: {
+            OVER: {
+              target: drag,
+              cond: notOverDragged,
+              actions: [onDragOverStart],
+            },
+          },
         },
-        DOWN: {
-          target: pressed,
+        // drag state is synononomous to dropzone created state
+        [drag]: {
+          on: {
+            OVER: [
+              {
+                target: drag,
+                cond: dragOverGuard,
+                actions: [onDragOverStart],
+              },
+              {
+                target: dragstartIdle,
+                cond: (context, event) => {
+                  return !notOverDragged(context, event);
+                },
+              },
+            ],
+          },
+          entry: (context, event) => {
+            dropzoneCreatedCbs.forEach((cb) => cb(context, event));
+          },
+          exit: (context, event) => {
+            dropzoneDestroyedCbs.forEach((cb) => cb(context, event));
+          },
         },
       },
       entry: (context, event) => {
-        hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
+        dragStartCbs.forEach((cb) => cb(context, event));
       },
       exit: (context, event) => {
-        hoverWhileSelectedEndCbs.forEach((cb) => cb(context, event));
-      },
-    },
-    [dragstart]: {
-      on: {
-        OVER: {
-          target: drag,
-          cond: notOverDragged,
-          actions: [onDragOverStart],
-        },
-      },
-    },
-    [drag]: {
-      on: {
-        OVER: {
-          target: drag,
-          cond: overNotLastDragOver,
-          actions: [onDragOverStart],
-        },
-        UP: [
-          { target: dragend, cond: dropOnNotDragged, actions: [onDragEnd] },
-          { target: dragcancel, cond: dropOnDragged, actions: [onDragCancel] },
-        ],
-      },
-    },
-    [dragend]: {
-      always: { target: idle, actions: [dragEndHandler] },
-    },
-    [dragcancel]: {
-      always: {
-        target: idle,
-        actions: [dragCancelHandler],
+        if (context.dragged === context.finalDropzone) {
+          dragCancelCbs.forEach((cb) => cb(context, event));
+        } else {
+          dragEndCbs.forEach((cb) => cb(context, event));
+        }
       },
     },
   },
@@ -269,14 +340,19 @@ const selectCbs: Callback[] = [];
 const selectEndCbs: Callback[] = [];
 const hoverWhileSelectedCbs: Callback[] = [];
 const hoverWhileSelectedEndCbs: Callback[] = [];
+const dragStartCbs: Callback[] = [];
+const dropzoneCreatedCbs: Callback[] = [];
+const dropzoneDestroyedCbs: Callback[] = [];
 const dragEndCbs: Callback[] = [];
 const dragCancelCbs: Callback[] = [];
 
 function createUnsubFunc(arr: Callback[], cb: Callback) {
-  const index = arr.findIndex((curr) => curr === cb);
-  if (index >= 0) {
-    return arr.splice(index, 1);
-  }
+  return () => {
+    const index = arr.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      return arr.splice(index, 1);
+    }
+  };
 }
 
 function subscribe(
@@ -287,6 +363,9 @@ function subscribe(
     | "selectEnd"
     | "hoverWhileSelected"
     | "hoverWhileSelectedEnd"
+    | "dragStart"
+    | "dropzoneCreated"
+    | "dropzoneDestroyed"
     | "dragEnd"
     | "dragCancel",
   cb: Callback
@@ -310,6 +389,15 @@ function subscribe(
     case "hoverWhileSelectedEnd":
       hoverWhileSelectedEndCbs.push(cb);
       return createUnsubFunc(hoverWhileSelectedEndCbs, cb);
+    case "dragStart":
+      dragStartCbs.push(cb);
+      return createUnsubFunc(dragStartCbs, cb);
+    case "dropzoneCreated":
+      dropzoneCreatedCbs.push(cb);
+      return createUnsubFunc(dropzoneCreatedCbs, cb);
+    case "dropzoneDestroyed":
+      dropzoneDestroyedCbs.push(cb);
+      return createUnsubFunc(dropzoneDestroyedCbs, cb);
     case "dragEnd":
       dragEndCbs.push(cb);
       return createUnsubFunc(dragEndCbs, cb);
@@ -321,9 +409,11 @@ function subscribe(
         `Unknown event received by ${canvasActivityMachine.id} - ${event}`
       );
   }
+  return () => {};
 }
 
 const service = interpret(canvasActivityMachine);
+service.start();
 
 // Event listeners are attached to window to reset the event handling.
 // Once the event has been handled by a component,
@@ -331,7 +421,7 @@ const service = interpret(canvasActivityMachine);
 let overHandled = false;
 let upHandled = false;
 let downHandled = false;
-window.addEventListener("mouseover", () => {
+window.addEventListener("mousemove", () => {
   overHandled = false;
 });
 window.addEventListener("mouseup", () => {
@@ -342,23 +432,9 @@ window.addEventListener("mousedown", () => {
 });
 
 const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
-  // starting/stopping interpreter service
-  useEffect(() => {
-    if (service.status === InterpreterStatus.Stopped) {
-      console.error(
-        `Cannot restart a stopped service for machine ${canvasActivityMachine.id}`
-      );
-      return;
-    }
-    service.start();
-    return () => {
-      service.stop();
-      console.log(`${canvasActivityMachine.id} stopped`);
-    };
-  }, []);
-
   useEffect(() => {
     const comp = canvasComponentStore[props.compId].ref.current;
+    console.log("comp from canvasactivity", comp);
     if (comp) {
       const mouseover = () => {
         if (overHandled) return;
@@ -385,12 +461,12 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
         });
       };
       comp.addEventListener("mousedown", mousedown);
-      comp.addEventListener("mouseover", mouseover);
+      comp.addEventListener("mousemove", mouseover);
       comp.addEventListener("mouseup", mouseup);
       return () => {
         if (comp) {
           comp.removeEventListener("mousedown", mousedown);
-          comp.removeEventListener("mouseover", mouseover);
+          comp.removeEventListener("mousemove", mouseover);
           comp.removeEventListener("mouseup", mouseup);
         }
       };

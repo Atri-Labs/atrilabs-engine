@@ -33,6 +33,7 @@ module.exports = {
     { pkg: "@atrilabs/component-list-layer" },
     { pkg: "@atrilabs/manage-canvas-runtime-layer" },
     { pkg: "@atrilabs/component-style-layer" },
+    { pkg: "@atrilabs/overlay-hints-layer" },
   ],
   output: "lib",
   services: {
