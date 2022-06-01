@@ -1,13 +1,11 @@
 import { RefObject, useEffect, useState } from "react";
+import { Dimension } from "../types";
 
 export const useAutoResize = (
   parent: RefObject<HTMLElement>,
   breakpoint: { min: number; max: number } | undefined
 ) => {
-  const [dimension, setDimension] = useState<{
-    width: string;
-    scale: number;
-  }>();
+  const [dimension, setDimension] = useState<Dimension>();
   useEffect(() => {
     if (breakpoint === undefined) return;
 

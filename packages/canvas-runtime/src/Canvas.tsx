@@ -6,6 +6,7 @@ import { DecoratorRenderer } from "./DecoratorRenderer";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
+import { useHintOverlays } from "./hooks/useHintOverlays";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -28,6 +29,7 @@ export const Canvas: React.FC = React.memo(() => {
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
   const overlay = useDragDrop(dragzoneRef);
+  const hintOverlays = useHintOverlays(dimension);
   return (
     <>
       <div
@@ -77,6 +79,13 @@ export const Canvas: React.FC = React.memo(() => {
                   <DecoratorRenderer compId="body" decorators={bodyDecorators}>
                     <ComponentRenderer compId="body" />
                   </DecoratorRenderer>
+                  {/*
+                  hint overlays are sibling of body because they need to be scroll along with
+                  the component they are overlayed with respect to.
+                  */}
+                  {hintOverlays.map((hint) => {
+                    return hint;
+                  })}
                 </div>
               </div>
             ) : null}

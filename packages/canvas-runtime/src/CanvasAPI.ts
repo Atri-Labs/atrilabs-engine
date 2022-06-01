@@ -87,3 +87,8 @@ export function updateComponentParent(
 ) {}
 
 export { subscribe as subscribeCanvasActivity } from "./decorators/CanvasActivityDecorator";
+
+export {
+  addOrModifyHintOverlays,
+  removeHintOverlays,
+} from "./hooks/useHintOverlays";

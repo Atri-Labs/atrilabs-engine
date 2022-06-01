@@ -2,6 +2,11 @@ import React from "react";
 
 export type Breakpoint = { min: number; max: number };
 
+export type Dimension = {
+  width: string;
+  scale: number;
+};
+
 export type DragComp = { comp: React.FC; props: any };
 
 export type DragData =
