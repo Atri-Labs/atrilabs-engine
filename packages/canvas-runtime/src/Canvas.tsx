@@ -1,5 +1,5 @@
 import { Container, getRef } from "@atrilabs/core";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { bodyDecorators } from "./body/bodyDecorators";
 import { ComponentRenderer } from "./ComponentRenderer";
 import { DecoratorRenderer } from "./DecoratorRenderer";
@@ -22,7 +22,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const Canvas: React.FC = () => {
+export const Canvas: React.FC = React.memo(() => {
   const breakpoint = useBreakpoint();
   const ref = useRef<HTMLDivElement>(null);
   const dimension = useAutoResize(ref, breakpoint);
@@ -92,4 +92,4 @@ export const Canvas: React.FC = () => {
       ) : null}
     </>
   );
-};
+});
