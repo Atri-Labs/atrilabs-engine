@@ -38,6 +38,7 @@ export const Canvas: React.FC = React.memo(() => {
           alignItems: "center",
           height: "100%",
           backgroundColor: "#6b7280",
+          userSelect: "none",
         }}
       >
         {breakpoint ? (

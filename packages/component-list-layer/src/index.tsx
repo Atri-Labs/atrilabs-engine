@@ -23,6 +23,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: `100%`,
     backgroundColor: gray700,
     boxSizing: "border-box",
+    userSelect: "none",
   },
   // ===========header======================
   dropContainerItemHeader: {
