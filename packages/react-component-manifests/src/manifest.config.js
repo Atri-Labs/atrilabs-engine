@@ -9,5 +9,9 @@ module.exports = {
       modulePath: "./src/manifests/Button/Button.tsx",
       exportedVarName: "Button",
     },
+    Flex: {
+      modulePath: "./src/manifests/Flex/Flex.tsx",
+      exportedVarName: "Flex",
+    },
   },
 };

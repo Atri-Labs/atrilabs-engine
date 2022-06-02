@@ -8,6 +8,7 @@ export type ReactComponentManifestSchema = {
     comp: FC<any>;
   };
   dev: {
+    comp?: FC<any>;
     decorators: FC<any>[];
     attachProps: { [key: string]: { treeId: string; initialValue: any } };
     attachCallbacks: { [key: string]: any };
@@ -21,6 +22,7 @@ const schema = Joi.object({
     comp: Joi.function(),
   }),
   dev: Joi.object({
+    comp: Joi.function(),
     // TODO: add more details to make schema validation better
     decorators: Joi.array(),
     attachProps: Joi.object(),

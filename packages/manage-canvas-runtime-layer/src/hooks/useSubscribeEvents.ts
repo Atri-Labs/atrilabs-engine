@@ -6,6 +6,7 @@ import {
 } from "@atrilabs/core";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import {
+  Catcher,
   clearCanvas,
   createComponent,
   getComponentProps,
@@ -80,19 +81,34 @@ function createComponentFromNode(node: TreeNode) {
     );
     // use CanvasAPI to create component
     if (manifest) {
-      const component = manifest.component;
-      const props = createPropsFromManifestComponent(id, component);
+      const manifestComponent = manifest.component;
+      const props = createPropsFromManifestComponent(id, manifestComponent);
+      const component =
+        manifestComponent.dev.comp || manifestComponent.render.comp;
+      const acceptsChild = manifestComponent.dev.acceptsChild;
+      const catchers: Catcher[] = [];
+      if (manifestComponent.dev.acceptsChild) {
+        // add catchers
+        // accept child catcher
+        const componentCatcher: Catcher = (dragData, _loc) => {
+          if (dragData.type === "component") {
+            return true;
+          }
+          return false;
+        };
+        catchers.push(componentCatcher);
+      }
       createComponent(
         id,
-        component.render.comp,
+        component,
         props,
         parent,
         // TODO: get decorators from manifest
         [],
         // TODO: create catchers from manifest
-        [],
+        catchers,
         // TODO: get acceptsChild from manifest
-        false
+        acceptsChild
       );
     }
   }
