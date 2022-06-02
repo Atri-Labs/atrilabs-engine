@@ -24,7 +24,7 @@ export const useSelectOverlay = () => {
       // top line
       addOrModifyHintOverlays({
         [topLineHoverId.current]: {
-          compId: context.hover?.id!,
+          compId: context.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: topLineHoverId.current,
           box: (dim) => {
@@ -41,7 +41,7 @@ export const useSelectOverlay = () => {
       // right line
       addOrModifyHintOverlays({
         [rightLineHoverId.current]: {
-          compId: context.hover?.id!,
+          compId: context.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: rightLineHoverId.current,
           box: (dim) => {
@@ -58,7 +58,7 @@ export const useSelectOverlay = () => {
       // bottom line
       addOrModifyHintOverlays({
         [bottomLineHoverId.current]: {
-          compId: context.hover?.id!,
+          compId: context.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: bottomLineHoverId.current,
           box: (dim) => {
@@ -75,7 +75,7 @@ export const useSelectOverlay = () => {
       // left line
       addOrModifyHintOverlays({
         [leftLineHoverId.current]: {
-          compId: context.hover?.id!,
+          compId: context.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: leftLineHoverId.current,
           box: (dim) => {
