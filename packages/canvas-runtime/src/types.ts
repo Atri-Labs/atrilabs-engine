@@ -50,3 +50,7 @@ export type CanvasComponentStore = {
 export type CanvasComponentTree = {
   [parentId: string]: string[];
 };
+
+export type Position = { top: number; left: number };
+
+export type BoxDimension = { width: number; height: number };

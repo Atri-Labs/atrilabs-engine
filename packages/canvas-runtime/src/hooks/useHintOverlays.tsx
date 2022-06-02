@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { canvasComponentStore } from "../CanvasComponentData";
-import { Dimension } from "../types";
+import { BoxDimension, Dimension, Position } from "../types";
 import { getCoords } from "../utils";
-
-type Position = { top: number; left: number };
-
-type BoxDimension = { width: number; height: number };
 
 export type HintOverlay = {
   overlayId: string;
@@ -59,7 +55,7 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
         });
         setBox(box);
         setBodyPosition({ top: bodyCoords.top, left: bodyCoords.left });
-        setCompPosition({ top: compCoords.top, left: compCoords.top });
+        setCompPosition({ top: compCoords.top, left: compCoords.left });
       }
     }
   }, [props]);
@@ -76,8 +72,8 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
             left:
               (compPosition.left - bodyPosition.left) / props.scale +
               box.position.left,
-            width: box.dimension.width,
-            height: box.dimension.height,
+            width: box.dimension.width / props.scale,
+            height: box.dimension.height / props.scale,
           }}
         >
           {props.comp}
