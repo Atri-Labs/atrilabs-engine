@@ -14,7 +14,6 @@ export type DecoratorRendererProps = {
 };
 
 export const DecoratorRenderer: React.FC<DecoratorRendererProps> = (props) => {
-  console.log("DecoratorRenderer called", props.compId);
   const FCComp = canvasComponentStore[props.compId].comp;
   const fcProps = canvasComponentStore[props.compId].props;
   const fcRef = canvasComponentStore[props.compId].ref;

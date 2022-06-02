@@ -433,20 +433,9 @@ window.addEventListener("mousedown", () => {
 
 const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
   useEffect(() => {
-    if (canvasComponentStore[props.compId].acceptsChild) {
-      console.log("CanvasActivityDecorator called", props.compId);
-    }
     const comp = canvasComponentStore[props.compId].ref.current;
     if (comp) {
-      if (canvasComponentStore[props.compId].acceptsChild) {
-        console.log(
-          "CanvasActivityDecorator called during subscribe",
-          props.compId
-        );
-      }
       const mouseover = () => {
-        if (canvasComponentStore[props.compId].acceptsChild)
-          console.log("mouseover called in childaccept", props.compId);
         if (overHandled) return;
         overHandled = true;
         service.send({
@@ -474,7 +463,6 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
       comp.addEventListener("mousemove", mouseover);
       comp.addEventListener("mouseup", mouseup);
       return () => {
-        console.log("unsub", props.compId);
         if (comp) {
           comp.removeEventListener("mousedown", mousedown);
           comp.removeEventListener("mousemove", mouseover);
@@ -482,7 +470,9 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
         }
       };
     } else {
-      console.log("Comp Ref is null");
+      console.error(
+        "The comp Ref is null. Please report this error to Atri Labs team."
+      );
     }
     return;
   }, [props]);
