@@ -19,9 +19,12 @@ export const createComponent = (
 ) => {
   const ref = React.createRef();
   // prepend default decorators
+  // ComponentRenderer listens for changes in components that accept child,
+  // hence, we add MutationDecorator to components who do not accept child only.
   if (!acceptsChild) {
-    decorators.unshift(MutationDecorator, CanvasActivityDecorator);
+    decorators.unshift(MutationDecorator);
   }
+  decorators.push(CanvasActivityDecorator);
   // update component store
   canvasComponentStore[id] = {
     id,
