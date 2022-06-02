@@ -1,8 +1,8 @@
-import { createRef } from "react";
 import { BodyComponent } from "./body/BodyComponent";
 import { bodyCatchers } from "./body/bodyCatchers";
 import { bodyDecorators } from "./body/bodyDecorators";
 import { CanvasComponentStore, CanvasComponentTree } from "./types";
+import { bodyRef } from "./body/bodyRef";
 
 /**
  * There are two important internal data structure for Canvas -
@@ -16,7 +16,7 @@ export const canvasComponentStore: CanvasComponentStore = {
     id: "body",
     comp: BodyComponent,
     props: { children: [] },
-    ref: createRef(),
+    ref: bodyRef,
     parent: { id: "", index: 0 },
     decorators: bodyDecorators,
     catchers: bodyCatchers,

@@ -69,35 +69,37 @@ export const useSubscribeDrop = () => {
               return curr.pkg === pkg && curr.component.meta.key === key;
             }
           );
-          if (manifest) {
-            const component = manifest.component;
-            const propsKeys = Object.keys(component.dev.attachProps);
-            for (let i = 0; i < propsKeys.length; i++) {
-              const propKey = propsKeys[i];
-              const treeId = component.dev.attachProps[propKey].treeId;
-              const initialValue =
-                component.dev.attachProps[propKey].initialValue;
-              const propCompId = getId();
-              const createEvent: CreateEvent = {
-                id: propCompId,
-                type: `CREATE$$${treeId}`,
-                meta: {},
-                state: {
-                  parent: { id: "", index: 0 },
-                  // NOTE: Introducting a convention to store node value in state's property field
-                  property: { [propKey]: initialValue },
-                },
-              };
-              api.postNewEvent(forestPkgId, forestId, createEvent);
+          setTimeout(() => {
+            if (manifest) {
+              const component = manifest.component;
+              const propsKeys = Object.keys(component.dev.attachProps);
+              for (let i = 0; i < propsKeys.length; i++) {
+                const propKey = propsKeys[i];
+                const treeId = component.dev.attachProps[propKey].treeId;
+                const initialValue =
+                  component.dev.attachProps[propKey].initialValue;
+                const propCompId = getId();
+                const createEvent: CreateEvent = {
+                  id: propCompId,
+                  type: `CREATE$$${treeId}`,
+                  meta: {},
+                  state: {
+                    parent: { id: "", index: 0 },
+                    // NOTE: Introducting a convention to store node value in state's property field
+                    property: { [propKey]: initialValue },
+                  },
+                };
+                api.postNewEvent(forestPkgId, forestId, createEvent);
 
-              const linkEvent: LinkEvent = {
-                type: `LINK$$${treeId}`,
-                refId: compId,
-                childId: propCompId,
-              };
-              api.postNewEvent(forestPkgId, forestId, linkEvent);
+                const linkEvent: LinkEvent = {
+                  type: `LINK$$${treeId}`,
+                  refId: compId,
+                  childId: propCompId,
+                };
+                api.postNewEvent(forestPkgId, forestId, linkEvent);
+              }
             }
-          }
+          }, 3000);
         }
       }
     });

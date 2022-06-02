@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useReducer } from "react";
 import { subscribeCanvasUpdate } from "./CanvasComponentData";
-import { DecoratorProps } from "./DecoratorRenderer";
+import { DecoratorProps, DecoratorRenderer } from "./DecoratorRenderer";
 
 /**
  * MutationDecorator is used with components that cannot accept child.
@@ -16,5 +16,5 @@ export const MutationDecorator = (props: DecoratorProps) => {
     });
     return unsub;
   }, [compId]);
-  return <>{props.children}</>;
+  return <DecoratorRenderer {...props} />;
 };

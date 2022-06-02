@@ -21,8 +21,9 @@ export const createComponent = (
   // prepend default decorators
   // ComponentRenderer listens for changes in components that accept child,
   // hence, we add MutationDecorator to components who do not accept child only.
-
-  decorators.unshift(MutationDecorator);
+  if (!acceptsChild) {
+    decorators.unshift(MutationDecorator);
+  }
 
   decorators.push(CanvasActivityDecorator);
   // update component store

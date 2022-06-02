@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   canvasComponentStore,
   canvasComponentTree,
@@ -19,9 +19,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
   const [, forceUpdate] = useReducer((c) => c + 1, 0);
   const [childrenId, setChildrenId] = useState<string[]>([]);
 
-  const component = useMemo(() => {
-    return canvasComponentStore[props.compId];
-  }, [props]);
+  const component = canvasComponentStore[props.compId];
 
   // It might happen that children have already been stored in the componentTree
   // when this parent component was created, hence, this useEffect just checks
@@ -41,6 +39,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
 
   useEffect(() => {
     const unsub = subscribeCanvasUpdate(props.compId, () => {
+      const component = canvasComponentStore[props.compId];
       if (component.acceptsChild) {
         const childrenId = canvasComponentTree[props.compId];
         if (childrenId) {
@@ -54,43 +53,22 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
       forceUpdate();
     });
     return unsub;
-  }, [props, component]);
+  }, [props]);
 
   /**
    * create component, assign props, link it with it's ref
    */
   return (
-    <>
-      {
-        <component.comp {...component.props} ref={component.ref}>
-          {childrenId.map((childId) => {
-            const childComp = canvasComponentStore[childId];
-            const decorators = childComp.decorators;
-            if (childComp.acceptsChild) {
-              return (
-                <DecoratorRenderer
-                  compId={childId}
-                  decorators={decorators}
-                  key={childId}
-                >
-                  <ComponentRenderer compId={childId} />
-                </DecoratorRenderer>
-              );
-            } else {
-              const ref = childComp.ref;
-              return (
-                <DecoratorRenderer
-                  compId={childId}
-                  decorators={decorators}
-                  key={childId}
-                >
-                  <childComp.comp {...childComp.props} ref={ref} />
-                </DecoratorRenderer>
-              );
-            }
-          })}
-        </component.comp>
-      }
-    </>
+    <component.comp {...component.props} ref={component.ref}>
+      {childrenId.map((childId) => {
+        return (
+          <DecoratorRenderer
+            compId={childId}
+            decoratorIndex={0}
+            key={childId}
+          />
+        );
+      })}
+    </component.comp>
   );
 };

@@ -1,31 +1,36 @@
 import React from "react";
+import { canvasComponentStore } from "./CanvasComponentData";
+import { ComponentRenderer } from "./ComponentRenderer";
 
 export type DecoratorProps = {
   compId: string;
   // a Decorator's children is always a DecoratorRenderer
-  children: React.ReactNode;
+  decoratorIndex: number;
 };
 
 export type DecoratorRendererProps = {
   compId: string;
-  decorators: React.FC<DecoratorProps>[];
-  // A DecoratorRenderer's children is either a Decorator or a Component
-  children: React.ReactNode;
+  decoratorIndex: number;
 };
 
 export const DecoratorRenderer: React.FC<DecoratorRendererProps> = (props) => {
-  if (props.decorators.length > 0) {
-    const Decorator = props.decorators[0]!;
+  console.log("DecoratorRenderer called", props.compId);
+  const FCComp = canvasComponentStore[props.compId].comp;
+  const fcProps = canvasComponentStore[props.compId].props;
+  const fcRef = canvasComponentStore[props.compId].ref;
+  const acceptsChild = canvasComponentStore[props.compId].acceptsChild;
+  const decorators = canvasComponentStore[props.compId].decorators;
+  if (decorators[props.decoratorIndex]) {
+    const Decorator = decorators[props.decoratorIndex]!;
     return (
-      <Decorator compId={props.compId}>
-        <DecoratorRenderer
-          compId={props.compId}
-          decorators={props.decorators.slice(1)}
-          children={props.children}
-        />
-      </Decorator>
+      <Decorator
+        compId={props.compId}
+        decoratorIndex={props.decoratorIndex + 1}
+      />
     );
+  } else if (acceptsChild) {
+    return <ComponentRenderer compId={props.compId} />;
   } else {
-    return <>{props.children}</>;
+    return <FCComp {...fcProps} ref={fcRef} />;
   }
 };

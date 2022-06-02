@@ -1,7 +1,5 @@
 import { Container, getRef } from "@atrilabs/core";
 import React, { useRef } from "react";
-import { bodyDecorators } from "./body/bodyDecorators";
-import { ComponentRenderer } from "./ComponentRenderer";
 import { DecoratorRenderer } from "./DecoratorRenderer";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
@@ -76,9 +74,7 @@ export const Canvas: React.FC = React.memo(() => {
                     height: "100%",
                   }}
                 >
-                  <DecoratorRenderer compId="body" decorators={bodyDecorators}>
-                    <ComponentRenderer compId="body" />
-                  </DecoratorRenderer>
+                  <DecoratorRenderer compId="body" decoratorIndex={0} />
                   {/*
                   hint overlays are sibling of body because they need to be scroll along with
                   the component they are overlayed with respect to.
