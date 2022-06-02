@@ -431,51 +431,49 @@ window.addEventListener("mousedown", () => {
   downHandled = false;
 });
 
-const CanvasActivityDecorator: React.FC<DecoratorProps> = React.memo(
-  (props) => {
-    useEffect(() => {
-      const comp = canvasComponentStore[props.compId].ref.current;
-      if (comp) {
-        const mouseover = () => {
-          if (overHandled) return;
-          overHandled = true;
-          service.send({
-            type: "OVER",
-            id: props.compId,
-          });
-        };
-        const mousedown = () => {
-          if (downHandled) return;
-          downHandled = true;
-          service.send({
-            type: "DOWN",
-            id: props.compId,
-          });
-        };
-        const mouseup = () => {
-          if (upHandled) return;
-          upHandled = true;
-          service.send({
-            type: "UP",
-            id: props.compId,
-          });
-        };
-        comp.addEventListener("mousedown", mousedown);
-        comp.addEventListener("mousemove", mouseover);
-        comp.addEventListener("mouseup", mouseup);
-        return () => {
-          if (comp) {
-            comp.removeEventListener("mousedown", mousedown);
-            comp.removeEventListener("mousemove", mouseover);
-            comp.removeEventListener("mouseup", mouseup);
-          }
-        };
-      }
-      return;
-    }, [props]);
+const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
+  useEffect(() => {
+    const comp = canvasComponentStore[props.compId].ref.current;
+    if (comp) {
+      const mouseover = () => {
+        if (overHandled) return;
+        overHandled = true;
+        service.send({
+          type: "OVER",
+          id: props.compId,
+        });
+      };
+      const mousedown = () => {
+        if (downHandled) return;
+        downHandled = true;
+        service.send({
+          type: "DOWN",
+          id: props.compId,
+        });
+      };
+      const mouseup = () => {
+        if (upHandled) return;
+        upHandled = true;
+        service.send({
+          type: "UP",
+          id: props.compId,
+        });
+      };
+      comp.addEventListener("mousedown", mousedown);
+      comp.addEventListener("mousemove", mouseover);
+      comp.addEventListener("mouseup", mouseup);
+      return () => {
+        if (comp) {
+          comp.removeEventListener("mousedown", mousedown);
+          comp.removeEventListener("mousemove", mouseover);
+          comp.removeEventListener("mouseup", mouseup);
+        }
+      };
+    }
+    return;
+  }, [props]);
 
-    return <>{props.children}</>;
-  }
-);
+  return <>{props.children}</>;
+};
 
 export { subscribe, CanvasActivityDecorator };

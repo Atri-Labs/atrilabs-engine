@@ -21,9 +21,9 @@ export const createComponent = (
   // prepend default decorators
   // ComponentRenderer listens for changes in components that accept child,
   // hence, we add MutationDecorator to components who do not accept child only.
-  if (!acceptsChild) {
-    decorators.unshift(MutationDecorator);
-  }
+
+  decorators.unshift(MutationDecorator);
+
   decorators.push(CanvasActivityDecorator);
   // update component store
   canvasComponentStore[id] = {
@@ -37,6 +37,10 @@ export const createComponent = (
     acceptsChild,
   };
   // update component tree
+  // Notice how we don't check whether the parent node exists. This is because,
+  // the canvas-runtime is built with assumption that children node can be stored before
+  // the parent node. For example, ComponentRenderer has a useEffect that checks if
+  // children are already present in the component tree upon first render.
   if (canvasComponentTree[parent.id]) {
     const index = canvasComponentTree[parent.id].findIndex((curr) => {
       const currComp = canvasComponentStore[curr]!;
@@ -74,6 +78,8 @@ export function clearCanvas() {
   // only call body subscribers
   callCanvasUpdateSubscribers("body");
 }
+
+(window as any)["canvasStore"] = canvasComponentStore;
 
 export function getComponentProps(compId: string) {
   return { ...canvasComponentStore[compId].props };

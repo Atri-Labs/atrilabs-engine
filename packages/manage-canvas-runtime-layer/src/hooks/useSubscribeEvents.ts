@@ -200,9 +200,10 @@ export const useSubscribeEvents = () => {
       }
       try {
         clearCanvas();
+        console.log("clearCanvas done");
         nodesToEvents();
-      } catch {
-        console.log("caught error during nodeToEvents");
+      } catch (err) {
+        console.log("caught error during nodeToEvents", err);
       }
     });
   }, [tree]);
