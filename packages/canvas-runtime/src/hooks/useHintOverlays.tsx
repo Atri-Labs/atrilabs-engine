@@ -67,11 +67,11 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
           style={{
             position: "absolute",
             top:
-              (compPosition.top - bodyPosition.top) / props.scale +
-              box.position.top,
+              (compPosition.top - bodyPosition.top + box.position.top) /
+              props.scale,
             left:
-              (compPosition.left - bodyPosition.left) / props.scale +
-              box.position.left,
+              (compPosition.left - bodyPosition.left + box.position.left) /
+              props.scale,
             width: box.dimension.width / props.scale,
             height: box.dimension.height / props.scale,
           }}
