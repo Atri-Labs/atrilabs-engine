@@ -7,6 +7,7 @@ import {
 import { CanvasActivityDecorator } from "./decorators/CanvasActivityDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher } from "./types";
+import { getCoords, ComponentCoords } from "./utils";
 
 export const createComponent = (
   id: string,
@@ -17,7 +18,7 @@ export const createComponent = (
   catchers: Catcher[],
   acceptsChild: boolean
 ) => {
-  const ref = React.createRef();
+  const ref = React.createRef<HTMLElement>();
   // prepend default decorators
   // ComponentRenderer listens for changes in components that accept child,
   // hence, we add MutationDecorator to components who do not accept child only.
@@ -89,6 +90,51 @@ export function getComponentProps(compId: string) {
 export function updateComponentProps(compId: string, props: any) {
   canvasComponentStore[compId].props = props;
   callCanvasUpdateSubscribers(compId);
+}
+
+export function getComponentChildrenId(compId: string) {
+  return [...canvasComponentTree[compId]];
+}
+
+export function getComponentRef(compId: string) {
+  return canvasComponentStore[compId].ref;
+}
+
+export function getRelativeChildrenCoords(compId: string): ComponentCoords[] {
+  const coords: ComponentCoords[] = [];
+  if (canvasComponentStore[compId]) {
+    const parentComp = canvasComponentStore[compId].ref.current;
+    if (!parentComp) {
+      console.error(
+        `Component ref of parent ${compId} is null. Please contact Atri Labs team if you are seeing this error.`
+      );
+      return coords;
+    }
+    const childIds = canvasComponentTree[compId];
+    if (childIds) {
+      childIds.forEach((childId) => {
+        const childComp = canvasComponentStore[compId].ref.current;
+        if (!childComp) {
+          console.error(
+            `Component ref for a child ${childId} is null. Please contact Atri Labs team if you are seeing this error.`
+          );
+          return;
+        }
+        const childCoords = getCoords(childComp);
+        const parentCoords = getCoords(parentComp);
+        const relativeCoords: ComponentCoords = {
+          top: childCoords.top - parentCoords.top,
+          left: childCoords.left - parentCoords.left,
+          width: childCoords.width,
+          height: childCoords.height,
+        };
+        coords.push(relativeCoords);
+      });
+    } else {
+      return coords;
+    }
+  }
+  return coords;
 }
 
 export function updateComponentParent(

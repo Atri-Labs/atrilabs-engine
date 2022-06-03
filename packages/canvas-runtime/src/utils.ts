@@ -6,14 +6,14 @@ import {
   Location,
 } from "./types";
 
-type ElementCoords = {
+export type ComponentCoords = {
   top: number;
   left: number;
   width: number;
   height: number;
 };
 
-export function getCoords(elem: HTMLElement): ElementCoords {
+export function getCoords(elem: HTMLElement): ComponentCoords {
   // crossbrowser version
   var box = elem.getBoundingClientRect();
 
@@ -32,7 +32,7 @@ export function getCoords(elem: HTMLElement): ElementCoords {
   return { top: top, left: left, width: box.width, height: box.height };
 }
 
-function insideBox(loc: Location, box: ElementCoords): boolean {
+function insideBox(loc: Location, box: ComponentCoords): boolean {
   if (
     box.left <= loc.pageX &&
     box.left + box.width >= loc.pageX &&
