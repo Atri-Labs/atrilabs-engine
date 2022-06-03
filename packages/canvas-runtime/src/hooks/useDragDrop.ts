@@ -89,13 +89,13 @@ export function startDrag(dragComp: DragComp, dragData: DragData) {
   service.send({ type: START_DRAG_CALLED, args: { dragComp, dragData } });
 }
 
-type DropSubscriber = (
+type DragDropSubscriber = (
   args: StartDragArgs,
   loc: Location,
   caughtBy: string
 ) => void;
-const dropSubscribers: DropSubscriber[] = [];
-export function subscribeNewDrop(cb: DropSubscriber) {
+const dropSubscribers: DragDropSubscriber[] = [];
+export function subscribeNewDrop(cb: DragDropSubscriber) {
   dropSubscribers.push(cb);
   return () => {
     const index = dropSubscribers.findIndex((curr) => curr === cb);
@@ -103,6 +103,21 @@ export function subscribeNewDrop(cb: DropSubscriber) {
       dropSubscribers.splice(index, 1);
     }
   };
+}
+
+const dragSubscribers: DragDropSubscriber[] = [];
+export function subscribeNewDrag(cb: DragDropSubscriber) {
+  dragSubscribers.push(cb);
+  return () => {
+    const index = dragSubscribers.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      dragSubscribers.splice(index, 1);
+    }
+  };
+}
+
+export function isNewDropInProgress() {
+  return service.state.value !== idle;
 }
 
 // =============== hook used in Canvas component to enable drag & drop mechanism ==
@@ -171,6 +186,14 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
       dropSubscribers.forEach((cb) => cb(args, loc, caughtBy));
     };
 
+    const callNewDragSubscribers = (
+      args: StartDragArgs,
+      loc: Location,
+      caughtBy: string
+    ) => {
+      dragSubscribers.forEach((cb) => cb(args, loc, caughtBy));
+    };
+
     service.onTransition((state, event) => {
       if (
         state.value === DRAG &&
@@ -178,12 +201,27 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
         state.context.startDragArgs
       ) {
         displayDragComponent(state.context.startDragArgs, event.loc);
+        if (state.context.startDragArgs) {
+          const caughtBy = findCatcher(
+            canvasComponentTree,
+            canvasComponentStore,
+            state.context.startDragArgs.dragData,
+            event.loc
+          );
+          if (caughtBy) {
+            // inform drop subscribers
+            callNewDragSubscribers(
+              state.context.startDragArgs,
+              event.loc,
+              caughtBy!.id
+            );
+          }
+        }
       }
 
       if (state.value === DRAG_END && event.type === MOUSE_UP) {
         // remove the icon created during dragging
         removeDragComponent();
-
         if (state.context.startDragArgs) {
           const caughtBy = findCatcher(
             canvasComponentTree,
