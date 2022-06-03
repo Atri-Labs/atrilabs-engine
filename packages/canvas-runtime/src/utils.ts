@@ -2,7 +2,7 @@ import {
   CanvasComponent,
   CanvasComponentStore,
   CanvasComponentTree,
-  DragData,
+  CatcherData,
   Location,
 } from "./types";
 
@@ -100,7 +100,7 @@ export function triangulate(
 
 export function bubbleUp(
   canvasComp: CanvasComponent,
-  dragData: DragData,
+  catcherData: CatcherData,
   loc: Location,
   canvasComponentStore: CanvasComponentStore
 ): CanvasComponent | null {
@@ -108,7 +108,7 @@ export function bubbleUp(
   const catchers = canvasComp.catchers;
   for (let i = 0; i < catchers.length; i++) {
     const catcher = catchers[i]!;
-    const isCaught = catcher(dragData, loc);
+    const isCaught = catcher(catcherData, loc);
     if (isCaught) {
       return canvasComp;
     }
@@ -120,5 +120,20 @@ export function bubbleUp(
   // bubble up to parent
   const parentId = canvasComp.parent.id;
   const parentCanvasComp = canvasComponentStore[parentId];
-  return bubbleUp(parentCanvasComp, dragData, loc, canvasComponentStore);
+  return bubbleUp(parentCanvasComp, catcherData, loc, canvasComponentStore);
+}
+
+export function findCatcher(
+  tree: CanvasComponentTree,
+  store: CanvasComponentStore,
+  catcherData: CatcherData,
+  loc: Location
+) {
+  const triangulatedBy = triangulate(tree, store, loc);
+  if (triangulatedBy) {
+    const triangulatedByComp = store[triangulatedBy]!;
+    const caughtBy = bubbleUp(triangulatedByComp, catcherData, loc, store);
+    return caughtBy;
+  }
+  return null;
 }

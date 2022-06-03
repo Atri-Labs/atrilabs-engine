@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createMachine, assign, Action, interpret } from "xstate";
-import { bubbleUp, getCoords, triangulate } from "../utils";
+import { findCatcher, getCoords } from "../utils";
 import type { StartDragArgs, DragComp, DragData, Location } from "../types";
 import {
   canvasComponentStore,
@@ -185,27 +185,19 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
         removeDragComponent();
 
         if (state.context.startDragArgs) {
-          const triangulatedBy = triangulate(
+          const caughtBy = findCatcher(
             canvasComponentTree,
             canvasComponentStore,
+            state.context.startDragArgs.dragData,
             event.loc
           );
-          if (triangulatedBy) {
-            const triangulatedByComp = canvasComponentStore[triangulatedBy]!;
-            const caughtBy = bubbleUp(
-              triangulatedByComp,
-              state.context.startDragArgs.dragData,
+          if (caughtBy) {
+            // inform drop subscribers
+            callDropSubscribers(
+              state.context.startDragArgs,
               event.loc,
-              canvasComponentStore
+              caughtBy!.id
             );
-            if (caughtBy) {
-              // inform drop subscribers
-              callDropSubscribers(
-                state.context.startDragArgs,
-                event.loc,
-                caughtBy!.id
-              );
-            }
           }
         }
         service.send({ type: RESTART });

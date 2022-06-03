@@ -23,11 +23,25 @@ export type StartDragArgs = {
 
 export type Location = { pageX: number; pageY: number };
 
+export type ReDragData = {
+  type: "redrop";
+  data: {
+    // component being dragged
+    compId: string;
+  };
+};
+
+/**
+ * Catchers are invoked at two occasions, when a new component drop is in progress
+ * and the other ocassion is when an existing component's re-parenting is in progress.
+ */
+export type CatcherData = DragData | ReDragData;
+
 /**
  * Catcher function associated with a component should return true
  * if the component can handle the canvas activity (drag or drop etc.)
  */
-export type Catcher = (dragData: DragData, loc: Location) => boolean;
+export type Catcher = (catcherData: CatcherData, loc: Location) => boolean;
 
 export type CanvasComponent = {
   id: string;
