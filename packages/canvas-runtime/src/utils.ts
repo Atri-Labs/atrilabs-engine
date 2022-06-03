@@ -44,6 +44,32 @@ function insideBox(loc: Location, box: ComponentCoords): boolean {
   return false;
 }
 
+// A region that is delta pixels inside the box is considered marginal region.
+// We are assuming that this function is being run after it has been estbalished that
+// the mouse is inside the box using insideBox.
+function inMarginalRegion(loc: Location, box: ComponentCoords): boolean {
+  let delta = 4;
+  if (box.left + delta >= loc.pageX && box.left <= loc.pageX) {
+    return true;
+  }
+  if (
+    box.left + box.width - delta <= loc.pageX &&
+    box.left + box.width >= loc.pageX
+  ) {
+    return true;
+  }
+  if (box.top + delta >= loc.pageY && box.top <= loc.pageY) {
+    return true;
+  }
+  if (
+    box.top + box.height - delta <= loc.pageY &&
+    box.top + box.height >= loc.pageY
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function _triangulate(
   currId: string,
   tree: CanvasComponentTree,
@@ -62,6 +88,12 @@ export function _triangulate(
       if (isInsideBox) {
         // store result in resultId
         resultId = currId;
+        // If current component location (parent) +/- 4 <= mouse location
+        // then don't loop over children, thus, considering current component
+        // as the catcher.
+        if (inMarginalRegion(loc, coords)) {
+          return resultId;
+        }
         const children = tree[currId];
         if (children) {
           // Loop over all it's child.
