@@ -105,13 +105,13 @@ export function startDrag(dragComp: DragComp, dragData: DragData) {
   }
 }
 
-type DragDropSubscriber = (
+type DropSubscriber = (
   args: StartDragArgs,
   loc: Location,
   caughtBy: string
 ) => void;
-const dropSubscribers: DragDropSubscriber[] = [];
-export function subscribeNewDrop(cb: DragDropSubscriber) {
+const dropSubscribers: DropSubscriber[] = [];
+export function subscribeNewDrop(cb: DropSubscriber) {
   dropSubscribers.push(cb);
   return () => {
     const index = dropSubscribers.findIndex((curr) => curr === cb);
@@ -121,8 +121,13 @@ export function subscribeNewDrop(cb: DragDropSubscriber) {
   };
 }
 
-const dragSubscribers: DragDropSubscriber[] = [];
-export function subscribeNewDrag(cb: DragDropSubscriber) {
+type DragSubscriber = (
+  args: StartDragArgs,
+  loc: Location,
+  caughtBy: string | null
+) => void;
+const dragSubscribers: DragSubscriber[] = [];
+export function subscribeNewDrag(cb: DragSubscriber) {
   dragSubscribers.push(cb);
   return () => {
     const index = dragSubscribers.findIndex((curr) => curr === cb);
@@ -205,7 +210,7 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
     const callNewDragSubscribers = (
       args: StartDragArgs,
       loc: Location,
-      caughtBy: string
+      caughtBy: string | null
     ) => {
       dragSubscribers.forEach((cb) => cb(args, loc, caughtBy));
     };
@@ -224,12 +229,18 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
             state.context.startDragArgs.dragData,
             event.loc
           );
+          // drag subscribers are informed in both the cases when caughtBy is null or non-null
           if (caughtBy) {
-            // inform drop subscribers
             callNewDragSubscribers(
               state.context.startDragArgs,
               event.loc,
               caughtBy!.id
+            );
+          } else {
+            callNewDragSubscribers(
+              state.context.startDragArgs,
+              event.loc,
+              null
             );
           }
           if (state.context.startDragArgs.dragData.type === "src") {

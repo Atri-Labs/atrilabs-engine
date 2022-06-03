@@ -3,6 +3,7 @@ import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import { useHoverOverlay } from "./overlays/useHoverOverlay";
 import { useSelectOverlay } from "./overlays/useSelectOverlay";
 import { useHoverWhileSelectedOverlay } from "./overlays/useHoverWhileSelectedOverlay";
+import { useSubscribeNewDrag } from "./overlays/useSubscribeNewDrag";
 
 export default function () {
   // overlays during hover
@@ -47,5 +48,6 @@ export default function () {
     });
     return unsub;
   }, []);
+  useSubscribeNewDrag();
   return <></>;
 }
