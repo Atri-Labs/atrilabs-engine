@@ -593,7 +593,7 @@ export async function installManifestPkgDependencies(
   }
 }
 
-function getFiles(dir: string): string[] {
+export function getFiles(dir: string): string[] {
   const files: string[] = [];
   const dirents = fs.readdirSync(dir, { withFileTypes: true });
   dirents.forEach((dirent) => {
@@ -606,7 +606,7 @@ function getFiles(dir: string): string[] {
   return files;
 }
 
-function copyFileSync(src: string, destDir: string) {
+export function copyFileSync(src: string, destDir: string) {
   const filename = path.basename(src);
   const destPath = path.resolve(destDir, filename);
   if (!fs.existsSync(path.dirname(destPath))) {

@@ -25,3 +25,10 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
+
+export type Cache = {
+  [pkg: string]: {
+    // filepath is relative to manifest directory in pkg
+    [filepath: string]: { timestamp: Date };
+  };
+};
