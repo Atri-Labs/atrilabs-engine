@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { subscribeDrop } from "@atrilabs/canvas-runtime";
+import { subscribeNewDrop } from "@atrilabs/canvas-runtime";
 import type { Location } from "@atrilabs/canvas-runtime";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { getId } from "@atrilabs/core";
@@ -39,7 +39,7 @@ function getComponentIndex(parentId: string, loc: Location): number {
 
 export const useSubscribeDrop = () => {
   useEffect(() => {
-    const unsub = subscribeDrop((args, loc, caughtBy) => {
+    const unsub = subscribeNewDrop((args, loc, caughtBy) => {
       if (args.dragData.type === "component") {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;

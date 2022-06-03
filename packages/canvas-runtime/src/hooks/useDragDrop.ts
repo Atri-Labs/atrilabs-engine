@@ -95,7 +95,7 @@ type DropSubscriber = (
   caughtBy: string
 ) => void;
 const dropSubscribers: DropSubscriber[] = [];
-export function subscribeDrop(cb: DropSubscriber) {
+export function subscribeNewDrop(cb: DropSubscriber) {
   dropSubscribers.push(cb);
   return () => {
     const index = dropSubscribers.findIndex((curr) => curr === cb);
@@ -163,7 +163,7 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
       setOverlay(null);
     };
 
-    const callDropSubscribers = (
+    const callNewDropSubscribers = (
       args: StartDragArgs,
       loc: Location,
       caughtBy: string
@@ -193,7 +193,7 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
           );
           if (caughtBy) {
             // inform drop subscribers
-            callDropSubscribers(
+            callNewDropSubscribers(
               state.context.startDragArgs,
               event.loc,
               caughtBy!.id

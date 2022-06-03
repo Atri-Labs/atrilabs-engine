@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Container } from "@atrilabs/core";
 import { Canvas } from "./Canvas";
 export { CanvasController } from "./CanvasController";
-export { startDrag, subscribeDrop } from "./hooks/useDragDrop";
+export { startDrag, subscribeNewDrop } from "./hooks/useDragDrop";
 export * from "./CanvasAPI";
 export * from "./types";
 
