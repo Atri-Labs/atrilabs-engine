@@ -15,12 +15,19 @@ const dragstartIdle = "dragstartIdle" as "dragstartIdle";
 const drag = "drag" as "drag";
 const hoverWhileSelected = "hoverWhileSelected" as "hoverWhileSelected";
 
+const lockCompDrop = "lockCompDrop" as "lockCompDrop";
+const lockDataDrop = "lockDataDrop" as "lockDataDrop";
+
 // events
 type OVER = "OVER";
 type DOWN = "DOWN";
 type UP = "UP";
 type AUTO = "AUTO";
 type OUT_OF_CANVAS = "OUT_OF_CANVAS";
+type LOCK_COMP_DROP = "LOCK_COMP_DROP"; // dropping new component
+type LOCK_DATA_DROP = "LOCK_DATA_DROP"; // dropping src etc.
+type UNLOCK_EVENT = "UNLOCK_EVENT";
+type CANCEL_LOCK_EVENT = "CANCEL_LOCK_EVENT";
 
 type OverEvent = {
   type: OVER;
@@ -45,12 +52,36 @@ type OutOfCanvasEvent = {
   type: OUT_OF_CANVAS;
 };
 
+type LockCompDropEvent = {
+  type: LOCK_COMP_DROP;
+  compId: string;
+};
+
+type LockDataDropEvent = {
+  type: LOCK_DATA_DROP;
+  targetId: string;
+};
+
+// unlock event always takes you to the select state
+type UnlockEvent = {
+  type: UNLOCK_EVENT;
+};
+
+// cacel lock event always takes you to the idle state
+type CancelLockEvent = {
+  type: CANCEL_LOCK_EVENT;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
   | UpEvent
   | AutoTransitionEvent
-  | OutOfCanvasEvent;
+  | OutOfCanvasEvent
+  | LockCompDropEvent
+  | LockDataDropEvent
+  | UnlockEvent
+  | CancelLockEvent;
 
 // context
 type CanvasActivityContext = {
@@ -70,6 +101,12 @@ type CanvasActivityContext = {
     id: string;
   };
   select?: {
+    id: string;
+  };
+  dropComp?: {
+    id: string;
+  };
+  dropData?: {
     id: string;
   };
 };
@@ -197,6 +234,36 @@ const setSelectOnOutOfCanvasOnDragFail = assign<
   },
 });
 
+const onLockCompDrop = assign<CanvasActivityContext, LockCompDropEvent>({
+  dropComp: (_context, event) => {
+    return { id: event.compId };
+  },
+});
+
+const onLockDataDrop = assign<CanvasActivityContext, LockDataDropEvent>({
+  dropData: (_context, event) => {
+    return { id: event.targetId };
+  },
+});
+
+const selectOnUnlockCompDrop = assign<CanvasActivityContext, UnlockEvent>({
+  select: (context) => {
+    return { id: context.dropComp!.id };
+  },
+  dropComp: () => {
+    return undefined;
+  },
+});
+
+const selectOnUnlockDataDrop = assign<CanvasActivityContext, UnlockEvent>({
+  select: (context) => {
+    return { id: context.dropData!.id };
+  },
+  dropData: () => {
+    return undefined;
+  },
+});
+
 const canvasActivityMachine = createMachine<
   CanvasActivityContext,
   CanvasActivityEvent
@@ -208,6 +275,8 @@ const canvasActivityMachine = createMachine<
     [idle]: {
       on: {
         OVER: { target: hover, actions: [onHoverStart] },
+        LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
+        LOCK_DATA_DROP: { target: lockDataDrop, actions: [onLockDataDrop] },
       },
       entry: assign({}),
     },
@@ -243,6 +312,8 @@ const canvasActivityMachine = createMachine<
         DOWN: {
           target: pressed,
         },
+        LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
+        LOCK_DATA_DROP: { target: lockDataDrop, actions: [onLockDataDrop] },
       },
       type: "compound",
       initial: selectIdle,
@@ -351,6 +422,18 @@ const canvasActivityMachine = createMachine<
         } else {
           dragEndCbs.forEach((cb) => cb(context, event));
         }
+      },
+    },
+    [lockCompDrop]: {
+      on: {
+        UNLOCK_EVENT: { target: select, actions: [selectOnUnlockCompDrop] },
+        CANCEL_LOCK_EVENT: { target: idle },
+      },
+    },
+    [lockDataDrop]: {
+      on: {
+        UNLOCK_EVENT: { target: select, actions: [selectOnUnlockDataDrop] },
+        CANCEL_LOCK_EVENT: { target: idle },
       },
     },
   },
