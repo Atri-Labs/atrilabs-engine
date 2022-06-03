@@ -45,9 +45,9 @@ export const useSubscribeDrop = () => {
         const forestId = BrowserForestManager.currentForest.forestId;
         const pkg = args.dragData.data.pkg;
         const key = args.dragData.data.key;
+        const compId = args.dragData.data.id;
         const manifestSchemaId = args.dragData.data.manifestSchema;
         const index = getComponentIndex(caughtBy, loc);
-        const compId = getId();
         const event: CreateEvent = {
           id: compId,
           type: `CREATE$$${ComponentTreeId}`,

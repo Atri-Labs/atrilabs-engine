@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Container, Menu } from "@atrilabs/core";
+import { Container, getId, Menu } from "@atrilabs/core";
 import {
   gray300,
   gray700,
@@ -109,6 +109,7 @@ export default function () {
                           key: comp.component.renderSchema.meta.key,
                           pkg: comp.pkg,
                           manifestSchema: ReactComponentManifestSchemaId,
+                          id: getId(),
                         },
                       });
                     }}

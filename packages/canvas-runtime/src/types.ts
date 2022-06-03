@@ -12,7 +12,7 @@ export type DragComp = { comp: React.FC; props: any };
 export type DragData =
   | {
       type: "component";
-      data: { pkg: string; key: string; manifestSchema: string };
+      data: { pkg: string; key: string; manifestSchema: string; id: string };
     }
   | { type: "src"; data: { src: string } };
 
