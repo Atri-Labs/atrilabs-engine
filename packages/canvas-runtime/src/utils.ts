@@ -32,7 +32,7 @@ export function getCoords(elem: HTMLElement): ComponentCoords {
   return { top: top, left: left, width: box.width, height: box.height };
 }
 
-function insideBox(loc: Location, box: ComponentCoords): boolean {
+export function insideBox(loc: Location, box: ComponentCoords): boolean {
   if (
     box.left <= loc.pageX &&
     box.left + box.width >= loc.pageX &&
@@ -47,7 +47,7 @@ function insideBox(loc: Location, box: ComponentCoords): boolean {
 // A region that is delta pixels inside the box is considered marginal region.
 // We are assuming that this function is being run after it has been estbalished that
 // the mouse is inside the box using insideBox.
-function inMarginalRegion(loc: Location, box: ComponentCoords): boolean {
+export function inMarginalRegion(loc: Location, box: ComponentCoords): boolean {
   let delta = 4;
   if (box.left + delta >= loc.pageX && box.left <= loc.pageX) {
     return true;

@@ -47,7 +47,7 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
         canvasComponentStore[props.compId].ref.current
       ) {
         const body = canvasComponentStore["body"].ref.current;
-        const comp = canvasComponentStore[props.compId].ref.current;
+        const comp = canvasComponentStore[props.compId].ref.current!;
         const bodyCoords = getCoords(body);
         const compCoords = getCoords(comp);
         const box = props.box({

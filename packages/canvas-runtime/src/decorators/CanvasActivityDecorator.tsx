@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
+import { getCoords, insideBox } from "../utils";
 
 // states
 const idle = "idle" as "idle";
@@ -19,6 +20,7 @@ type OVER = "OVER";
 type DOWN = "DOWN";
 type UP = "UP";
 type AUTO = "AUTO";
+type OUT_OF_CANVAS = "OUT_OF_CANVAS";
 
 type OverEvent = {
   type: OVER;
@@ -39,11 +41,16 @@ type AutoTransitionEvent = {
   type: AUTO;
 };
 
+type OutOfCanvasEvent = {
+  type: OUT_OF_CANVAS;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
   | UpEvent
-  | AutoTransitionEvent;
+  | AutoTransitionEvent
+  | OutOfCanvasEvent;
 
 // context
 type CanvasActivityContext = {
@@ -176,6 +183,20 @@ const onDragCancel = assign<CanvasActivityContext, UpEvent>({
   },
 });
 
+const setSelectOnOutOfCanvasOnDragFail = assign<
+  CanvasActivityContext,
+  OutOfCanvasEvent
+>({
+  select: (context) => {
+    if (!context.dragged?.id) {
+      console.error(
+        "context.dragged was expected to be defined. Please report this error to Atri Labs team."
+      );
+    }
+    return { id: context.dragged!.id };
+  },
+});
+
 const canvasActivityMachine = createMachine<
   CanvasActivityContext,
   CanvasActivityEvent
@@ -194,6 +215,7 @@ const canvasActivityMachine = createMachine<
       on: {
         OVER: { target: hover, cond: overAnother, actions: [onHoverStart] },
         DOWN: { target: pressed },
+        OUT_OF_CANVAS: { target: idle },
       },
       entry: (context, event) => {
         hoverCbs.forEach((cb) => cb(context, event));
@@ -249,6 +271,7 @@ const canvasActivityMachine = createMachine<
                 },
               },
             ],
+            OUT_OF_CANVAS: { target: selectIdle },
           },
           entry: (context, event) => {
             hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
@@ -279,6 +302,10 @@ const canvasActivityMachine = createMachine<
             actions: [onDragCancel],
           },
         ],
+        OUT_OF_CANVAS: {
+          target: select,
+          actions: [setSelectOnOutOfCanvasOnDragFail],
+        },
       },
       states: {
         [dragstartIdle]: {
@@ -432,6 +459,21 @@ window.addEventListener("mousedown", () => {
 });
 
 const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
+  useEffect(() => {
+    // useEffect for body only
+    if (props.compId === "body") {
+      const mousemove = (event: MouseEvent) => {
+        const body = canvasComponentStore[props.compId].ref.current!;
+        if (!insideBox(event, getCoords(body))) {
+          service.send({ type: "OUT_OF_CANVAS" });
+        }
+      };
+      window.addEventListener("mousemove", mousemove, { capture: true });
+      return () => {
+        window.removeEventListener("mousemove", mousemove);
+      };
+    }
+  }, [props]);
   useEffect(() => {
     const comp = canvasComponentStore[props.compId].ref.current;
     if (comp) {
