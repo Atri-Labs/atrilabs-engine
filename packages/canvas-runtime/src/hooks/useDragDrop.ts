@@ -6,6 +6,15 @@ import {
   canvasComponentStore,
   canvasComponentTree,
 } from "../CanvasComponentData";
+import {
+  cancelMachineLock,
+  isMachineLocked,
+  lockMachineForCompDrop,
+  lockMachineForDataDrop,
+  setDataDropTarget,
+  unlockMachine,
+  unsetDataDropTarget,
+} from "../decorators/CanvasActivityDecorator";
 
 type DragDropMachineContext = {
   startDragArgs: StartDragArgs | null;
@@ -87,6 +96,13 @@ const service = interpret(dragDropMachine);
 // ============ API exposed to layers ====================================
 export function startDrag(dragComp: DragComp, dragData: DragData) {
   service.send({ type: START_DRAG_CALLED, args: { dragComp, dragData } });
+  if (dragData.type === "component") {
+    lockMachineForCompDrop(dragData.data.id);
+  }
+  if (dragData.type === "src") {
+    // For data drop, the target is known during drag & drop only
+    lockMachineForDataDrop();
+  }
 }
 
 type DragDropSubscriber = (
@@ -216,6 +232,14 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
               caughtBy!.id
             );
           }
+          if (state.context.startDragArgs.dragData.type === "src") {
+            // if caughtBy is null then unset data drop target, otherwise set it
+            if (caughtBy) {
+              setDataDropTarget(caughtBy.id);
+            } else {
+              unsetDataDropTarget();
+            }
+          }
         }
       }
 
@@ -236,6 +260,31 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
               event.loc,
               caughtBy!.id
             );
+          }
+          if (state.context.startDragArgs.dragData.type === "src") {
+            // if caughtBy is null then unset data drop target, otherwise set the target
+            if (caughtBy) {
+              setDataDropTarget(caughtBy.id);
+            } else {
+              unsetDataDropTarget();
+            }
+            // If we are dropping src, then we can immidiately unlock the machine,
+            // once we have set/unset the target.
+            unlockMachine();
+          }
+          // Wait for 500 ms before unlocking the machine
+          // If caughtBy is null, then immidiately unlock the machine
+          if (caughtBy) {
+            setTimeout(() => {
+              if (isMachineLocked()) {
+                cancelMachineLock();
+                console.error(
+                  "Cancel machine lock was created as a escape hatch and isn't expected to happen. Please report to Atri Labs about this error message."
+                );
+              }
+            }, 500);
+          } else {
+            cancelMachineLock();
           }
         }
         service.send({ type: RESTART });

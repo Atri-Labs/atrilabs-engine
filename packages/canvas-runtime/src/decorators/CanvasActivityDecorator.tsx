@@ -17,6 +17,8 @@ const hoverWhileSelected = "hoverWhileSelected" as "hoverWhileSelected";
 
 const lockCompDrop = "lockCompDrop" as "lockCompDrop";
 const lockDataDrop = "lockDataDrop" as "lockDataDrop";
+const lockDataDropIdle = "lockDataDropIdle" as "lockDataDropIdle";
+const lockDataDropSet = "lockDataDropSet" as "lockDataDropSet";
 
 // events
 type OVER = "OVER";
@@ -28,6 +30,8 @@ type LOCK_COMP_DROP = "LOCK_COMP_DROP"; // dropping new component
 type LOCK_DATA_DROP = "LOCK_DATA_DROP"; // dropping src etc.
 type UNLOCK_EVENT = "UNLOCK_EVENT";
 type CANCEL_LOCK_EVENT = "CANCEL_LOCK_EVENT";
+type SET_DATA_DROP_TARGET = "SET_DATA_DROP_TARGET";
+type UNSET_DATA_DROP_TARGET = "UNSET_DATA_DROP_TARGET";
 
 type OverEvent = {
   type: OVER;
@@ -59,7 +63,15 @@ type LockCompDropEvent = {
 
 type LockDataDropEvent = {
   type: LOCK_DATA_DROP;
+};
+
+type SetDropTargetEvent = {
+  type: SET_DATA_DROP_TARGET;
   targetId: string;
+};
+
+type UnsetDropTargetEvent = {
+  type: UNSET_DATA_DROP_TARGET;
 };
 
 // unlock event always takes you to the select state
@@ -81,7 +93,9 @@ type CanvasActivityEvent =
   | LockCompDropEvent
   | LockDataDropEvent
   | UnlockEvent
-  | CancelLockEvent;
+  | CancelLockEvent
+  | SetDropTargetEvent
+  | UnsetDropTargetEvent;
 
 // context
 type CanvasActivityContext = {
@@ -151,6 +165,17 @@ const dropOnNotDragged = (context: CanvasActivityContext, event: UpEvent) => {
 // mouse up on the dragged component itself
 const dropOnDragged = (context: CanvasActivityContext, event: UpEvent) => {
   return context.dragged?.id === event.id;
+};
+
+const dropDataIsSet = (context: CanvasActivityContext) => {
+  if (context.dropData && context.dropData.id) {
+    return true;
+  }
+  return false;
+};
+
+const dropDataIsNotSet = (context: CanvasActivityContext) => {
+  return !dropDataIsSet(context);
 };
 
 const onHoverStart = assign<CanvasActivityContext, OverEvent>({
@@ -240,11 +265,19 @@ const onLockCompDrop = assign<CanvasActivityContext, LockCompDropEvent>({
   },
 });
 
-const onLockDataDrop = assign<CanvasActivityContext, LockDataDropEvent>({
+const onSetLockDataDrop = assign<CanvasActivityContext, SetDropTargetEvent>({
   dropData: (_context, event) => {
     return { id: event.targetId };
   },
 });
+
+const onUnsetLockDataDrop = assign<CanvasActivityContext, UnsetDropTargetEvent>(
+  {
+    dropData: () => {
+      return undefined;
+    },
+  }
+);
 
 const selectOnUnlockCompDrop = assign<CanvasActivityContext, UnlockEvent>({
   select: (context) => {
@@ -276,7 +309,7 @@ const canvasActivityMachine = createMachine<
       on: {
         OVER: { target: hover, actions: [onHoverStart] },
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
-        LOCK_DATA_DROP: { target: lockDataDrop, actions: [onLockDataDrop] },
+        LOCK_DATA_DROP: { target: lockDataDrop },
       },
       entry: assign({}),
     },
@@ -313,7 +346,7 @@ const canvasActivityMachine = createMachine<
           target: pressed,
         },
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
-        LOCK_DATA_DROP: { target: lockDataDrop, actions: [onLockDataDrop] },
+        LOCK_DATA_DROP: { target: lockDataDrop },
       },
       type: "compound",
       initial: selectIdle,
@@ -432,8 +465,42 @@ const canvasActivityMachine = createMachine<
     },
     [lockDataDrop]: {
       on: {
-        UNLOCK_EVENT: { target: select, actions: [selectOnUnlockDataDrop] },
+        UNLOCK_EVENT: [
+          {
+            target: select,
+            cond: dropDataIsSet,
+            actions: [selectOnUnlockDataDrop],
+          },
+          {
+            target: idle,
+            cond: dropDataIsNotSet,
+          },
+        ],
         CANCEL_LOCK_EVENT: { target: idle },
+      },
+      type: "compound",
+      initial: lockDataDropIdle,
+      states: {
+        [lockDataDropIdle]: {
+          on: {
+            SET_DATA_DROP_TARGET: {
+              target: lockDataDropSet,
+              actions: [onSetLockDataDrop],
+            },
+          },
+        },
+        [lockDataDropSet]: {
+          on: {
+            SET_DATA_DROP_TARGET: {
+              target: lockDataDropSet,
+              actions: [onSetLockDataDrop],
+            },
+            UNSET_DATA_DROP_TARGET: {
+              target: lockDataDropIdle,
+              actions: [onUnsetLockDataDrop],
+            },
+          },
+        },
       },
     },
   },
@@ -605,4 +672,58 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
   return <DecoratorRenderer {...props} />;
 };
 
-export { subscribe, CanvasActivityDecorator };
+// =================== API for internal use only =====================
+
+function lockMachineForCompDrop(compId: string) {
+  service.send({ type: "LOCK_COMP_DROP", compId });
+}
+
+function lockMachineForDataDrop() {
+  service.send({ type: "LOCK_DATA_DROP" });
+}
+
+function setDataDropTarget(targetId: string) {
+  service.send({ type: "SET_DATA_DROP_TARGET", targetId });
+}
+
+function unsetDataDropTarget() {
+  service.send({ type: "UNSET_DATA_DROP_TARGET" });
+}
+
+function unlockMachine() {
+  service.send({ type: "UNLOCK_EVENT" });
+}
+
+function cancelMachineLock() {
+  service.send({ type: "CANCEL_LOCK_EVENT" });
+}
+
+function getCompDropTarget() {
+  return service.state.context.dropComp?.id;
+}
+
+function getDataDropTarget() {
+  return service.state.context.dropData?.id;
+}
+
+function isMachineLocked() {
+  return (
+    service.state.value === lockCompDrop || service.state.value === lockDataDrop
+  );
+}
+
+// ===================================================================
+
+export {
+  subscribe,
+  CanvasActivityDecorator,
+  lockMachineForCompDrop,
+  lockMachineForDataDrop,
+  unlockMachine,
+  cancelMachineLock,
+  setDataDropTarget,
+  unsetDataDropTarget,
+  getCompDropTarget,
+  getDataDropTarget,
+  isMachineLocked,
+};

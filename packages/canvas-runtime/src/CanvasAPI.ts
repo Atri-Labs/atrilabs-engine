@@ -5,6 +5,7 @@ import {
   canvasComponentTree,
 } from "./CanvasComponentData";
 import { CanvasActivityDecorator } from "./decorators/CanvasActivityDecorator";
+import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher } from "./types";
 import { getCoords, ComponentCoords } from "./utils";
@@ -26,7 +27,10 @@ export const createComponent = (
     decorators.unshift(MutationDecorator);
   }
 
-  decorators.push(CanvasActivityDecorator);
+  decorators.push(
+    CanvasActivityDecorator,
+    UnlockCanvasActivityMachineDecorator
+  );
   // update component store
   canvasComponentStore[id] = {
     id,
@@ -148,3 +152,5 @@ export {
   addOrModifyHintOverlays,
   removeHintOverlays,
 } from "./hooks/useHintOverlays";
+
+export { subscribeNewDropRendered } from "./decorators/UnlockCanvasActivityMachineDecorator";
