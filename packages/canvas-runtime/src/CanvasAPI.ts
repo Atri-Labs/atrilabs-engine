@@ -123,7 +123,7 @@ export function getRelativeChildrenCoords(compId: string): ComponentCoords[] {
     const childIds = canvasComponentTree[compId];
     if (childIds) {
       childIds.forEach((childId) => {
-        const childComp = canvasComponentStore[compId].ref.current;
+        const childComp = canvasComponentStore[childId].ref.current;
         if (!childComp) {
           console.error(
             `Component ref for a child ${childId} is null. Please contact Atri Labs team if you are seeing this error.`

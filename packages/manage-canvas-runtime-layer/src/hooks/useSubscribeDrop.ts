@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { subscribeNewDrop } from "@atrilabs/canvas-runtime";
+import {
+  getOwnCoords,
+  getRelativeChildrenCoords,
+  subscribeNewDrop,
+  getRelativeLocation,
+} from "@atrilabs/canvas-runtime";
 import type { Location } from "@atrilabs/canvas-runtime";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { getId } from "@atrilabs/core";
@@ -10,26 +15,24 @@ import {
 } from "@atrilabs/core";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 
 function getComponentIndex(parentId: string, loc: Location): number {
   if (parentId === "body") {
-    const currentForest = BrowserForestManager.currentForest;
-    const tree = currentForest.tree(ComponentTreeId)!;
-    const nodeIds = Object.keys(tree.nodes);
-    const reverseMap: { [parentId: string]: string[] } = {};
-    nodeIds.forEach((nodeId) => {
-      const node = tree.nodes[nodeId]!;
-      if (reverseMap[node.state.parent.id]) {
-        reverseMap[node.state.parent.id].push(nodeId);
-      } else {
-        reverseMap[node.state.parent.id] = [nodeId];
-      }
-    });
-    // if parentId doesn't appear in reverseMap, then it's the first child for parent
-    if (reverseMap[parentId] === undefined) {
-      return 0;
+    const coords = getOwnCoords(parentId);
+    const childCoordinates = getRelativeChildrenCoords(parentId);
+    const relativePointerLoc = getRelativeLocation(parentId, loc);
+    if (coords && relativePointerLoc) {
+      return computeBodyChildIndex({
+        coords,
+        childCoordinates,
+        relativePointerLoc,
+      });
     } else {
-      return reverseMap[parentId].length;
+      console.error(
+        `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
+      );
+      return 0;
     }
   } else {
     // TODO: handle component with non-body parent
