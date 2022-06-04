@@ -12,7 +12,7 @@ import {
 import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher, Location } from "./types";
-import { getCoords, ComponentCoords } from "./utils";
+import { getCoords, ComponentCoords, getAllDescendants } from "./utils";
 export type { ComponentCoords } from "./utils";
 
 export const createComponent = (
@@ -226,10 +226,13 @@ export function deleteComponent(compId: string) {
   const component = canvasComponentStore[compId];
   if (component) {
     const parentId = component.parent.id;
-    const childIds = canvasComponentTree[compId];
-    // TODO: delete recursively all child
-    if (childIds) {
-      childIds.forEach((childId) => {});
+    // delete recursively all child
+    const descendants = getAllDescendants(compId);
+    if (descendants) {
+      descendants.forEach((descendantId) => {
+        delete canvasComponentStore[descendantId];
+        delete canvasComponentTree[descendantId];
+      });
     }
     // delete itself from parent component tree
     const index = canvasComponentTree[parentId].findIndex((curr) => {
