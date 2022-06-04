@@ -163,6 +163,8 @@ export type RewireUpdate = {
   childId: string;
   oldParentId: string;
   newParentId: string;
+  newIndex: number;
+  oldIndex: number;
   treeId: string;
 };
 

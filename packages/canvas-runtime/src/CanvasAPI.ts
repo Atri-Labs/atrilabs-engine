@@ -40,10 +40,10 @@ export const createComponent = (
     id,
     ref,
     comp,
-    props,
-    parent,
-    decorators,
-    catchers,
+    props: JSON.parse(JSON.stringify(props)),
+    parent: { ...parent },
+    decorators: [...decorators],
+    catchers: [...catchers],
     acceptsChild,
   };
   // update component tree
@@ -178,7 +178,44 @@ export function getRelativeLocation(
 export function updateComponentParent(
   compId: string,
   newParent: { id: string; index: number }
-) {}
+) {
+  // it might happen that oldParent isn't created on fresh load of page
+  if (!canvasComponentStore[compId]) {
+    return;
+  }
+  const oldParent = canvasComponentStore[compId].parent;
+  // TODO: update component tree
+  if (canvasComponentTree[oldParent.id]) {
+    const index = canvasComponentTree[oldParent.id].findIndex(
+      (curr) => curr === compId
+    );
+    if (index >= 0) {
+      canvasComponentTree[oldParent.id].splice(index, 1);
+    }
+  } else {
+    canvasComponentTree[oldParent.id] = [];
+  }
+
+  if (canvasComponentTree[newParent.id]) {
+    const index = canvasComponentTree[newParent.id].findIndex((curr) => {
+      const currComp = canvasComponentStore[curr]!;
+      if (currComp.parent.index >= newParent.index) {
+        return true;
+      }
+      return false;
+    });
+    if (index >= 0) {
+      canvasComponentTree[newParent.id].splice(index, 0, compId);
+    } else {
+      canvasComponentTree[newParent.id].push(compId);
+    }
+  } else {
+    canvasComponentTree[newParent.id] = [compId];
+  }
+  canvasComponentStore[compId].parent = { ...newParent };
+  callCanvasUpdateSubscribers(oldParent.id);
+  callCanvasUpdateSubscribers(newParent.id);
+}
 
 export { subscribe as subscribeCanvasActivity } from "./decorators/CanvasActivityDecorator";
 

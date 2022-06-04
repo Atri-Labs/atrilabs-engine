@@ -78,6 +78,39 @@ export function createForest(def: ForestDef): Forest {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice("PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
+        // patch parent
+        if (patchEvent.slice && patchEvent.slice.parent) {
+          if (patchEvent.slice.parent.id && patchEvent.slice.parent.index) {
+            const oldParentId =
+              tree(treeId)?.nodes[patchEvent.id]?.state.parent.id;
+            const oldIndex =
+              tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
+            if (oldParentId !== undefined && oldIndex !== undefined) {
+              merge(
+                treeMap[treeId]!.nodes[patchEvent.id]!["state"],
+                patchEvent.slice
+              );
+              forestUpdateSubscribers.forEach((cb) => {
+                cb({
+                  type: "rewire",
+                  treeId,
+                  childId: patchEvent.id,
+                  newParentId: patchEvent.slice.parent.id,
+                  newIndex: patchEvent.slice.parent.index,
+                  oldIndex,
+                  oldParentId,
+                });
+              });
+            }
+            return;
+          } else {
+            console.error(
+              "The parent field's id and index must be updated together. Ignoring the patch event."
+            );
+            return;
+          }
+        }
+        // patch other fields
         merge(
           treeMap[treeId]!.nodes[patchEvent.id]!["state"],
           patchEvent.slice

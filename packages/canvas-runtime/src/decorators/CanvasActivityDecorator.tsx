@@ -3,6 +3,7 @@ import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
 import { bubbleUp, getAllDescendants, getCoords, insideBox } from "../utils";
+import { Location } from "../types";
 
 // states
 const idle = "idle" as "idle";
@@ -117,10 +118,14 @@ type CanvasActivityContext = {
   // component hovered over during drag
   currentDropzone?: {
     id: string;
+    // location is needed to use with bubble up and catcher
+    loc: Location;
   };
   // component where drop happens at the end of drag
   finalDropzone?: {
     id: string;
+    // location is needed to use with bubble up and catcher
+    loc: Location;
   };
   hover?: {
     id: string;
@@ -240,7 +245,7 @@ const onDragOverStart = assign<CanvasActivityContext, OverEvent>({
       canvasComponentStore
     );
     if (dropzoneComp) {
-      return { id: dropzoneComp.id };
+      return { id: dropzoneComp.id, loc: event.event };
     }
     return undefined;
   },
@@ -256,7 +261,7 @@ const onDragEnd = assign<CanvasActivityContext, UpEvent>({
       canvasComponentStore
     );
     if (dropzoneComp) {
-      return { id: dropzoneComp.id };
+      return { id: dropzoneComp.id, loc: event.event };
     }
   },
   select: (context) => {
@@ -556,7 +561,7 @@ const canvasActivityMachine = createMachine<
 // callbacks
 type Callback = (
   context: CanvasActivityContext,
-  event: CanvasActivityEvent
+  event: CanvasActivityEvent | { type: "dropzoneMove"; loc: Location }
 ) => void;
 const hoverCbs: Callback[] = [];
 const hoverEndCbs: Callback[] = [];
@@ -591,7 +596,8 @@ function subscribe(
     | "dropzoneCreated"
     | "dropzoneDestroyed"
     | "dragEnd"
-    | "dragCancel",
+    | "dragCancel"
+    | "dropzoneMove",
   cb: Callback
 ) {
   switch (event) {
@@ -628,6 +634,8 @@ function subscribe(
     case "dragCancel":
       dragCancelCbs.push(cb);
       return createUnsubFunc(dragCancelCbs, cb);
+    case "dropzoneMove":
+      return subscribeDropzoneMove(cb);
     default:
       console.error(
         `Unknown event received by ${canvasActivityMachine.id} - ${event}`
@@ -660,7 +668,7 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
     // useEffect for body only
     if (props.compId === "body") {
       const mousemove = (event: MouseEvent) => {
-        const body = canvasComponentStore[props.compId].ref.current!;
+        const body = canvasComponentStore["body"].ref.current!;
         if (!insideBox(event, getCoords(body))) {
           service.send({ type: "OUT_OF_CANVAS" });
         }
@@ -763,6 +771,39 @@ function isMachineLocked() {
 
 function emitClearCanvasEvent() {
   service.send({ type: "CLEAR_CANVAS_EVENT" });
+}
+
+// ===================================================================
+
+// ===================== API for layers ==============================
+const dropzoneMoveListeners: ((
+  context: CanvasActivityContext,
+  event: { type: "dropzoneMove"; loc: Location }
+) => void)[] = [];
+const windowMoveListener = (event: MouseEvent) => {
+  dropzoneMoveListeners.forEach((cb) =>
+    cb(service.state.context, { type: "dropzoneMove", loc: event })
+  );
+};
+subscribe("dropzoneCreated", () => {
+  window.addEventListener("mousemove", windowMoveListener);
+});
+subscribe("dropzoneDestroyed", () => {
+  window.removeEventListener("mousemove", windowMoveListener);
+});
+function subscribeDropzoneMove(
+  cb: (
+    context: CanvasActivityContext,
+    event: { type: "dropzoneMove"; loc: Location }
+  ) => void
+) {
+  dropzoneMoveListeners.push(cb);
+  return () => {
+    const index = dropzoneMoveListeners.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      dropzoneMoveListeners.splice(index, 1);
+    }
+  };
 }
 
 // ===================================================================

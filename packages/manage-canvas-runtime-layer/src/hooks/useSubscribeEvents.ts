@@ -10,6 +10,7 @@ import {
   clearCanvas,
   createComponent,
   getComponentProps,
+  updateComponentParent,
   updateComponentProps,
 } from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
@@ -180,6 +181,13 @@ export const useSubscribeEvents = () => {
             }
           }
         }
+      }
+
+      if (update.type === "rewire") {
+        updateComponentParent(update.childId, {
+          id: update.newParentId,
+          index: update.newIndex,
+        });
       }
     });
     return unsub;
