@@ -10,8 +10,9 @@ import {
 } from "./decorators/CanvasActivityDecorator";
 import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
-import { Catcher } from "./types";
+import { Catcher, Location } from "./types";
 import { getCoords, ComponentCoords } from "./utils";
+export type { ComponentCoords } from "./utils";
 
 export const createComponent = (
   id: string,
@@ -144,6 +145,34 @@ export function getRelativeChildrenCoords(compId: string): ComponentCoords[] {
     }
   }
   return coords;
+}
+
+export function getOwnCoords(compId: string) {
+  if (canvasComponentStore[compId]) {
+    const comp = canvasComponentStore[compId].ref.current;
+    if (comp) {
+      return getCoords(comp);
+    } else {
+      console.error(
+        "Component Ref should have been defined. Please report this error to Atri Labs team."
+      );
+    }
+  }
+}
+
+// Get location relative to a component
+// This function is expected to be used to calculate relative mouse position
+// inside a component
+export function getRelativeLocation(
+  compId: string,
+  loc: Location
+): Pick<ComponentCoords, "top" | "left"> | undefined {
+  const coords = getOwnCoords(compId);
+  if (coords) {
+    const top = loc.pageX - coords.left;
+    const left = loc.pageY - coords.top;
+    return { top, left };
+  }
 }
 
 export function updateComponentParent(
