@@ -9,6 +9,7 @@ import {
   Catcher,
   clearCanvas,
   createComponent,
+  deleteComponent,
   getComponentProps,
   updateComponentParent,
   updateComponentProps,
@@ -188,6 +189,10 @@ export const useSubscribeEvents = () => {
           id: update.newParentId,
           index: update.newIndex,
         });
+      }
+
+      if (update.type === "dewire") {
+        deleteComponent(update.childId);
       }
     });
     return unsub;

@@ -792,10 +792,6 @@ function emitClearCanvasEvent() {
   service.send({ type: "CLEAR_CANVAS_EVENT" });
 }
 
-function getCurrentState() {
-  return service.state.value;
-}
-
 function sendDeleteComponent(compId: string) {
   service.send({ type: "DELETE_COMPONENT_EVENT", id: compId });
 }
@@ -833,6 +829,14 @@ function subscribeDropzoneMove(
   };
 }
 
+function getCurrentState() {
+  return service.state.value;
+}
+
+function getCurrentMachineContext() {
+  return service.state.context;
+}
+
 // ===================================================================
 
 export {
@@ -850,4 +854,5 @@ export {
   emitClearCanvasEvent,
   getCurrentState,
   sendDeleteComponent,
+  getCurrentMachineContext,
 };

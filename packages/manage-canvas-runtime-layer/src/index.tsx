@@ -1,3 +1,4 @@
+import { useDeleteKey } from "./hooks/useDeleteKey";
 import { useSubscribeDrop } from "./hooks/useSubscribeDrop";
 import { useSubscribeEvents } from "./hooks/useSubscribeEvents";
 import { useSubscribeReDrop } from "./hooks/useSubscribeReDrop";
@@ -7,5 +8,6 @@ export default function () {
   useSubscribeDrop();
   useSubscribeEvents();
   useSubscribeReDrop();
+  useDeleteKey();
   return <></>;
 }

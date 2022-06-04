@@ -248,7 +248,11 @@ export function deleteComponent(compId: string) {
   }
 }
 
-export { subscribe as subscribeCanvasActivity } from "./decorators/CanvasActivityDecorator";
+export {
+  subscribe as subscribeCanvasActivity,
+  getCurrentState,
+  getCurrentMachineContext,
+} from "./decorators/CanvasActivityDecorator";
 
 export {
   addOrModifyHintOverlays,
