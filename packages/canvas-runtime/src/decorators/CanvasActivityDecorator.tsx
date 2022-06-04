@@ -34,6 +34,7 @@ type CANCEL_LOCK_EVENT = "CANCEL_LOCK_EVENT";
 type SET_DATA_DROP_TARGET = "SET_DATA_DROP_TARGET";
 type UNSET_DATA_DROP_TARGET = "UNSET_DATA_DROP_TARGET";
 type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
+type DELETE_COMPONENT_EVENT = "DELETE_COMPONENT_EVENT";
 
 type OverEvent = {
   type: OVER;
@@ -95,6 +96,12 @@ type ClearCanvasEvent = {
   type: CLEAR_CANVAS_EVENT;
 };
 
+// A delete event is raised by user
+type DeleteComponentEvent = {
+  type: DELETE_COMPONENT_EVENT;
+  id: string;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -107,7 +114,8 @@ type CanvasActivityEvent =
   | CancelLockEvent
   | SetDropTargetEvent
   | UnsetDropTargetEvent
-  | ClearCanvasEvent;
+  | ClearCanvasEvent
+  | DeleteComponentEvent;
 
 // context
 type CanvasActivityContext = {
@@ -211,6 +219,13 @@ const dropDataIsSet = (context: CanvasActivityContext) => {
 
 const dropDataIsNotSet = (context: CanvasActivityContext) => {
   return !dropDataIsSet(context);
+};
+
+const deletedSelectedComponent = (
+  context: CanvasActivityContext,
+  event: DeleteComponentEvent
+) => {
+  return context.select?.id === event.id;
 };
 
 const onHoverStart = assign<CanvasActivityContext, OverEvent>({
@@ -397,6 +412,10 @@ const canvasActivityMachine = createMachine<
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
         LOCK_DATA_DROP: { target: lockDataDrop },
         CLEAR_CANVAS_EVENT: { target: idle },
+        DELETE_COMPONENT_EVENT: {
+          target: idle,
+          cond: deletedSelectedComponent,
+        },
       },
       type: "compound",
       initial: selectIdle,
@@ -773,6 +792,14 @@ function emitClearCanvasEvent() {
   service.send({ type: "CLEAR_CANVAS_EVENT" });
 }
 
+function getCurrentState() {
+  return service.state.value;
+}
+
+function sendDeleteComponent(compId: string) {
+  service.send({ type: "DELETE_COMPONENT_EVENT", id: compId });
+}
+
 // ===================================================================
 
 // ===================== API for layers ==============================
@@ -821,4 +848,6 @@ export {
   getDataDropTarget,
   isMachineLocked,
   emitClearCanvasEvent,
+  getCurrentState,
+  sendDeleteComponent,
 };

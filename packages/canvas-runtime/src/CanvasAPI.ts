@@ -7,6 +7,7 @@ import {
 import {
   CanvasActivityDecorator,
   emitClearCanvasEvent,
+  sendDeleteComponent,
 } from "./decorators/CanvasActivityDecorator";
 import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
@@ -215,6 +216,33 @@ export function updateComponentParent(
   canvasComponentStore[compId].parent = { ...newParent };
   callCanvasUpdateSubscribers(oldParent.id);
   callCanvasUpdateSubscribers(newParent.id);
+}
+
+export function deleteComponent(compId: string) {
+  // can't delete body
+  if (compId === "body") {
+    return;
+  }
+  const component = canvasComponentStore[compId];
+  if (component) {
+    const parentId = component.parent.id;
+    const childIds = canvasComponentTree[compId];
+    // TODO: delete recursively all child
+    if (childIds) {
+      childIds.forEach((childId) => {});
+    }
+    // delete itself from parent component tree
+    const index = canvasComponentTree[parentId].findIndex((curr) => {
+      return curr === compId;
+    });
+    if (index >= 0) {
+      canvasComponentTree[parentId].splice(index, 1);
+    }
+    // inform parent
+    callCanvasUpdateSubscribers(parentId);
+    // inform canvas activity machine
+    sendDeleteComponent(compId);
+  }
 }
 
 export { subscribe as subscribeCanvasActivity } from "./decorators/CanvasActivityDecorator";
