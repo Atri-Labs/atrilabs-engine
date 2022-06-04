@@ -4,6 +4,7 @@ import { useHoverOverlay } from "./overlays/useHoverOverlay";
 import { useSelectOverlay } from "./overlays/useSelectOverlay";
 import { useHoverWhileSelectedOverlay } from "./overlays/useHoverWhileSelectedOverlay";
 import { useSubscribeNewDrag } from "./overlays/useSubscribeNewDrag";
+import { useDropzoneOverlay } from "./overlays/useDropzoneOverlay";
 
 export default function () {
   // overlays during hover
@@ -12,28 +13,12 @@ export default function () {
   useSelectOverlay();
   // overlays for a component hovered while other is selected
   useHoverWhileSelectedOverlay();
+  // overlays new parent during reposition
+  useDropzoneOverlay();
   useEffect(() => {
     const unsub = subscribeCanvasActivity("dragStart", (context, event) => {
       console.log("dragStart", context, event);
     });
-    return unsub;
-  }, []);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity(
-      "dropzoneCreated",
-      (context, event) => {
-        console.log("dropzoneCreated", context, event);
-      }
-    );
-    return unsub;
-  }, []);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity(
-      "dropzoneDestroyed",
-      (context, event) => {
-        console.log("dropzoneDestroyed", context, event);
-      }
-    );
     return unsub;
   }, []);
   useEffect(() => {
