@@ -145,7 +145,7 @@ export function bubbleUp(
       return canvasComp;
     }
   }
-  // can't bubble up beryon body
+  // can't bubble up beyond body
   if (canvasComp.id === "body") {
     return null;
   }
