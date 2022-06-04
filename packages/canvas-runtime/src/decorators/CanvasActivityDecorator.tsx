@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
-import { getCoords, insideBox } from "../utils";
+import { bubbleUp, getAllDescendants, getCoords, insideBox } from "../utils";
 
 // states
 const idle = "idle" as "idle";
@@ -37,6 +37,8 @@ type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
 type OverEvent = {
   type: OVER;
   id: string;
+  // event is only required for re-position (catchers need mouse location)
+  event: MouseEvent;
 };
 
 type DownEvent = {
@@ -47,6 +49,8 @@ type DownEvent = {
 type UpEvent = {
   type: UP;
   id: string;
+  // event is only required for re-position (catchers need mouse location)
+  event: MouseEvent;
 };
 
 type AutoTransitionEvent = {
@@ -148,7 +152,16 @@ const hoverWhileSelectedGuard = (
 };
 
 const notOverDragged = (context: CanvasActivityContext, event: OverEvent) => {
-  return context.dragged?.id !== event.id;
+  if (context.dragged?.id === event.id) {
+    return false;
+  }
+  const descendants = getAllDescendants(context.dragged!.id);
+  for (let i = 0; i < descendants.length; i++) {
+    if (descendants[i] === event.id) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const overNotLastDragOver = (
@@ -167,11 +180,21 @@ const dragOverGuard = (context: CanvasActivityContext, event: OverEvent) => {
 
 // mouse up on component other than the dragged
 const dropOnNotDragged = (context: CanvasActivityContext, event: UpEvent) => {
-  return context.dragged?.id !== event.id;
+  if (context.dragged?.id === event.id) {
+    return false;
+  }
+  const descendants = getAllDescendants(context.dragged!.id);
+  for (let i = 0; i < descendants.length; i++) {
+    if (descendants[i] === event.id) {
+      return false;
+    }
+  }
+  return true;
 };
+
 // mouse up on the dragged component itself
 const dropOnDragged = (context: CanvasActivityContext, event: UpEvent) => {
-  return context.dragged?.id === event.id;
+  return !dropOnNotDragged(context, event);
 };
 
 const dropDataIsSet = (context: CanvasActivityContext) => {
@@ -208,18 +231,33 @@ const onDragStart = assign<CanvasActivityContext, OverEvent>({
 });
 
 const onDragOverStart = assign<CanvasActivityContext, OverEvent>({
-  currentDropzone: (_context, event) => {
-    return {
-      id: event.id,
-    };
+  currentDropzone: (context, event) => {
+    const comp = canvasComponentStore[event.id];
+    const dropzoneComp = bubbleUp(
+      comp,
+      { type: "redrop", data: { compId: context.dragged!.id } },
+      event.event,
+      canvasComponentStore
+    );
+    if (dropzoneComp) {
+      return { id: dropzoneComp.id };
+    }
+    return undefined;
   },
 });
 
 const onDragEnd = assign<CanvasActivityContext, UpEvent>({
-  finalDropzone: (_context, event) => {
-    return {
-      id: event.id,
-    };
+  finalDropzone: (context, event) => {
+    const comp = canvasComponentStore[event.id];
+    const dropzoneComp = bubbleUp(
+      comp,
+      { type: "redrop", data: { compId: context.dragged!.id } },
+      event.event,
+      canvasComponentStore
+    );
+    if (dropzoneComp) {
+      return { id: dropzoneComp.id };
+    }
   },
   select: (context) => {
     if (context.dragged === undefined) {
@@ -235,9 +273,7 @@ const onDragEnd = assign<CanvasActivityContext, UpEvent>({
 
 const onDragCancel = assign<CanvasActivityContext, UpEvent>({
   finalDropzone: (_context, event) => {
-    return {
-      id: event.id,
-    };
+    return undefined;
   },
 
   select: (context) => {
@@ -459,7 +495,7 @@ const canvasActivityMachine = createMachine<
         dragStartCbs.forEach((cb) => cb(context, event));
       },
       exit: (context, event) => {
-        if (context.dragged === context.finalDropzone) {
+        if (context.finalDropzone === undefined) {
           dragCancelCbs.forEach((cb) => cb(context, event));
         } else {
           dragEndCbs.forEach((cb) => cb(context, event));
@@ -638,12 +674,13 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
   useEffect(() => {
     const comp = canvasComponentStore[props.compId].ref.current;
     if (comp) {
-      const mouseover = () => {
+      const mouseover = (event: MouseEvent) => {
         if (overHandled) return;
         overHandled = true;
         service.send({
           type: "OVER",
           id: props.compId,
+          event,
         });
       };
       const mousedown = () => {
@@ -654,12 +691,13 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
           id: props.compId,
         });
       };
-      const mouseup = () => {
+      const mouseup = (event: MouseEvent) => {
         if (upHandled) return;
         upHandled = true;
         service.send({
           type: "UP",
           id: props.compId,
+          event,
         });
       };
       comp.addEventListener("mousedown", mousedown);

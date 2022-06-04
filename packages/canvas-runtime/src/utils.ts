@@ -1,3 +1,4 @@
+import { canvasComponentTree } from "./CanvasComponentData";
 import {
   CanvasComponent,
   CanvasComponentStore,
@@ -168,4 +169,20 @@ export function findCatcher(
     return caughtBy;
   }
   return null;
+}
+
+export function getAllDescendants(compId: string): string[] {
+  const descendants: string[] = [];
+  if (canvasComponentTree[compId]) {
+    descendants.push(...canvasComponentTree[compId]);
+    let curr = 0;
+    while (curr < descendants.length) {
+      const currId = descendants[curr];
+      if (canvasComponentTree[currId]) {
+        descendants.push(...canvasComponentTree[currId]);
+      }
+      curr++;
+    }
+  }
+  return descendants;
 }
