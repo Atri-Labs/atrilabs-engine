@@ -1,10 +1,9 @@
-import { useEffect } from "react";
-import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import { useHoverOverlay } from "./overlays/useHoverOverlay";
 import { useSelectOverlay } from "./overlays/useSelectOverlay";
 import { useHoverWhileSelectedOverlay } from "./overlays/useHoverWhileSelectedOverlay";
 import { useSubscribeNewDrag } from "./overlays/useSubscribeNewDrag";
 import { useDropzoneOverlay } from "./overlays/useDropzoneOverlay";
+import { useDraggedOverlay } from "./overlays/useDraggedOverlay";
 
 export default function () {
   // overlays during hover
@@ -15,24 +14,9 @@ export default function () {
   useHoverWhileSelectedOverlay();
   // overlays new parent during reposition
   useDropzoneOverlay();
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity("dragStart", (context, event) => {
-      console.log("dragStart", context, event);
-    });
-    return unsub;
-  }, []);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity("dragEnd", (context, event) => {
-      console.log("dragEnd", context, event);
-    });
-    return unsub;
-  }, []);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity("dragCancel", (context, event) => {
-      console.log("dragCancel", context, event);
-    });
-    return unsub;
-  }, []);
+  // overlays the component being dragged with opacity box
+  useDraggedOverlay();
+  // shows overlays on the parent of new component being dropped
   useSubscribeNewDrag();
   return <></>;
 }

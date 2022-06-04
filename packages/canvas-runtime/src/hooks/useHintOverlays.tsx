@@ -74,6 +74,8 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
               props.scale,
             width: box.dimension.width / props.scale,
             height: box.dimension.height / props.scale,
+            pointerEvents: "none",
+            userSelect: "none",
           }}
         >
           {props.comp}
