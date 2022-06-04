@@ -4,7 +4,10 @@ import {
   callCanvasUpdateSubscribers,
   canvasComponentTree,
 } from "./CanvasComponentData";
-import { CanvasActivityDecorator } from "./decorators/CanvasActivityDecorator";
+import {
+  CanvasActivityDecorator,
+  emitClearCanvasEvent,
+} from "./decorators/CanvasActivityDecorator";
 import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher } from "./types";
@@ -81,6 +84,8 @@ export function clearCanvas() {
   treeKeys.forEach((treeKey) => {
     delete canvasComponentTree[treeKey];
   });
+  // set canvas activity machine back to idle
+  emitClearCanvasEvent();
   // only call body subscribers
   callCanvasUpdateSubscribers("body");
 }

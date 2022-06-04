@@ -32,6 +32,7 @@ type UNLOCK_EVENT = "UNLOCK_EVENT";
 type CANCEL_LOCK_EVENT = "CANCEL_LOCK_EVENT";
 type SET_DATA_DROP_TARGET = "SET_DATA_DROP_TARGET";
 type UNSET_DATA_DROP_TARGET = "UNSET_DATA_DROP_TARGET";
+type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
 
 type OverEvent = {
   type: OVER;
@@ -84,6 +85,11 @@ type CancelLockEvent = {
   type: CANCEL_LOCK_EVENT;
 };
 
+// Canvas gets cleared when the forest is reset
+type ClearCanvasEvent = {
+  type: CLEAR_CANVAS_EVENT;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -95,7 +101,8 @@ type CanvasActivityEvent =
   | UnlockEvent
   | CancelLockEvent
   | SetDropTargetEvent
-  | UnsetDropTargetEvent;
+  | UnsetDropTargetEvent
+  | ClearCanvasEvent;
 
 // context
 type CanvasActivityContext = {
@@ -318,6 +325,7 @@ const canvasActivityMachine = createMachine<
         OVER: { target: hover, cond: overAnother, actions: [onHoverStart] },
         DOWN: { target: pressed },
         OUT_OF_CANVAS: { target: idle },
+        CLEAR_CANVAS_EVENT: { target: idle },
       },
       entry: (context, event) => {
         hoverCbs.forEach((cb) => cb(context, event));
@@ -347,6 +355,7 @@ const canvasActivityMachine = createMachine<
         },
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
         LOCK_DATA_DROP: { target: lockDataDrop },
+        CLEAR_CANVAS_EVENT: { target: idle },
       },
       type: "compound",
       initial: selectIdle,
@@ -461,6 +470,7 @@ const canvasActivityMachine = createMachine<
       on: {
         UNLOCK_EVENT: { target: select, actions: [selectOnUnlockCompDrop] },
         CANCEL_LOCK_EVENT: { target: idle },
+        CLEAR_CANVAS_EVENT: { target: idle },
       },
     },
     [lockDataDrop]: {
@@ -477,6 +487,7 @@ const canvasActivityMachine = createMachine<
           },
         ],
         CANCEL_LOCK_EVENT: { target: idle },
+        CLEAR_CANVAS_EVENT: { target: idle },
       },
       type: "compound",
       initial: lockDataDropIdle,
@@ -712,6 +723,10 @@ function isMachineLocked() {
   );
 }
 
+function emitClearCanvasEvent() {
+  service.send({ type: "CLEAR_CANVAS_EVENT" });
+}
+
 // ===================================================================
 
 export {
@@ -726,4 +741,5 @@ export {
   getCompDropTarget,
   getDataDropTarget,
   isMachineLocked,
+  emitClearCanvasEvent,
 };
