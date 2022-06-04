@@ -27,7 +27,6 @@ const compManifest: ReactComponentManifestSchema = {
       styles: { treeId: CSSTreeId, initialValue: { background: "pink" } },
     },
     attachCallbacks: {},
-    acceptsChild: false,
   },
 };
 

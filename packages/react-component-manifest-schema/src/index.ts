@@ -2,6 +2,20 @@ import Joi from "joi";
 import { ManifestSchema } from "@atrilabs/core";
 import type { FC } from "react";
 
+export type ComponentCoords = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+export type AcceptsChildFunction = (info: {
+  coords: ComponentCoords;
+  childCoordinates: ComponentCoords[];
+  relativePointerLoc: Pick<ComponentCoords, "top" | "left">;
+  props: any;
+}) => number;
+
 export type ReactComponentManifestSchema = {
   meta: { key: string };
   render: {
@@ -12,7 +26,7 @@ export type ReactComponentManifestSchema = {
     decorators: FC<any>[];
     attachProps: { [key: string]: { treeId: string; initialValue: any } };
     attachCallbacks: { [key: string]: any };
-    acceptsChild: boolean;
+    acceptsChild?: AcceptsChildFunction;
   };
 };
 
@@ -27,7 +41,7 @@ const schema = Joi.object({
     decorators: Joi.array(),
     attachProps: Joi.object(),
     attachCallbacks: Joi.object(),
-    acceptsChild: Joi.bool(),
+    acceptsChild: Joi.function(),
   }),
 });
 

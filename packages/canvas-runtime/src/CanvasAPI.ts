@@ -169,8 +169,8 @@ export function getRelativeLocation(
 ): Pick<ComponentCoords, "top" | "left"> | undefined {
   const coords = getOwnCoords(compId);
   if (coords) {
-    const top = loc.pageX - coords.left;
-    const left = loc.pageY - coords.top;
+    const left = loc.pageX - coords.left;
+    const top = loc.pageY - coords.top;
     return { top, left };
   }
 }

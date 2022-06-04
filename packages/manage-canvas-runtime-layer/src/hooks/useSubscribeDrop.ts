@@ -7,42 +7,96 @@ import {
 } from "@atrilabs/canvas-runtime";
 import type { Location } from "@atrilabs/canvas-runtime";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { getId } from "@atrilabs/core";
+import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema/lib/index";
+import { getId, ManifestRegistry, useTree } from "@atrilabs/core";
 import {
   api,
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
-import { CreateEvent, LinkEvent } from "@atrilabs/forest";
+import { CreateEvent, LinkEvent, Tree } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 
-function getComponentIndex(parentId: string, loc: Location): number {
-  if (parentId === "body") {
-    const coords = getOwnCoords(parentId);
-    const childCoordinates = getRelativeChildrenCoords(parentId);
-    const relativePointerLoc = getRelativeLocation(parentId, loc);
-    if (coords && relativePointerLoc) {
-      return computeBodyChildIndex({
-        coords,
-        childCoordinates,
-        relativePointerLoc,
-      });
-    } else {
-      console.error(
-        `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
-      );
-      return 0;
-    }
+function getComponentIndexInsideBody(loc: Location): number {
+  const parentId = "body";
+  const coords = getOwnCoords(parentId);
+  const childCoordinates = getRelativeChildrenCoords(parentId);
+  const relativePointerLoc = getRelativeLocation(parentId, loc);
+  if (coords && relativePointerLoc) {
+    return computeBodyChildIndex({
+      coords,
+      childCoordinates,
+      relativePointerLoc,
+    });
   } else {
-    // TODO: handle component with non-body parent
+    console.error(
+      `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
+    );
+    return 0;
+  }
+}
+
+function getComponentIndex(
+  tree: Tree,
+  caughtBy: string,
+  loc: Location,
+  manifestRegistry: ManifestRegistry
+): number {
+  const parentMeta = tree.nodes[caughtBy]!.meta;
+  const parentPkg = parentMeta.pkg;
+  const parentKey = parentMeta.key;
+  const parentManifestSchemaId = parentMeta.manifestSchemaId;
+  if (parentManifestSchemaId === ReactComponentManifestSchemaId) {
+  }
+  const parentManifest = manifestRegistry[
+    parentManifestSchemaId
+  ].components.find((curr) => {
+    return curr.pkg === parentPkg && curr.component.meta.key === parentKey;
+  });
+  const parentComponent = parentManifest!.component;
+  if (!parentComponent.dev.acceptsChild) {
+    console.error(
+      "Parent manifest component must have a dev.acceptsChild field."
+    );
+  }
+  const acceptsChild: AcceptsChildFunction = parentComponent.dev.acceptsChild;
+  const coords = getOwnCoords(caughtBy);
+  const childCoordinates = getRelativeChildrenCoords(caughtBy);
+  const relativePointerLoc = getRelativeLocation(caughtBy, loc);
+  const props = { styles: {} };
+  if (coords && relativePointerLoc) {
+    return acceptsChild({
+      coords,
+      childCoordinates,
+      relativePointerLoc,
+      props,
+    });
+  } else {
+    console.error(
+      `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
+    );
     return 0;
   }
 }
 
 export const useSubscribeDrop = () => {
+  const tree = useTree(ComponentTreeId);
   useEffect(() => {
     const unsub = subscribeNewDrop((args, loc, caughtBy) => {
+      // find manifest from manifest registry
+      const manifestRegistry =
+        manifestRegistryController.readManifestRegistry();
+      let index = 0;
+      if (caughtBy === "body") {
+        index = getComponentIndexInsideBody(loc);
+      } else {
+        // Don't process if caughtBy/parent does not belong to component tree
+        if (!tree.nodes[caughtBy]) {
+          return;
+        }
+        index = getComponentIndex(tree, caughtBy, loc, manifestRegistry);
+      }
       if (args.dragData.type === "component") {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;
@@ -50,28 +104,25 @@ export const useSubscribeDrop = () => {
         const key = args.dragData.data.key;
         const compId = args.dragData.data.id;
         const manifestSchemaId = args.dragData.data.manifestSchema;
-        const index = getComponentIndex(caughtBy, loc);
-        const event: CreateEvent = {
-          id: compId,
-          type: `CREATE$$${ComponentTreeId}`,
-          meta: {
-            pkg: pkg,
-            key: key,
-            manifestSchemaId: manifestSchemaId,
-          },
-          state: { parent: { id: caughtBy, index: index } },
-        };
-        api.postNewEvent(forestPkgId, forestId, event);
 
         if (manifestSchemaId === ReactComponentManifestSchemaId) {
-          // find manifest from manifest registry
-          const manifestRegistry =
-            manifestRegistryController.readManifestRegistry();
           const manifest = manifestRegistry[manifestSchemaId].components.find(
             (curr) => {
               return curr.pkg === pkg && curr.component.meta.key === key;
             }
           );
+          const event: CreateEvent = {
+            id: compId,
+            type: `CREATE$$${ComponentTreeId}`,
+            meta: {
+              pkg: pkg,
+              key: key,
+              manifestSchemaId: manifestSchemaId,
+            },
+            state: { parent: { id: caughtBy, index: index } },
+          };
+          api.postNewEvent(forestPkgId, forestId, event);
+
           setTimeout(() => {
             if (manifest) {
               const component = manifest.component;
@@ -107,5 +158,5 @@ export const useSubscribeDrop = () => {
       }
     });
     return unsub;
-  }, []);
+  }, [tree]);
 };
