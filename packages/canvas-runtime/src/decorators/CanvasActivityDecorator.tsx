@@ -417,40 +417,51 @@ const canvasActivityMachine = createMachine<
           cond: deletedSelectedComponent,
         },
       },
-      type: "compound",
-      initial: selectIdle,
+      type: "parallel",
       states: {
-        [selectIdle]: {
-          on: {
-            OVER: {
-              target: hoverWhileSelected,
-              cond: overNotSelected,
-              actions: [onHoverStart],
-            },
+        focus: {
+          initial: "focused",
+          states: {
+            focused: {},
+            unfocused: {},
           },
         },
-        [hoverWhileSelected]: {
-          on: {
-            OVER: [
-              {
-                target: hoverWhileSelected,
-                cond: hoverWhileSelectedGuard,
-                actions: [onHoverStart],
-              },
-              {
-                target: selectIdle,
-                cond: (context, event) => {
-                  return !overNotSelected(context, event);
+        hoverstates: {
+          initial: selectIdle,
+          states: {
+            [selectIdle]: {
+              on: {
+                OVER: {
+                  target: hoverWhileSelected,
+                  cond: overNotSelected,
+                  actions: [onHoverStart],
                 },
               },
-            ],
-            OUT_OF_CANVAS: { target: selectIdle },
-          },
-          entry: (context, event) => {
-            hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
-          },
-          exit: (context, event) => {
-            hoverWhileSelectedEndCbs.forEach((cb) => cb(context, event));
+            },
+            [hoverWhileSelected]: {
+              on: {
+                OVER: [
+                  {
+                    target: hoverWhileSelected,
+                    cond: hoverWhileSelectedGuard,
+                    actions: [onHoverStart],
+                  },
+                  {
+                    target: selectIdle,
+                    cond: (context, event) => {
+                      return !overNotSelected(context, event);
+                    },
+                  },
+                ],
+                OUT_OF_CANVAS: { target: selectIdle },
+              },
+              entry: (context, event) => {
+                hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
+              },
+              exit: (context, event) => {
+                hoverWhileSelectedEndCbs.forEach((cb) => cb(context, event));
+              },
+            },
           },
         },
       },
@@ -727,14 +738,26 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
           event,
         });
       };
+      // focus to receive keyboard input (like delete key)
+      comp.tabIndex = 0;
+      const focus = (event: FocusEvent) => {
+        console.log("focus rec", props.compId);
+      };
+      const blur = (event: FocusEvent) => {
+        console.log("blur rec", props.compId);
+      };
       comp.addEventListener("mousedown", mousedown);
       comp.addEventListener("mousemove", mouseover);
       comp.addEventListener("mouseup", mouseup);
+      comp.addEventListener("focus", focus);
+      comp.addEventListener("blur", blur);
       return () => {
         if (comp) {
           comp.removeEventListener("mousedown", mousedown);
           comp.removeEventListener("mousemove", mouseover);
           comp.removeEventListener("mouseup", mouseup);
+          comp.removeEventListener("focus", focus);
+          comp.removeEventListener("blur", blur);
         }
       };
     } else {
