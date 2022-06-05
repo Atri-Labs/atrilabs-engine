@@ -11,7 +11,7 @@ import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
 
-export const useSubscribeDrop = () => {
+export const useSubscribeNewDrop = () => {
   const tree = useTree(ComponentTreeId);
   useEffect(() => {
     const unsub = subscribeNewDrop((args, loc, caughtBy) => {

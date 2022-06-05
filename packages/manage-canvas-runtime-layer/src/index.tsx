@@ -1,11 +1,11 @@
 import { useDeleteKey } from "./hooks/useDeleteKey";
-import { useSubscribeDrop } from "./hooks/useSubscribeDrop";
+import { useSubscribeNewDrop } from "./hooks/useSubscribeNewDrop";
 import { useSubscribeEvents } from "./hooks/useSubscribeEvents";
 import { useSubscribeReDrop } from "./hooks/useSubscribeReDrop";
 
 export default function () {
   console.log("manage-canvas-runtime-layer-loaded");
-  useSubscribeDrop();
+  useSubscribeNewDrop();
   useSubscribeEvents();
   useSubscribeReDrop();
   useDeleteKey();
