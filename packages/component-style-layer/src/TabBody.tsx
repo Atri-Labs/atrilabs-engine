@@ -1,5 +1,10 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
-import React, { useCallback, useState } from "react";
+import React from "react";
+
+export type TabBodyProps = {
+  alias: string;
+  setAliasCb: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -18,20 +23,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const TabBody: React.FC = () => {
-  const [alias, setAlias] = useState<string>("");
-  const setAliasCb = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setAlias(event.target.value.replace(/\s+/g, "_"));
-    },
-    []
-  );
+export const TabBody: React.FC<TabBodyProps> = (props) => {
   return (
     <div style={styles.container}>
       <input
         style={styles.aliasContainer}
-        onChange={setAliasCb}
-        value={alias}
+        onChange={props.setAliasCb}
+        value={props.alias}
       />
     </div>
   );

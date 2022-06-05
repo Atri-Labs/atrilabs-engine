@@ -17,6 +17,9 @@ export const useDraggedOverlay = () => {
   }, []);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("dragStart", (context) => {
+      if (context.dragged && context.dragged.id === "body") {
+        return;
+      }
       boxOverlayId.current = getId();
       // top line
       addOrModifyHintOverlays({
