@@ -18,7 +18,7 @@ export const Button = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   topographyOptions: true,
   spacingOptions: true,
