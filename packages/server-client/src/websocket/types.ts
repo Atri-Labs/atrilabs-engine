@@ -61,6 +61,11 @@ export interface ClientToServerEvents {
     event: AnyEvent,
     callback: (success: boolean) => void
   ) => void;
+  getNewAlias: (
+    forestPkgId: string,
+    prefix: string,
+    callback: (alias: string) => void
+  ) => void;
 }
 
 export interface InterServerEvents {}

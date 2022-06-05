@@ -85,6 +85,14 @@ function postNewEvent(
   socket.emit("postNewEvent", forestPkgId, pageId, event, callback);
 }
 
+function getNewAlias(
+  forestPkgId: string,
+  prefix: string,
+  callback: (alias: string) => void
+) {
+  socket.emit("getNewAlias", forestPkgId, prefix, callback);
+}
+
 type EventSubscriber = (
   forestPkgId: string,
   pageId: string,
@@ -144,6 +152,7 @@ const client: BrowserClient = {
   subscribeEvents,
   subscribeExternalEvents,
   subscribeOwnEvents,
+  getNewAlias,
 };
 
 export default client;

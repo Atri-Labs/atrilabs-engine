@@ -172,6 +172,12 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       // send this event to all connected sockets
       io.emit("newEvent", forestPkgId, pageId, event, socket.id);
     });
+    socket.on("getNewAlias", (forestPkgId, prefix, callback) => {
+      const eventManager = getEventManager(forestPkgId);
+      const index = eventManager.incrementAlias(prefix);
+      const alias = `${prefix}${index}`;
+      callback(alias);
+    });
   });
 
   const port = (options && options.port) || 4001;

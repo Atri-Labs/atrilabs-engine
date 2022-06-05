@@ -193,6 +193,11 @@ export type BrowserClient = {
     event: AnyEvent,
     callback: (success: boolean) => void
   ): void;
+  getNewAlias(
+    forestPkgId: string,
+    prefix: string,
+    callback: (alias: string) => void
+  ): void;
   subscribeEvents(cb: EventSubscriber): () => void;
   subscribeExternalEvents(cb: EventSubscriber): () => void;
   subscribeOwnEvents(cb: EventSubscriber): () => void;

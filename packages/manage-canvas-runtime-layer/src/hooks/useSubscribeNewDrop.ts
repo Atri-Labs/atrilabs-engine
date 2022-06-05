@@ -7,7 +7,7 @@ import {
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
-import { CreateEvent, LinkEvent } from "@atrilabs/forest";
+import { CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
 
@@ -53,6 +53,18 @@ export const useSubscribeNewDrop = () => {
             state: { parent: { id: caughtBy, index: index } },
           };
           api.postNewEvent(forestPkgId, forestId, event);
+
+          // TODO: fetch a new alias using key, then emit a alias event
+          api.getNewAlias(forestPkgId, key, (alias) => {
+            const setAliasEvent: PatchEvent = {
+              id: compId,
+              type: `PATCH$$${ComponentTreeId}`,
+              slice: {
+                alias,
+              },
+            };
+            api.postNewEvent(forestPkgId, forestId, setAliasEvent);
+          });
 
           setTimeout(() => {
             if (manifest) {
