@@ -7,6 +7,7 @@ import type {
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { gray500 } from "@atrilabs/design-system";
 
 export const DevFlex = forwardRef<
@@ -90,6 +91,15 @@ const acceptsChild: AcceptsChildFunction = (info) => {
   }
 };
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: true,
+  flexChildOptions: true,
+  topographyOptions: true,
+  spacingOptions: true,
+  sizeOptions: true,
+  borderOptions: true,
+};
+
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "Flex" },
   render: {
@@ -99,7 +109,12 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevFlex,
     decorators: [],
     attachProps: {
-      styles: { treeId: CSSTreeId, initialValue: {} },
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { display: "flex" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
     },
     attachCallbacks: {},
     acceptsChild,

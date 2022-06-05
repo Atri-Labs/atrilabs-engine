@@ -1,3 +1,12 @@
+export type CSSTreeOptions = {
+  flexContainerOptions: boolean;
+  flexChildOptions: boolean;
+  topographyOptions: boolean;
+  spacingOptions: boolean;
+  sizeOptions: boolean;
+  borderOptions: boolean;
+};
+
 export default function () {
   const validateCreate = () => {
     return true;

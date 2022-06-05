@@ -4,6 +4,7 @@ import type { ReactComponentManifestSchema } from "@atrilabs/react-component-man
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 export const Button = forwardRef<
   HTMLButtonElement,
@@ -16,6 +17,15 @@ export const Button = forwardRef<
   );
 });
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: true,
+  flexChildOptions: true,
+  topographyOptions: true,
+  spacingOptions: true,
+  sizeOptions: true,
+  borderOptions: true,
+};
+
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "Button" },
   render: {
@@ -24,7 +34,12 @@ const compManifest: ReactComponentManifestSchema = {
   dev: {
     decorators: [],
     attachProps: {
-      styles: { treeId: CSSTreeId, initialValue: { background: "pink" } },
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { background: "pink" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
     },
     attachCallbacks: {},
   },

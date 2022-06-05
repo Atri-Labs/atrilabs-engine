@@ -24,7 +24,14 @@ export type ReactComponentManifestSchema = {
   dev: {
     comp?: FC<any>;
     decorators: FC<any>[];
-    attachProps: { [key: string]: { treeId: string; initialValue: any } };
+    attachProps: {
+      [key: string]: {
+        treeId: string;
+        initialValue: any;
+        treeOptions: any;
+        canvasOptions: { groupByBreakpoint: boolean };
+      };
+    };
     attachCallbacks: { [key: string]: any };
     acceptsChild?: AcceptsChildFunction;
   };
