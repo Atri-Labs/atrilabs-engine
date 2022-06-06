@@ -7,13 +7,21 @@ import { useManageCSS } from "./hooks/useManageCSS";
 export default function () {
   // show tab and set alias
   const { showTab, alias, setAliasCb, id } = useShowTab();
-  useManageCSS(id);
+  const { patchCb, styles, treeOptions } = useManageCSS(id);
   return (
     <>
       {showTab ? (
         <Tab
           name="PropertiesTab"
-          body={<TabBody alias={alias} setAliasCb={setAliasCb} />}
+          body={
+            <TabBody
+              alias={alias}
+              setAliasCb={setAliasCb}
+              patchCb={patchCb}
+              styles={styles}
+              treeOptions={treeOptions}
+            />
+          }
           header={<TabHeader />}
         />
       ) : null}

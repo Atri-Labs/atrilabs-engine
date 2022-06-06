@@ -1,10 +1,14 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React from "react";
 import { Layout } from "./components/layout/Layout";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 export type TabBodyProps = {
   alias: string;
   setAliasCb: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  patchCb: (slice: any) => void;
+  styles: React.CSSProperties;
+  treeOptions: CSSTreeOptions;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -32,7 +36,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
-      <Layout />
+      {props.treeOptions.flexContainerOptions ? (
+        <Layout styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
     </div>
   );
 };
