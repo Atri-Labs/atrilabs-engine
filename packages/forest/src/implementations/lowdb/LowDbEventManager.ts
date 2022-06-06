@@ -211,6 +211,12 @@ function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
   const eventsFile = eventFile(dbDir, pageId);
   const eventsDb = Lowdb(new FileSync<EvensDbSchema>(eventsFile));
   eventsDb.read();
+  // If events file is empty, lowdb writes {} by default. We override it for events file.
+  const initState = eventsDb.getState();
+  if (JSON.stringify(initState) === "{}") {
+    eventsDb.setState([]);
+    eventsDb.write();
+  }
   openDbs.events![pageId] = eventsDb;
   return eventsDb;
 }
@@ -352,6 +358,7 @@ export default function createLowDbEventManager(
         }
         if ([storeEvent].includes(target)) {
           const eventsDb = getEventsDb(dbDir, args[0]);
+          console.log("event db data", eventsDb.getState());
           eventsDb.write();
         }
         return returnValue;
