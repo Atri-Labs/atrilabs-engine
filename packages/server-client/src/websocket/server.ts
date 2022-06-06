@@ -93,8 +93,10 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         if (meta["folders"][page.folderId]) {
           const foldername = meta["folders"][page.folderId]!.name;
           // TODO: route must follow the hierarchy of folders, not just the immidiate folder
-          const route = `/${foldername}/${page.name}`;
+          let route = `/${foldername}/${page.name}`;
+          if (foldername === "/") route = `/${page.name}`;
           meta["pages"][page.id] = page.folderId;
+          getEventManager(forestPkgId)!.updateMeta(meta);
           getEventManager(forestPkgId)!.createPage(page.id, page.name, route);
           callback(true);
         } else {
