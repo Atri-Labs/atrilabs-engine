@@ -1,5 +1,5 @@
 import { gray200, smallText } from "@atrilabs/design-system";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { IconsContainer } from "../../IconsContainer";
 import { ReactComponent as RightArrow } from "../../assets/right-arrow.svg";
 import { ReactComponent as DownArrow } from "../../assets/down-arrow.svg";
@@ -37,7 +37,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 const directionValues = ["row", "column", "row-reverse", "column-reverse"];
 
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
-  const initialDirectionIndex = useMemo(() => {
+  const directionIndex = useMemo(() => {
     if (props.styles.flexDirection) {
       const index = directionValues.findIndex(
         (val) => val === props.styles.flexDirection
@@ -53,13 +53,12 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
     }
     return 0;
   }, [props.styles]);
-  const [directionIndex, setDirectionIndex] = useState<number>(
-    initialDirectionIndex
-  );
+
   const setDirectionSelectedIndexCb = useCallback(
     (index: number) => {
-      setDirectionIndex(index);
-      props.patchCb({ property: { flexDirection: directionValues[index] } });
+      props.patchCb({
+        property: { styles: { flexDirection: directionValues[index] } },
+      });
     },
     [props]
   );

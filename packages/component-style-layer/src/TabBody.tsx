@@ -36,7 +36,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
-      {props.treeOptions.flexContainerOptions ? (
+      {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
       ) : null}
     </div>

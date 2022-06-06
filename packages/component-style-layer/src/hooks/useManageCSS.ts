@@ -19,10 +19,10 @@ export const useManageCSS = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
   const cssTree = useTree(cssTreeId);
   const [styles, setStyles] = useState<React.CSSProperties>({});
-  const [treeOptions, setTreeOptions] =
-    useState<
-      ReactComponentManifestSchema["dev"]["attachProps"]["0"]["treeOptions"]
-    >();
+  const [treeOptions, setTreeOptions] = useState<
+    | ReactComponentManifestSchema["dev"]["attachProps"]["0"]["treeOptions"]
+    | null
+  >(null);
   // callback to post patch event -> takes a slice
   const patchCb = useCallback(
     (slice: any) => {
@@ -59,7 +59,7 @@ export const useManageCSS = (id: string | null) => {
           if (update.treeId === cssTreeId) {
             const cssNode = cssTree.links[id];
             const cssNodeId = cssNode.childId;
-            setStyles(cssTree.nodes[cssNodeId].state.property.styles);
+            setStyles({ ...cssTree.nodes[cssNodeId].state.property.styles });
             // tranform it into props
             const props = cssTree.nodes[cssNodeId].state.property;
             if (props) {
@@ -80,7 +80,8 @@ export const useManageCSS = (id: string | null) => {
       compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
     ) {
       const cssNodeId = cssTree.links[id];
-      setStyles(cssTree.nodes[cssNodeId.childId].state.property.styles);
+      if (cssNodeId)
+        setStyles(cssTree.nodes[cssNodeId.childId].state.property.styles);
     }
   }, [id, compTree, cssTree]);
   useEffect(() => {
