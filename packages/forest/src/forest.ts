@@ -86,9 +86,11 @@ export function createForest(def: ForestDef): Forest {
             const oldIndex =
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
-              merge(
-                treeMap[treeId]!.nodes[patchEvent.id]!["state"],
-                patchEvent.slice
+              tree(treeId)!.nodes[patchEvent.id]!["state"] = merge(
+                JSON.parse(
+                  JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
+                ),
+                JSON.parse(JSON.stringify(patchEvent.slice))
               );
               forestUpdateSubscribers.forEach((cb) => {
                 cb({
@@ -111,9 +113,11 @@ export function createForest(def: ForestDef): Forest {
           }
         }
         // patch other fields
-        merge(
-          treeMap[treeId]!.nodes[patchEvent.id]!["state"],
-          patchEvent.slice
+        tree(treeId)!.nodes[patchEvent.id]!["state"] = merge(
+          JSON.parse(
+            JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
+          ),
+          JSON.parse(JSON.stringify(patchEvent.slice))
         );
         forestUpdateSubscribers.forEach((cb) => {
           cb({ type: "change", id: patchEvent.id, treeId });
