@@ -2,10 +2,12 @@ import { Tab } from "@atrilabs/core";
 import { TabBody } from "./TabBody";
 import { TabHeader } from "./TabHeader";
 import { useShowTab } from "./hooks/useShowTab";
+import { useManageCSS } from "./hooks/useManageCSS";
 
 export default function () {
   // show tab and set alias
-  const { showTab, alias, setAliasCb } = useShowTab();
+  const { showTab, alias, setAliasCb, id } = useShowTab();
+  useManageCSS(id);
   return (
     <>
       {showTab ? (

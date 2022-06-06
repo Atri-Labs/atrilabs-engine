@@ -72,5 +72,5 @@ export const useShowTab = () => {
     });
     return unsub;
   }, []);
-  return { showTab, alias, setAliasCb };
+  return { showTab, alias, setAliasCb, id };
 };
