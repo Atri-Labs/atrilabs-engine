@@ -15,6 +15,8 @@ const dragstart = "dragstart" as "dragstart";
 const dragstartIdle = "dragstartIdle" as "dragstartIdle";
 const drag = "drag" as "drag";
 const hoverWhileSelected = "hoverWhileSelected" as "hoverWhileSelected";
+const focused = "focused" as "focused";
+const unfocused = "unfocused" as "unfocused";
 
 const lockCompDrop = "lockCompDrop" as "lockCompDrop";
 const lockDataDrop = "lockDataDrop" as "lockDataDrop";
@@ -35,6 +37,7 @@ type SET_DATA_DROP_TARGET = "SET_DATA_DROP_TARGET";
 type UNSET_DATA_DROP_TARGET = "UNSET_DATA_DROP_TARGET";
 type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
 type DELETE_COMPONENT_EVENT = "DELETE_COMPONENT_EVENT";
+type BLUR_EVENT = "BLUR_EVENT";
 
 type OverEvent = {
   type: OVER;
@@ -102,6 +105,11 @@ type DeleteComponentEvent = {
   id: string;
 };
 
+type BlurEvent = {
+  type: BLUR_EVENT;
+  id: string;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -115,7 +123,8 @@ type CanvasActivityEvent =
   | SetDropTargetEvent
   | UnsetDropTargetEvent
   | ClearCanvasEvent
-  | DeleteComponentEvent;
+  | DeleteComponentEvent
+  | BlurEvent;
 
 // context
 type CanvasActivityContext = {
@@ -225,6 +234,10 @@ const deletedSelectedComponent = (
   context: CanvasActivityContext,
   event: DeleteComponentEvent
 ) => {
+  return context.select?.id === event.id;
+};
+
+const blurredSelected = (context: CanvasActivityContext, event: BlurEvent) => {
   return context.select?.id === event.id;
 };
 
@@ -395,12 +408,8 @@ const canvasActivityMachine = createMachine<
         UP: { target: select, actions: [onSelect] },
         OVER: { target: dragstart, actions: [onDragStart] },
       },
-      entry: () => {
-        console.log("entered pressed state");
-      },
-      exit: () => {
-        console.log("exiting pressed state");
-      },
+      entry: () => {},
+      exit: () => {},
     },
     [select]: {
       on: {
@@ -419,11 +428,23 @@ const canvasActivityMachine = createMachine<
       },
       type: "parallel",
       states: {
-        focus: {
-          initial: "focused",
+        focusstates: {
+          initial: focused,
           states: {
-            focused: {},
-            unfocused: {},
+            [focused]: {
+              on: {
+                BLUR_EVENT: { target: unfocused, cond: blurredSelected },
+              },
+              entry: (context, event) => {
+                focusedCbs.forEach((cb) => cb(context, event));
+              },
+              exit: (context, event) => {
+                blurCbs.forEach((cb) => cb(context, event));
+              },
+            },
+            [unfocused]: {
+              type: "final",
+            },
           },
         },
         hoverstates: {
@@ -591,7 +612,10 @@ const canvasActivityMachine = createMachine<
 // callbacks
 type Callback = (
   context: CanvasActivityContext,
-  event: CanvasActivityEvent | { type: "dropzoneMove"; loc: Location }
+  event:
+    | CanvasActivityEvent
+    | { type: "dropzoneMove"; loc: Location }
+    | { type: "keyup"; event: KeyboardEvent }
 ) => void;
 const hoverCbs: Callback[] = [];
 const hoverEndCbs: Callback[] = [];
@@ -604,6 +628,8 @@ const dropzoneCreatedCbs: Callback[] = [];
 const dropzoneDestroyedCbs: Callback[] = [];
 const dragEndCbs: Callback[] = [];
 const dragCancelCbs: Callback[] = [];
+const focusedCbs: Callback[] = [];
+const blurCbs: Callback[] = [];
 
 function createUnsubFunc(arr: Callback[], cb: Callback) {
   return () => {
@@ -627,7 +653,10 @@ function subscribe(
     | "dropzoneDestroyed"
     | "dragEnd"
     | "dragCancel"
-    | "dropzoneMove",
+    | "dropzoneMove"
+    | "focus"
+    | "blur"
+    | "keyup",
   cb: Callback
 ) {
   switch (event) {
@@ -666,6 +695,14 @@ function subscribe(
       return createUnsubFunc(dragCancelCbs, cb);
     case "dropzoneMove":
       return subscribeDropzoneMove(cb);
+    case "focus":
+      focusedCbs.push(cb);
+      return createUnsubFunc(focusedCbs, cb);
+    case "blur":
+      blurCbs.push(cb);
+      return createUnsubFunc(blurCbs, cb);
+    case "keyup":
+      return subscribeKeyup(cb);
     default:
       console.error(
         `Unknown event received by ${canvasActivityMachine.id} - ${event}`
@@ -740,23 +777,18 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
       };
       // focus to receive keyboard input (like delete key)
       comp.tabIndex = 0;
-      const focus = (event: FocusEvent) => {
-        console.log("focus rec", props.compId);
-      };
       const blur = (event: FocusEvent) => {
-        console.log("blur rec", props.compId);
+        service.send({ type: "BLUR_EVENT", id: props.compId });
       };
       comp.addEventListener("mousedown", mousedown);
       comp.addEventListener("mousemove", mouseover);
       comp.addEventListener("mouseup", mouseup);
-      comp.addEventListener("focus", focus);
       comp.addEventListener("blur", blur);
       return () => {
         if (comp) {
           comp.removeEventListener("mousedown", mousedown);
           comp.removeEventListener("mousemove", mouseover);
           comp.removeEventListener("mouseup", mouseup);
-          comp.removeEventListener("focus", focus);
           comp.removeEventListener("blur", blur);
         }
       };
@@ -860,6 +892,45 @@ function getCurrentMachineContext() {
   return service.state.context;
 }
 
+// generated from keyup event in between focus and blur
+const keyUpCbs: ((
+  context: CanvasActivityContext,
+  event: { type: "keyup"; event: KeyboardEvent }
+) => void)[] = [];
+const keyupListener = (event: KeyboardEvent) => {
+  keyUpCbs.forEach((cb) => cb(service.state.context, { type: "keyup", event }));
+};
+subscribe("focus", (context) => {
+  if (context.select?.id) {
+    canvasComponentStore[context.select.id].ref.current?.addEventListener(
+      "keyup",
+      keyupListener
+    );
+  }
+});
+subscribe("blur", (context) => {
+  if (context.select?.id) {
+    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
+      "keyup",
+      keyupListener
+    );
+  }
+});
+function subscribeKeyup(
+  cb: (
+    context: CanvasActivityContext,
+    event: { type: "keyup"; event: KeyboardEvent }
+  ) => void
+) {
+  keyUpCbs.push(cb);
+  return () => {
+    const index = keyUpCbs.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      keyUpCbs.splice(index, 1);
+    }
+  };
+}
+
 // ===================================================================
 
 export {
@@ -878,4 +949,5 @@ export {
   getCurrentState,
   sendDeleteComponent,
   getCurrentMachineContext,
+  subscribeKeyup,
 };

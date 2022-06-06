@@ -1,6 +1,7 @@
 import {
   getCurrentMachineContext,
   getCurrentState,
+  subscribeCanvasActivity,
 } from "@atrilabs/canvas-runtime";
 import { api, BrowserForestManager } from "@atrilabs/core";
 import { useEffect } from "react";
@@ -31,9 +32,9 @@ export const useDeleteKey = () => {
         }
       }
     };
-    window.addEventListener("keyup", keyupCb);
-    return () => {
-      window.removeEventListener("keyup", keyupCb);
-    };
+    const unsub = subscribeCanvasActivity("keyup", (context, event) => {
+      if (event.type === "keyup") keyupCb(event.event);
+    });
+    return unsub;
   }, []);
 };
