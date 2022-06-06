@@ -1,5 +1,6 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React from "react";
+import { Layout } from "./components/layout/Layout";
 
 export type TabBodyProps = {
   alias: string;
@@ -31,6 +32,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
+      <Layout />
     </div>
   );
 };
