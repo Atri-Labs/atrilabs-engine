@@ -358,7 +358,6 @@ export default function createLowDbEventManager(
         }
         if ([storeEvent].includes(target)) {
           const eventsDb = getEventsDb(dbDir, args[0]);
-          console.log("event db data", eventsDb.getState());
           eventsDb.write();
         }
         return returnValue;

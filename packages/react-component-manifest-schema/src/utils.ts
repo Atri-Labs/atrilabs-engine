@@ -80,7 +80,6 @@ export function findInRow(
       break;
     }
   }
-  console.log("ind", foundIndex);
   return foundIndex;
 }
 
@@ -90,7 +89,6 @@ export function flexRowSort(
 ) {
   bottomWMSort(coords);
   const rows = detectRows(coords);
-  console.log(rows);
   const rowWiseCoords = rows.map((row, index) => {
     let newCoords = [];
     if (index === 0) newCoords = coords.slice(0, row.lastIndex + 1);
@@ -107,7 +105,6 @@ export function flexRowSort(
     console.error("unexpected less than 0");
     return;
   }
-  console.log(rowWiseCoords[rowIndex]);
   if (rowIndex === 0) {
     return findInRow(loc, rowWiseCoords[rowIndex]);
   }
@@ -178,7 +175,6 @@ export function findInCol(
       break;
     }
   }
-  console.log("ind", foundIndex);
   return foundIndex;
 }
 
@@ -188,7 +184,6 @@ export function flexColSort(
 ) {
   rightWMSort(coords);
   const cols = detectCols(coords);
-  console.log(cols);
   const colWiseCoords = cols.map((col, index) => {
     let newCoords = [];
     if (index === 0) newCoords = coords.slice(0, col.lastIndex + 1);
@@ -205,7 +200,6 @@ export function flexColSort(
     console.error("unexpected less than 0");
     return;
   }
-  console.log(colWiseCoords[colIndex]);
   if (colIndex === 0) {
     return findInCol(loc, colWiseCoords[colIndex]);
   }
@@ -243,7 +237,6 @@ export function findInRowRevere(
       break;
     }
   }
-  console.log("ind", foundIndex);
   return foundIndex;
 }
 
@@ -253,7 +246,6 @@ export function flexRowReverseSort(
 ) {
   bottomWMSort(coords);
   const rows = detectRows(coords);
-  console.log(rows);
   const rowWiseCoords = rows.map((row, index) => {
     let newCoords = [];
     if (index === 0) newCoords = coords.slice(0, row.lastIndex + 1);
@@ -270,7 +262,6 @@ export function flexRowReverseSort(
     console.error("unexpected less than 0");
     return;
   }
-  console.log(rowWiseCoords[rowIndex]);
   if (rowIndex === 0) {
     return findInRowRevere(loc, rowWiseCoords[rowIndex]);
   }
@@ -310,7 +301,6 @@ export function findInColReverse(
       break;
     }
   }
-  console.log("ind", foundIndex);
   return foundIndex;
 }
 
@@ -320,7 +310,6 @@ export function flexColReverseSort(
 ) {
   rightWMSort(coords);
   const cols = detectCols(coords);
-  console.log(cols);
   const colWiseCoords = cols.map((col, index) => {
     let newCoords = [];
     if (index === 0) newCoords = coords.slice(0, col.lastIndex + 1);
@@ -337,7 +326,6 @@ export function flexColReverseSort(
     console.error("unexpected less than 0");
     return;
   }
-  console.log(colWiseCoords[colIndex]);
   if (colIndex === 0) {
     return findInColReverse(loc, colWiseCoords[colIndex]);
   }

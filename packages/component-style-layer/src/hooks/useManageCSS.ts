@@ -9,7 +9,7 @@ import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import cssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent } from "@atrilabs/forest";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/index";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import {
   getComponentProps,
   updateComponentProps,

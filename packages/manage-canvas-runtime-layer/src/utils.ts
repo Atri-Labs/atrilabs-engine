@@ -14,7 +14,6 @@ import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-s
 
 function computeFactoredIndex(index: number, parentId: string) {
   const childrenId = getComponentChildrenId(parentId);
-  console.log("rec index", index);
   if (index === 0 && childrenId.length === 0) {
     return 1;
   } else if (index === 0) {

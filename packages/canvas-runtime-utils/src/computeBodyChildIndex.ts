@@ -25,12 +25,10 @@ export function computeBodyChildIndex(info: {
       } else {
         index = insideBoxIndex + 1;
       }
-      console.log("InsideBox", index);
       return index;
     }
     // scenario - traverse until hit a top greater than pageY
     lrtbSort(coords);
-    console.log(coords);
     const nextIndex = coords.findIndex((coord) => {
       return coord.topWM >= info.loc.pageY;
     });
@@ -39,7 +37,6 @@ export function computeBodyChildIndex(info: {
     } else {
       index = coords.length;
     }
-    console.log("lrtb", index);
   }
   return index;
 }

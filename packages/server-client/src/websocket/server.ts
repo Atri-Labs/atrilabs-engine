@@ -76,7 +76,6 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       callback(pages);
     });
     socket.on("createFolder", (forestPkgId, folder, callback) => {
-      console.log(folder);
       if (getEventManager(forestPkgId)) {
         const meta = getMeta(forestPkgId);
         meta["folders"][folder.id] = folder;
