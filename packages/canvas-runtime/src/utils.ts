@@ -14,6 +14,17 @@ export type ComponentCoords = {
   height: number;
 };
 
+export type ComponentCoordsWM = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  topWM: number;
+  rightWM: number;
+  bottomWM: number;
+  leftWM: number;
+};
+
 export function getCoords(elem: HTMLElement): ComponentCoords {
   // crossbrowser version
   var box = elem.getBoundingClientRect();
@@ -33,7 +44,42 @@ export function getCoords(elem: HTMLElement): ComponentCoords {
   return { top: top, left: left, width: box.width, height: box.height };
 }
 
-export function insideBox(loc: Location, box: ComponentCoords): boolean {
+export function getCSSBoxCoords(elem: Element): ComponentCoordsWM {
+  // crossbrowser version
+  var box = elem.getBoundingClientRect();
+
+  var body = document.body;
+  var docEl = document.documentElement;
+
+  var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+  var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+  var clientTop = docEl.clientTop || body.clientTop || 0;
+  var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+  var top = box.top + scrollTop - clientTop;
+  var left = box.left + scrollLeft - clientLeft;
+
+  var topWM = top - parseFloat(window.getComputedStyle(elem).marginTop);
+  var leftWM = left - parseFloat(window.getComputedStyle(elem).marginLeft);
+  var bottomWM =
+    top + box.height + parseFloat(window.getComputedStyle(elem).marginBottom);
+  var rightWM =
+    left + box.width + parseFloat(window.getComputedStyle(elem).marginRight);
+
+  return {
+    top: top,
+    left: left,
+    width: box.width,
+    height: box.height,
+    topWM,
+    leftWM,
+    rightWM,
+    bottomWM,
+  };
+}
+
+export function isInsideBox(loc: Location, box: ComponentCoords): boolean {
   if (
     box.left <= loc.pageX &&
     box.left + box.width >= loc.pageX &&
@@ -45,9 +91,42 @@ export function insideBox(loc: Location, box: ComponentCoords): boolean {
   return false;
 }
 
+export function isInsideCSSBox(
+  loc: { pageX: number; pageY: number },
+  coord: ComponentCoordsWM
+) {
+  if (
+    coord.topWM <= loc.pageY &&
+    coord.bottomWM >= loc.pageY &&
+    coord.leftWM <= loc.pageX &&
+    coord.rightWM >= loc.pageX
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export function horizontalClose(
+  loc: { pageX: number; pageY: number },
+  coord: ComponentCoordsWM
+) {
+  return loc.pageX - coord.leftWM < coord.rightWM - loc.pageX
+    ? "left"
+    : "right";
+}
+
+export function verticalClose(
+  loc: { pageX: number; pageY: number },
+  coord: ComponentCoordsWM
+) {
+  return loc.pageY - coord.topWM < coord.bottomWM - loc.pageY
+    ? "top"
+    : "bottom";
+}
+
 // A region that is delta pixels inside the box is considered marginal region.
 // We are assuming that this function is being run after it has been estbalished that
-// the mouse is inside the box using insideBox.
+// the mouse is inside the box using isInsideBox.
 export function inMarginalRegion(loc: Location, box: ComponentCoords): boolean {
   let delta = 4;
   if (box.left + delta >= loc.pageX && box.left <= loc.pageX) {
@@ -85,8 +164,8 @@ export function _triangulate(
       const element = currComp.ref.current;
       const coords = getCoords(element);
       // check if mouse pointer is inside
-      const isInsideBox = insideBox(loc, coords);
-      if (isInsideBox) {
+      const isInsideBoxRes = isInsideBox(loc, coords);
+      if (isInsideBoxRes) {
         // store result in resultId
         resultId = currId;
         // If current component location (parent) +/- 4 <= mouse location

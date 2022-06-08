@@ -1,40 +1,45 @@
-import { ComponentCoords } from "@atrilabs/canvas-runtime";
+import {
+  ComponentCoordsWM,
+  horizontalClose,
+  isInsideCSSBox,
+} from "@atrilabs/canvas-runtime";
+import { lrtbSort } from "./utils";
 
 export function computeBodyChildIndex(info: {
-  coords: ComponentCoords;
-  childCoordinates: ComponentCoords[];
-  relativePointerLoc: Pick<ComponentCoords, "top" | "left">;
+  coords: ComponentCoordsWM;
+  childCoordinates: ComponentCoordsWM[];
+  loc: { pageX: number; pageY: number };
 }) {
-  const { childCoordinates, relativePointerLoc } = info;
-  let minDist = Infinity;
-  let minSide: "left" | "top" | "right" | "bottom" = "top";
-  let minIndex: number = 0;
-  for (let i = 0; i < childCoordinates.length; i++) {
-    const curr = childCoordinates[i]!;
-    if (Math.abs(curr.left - relativePointerLoc.left) < minDist) {
-      minSide = "left";
-      minDist = Math.abs(curr.left - relativePointerLoc.left);
-      minIndex = i;
+  // index will be 0 if no children already
+  let index: number = 0;
+  if (info.childCoordinates.length > 0) {
+    const coords = info.childCoordinates;
+    // scenario - inside a box
+    const insideBoxIndex = coords.findIndex((coord) => {
+      return isInsideCSSBox(info.loc, coord);
+    });
+    if (insideBoxIndex >= 0) {
+      const side = horizontalClose(info.loc, coords[insideBoxIndex]);
+      if (side === "left") {
+        index = insideBoxIndex;
+      } else {
+        index = insideBoxIndex + 1;
+      }
+      console.log("InsideBox", index);
+      return index;
     }
-    if (Math.abs(curr.left + curr.width - relativePointerLoc.left) < minDist) {
-      minSide = "right";
-      minDist = Math.abs(curr.left + curr.width - relativePointerLoc.left);
-      minIndex = i;
+    // scenario - traverse until hit a top greater than pageY
+    lrtbSort(coords);
+    console.log(coords);
+    const nextIndex = coords.findIndex((coord) => {
+      return coord.topWM >= info.loc.pageY;
+    });
+    if (nextIndex >= 0) {
+      index = nextIndex;
+    } else {
+      index = coords.length;
     }
-    if (Math.abs(curr.top - relativePointerLoc.top) < minDist) {
-      minSide = "top";
-      minDist = Math.abs(curr.top - relativePointerLoc.top);
-      minIndex = i;
-    }
-    if (Math.abs(curr.top + curr.height - relativePointerLoc.top) < minDist) {
-      minSide = "bottom";
-      minDist = Math.abs(curr.top + curr.height - relativePointerLoc.top);
-      minIndex = i;
-    }
+    console.log("lrtb", index);
   }
-  if (minSide! === "left" || minSide! === "top") {
-    return minIndex! - 1;
-  } else {
-    return minIndex! + 1;
-  }
+  return index;
 }

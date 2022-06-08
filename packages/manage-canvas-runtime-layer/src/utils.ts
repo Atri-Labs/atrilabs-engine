@@ -1,26 +1,64 @@
 import {
   getOwnCoords,
-  getRelativeChildrenCoords,
-  getRelativeLocation,
   Location,
+  getComponentChildrenId,
+  getComponentParent,
+  ComponentCoordsWM,
 } from "@atrilabs/canvas-runtime";
 import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 import { ManifestRegistry } from "@atrilabs/core";
 import { Tree } from "@atrilabs/forest";
-import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema/lib";
+import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema/lib/types";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+
+function computeFactoredIndex(index: number, parentId: string) {
+  const childrenId = getComponentChildrenId(parentId);
+  console.log("rec index", index);
+  if (index === 0 && childrenId.length === 0) {
+    return 1;
+  } else if (index === 0) {
+    // NOTE: we are relying on the fact the getComponentChildrenId will return
+    // children id in order
+    const childrenId = getComponentChildrenId(parentId);
+    const nextSiblingId = childrenId[0];
+    const nextSiblingIndex = getComponentParent(nextSiblingId).index;
+    const newIndex = nextSiblingIndex / 2;
+    return newIndex;
+  } else if (index === childrenId.length) {
+    const childrenId = getComponentChildrenId(parentId);
+    const prevSiblingId = childrenId[index - 1];
+    const prevSiblingIndex = getComponentParent(prevSiblingId).index;
+    const newIndex = prevSiblingIndex * 2;
+    return newIndex;
+  } else {
+    const childrenId = getComponentChildrenId(parentId);
+    const prevSiblingId = childrenId[index - 1];
+    const nextSiblingId = childrenId[index];
+    const prevSiblingIndex = getComponentParent(prevSiblingId).index;
+    const nextSiblingIndex = getComponentParent(nextSiblingId).index;
+    const newIndex = (prevSiblingIndex + nextSiblingIndex) / 2;
+    return newIndex;
+  }
+}
 
 export function getComponentIndexInsideBody(loc: Location): number {
   const parentId = "body";
   const coords = getOwnCoords(parentId);
-  const childCoordinates = getRelativeChildrenCoords(parentId);
-  const relativePointerLoc = getRelativeLocation(parentId, loc);
-  if (coords && relativePointerLoc) {
-    return computeBodyChildIndex({
+  const childrenId = getComponentChildrenId(parentId);
+  const childCoordinates: ComponentCoordsWM[] = [];
+  for (let i = 0; i < childrenId.length; i++) {
+    const coords = getOwnCoords(childrenId[i]);
+    if (coords) {
+      childCoordinates.push(coords!);
+    }
+  }
+  if (coords) {
+    const index = computeBodyChildIndex({
       coords,
       childCoordinates,
-      relativePointerLoc,
+      loc,
     });
+    return computeFactoredIndex(index, parentId);
   } else {
     console.error(
       `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
@@ -54,17 +92,23 @@ export function getComponentIndex(
   }
   const acceptsChild: AcceptsChildFunction = parentComponent.dev.acceptsChild;
   const coords = getOwnCoords(caughtBy);
-  const childCoordinates = getRelativeChildrenCoords(caughtBy);
-  const relativePointerLoc = getRelativeLocation(caughtBy, loc);
-  // TODO: send original props
+  const childrenId = getComponentChildrenId(caughtBy);
+  const childCoordinates: ComponentCoordsWM[] = [];
+  for (let i = 0; i < childrenId.length; i++) {
+    const coords = getOwnCoords(childrenId[i]);
+    if (coords) {
+      childCoordinates.push(coords!);
+    }
+  } // TODO: send original props
   const props = { styles: {} };
-  if (coords && relativePointerLoc) {
-    return acceptsChild({
+  if (coords) {
+    const index = acceptsChild({
       coords,
       childCoordinates,
-      relativePointerLoc,
+      loc,
       props,
     });
+    return computeFactoredIndex(index, caughtBy);
   } else {
     console.error(
       `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`

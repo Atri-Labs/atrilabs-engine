@@ -12,8 +12,14 @@ import {
 import { UnlockCanvasActivityMachineDecorator } from "./decorators/UnlockCanvasActivityMachineDecorator";
 import { MutationDecorator } from "./DefaultDecorators";
 import { Catcher, Location } from "./types";
-import { getCoords, ComponentCoords, getAllDescendants } from "./utils";
-export type { ComponentCoords } from "./utils";
+import { ComponentCoords, getAllDescendants, getCSSBoxCoords } from "./utils";
+export type { ComponentCoords, ComponentCoordsWM } from "./utils";
+export {
+  getCSSBoxCoords,
+  isInsideCSSBox,
+  horizontalClose,
+  verticalClose,
+} from "./utils";
 
 export const createComponent = (
   id: string,
@@ -104,7 +110,7 @@ export function updateComponentProps(compId: string, props: any) {
 }
 
 export function getComponentChildrenId(compId: string) {
-  return [...canvasComponentTree[compId]];
+  return canvasComponentTree[compId] ? [...canvasComponentTree[compId]] : [];
 }
 
 export function getComponentRef(compId: string) {
@@ -131,8 +137,8 @@ export function getRelativeChildrenCoords(compId: string): ComponentCoords[] {
           );
           return;
         }
-        const childCoords = getCoords(childComp);
-        const parentCoords = getCoords(parentComp);
+        const childCoords = getCSSBoxCoords(childComp);
+        const parentCoords = getCSSBoxCoords(parentComp);
         const relativeCoords: ComponentCoords = {
           top: childCoords.top - parentCoords.top,
           left: childCoords.left - parentCoords.left,
@@ -152,7 +158,7 @@ export function getOwnCoords(compId: string) {
   if (canvasComponentStore[compId]) {
     const comp = canvasComponentStore[compId].ref.current;
     if (comp) {
-      return getCoords(comp);
+      return getCSSBoxCoords(comp);
     } else {
       console.error(
         "Component Ref should have been defined. Please report this error to Atri Labs team."
@@ -246,6 +252,10 @@ export function deleteComponent(compId: string) {
     // inform canvas activity machine
     sendDeleteComponent(compId);
   }
+}
+
+export function getComponentParent(compId: string) {
+  return { ...canvasComponentStore[compId].parent };
 }
 
 export {

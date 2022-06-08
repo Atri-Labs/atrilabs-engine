@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
-import { bubbleUp, getAllDescendants, getCoords, insideBox } from "../utils";
+import { bubbleUp, getAllDescendants, getCoords, isInsideBox } from "../utils";
 import { Location } from "../types";
 
 // states
@@ -736,7 +736,7 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
     if (props.compId === "body") {
       const mousemove = (event: MouseEvent) => {
         const body = canvasComponentStore["body"].ref.current!;
-        if (!insideBox(event, getCoords(body))) {
+        if (!isInsideBox(event, getCoords(body))) {
           service.send({ type: "OUT_OF_CANVAS" });
         }
       };

@@ -3,7 +3,13 @@ import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
   ReactComponentManifestSchema,
-} from "@atrilabs/react-component-manifest-schema/lib/index";
+} from "@atrilabs/react-component-manifest-schema/lib/types";
+import {
+  flexRowSort,
+  flexColSort,
+  flexRowReverseSort,
+  flexColReverseSort,
+} from "@atrilabs/react-component-manifest-schema/lib/utils";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
@@ -44,51 +50,27 @@ export const Flex = forwardRef<
 });
 
 const acceptsChild: AcceptsChildFunction = (info) => {
-  const { childCoordinates, relativePointerLoc } = info;
-  let minDist = Infinity;
-  let minSide: "left" | "top" | "right" | "bottom" = "top";
-  let minIndex: number = 0;
-  if (
-    info.props.styles.flexDirection &&
-    info.props.styles.flexDirection.match("column")
-  ) {
-    for (let i = 0; i < childCoordinates.length; i++) {
-      const child = childCoordinates[i]!;
-      if (Math.abs(child.top - relativePointerLoc.top) < minDist) {
-        minSide = "top";
-        minDist = Math.abs(child.top - relativePointerLoc.top);
-        minIndex = i;
-      }
-      if (
-        Math.abs(child.top + child.height - relativePointerLoc.top) < minDist
-      ) {
-        minSide = "bottom";
-        minDist = Math.abs(child.top + child.height - relativePointerLoc.top);
-        minIndex = i;
-      }
-    }
-  } else {
-    for (let i = 0; i < childCoordinates.length; i++) {
-      const child = childCoordinates[i]!;
-      if (Math.abs(child.left - relativePointerLoc.left) < minDist) {
-        minSide = "left";
-        minDist = Math.abs(child.left - relativePointerLoc.left);
-        minIndex = i;
-      }
-      if (
-        Math.abs(child.left + child.width - relativePointerLoc.left) < minDist
-      ) {
-        minSide = "right";
-        minDist = Math.abs(child.left + child.width - relativePointerLoc.left);
-        minIndex = i;
-      }
-    }
+  if (info.childCoordinates.length === 0) {
+    return 0;
   }
-  if (minSide! === "left" || minSide! === "top") {
-    return minIndex! - 1;
-  } else {
-    return minIndex! + 1;
+  const flexDirection: "row" | "column" | "row-reverse" | "column-reverse" =
+    info.props.styles["flexDirection"] || "row";
+  let index = 0;
+  switch (flexDirection) {
+    case "row":
+      index = flexRowSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "column":
+      index = flexColSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "row-reverse":
+      index = flexRowReverseSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "column-reverse":
+      index = flexColReverseSort(info.loc, info.childCoordinates) || 0;
+      break;
   }
+  return index;
 };
 
 const cssTreeOptions: CSSTreeOptions = {

@@ -1,41 +1,5 @@
 import Joi from "joi";
 import { ManifestSchema } from "@atrilabs/core";
-import type { FC } from "react";
-
-export type ComponentCoords = {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-};
-
-export type AcceptsChildFunction = (info: {
-  coords: ComponentCoords;
-  childCoordinates: ComponentCoords[];
-  relativePointerLoc: Pick<ComponentCoords, "top" | "left">;
-  props: any;
-}) => number;
-
-export type ReactComponentManifestSchema = {
-  meta: { key: string };
-  render: {
-    comp: FC<any>;
-  };
-  dev: {
-    comp?: FC<any>;
-    decorators: FC<any>[];
-    attachProps: {
-      [key: string]: {
-        treeId: string;
-        initialValue: any;
-        treeOptions: any;
-        canvasOptions: { groupByBreakpoint: boolean };
-      };
-    };
-    attachCallbacks: { [key: string]: any };
-    acceptsChild?: AcceptsChildFunction;
-  };
-};
 
 const schema = Joi.object({
   meta: Joi.object({ key: Joi.string() }),
