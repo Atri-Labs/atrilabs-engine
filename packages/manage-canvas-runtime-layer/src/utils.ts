@@ -4,6 +4,7 @@ import {
   getComponentChildrenId,
   getComponentParent,
   ComponentCoordsWM,
+  getComponentProps,
 } from "@atrilabs/canvas-runtime";
 import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 import { ManifestRegistry } from "@atrilabs/core";
@@ -99,8 +100,8 @@ export function getComponentIndex(
     if (coords) {
       childCoordinates.push(coords!);
     }
-  } // TODO: send original props
-  const props = { styles: {} };
+  } // TODO: send original props of parent
+  const props = getComponentProps(caughtBy);
   if (coords) {
     const index = acceptsChild({
       coords,
