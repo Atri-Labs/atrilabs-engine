@@ -35,6 +35,7 @@
     "@atrilabs/app-page-layer": "^0.0.8",
     "@atrilabs/atri-icon-layer": "^0.0.8",
     "@atrilabs/base-layer": "^0.0.8",
+    "@atrilabs/canvas-breakpoint-layer": "^0.0.8",
     "@atrilabs/canvas-runtime": "^0.0.8",
     "@atrilabs/component-icon-manifest-schema": "^0.0.8",
     "@atrilabs/component-list-layer": "^0.0.8",
