@@ -134,12 +134,37 @@ async function checkCache(arg: {
   return false;
 }
 
+// Inside docker container, compiled typescript files does not get created on disk
+// hence, we will do check thrice in certain intervals to validate all files got created
+async function validateTSOutput(compiledFiles: string[]) {
+  return new Promise<void>((res, rej) => {
+    let retryCount = 0;
+    const validateFn = () => {
+      for (let i = 0; i < compiledFiles.length; i++) {
+        const file = compiledFiles[i]!;
+        if (!fs.existsSync(file)) {
+          retryCount++;
+          if (retryCount <= 3) {
+            setTimeout(validateFn, 200);
+            return;
+          } else {
+            rej();
+          }
+        }
+      }
+      // will reach this line of code only after successful checks
+      res();
+    };
+    validateFn();
+  });
+}
+
 export default function (
   toolConfig: ToolConfig,
   options: ManifestServerOptions
 ) {
   app.use((req, _res, next) => {
-    console.log("req rec", req.originalUrl);
+    console.log("[manifest-server] request url", req.originalUrl);
     next();
   });
   // setup http request & response (a file server for bundled manifest assets)
@@ -178,38 +203,87 @@ export default function (
   // setup socket request & response
   io.on("connection", (socket) => {
     socket.on("sendManifestScripts", async (cb) => {
-      const manifestPkgBundles: ManifestPkgBundle[] = [];
-      const scriptName = "manifestscript";
-      // TODO: build script
-      for (let i = 0; i < manifestDirs.length; i++) {
-        const dir = manifestDirs[i]!;
-        const pkg = dir.pkg;
-        const manifestPkgInfo = getManifestPkgInfo(pkg);
-        // create cache directory if not already created
-        const {
-          cacheDir,
-          cacheSrcDir,
-          firstBuild,
-          finalBuild,
-          entryPoint,
-          manifestJsPath,
-          shimsPath,
-        } = getAllPaths(manifestPkgInfo);
-        if (!fs.existsSync(cacheDir)) {
-          fs.mkdirSync(cacheDir, { recursive: true });
-        }
-        // get build info for the manifest package
-        const buildInfo = await extractManifestPkgBuildInfo(manifestPkgInfo);
+      try {
+        const manifestPkgBundles: ManifestPkgBundle[] = [];
+        const scriptName = "manifestscript";
+        // TODO: build script
+        for (let i = 0; i < manifestDirs.length; i++) {
+          const dir = manifestDirs[i]!;
+          const pkg = dir.pkg;
+          const manifestPkgInfo = getManifestPkgInfo(pkg);
+          // create cache directory if not already created
+          const {
+            cacheDir,
+            cacheSrcDir,
+            firstBuild,
+            finalBuild,
+            entryPoint,
+            manifestJsPath,
+            shimsPath,
+          } = getAllPaths(manifestPkgInfo);
+          if (!fs.existsSync(cacheDir)) {
+            fs.mkdirSync(cacheDir, { recursive: true });
+          }
+          // get build info for the manifest package
+          const buildInfo = await extractManifestPkgBuildInfo(manifestPkgInfo);
 
-        // check cache hit
-        const buildCacheFile = path.resolve(cacheDir, "cache.json");
-        const hit = await checkCache({
-          buildCacheFile,
-          finalBundleFile: path.resolve(finalBuild, "bundle.js"),
-          pkg,
-          manifestDir: buildInfo.dir,
-        });
-        if (hit) {
+          // check cache hit
+          const buildCacheFile = path.resolve(cacheDir, "cache.json");
+          const hit = await checkCache({
+            buildCacheFile,
+            finalBundleFile: path.resolve(finalBuild, "bundle.js"),
+            pkg,
+            manifestDir: buildInfo.dir,
+          });
+          if (hit) {
+            manifestPkgBundles.push({
+              src: fs
+                .readFileSync(path.resolve(finalBuild, "bundle.js"))
+                .toString(),
+              scriptName,
+              pkg: pkg,
+            });
+            continue;
+          }
+
+          copyManifestEntryTemplate("react", cacheSrcDir);
+
+          // compile typescript if manifest pkg contains tsconfig.json file
+          const compiledFiles = await compileTypescriptManifestPkg(
+            buildInfo.dir,
+            firstBuild
+          );
+
+          try {
+            await validateTSOutput(compiledFiles);
+          } catch {
+            console.log(
+              `Some typscript compiled output files are missing after 600ms.`
+            );
+            cb([]);
+            return;
+          }
+
+          await installManifestPkgDependencies(
+            manifestPkgInfo,
+            toolConfig.pkgManager
+          );
+          // TODO: if no tsconfig.js file, then do a babel build
+          // use the built assets from previous step, to create a webpack build
+          await bundleManifestPkg(
+            "development",
+            true,
+            entryPoint,
+            { path: finalBuild, filename: "bundle.js" },
+            scriptName,
+            `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
+            manifestJsPath,
+            compiledFiles,
+            shimsPath,
+            // ignore putting import {Shims} from "path/to/shims.js"
+            // in all files from cache src dir
+            cacheSrcDir
+          );
           manifestPkgBundles.push({
             src: fs
               .readFileSync(path.resolve(finalBuild, "bundle.js"))
@@ -217,48 +291,16 @@ export default function (
             scriptName,
             pkg: pkg,
           });
-          continue;
+          // update cache
+          updateBuildCache(buildCacheFile, buildInfo.dir, pkg);
         }
-
-        copyManifestEntryTemplate("react", cacheSrcDir);
-
-        // compile typescript if manifest pkg contains tsconfig.json file
-        const compiledFiles = await compileTypescriptManifestPkg(
-          buildInfo.dir,
-          firstBuild
+        cb(manifestPkgBundles);
+      } catch (err) {
+        console.log(
+          `[manifest-server] Following error occured in sendManifestScripts message handler`
         );
-
-        await installManifestPkgDependencies(
-          manifestPkgInfo,
-          toolConfig.pkgManager
-        );
-        // TODO: if no tsconfig.js file, then do a babel build
-        // use the built assets from previous step, to create a webpack build
-        await bundleManifestPkg(
-          "development",
-          true,
-          entryPoint,
-          { path: finalBuild, filename: "bundle.js" },
-          scriptName,
-          `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
-          manifestJsPath,
-          compiledFiles,
-          shimsPath,
-          // ignore putting import {Shims} from "path/to/shims.js"
-          // in all files from cache src dir
-          cacheSrcDir
-        );
-        manifestPkgBundles.push({
-          src: fs
-            .readFileSync(path.resolve(finalBuild, "bundle.js"))
-            .toString(),
-          scriptName,
-          pkg: pkg,
-        });
-        // update cache
-        updateBuildCache(buildCacheFile, buildInfo.dir, pkg);
+        console.log(err);
       }
-      cb(manifestPkgBundles);
     });
   });
 

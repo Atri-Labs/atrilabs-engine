@@ -82,7 +82,6 @@ export const createComponent = (
  * clearCanvas is expected to be called when currentForest changes
  */
 export function clearCanvas() {
-  console.log("clearCanvas called", { ...canvasComponentStore });
   const storeKeys = Object.keys(canvasComponentStore);
   // delete everything apart from body
   storeKeys.forEach((storeKey) => {
