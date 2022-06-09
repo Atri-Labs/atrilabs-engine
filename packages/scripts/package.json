@@ -14,11 +14,10 @@
     "bootstrap-atri-services": "build/tasks/bootstrap-services/bootstrap-services.js"
   },
   "directories": {
-    "bin": "bin",
     "test": "__tests__"
   },
   "files": [
-    "bin"
+    "build"
   ],
   "publishConfig": {
     "access": "public"
