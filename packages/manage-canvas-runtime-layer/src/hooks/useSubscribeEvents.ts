@@ -16,6 +16,7 @@ import {
 } from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 /**
  * This function is an escape hatch and should be removed with urgency.
@@ -118,6 +119,7 @@ function createComponentFromNode(node: TreeNode) {
 
 export const useSubscribeEvents = () => {
   const tree = useTree(ComponentTreeId);
+  const cssTree = useTree(CssTreeId);
 
   useEffect(() => {
     const currentForest = BrowserForestManager.currentForest;
@@ -194,9 +196,29 @@ export const useSubscribeEvents = () => {
       if (update.type === "dewire") {
         deleteComponent(update.childId);
       }
+
+      if (update.type === "change") {
+        if (update.treeId === CssTreeId) {
+          const links = Object.values(cssTree.links);
+          const link = links.find((link) => {
+            return link.childId === update.id;
+          });
+          if (link === undefined) {
+            return;
+          }
+          const compId = link.refId;
+          const cssNode = cssTree.nodes[update.id];
+          // tranform it into props
+          const props = cssNode.state.property;
+          if (props) {
+            const oldProps = getComponentProps(compId);
+            updateComponentProps(compId, { ...oldProps, ...props });
+          }
+        }
+      }
     });
     return unsub;
-  }, [tree]);
+  }, [tree, cssTree]);
 
   useEffect(() => {
     // TODO

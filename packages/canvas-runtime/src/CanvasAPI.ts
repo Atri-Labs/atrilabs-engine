@@ -101,10 +101,13 @@ export function clearCanvas() {
 (window as any)["canvasStore"] = canvasComponentStore;
 
 export function getComponentProps(compId: string) {
-  return { ...canvasComponentStore[compId].props };
+  return canvasComponentStore[compId]
+    ? { ...canvasComponentStore[compId].props }
+    : {};
 }
 
 export function updateComponentProps(compId: string, props: any) {
+  if (canvasComponentStore[compId] === undefined) return;
   canvasComponentStore[compId].props = props;
   callCanvasUpdateSubscribers(compId);
 }
