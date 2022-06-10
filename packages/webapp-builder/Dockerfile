@@ -4,7 +4,7 @@ COPY . /code
 
 WORKDIR /code
 
-RUN npm install && npm run build
+RUN yarn install && yarn run build && yarn run buildManifests
 
 FROM node:lts-slim
 
@@ -12,4 +12,4 @@ COPY --from=build /code /code
 
 WORKDIR /code
 
-ENTRYPOINT [ "npm", "run", "server" ]
+ENTRYPOINT [ "yarn", "run", "server" ]
