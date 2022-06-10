@@ -24,6 +24,7 @@
     "build": "build-atri-tool",
     "start": "dev-atri-tool",
     "server": "bootstrap-atri-services",
+    "buildManifests": "build-manifest-pkg",
     "prepublishOnly": "yarn run build"
   },
   "bugs": {

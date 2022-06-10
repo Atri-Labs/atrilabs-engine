@@ -682,7 +682,7 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
         try {
           await fs.promises.stat(outputDir);
         } catch (err) {
-          fs.promises.mkdir(outputDir, { recursive: true });
+          await fs.promises.mkdir(outputDir, { recursive: true });
         }
         fs.writeFile(outputPath, newCode, () => {
           res(outputPath);
@@ -703,7 +703,7 @@ export function compileTypescriptManifestPkg(srcDir: string, outDir: string) {
       fs.promises
         .stat(copyDestDir)
         .catch(() => {
-          fs.promises.mkdir(copyDestDir, { recursive: true });
+          fs.mkdirSync(copyDestDir, { recursive: true });
         })
         .finally(() => {
           fs.promises.readFile(file).then((value) => {

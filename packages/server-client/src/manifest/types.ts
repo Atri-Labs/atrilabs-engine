@@ -1,13 +1,4 @@
-export type Script = {
-  src: string;
-  scriptName: string;
-};
-
-export type ManifestPkg = {
-  pkg: string;
-};
-
-export type ManifestPkgBundle = ManifestPkg & Script;
+import { ManifestPkgBundle } from "@atrilabs/core";
 
 export interface ServerToClientEvents {
   updateManifestPkg: (
@@ -25,10 +16,3 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
-
-export type Cache = {
-  [pkg: string]: {
-    // filepath is relative to manifest directory in pkg
-    [filepath: string]: { timestamp: Date };
-  };
-};

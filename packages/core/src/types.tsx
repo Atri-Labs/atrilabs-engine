@@ -202,3 +202,21 @@ export type BrowserClient = {
   subscribeExternalEvents(cb: EventSubscriber): () => void;
   subscribeOwnEvents(cb: EventSubscriber): () => void;
 };
+
+export type Script = {
+  src: string;
+  scriptName: string;
+};
+
+export type ManifestPkg = {
+  pkg: string;
+};
+
+export type ManifestPkgBundle = ManifestPkg & Script;
+
+export type Cache = {
+  [pkg: string]: {
+    // filepath is relative to manifest directory in pkg
+    [filepath: string]: { timestamp: Date };
+  };
+};

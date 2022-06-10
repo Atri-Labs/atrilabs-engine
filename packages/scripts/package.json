@@ -11,7 +11,8 @@
     "dev-atri-tool": "build/tasks/dev/dev.js",
     "build-atri-layer": "build/tasks/build-layer/index.js",
     "build-atri-runtime": "build/tasks/build-runtime/index.js",
-    "bootstrap-atri-services": "build/tasks/bootstrap-services/bootstrap-services.js"
+    "bootstrap-atri-services": "build/tasks/bootstrap-services/bootstrap-services.js",
+    "build-manifest-pkg": "build/tasks/build-manifest-pkg/index.js"
   },
   "directories": {
     "test": "__tests__"
