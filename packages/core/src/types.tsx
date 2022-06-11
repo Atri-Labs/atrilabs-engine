@@ -70,9 +70,15 @@ export type ToolConfig = {
   services: {
     fileServer: { path: string; options: any };
     eventServer: { path: string; options: any };
-    codeGenerators: { path: string; options: any }[];
     manifestServer: { path: string; options: any };
   };
+  generators: {
+    targetName: string;
+    hint: string;
+    description: string;
+    path: string;
+    options: any;
+  }[];
   /**
    * All the clients must default export their API.
    */

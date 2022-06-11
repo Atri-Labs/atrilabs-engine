@@ -46,7 +46,6 @@ module.exports = {
     eventServer: {
       path: require.resolve("@atrilabs/server-client/lib/websocket/server"),
     },
-    codeGenerators: [],
     manifestServer: {
       path: require.resolve("@atrilabs/server-client/lib/manifest/server"),
       options: {
@@ -54,6 +53,7 @@ module.exports = {
       },
     },
   },
+  generators: [],
   clients: {
     eventClient: {
       modulePath: require.resolve(
