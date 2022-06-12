@@ -55,7 +55,7 @@ module.exports = {
       },
     },
   },
-  generators: [
+  targets: [
     {
       targetName: "Web App",
       hint: "A React App that supports SSR",

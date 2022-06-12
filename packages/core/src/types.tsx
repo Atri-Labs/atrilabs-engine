@@ -72,7 +72,7 @@ export type ToolConfig = {
     eventServer: { path: string; options: any };
     manifestServer: { path: string; options: any };
   };
-  generators: {
+  targets: {
     targetName: string;
     hint: string;
     description: string;
