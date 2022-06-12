@@ -1,0 +1,13 @@
+{
+  "name": "atri-react-app-template",
+  "version": "0.0.0",
+  "private": "true",
+  "dependencies": {
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1"
+  }
+}

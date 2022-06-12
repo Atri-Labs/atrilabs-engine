@@ -3,11 +3,22 @@ import { createForest, Forest, ForestDef, TreeDef } from "@atrilabs/forest";
 import { createForestMgr } from "./create-forest-mgr";
 import { AppGeneratorOptions } from "./types";
 import path from "path";
+import { getFiles } from "./utils";
+import fs from "fs";
+
+const reactAppTemplatePath = path.resolve(
+  __dirname,
+  "..",
+  "templates",
+  "react-app"
+);
 
 export default async function (
   toolConfig: ToolConfig,
   options: AppGeneratorOptions
 ) {
+  // paths
+  const reactDestPath = path.resolve(options.outputDir, "app");
   // create forests using forest manager
   const forestManager = createForestMgr(toolConfig);
   const eventManager = forestManager.getEventManager(options.appForestPkgId);
@@ -73,4 +84,40 @@ export default async function (
       };
     }
   }
+
+  // copy template to the output directory
+  const files = getFiles(reactAppTemplatePath);
+  files.forEach((file) => {
+    const dirname = path.dirname(file);
+    const relativeDirname = path.relative(reactAppTemplatePath, dirname);
+    const destDirname = path.resolve(reactDestPath, relativeDirname);
+    const relativeFilename = path.relative(reactAppTemplatePath, file);
+    const destFilename = path.resolve(reactDestPath, relativeFilename);
+    if (!fs.existsSync(destDirname)) {
+      fs.mkdirSync(destDirname, { recursive: true });
+    }
+    fs.writeFileSync(destFilename, fs.readFileSync(file));
+  });
+  // create pages directory
+  const reactAppDestPagesDirectory = path.resolve(
+    reactDestPath,
+    "src",
+    "pages"
+  );
+  if (!fs.existsSync(reactAppDestPagesDirectory)) {
+    fs.mkdirSync(reactAppDestPagesDirectory);
+  }
+  // install packages or update package.json
+  const reactAppPackageJSONPath = path.resolve(
+    reactAppTemplatePath,
+    "package.json"
+  );
+  const reactAppPackageJSON = require(reactAppPackageJSONPath);
+  const reactAppDependencies = reactAppPackageJSON["dependencies"] || {};
+  const reactAppDevDependencies = reactAppPackageJSON["devDependencies"] || {};
+
+  // fill pages in app
+  // create pages
+  // fill each page
+  // update store from python as well as editor events
 }
