@@ -3,8 +3,6 @@ import { createForest, Forest, ForestDef, TreeDef } from "@atrilabs/forest";
 import { createForestMgr } from "./create-forest-mgr";
 import { AppGeneratorOptions } from "./types";
 import path from "path";
-import { getFiles } from "./utils";
-import fs from "fs";
 import { createReactAppTemplateManager } from "./react-app-template-manager";
 
 const reactAppTemplatePath = path.resolve(

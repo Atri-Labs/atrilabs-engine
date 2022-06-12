@@ -6,14 +6,20 @@ export function createReactAppTemplateManager(paths: {
   reactAppTemplate: string;
   reactAppDest: string;
 }) {
-  const pagesDirectory = path.resolve(paths.reactAppDest, "src", "pages");
-  const examplePageFile = path.resolve(pagesDirectory, "Example.jsx");
+  const pagesTemplateDirectory = path.resolve(
+    paths.reactAppTemplate,
+    "src",
+    "pages"
+  );
+  const pagesDestDirectory = path.resolve(paths.reactAppDest, "src", "pages");
+  const examplePageFile = path.resolve(pagesTemplateDirectory, "Example.jsx");
   const examplePageFileText = fs.readFileSync(examplePageFile).toString();
   const appJSXTemplatePath = path.resolve(
     paths.reactAppTemplate,
     "src",
     "App.jsx"
   );
+  const appJSXDestPath = path.resolve(paths.reactAppDest, "src", "App.jsx");
 
   // variables to manage writes in App.jsx
   const pageImports: { name: string; route: string; source: string }[] = [];
@@ -22,7 +28,7 @@ export function createReactAppTemplateManager(paths: {
     const files = getFiles(paths.reactAppTemplate);
     files.forEach((file) => {
       // file from pages directory should not be copied
-      if (file.match(pagesDirectory)) {
+      if (file.match(pagesDestDirectory)) {
         return;
       }
       const dirname = path.dirname(file);
@@ -36,8 +42,8 @@ export function createReactAppTemplateManager(paths: {
       fs.writeFileSync(destFilename, fs.readFileSync(file));
     });
     // create pages directory
-    if (!fs.existsSync(pagesDirectory)) {
-      fs.mkdirSync(pagesDirectory);
+    if (!fs.existsSync(pagesDestDirectory)) {
+      fs.mkdirSync(pagesDestDirectory);
     }
   }
 
@@ -53,7 +59,7 @@ export function createReactAppTemplateManager(paths: {
   function createPage(name: string) {
     const filenameWithExt = getFilenameForPage(name);
     fs.writeFileSync(
-      path.resolve(pagesDirectory, filenameWithExt),
+      path.resolve(pagesDestDirectory, filenameWithExt),
       examplePageFileText.replace("Example", getPageComponentName(name))
     );
   }
@@ -62,7 +68,7 @@ export function createReactAppTemplateManager(paths: {
     pageImports.push({
       name: page.name,
       route: page.route,
-      source: path.resolve(pagesDirectory, getFilenameForPage(page.name)),
+      source: path.resolve(pagesDestDirectory, getFilenameForPage(page.name)),
     });
   }
 
@@ -113,9 +119,11 @@ export function createReactAppTemplateManager(paths: {
         )} />\n</Route>`;
       })
       .join("\n");
-    const importCursorMatch = appJSXTemplateText.match(/\/\/\sIMPORT CURSOR\n/);
-    const routeCursorMatch = appJSXTemplatePath.match(
-      /\{\/\*\sROUTE CURSOR.*\n/
+    const importCursorMatch = appJSXTemplateText.match(
+      /\/\/\sIMPORT\sCURSOR\n/
+    );
+    const routeCursorMatch = appJSXTemplateText.match(
+      /\{\/\*\sROUTE\sCURSOR.*\n/
     );
     if (!importCursorMatch || !routeCursorMatch) {
       console.log(
@@ -123,7 +131,7 @@ export function createReactAppTemplateManager(paths: {
       );
       return;
     }
-    replaceText(appJSXTemplateText, [
+    const newText = replaceText(appJSXTemplateText, [
       {
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,
@@ -135,6 +143,7 @@ export function createReactAppTemplateManager(paths: {
         replaceWith: routeStatements + "\n",
       },
     ]);
+    fs.writeFileSync(appJSXDestPath, newText);
   }
 
   function getDependencies() {

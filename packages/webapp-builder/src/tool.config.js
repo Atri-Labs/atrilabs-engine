@@ -65,7 +65,7 @@ module.exports = {
           path: require.resolve("@atrilabs/app-generator/lib/index.js"),
           options: {
             appForestPkgId,
-            outputDir: "atri-app",
+            outputDir: "node_modules/.targets/atri-app",
             controllers: {
               python: {
                 dir: "controllers",

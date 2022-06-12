@@ -789,3 +789,10 @@ export async function extractManifestSchemaEntries(toolConfig: ToolConfig) {
   const pkgs = toolConfig.manifestSchema.map((schema) => schema.pkg);
   return Promise.all(pkgs.map((pkg) => extractManifestSchemaEntry(pkg)));
 }
+
+export function isPromise(p: any) {
+  if (p instanceof Promise) {
+    return true;
+  }
+  return false;
+}

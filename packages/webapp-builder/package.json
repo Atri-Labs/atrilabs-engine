@@ -25,6 +25,7 @@
     "start": "dev-atri-tool",
     "server": "bootstrap-atri-services",
     "buildManifests": "build-manifest-pkg",
+    "generateApp": "run-atri-target --task generate --target 'Web App'",
     "prepublishOnly": "yarn run build"
   },
   "bugs": {
