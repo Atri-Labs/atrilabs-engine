@@ -1,7 +1,9 @@
 const path = require("path");
 
+const appForestPkgId = "@atrilabs/app-design-forest";
+
 const forestsConfig = {
-  "@atrilabs/app-design-forest": [
+  [appForestPkgId]: [
     {
       modulePath: "@atrilabs/app-design-forest/lib/componentTree.js",
     },
@@ -53,7 +55,23 @@ module.exports = {
       },
     },
   },
-  generators: [],
+  generators: [
+    {
+      targetName: "Web App",
+      hint: "A React App that supports SSR",
+      description: "A React App that supports SSR",
+      path: require.resolve("@atrilabs/app-generator"),
+      options: {
+        appForestPkgId,
+        outputDir: "atri-app",
+        controllers: {
+          python: {
+            dir: "controllers",
+          },
+        },
+      },
+    },
+  ],
   clients: {
     eventClient: {
       modulePath: require.resolve(

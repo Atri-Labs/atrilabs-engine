@@ -9,7 +9,7 @@ export type AppGeneratorOptions = {
   // controllers for different languages
   controllers: {
     // python controller directory
-    python: { path: string };
+    python: { dir: string };
   };
   // generates component for a page/forest
   components: { modulePath: string }[];

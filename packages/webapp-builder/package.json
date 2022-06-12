@@ -33,6 +33,7 @@
   "dependencies": {
     "@atrilabs/app-design-forest": "^0.0.10",
     "@atrilabs/app-design-layer": "^0.0.10",
+    "@atrilabs/app-generator": "^0.0.10",
     "@atrilabs/app-page-layer": "^0.0.10",
     "@atrilabs/atri-icon-layer": "^0.0.10",
     "@atrilabs/base-layer": "^0.0.10",
