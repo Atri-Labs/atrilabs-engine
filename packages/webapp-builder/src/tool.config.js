@@ -60,14 +60,30 @@ module.exports = {
       targetName: "Web App",
       hint: "A React App that supports SSR",
       description: "A React App that supports SSR",
-      path: require.resolve("@atrilabs/app-generator"),
-      options: {
-        appForestPkgId,
-        outputDir: "atri-app",
-        controllers: {
-          python: {
-            dir: "controllers",
+      tasks: {
+        generate: {
+          path: require.resolve("@atrilabs/app-generator/lib/index.js"),
+          options: {
+            appForestPkgId,
+            outputDir: "atri-app",
+            controllers: {
+              python: {
+                dir: "controllers",
+              },
+            },
           },
+        },
+        build: {
+          path: require.resolve(
+            "@atrilabs/app-generator/lib/build-scripts/react-app/index.js"
+          ),
+          options: {},
+        },
+        deploy: {
+          path: require.resolve(
+            "@atrilabs/app-generator/lib/deploy-scripts/react-app/index.js"
+          ),
+          options: {},
         },
       },
     },
