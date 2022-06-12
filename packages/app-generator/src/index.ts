@@ -5,6 +5,7 @@ import { AppGeneratorOptions } from "./types";
 import path from "path";
 import { getFiles } from "./utils";
 import fs from "fs";
+import { createReactAppTemplateManager } from "./react-app-template-manager";
 
 const reactAppTemplatePath = path.resolve(
   __dirname,
@@ -18,7 +19,7 @@ export default async function (
   options: AppGeneratorOptions
 ) {
   // paths
-  const reactDestPath = path.resolve(options.outputDir, "app");
+  const reactAppDestPath = path.resolve(options.outputDir, "app");
   // create forests using forest manager
   const forestManager = createForestMgr(toolConfig);
   const eventManager = forestManager.getEventManager(options.appForestPkgId);
@@ -60,64 +61,21 @@ export default async function (
     });
   });
 
-  // create manifest registry from events pkg, key, manifestSchemaId
-  // search in the manifest pkg with key, get exportedVar
-  function getComponentFromManifest(meta: { pkg: string; key: string }) {
-    const manifestConfigPath = require.resolve(
-      `${meta.pkg}/src/manifest.config.js`
-    );
-    const manifestConfig = require(manifestConfigPath);
-    if (
-      manifestConfig["componentMap"] &&
-      manifestConfig["componentMap"][meta.key] &&
-      manifestConfig["componentMap"][meta.key]["modulePath"] &&
-      manifestConfig["componentMap"][meta.key]["exportedVarName"]
-    ) {
-      return {
-        exportedVarName:
-          manifestConfig["componentMap"][meta.key]["exportedVarName"],
-        // absolute module path
-        modulePath: path.resolve(
-          manifestConfig,
-          manifestConfig["componentMap"][meta.key]["modulePath"]
-        ),
-      };
-    }
-  }
-
-  // copy template to the output directory
-  const files = getFiles(reactAppTemplatePath);
-  files.forEach((file) => {
-    const dirname = path.dirname(file);
-    const relativeDirname = path.relative(reactAppTemplatePath, dirname);
-    const destDirname = path.resolve(reactDestPath, relativeDirname);
-    const relativeFilename = path.relative(reactAppTemplatePath, file);
-    const destFilename = path.resolve(reactDestPath, relativeFilename);
-    if (!fs.existsSync(destDirname)) {
-      fs.mkdirSync(destDirname, { recursive: true });
-    }
-    fs.writeFileSync(destFilename, fs.readFileSync(file));
+  const reactTemplateManager = createReactAppTemplateManager({
+    reactAppTemplate: reactAppTemplatePath,
+    reactAppDest: reactAppDestPath,
   });
-  // create pages directory
-  const reactAppDestPagesDirectory = path.resolve(
-    reactDestPath,
-    "src",
-    "pages"
-  );
-  if (!fs.existsSync(reactAppDestPagesDirectory)) {
-    fs.mkdirSync(reactAppDestPagesDirectory);
-  }
+  // copy template to the output directory
+  reactTemplateManager.copyTemplate();
+  // create pages
+  pageIds.forEach((pageId) => {
+    const pageName = pages[pageId].name;
+    reactTemplateManager.createPage(pageName);
+  });
   // install packages or update package.json
-  const reactAppPackageJSONPath = path.resolve(
-    reactAppTemplatePath,
-    "package.json"
-  );
-  const reactAppPackageJSON = require(reactAppPackageJSONPath);
-  const reactAppDependencies = reactAppPackageJSON["dependencies"] || {};
-  const reactAppDevDependencies = reactAppPackageJSON["devDependencies"] || {};
 
   // fill pages in app
-  // create pages
+  reactTemplateManager.flushAppJSX();
   // fill each page
   // update store from python as well as editor events
 }
