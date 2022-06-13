@@ -12,9 +12,9 @@ export type AppGeneratorOptions = {
     python: { dir: string };
   };
   // generates component for a page/forest
-  components: { modulePath: string }[];
+  components: { modulePath: string; options: any }[];
   // generates props for a page/forest
-  props: { modulePath: string }[];
+  props: { modulePath: string; options: any }[];
 };
 
 export type ComponentGetter = (meta: { pkg: string; key: string }) =>
@@ -28,6 +28,8 @@ export type ComponentGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
   getComponentFromManifest: ComponentGetter;
+  // custom options that are module specific
+  custom: any;
 };
 
 export type ComponentGeneratorOutput = {
@@ -46,6 +48,7 @@ export type ComponentGeneratorFunction = (
 export type PropsGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
+  custom: any;
 };
 
 export type PropsGeneratorOutput = { [compId: string]: { props: any } };

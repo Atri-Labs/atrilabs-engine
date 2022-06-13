@@ -4,48 +4,28 @@ import { createForestMgr } from "./create-forest-mgr";
 import { AppGeneratorOptions } from "./types";
 import path from "path";
 import { createReactAppTemplateManager } from "./react-app-template-manager";
-
-const reactAppTemplatePath = path.resolve(
-  __dirname,
-  "..",
-  "templates",
-  "react-app"
-);
+import {
+  getForestDef,
+  getReactAppDestPath,
+  reactAppTemplatePath,
+} from "./utils";
 
 export default async function (
   toolConfig: ToolConfig,
   options: AppGeneratorOptions
 ) {
   // paths
-  const reactAppDestPath = path.resolve(options.outputDir, "app");
-  // create forests using forest manager
-  const forestManager = createForestMgr(toolConfig);
-  const eventManager = forestManager.getEventManager(options.appForestPkgId);
-  // get all pages
-  const pages = eventManager.pages();
-  // create tree def and forest def from toolConfig
-  const appForestEntry = toolConfig.forests[options.appForestPkgId];
-  if (appForestEntry === undefined) {
-    console.log(
-      `appForestPkgId not found in toolConfig\nappForestPkgId: ${
-        options.appForestPkgId
-      }\nforestConfigs: ${JSON.stringify(toolConfig.forests, null, 2)}`
-    );
+  const reactAppDestPath = getReactAppDestPath(options.outputDir);
+  // get/create forest def
+  const forestDef = getForestDef(toolConfig, options.appForestPkgId);
+  if (forestDef === undefined) {
     return;
   }
-  const treeDefs: TreeDef[] = appForestEntry.map((treeDef) => {
-    return {
-      defFn: require(treeDef.modulePath).default,
-      id: treeDef.modulePath,
-      modulePath: treeDef.modulePath,
-    };
-  });
-  const forestDef: ForestDef = {
-    id: options.appForestPkgId,
-    pkg: options.appForestPkgId,
-    trees: treeDefs,
-  };
+  const forestManager = createForestMgr(toolConfig);
+  const eventManager = forestManager.getEventManager(options.appForestPkgId);
   // create forest for each page
+  // get all pages
+  const pages = eventManager.pages();
   const pageForestMap: { [pageId: string]: Forest } = {};
   const pageIds = Object.keys(pages);
   pageIds.forEach((pageId) => {

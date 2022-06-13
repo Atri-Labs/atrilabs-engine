@@ -25,5 +25,8 @@
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/forest": "^0.0.10"
   }
 }
