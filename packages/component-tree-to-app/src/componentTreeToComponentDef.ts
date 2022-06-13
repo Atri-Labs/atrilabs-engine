@@ -33,6 +33,7 @@ const componentTreeToComponentDef: ComponentGeneratorFunction = (options) => {
               alias,
               exportedVarName: component.exportedVarName,
               modulePath: component.modulePath,
+              parent: node.state.parent,
             };
         }
       }

@@ -71,6 +71,7 @@ module.exports = {
                 dir: "controllers",
               },
             },
+            rootComponentId: "body",
             components: [
               {
                 modulePath:

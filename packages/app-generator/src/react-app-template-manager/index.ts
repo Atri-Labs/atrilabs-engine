@@ -1,13 +1,16 @@
 import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
-import { camelCase, map } from "lodash";
+import { camelCase } from "lodash";
 import { ComponentGeneratorOutput } from "../types";
 
-export function createReactAppTemplateManager(paths: {
-  reactAppTemplate: string;
-  reactAppDest: string;
-}) {
+export function createReactAppTemplateManager(
+  paths: {
+    reactAppTemplate: string;
+    reactAppDest: string;
+  },
+  rootComponentId: string
+) {
   const pagesTemplateDirectory = path.resolve(
     paths.reactAppTemplate,
     "src",
@@ -38,7 +41,7 @@ export function createReactAppTemplateManager(paths: {
       [compId: string]: {
         localIdentifier: string;
         alias: string;
-        parentId: string;
+        parent: { id: string; index: number };
       };
     };
   } = {};
@@ -71,15 +74,19 @@ export function createReactAppTemplateManager(paths: {
     return filenameWithExt;
   }
 
+  function getPageDestPath(name: string) {
+    const filenameWithExt = getFilenameForPage(name);
+    return path.resolve(pagesDestDirectory, filenameWithExt);
+  }
+
   function getPageComponentName(name: string) {
     const casedName = camelCase(name);
     return casedName[0].toUpperCase() + casedName.slice(1);
   }
 
   function createPage(name: string) {
-    const filenameWithExt = getFilenameForPage(name);
     fs.writeFileSync(
-      path.resolve(pagesDestDirectory, filenameWithExt),
+      getPageDestPath(name),
       examplePageFileText.replace("Example", getPageComponentName(name))
     );
   }
@@ -195,11 +202,13 @@ export function createReactAppTemplateManager(paths: {
     if (pageImportMap[page.name] === undefined) {
       pageImportMap[page.name] = {};
     }
+    if (componentMap[page.name] === undefined) {
+      componentMap[page.name] = {};
+    }
     compIds.forEach((compId) => {
-      const { exportedVarName, modulePath, alias, parentId } =
-        components[compId];
+      const { exportedVarName, modulePath, alias, parent } = components[compId];
       // If a component is already added for import, do nothing
-      const mapped = pageImportMap[page.name][modulePath].find(
+      const mapped = pageImportMap[page.name][modulePath]?.find(
         (curr) => curr.identifier === exportedVarName
       );
       let localIdentifier = "";
@@ -213,25 +222,126 @@ export function createReactAppTemplateManager(paths: {
         if (identiferRegistry[exportedVarName] === undefined) {
           localIdentifier = exportedVarName;
           identiferRegistry[exportedVarName] = 1;
-          pageImportMap[page.name][modulePath].push({
+          const entry = {
             identifier: exportedVarName,
             localIdentifier,
-          });
+          };
+          if (pageImportMap[page.name][modulePath])
+            pageImportMap[page.name][modulePath].push(entry);
+          else pageImportMap[page.name][modulePath] = [entry];
         } else {
           localIdentifier =
             exportedVarName + identiferRegistry[exportedVarName];
           identiferRegistry[exportedVarName] += 1;
-          pageImportMap[page.name][modulePath].push({
+          const entry = {
             identifier: exportedVarName,
             localIdentifier,
-          });
+          };
+          if (pageImportMap[page.name][modulePath])
+            pageImportMap[page.name][modulePath].push(entry);
+          else pageImportMap[page.name][modulePath] = [entry];
         }
       }
       componentMap[page.name][compId] = {
         alias,
         localIdentifier,
-        parentId,
+        parent,
       };
+    });
+  }
+
+  function flushPage(name: string) {
+    /**
+     * import { localIdentifier } from "source";
+     *
+     * export default function PageName(){
+     *  const Flex1Key = "Flex1";
+     *  const Flex1Ref = useRef(null);
+     *  const Flex1Props = useStore((state)=>state["Flex1"]);
+     *
+     *  const Button1Key = "Button1";
+     *  const Button1Ref = useRef(null);
+     *  const Button1Props = useStore((state)=>state["Button1"]);
+     *
+     *  return (<>
+     *    <Flex props={} ref={} key={flex1Key} >
+     *      <Button props={} ref={Button1Ref} key={} />
+     *    <Flex />
+     *  </>)
+     * }
+     */
+    const pagePath = getPageDestPath(name);
+    console.log(pagePath);
+    const pageText = fs.readFileSync(pagePath).toString();
+    const jsxCursorMatch = pageText.match(/\{\/\*\sJSX\sCURSOR.*\n/);
+    // create jsx
+    function createJSX(
+      compId: string,
+      pageComponentMap: typeof componentMap["0"],
+      reverseMap: {
+        [parentId: string]: { compId: string; index: number }[];
+      }
+    ) {
+      const isParent = reverseMap[compId] !== undefined;
+      const localIdentifier = pageComponentMap[compId].localIdentifier;
+      if (isParent) {
+        const start = `<${localIdentifier}>\n`;
+        const mid = reverseMap[compId].map((child) => {
+          createJSX(child.compId, pageComponentMap, reverseMap);
+        });
+        const end = `</${localIdentifier}>\n`;
+        return start + mid + end;
+      } else {
+        const start = `<${localIdentifier}/>\n`;
+        return start;
+      }
+    }
+    if (jsxCursorMatch) {
+      const reverseMap: {
+        [parentId: string]: { compId: string; index: number }[];
+      } = {};
+      const compIds = Object.keys(componentMap[name]);
+      for (let i = 0; i < compIds.length; i++) {
+        const compId = compIds[i];
+        const parentCompId = componentMap[name][compId].parent.id;
+        const index = componentMap[name][compId].parent.index;
+        if (reverseMap[parentCompId]) {
+          reverseMap[parentCompId].push({ compId, index });
+        } else {
+          reverseMap[parentCompId] = [{ compId, index }];
+        }
+      }
+      // sort in-place
+      const parentIds = Object.keys(reverseMap);
+      parentIds.forEach((parentId) => {
+        reverseMap[parentId].sort((a, b) => a.index - b.index);
+      });
+
+      const rootChildren = reverseMap[rootComponentId];
+      // it might happen that the page is empty
+      if (rootChildren) {
+        const jsx = rootChildren
+          .map((rootChild) => {
+            return createJSX(rootChild.compId, componentMap[name], reverseMap);
+          })
+          .join("");
+        const newText = replaceText(pageText, [
+          {
+            index: jsxCursorMatch.index!,
+            length: jsxCursorMatch.length,
+            replaceWith: jsx,
+          },
+        ]);
+        fs.writeFileSync(pagePath, newText);
+      }
+    } else {
+      console.log("jsx cursor not found");
+    }
+  }
+
+  function flushPages() {
+    pageImports.forEach((page) => {
+      flushPage(page.name);
     });
   }
 
@@ -247,5 +357,6 @@ export function createReactAppTemplateManager(paths: {
     getDevDependencies,
     patchDependencies,
     addComponents,
+    flushPages,
   };
 }

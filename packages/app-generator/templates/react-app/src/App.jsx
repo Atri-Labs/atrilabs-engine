@@ -6,7 +6,7 @@ export default function App() {
     <Router>
       <div>
         <Switch>
-          {/* ROUTE CURSOR Adding a big comment to avoid line wrap*/}
+          {/* ROUTE CURSOR */}
         </Switch>
       </div>
     </Router>

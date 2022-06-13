@@ -47,6 +47,14 @@ export default async function (
     });
   });
 
+  const reactTemplateManager = createReactAppTemplateManager(
+    {
+      reactAppTemplate: reactAppTemplatePath,
+      reactAppDest: reactAppDestPath,
+    },
+    options.rootComponentId
+  );
+
   const componentGeneratorFunctions: {
     fn: ComponentGeneratorFunction;
     options: ComponentGeneratorOptions;
@@ -81,6 +89,7 @@ export default async function (
         console.log(err);
       }
     });
+    reactTemplateManager.addComponents(pages[pageId], componentGeneratorOutput);
   });
 
   const propsGeneratorFunctions: {
@@ -118,10 +127,6 @@ export default async function (
     });
   });
 
-  const reactTemplateManager = createReactAppTemplateManager({
-    reactAppTemplate: reactAppTemplatePath,
-    reactAppDest: reactAppDestPath,
-  });
   // copy template to the output directory
   reactTemplateManager.copyTemplate();
   // create pages
@@ -135,5 +140,6 @@ export default async function (
   // fill pages in app
   reactTemplateManager.flushAppJSX();
   // fill each page
+  reactTemplateManager.flushPages();
   // update store from python as well as editor events
 }

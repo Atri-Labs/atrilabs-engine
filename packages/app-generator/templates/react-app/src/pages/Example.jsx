@@ -1,3 +1,5 @@
 export default function Example() {
-  return <></>;
+  return (<>
+  {/* JSX CURSOR */}
+  </>);
 }

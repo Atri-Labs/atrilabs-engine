@@ -11,6 +11,8 @@ export type AppGeneratorOptions = {
     // python controller directory
     python: { dir: string };
   };
+  // root component alias (body / root)
+  rootComponentId: string;
   // generates component for a page/forest. options will be passed as custom.
   components: { modulePath: string; options: any }[];
   // generates props for a page/forest. options will be passed as custom.
@@ -37,7 +39,7 @@ export type ComponentGeneratorOutput = {
     alias: string;
     modulePath: string;
     exportedVarName: string;
-    parentId: string;
+    parent: { id: string; index: number };
   };
 };
 
