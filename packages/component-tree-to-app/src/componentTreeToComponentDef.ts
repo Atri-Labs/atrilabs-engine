@@ -11,7 +11,7 @@ const componentTreeToComponentDef: ComponentGeneratorFunction = (options) => {
   );
   if (options.forestDef.trees[0]?.id === componentTreeId) {
     const forest = options.forest;
-    const componentTree = forest.tree("");
+    const componentTree = forest.tree(componentTreeId);
     if (componentTree) {
       const nodes = componentTree.nodes;
       const nodeIds = Object.keys(nodes);

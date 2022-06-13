@@ -71,6 +71,20 @@ module.exports = {
                 dir: "controllers",
               },
             },
+            components: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
+                options: {},
+              },
+            ],
+            props: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
+                options: {},
+              },
+            ],
           },
         },
         build: {

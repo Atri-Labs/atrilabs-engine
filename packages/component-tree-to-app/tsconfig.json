@@ -1,7 +1,7 @@
 {
   "extends": "../../configs/node.internal.tsconfig.json",
   "compilerOptions": {
-    "outDir": "build",
+    "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
     "jsx": "react-jsx"

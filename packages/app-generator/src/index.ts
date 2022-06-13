@@ -1,10 +1,18 @@
 import { ToolConfig } from "@atrilabs/core";
-import { createForest, Forest, ForestDef, TreeDef } from "@atrilabs/forest";
+import { createForest, Forest } from "@atrilabs/forest";
 import { createForestMgr } from "./create-forest-mgr";
-import { AppGeneratorOptions } from "./types";
-import path from "path";
+import {
+  AppGeneratorOptions,
+  ComponentGeneratorFunction,
+  ComponentGeneratorOptions,
+  ComponentGeneratorOutput,
+  PropsGeneratorFunction,
+  PropsGeneratorOptions,
+  PropsGeneratorOutput,
+} from "./types";
 import { createReactAppTemplateManager } from "./react-app-template-manager";
 import {
+  getComponentFromManifest,
   getForestDef,
   getReactAppDestPath,
   reactAppTemplatePath,
@@ -36,6 +44,77 @@ export default async function (
     const events = eventManager.fetchEvents(pageId);
     events.forEach((event) => {
       pageForestMap[pageId].handleEvent(event);
+    });
+  });
+
+  const componentGeneratorFunctions: {
+    fn: ComponentGeneratorFunction;
+    options: ComponentGeneratorOptions;
+  }[] = [];
+  for (let i = 0; i < options.components.length; i++) {
+    const componentGeneratorModulePath = options.components[i]!.modulePath;
+    const mod = await import(componentGeneratorModulePath);
+    const defaultFn = mod["default"];
+    if (typeof defaultFn === "function") {
+      componentGeneratorFunctions.push({
+        fn: defaultFn,
+        options: options.components[i]!.options,
+      });
+    }
+  }
+  pageIds.forEach((pageId) => {
+    const forest = pageForestMap[pageId];
+    let componentGeneratorOutput: ComponentGeneratorOutput = {};
+    componentGeneratorFunctions.forEach(({ fn, options }) => {
+      try {
+        const currentOutput = fn({
+          forestDef,
+          forest,
+          getComponentFromManifest,
+          custom: options,
+        });
+        componentGeneratorOutput = {
+          ...componentGeneratorOutput,
+          ...currentOutput,
+        };
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  const propsGeneratorFunctions: {
+    fn: PropsGeneratorFunction;
+    options: PropsGeneratorOptions;
+  }[] = [];
+  for (let i = 0; i < options.props.length; i++) {
+    const propsGeneratorModulePath = options.props[i]!.modulePath;
+    const mod = await import(propsGeneratorModulePath);
+    const defaultFn = mod["default"];
+    if (typeof defaultFn === "function") {
+      propsGeneratorFunctions.push({
+        fn: defaultFn,
+        options: options.components[i]!.options,
+      });
+    }
+  }
+  pageIds.forEach((pageId) => {
+    const forest = pageForestMap[pageId];
+    let propsGeneratorOutput: PropsGeneratorOutput = {};
+    propsGeneratorFunctions.forEach(({ fn, options }) => {
+      try {
+        const currentOutput = fn({
+          forestDef,
+          forest,
+          custom: options,
+        });
+        propsGeneratorOutput = {
+          ...propsGeneratorOutput,
+          ...currentOutput,
+        };
+      } catch (err) {
+        console.log(err);
+      }
     });
   });
 

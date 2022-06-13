@@ -11,9 +11,9 @@ export type AppGeneratorOptions = {
     // python controller directory
     python: { dir: string };
   };
-  // generates component for a page/forest
+  // generates component for a page/forest. options will be passed as custom.
   components: { modulePath: string; options: any }[];
-  // generates props for a page/forest
+  // generates props for a page/forest. options will be passed as custom.
   props: { modulePath: string; options: any }[];
 };
 

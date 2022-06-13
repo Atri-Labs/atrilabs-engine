@@ -20,29 +20,28 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
       }
     });
   }
-  if (!options.forestDef.trees[0]?.id.match("componentTree")) {
-    const treeDefs = options.forestDef.trees;
-    for (let i = 0; i < treeDefs.length; i++) {
-      const treeDef = treeDefs[i]!;
-      const treeId = treeDef.id;
-      if (excludedTrees.includes(treeId)) {
-        continue;
-      }
-      const tree = options.forest.tree(treeId);
-      if (tree) {
-        const nodes = tree.nodes;
-        const refIds = Object.keys(tree.links);
-        for (let j = 0; j < refIds.length; j++) {
-          const refId = refIds[j]!;
-          const childId = tree.links[refId]!.childId;
-          const childNode = nodes[childId]!;
-          if (childNode.state && childNode.state["property"]) {
-            output[refId] = { props: childNode.state["property"] };
-          }
+  const treeDefs = options.forestDef.trees;
+  for (let i = 0; i < treeDefs.length; i++) {
+    const treeDef = treeDefs[i]!;
+    const treeId = treeDef.id;
+    if (excludedTrees.includes(treeId)) {
+      continue;
+    }
+    const tree = options.forest.tree(treeId);
+    if (tree) {
+      const nodes = tree.nodes;
+      const refIds = Object.keys(tree.links);
+      for (let j = 0; j < refIds.length; j++) {
+        const refId = refIds[j]!;
+        const childId = tree.links[refId]!.childId;
+        const childNode = nodes[childId]!;
+        if (childNode.state && childNode.state["property"]) {
+          output[refId] = { props: childNode.state["property"] };
         }
       }
     }
   }
+
   return output;
 };
 

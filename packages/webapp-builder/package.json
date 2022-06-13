@@ -43,6 +43,7 @@
     "@atrilabs/component-icon-manifest-schema": "^0.0.10",
     "@atrilabs/component-list-layer": "^0.0.10",
     "@atrilabs/component-style-layer": "^0.0.10",
+    "@atrilabs/component-tree-to-app": "^0.0.10",
     "@atrilabs/design-system": "^0.0.10",
     "@atrilabs/forest": "^0.0.10",
     "@atrilabs/layer-types": "^0.0.10",

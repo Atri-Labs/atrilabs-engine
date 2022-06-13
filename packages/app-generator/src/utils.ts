@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs";
-import { createForestMgr } from "./create-forest-mgr";
 import { ToolConfig } from "@atrilabs/core";
 import { ForestDef, TreeDef } from "@atrilabs/forest";
 import { generateModuleId } from "@atrilabs/scripts";
@@ -20,7 +19,7 @@ export function getFiles(dir: string): string[] {
 
 // create manifest registry from events pkg, key, manifestSchemaId
 // search in the manifest pkg with key, get exportedVar
-function getComponentFromManifest(meta: { pkg: string; key: string }) {
+export function getComponentFromManifest(meta: { pkg: string; key: string }) {
   const manifestConfigPath = require.resolve(
     `${meta.pkg}/src/manifest.config.js`
   );
@@ -36,7 +35,7 @@ function getComponentFromManifest(meta: { pkg: string; key: string }) {
         manifestConfig["componentMap"][meta.key]["exportedVarName"],
       // absolute module path
       modulePath: path.resolve(
-        manifestConfig,
+        manifestConfigPath,
         manifestConfig["componentMap"][meta.key]["modulePath"]
       ),
     };
