@@ -69,6 +69,7 @@ export default async function (
   pageIds.forEach((pageId) => {
     const pageName = pages[pageId].name;
     reactTemplateManager.createPage(pageName);
+    reactTemplateManager.addPageToApp(pages[pageId]);
   });
   // install packages or update package.json
 

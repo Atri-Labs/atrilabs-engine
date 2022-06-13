@@ -1,6 +1,7 @@
 import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
+import { camelCase } from "lodash";
 
 export function createReactAppTemplateManager(paths: {
   reactAppTemplate: string;
@@ -53,7 +54,8 @@ export function createReactAppTemplateManager(paths: {
   }
 
   function getPageComponentName(name: string) {
-    return name[0].toUpperCase() + name.slice(1);
+    const casedName = camelCase(name);
+    return casedName[0].toUpperCase() + casedName.slice(1);
   }
 
   function createPage(name: string) {
@@ -81,7 +83,7 @@ export function createReactAppTemplateManager(paths: {
     for (let i = 0; i < slices.length; i++) {
       const slice = slices[i];
       if (i === 0) newPieces.push(initial.slice(0, slice.index));
-      else if (i === slice.length - 1) {
+      else if (i === slices.length - 1) {
         const prevSlice = slices[i - 1];
         newPieces.push(
           initial.slice(prevSlice.index + prevSlice.length, slice.index)
@@ -96,7 +98,7 @@ export function createReactAppTemplateManager(paths: {
     }
     for (let i = 0; i < slices.length; i++) {
       const slice = slices[i];
-      newPieces.splice(i + 1, 0, slice.replaceWith);
+      newPieces.splice(2 * i + 1, 0, slice.replaceWith);
     }
     return newPieces.join("");
   }
