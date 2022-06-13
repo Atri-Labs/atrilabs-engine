@@ -1,7 +1,8 @@
 import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
-import { camelCase } from "lodash";
+import { camelCase, map } from "lodash";
+import { ComponentGeneratorOutput } from "../types";
 
 export function createReactAppTemplateManager(paths: {
   reactAppTemplate: string;
@@ -24,6 +25,23 @@ export function createReactAppTemplateManager(paths: {
 
   // variables to manage writes in App.jsx
   const pageImports: { name: string; route: string; source: string }[] = [];
+
+  // variables to manage writes for a page (initial number will be 1)
+  const identiferRegistry: { [identifer: string]: number } = {};
+  const pageImportMap: {
+    [pageName: string]: {
+      [source: string]: { identifier: string; localIdentifier: string }[];
+    };
+  } = {};
+  const componentMap: {
+    [pageName: string]: {
+      [compId: string]: {
+        localIdentifier: string;
+        alias: string;
+        parentId: string;
+      };
+    };
+  } = {};
 
   function copyTemplate() {
     const files = getFiles(paths.reactAppTemplate);
@@ -169,6 +187,54 @@ export function createReactAppTemplateManager(paths: {
     return reactAppDevDependencies;
   }
 
+  function addComponents(
+    page: { name: string },
+    components: ComponentGeneratorOutput
+  ) {
+    const compIds = Object.keys(components);
+    if (pageImportMap[page.name] === undefined) {
+      pageImportMap[page.name] = {};
+    }
+    compIds.forEach((compId) => {
+      const { exportedVarName, modulePath, alias, parentId } =
+        components[compId];
+      // If a component is already added for import, do nothing
+      const mapped = pageImportMap[page.name][modulePath].find(
+        (curr) => curr.identifier === exportedVarName
+      );
+      let localIdentifier = "";
+      if (
+        pageImportMap[page.name] &&
+        pageImportMap[page.name][modulePath] &&
+        mapped
+      ) {
+        localIdentifier = mapped.localIdentifier;
+      } else {
+        if (identiferRegistry[exportedVarName] === undefined) {
+          localIdentifier = exportedVarName;
+          identiferRegistry[exportedVarName] = 1;
+          pageImportMap[page.name][modulePath].push({
+            identifier: exportedVarName,
+            localIdentifier,
+          });
+        } else {
+          localIdentifier =
+            exportedVarName + identiferRegistry[exportedVarName];
+          identiferRegistry[exportedVarName] += 1;
+          pageImportMap[page.name][modulePath].push({
+            identifier: exportedVarName,
+            localIdentifier,
+          });
+        }
+      }
+      componentMap[page.name][compId] = {
+        alias,
+        localIdentifier,
+        parentId,
+      };
+    });
+  }
+
   // add dependencies to destination package.json
   function patchDependencies() {}
 
@@ -180,5 +246,6 @@ export function createReactAppTemplateManager(paths: {
     getDependencies,
     getDevDependencies,
     patchDependencies,
+    addComponents,
   };
 }

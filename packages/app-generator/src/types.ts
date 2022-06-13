@@ -37,6 +37,7 @@ export type ComponentGeneratorOutput = {
     alias: string;
     modulePath: string;
     exportedVarName: string;
+    parentId: string;
   };
 };
 
