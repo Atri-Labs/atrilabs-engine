@@ -108,17 +108,15 @@ export function createReactAppTemplateManager(
     for (let i = 0; i < slices.length; i++) {
       const slice = slices[i];
       if (i === 0) newPieces.push(initial.slice(0, slice.index));
-      else if (i === slices.length - 1) {
+      else {
         const prevSlice = slices[i - 1];
         newPieces.push(
           initial.slice(prevSlice.index + prevSlice.length, slice.index)
         );
+      }
+
+      if (i === slices.length - 1) {
         newPieces.push(initial.slice(slice.index + slice.length));
-      } else {
-        const prevSlice = slices[i - 1];
-        newPieces.push(
-          initial.slice(prevSlice.index + prevSlice.length, slice.index)
-        );
       }
     }
     for (let i = 0; i < slices.length; i++) {
@@ -271,7 +269,6 @@ export function createReactAppTemplateManager(
      * }
      */
     const pagePath = getPageDestPath(name);
-    console.log(pagePath);
     const pageText = fs.readFileSync(pagePath).toString();
     const jsxCursorMatch = pageText.match(/\{\/\*\sJSX\sCURSOR.*\n/);
     // create jsx
@@ -281,14 +278,16 @@ export function createReactAppTemplateManager(
       reverseMap: {
         [parentId: string]: { compId: string; index: number }[];
       }
-    ) {
+    ): string {
       const isParent = reverseMap[compId] !== undefined;
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       if (isParent) {
         const start = `<${localIdentifier}>\n`;
-        const mid = reverseMap[compId].map((child) => {
-          createJSX(child.compId, pageComponentMap, reverseMap);
-        });
+        const mid = reverseMap[compId]
+          .map((child) => {
+            return createJSX(child.compId, pageComponentMap, reverseMap);
+          })
+          .join("");
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
@@ -328,7 +327,7 @@ export function createReactAppTemplateManager(
         const newText = replaceText(pageText, [
           {
             index: jsxCursorMatch.index!,
-            length: jsxCursorMatch.length,
+            length: jsxCursorMatch[0].length,
             replaceWith: jsx,
           },
         ]);
