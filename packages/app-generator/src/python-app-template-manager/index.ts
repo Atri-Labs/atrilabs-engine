@@ -105,7 +105,11 @@ export function createPythonAppTemplateManager(
       return `${variableName} = ${createValue(variableValue)}`;
     }
     const { output } = variableMap[page.name];
-    const outputPath = path.resolve(paths.controllers, page.route);
+    const outputPath = path.resolve(
+      paths.controllers,
+      page.route.replace(/^([\/]*)/, ""),
+      "atri.py"
+    );
     const variableNames = Object.keys(output.vars);
     const variableDefStatements = variableNames
       .map((variableName) => {
@@ -114,7 +118,41 @@ export function createPythonAppTemplateManager(
       })
       .join("");
     const importStatements = ["import json\n"].join("");
-    const newText = importStatements + "\n" + variableDefStatements;
+    const updateDefBody = variableNames
+      .map((variableName) => {
+        return `\tglobal ${variableName}\n\t${variableName} = state["${variableName}"]\n`;
+      })
+      .join("");
+    const updateDef = `def updateState(state):\n` + updateDefBody;
+    const getStateDefBodyPart1 = variableNames
+      .map((variableName) => {
+        return `\tglobal ${variableName}\n`;
+      })
+      .join("");
+    const getStateDefBodyPart2 =
+      "\treturn json.dumps({" +
+      variableNames
+        .map((variableName, index) => {
+          if (index === variableNames.length - 1) {
+            return `"${variableName}": ${variableName}`;
+          }
+          return `"${variableName}": ${variableName}, `;
+        })
+        .join("") +
+      "})\n";
+    const getStateDef =
+      `def getState():\n` + getStateDefBodyPart1 + getStateDefBodyPart2;
+    const newText =
+      importStatements +
+      "\n" +
+      variableDefStatements +
+      "\n" +
+      updateDef +
+      "\n" +
+      getStateDef;
+    if (!fs.existsSync(path.dirname(outputPath))) {
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    }
     fs.writeFileSync(outputPath, newText);
   }
   function flushAtriPyFiles() {

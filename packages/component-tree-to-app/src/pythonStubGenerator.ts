@@ -9,7 +9,16 @@ const pythonStubGenerator: PythonStubGeneratorFunction = (_options) => {
   stub.vars = {
     Flex1: {
       type: {},
-      value: {},
+      value: { styles: { display: "flex" }, custom: {} },
+      gettable: true,
+      updateable: true,
+    },
+    Button1: {
+      type: {},
+      value: {
+        styles: { background: "pink", color: "black", opacity: 0.5 },
+        custom: { text: "Click Me" },
+      },
       gettable: true,
       updateable: true,
     },
