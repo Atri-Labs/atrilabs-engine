@@ -1,7 +1,7 @@
 import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
-import { camelCase } from "lodash";
+import { camelCase, slice } from "lodash";
 import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
 
 export function createReactAppTemplateManager(
@@ -286,6 +286,11 @@ export function createReactAppTemplateManager(
     const pagePath = getPageDestPath(name);
     const pageText = fs.readFileSync(pagePath).toString();
     const jsxCursorMatch = pageText.match(/\{\/\*\sJSX\sCURSOR.*\n/);
+    const slices: {
+      index: number;
+      length: number;
+      replaceWith: string;
+    }[] = [];
     // create jsx
     function createJSX(
       compId: string,
@@ -296,8 +301,9 @@ export function createReactAppTemplateManager(
     ): string {
       const isParent = reverseMap[compId] !== undefined;
       const localIdentifier = pageComponentMap[compId].localIdentifier;
+      const alias = pageComponentMap[compId].alias;
       if (isParent) {
-        const start = `<${localIdentifier}>\n`;
+        const start = `<${localIdentifier} {...${alias}Props}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -306,7 +312,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier}/>\n`;
+        const start = `<${localIdentifier} {...${alias}Props}/>\n`;
         return start;
       }
     }
@@ -339,18 +345,37 @@ export function createReactAppTemplateManager(
             return createJSX(rootChild.compId, componentMap[name], reverseMap);
           })
           .join("");
-        const newText = replaceText(pageText, [
-          {
-            index: jsxCursorMatch.index!,
-            length: jsxCursorMatch[0].length,
-            replaceWith: jsx,
-          },
-        ]);
-        fs.writeFileSync(pagePath, newText);
+        slices.push({
+          index: jsxCursorMatch.index!,
+          length: jsxCursorMatch[0].length,
+          replaceWith: jsx,
+        });
       }
     } else {
       console.log("jsx cursor not found");
     }
+    const componentCursorMatch = pageText.match(/\/\/\sCOMPONENT\sCURSOR.*\n/);
+    if (componentCursorMatch) {
+      const compIds = Object.keys(componentMap[name]);
+      const def = compIds
+        .map((compId) => {
+          const comp = componentMap[name][compId];
+          const alias = comp.alias;
+          // component definition
+          const def = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);\n`;
+          return def;
+        })
+        .join("");
+      slices.push({
+        index: componentCursorMatch.index!,
+        length: componentCursorMatch[0].length,
+        replaceWith: def,
+      });
+    } else {
+      console.log("component cursor not found");
+    }
+    const newText = replaceText(pageText, slices);
+    fs.writeFileSync(pagePath, newText);
   }
 
   function flushPages() {
