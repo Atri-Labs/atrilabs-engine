@@ -1,7 +1,7 @@
 import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
-import { camelCase, slice } from "lodash";
+import { camelCase } from "lodash";
 import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
 
 export function createReactAppTemplateManager(

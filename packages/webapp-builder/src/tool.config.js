@@ -68,7 +68,20 @@ module.exports = {
             outputDir: "node_modules/.targets/atri-app",
             controllers: {
               python: {
-                dir: "controllers",
+                dir: path.resolve(
+                  __dirname,
+                  "..",
+                  "node_modules",
+                  ".targets",
+                  "controllers"
+                ),
+                stubGenerators: [
+                  {
+                    modulePath:
+                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
+                    options: {},
+                  },
+                ],
               },
             },
             rootComponentId: "body",

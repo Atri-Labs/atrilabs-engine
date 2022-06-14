@@ -9,6 +9,9 @@ import {
   PropsGeneratorFunction,
   PropsGeneratorOptions,
   PropsGeneratorOutput,
+  PythonStubGeneratorFunction,
+  PythonStubGeneratorOptions,
+  PythonStubGeneratorOutput,
 } from "./types";
 import { createReactAppTemplateManager } from "./react-app-template-manager";
 import {
@@ -17,6 +20,7 @@ import {
   getReactAppDestPath,
   reactAppTemplatePath,
 } from "./utils";
+import { createPythonAppTemplateManager } from "./python-app-template-manager";
 
 export default async function (
   toolConfig: ToolConfig,
@@ -144,4 +148,47 @@ export default async function (
   reactTemplateManager.flushPages();
   // update store using editor events
   reactTemplateManager.flushStore();
+
+  const pythonGeneratorFunctions: {
+    fn: PythonStubGeneratorFunction;
+    options: PythonStubGeneratorOptions;
+  }[] = [];
+  for (let i = 0; i < options.controllers.python.stubGenerators.length; i++) {
+    const pythonGeneratorModulePath =
+      options.controllers.python.stubGenerators[i]!.modulePath;
+    const mod = await import(pythonGeneratorModulePath);
+    const defaultFn = mod["default"];
+    if (typeof defaultFn === "function") {
+      pythonGeneratorFunctions.push({
+        fn: defaultFn,
+        options: options.controllers.python.stubGenerators[i]!.options,
+      });
+    }
+  }
+  const pythonAppTemplateManager = createPythonAppTemplateManager(
+    { controllers: options.controllers.python.dir },
+    Object.values(pages)
+  );
+  pageIds.forEach((pageId) => {
+    const page = pages[pageId];
+    const forest = pageForestMap[pageId];
+    let pythonGeneratorOutput: PythonStubGeneratorOutput = { vars: {} };
+    pythonGeneratorFunctions.forEach(({ fn, options }) => {
+      try {
+        const currentOutput = fn({
+          forestDef,
+          forest,
+          custom: options,
+        });
+        pythonGeneratorOutput["vars"] = {
+          ...pythonGeneratorOutput["vars"],
+          ...currentOutput["vars"],
+        };
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    pythonAppTemplateManager.addVariables(page.name, pythonGeneratorOutput);
+  });
+  pythonAppTemplateManager.flushAtriPyFiles();
 }

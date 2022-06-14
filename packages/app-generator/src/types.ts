@@ -8,8 +8,12 @@ export type AppGeneratorOptions = {
   outputDir: string;
   // controllers for different languages
   controllers: {
-    // python controller directory
-    python: { dir: string };
+    python: {
+      // python controller directory
+      dir: string;
+      // generate stub at component level
+      stubGenerators: { modulePath: string; options: any }[];
+    };
   };
   // root component alias (body / root)
   rootComponentId: string;
@@ -60,3 +64,29 @@ export type PropsGeneratorOutput = { [compId: string]: { props: any } };
 export type PropsGeneratorFunction = (
   options: PropsGeneratorOptions
 ) => PropsGeneratorOutput;
+
+export type PythonStubGeneratorOptions = {
+  forestDef: ForestDef;
+  forest: Forest;
+  custom: any;
+};
+
+export type PythonStubGeneratorOutput = {
+  vars: {
+    // alias can be varName
+    [varName: string]: {
+      // joi schema for type setting
+      type: any;
+      // initial value
+      value: any;
+      // whether the variable should be returned in getState call
+      gettable: boolean;
+      // whether the variable should be included in updateState call
+      updateable: boolean;
+    };
+  };
+};
+
+export type PythonStubGeneratorFunction = (
+  options: PythonStubGeneratorOptions
+) => PythonStubGeneratorOutput;
