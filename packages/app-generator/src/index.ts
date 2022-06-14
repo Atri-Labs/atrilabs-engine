@@ -125,6 +125,7 @@ export default async function (
         console.log(err);
       }
     });
+    reactTemplateManager.addProps(pages[pageId], propsGeneratorOutput);
   });
 
   // copy template to the output directory
@@ -141,5 +142,6 @@ export default async function (
   reactTemplateManager.flushAppJSX();
   // fill each page
   reactTemplateManager.flushPages();
-  // update store from python as well as editor events
+  // update store using editor events
+  reactTemplateManager.flushStore();
 }

@@ -2,7 +2,7 @@ import { getFiles } from "../utils";
 import path from "path";
 import fs from "fs";
 import { camelCase } from "lodash";
-import { ComponentGeneratorOutput } from "../types";
+import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
 
 export function createReactAppTemplateManager(
   paths: {
@@ -25,6 +25,18 @@ export function createReactAppTemplateManager(
     "App.jsx"
   );
   const appJSXDestPath = path.resolve(paths.reactAppDest, "src", "App.jsx");
+  const useStoreDestPath = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "hooks",
+    "useStore.js"
+  );
+  const useStoreTemplatePath = path.resolve(
+    paths.reactAppTemplate,
+    "src",
+    "hooks",
+    "useStore.js"
+  );
 
   // variables to manage writes in App.jsx
   const pageImports: { name: string; route: string; source: string }[] = [];
@@ -45,6 +57,7 @@ export function createReactAppTemplateManager(
       };
     };
   } = {};
+  const propsMap: { [pageName: string]: PropsGeneratorOutput } = {};
 
   function copyTemplate() {
     const files = getFiles(paths.reactAppTemplate);
@@ -268,6 +281,8 @@ export function createReactAppTemplateManager(
      *  </>)
      * }
      */
+    // re-create page as it might have been polluted by previous run
+    createPage(name);
     const pagePath = getPageDestPath(name);
     const pageText = fs.readFileSync(pagePath).toString();
     const jsxCursorMatch = pageText.match(/\{\/\*\sJSX\sCURSOR.*\n/);
@@ -344,6 +359,64 @@ export function createReactAppTemplateManager(
     });
   }
 
+  function addProps(page: { name: string }, props: PropsGeneratorOutput) {
+    if (propsMap[page.name]) {
+      propsMap[page.name] = { ...propsMap[page.name], ...props };
+    } else {
+      propsMap[page.name] = { ...props };
+    }
+  }
+
+  // This function requires addComponents and addProps to already have been run
+  function flushStore() {
+    const pageNames = Object.keys(componentMap);
+    const propsForAllPages = pageNames.map((pageName) => {
+      const components = componentMap[pageName]!;
+      const componentIds = Object.keys(components);
+      const propsForPage = componentIds.map((compId) => {
+        const alias = components[compId].alias;
+        const props =
+          propsMap[pageName] &&
+          propsMap[pageName][compId] &&
+          propsMap[pageName][compId].props
+            ? propsMap[pageName][compId].props
+            : {};
+        return { alias, props };
+      });
+      return { propsForPage, pageName };
+    });
+    // create data to put in useStore
+    const useStoreData: { [pageName: string]: { [alias: string]: any } } = {};
+    propsForAllPages.forEach((propsForPage) => {
+      const aliasPropsMap: { [alias: string]: any } = {};
+      propsForPage.propsForPage.forEach((aliasProps) => {
+        aliasPropsMap[aliasProps.alias] = aliasProps.props;
+      });
+      useStoreData[propsForPage.pageName] = aliasPropsMap;
+    });
+    // although we expect copyTemplate to have been run already
+    if (!fs.existsSync(path.dirname(useStoreDestPath))) {
+      fs.mkdirSync(path.dirname(useStoreDestPath), { recursive: true });
+    }
+    // copy useStore again (in case it's polluted)
+    const useStoreTemplateText = fs
+      .readFileSync(useStoreTemplatePath)
+      .toString();
+    const dataCursorMatch = useStoreTemplateText.match(/\/\/\sDATA\sCURSOR\n/);
+    if (dataCursorMatch) {
+      const newText = replaceText(useStoreTemplateText, [
+        {
+          index: dataCursorMatch.index!,
+          length: dataCursorMatch[0].length,
+          replaceWith: `return ${JSON.stringify(useStoreData, null, 2)}`,
+        },
+      ]);
+      fs.writeFileSync(useStoreDestPath, newText);
+    } else {
+      console.log("useStore data cursor match is null");
+    }
+  }
+
   // add dependencies to destination package.json
   function patchDependencies() {}
 
@@ -357,5 +430,7 @@ export function createReactAppTemplateManager(
     patchDependencies,
     addComponents,
     flushPages,
+    addProps,
+    flushStore,
   };
 }

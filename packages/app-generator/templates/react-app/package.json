@@ -5,7 +5,8 @@
   "dependencies": {
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",
