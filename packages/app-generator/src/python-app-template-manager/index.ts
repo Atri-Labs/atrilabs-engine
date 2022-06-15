@@ -1,9 +1,10 @@
 import { PythonStubGeneratorOutput } from "../types";
 import path from "path";
 import fs from "fs";
+import { getFiles } from "@atrilabs/scripts";
 
 export function createPythonAppTemplateManager(
-  paths: { controllers: string },
+  paths: { controllers: string; pythonAppTemplate: string },
   pages: { name: string; route: string }[]
 ) {
   const variableMap: {
@@ -105,8 +106,9 @@ export function createPythonAppTemplateManager(
       return `${variableName} = ${createValue(variableValue)}`;
     }
     const { output } = variableMap[page.name];
-    const outputPath = path.resolve(
+    const outputRoutePath = path.resolve(
       paths.controllers,
+      "routes",
       page.route.replace(/^([\/]*)/, ""),
       "atri.py"
     );
@@ -150,15 +152,29 @@ export function createPythonAppTemplateManager(
       updateDef +
       "\n" +
       getStateDef;
-    if (!fs.existsSync(path.dirname(outputPath))) {
-      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    if (!fs.existsSync(path.dirname(outputRoutePath))) {
+      fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }
-    fs.writeFileSync(outputPath, newText);
+    fs.writeFileSync(outputRoutePath, newText);
   }
   function flushAtriPyFiles() {
     pages.forEach((page) => {
       flushAtriPyFile(page);
     });
   }
-  return { addVariables, flushAtriPyFiles };
+  function copyTemplate() {
+    const files = getFiles(paths.pythonAppTemplate);
+    files.forEach((file) => {
+      const dirname = path.dirname(file);
+      const relativeDirname = path.relative(paths.pythonAppTemplate, dirname);
+      const destDirname = path.resolve(paths.controllers, relativeDirname);
+      const relativeFilename = path.relative(paths.pythonAppTemplate, file);
+      const destFilename = path.resolve(paths.controllers, relativeFilename);
+      if (!fs.existsSync(destDirname)) {
+        fs.mkdirSync(destDirname, { recursive: true });
+      }
+      fs.writeFileSync(destFilename, fs.readFileSync(file));
+    });
+  }
+  return { addVariables, flushAtriPyFiles, copyTemplate };
 }

@@ -135,3 +135,10 @@ export function getForestDef(toolConfig: ToolConfig, appForestPkgId: string) {
   };
   return forestDef;
 }
+
+export const pythonAppTemplatePath = path.resolve(
+  __dirname,
+  "..",
+  "templates",
+  "python-app"
+);

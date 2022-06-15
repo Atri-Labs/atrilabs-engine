@@ -19,6 +19,7 @@ import {
   getForestDef,
   getManifest,
   getReactAppDestPath,
+  pythonAppTemplatePath,
   reactAppTemplatePath,
 } from "./utils";
 import { createPythonAppTemplateManager } from "./python-app-template-manager";
@@ -167,9 +168,13 @@ export default async function (
     }
   }
   const pythonAppTemplateManager = createPythonAppTemplateManager(
-    { controllers: options.controllers.python.dir },
+    {
+      controllers: options.controllers.python.dir,
+      pythonAppTemplate: pythonAppTemplatePath,
+    },
     Object.values(pages)
   );
+  pythonAppTemplateManager.copyTemplate();
   pageIds.forEach((pageId) => {
     const page = pages[pageId];
     const forest = pageForestMap[pageId];
