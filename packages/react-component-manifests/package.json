@@ -6,10 +6,11 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "directories": {
-    "lib": "src"
+    "lib": "lib"
   },
   "files": [
-    "src"
+    "src",
+    "lib"
   ],
   "publishConfig": {
     "access": "public"
@@ -18,7 +19,9 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json && babel src --out-dir lib -x '.tsx' --out-file-extension .cjs"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
@@ -31,6 +34,12 @@
     "typescript": "^4.6.4"
   },
   "devDependencies": {
+    "@atrilabs/scripts": "^0.0.10",
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@babel/preset-typescript": "^7.17.12",
     "@types/react": "18.0.5",
     "react": "18.0.0",
     "react-dom": "18.0.0"

@@ -65,9 +65,12 @@ export type PropsGeneratorFunction = (
   options: PropsGeneratorOptions
 ) => PropsGeneratorOutput;
 
+export type ManifestGetter = (meta: { pkg: string; key: string }) => any;
+
 export type PythonStubGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
+  getManifest: ManifestGetter;
   custom: any;
 };
 

@@ -17,6 +17,7 @@ import { createReactAppTemplateManager } from "./react-app-template-manager";
 import {
   getComponentFromManifest,
   getForestDef,
+  getManifest,
   getReactAppDestPath,
   reactAppTemplatePath,
 } from "./utils";
@@ -178,6 +179,7 @@ export default async function (
         const currentOutput = fn({
           forestDef,
           forest,
+          getManifest,
           custom: options,
         });
         pythonGeneratorOutput["vars"] = {
