@@ -5,6 +5,7 @@ import click
 import json
 import uvicorn
 from typing import TypedDict
+from jsonpickle import encode
 
 
 class RouteDetails(TypedDict):
@@ -62,7 +63,7 @@ def compute(obj, route, state):
     mainPy = obj["dir"] + replaceWith + ".main"
     routeDetails: RouteDetails = {"atriPy": atriPy, "mainPy": mainPy}
     updated_state = compute_initial_state(routeDetails, incoming_state)
-    print(json.dumps({"statusCode": 200, "state": updated_state}))
+    print(encode({"statusCode": 200, "state": updated_state}, unpicklable=False))
 
 if __name__ == '__main__':
     main()
