@@ -93,3 +93,5 @@ export type PythonStubGeneratorOutput = {
 export type PythonStubGeneratorFunction = (
   options: PythonStubGeneratorOptions
 ) => PythonStubGeneratorOutput;
+
+export type AppBuildOptions = AppGeneratorOptions;

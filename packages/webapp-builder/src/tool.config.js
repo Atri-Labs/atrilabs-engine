@@ -105,7 +105,43 @@ module.exports = {
           path: require.resolve(
             "@atrilabs/app-generator/lib/build-scripts/react-app/index.js"
           ),
-          options: {},
+          options: {
+            appForestPkgId,
+            outputDir: "node_modules/.targets/atri-app",
+            controllers: {
+              python: {
+                dir: path.resolve(
+                  __dirname,
+                  "..",
+                  "node_modules",
+                  ".targets",
+                  "controllers"
+                ),
+                stubGenerators: [
+                  {
+                    modulePath:
+                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
+                    options: {},
+                  },
+                ],
+              },
+            },
+            rootComponentId: "body",
+            components: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
+                options: {},
+              },
+            ],
+            props: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
+                options: {},
+              },
+            ],
+          },
         },
         deploy: {
           path: require.resolve(

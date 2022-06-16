@@ -89,12 +89,13 @@ export function createPythonAppTemplateManager(
         return `\tclass __${className}:\n\t\tdef __init__(self, state):\n${initBody}`;
       })
       .join("\n");
-    const AtriClassInitBody = Object.keys(varClassMap)
-      .map((varName) => {
-        const className = varClassMap[varName];
-        return `\t\tself.${varName} = self.__${className}(state["${varName}"])`;
-      })
-      .join("\n");
+    const AtriClassInitBody =
+      Object.keys(varClassMap)
+        .map((varName) => {
+          const className = varClassMap[varName];
+          return `\t\tself.${varName} = self.__${className}(state["${varName}"])`;
+        })
+        .join("\n") || "\t\tpass";
     const AtriClassInitDef = `\tdef __init__(self, state: Any):\n${AtriClassInitBody}`;
     const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${classStatements}`;
     const newText = importStatements + "\n" + AtriClassDef;

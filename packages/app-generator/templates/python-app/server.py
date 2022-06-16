@@ -54,8 +54,12 @@ def serve(obj, port, host):
 @click.pass_obj
 def compute(obj, route, state):
     incoming_state = json.loads(state)
-    atriPy = obj["dir"] + route[1:].replace("/", ".") + ".atri"
-    mainPy = obj["dir"] + route[1:].replace("/", ".") + ".main"
+    if route == "/":
+        replaceWith = ""
+    else:
+        replaceWith = route.replace("/", ".")
+    atriPy = obj["dir"] + replaceWith + ".atri"
+    mainPy = obj["dir"] + replaceWith + ".main"
     routeDetails: RouteDetails = {"atriPy": atriPy, "mainPy": mainPy}
     updated_state = compute_initial_state(routeDetails, incoming_state)
     print(json.dumps({"statusCode": 200, "state": updated_state}))
