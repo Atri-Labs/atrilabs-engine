@@ -198,4 +198,11 @@ export default async function (
     pythonAppTemplateManager.addVariables(page.name, pythonGeneratorOutput);
   });
   pythonAppTemplateManager.flushAtriPyFiles();
+  // create main.py files if not already created
+  pageIds.forEach((pageId) => {
+    if (!pythonAppTemplateManager.mainPyFileExists(pages[pageId]))
+      pythonAppTemplateManager.createMainPyFile(pages[pageId]);
+    if (!pythonAppTemplateManager.initPyFileExists(pages[pageId]))
+      pythonAppTemplateManager.createInitPyFile(pages[pageId]);
+  });
 }

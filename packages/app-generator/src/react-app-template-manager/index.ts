@@ -63,7 +63,7 @@ export function createReactAppTemplateManager(
     const files = getFiles(paths.reactAppTemplate);
     files.forEach((file) => {
       // file from pages directory should not be copied
-      if (file.match(pagesDestDirectory)) {
+      if (file.match(pagesTemplateDirectory)) {
         return;
       }
       const dirname = path.dirname(file);

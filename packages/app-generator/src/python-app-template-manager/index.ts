@@ -7,6 +7,11 @@ export function createPythonAppTemplateManager(
   paths: { controllers: string; pythonAppTemplate: string },
   pages: { name: string; route: string }[]
 ) {
+  const routeMainPyTemplatePath = path.resolve(
+    paths.pythonAppTemplate,
+    "routes",
+    "main.py"
+  );
   const variableMap: {
     [pageName: string]: { output: PythonStubGeneratorOutput };
   } = {};
@@ -176,5 +181,69 @@ export function createPythonAppTemplateManager(
       fs.writeFileSync(destFilename, fs.readFileSync(file));
     });
   }
-  return { addVariables, flushAtriPyFiles, copyTemplate };
+  // CAUTION: This will overridde existing main.py file
+  function createMainPyFile(page: { name: string; route: string }) {
+    const outputRouteMainPyPath = path.resolve(
+      paths.controllers,
+      "routes",
+      page.route.replace(/^([\/]*)/, ""),
+      "main.py"
+    );
+    if (!fs.existsSync(path.dirname(outputRouteMainPyPath))) {
+      fs.mkdirSync(path.dirname(outputRouteMainPyPath));
+    }
+    fs.writeFileSync(
+      outputRouteMainPyPath,
+      fs.readFileSync(routeMainPyTemplatePath)
+    );
+  }
+  function mainPyFileExists(page: { name: string; route: string }) {
+    const outputRouteMainPyPath = path.resolve(
+      paths.controllers,
+      "routes",
+      page.route.replace(/^([\/]*)/, ""),
+      "main.py"
+    );
+    if (fs.existsSync(outputRouteMainPyPath)) {
+      return true;
+    }
+    return false;
+  }
+  // CAUTION: This will overridde existing main.py file
+  function createInitPyFile(page: { name: string; route: string }) {
+    const outputRouteMainPyPath = path.resolve(
+      paths.controllers,
+      "routes",
+      page.route.replace(/^([\/]*)/, ""),
+      "__init__.py"
+    );
+    if (!fs.existsSync(path.dirname(outputRouteMainPyPath))) {
+      fs.mkdirSync(path.dirname(outputRouteMainPyPath));
+    }
+    fs.writeFileSync(
+      outputRouteMainPyPath,
+      fs.readFileSync(routeMainPyTemplatePath)
+    );
+  }
+  function initPyFileExists(page: { name: string; route: string }) {
+    const outputRouteMainPyPath = path.resolve(
+      paths.controllers,
+      "routes",
+      page.route.replace(/^([\/]*)/, ""),
+      "__init__.py"
+    );
+    if (fs.existsSync(outputRouteMainPyPath)) {
+      return true;
+    }
+    return false;
+  }
+  return {
+    addVariables,
+    flushAtriPyFiles,
+    copyTemplate,
+    createMainPyFile,
+    mainPyFileExists,
+    createInitPyFile,
+    initPyFileExists,
+  };
 }
