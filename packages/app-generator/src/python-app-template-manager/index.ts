@@ -77,38 +77,27 @@ export function createPythonAppTemplateManager(
         const { className, attrs } = classTask;
         const attrStatements = attrs
           .map((attr) => {
-            return `\t\tself.${attr.name}: ${attr.type} = state["${attr.name}"]`;
+            // if type is not str | int | bool then it's a class
+            const typePrefix =
+              attr.type === "str" || attr.type === "int" || attr.type === "bool"
+                ? ""
+                : "Atri.__";
+            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = state["${attr.name}"]`;
           })
           .join("\n");
-        const initBody = attrs.length === 0 ? "\t\tpass" : attrStatements;
-        return `class ${className}:\n\tdef __init__(self, state):\n${initBody}`;
+        const initBody = attrs.length === 0 ? "\t\t\tpass" : attrStatements;
+        return `\tclass __${className}:\n\t\tdef __init__(self, state):\n${initBody}`;
       })
       .join("\n");
-    const createStateDefBody = Object.keys(varClassMap)
+    const AtriClassInitBody = Object.keys(varClassMap)
       .map((varName) => {
-        return `\tglobal ${varName}\n\t${varName} = ${varClassMap[varName]}(state)`;
+        const className = varClassMap[varName];
+        return `\t\tself.${varName} = self.__${className}(state["${varName}"])`;
       })
       .join("\n");
-    const createStateDef = `def create_state(state):\n${createStateDefBody}`;
-    const jsonifyBodyPart1 = Object.keys(varClassMap)
-      .map((varName) => {
-        return `\tglobal ${varName}`;
-      })
-      .join("\n");
-    const jsonifyBodyPart2 = Object.keys(varClassMap)
-      .map((varName) => {
-        return `"${varName}": ${varName}.__dict__`;
-      })
-      .join(", ");
-    const jsonifyDef = `def jsonify(state):\n${jsonifyBodyPart1}\n\treturn json.dumps({${jsonifyBodyPart2}})`;
-    const newText =
-      importStatements +
-      "\n" +
-      classStatements +
-      "\n" +
-      createStateDef +
-      "\n" +
-      jsonifyDef;
+    const AtriClassInitDef = `\tdef __init__(self, state: Any):\n${AtriClassInitBody}`;
+    const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${classStatements}`;
+    const newText = importStatements + "\n" + AtriClassDef;
     if (!fs.existsSync(path.dirname(outputRoutePath))) {
       fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }

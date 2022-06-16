@@ -12,11 +12,15 @@ class RouteDetails(TypedDict):
     mainPy: str
 
 def compute_initial_state(route: RouteDetails, incoming_state):
+    atri_py = route["atriPy"]
+    atri_mod = import_module(atri_py)
+    Atri = getattr(atri_mod, "Atri")
+    atri_obj = Atri(incoming_state)
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     init_state = getattr(main_mod, "init_state")
-    init_state(incoming_state)
-    return incoming_state
+    init_state(atri_obj)
+    return atri_obj
 
 @click.group()
 @click.option("--dir", default="routes", help="relative path for directory containing controller for each route")

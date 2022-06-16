@@ -1,4 +1,4 @@
-from atri import Atri
+from .atri import Atri
 
 def init_state(at: Atri):
     """
