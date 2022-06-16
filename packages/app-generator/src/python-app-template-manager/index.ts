@@ -19,96 +19,40 @@ export function createPythonAppTemplateManager(
     variableMap[pageName] = { output };
   }
   function flushAtriPyFile(page: { name: string; route: string }) {
-    /**
-     * file://route/atri.py
-     * import json
-     *
-     * Flex1 = {
-     *    style: {
-     *        display: "flex"
-     *    }
-     * }
-     *
-     * def updateState(state):
-     *    global Flex1
-     *    Flex1 = state["Flex1"]
-     *
-     * def getState():
-     *    global Flex1
-     *    return json.dumps({"Flex1": Flex1})
-     */
-    function createPrimitive(value: any): string {
-      switch (typeof value) {
-        case "string":
-          return `"${value}"`;
-        case "boolean":
-          return value === true ? "True" : "False";
-        case "number":
-          return `${value}`;
-      }
-      return "0";
-    }
-    function createArray(values: any[]): string {
-      /**
-       * [value1, value2]
-       */
-      const arrStr =
-        "[" +
-        values
-          .map((value) => {
-            return createValue(value);
-          })
-          .join("") +
-        "]";
-      return arrStr;
-    }
-    function createDict(obj: { [key: string]: any }): string {
-      /**
-       * {"key1": value1, "key2": value2}
-       */
-      const keys = Object.keys(obj);
-      const dictStr =
-        "{" +
-        keys
-          .map((key, index) => {
-            if (index === keys.length - 1) {
-              return `"${key}": ${createValue(obj[key])}`;
+    const classTasks: {
+      className: string;
+      attrs: { name: string; type: string }[];
+    }[] = [];
+    const varClassMap: { [varName: string]: string } = {};
+    function addClassTask(className: string, value: any) {
+      const attrs: { name: string; type: string }[] = [];
+      const attrNames = Object.keys(value);
+      attrNames.forEach((attrName) => {
+        switch (typeof value[attrName]) {
+          case "string":
+            attrs.push({ name: attrName, type: "str" });
+            break;
+          case "boolean":
+            attrs.push({ name: attrName, type: "bool" });
+            break;
+          case "number":
+            attrs.push({ name: attrName, type: "int" });
+            break;
+          case "object":
+            if (value[attrName] === null) {
+              console.log("null values are not accepted");
             }
-            return `"${key}": ${createValue(obj[key])}, `;
-          })
-          .join("") +
-        "}";
-      return dictStr;
-    }
-    function createValue(
-      variableValue: PythonStubGeneratorOutput["vars"]["0"]["value"]
-    ): string {
-      let valStr = "";
-      switch (typeof variableValue) {
-        case "object":
-          if (variableValue === null) {
-            console.log("null values are not accepted");
-          }
-          if (Array.isArray(variableValue)) {
-            valStr = createArray(variableValue);
-          } else {
-            valStr = createDict(variableValue);
-          }
-          break;
-        case "number":
-        case "boolean":
-        case "string":
-          valStr = createPrimitive(variableValue);
-          break;
-      }
-      return valStr;
-    }
-    function createVariable(
-      variableName: string,
-      variable: PythonStubGeneratorOutput["vars"]["0"]
-    ) {
-      const variableValue = variable.value;
-      return `${variableName} = ${createValue(variableValue)}`;
+            if (Array.isArray(value[attrName])) {
+              attrs.push({ name: attrName, type: "List[Any]" });
+            } else {
+              const childClassName = `${className}${attrName}Class`;
+              attrs.push({ name: attrName, type: childClassName });
+              addClassTask(childClassName, value[attrName]);
+            }
+            break;
+        }
+      });
+      classTasks.push({ className, attrs });
     }
     const { output } = variableMap[page.name];
     const outputRoutePath = path.resolve(
@@ -118,45 +62,53 @@ export function createPythonAppTemplateManager(
       "atri.py"
     );
     const variableNames = Object.keys(output.vars);
-    const variableDefStatements = variableNames
-      .map((variableName) => {
-        const variableValue = output.vars[variableName];
-        return createVariable(variableName, variableValue) + "\n";
+    variableNames.forEach((variableName) => {
+      const variable = output.vars[variableName];
+      const className = `${variableName}Class`;
+      addClassTask(className, variable.value);
+      varClassMap[variableName] = className;
+    });
+    const importStatements = [
+      "import json",
+      "from typing import List, Any",
+    ].join("\n");
+    const classStatements = classTasks
+      .map((classTask) => {
+        const { className, attrs } = classTask;
+        const attrStatements = attrs
+          .map((attr) => {
+            return `\t\tself.${attr.name}: ${attr.type} = state["${attr.name}"]`;
+          })
+          .join("\n");
+        const initBody = attrs.length === 0 ? "\t\tpass" : attrStatements;
+        return `class ${className}:\n\tdef __init__(self, state):\n${initBody}`;
       })
-      .join("");
-    const importStatements = ["import json\n"].join("");
-    const updateDefBody = variableNames
-      .map((variableName) => {
-        return `\tglobal ${variableName}\n\t${variableName} = state["${variableName}"]\n`;
+      .join("\n");
+    const createStateDefBody = Object.keys(varClassMap)
+      .map((varName) => {
+        return `\tglobal ${varName}\n\t${varName} = ${varClassMap[varName]}(state)`;
       })
-      .join("");
-    const updateDef = `def updateState(state):\n` + updateDefBody;
-    const getStateDefBodyPart1 = variableNames
-      .map((variableName) => {
-        return `\tglobal ${variableName}\n`;
+      .join("\n");
+    const createStateDef = `def create_state(state):\n${createStateDefBody}`;
+    const jsonifyBodyPart1 = Object.keys(varClassMap)
+      .map((varName) => {
+        return `\tglobal ${varName}`;
       })
-      .join("");
-    const getStateDefBodyPart2 =
-      "\treturn json.dumps({" +
-      variableNames
-        .map((variableName, index) => {
-          if (index === variableNames.length - 1) {
-            return `"${variableName}": ${variableName}`;
-          }
-          return `"${variableName}": ${variableName}, `;
-        })
-        .join("") +
-      "})\n";
-    const getStateDef =
-      `def getState():\n` + getStateDefBodyPart1 + getStateDefBodyPart2;
+      .join("\n");
+    const jsonifyBodyPart2 = Object.keys(varClassMap)
+      .map((varName) => {
+        return `"${varName}": ${varName}.__dict__`;
+      })
+      .join(", ");
+    const jsonifyDef = `def jsonify(state):\n${jsonifyBodyPart1}\n\treturn json.dumps({${jsonifyBodyPart2}})`;
     const newText =
       importStatements +
       "\n" +
-      variableDefStatements +
+      classStatements +
       "\n" +
-      updateDef +
+      createStateDef +
       "\n" +
-      getStateDef;
+      jsonifyDef;
     if (!fs.existsSync(path.dirname(outputRoutePath))) {
       fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }
