@@ -200,9 +200,7 @@ export default async function (
   pythonAppTemplateManager.flushAtriPyFiles();
   // create main.py files if not already created
   pageIds.forEach((pageId) => {
-    if (!pythonAppTemplateManager.mainPyFileExists(pages[pageId]))
-      pythonAppTemplateManager.createMainPyFile(pages[pageId]);
-    if (!pythonAppTemplateManager.initPyFileExists(pages[pageId]))
-      pythonAppTemplateManager.createInitPyFile(pages[pageId]);
+    pythonAppTemplateManager.createMainPyRecursively(pages[pageId]);
+    pythonAppTemplateManager.createInitPyRecursively(pages[pageId]);
   });
 }

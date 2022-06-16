@@ -161,21 +161,27 @@ export function createPythonAppTemplateManager(
     }
     return false;
   }
+  function createMainPyRecursively(page: { name: string; route: string }) {
+    const routeSplits = page.route.split("/");
+    for (let i = routeSplits.length; i > 0; i--) {
+      const currRoute = "/" + routeSplits.slice(0, i).join("/");
+      if (!mainPyFileExists({ name: page.name, route: currRoute })) {
+        createMainPyFile({ name: page.name, route: currRoute });
+      }
+    }
+  }
   // CAUTION: This will overridde existing main.py file
   function createInitPyFile(page: { name: string; route: string }) {
-    const outputRouteMainPyPath = path.resolve(
+    const outputRouteInitPyPath = path.resolve(
       paths.controllers,
       "routes",
       page.route.replace(/^([\/]*)/, ""),
       "__init__.py"
     );
-    if (!fs.existsSync(path.dirname(outputRouteMainPyPath))) {
-      fs.mkdirSync(path.dirname(outputRouteMainPyPath));
+    if (!fs.existsSync(path.dirname(outputRouteInitPyPath))) {
+      fs.mkdirSync(path.dirname(outputRouteInitPyPath));
     }
-    fs.writeFileSync(
-      outputRouteMainPyPath,
-      fs.readFileSync(routeMainPyTemplatePath)
-    );
+    fs.writeFileSync(outputRouteInitPyPath, "");
   }
   function initPyFileExists(page: { name: string; route: string }) {
     const outputRouteMainPyPath = path.resolve(
@@ -189,13 +195,24 @@ export function createPythonAppTemplateManager(
     }
     return false;
   }
+  function createInitPyRecursively(page: { name: string; route: string }) {
+    const routeSplits = page.route.split("/");
+    for (let i = routeSplits.length; i > 0; i--) {
+      const currRoute = "/" + routeSplits.slice(0, i).join("/");
+      if (!initPyFileExists({ name: page.name, route: currRoute })) {
+        createInitPyFile({ name: page.name, route: currRoute });
+      }
+    }
+  }
   return {
     addVariables,
     flushAtriPyFiles,
     copyTemplate,
     createMainPyFile,
     mainPyFileExists,
+    createMainPyRecursively,
     createInitPyFile,
     initPyFileExists,
+    createInitPyRecursively,
   };
 }
