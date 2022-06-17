@@ -10,10 +10,16 @@ import {
   PropsGeneratorOptions,
   PropsGeneratorOutput,
 } from "../../types";
-import { getComponentFromManifest, getForestDef } from "../../utils";
+import {
+  getComponentFromManifest,
+  getForestDef,
+  getReactAppDestPath,
+  reactAppTemplatePath,
+} from "../../utils";
 import path from "path";
 import fs from "fs";
 import { exec } from "child_process";
+import { createReactAppTemplateManager } from "../../react-app-template-manager";
 
 export default async function buildReactApp(
   toolConfig: ToolConfig,
@@ -80,74 +86,118 @@ export default async function buildReactApp(
       });
     }
   }
+  const reactAppDestPath = getReactAppDestPath(options.outputDir);
+  const reactTemplateManager = createReactAppTemplateManager(
+    {
+      reactAppTemplate: reactAppTemplatePath,
+      reactAppDest: reactAppDestPath,
+    },
+    options.rootComponentId
+  );
+  const pagePropsPromises: Promise<void>[] = [];
   pageIds.forEach((pageId) => {
-    // create props for state
-    let componentGeneratorOutput: ComponentGeneratorOutput = {};
-    let propsGeneratorOutput: PropsGeneratorOutput = {};
-    const forest = pageForestMap[pageId];
-    componentGeneratorFunctions.forEach(({ fn, options }) => {
-      try {
-        const currentOutput = fn({
-          forestDef,
-          forest,
-          getComponentFromManifest,
-          custom: options,
+    pagePropsPromises.push(
+      new Promise((resolve) => {
+        // create props for state
+        let componentGeneratorOutput: ComponentGeneratorOutput = {};
+        let propsGeneratorOutput: PropsGeneratorOutput = {};
+        const forest = pageForestMap[pageId];
+        componentGeneratorFunctions.forEach(({ fn, options }) => {
+          try {
+            const currentOutput = fn({
+              forestDef,
+              forest,
+              getComponentFromManifest,
+              custom: options,
+            });
+            componentGeneratorOutput = {
+              ...componentGeneratorOutput,
+              ...currentOutput,
+            };
+          } catch (err) {
+            console.log(err);
+          }
         });
-        componentGeneratorOutput = {
-          ...componentGeneratorOutput,
-          ...currentOutput,
-        };
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    propsGeneratorFunctions.forEach(({ fn, options }) => {
-      try {
-        const currentOutput = fn({
-          forestDef,
-          forest,
-          custom: options,
+        // We need props generator output as initial state
+        propsGeneratorFunctions.forEach(({ fn, options }) => {
+          try {
+            const currentOutput = fn({
+              forestDef,
+              forest,
+              custom: options,
+            });
+            propsGeneratorOutput = {
+              ...propsGeneratorOutput,
+              ...currentOutput,
+            };
+          } catch (err) {
+            console.log(err);
+          }
         });
-        propsGeneratorOutput = {
-          ...propsGeneratorOutput,
-          ...currentOutput,
-        };
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    const compIds = Object.keys(componentGeneratorOutput);
-    const pageState: { [alias: string]: any } = {};
-    compIds.map((compId) => {
-      if (propsGeneratorOutput[compId]) {
-        const alias = componentGeneratorOutput[compId].alias;
-        const props = propsGeneratorOutput[compId].props;
-        pageState[alias] = props;
-      } else {
-        console.log(`WARNING: props not found for ${compId}`);
-      }
-    });
-    exec(
-      `python -m server compute --route '${
-        pages[pageId].route || "/"
-      }' --state '${JSON.stringify(pageState)}'`,
-      { cwd: controllersDir },
-      (err, stdout, stderr) => {
-        if (err) {
-          console.log(
-            `Failed to run server.py for route ${pages[pageId].route}`
-          );
-        }
-        if (stdout) {
-          console.log(stdout);
-        }
-        if (stderr) {
-          console.log(
-            `Error while running server.py for route ${pages[pageId].route}:\n`,
-            stderr
-          );
-        }
-      }
+        const compIds = Object.keys(componentGeneratorOutput);
+        const pageState: { [alias: string]: any } = {};
+        compIds.forEach((compId) => {
+          if (propsGeneratorOutput[compId]) {
+            const alias = componentGeneratorOutput[compId].alias;
+            const props = propsGeneratorOutput[compId].props;
+            pageState[alias] = props;
+          } else {
+            console.log(`WARNING: props not found for ${compId}`);
+          }
+        });
+        exec(
+          `python -m server compute --route '${
+            pages[pageId].route || "/"
+          }' --state '${JSON.stringify(pageState)}'`,
+          { cwd: controllersDir },
+          (err, stdout, stderr) => {
+            if (err) {
+              console.log(
+                `Failed to run server.py for route ${pages[pageId].route}`
+              );
+            }
+            if (stdout) {
+              try {
+                const newProps = JSON.parse(stdout);
+                if (
+                  newProps &&
+                  newProps["statusCode"] === 200 &&
+                  newProps["state"]
+                ) {
+                  reactTemplateManager.addComponents(
+                    pages[pageId],
+                    componentGeneratorOutput
+                  );
+                  const newPropsOuputFormat: PropsGeneratorOutput = {};
+                  compIds.forEach((compId) => {
+                    const comp = componentGeneratorOutput[compId];
+                    newPropsOuputFormat[compId] = {
+                      props: newProps["state"][comp.alias],
+                    };
+                  });
+                  reactTemplateManager.addProps(
+                    pages[pageId],
+                    newPropsOuputFormat
+                  );
+                }
+              } catch (err) {
+                console.log(
+                  `JSON decode error for route ${pages[pageId].route}`
+                );
+              }
+            }
+            if (stderr) {
+              console.log(
+                `Error while running server.py for route ${pages[pageId].route}:\n`,
+                stderr
+              );
+            }
+            resolve();
+          }
+        );
+      })
     );
   });
+  await Promise.all(pagePropsPromises);
+  reactTemplateManager.flushStore();
 }
