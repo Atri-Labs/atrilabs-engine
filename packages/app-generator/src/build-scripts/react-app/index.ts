@@ -127,26 +127,27 @@ export default async function buildReactApp(
         console.log(`WARNING: props not found for ${compId}`);
       }
     });
-    // console.log(pageState);
-    // console.log(pages[pageId].route);
-    if (pages[pageId].route === "/darshita/boston") {
-      exec(
-        `python -m server compute --route '${
-          pages[pageId].route || "/"
-        }' --state '${JSON.stringify(pageState)}'`,
-        { cwd: controllersDir },
-        (err, stdout, stderr) => {
-          if (err) {
-            console.log("Failed to run server.py");
-          }
-          if (stdout) {
-            console.log(stdout);
-          }
-          if (stderr) {
-            console.log("Error while running server.py:\n", stderr);
-          }
+    exec(
+      `python -m server compute --route '${
+        pages[pageId].route || "/"
+      }' --state '${JSON.stringify(pageState)}'`,
+      { cwd: controllersDir },
+      (err, stdout, stderr) => {
+        if (err) {
+          console.log(
+            `Failed to run server.py for route ${pages[pageId].route}`
+          );
         }
-      );
-    }
+        if (stdout) {
+          console.log(stdout);
+        }
+        if (stderr) {
+          console.log(
+            `Error while running server.py for route ${pages[pageId].route}:\n`,
+            stderr
+          );
+        }
+      }
+    );
   });
 }

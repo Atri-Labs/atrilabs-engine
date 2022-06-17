@@ -2,13 +2,12 @@ export const keyPropMap: any = {
   Flex: {
     styles: {
       display: "flex",
+      flexDirection: "row",
     },
-    custom: {},
   },
   Button: {
     styles: {
       background: "pink",
     },
-    custom: {},
   },
 };

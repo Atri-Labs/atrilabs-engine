@@ -56,7 +56,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     const pages = eventManager.pages();
     if (pages["home"] === undefined) {
       // create home page if not already created
-      eventManager.createPage("home", "Home", "");
+      eventManager.createPage("home", "Home", "/");
     }
     return eventManager.pages();
   }
