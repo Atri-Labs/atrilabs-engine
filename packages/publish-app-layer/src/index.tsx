@@ -1,6 +1,7 @@
 import { Menu } from "@atrilabs/core";
 import { gray300, smallText } from "@atrilabs/design-system";
 import React, { useState } from "react";
+import { useRunTask } from "./hooks/useRunTask";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -25,6 +26,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export default function () {
+  const { callRunTaskApi } = useRunTask();
   const [showPopup, setShowPopup] = useState(false);
   return (
     <>
@@ -33,6 +35,7 @@ export default function () {
           style={styles.outerDiv}
           onClick={() => {
             setShowPopup(!showPopup);
+            callRunTaskApi();
           }}
         >
           Publish

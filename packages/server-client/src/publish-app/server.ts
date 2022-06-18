@@ -25,9 +25,9 @@ export default function startPublishServer(
   /**
    * The resposne sent is of format {success: boolean, msg?: string, num_tasks_left?: number}
    */
-  app.post("/run-tasks", express.json(), (req, res) => {
-    const startTask = req.body["startTask"] as string;
-    const endTask = req.body["endTask"] as string;
+  app.get("/run-tasks", (req, res) => {
+    const startTask = req.query["startTask"] as string;
+    const endTask = req.query["endTask"] as string;
     // create a task queue
     const taskQueue: string[] = [];
     if (startTask && endTask) {
@@ -55,6 +55,9 @@ export default function startPublishServer(
       }
       // task queue is prepared, run it
       runTaskQueue(taskQueue, createUpdateHandler(req, res, taskQueue.length));
+    } else {
+      sendInitialResponse({ success: false, msg: "bad request" }, res);
+      res.end();
     }
   });
 
