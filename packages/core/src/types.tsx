@@ -71,6 +71,7 @@ export type ToolConfig = {
     fileServer: { path: string; options: any };
     eventServer: { path: string; options: any };
     manifestServer: { path: string; options: any };
+    publishServer: { path: string; options: any };
   };
   targets: {
     targetName: string;

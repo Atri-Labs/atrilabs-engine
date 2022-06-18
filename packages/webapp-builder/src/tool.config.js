@@ -55,6 +55,12 @@ module.exports = {
         port: 4003,
       },
     },
+    publishServer: {
+      path: require.resolve("@atrilabs/server-client/lib/publish-app/server"),
+      options: {
+        port: 4004,
+      },
+    },
   },
   targets: [
     {
@@ -163,6 +169,7 @@ module.exports = {
   env: {
     EVENT_SERVER_CLIENT: "http://localhost:4001",
     MANIFEST_SERVER_CLIENT: "http://localhost:4003",
+    PUBLISH_SERVER_CLIENT: "http://localhost:4004",
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {
