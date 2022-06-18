@@ -38,10 +38,23 @@ function startManifestServer() {
   return controller;
 }
 
+function startPublishServer() {
+  const runPublishServerFile = path.resolve(__dirname, "runPublishServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const publishServer = fork(runPublishServerFile, [], { signal });
+  publishServer.on("error", (err) => {
+    if (!err.toString().match("AbortError"))
+      console.log(`Publish Server exited with error\n${err}`);
+  });
+  return controller;
+}
+
 const controllers = [
   startEventServer(),
   startFileServer(),
   startManifestServer(),
+  startPublishServer(),
 ];
 
 // wait for kill signals

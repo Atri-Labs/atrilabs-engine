@@ -64,11 +64,11 @@ export default function startPublishServer(
     if (typeof address === "object" && address !== null) {
       let port = address.port;
       let ip = address.address;
-      console.log(`[manifest_server] listening on http://${ip}:${port}`);
+      console.log(`[publish_app_server] listening on http://${ip}:${port}`);
     } else if (typeof address === "string") {
-      console.log(`[manifest_server] listening on http://${address}`);
+      console.log(`[publish_app_server] listening on http://${address}`);
     } else {
-      console.log(`[manifest_server] cannot listen on ${port}`);
+      console.log(`[publish_app_server] cannot listen on ${port}`);
     }
   });
 }
