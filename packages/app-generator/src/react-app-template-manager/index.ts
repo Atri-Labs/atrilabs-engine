@@ -152,9 +152,9 @@ export function createReactAppTemplateManager(
     // add routes
     const routeStatements = pageImports
       .map((pageImport) => {
-        return `<Route path="${pageImport.route}">\n<${getPageComponentName(
-          pageImport.name
-        )} />\n</Route>`;
+        return `<Route path="${
+          pageImport.route
+        }" element={<${getPageComponentName(pageImport.name)} />} />`;
       })
       .join("\n");
     const importCursorMatch = appJSXTemplateText.match(
