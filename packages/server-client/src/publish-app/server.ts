@@ -1,15 +1,16 @@
 import { ToolConfig } from "@atrilabs/core";
-import express, { response } from "express";
-import cors from "cors";
+import { runTaskQueue, createTaskQueue } from "./server-utils";
 import {
-  sendInitialResponse,
-  GENERATE,
-  BUILD,
-  DEPLOY,
-  taskSequence,
-  runTaskQueue,
-  createUpdateHandler,
-} from "./server-utils";
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData,
+} from "./types";
+import http from "http";
+import { Server } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
+
+const server = http.createServer();
 
 export type PublishServerOptions = {
   port?: number;
@@ -19,50 +20,49 @@ export default function startPublishServer(
   _toolConfig: ToolConfig,
   options: PublishServerOptions
 ) {
-  const app = express();
-  app.use(cors({ origin: "*" }));
+  const io = new Server<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    InterServerEvents,
+    SocketData
+  >(server, { cors: { origin: "*" } });
 
-  /**
-   * The resposne sent is of format {success: boolean, msg?: string, num_tasks_left?: number}
-   */
-  app.get("/run-tasks", (req, res) => {
-    const startTask = req.query["startTask"] as string;
-    const endTask = req.query["endTask"] as string;
-    // create a task queue
-    const taskQueue: string[] = [];
-    if (startTask && endTask) {
-      if (startTask === GENERATE && taskSequence.includes(endTask)) {
-        taskQueue.push(...taskSequence.slice(0));
-        // send initial response with keepAlive header set
-        sendInitialResponse(
-          { success: true, num_tasks_left: taskQueue.length },
-          response
-        );
-      } else if (
-        startTask === BUILD &&
-        taskSequence.slice(1).includes(endTask)
-      ) {
-        taskQueue.push(...taskSequence.slice(1));
-      } else if (
-        startTask === DEPLOY &&
-        taskSequence.slice(2).includes(endTask)
-      ) {
-        taskQueue.push(...taskSequence.slice(2));
-      } else {
-        sendInitialResponse({ success: false, msg: "bad request" }, res);
-        res.end();
+  io.on("connection", (socket) => {
+    socket.on("runTasks", (startTask, endTask, cb) => {
+      const taskQueue = createTaskQueue(startTask, endTask);
+      // check if task request is invalid
+      if (taskQueue.length === 0) {
+        cb(null, taskQueue);
         return;
       }
-      // task queue is prepared, run it
-      runTaskQueue(taskQueue, createUpdateHandler(req, res, taskQueue.length));
-    } else {
-      sendInitialResponse({ success: false, msg: "bad request" }, res);
-      res.end();
-    }
+      const taskId = uuidv4();
+      cb(taskId, taskQueue);
+      let num_tasks_completed = 0;
+      runTaskQueue(taskQueue, (_task, status) => {
+        if (status === "success") {
+          num_tasks_completed += 1;
+          socket.emit(
+            "taskUpdate",
+            taskId,
+            taskQueue.length - num_tasks_completed,
+            taskQueue
+          );
+        } else {
+          // a task failed
+          socket.emit(
+            "taskUpdate",
+            taskId,
+            taskQueue.length - num_tasks_completed,
+            taskQueue,
+            true
+          );
+        }
+      });
+    });
   });
 
   const port = options.port || 4004;
-  const server = app.listen(port, () => {
+  server.listen(port, () => {
     const address = server.address();
     if (typeof address === "object" && address !== null) {
       let port = address.port;
