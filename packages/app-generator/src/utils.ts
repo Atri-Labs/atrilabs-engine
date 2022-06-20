@@ -172,3 +172,10 @@ export const pythonAppTemplatePath = path.resolve(
   "templates",
   "python-app"
 );
+
+export const atriAppBuildInfoFilename = "atri-build-info.json";
+
+export const atriAppBuildInfoTemplateFilepath = path.resolve(
+  reactAppRootTemplate,
+  atriAppBuildInfoFilename
+);

@@ -163,6 +163,7 @@ export default async function (
   reactTemplateManager.flushPages();
   // update store using editor events
   reactTemplateManager.flushStore();
+  reactTemplateManager.flushAtriBuildInfo(toolConfig["manifestDirs"]);
 
   const pythonGeneratorFunctions: {
     fn: PythonStubGeneratorFunction;

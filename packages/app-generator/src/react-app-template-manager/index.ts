@@ -1,8 +1,13 @@
-import { getFiles } from "../utils";
+import {
+  atriAppBuildInfoFilename,
+  atriAppBuildInfoTemplateFilepath,
+  getFiles,
+} from "../utils";
 import path from "path";
 import fs from "fs";
 import { camelCase } from "lodash";
 import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
+import { ToolConfig } from "@atrilabs/core";
 
 export function createReactAppTemplateManager(
   paths: {
@@ -515,6 +520,19 @@ export function createReactAppTemplateManager(
   // add dependencies to destination package.json
   function patchDependencies() {}
 
+  // flush atri-build-info.json
+  function flushAtriBuildInfo(manifestDirs: ToolConfig["manifestDirs"]) {
+    const buildInfoTemplate = JSON.parse(
+      fs.readFileSync(atriAppBuildInfoTemplateFilepath).toString()
+    );
+    buildInfoTemplate["manifestDirs"] = manifestDirs;
+    const dest = path.resolve(paths.reactAppRootDest, atriAppBuildInfoFilename);
+    if (!fs.existsSync(paths.reactAppRootDest)) {
+      fs.mkdirSync(paths.reactAppRootDest);
+    }
+    fs.writeFileSync(dest, JSON.stringify(buildInfoTemplate, null, 2));
+  }
+
   return {
     copyTemplate,
     createPage,
@@ -527,5 +545,6 @@ export function createReactAppTemplateManager(
     flushPages,
     addProps,
     flushStore,
+    flushAtriBuildInfo,
   };
 }
