@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "fs";
+import path from "path";
 import {
   buildInfoFile,
   buildInfoFilename,
@@ -20,17 +21,24 @@ try {
     const serverOutput: string = buildInfo["serverOutput"];
     const appSrc: string = buildInfo["appSrc"];
     if (
-      serverEntry &&
-      typeof serverEntry === "string" &&
-      serverOutput &&
-      typeof serverOutput === "string" &&
-      serverSrc &&
-      typeof serverSrc === "string"
+      !(
+        serverEntry &&
+        typeof serverEntry === "string" &&
+        serverOutput &&
+        typeof serverOutput === "string" &&
+        serverSrc &&
+        typeof serverSrc === "string"
+      )
     ) {
       throw Error(`Wrong schema of ${buildInfoFilename}.`);
     }
     const includes = [serverSrc, appSrc];
-    buildServer({ serverEntry, serverOutput, includes, mode });
+    buildServer({
+      serverEntry: path.resolve(serverEntry),
+      serverOutput: path.resolve(serverOutput),
+      includes: includes.map((inc) => path.resolve(inc)),
+      mode,
+    });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);
   }

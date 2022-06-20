@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "fs";
+import path from "path";
 import {
   buildApp,
   getMode,
@@ -20,28 +21,36 @@ try {
     const appSrc: string = buildInfo["appSrc"];
     const manifestDirs: { pkg: string }[] = buildInfo["manifestDirs"];
     if (
-      appEntry &&
-      typeof appEntry === "string" &&
-      appHtml &&
-      typeof appHtml === "string" &&
-      appOutput &&
-      typeof appOutput === "string" &&
-      appSrc &&
-      typeof appSrc === "string" &&
-      manifestDirs &&
-      Array.isArray(manifestDirs)
+      !(
+        appEntry &&
+        typeof appEntry === "string" &&
+        appHtml &&
+        typeof appHtml === "string" &&
+        appOutput &&
+        typeof appOutput === "string" &&
+        appSrc &&
+        typeof appSrc === "string" &&
+        manifestDirs &&
+        Array.isArray(manifestDirs)
+      )
     ) {
       throw Error(`Wrong schema of ${buildInfoFilename}.`);
     }
     const manifestPkgs = manifestDirs.map((manifestDef) => {
       if (manifestDef["pkg"]) {
-        return manifestDef.pkg;
+        return path.dirname(require.resolve(`${manifestDef.pkg}/package.json`));
       } else {
         throw Error(`Wrong schema of ${buildInfoFilename}.`);
       }
     });
     const includes = [...manifestPkgs, appSrc];
-    buildApp({ appEntry, appHtml, appOutput, includes, mode });
+    buildApp({
+      appEntry: path.resolve(appEntry),
+      appHtml: path.resolve(appHtml),
+      appOutput: path.resolve(appOutput),
+      includes: includes.map((inc) => path.resolve(inc)),
+      mode,
+    });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);
   }
