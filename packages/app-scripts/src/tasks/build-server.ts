@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 import fs from "fs";
 import {
   buildInfoFile,
