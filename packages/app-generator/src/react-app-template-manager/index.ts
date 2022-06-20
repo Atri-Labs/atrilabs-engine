@@ -7,7 +7,13 @@ import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
 export function createReactAppTemplateManager(
   paths: {
     reactAppTemplate: string;
+    reactAppServerTemplate: string;
     reactAppDest: string;
+    reactAppServerDest: string;
+    toCopy: string[];
+    reactAppRootDest: string;
+    reactAppRootTemplate: string;
+    reactAppPackageJSON: string;
   },
   rootComponentId: string
 ) {
@@ -59,7 +65,7 @@ export function createReactAppTemplateManager(
   } = {};
   const propsMap: { [pageName: string]: PropsGeneratorOutput } = {};
 
-  function copyTemplate() {
+  function copyAppTemplate() {
     const files = getFiles(paths.reactAppTemplate);
     files.forEach((file) => {
       // file from pages directory should not be copied
@@ -80,6 +86,70 @@ export function createReactAppTemplateManager(
     if (!fs.existsSync(pagesDestDirectory)) {
       fs.mkdirSync(pagesDestDirectory);
     }
+  }
+
+  function copyServerTemplate() {
+    const files = getFiles(paths.reactAppServerTemplate);
+    files.forEach((file) => {
+      const dirname = path.dirname(file);
+      const relativeDirname = path.relative(
+        paths.reactAppServerTemplate,
+        dirname
+      );
+      const destDirname = path.resolve(
+        paths.reactAppServerDest,
+        relativeDirname
+      );
+      const relativeFilename = path.relative(
+        paths.reactAppServerTemplate,
+        file
+      );
+      const destFilename = path.resolve(
+        paths.reactAppServerDest,
+        relativeFilename
+      );
+      if (!fs.existsSync(destDirname)) {
+        fs.mkdirSync(destDirname, { recursive: true });
+      }
+      fs.writeFileSync(destFilename, fs.readFileSync(file));
+    });
+  }
+
+  function copyOthersToRoot() {
+    paths.toCopy.forEach((file) => {
+      const dirname = path.dirname(file);
+      const relativeDirname = path.relative(
+        paths.reactAppRootTemplate,
+        dirname
+      );
+      const destDirname = path.resolve(paths.reactAppRootDest, relativeDirname);
+      const relativeFilename = path.relative(paths.reactAppRootTemplate, file);
+      const destFilename = path.resolve(
+        paths.reactAppRootDest,
+        relativeFilename
+      );
+      if (!fs.existsSync(destDirname)) {
+        fs.mkdirSync(destDirname, { recursive: true });
+      }
+      fs.writeFileSync(destFilename, fs.readFileSync(file));
+    });
+  }
+
+  function copyPackageJSON() {
+    const file = path.resolve(paths.reactAppPackageJSON);
+    const destDirname = path.resolve(paths.reactAppRootDest);
+    const destFilename = path.resolve(paths.reactAppRootDest, "package.json");
+    if (!fs.existsSync(destDirname)) {
+      fs.mkdirSync(destDirname, { recursive: true });
+    }
+    fs.writeFileSync(destFilename, fs.readFileSync(file));
+  }
+
+  function copyTemplate() {
+    copyAppTemplate();
+    copyServerTemplate();
+    copyOthersToRoot();
+    copyPackageJSON();
   }
 
   function getFilenameForPage(name: string) {

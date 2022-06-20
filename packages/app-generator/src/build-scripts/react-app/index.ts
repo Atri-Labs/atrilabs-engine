@@ -14,7 +14,12 @@ import {
   getComponentFromManifest,
   getForestDef,
   getReactAppDestPath,
+  getReactAppServerDestPath,
+  reactAppPackageJSON,
+  reactAppRootTemplate,
+  reactAppServerTemplatePath,
   reactAppTemplatePath,
+  reactAppToCopyToRoot,
 } from "../../utils";
 import path from "path";
 import fs from "fs";
@@ -87,10 +92,17 @@ export default async function buildReactApp(
     }
   }
   const reactAppDestPath = getReactAppDestPath(options.outputDir);
+  const reactAppServerDestPath = getReactAppServerDestPath(options.outputDir);
   const reactTemplateManager = createReactAppTemplateManager(
     {
       reactAppTemplate: reactAppTemplatePath,
       reactAppDest: reactAppDestPath,
+      reactAppServerTemplate: reactAppServerTemplatePath,
+      reactAppServerDest: reactAppServerDestPath,
+      reactAppRootDest: options.outputDir,
+      toCopy: reactAppToCopyToRoot,
+      reactAppRootTemplate,
+      reactAppPackageJSON,
     },
     options.rootComponentId
   );

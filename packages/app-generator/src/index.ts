@@ -19,8 +19,13 @@ import {
   getForestDef,
   getManifest,
   getReactAppDestPath,
+  getReactAppServerDestPath,
   pythonAppTemplatePath,
+  reactAppPackageJSON,
+  reactAppRootTemplate,
+  reactAppServerTemplatePath,
   reactAppTemplatePath,
+  reactAppToCopyToRoot,
 } from "./utils";
 import { createPythonAppTemplateManager } from "./python-app-template-manager";
 
@@ -30,6 +35,8 @@ export default async function (
 ) {
   // paths
   const reactAppDestPath = getReactAppDestPath(options.outputDir);
+  const reactAppServerDestPath = getReactAppServerDestPath(options.outputDir);
+
   // get/create forest def
   const forestDef = getForestDef(toolConfig, options.appForestPkgId);
   if (forestDef === undefined) {
@@ -57,6 +64,12 @@ export default async function (
     {
       reactAppTemplate: reactAppTemplatePath,
       reactAppDest: reactAppDestPath,
+      reactAppServerTemplate: reactAppServerTemplatePath,
+      reactAppServerDest: reactAppServerDestPath,
+      reactAppRootDest: options.outputDir,
+      toCopy: reactAppToCopyToRoot,
+      reactAppRootTemplate,
+      reactAppPackageJSON,
     },
     options.rootComponentId
   );

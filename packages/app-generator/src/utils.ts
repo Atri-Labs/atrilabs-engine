@@ -97,15 +97,45 @@ export function getManifest(meta: { pkg: string; key: string }) {
   }
 }
 
-export const reactAppTemplatePath = path.resolve(
+export const reactAppRootTemplate = path.resolve(
   __dirname,
   "..",
   "templates",
   "react-app"
 );
 
+export const reactAppPackageJSON = path.resolve(
+  reactAppRootTemplate,
+  "package.json"
+);
+
+export const reactAppTemplatePath = path.resolve(
+  __dirname,
+  "..",
+  "templates",
+  "react-app",
+  "app"
+);
+
+export const reactAppServerTemplatePath = path.resolve(
+  __dirname,
+  "..",
+  "templates",
+  "react-app",
+  "server"
+);
+
+export const reactAppToCopyToRoot = [
+  path.resolve(reactAppRootTemplate, ".eslintrc.json"),
+  path.resolve(reactAppRootTemplate, "atri-app-env.d.ts"),
+];
+
 export function getReactAppDestPath(outputDir: string) {
   return path.resolve(outputDir, "app");
+}
+
+export function getReactAppServerDestPath(outputDir: string) {
+  return path.resolve(outputDir, "server");
 }
 
 export function getForestDef(toolConfig: ToolConfig, appForestPkgId: string) {
