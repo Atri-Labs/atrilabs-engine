@@ -20,7 +20,7 @@ export const Button = forwardRef<
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
-  topographyOptions: true,
+  typographyOptions: true,
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
