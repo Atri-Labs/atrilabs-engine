@@ -183,7 +183,7 @@ export function createReactAppTemplateManager(
     pageImports.push({
       name: page.name,
       route: page.route,
-      source: path.resolve(pagesDestDirectory, getFilenameForPage(page.name)),
+      source: `./pages/${getFilenameForPage(page.name)}`,
     });
   }
 
