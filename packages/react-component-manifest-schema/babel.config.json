@@ -1,0 +1,8 @@
+{
+  "presets": [
+    ["@babel/preset-env", { "targets": { "node": true } }],
+    ["@babel/preset-typescript", { "isTSX": true, "allExtensions": true }],
+    "@babel/preset-react"
+  ],
+  "plugins": ["./replaceid-babel-plugin.js"]
+}

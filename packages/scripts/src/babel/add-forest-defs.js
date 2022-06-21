@@ -1,26 +1,39 @@
+const generateModuleId = require("./generateModuleId");
+
+/**
+ *
+ * @param {string} forestPkg
+ */
+function forestId(forestPkg) {
+  return generateModuleId(forestPkg);
+}
+
 // treeId is the import path of the tree's default function
 /**
  *
- * @param {{pkg: string; modulePath: string; name: string;}} tree
+ * @param {{modulePath: string;}} tree
  * @returns {string}
  */
 function treeId(tree) {
-  return tree.pkg + "/" + tree.modulePath;
+  return generateModuleId(tree.modulePath);
 }
 
 /**
  *
- * @param {{[name: string]: {pkg: string; modulePath: string; name: string;}[]}} forests
- * @returns {{[treeId: string]: string}}
+ * @param {{[forestPkg: string]: {modulePath: string;}[]}} forests
+ * @returns {{[modulePath: string]: {localIdentifier: string, treeId: string}}}
  */
 function generateImportMap(forests) {
-  const forestNames = Object.keys(forests);
+  const forestPkgs = Object.keys(forests);
   let treeCount = 1;
   const treeImportMap = {};
-  forestNames.forEach((name) => {
-    const forest = forests[name];
+  forestPkgs.forEach((forestPkg) => {
+    const forest = forests[forestPkg];
     forest.forEach((tree) => {
-      treeImportMap[treeId(tree)] = "tree" + treeCount++;
+      treeImportMap[tree.modulePath] = {
+        localIdentifier: "tree" + treeCount++,
+        treeId: treeId(tree),
+      };
     });
   });
   return treeImportMap;
@@ -29,13 +42,13 @@ function generateImportMap(forests) {
 /**
  *
  * @param {*} t
- * @param {{[treeId: string]: string}} treeImportMap
+ * @param {{[modulePath: string]: {localIdentifier: string, treeId: string}}} treeImportMap
  * @returns
  */
 function generateImportStatements(t, treeImportMap) {
   const keys = Object.keys(treeImportMap);
   return keys.map((key) => {
-    const identifier = t.identifier(treeImportMap[key]);
+    const identifier = t.identifier(treeImportMap[key].localIdentifier);
     const importDefaultSpecifier = t.importDefaultSpecifier(identifier);
     const importDeclaration = t.importDeclaration(
       [importDefaultSpecifier],
@@ -48,31 +61,25 @@ function generateImportStatements(t, treeImportMap) {
 /**
  *
  * @param {*} t
- * @param {{pkg: string; modulePath: string; name: string;}[]} forest
- * @param {{[treeId: string]: string}} treeImportMap
+ * @param {{modulePath: string;}[]} forest
+ * @param {{[modulePath: string]: {localIdentifier: string, treeId: string}}} treeImportMap
  * @returns
  */
 function generateTreeDefArray(t, forest, treeImportMap) {
   const treeDefObjects = forest.map((tree) => {
-    const nameProp = t.objectProperty(
-      t.identifier("name"),
-      t.stringLiteral(tree.name)
-    );
-    const pkgProp = t.objectProperty(
-      t.identifier("pkg"),
-      t.stringLiteral(tree.pkg)
+    const idProp = t.objectProperty(
+      t.identifier("id"),
+      t.stringLiteral(treeImportMap[tree.modulePath].treeId)
     );
     const modulePathProp = t.objectProperty(
       t.identifier("modulePath"),
       t.stringLiteral(tree.modulePath)
     );
-    const id = treeId(tree);
-    const defFn = t.identifier(treeImportMap[id]);
+    const defFn = t.identifier(treeImportMap[tree.modulePath].localIdentifier);
     const defFnProp = t.objectProperty(t.identifier("defFn"), defFn);
 
     const treeDefObject = t.objectExpression([
-      nameProp,
-      pkgProp,
+      idProp,
       modulePathProp,
       defFnProp,
     ]);
@@ -86,24 +93,28 @@ function generateTreeDefArray(t, forest, treeImportMap) {
 /**
  *
  * @param {*} t
- * @param {{[name: string]: {pkg: string; modulePath: string; name: string;}[]}} forests
- * @param {{[treeId: string]: string}} treeImportMap
+ * @param {{[forestPkg: string]: {modulePath: string;}[]}} forests
+ * @param {{[treeId: string]: {localIdentifier: string, treeId: string}}} treeImportMap
  * @returns
  */
 function generateForestDefArray(t, forests, treeImportMap) {
-  const forestNames = Object.keys(forests);
+  const forestPkgs = Object.keys(forests);
   // generate properties for each forest
-  const forestDefs = forestNames.map((forestName) => {
-    const nameProp = t.objectProperty(
-      t.identifier("name"),
-      t.stringLiteral(forestName)
+  const forestDefs = forestPkgs.map((forestPkg) => {
+    const idProp = t.objectProperty(
+      t.identifier("id"),
+      t.stringLiteral(forestId(forestPkg))
     );
-    const trees = forests[forestName];
+    const pkgProp = t.objectProperty(
+      t.identifier("pkg"),
+      t.stringLiteral(forestPkg)
+    );
+    const trees = forests[forestPkg];
     const treesProp = t.objectProperty(
       t.identifier("trees"),
       generateTreeDefArray(t, trees, treeImportMap)
     );
-    return t.objectExpression([nameProp, treesProp]);
+    return t.objectExpression([idProp, pkgProp, treesProp]);
   });
 
   // create object expression
@@ -128,14 +139,14 @@ const InternalVisitor = {
 /**
  * The path to layer can be without extension.
  * @param {*} babel
- * @param {{forests: {[name: string]: {pkg: string; modulePath: string; name: string;}[]}, setCurrentForestFile: string}} options
+ * @param {{forests: {[pkg: string]: {modulePath: string;}[]}, browserForestManagerFile: string}} options
  * @returns
  */
 module.exports = function (babel, options) {
   // check options
   if (
     options.forests === undefined ||
-    options.setCurrentForestFile === undefined
+    options.browserForestManagerFile === undefined
   ) {
     // do nothing if options are incorrect
     return { visitor: {} };
@@ -143,7 +154,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program(path, parent) {
-        if (!parent.filename.match(options.setCurrentForestFile)) {
+        if (!parent.filename.match(options.browserForestManagerFile)) {
           return;
         }
         // add import statements for each tree

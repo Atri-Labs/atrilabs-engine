@@ -1,6 +1,7 @@
 import { Container } from "@atrilabs/core";
 import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
+import { useGetPageTableData } from "./hooks/useGetPageTableData";
 import { ArrowDown } from "./icons/ArrowDown";
 import { PageEditor } from "./PageEditor";
 
@@ -31,11 +32,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     overflow: "hidden",
   },
 };
+
 export const PageSelector: React.FC<PageSelectorProps> = () => {
   const [showPageEditor, setShowPageEditor] = useState<boolean>(false);
   const closePageEditor = useCallback(() => {
     setShowPageEditor(false);
   }, []);
+
+  const { selectedPage, pageTableData, loadData, changePageCb } =
+    useGetPageTableData();
+
   return (
     <div
       style={styles.page}
@@ -44,13 +50,19 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       }}
     >
       <div>Page:</div>
-      <div style={styles.p}>Home</div>
+      <div style={styles.p}>{selectedPage ? selectedPage.name : null}</div>
       <span style={styles.span}>
         <ArrowDown />
       </span>
-      {showPageEditor ? (
+      {showPageEditor && selectedPage ? (
         <Container name="Drop">
-          <PageEditor close={closePageEditor} />
+          <PageEditor
+            close={closePageEditor}
+            pageTableData={pageTableData}
+            loadData={loadData}
+            selectedPage={selectedPage}
+            changePageCb={changePageCb}
+          />
         </Container>
       ) : null}
     </div>

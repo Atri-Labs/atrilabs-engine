@@ -1,5 +1,7 @@
 node_modules/
+build/
 lib/
 bin/
 yarn-error.log
 lerna-debug.log
+lib-cjs/

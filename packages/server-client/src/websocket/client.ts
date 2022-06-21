@@ -1,103 +1,158 @@
-import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
+import { BrowserClient } from "@atrilabs/core";
+import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 import { io, Socket } from "socket.io-client";
-import {
-  ClientToServerEvents,
-  Folder,
-  Page,
-  ServerToClientEvents,
-} from "./types";
+import { ClientToServerEvents, ServerToClientEvents } from "./types";
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
 );
 
-function handleSuccess(
-  success: boolean,
-  onSuccess: () => void,
-  onFailure: () => void
+function getMeta(forestPkgId: string, onData: (meta: any) => void) {
+  socket.emit("getMeta", forestPkgId, onData);
+}
+
+function getPages(
+  forestPkgId: string,
+  onData: (pages: { [pageId: string]: PageDetails }) => void
 ) {
-  if (success) {
-    onSuccess();
-  } else {
-    onFailure();
-  }
+  socket.emit("getPages", forestPkgId, onData);
 }
 
-export function getMeta(forestname: string, onData: (meta: any) => void) {
-  socket.emit("getMeta", forestname, onData);
-}
-
-export function getPages(
-  forestname: string,
-  onData: (pages: PagesDbSchema) => void
-) {
-  socket.emit("getPages", forestname, onData);
-}
-
-export function createFolder(
-  forestname: string,
+function createFolder(
+  forestPkgId: string,
   folder: Folder,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("createFolder", forestname, folder, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("createFolder", forestPkgId, folder, callback);
 }
 
-export function updateFolder(
-  forestname: string,
+function updateFolder(
+  forestPkgId: string,
   id: string,
   update: Partial<Omit<Folder, "id">>,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("updateFolder", forestname, id, update, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("updateFolder", forestPkgId, id, update, callback);
 }
 
-export function createPage(
-  forestname: string,
+function createPage(
+  forestPkgId: string,
   page: Page,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("createPage", forestname, page, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("createPage", forestPkgId, page, callback);
 }
 
-export function updatePage(
-  forestname: string,
+function updatePage(
+  forestPkgId: string,
   id: string,
   update: Partial<Omit<Page, "id">>,
-  onSuccess: () => void,
-  onFailure: () => void
+  callback: (success: boolean) => void
 ) {
-  socket.emit("updatePage", forestname, id, update, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
+  socket.emit("updatePage", forestPkgId, id, update, callback);
+}
+
+function deletePage(
+  forestPkgId: string,
+  id: string,
+  callback: (success: boolean) => void
+) {
+  socket.emit("deletePage", forestPkgId, id, callback);
+}
+
+function deleteFolder(
+  forestPkgId: string,
+  id: string,
+  callback: (success: boolean) => void
+) {
+  socket.emit("deleteFolder", forestPkgId, id, callback);
+}
+
+async function fetchEvents(forestPkgId: string, pageId: string) {
+  return new Promise<AnyEvent[]>((res) => {
+    socket.emit("fetchEvents", forestPkgId, pageId, (events) => {
+      res(events);
+    });
   });
 }
 
-export function deletePage(
-  forestname: string,
-  id: string,
-  onSuccess: () => void,
-  onFailure: () => void
+function postNewEvent(
+  forestPkgId: string,
+  pageId: string,
+  event: AnyEvent,
+  callback: (success: boolean) => void
 ) {
-  socket.emit("deletePage", forestname, id, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("postNewEvent", forestPkgId, pageId, event, callback);
 }
 
-export function deleteFolder(
-  forestname: string,
-  id: string,
-  onSuccess: () => void,
-  onFailure: () => void
+function getNewAlias(
+  forestPkgId: string,
+  prefix: string,
+  callback: (alias: string) => void
 ) {
-  socket.emit("deleteFolder", forestname, id, (success) => {
-    handleSuccess(success, onSuccess, onFailure);
-  });
+  socket.emit("getNewAlias", forestPkgId, prefix, callback);
 }
+
+type EventSubscriber = (
+  forestPkgId: string,
+  pageId: string,
+  event: AnyEvent
+) => void;
+const eventSubscribers: EventSubscriber[] = [];
+function subscribeEvents(cb: EventSubscriber) {
+  eventSubscribers.push(cb);
+  return () => {
+    const index = eventSubscribers.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      eventSubscribers.splice(index, 1);
+    }
+  };
+}
+const externalEventSubscribers: EventSubscriber[] = [];
+function subscribeExternalEvents(cb: EventSubscriber) {
+  externalEventSubscribers.push(cb);
+  return () => {
+    const index = externalEventSubscribers.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      externalEventSubscribers.splice(index, 1);
+    }
+  };
+}
+const ownEventSubscribers: EventSubscriber[] = [];
+function subscribeOwnEvents(cb: EventSubscriber) {
+  ownEventSubscribers.push(cb);
+  return () => {
+    const index = ownEventSubscribers.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      ownEventSubscribers.splice(index, 1);
+    }
+  };
+}
+socket.on("newEvent", (forestPkgId, pageId, event, socketId) => {
+  eventSubscribers.forEach((cb) => cb(forestPkgId, pageId, event));
+  if (socketId !== socket.id) {
+    externalEventSubscribers.forEach((cb) => cb(forestPkgId, pageId, event));
+  }
+  if (socketId === socket.id) {
+    ownEventSubscribers.forEach((cb) => cb(forestPkgId, pageId, event));
+  }
+});
+
+const client: BrowserClient = {
+  getMeta,
+  getPages,
+  createFolder,
+  updateFolder,
+  createPage,
+  updatePage,
+  deletePage,
+  deleteFolder,
+  fetchEvents,
+  postNewEvent,
+  subscribeEvents,
+  subscribeExternalEvents,
+  subscribeOwnEvents,
+  getNewAlias,
+};
+
+export default client;

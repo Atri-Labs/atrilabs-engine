@@ -1,0 +1,34 @@
+{
+  "name": "@atrilabs/component-tree-to-app",
+  "version": "0.0.10",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/app-generator": "^0.0.10",
+    "@atrilabs/react-component-manifest-schema": "^0.0.10",
+    "@atrilabs/scripts": "^0.0.10",
+    "typescript": "^4.7.3"
+  }
+}

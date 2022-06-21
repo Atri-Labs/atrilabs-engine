@@ -1,7 +1,17 @@
-import { LayerConfig, ForestsConfig, RuntimeConfig } from "@atrilabs/core";
+import {
+  LayerConfig,
+  ForestsConfig,
+  RuntimeConfig,
+  ToolConfig,
+} from "@atrilabs/core";
 import path from "path";
 import { RuleSetRule, RuleSetUseItem } from "webpack";
-import { LayerEntry, CorePkgInfo, RuntimeEntry } from "./types";
+import {
+  LayerEntry,
+  CorePkgInfo,
+  RuntimeEntry,
+  ManifestSchemaEntry,
+} from "./types";
 import {
   detectLayerForFile,
   detectRuntimeForFile,
@@ -16,9 +26,11 @@ import {
 export default function emitBabelLoader(
   layerEntries: LayerEntry[],
   runtimeEntries: RuntimeEntry[],
+  manifestSchemaEntries: ManifestSchemaEntry[],
   forestsConfig: ForestsConfig,
   corePkgInfo: CorePkgInfo,
-  env: "production" | "development"
+  env: "production" | "development",
+  clients: ToolConfig["clients"]
 ): Exclude<RuleSetRule["use"], undefined> {
   const isEnvDevelopment = env === "development";
 
@@ -162,8 +174,45 @@ export default function emitBabelLoader(
             [
               path.resolve(__dirname, "..", "babel", "add-forest-defs.js"),
               {
-                setCurrentForestFile: corePkgInfo.setCurrentForestFile,
+                browserForestManagerFile: corePkgInfo.browserForestManagerFile,
                 forests: forestsConfig,
+              },
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "replace-import-with-id.js"
+              ),
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "populate-manifest-registry-in-core.js"
+              ),
+              {
+                manifestRegistryFile: corePkgInfo.manifestRegistryFile,
+                manifests: manifestSchemaEntries.map((entry) => {
+                  return {
+                    manifestId: entry.manifestId,
+                    schemaModulePath: entry.modulePath,
+                  };
+                }),
+              },
+            ],
+            [
+              path.resolve(
+                __dirname,
+                "..",
+                "babel",
+                "add-event-client-to-core.js"
+              ),
+              {
+                apiFile: corePkgInfo.apiFile,
+                eventClient: clients.eventClient.modulePath,
               },
             ],
             isEnvDevelopment && require("react-refresh/babel"),

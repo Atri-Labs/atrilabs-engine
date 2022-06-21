@@ -6,7 +6,6 @@ import { useHeaderMenu } from "./hooks/useHeaderMenu";
 import { useLogo } from "./hooks/useLogo";
 import { useOverlayContainer } from "./hooks/useOverlayContainer";
 import "./styles.css";
-
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
     height: "100vh",

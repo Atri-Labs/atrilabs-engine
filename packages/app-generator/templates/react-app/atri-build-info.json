@@ -1,0 +1,10 @@
+{
+  "appSrc": "app/src",
+  "appEntry": "app/src/index.jsx",
+  "appHtml": "app/public/index.html",
+  "appOutput": "dist/app",
+  "serverSrc": "server/src",
+  "serverEntry": "server/src/index.tsx",
+  "serverOutput": "dist/server",
+  "manifestDirs": []
+}

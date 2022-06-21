@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
-import { gray700, gray800 } from "@atrilabs/design-system";
+import React, { useRef, useState } from "react";
+import { gray700, gray800, gray900 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
 import { usePageMenu } from "./hooks/usePageMenu";
 import { usePublishMenu } from "./hooks/usePublishMenu";
-import { currentForest, setCurrentForest } from "@atrilabs/core";
 import { useDropContainer } from "./hooks/useDropContainer";
 import { useCanvasContainer } from "./hooks/useCanvasContainer";
+import { usePropertiesTab } from "./hooks/usePropertiesTab";
+import { attachRef } from "@atrilabs/core";
+import { usePlaygroundContainer } from "./hooks/usePlaygroundOverlayContainer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -22,7 +24,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
   },
-  rightPart: { height: "100%", width: "15rem", display: "flex" },
+  rightPart: {
+    height: "100%",
+    width: "15rem",
+    display: "flex",
+    background: gray700,
+    flexDirection: "column",
+  },
 
   // children of leftPart
   header: {
@@ -33,7 +41,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     borderBottom: `1px solid ${gray800}`,
   },
-  body: { display: "flex", flexGrow: 1 },
+  body: { display: "flex", flexGrow: 1, position: "relative" },
 
   // children of body
   dropContainer: {},
@@ -57,6 +65,22 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   // children of rightHeader
   publishMenu: { display: "flex" },
+
+  // children of rightPart
+  propertyTabHeader: {
+    display: "flex",
+    height: "2.5rem",
+    boxSizing: "border-box",
+    border: `1px solid ${gray800}`,
+  },
+  propertyTabHeaderItem: {
+    width: "2.5rem",
+    height: "100%",
+  },
+  propertyTabBody: {
+    width: "100%",
+    height: `calc(100% - 2.5rem)`,
+  },
 };
 
 export const BaseContainer: React.FC = () => {
@@ -66,16 +90,11 @@ export const BaseContainer: React.FC = () => {
   const publishMenuItems = usePublishMenu();
   const dropContainerItem = useDropContainer();
   const canvasContainerItem = useCanvasContainer();
-  useEffect(() => {
-    currentForest.on("reset", () => {
-      console.log("current foreset reset");
-    });
-  }, []);
-  useEffect(() => {
-    setCurrentForest("page", "1").then((forest) => {
-      console.log(forest);
-    });
-  }, []);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const propertyTabItems = usePropertiesTab();
+  const dragZoneRef = useRef<HTMLDivElement>(null);
+  attachRef("Dragzone", dragZoneRef);
+  const playgroundContainerItem = usePlaygroundContainer();
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
@@ -107,16 +126,42 @@ export const BaseContainer: React.FC = () => {
             </div>
           </div>
         </div>
-        <div style={styles.body}>
+        <div style={styles.body} ref={dragZoneRef}>
           <div style={styles.dropContainer}>
             {dropContainerItem ? dropContainerItem : null}
           </div>
           <div style={styles.canvasContainer}>
             {canvasContainerItem ? canvasContainerItem : null}
           </div>
+          {playgroundContainerItem ? playgroundContainerItem : null}
         </div>
       </div>
-      <div style={styles.rightPart}></div>
+      <div style={styles.rightPart}>
+        <div style={styles.propertyTabHeader}>
+          {propertyTabItems.map((item, index) => {
+            const style = { ...styles.propertyTabHeaderItem };
+            if (index === selectedTab) {
+              style.background = gray900;
+            }
+            return (
+              <div
+                style={style}
+                onClick={() => {
+                  setSelectedTab(index);
+                }}
+                key={index}
+              >
+                {item.header}
+              </div>
+            );
+          })}
+        </div>
+        <div style={styles.propertyTabBody}>
+          {propertyTabItems[selectedTab]
+            ? propertyTabItems[selectedTab].body
+            : null}
+        </div>
+      </div>
     </div>
   );
 };

@@ -7,5 +7,8 @@ export const publishMenu = menu("PublishMenu")!;
 
 export const canvasContainer = container("Canvas")!;
 export const dropContainer = container("Drop")!;
+export const playgroundOverlayContainer = container(
+  "PlaygroundOverlayContainer"
+)!;
 
 export const propertiesTab = tab("PropertiesTab")!;

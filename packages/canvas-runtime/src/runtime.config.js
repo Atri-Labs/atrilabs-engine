@@ -4,6 +4,7 @@ module.exports = {
   requires: {
     containers: {
       Canvas: "Canvas",
+      PlaygroundOverlayContainer: "PlaygroundOverlayContainer",
     },
   },
 };

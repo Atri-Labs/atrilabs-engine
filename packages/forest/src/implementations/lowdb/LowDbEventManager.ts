@@ -2,7 +2,7 @@ import Lowdb, { LowdbSync } from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import path from "path";
 import fs from "fs";
-import { AnyEvent, EventManager, PageId } from "../../types";
+import { AnyEvent, EventManager, Page } from "../../types";
 import {
   AliasDbSchema,
   PagesDbSchema,
@@ -208,9 +208,15 @@ function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
   if (openDbs.events![pageId]) {
     return openDbs.events![pageId]!;
   }
-  const eventsFile = path.resolve(dbDir, pageId, "events.json");
+  const eventsFile = eventFile(dbDir, pageId);
   const eventsDb = Lowdb(new FileSync<EvensDbSchema>(eventsFile));
   eventsDb.read();
+  // If events file is empty, lowdb writes {} by default. We override it for events file.
+  const initState = eventsDb.getState();
+  if (JSON.stringify(initState) === "{}") {
+    eventsDb.setState([]);
+    eventsDb.write();
+  }
   openDbs.events![pageId] = eventsDb;
   return eventsDb;
 }
@@ -221,6 +227,15 @@ function deleteEventsDb(dbDir: string, pageId: string) {
     const eventsFilename = eventFile(dbDir, pageId);
     if (fs.existsSync(eventsFilename))
       fs.rmSync(path.dirname(eventsFilename), { force: true });
+  }
+}
+
+function createEventsFile(filePath: string, content: string) {
+  if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync(path.dirname(filePath))) {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    }
+    fs.writeFileSync(filePath, content);
   }
 }
 
@@ -260,8 +275,8 @@ export default function createLowDbEventManager(
     return pagesDb.getState();
   }
 
-  function createPage(id: PageId, name: string, route: string) {
-    // do nothing if a page with id PageId already exists
+  function createPage(id: Page["id"], name: string, route: string) {
+    // do nothing if a page with id Page["id"] already exists
     if (pagesDb.getState()[id]) {
       console.log(
         `Error: Page with id ${id} already exists. Cannot create a new page.`
@@ -269,9 +284,11 @@ export default function createLowDbEventManager(
       return;
     }
     pagesDb.getState()[id] = { name, route };
+    const eventsFile = eventFile(dbDir, id);
+    createEventsFile(eventsFile, "[]");
   }
 
-  function renamePage(id: PageId, name: string) {
+  function renamePage(id: Page["id"], name: string) {
     if (!pagesDb.getState()[id]) {
       console.log(`Error: Page with id ${id} does not exist. Cannot rename.`);
       return;
@@ -279,7 +296,7 @@ export default function createLowDbEventManager(
     pagesDb.getState()[id]!["name"] = name;
   }
 
-  function changeRoute(id: PageId, route: string) {
+  function changeRoute(id: Page["id"], route: string) {
     if (!pagesDb.getState()[id]) {
       console.log(
         `Error: Page with id ${id} does not exist. Cannot change route.`
@@ -289,25 +306,25 @@ export default function createLowDbEventManager(
     pagesDb.getState()[id]!["route"] = route;
   }
 
-  function deletePage(id: PageId) {
+  function deletePage(id: Page["id"]) {
     const pages = pagesDb.getState();
     delete pages[id];
     pagesDb.setState(pages);
     deleteEventsDb(dbDir, id);
   }
 
-  function storeEvent(pageId: PageId, event: AnyEvent) {
+  function storeEvent(pageId: Page["id"], event: AnyEvent) {
     const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.getState().push(event);
   }
 
-  function fetchEvents(pageId: PageId): AnyEvent[] {
+  function fetchEvents(pageId: Page["id"]): AnyEvent[] {
     // open pages db if not already open
     const eventsDb = getEventsDb(dbDir, pageId);
     return eventsDb.getState();
   }
 
-  function writeBackCompressedEvents(pageId: PageId, events: AnyEvent[]) {
+  function writeBackCompressedEvents(pageId: Page["id"], events: AnyEvent[]) {
     const eventsDb = getEventsDb(dbDir, pageId);
     eventsDb.setState(events);
   }

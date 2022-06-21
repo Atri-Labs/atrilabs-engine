@@ -26,7 +26,36 @@ function startFileServer() {
   return controller;
 }
 
-const controllers = [startEventServer(), startFileServer()];
+function startManifestServer() {
+  const manifestServerFile = path.resolve(__dirname, "runManifestServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const manifestServer = fork(manifestServerFile, [], { signal });
+  manifestServer.on("error", (err) => {
+    if (!err.toString().match("AbortError"))
+      console.log(`Manifest Server exited with error\n${err}`);
+  });
+  return controller;
+}
+
+function startPublishServer() {
+  const runPublishServerFile = path.resolve(__dirname, "runPublishServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const publishServer = fork(runPublishServerFile, [], { signal });
+  publishServer.on("error", (err) => {
+    if (!err.toString().match("AbortError"))
+      console.log(`Publish Server exited with error\n${err}`);
+  });
+  return controller;
+}
+
+const controllers = [
+  startEventServer(),
+  startFileServer(),
+  startManifestServer(),
+  startPublishServer(),
+];
 
 // wait for kill signals
 ["SIGINT", "SIGTERM"].forEach(function (sig) {

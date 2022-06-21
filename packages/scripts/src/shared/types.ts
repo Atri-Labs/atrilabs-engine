@@ -1,4 +1,9 @@
-import { LayerConfig, RuntimeConfig, ToolConfig } from "@atrilabs/core";
+import {
+  LayerConfig,
+  ManifestSchemaConfig,
+  RuntimeConfig,
+  ToolConfig,
+} from "@atrilabs/core";
 
 export type ToolPkgInfo = {
   dir: string;
@@ -51,8 +56,33 @@ export type CorePkgInfo = {
   // file that contains information spanning and applicable to all layers
   // such as global name map for menu, tab, containers etc.
   layerDetailsFile: string;
-  // file that contains setCurrentForest function
-  setCurrentForestFile: string;
+  // file that exports browserForestManager function
+  // needed to fill in forest def from tool.config.js
+  browserForestManagerFile: string;
+  // file that contains manifestRegistry
+  manifestRegistryFile: string;
+  // file that exposes event API
+  apiFile: string;
+};
+
+export type ManifestSchemaPkgInfo = {
+  pkg: string;
+  // path to the root of the manifest schema package
+  schemaPath: string;
+  srcDir: string;
+  configFile: string;
+  manifestId: string;
+};
+
+export type ManifestSchemaEntry = ManifestSchemaPkgInfo & ManifestSchemaConfig;
+
+export type ManifestPkgInfo = {
+  pkg: string;
+  // path to the root directory of package
+  manifestPath: string;
+  srcDir: string;
+  configFile: string;
+  packageJSON: string;
 };
 
 export type ToolEnv = {

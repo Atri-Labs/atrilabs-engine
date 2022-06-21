@@ -1,56 +1,70 @@
+import { AnyEvent, Folder, Page } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 
-export type Folder = {
-  id: string;
-  name: string;
-  parentId: string;
-};
-
-export type Page = {
-  id: string;
-  name: string;
-  folderId: string;
-};
-
-export interface ServerToClientEvents {}
+export interface ServerToClientEvents {
+  newEvent: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    event: AnyEvent,
+    // the socket id from which this event originated
+    socketId: string
+  ) => void;
+}
 
 export interface ClientToServerEvents {
-  getMeta: (forestName: string, callback: (meta: any) => void) => void;
+  getMeta: (forestPkgId: string, callback: (meta: any) => void) => void;
   createFolder: (
-    forestName: string,
+    forestPkgId: string,
     folder: Folder,
     callback: (success: boolean) => void
   ) => void;
   updateFolder: (
-    forestName: string,
+    forestPkgId: string,
     id: Folder["id"],
     update: Partial<Omit<Folder, "id">>,
     callback: (success: boolean) => void
   ) => void;
   deleteFolder: (
-    forestName: string,
+    forestPkgId: string,
     id: Folder["id"],
     callback: (success: boolean) => void
   ) => void;
   getPages: (
-    forestname: string,
+    forestPkgId: string,
     callback: (page: PagesDbSchema) => void
   ) => void;
   createPage: (
-    forestName: string,
+    forestPkgId: string,
     page: Page,
     callback: (success: boolean) => void
   ) => void;
   updatePage: (
-    forestName: string,
+    forestPkgId: string,
     pageId: Page["id"],
     update: Partial<Omit<Page, "id">>,
     callback: (success: boolean) => void
   ) => void;
   deletePage: (
-    forestName: string,
-    id: Page["id"],
+    forestPkgId: string,
+    pageId: Page["id"],
     callback: (success: boolean) => void
+  ) => void;
+
+  fetchEvents: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+  postNewEvent: (
+    forestPkgId: string,
+    pageId: Page["id"],
+    event: AnyEvent,
+    callback: (success: boolean) => void
+  ) => void;
+  getNewAlias: (
+    forestPkgId: string,
+    prefix: string,
+    callback: (alias: string) => void
   ) => void;
 }
 

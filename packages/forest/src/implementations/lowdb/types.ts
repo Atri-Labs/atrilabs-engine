@@ -1,7 +1,9 @@
 import { LowdbSync } from "lowdb";
-import { AnyEvent, PageId } from "../../types";
+import { AnyEvent, Page } from "../../types";
 
-export type PagesDbSchema = { [id: PageId]: { name: string; route: string } };
+export type PagesDbSchema = {
+  [id: Page["id"]]: { name: string; route: string };
+};
 
 export type AliasDbSchema = { [alias: string]: number };
 
@@ -17,12 +19,12 @@ export type LayoutErrorReport = Partial<{
   meta: LayoutErrorType;
   pages: LayoutErrorType;
   alias: LayoutErrorType;
-  events: { [pageId: PageId]: LayoutErrorType };
+  events: { [pageId: Page["id"]]: LayoutErrorType };
 }>;
 
 export type OpenDbs = Partial<{
   meta: LowdbSync<any>;
   pages: LowdbSync<PagesDbSchema>;
   alias: LowdbSync<AliasDbSchema>;
-  events: { [pageId: PageId]: LowdbSync<EvensDbSchema> };
+  events: { [pageId: Page["id"]]: LowdbSync<EvensDbSchema> };
 }>;

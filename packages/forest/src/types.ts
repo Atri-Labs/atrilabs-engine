@@ -29,7 +29,6 @@ export type Tree = {
 };
 
 export type Forest = {
-  name: string;
   tree: (name: string) => Tree | undefined;
   create: (event: CreateEvent) => void;
   patch: (event: PatchEvent) => void;
@@ -37,6 +36,7 @@ export type Forest = {
   link: (event: LinkEvent) => void;
   unlink: (event: UnlinkEvent) => void;
   handleEvent: (event: AnyEvent) => void;
+  subscribeForest: (cb: ForestUpdateSubscriber) => ForestUpdateUnsubscriber;
 };
 
 export type EventDto = {
@@ -76,40 +76,61 @@ export type TreeDefReturnType = {
 };
 
 export type TreeDef = {
-  pkg: string;
+  // id will be computed from modulePath
+  id: string;
   modulePath: string;
-  name: string;
   defFn: () => TreeDefReturnType;
 };
 
 export type ForestDef = {
-  name: string;
+  // id will be computed from pkg
+  id: string;
+  pkg: string;
   trees: TreeDef[];
 };
 
-export type PageId = string;
+export type Folder = {
+  id: string;
+  name: string;
+  parentId: string;
+};
+
+// A Page is an actual instance of forest
+// Page["id"] === forestId
+export type Page = {
+  id: string;
+  name: string;
+  folderId: string;
+};
+
+export type MetaData = {
+  folders: { [folderId: string]: Folder };
+  pages: { [pageId: string]: Folder["id"] };
+};
+
+export type PageDetails = { name: string; route: string };
 
 export type EventManager = {
-  meta: () => any;
-  updateMeta: (data: any) => void;
+  meta: () => MetaData;
+  updateMeta: (data: MetaData) => void;
 
-  pages: () => { [id: PageId]: { name: string; route: string } };
+  pages: () => { [id: Page["id"]]: PageDetails };
   // takes page name and page route and returns page id
-  createPage: (id: PageId, name: string, route: string) => void;
+  createPage: (id: Page["id"], name: string, route: string) => void;
   // rename an existing page
-  renamePage: (id: PageId, name: string) => void;
+  renamePage: (id: Page["id"], name: string) => void;
   // change router of a page
-  changeRoute: (id: PageId, route: string) => void;
+  changeRoute: (id: Page["id"], route: string) => void;
   // delete a page
-  deletePage: (id: PageId) => void;
+  deletePage: (id: Page["id"]) => void;
 
   // store an event for a page
-  storeEvent: (pageId: PageId, event: AnyEvent) => void;
+  storeEvent: (pageId: Page["id"], event: AnyEvent) => void;
   // fetch all events for a page
-  fetchEvents: (pageId: PageId) => AnyEvent[];
+  fetchEvents: (pageId: Page["id"]) => AnyEvent[];
 
   // write back compressed events
-  writeBackCompressedEvents: (pageId: PageId, events: AnyEvent[]) => void;
+  writeBackCompressedEvents: (pageId: Page["id"], events: AnyEvent[]) => void;
 
   // takes prefix and returns next number for the prefix
   incrementAlias: (prefix: string) => number;
@@ -120,5 +141,63 @@ export type ForestManager = {
 };
 
 export type ForestsConfig = {
-  [name: string]: Pick<TreeDef, "name" | "pkg" | "modulePath">[];
+  [forestPkg: string]: Pick<TreeDef, "modulePath">[];
 };
+
+export type WireUpdate = {
+  type: "wire";
+  id: string;
+  parentId: string;
+  treeId: string;
+};
+
+export type DewireUpdate = {
+  type: "dewire";
+  childId: string;
+  parentId: string;
+  treeId: string;
+};
+
+export type RewireUpdate = {
+  type: "rewire";
+  childId: string;
+  oldParentId: string;
+  newParentId: string;
+  newIndex: number;
+  oldIndex: number;
+  treeId: string;
+};
+
+export type ChangeUpdate = {
+  type: "change";
+  id: string;
+  treeId: string;
+};
+
+export type LinkUpdate = {
+  type: "link";
+  refId: string;
+  childId: string;
+  treeId: string;
+  rootTreeId: string;
+};
+
+export type UnlinkUpdate = {
+  type: "unlink";
+  refId: string;
+  childId: string;
+  treeId: string;
+  rootTreeId: string;
+};
+
+export type ForestUpdate =
+  | WireUpdate
+  | DewireUpdate
+  | RewireUpdate
+  | ChangeUpdate
+  | LinkUpdate
+  | UnlinkUpdate;
+
+export type ForestUpdateSubscriber = (update: ForestUpdate) => void;
+
+export type ForestUpdateUnsubscriber = () => void;

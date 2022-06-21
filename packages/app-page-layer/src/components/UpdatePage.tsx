@@ -200,11 +200,11 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
           </div>
           <div>
             {selectedFolder
-              ? (
-                  `/${selectedFolder.folder.name.replace("/", "")}` +
-                  (pageName ? `/${pageName}` : "")
-                ).replace("//", "/")
-              : `/`}
+              ? (selectedFolder.folder.name === "/"
+                  ? ""
+                  : `/${selectedFolder.folder.name}`) +
+                (pageName ? `/${pageName}` : "")
+              : ``}
           </div>
         </div>
       </div>

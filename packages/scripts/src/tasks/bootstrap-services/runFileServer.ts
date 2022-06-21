@@ -7,8 +7,8 @@ importToolConfig(toolPkgInfo.configFile)
     const fileServerConfig = toolConfig.services.fileServer;
     if (fileServerConfig) {
       // toolConfig is passed as first arg, options as second
-      const eventServer = require(fileServerConfig.path)["default"];
-      eventServer(toolConfig, fileServerConfig.options);
+      const fileServer = require(fileServerConfig.path)["default"];
+      fileServer(toolConfig, fileServerConfig.options);
     }
   })
   .catch((err) => console.log(err));

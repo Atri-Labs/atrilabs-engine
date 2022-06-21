@@ -1,0 +1,21 @@
+{
+  "name": "atri-react-app-template",
+  "version": "0.0.0",
+  "private": "true",
+  "scripts": {
+    "buildApp": "atri-react-app-build-app",
+    "buildServer": "atri-react-app-build-server",
+    "build": "yarn run buildApp && yarn run buildServer"
+  },
+  "dependencies": {
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
+    "react-router-dom": "^6.3.0",
+    "zustand": "^4.0.0-rc.1",
+    "@atrilabs/app-scripts": "^0.0.10"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1"
+  }
+}

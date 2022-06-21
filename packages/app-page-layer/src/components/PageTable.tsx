@@ -21,7 +21,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   folderHeader: {
     width: "100%",
-    padding: "0.75rem 1rem",
+    padding: "0 1rem",
+    height: "2rem",
     backgroundColor: gray900,
     display: "flex",
     justifyContent: "flex-start",
@@ -40,10 +41,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexGrow: 1,
     justifyContent: "space-between",
+    alignItems: "center",
   },
   page: {
     display: "flex",
-    padding: "0.5rem 1rem",
+    padding: "0 1rem",
+    height: "2rem",
     alignItems: "center",
     justifyContent: "space-between",
     borderBottom: `1px solid ${agastyaLine}`,
@@ -60,6 +63,7 @@ export type PageTableProps = {
   closeSubContainer: () => void;
   data: PageTableData;
   index: number;
+  changePageCb: (pageId: string) => void;
 };
 
 export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
@@ -87,6 +91,7 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
     },
     [props]
   );
+
   return (
     <div style={styles.folder}>
       {/**Show folder name only if it's not root */}
@@ -99,10 +104,12 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
             <DownArrow />
           </span>
           <div style={styles.folderNameDiv}>
-            {props.data[props.index].folder.name}
-            <span onClick={openUpdateFolder}>
-              <Setting />
-            </span>
+            <p>{props.data[props.index].folder.name}</p>
+            <div onClick={openUpdateFolder}>
+              <span>
+                <Setting />
+              </span>
+            </div>
           </div>
         </header>
       ) : null}
@@ -115,6 +122,12 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
                   <div
                     style={{
                       display: "flex",
+                      flexGrow: 1,
+                      height: "100%",
+                      alignItems: "center",
+                    }}
+                    onClick={() => {
+                      props.changePageCb(page.id);
                     }}
                   >
                     <span

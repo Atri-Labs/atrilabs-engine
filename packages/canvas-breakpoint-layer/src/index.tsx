@@ -22,6 +22,8 @@ const breakpoints = {
 };
 
 export default function () {
+  console.log("canvas-breakpoint-layer loaded");
+
   const [breakpoint, setBreakpoint] = useState<Breakpoint>();
 
   // set initial breakpoint at Desktop
@@ -41,7 +43,6 @@ export default function () {
   const setProtrait = useCallback(() => {
     setBreakpoint(breakpoints.portrait);
   }, []);
-  console.log(breakpoint === breakpoints.tablet);
   return (
     <>
       {breakpoint ? <CanvasController breakpoint={breakpoint} /> : null}

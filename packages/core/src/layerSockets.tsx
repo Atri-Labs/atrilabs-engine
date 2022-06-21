@@ -173,7 +173,7 @@ export function tab(name: string) {
     return;
   }
 
-  const register = (item: MenuItem): void => {
+  const register = (item: TabItem): void => {
     tabsRegistry[name]!.items.push(item);
     if (subscribers.tabs[name]) {
       subscribers.tabs[name].forEach((cb) => cb({ item, event: "registered" }));
@@ -279,29 +279,39 @@ export const Menu: React.FC<MenuProps> = (props) => {
 };
 
 export type TabProps = {
-  children: ReactNode | ReactNode[];
   name: string;
-};
+} & TabItem;
 
 export const Tab: React.FC<TabProps> = (props) => {
   useEffect(() => {
     const namedTab = tab(props.name);
-    if (Array.isArray(props.children)) {
-      props.children.forEach((child) => {
-        namedTab?.register(child);
-      });
-    } else {
-      namedTab?.register(props.children);
-    }
+    namedTab?.register(props);
     return () => {
-      if (Array.isArray(props.children)) {
-        props.children.forEach((child) => {
-          namedTab?.unregister(child);
-        });
-      } else {
-        namedTab?.unregister(props.children);
-      }
+      namedTab?.unregister(props);
     };
   }, [props]);
   return <></>;
 };
+
+const refRegistry: {
+  [name: string]: React.RefObject<any>;
+} = {};
+
+export function attachRef(name: string, ref: React.RefObject<any>) {
+  refRegistry[name] = ref;
+}
+
+/**
+ *
+ * detachRef deletes a ref from registry only if the provided ref matches the existing ref.
+ * If it doesn't matches, then it does nothing.
+ */
+export function detachRef(name: string, ref: React.RefObject<any>) {
+  if (refRegistry[name] && refRegistry[name] === ref) {
+    delete refRegistry[name];
+  }
+}
+
+export function getRef(name: string) {
+  return refRegistry[name];
+}

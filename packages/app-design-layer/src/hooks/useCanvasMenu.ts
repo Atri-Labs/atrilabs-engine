@@ -6,7 +6,9 @@ export const useCanvasMenu = () => {
   const [items, setItems] = useState<MenuItem[]>(canvasMenu.items());
   useEffect(() => {
     canvasMenu.listen(() => {
-      setItems(canvasMenu.items());
+      // Note: Its important to create a copy of the items array
+      // because canvasMenu.items() returns the same instance of array every time
+      setItems([...canvasMenu.items()]);
     });
   }, [setItems]);
   return items;
