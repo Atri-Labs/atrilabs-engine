@@ -1,9 +1,9 @@
 import React, { forwardRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type {
-  AcceptsChildFunction,
-  ReactComponentManifestSchema,
-} from "@atrilabs/react-component-manifest-schema/lib/types";
+// import type {
+//   AcceptsChildFunction,
+//   ReactComponentManifestSchema,
+// } from "@atrilabs/react-component-manifest-schema/lib/types";
 import {
   flexRowSort,
   flexColSort,
@@ -15,6 +15,8 @@ import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { gray500 } from "@atrilabs/design-system";
+
+type A = { s: string };
 
 export const DevFlex = forwardRef<
   HTMLDivElement,
@@ -49,7 +51,7 @@ export const Flex = forwardRef<
   );
 });
 
-const acceptsChild: AcceptsChildFunction = (info) => {
+const acceptsChild = (info: any) => {
   if (info.childCoordinates.length === 0) {
     return 0;
   }
@@ -82,7 +84,7 @@ const cssTreeOptions: CSSTreeOptions = {
   borderOptions: true,
 };
 
-const compManifest: ReactComponentManifestSchema = {
+const compManifest = {
   meta: { key: "Flex" },
   render: {
     comp: Flex,

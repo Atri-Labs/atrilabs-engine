@@ -20,7 +20,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc --project ./tsconfig.json && babel src --out-dir lib -x '.tsx' --out-file-extension .cjs"
+    "oldBuild": "tsc --project ./tsconfig.json && babel src --out-dir lib -x '.tsx' --out-file-extension .cjs"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

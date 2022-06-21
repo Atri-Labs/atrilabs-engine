@@ -50,16 +50,8 @@ export function getComponentFromManifest(meta: { pkg: string; key: string }) {
 
 // replace src with lib
 export function getManifestModulePath(pkg: string, modulePath: string) {
-  const srcDir = path.dirname(require.resolve(`${pkg}/src/manifest.config.js`));
-  let newModulePath = modulePath;
-  const relativePath = path.relative(srcDir, modulePath);
-  if (!relativePath.startsWith(".")) {
-    const libDir = path.resolve(srcDir, "..", "lib");
-    newModulePath = path.resolve(libDir, relativePath);
-    // change extension to js
-    newModulePath = newModulePath.replace(/((.ts)|(.tsx))$/, ".cjs");
-  }
-  return newModulePath;
+  const dirname = path.dirname(require.resolve(`${pkg}/package.json`));
+  return path.resolve(dirname, modulePath);
 }
 
 export function getManifest(meta: { pkg: string; key: string }) {
