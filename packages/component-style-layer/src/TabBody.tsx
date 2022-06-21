@@ -28,6 +28,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+// This serves as a Higher Order Component to arrange different sections
+// such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
   return (
     <div style={styles.container}>

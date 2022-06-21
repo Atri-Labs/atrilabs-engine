@@ -34,11 +34,21 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+// CSS Values for different CSS property (The default value must be at position 0)
+// CSS values for flex-direction CSS property (The default value row is at position 0)
 const directionValues = ["row", "column", "row-reverse", "column-reverse"];
 
+// This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
   const directionIndex = useMemo(() => {
-    if (props.styles.flexDirection) {
+    // It might happen that props.styles.flexDirection is undefined
+    // because user has not set any flex direction yet. This is true
+    // for any other CSS property as well. In those cases, the property component,
+    // like this Layout component, will set the default CSS property.
+    if (props.styles.flexDirection === undefined) {
+      // return the default CSS value index
+      return 0;
+    } else {
       const index = directionValues.findIndex(
         (val) => val === props.styles.flexDirection
       );
@@ -51,11 +61,12 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
         return 0;
       }
     }
-    return 0;
-  }, [props.styles]);
+  }, [props.styles.flexDirection]);
 
   const setDirectionSelectedIndexCb = useCallback(
     (index: number) => {
+      // Calling patchCb informs the browser forest manager(editor's state manager)
+      // to update the state and inform all subscribers about the state update.
       props.patchCb({
         property: { styles: { flexDirection: directionValues[index] } },
       });

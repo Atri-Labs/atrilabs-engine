@@ -4,6 +4,9 @@ import { TabHeader } from "./TabHeader";
 import { useShowTab } from "./hooks/useShowTab";
 import { useManageCSS } from "./hooks/useManageCSS";
 
+/*
+This serves as the Data Manager component for this layer.
+*/
 export default function () {
   // show tab and set alias
   const { showTab, alias, setAliasCb, id } = useShowTab();
