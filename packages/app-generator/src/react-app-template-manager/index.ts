@@ -429,6 +429,7 @@ export function createReactAppTemplateManager(
     } else {
       console.log("jsx cursor not found");
     }
+    // define component props, callbacks, refs etc.
     const componentCursorMatch = pageText.match(/\/\/\sCOMPONENT\sCURSOR.*\n/);
     if (componentCursorMatch) {
       const compIds = Object.keys(componentMap[name]);
@@ -448,6 +449,31 @@ export function createReactAppTemplateManager(
       });
     } else {
       console.log("component cursor not found");
+    }
+    // create imports for the page
+    const importCursorMatch = pageText.match(/\/\/\sIMPORT\sCURSOR.*\n/);
+    if (importCursorMatch) {
+      const currPageImports = pageImportMap[name];
+      const sources = Object.keys(currPageImports);
+      const newImportText = sources
+        .map((source) => {
+          const importVars = currPageImports[source]
+            .map((val) => {
+              if (val.identifier === val.localIdentifier)
+                return `${val.identifier}`;
+              return `${val.identifier} as ${val.localIdentifier}`;
+            })
+            .join(", ");
+          return `import { ${importVars} } from "${source}";`;
+        })
+        .join("\n");
+      slices.push({
+        index: importCursorMatch.index!,
+        length: importCursorMatch[0].length,
+        replaceWith: newImportText,
+      });
+    } else {
+      console.log("import cursor not found");
     }
     const newText = replaceText(pageText, slices);
     fs.writeFileSync(pagePath, newText);
