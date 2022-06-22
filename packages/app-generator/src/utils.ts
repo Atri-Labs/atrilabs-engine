@@ -39,10 +39,7 @@ export function getComponentFromManifest(meta: { pkg: string; key: string }) {
       // absolute module path
       modulePath: getManifestModulePath(
         meta.pkg,
-        path.resolve(
-          manifestPkgPath,
-          manifestConfig["componentMap"][meta.key]["modulePath"]
-        )
+        manifestConfig["componentMap"][meta.key]["modulePath"]
       ),
     };
   }
@@ -50,8 +47,7 @@ export function getComponentFromManifest(meta: { pkg: string; key: string }) {
 
 // replace src with lib
 export function getManifestModulePath(pkg: string, modulePath: string) {
-  const dirname = path.dirname(require.resolve(`${pkg}/package.json`));
-  return path.resolve(dirname, modulePath);
+  return path.join(pkg, modulePath);
 }
 
 export function getManifest(meta: { pkg: string; key: string }) {
@@ -74,17 +70,11 @@ export function getManifest(meta: { pkg: string; key: string }) {
       manifestConfig["componentMap"][meta.key]["modulePath"]
     );
     const compiledModulePath = getManifestModulePath(meta.pkg, modulePath);
-    console.log("got path", compiledModulePath);
-    if (fs.existsSync(compiledModulePath)) {
-      console.log("path exists");
-      try {
-        console.log("module entire", require(compiledModulePath));
-        return require(compiledModulePath)["default"];
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      console.log("compiled module not found", compiledModulePath);
+    try {
+      console.log("compiled module path", require(compiledModulePath));
+      return require(compiledModulePath)["default"];
+    } catch (err) {
+      console.log(err);
     }
   }
 }
