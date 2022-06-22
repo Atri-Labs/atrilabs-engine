@@ -11,7 +11,7 @@ watcher.on("change", (path) => {
   let changeWasInLayer = false;
   const layerSrcDirs = Object.keys(watchedLayerSrcDirs);
   layerSrcDirs.forEach((srcDir) => {
-    if (path.match(srcDir)) {
+    if (path.includes(srcDir)) {
       changeWasInLayer = true;
       buildLayer(watchedLayerSrcDirs[srcDir]!);
     }
@@ -20,7 +20,7 @@ watcher.on("change", (path) => {
   if (!changeWasInLayer) {
     const runtimeSrcDirs = Object.keys(watchedRuntimeSrcDirs);
     runtimeSrcDirs.forEach((srcDir) => {
-      if (path.match(srcDir)) {
+      if (path.includes(srcDir)) {
         buildRuntime(watchedRuntimeSrcDirs[srcDir]!);
       }
     });

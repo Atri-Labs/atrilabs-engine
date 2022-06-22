@@ -24,7 +24,7 @@ module.exports = function (babel, options) {
         // put if condition here
         if (
           options.manifestJsPath &&
-          parent.filename.match(options.manifestJsPath)
+          parent.filename.includes(options.manifestJsPath)
         ) {
           path.traverse(defaultImportsVisitor);
           options.manifests.forEach((m, index) => {

@@ -17,7 +17,7 @@ function packageDetails(pkg) {
   const keys = Object.keys(deps);
   let isScriptInstalled = false;
   keys.every((key) => {
-    if (key.match(scriptsPackage)) {
+    if (key.includes(scriptsPackage)) {
       isScriptInstalled = true;
       // stop
       return false;

@@ -82,7 +82,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program: (path, parent) => {
-        if (!parent.filename.match(options.ignoreShimsDir)) {
+        if (!(parent.filename.includes(options.ignoreShimsDir))) {
           const ast = babel.template.statement.ast(shimsImportStatement);
           path.unshiftContainer("body", ast);
           path.traverse(childVisitor);

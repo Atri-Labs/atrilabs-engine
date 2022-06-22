@@ -154,7 +154,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program(path, parent) {
-        if (!parent.filename.match(options.browserForestManagerFile)) {
+        if (!(parent.filename.includes(options.browserForestManagerFile))) {
           return;
         }
         // add import statements for each tree

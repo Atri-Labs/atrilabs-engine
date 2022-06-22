@@ -34,9 +34,7 @@ module.exports = function (babel, options) {
     visitor: {
       Program: {
         enter: (path, parent) => {
-          const skip = parent.filename.match(options.layerDetailsFile)
-            ? false
-            : true;
+          const skip = !(parent.filename.includes(options.layerDetailsFile));
           if (!skip) {
             path.traverse(InternalVisitor, { options });
           }

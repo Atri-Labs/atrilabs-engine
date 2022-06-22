@@ -34,7 +34,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program: (path, parent) => {
-        if (parent.filename.match(options.manifestRegistryFile)) {
+        if (parent.filename.includes(options.manifestRegistryFile)) {
           options.manifests.forEach((man, index) => {
             const importNode = babel.template.statement.ast(
               importTemplate(man.schemaModulePath, index)
