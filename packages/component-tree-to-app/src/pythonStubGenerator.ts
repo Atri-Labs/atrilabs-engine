@@ -111,7 +111,7 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
       if (node.meta && node.meta.pkg && node.meta.key && alias) {
         const pkg = node.meta.pkg;
         const key = node.meta.key;
-        if (pkg.match("react-component-manifests")) {
+        if (pkg.includes("react-component-manifests")) {
           if (keyPropMap[key]) {
             stub.vars[alias] = {
               type: "",

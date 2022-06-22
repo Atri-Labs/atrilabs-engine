@@ -8,7 +8,7 @@ function startEventServer() {
   const { signal } = controller;
   const eventServer = fork(runEventServerFile, [], { signal });
   eventServer.on("error", (err) => {
-    if (!err.toString().match("AbortError"))
+    if (!err.toString().includes("AbortError"))
       console.log(`Event Server exited with error\n${err}`);
   });
   return controller;
@@ -20,7 +20,7 @@ function startFileServer() {
   const { signal } = controller;
   const fileServer = fork(fileServerFile, [], { signal });
   fileServer.on("error", (err) => {
-    if (!err.toString().match("AbortError"))
+    if (!err.toString().includes("AbortError"))
       console.log(`File Server exited with error\n${err}`);
   });
   return controller;
@@ -32,7 +32,7 @@ function startManifestServer() {
   const { signal } = controller;
   const manifestServer = fork(manifestServerFile, [], { signal });
   manifestServer.on("error", (err) => {
-    if (!err.toString().match("AbortError"))
+    if (!err.toString().includes("AbortError"))
       console.log(`Manifest Server exited with error\n${err}`);
   });
   return controller;
@@ -44,7 +44,7 @@ function startPublishServer() {
   const { signal } = controller;
   const publishServer = fork(runPublishServerFile, [], { signal });
   publishServer.on("error", (err) => {
-    if (!err.toString().match("AbortError"))
+    if (!err.toString().includes("AbortError"))
       console.log(`Publish Server exited with error\n${err}`);
   });
   return controller;

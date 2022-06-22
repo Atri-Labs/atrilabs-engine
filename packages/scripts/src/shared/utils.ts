@@ -271,7 +271,7 @@ export function detectLayerForFile(
 ) {
   for (let i = 0; i < layerEntries.length; i++) {
     const currLayer = layerEntries[i]!;
-    if (filename.match(currLayer.layerPath)) {
+    if (filename.includes(currLayer.layerPath)) {
       return currLayer;
     }
   }
@@ -284,7 +284,7 @@ export function detectRuntimeForFile(
 ) {
   for (let i = 0; i < runtimeEntries.length; i++) {
     const currRuntime = runtimeEntries[i]!;
-    if (filename.match(currRuntime.runtimePath)) {
+    if (filename.includes(currRuntime.runtimePath)) {
       return currRuntime;
     }
   }

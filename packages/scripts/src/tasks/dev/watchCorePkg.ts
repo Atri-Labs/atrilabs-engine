@@ -14,7 +14,7 @@ export default function watchCorePkg(corePkgInfo: CorePkgInfo) {
     watcher.add(`${srcDir}/**/*`);
   }
   watcher.on("change", (path) => {
-    if (path.match(srcDir)) {
+    if (path.includes(srcDir)) {
       try {
         exec("tsc", { cwd: corePkgInfo.dir }, (err, stdout, stderr) => {
           let hasError = false;

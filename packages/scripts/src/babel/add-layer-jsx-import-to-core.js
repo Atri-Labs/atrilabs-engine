@@ -10,7 +10,7 @@ module.exports = function (babel, options) {
   return {
     visitor: {
       Program(path, parent) {
-        if (!parent.filename.match(options.coreEntry)) {
+        if (!(parent.filename.includes(options.coreEntry))) {
           return;
         }
         if (
