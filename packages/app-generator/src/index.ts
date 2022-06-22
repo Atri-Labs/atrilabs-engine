@@ -18,8 +18,10 @@ import {
   getComponentFromManifest,
   getForestDef,
   getManifest,
+  getPackageVersion,
   getReactAppDestPath,
   getReactAppServerDestPath,
+  getReactPackageJSONDestPath,
   pythonAppTemplatePath,
   reactAppPackageJSON,
   reactAppRootTemplate,
@@ -70,6 +72,7 @@ export default async function (
       toCopy: reactAppToCopyToRoot,
       reactAppRootTemplate,
       reactAppPackageJSON,
+      reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
     },
     options.rootComponentId
   );
@@ -155,7 +158,44 @@ export default async function (
     reactTemplateManager.createPage(pageName);
     reactTemplateManager.addPageToApp(pages[pageId]);
   });
+
   // install packages or update package.json
+  const deps: { [pkg: string]: string } = {};
+  const devDeps: { [pkg: string]: string } = {};
+  const manifestDirs = toolConfig["manifestDirs"];
+  console.log(manifestDirs);
+  if (manifestDirs && Array.isArray(manifestDirs)) {
+    manifestDirs.forEach((dir) => {
+      const version = getPackageVersion(dir.pkg);
+      console.log(version);
+      if (version) {
+        deps[dir.pkg] = `^${version}`;
+      }
+    });
+  }
+  // We will update all the @atrilabs/... dependencies with latest version
+  const currDeps = reactTemplateManager.getDependencies();
+  const atriDeps = Object.keys(currDeps).filter((dep) => {
+    return dep.match("@atrilabs");
+  });
+  atriDeps.forEach((dep) => {
+    const version = getPackageVersion(dep);
+    if (version) {
+      deps[dep] = `^${version}`;
+    }
+  });
+  const currDevDeps = reactTemplateManager.getDevDependencies();
+  const atriDevDeps = Object.keys(currDevDeps).filter((dep) => {
+    return dep.match("@atrilabs");
+  });
+  atriDevDeps.forEach((dep) => {
+    const version = getPackageVersion(dep);
+    if (version) {
+      devDeps[dep] = `^${version}`;
+    }
+  });
+  reactTemplateManager.patchDependencies(deps);
+  reactTemplateManager.patchDevDependencies(devDeps);
 
   // fill pages in app
   reactTemplateManager.flushAppJSX();
@@ -164,6 +204,7 @@ export default async function (
   // update store using editor events
   reactTemplateManager.flushStore();
   reactTemplateManager.flushAtriBuildInfo(toolConfig["manifestDirs"]);
+  reactTemplateManager.flushPatchedPackageJSON();
 
   const pythonGeneratorFunctions: {
     fn: PythonStubGeneratorFunction;

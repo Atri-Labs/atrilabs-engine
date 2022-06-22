@@ -15,6 +15,7 @@ import {
   getForestDef,
   getReactAppDestPath,
   getReactAppServerDestPath,
+  getReactPackageJSONDestPath,
   reactAppPackageJSON,
   reactAppRootTemplate,
   reactAppServerTemplatePath,
@@ -103,6 +104,7 @@ export default async function buildReactApp(
       toCopy: reactAppToCopyToRoot,
       reactAppRootTemplate,
       reactAppPackageJSON,
+      reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
     },
     options.rootComponentId
   );

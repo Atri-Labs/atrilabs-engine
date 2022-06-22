@@ -2,6 +2,7 @@ import {
   atriAppBuildInfoFilename,
   atriAppBuildInfoTemplateFilepath,
   getFiles,
+  reactAppPackageJSON,
 } from "../utils";
 import path from "path";
 import fs from "fs";
@@ -19,6 +20,7 @@ export function createReactAppTemplateManager(
     reactAppRootDest: string;
     reactAppRootTemplate: string;
     reactAppPackageJSON: string;
+    reactAppPackageJSONDest: string;
   },
   rootComponentId: string
 ) {
@@ -259,24 +261,16 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(appJSXDestPath, newText);
   }
 
-  function getDependencies() {
-    const reactAppPackageJSONPath = path.resolve(
-      paths.reactAppTemplate,
-      "package.json"
-    );
-    const reactAppPackageJSON = require(reactAppPackageJSONPath);
-    const reactAppDependencies = reactAppPackageJSON["dependencies"] || {};
+  function getDependencies(): { [pkg: string]: string } {
+    const reactAppPackageJSONObj = require(reactAppPackageJSON);
+    const reactAppDependencies = reactAppPackageJSONObj["dependencies"] || {};
     return reactAppDependencies;
   }
 
-  function getDevDependencies() {
-    const reactAppPackageJSONPath = path.resolve(
-      paths.reactAppTemplate,
-      "package.json"
-    );
-    const reactAppPackageJSON = require(reactAppPackageJSONPath);
+  function getDevDependencies(): { [pkg: string]: string } {
+    const reactAppPackageJSONObj = require(reactAppPackageJSON);
     const reactAppDevDependencies =
-      reactAppPackageJSON["devDependencies"] || {};
+      reactAppPackageJSONObj["devDependencies"] || {};
     return reactAppDevDependencies;
   }
 
@@ -544,7 +538,31 @@ export function createReactAppTemplateManager(
   }
 
   // add dependencies to destination package.json
-  function patchDependencies() {}
+  let dependencies: { [pkg: string]: string } = {};
+  let devDependencies: { [pkg: string]: string } = {};
+  function patchDependencies(deps: { [pkg: string]: string }) {
+    dependencies = { ...dependencies, ...deps };
+  }
+
+  function patchDevDependencies(deps: { [pkg: string]: string }) {
+    devDependencies = { ...devDependencies, ...deps };
+  }
+
+  function flushPatchedPackageJSON() {
+    const reactAppPackageJSONObj = require(reactAppPackageJSON);
+    reactAppPackageJSONObj["dependencies"] = {
+      ...reactAppPackageJSONObj["dependencies"],
+      ...dependencies,
+    };
+    reactAppPackageJSONObj["devDependencies"] = {
+      ...reactAppPackageJSONObj["devDependencies"],
+      ...devDependencies,
+    };
+    fs.writeFileSync(
+      paths.reactAppPackageJSONDest,
+      JSON.stringify(reactAppPackageJSONObj, null, 2)
+    );
+  }
 
   // flush atri-build-info.json
   function flushAtriBuildInfo(manifestDirs: ToolConfig["manifestDirs"]) {
@@ -567,10 +585,12 @@ export function createReactAppTemplateManager(
     getDependencies,
     getDevDependencies,
     patchDependencies,
+    patchDevDependencies,
     addComponents,
     flushPages,
     addProps,
     flushStore,
     flushAtriBuildInfo,
+    flushPatchedPackageJSON,
   };
 }

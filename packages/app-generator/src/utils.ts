@@ -120,6 +120,10 @@ export function getReactAppServerDestPath(outputDir: string) {
   return path.resolve(outputDir, "server");
 }
 
+export function getReactPackageJSONDestPath(outputDir: string) {
+  return path.resolve(outputDir, "package.json");
+}
+
 export function getForestDef(toolConfig: ToolConfig, appForestPkgId: string) {
   // create tree def and forest def from toolConfig
   const appForestEntry = toolConfig.forests[appForestPkgId];
@@ -161,3 +165,14 @@ export const atriAppBuildInfoTemplateFilepath = path.resolve(
   reactAppRootTemplate,
   atriAppBuildInfoFilename
 );
+
+export function getPackageVersion(pkg: string): string | null {
+  try {
+    const pkgJSON = require.resolve(`${pkg}/package.json`);
+    const version = require(pkgJSON)["version"];
+    return version;
+  } catch (err) {
+    console.log(err);
+  }
+  return null;
+}
