@@ -306,31 +306,18 @@ export async function extractRuntimeEntries(
 
   function getRuntimeInfo(runtimeConfigPath: string) {
     return new Promise<{
-      runtimeEntry: string;
+      runtimeEntryModulePath: string;
       requires: RuntimeConfig["requires"];
       exposes: RuntimeConfig["exposes"];
-    }>((res, rej) => {
+    }>((res) => {
       // delete cache to re-import layer.config.js module
       delete require.cache[runtimeConfigPath];
       import(runtimeConfigPath).then((mod: { default: RuntimeConfig }) => {
-        let runtimeEntry = mod.default.modulePath;
-        // layerEntry must be converted to absolute path
-        if (!path.isAbsolute(mod.default.modulePath)) {
-          runtimeEntry = path.resolve(
-            path.dirname(runtimeConfigPath),
-            mod.default.modulePath
-          );
-        }
-        const filenameWithExt = findFileWithoutExtension(runtimeEntry);
-        if (filenameWithExt) {
-          res({
-            runtimeEntry: filenameWithExt,
-            requires: mod.default.requires,
-            exposes: mod.default.exposes,
-          });
-          return;
-        }
-        rej(`${runtimeEntry} not found`);
+        res({
+          runtimeEntryModulePath: mod.default.modulePath,
+          requires: mod.default.requires,
+          exposes: mod.default.exposes,
+        });
       });
     });
   }
@@ -368,12 +355,11 @@ export async function extractRuntimeEntries(
       );
       const runtimeSrcDir = path.resolve(runtimePath, "src");
       const runtimePackageName = runtime;
-      const { runtimeEntry, exposes, requires } = await getRuntimeInfo(
-        runtimeConfigPath
-      );
+      const { runtimeEntryModulePath, exposes, requires } =
+        await getRuntimeInfo(runtimeConfigPath);
       runtimeEntries.push({
         index: i,
-        runtimeEntry,
+        runtimeEntry: path.join(runtime, "lib", runtimeEntryModulePath),
         runtimeConfigPath,
         runtimePath,
         runtimePackageName,
