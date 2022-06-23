@@ -201,7 +201,9 @@ export async function extractLayerEntries(
         layer,
         "index.js"
       );
-      const importGlobalModulePath = path.join(".cache", layer, "index.js");
+      const importGlobalModulePath = path
+        .join(".cache", layer, "index.js")
+        .replace(/\\/g, "/");
       const layerConfigSymlink = path.resolve(
         toolPkgInfo.cacheDir,
         layer,
@@ -209,7 +211,9 @@ export async function extractLayerEntries(
       );
       const { layerEntryModulePath, exposes, requires, runtime } =
         await getLayerInfo(layerConfigPath);
-      const layerEntry = path.join(layer, "lib", layerEntryModulePath);
+      const layerEntry = path
+        .join(layer, "lib", layerEntryModulePath)
+        .replace(/\\/g, "/");
       const isRoot = i === 0 ? true : false;
       layerEntries.push({
         index: i,
@@ -359,7 +363,9 @@ export async function extractRuntimeEntries(
         await getRuntimeInfo(runtimeConfigPath);
       runtimeEntries.push({
         index: i,
-        runtimeEntry: path.join(runtime, "lib", runtimeEntryModulePath),
+        runtimeEntry: path
+          .join(runtime, "lib", runtimeEntryModulePath)
+          .replace(/\\/g, "/"),
         runtimeConfigPath,
         runtimePath,
         runtimePackageName,
@@ -754,11 +760,9 @@ export async function extractManifestSchemaEntry(
   const manifestSchemaConfig = await importManifestSchemaConfig(
     manifestSchemaPkgInfo.configFile
   );
-  const modulePath = path.join(
-    manifestSchemaPkg,
-    "lib",
-    manifestSchemaConfig.modulePath
-  );
+  const modulePath = path
+    .join(manifestSchemaPkg, "lib", manifestSchemaConfig.modulePath)
+    .replace(/\\/g, "/");
   return { ...manifestSchemaConfig, modulePath, ...manifestSchemaPkgInfo };
 }
 

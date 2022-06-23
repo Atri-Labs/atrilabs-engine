@@ -47,7 +47,7 @@ export function getComponentFromManifest(meta: { pkg: string; key: string }) {
 
 // replace src with lib
 export function getManifestModulePath(pkg: string, modulePath: string) {
-  return path.join(pkg, modulePath);
+  return path.join(pkg, modulePath).replace(/\\/g, "/");
 }
 
 export function getManifest(meta: { pkg: string; key: string }) {
