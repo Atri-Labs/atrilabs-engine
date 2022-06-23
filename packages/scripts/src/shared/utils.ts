@@ -148,33 +148,21 @@ export async function extractLayerEntries(
 
   async function getLayerInfo(layerConfigPath: string) {
     return new Promise<{
-      layerEntry: string;
+      layerEntryModulePath: string;
       requires: LayerConfig["requires"];
       exposes: LayerConfig["exposes"];
       runtime: LayerConfig["runtime"];
-    }>((res, rej) => {
+    }>((res) => {
       // delete cache to re-import layer.config.js module
       delete require.cache[layerConfigPath];
       import(layerConfigPath).then((mod: { default: LayerConfig }) => {
-        let layerEntry = mod.default.modulePath;
-        // layerEntry must be converted to absolute path
-        if (!path.isAbsolute(mod.default.modulePath)) {
-          layerEntry = path.resolve(
-            path.dirname(layerConfigPath),
-            mod.default.modulePath
-          );
-        }
-        const filenameWithExt = findFileWithoutExtension(layerEntry);
-        if (filenameWithExt) {
-          res({
-            layerEntry: filenameWithExt,
-            requires: mod.default.requires,
-            exposes: mod.default.exposes,
-            runtime: mod.default.runtime,
-          });
-          return;
-        }
-        rej(`${layerEntry} not found`);
+        res({
+          layerEntryModulePath: mod.default.modulePath,
+          requires: mod.default.requires,
+          exposes: mod.default.exposes,
+          runtime: mod.default.runtime,
+        });
+        return;
       });
     });
   }
@@ -218,9 +206,9 @@ export async function extractLayerEntries(
         layer,
         "layer.config.js"
       );
-      const { layerEntry, exposes, requires, runtime } = await getLayerInfo(
-        layerConfigPath
-      );
+      const { layerEntryModulePath, exposes, requires, runtime } =
+        await getLayerInfo(layerConfigPath);
+      const layerEntry = path.join(layer, "lib", layerEntryModulePath);
       const isRoot = i === 0 ? true : false;
       layerEntries.push({
         index: i,

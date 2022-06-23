@@ -20,6 +20,7 @@ export type LayerEntry = {
   layerPackageName: string;
   layerPath: string;
   layerConfigPath: string;
+  // layerEntry has import format i.e. <pkg>/lib/index.js
   layerEntry: string;
   layerSrcDir: string;
   // the path where layer specific module is written
