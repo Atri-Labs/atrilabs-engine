@@ -10,6 +10,7 @@ import {
   getFiles,
   getManifestPkgCacheDir,
   getManifestPkgInfo,
+  getToolPkgInfo,
   installManifestPkgDependencies,
 } from "./utils";
 import { ManifestPkgInfo } from "./types";
@@ -189,6 +190,9 @@ export async function buildManifestPackage(
       buildInfo.dir,
       firstBuild
     );
+    const relativeCompiledFiles = compiledFiles.map((file) => {
+      return path.relative(getToolPkgInfo()["nodeModule"], file);
+    });
 
     try {
       await validateTSOutput(compiledFiles);
@@ -210,7 +214,7 @@ export async function buildManifestPackage(
       scriptName,
       `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
       manifestJsPath,
-      compiledFiles,
+      relativeCompiledFiles,
       shimsPath,
       // ignore putting import {Shims} from "path/to/shims.js"
       // in all files from cache src dir
