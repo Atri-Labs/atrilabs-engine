@@ -25,6 +25,8 @@ export type LayerEntry = {
   layerSrcDir: string;
   // the path where layer specific module is written
   globalModulePath: string;
+  // importGlobalModulePath has import format i.e. .cache/<layer-pkg>/index.js
+  importGlobalModulePath: string;
   layerConfigSymlink: string;
   // flag root layer
   isRoot: boolean;

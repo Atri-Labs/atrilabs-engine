@@ -95,15 +95,17 @@ export default function emitBabelLoader(
   // we insert (import) global values like currentLayer etc.
   // to all the modules in a layer. We do this by importing the globalModulePath
   // for each layer.
-  const getImports = (
-    filename: string
-  ): { namedImports: string[]; path: string }[] | undefined => {
-    const layer = detectLayerForFile(filename, layerEntries);
-    if (layer) {
-      return [{ namedImports: ["currentLayer"], path: layer.globalModulePath }];
-    }
-    return;
-  };
+  // const getImports = (
+  //   filename: string
+  // ): { namedImports: string[]; path: string }[] | undefined => {
+  //   const layer = detectLayerForFile(filename, layerEntries);
+  //   if (layer) {
+  //     return [
+  //       { namedImports: ["currentLayer"], path: layer.importGlobalModulePath },
+  //     ];
+  //   }
+  //   return;
+  // };
 
   const getNameMap = (filename: string) => {
     const layer = detectLayerForFile(filename, layerEntries);
@@ -143,12 +145,12 @@ export default function emitBabelLoader(
                 layerDetailsFile: corePkgInfo.layerDetailsFile,
               },
             ],
-            [
-              path.resolve(__dirname, "..", "babel", "add-layer-import.js"),
-              {
-                getImports,
-              },
-            ],
+            // [
+            //   path.resolve(__dirname, "..", "babel", "add-layer-import.js"),
+            //   {
+            //     getImports,
+            //   },
+            // ],
             [
               path.resolve(
                 __dirname,

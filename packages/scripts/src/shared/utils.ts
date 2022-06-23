@@ -201,6 +201,7 @@ export async function extractLayerEntries(
         layer,
         "index.js"
       );
+      const importGlobalModulePath = path.join(".cache", layer, "index.js");
       const layerConfigSymlink = path.resolve(
         toolPkgInfo.cacheDir,
         layer,
@@ -219,6 +220,7 @@ export async function extractLayerEntries(
         globalModulePath,
         layerConfigSymlink,
         layerPackageName,
+        importGlobalModulePath,
         exposes,
         requires,
         remap,
