@@ -161,9 +161,8 @@ module.exports = {
   ],
   clients: {
     eventClient: {
-      modulePath: require.resolve(
-        "@atrilabs/server-client/lib/websocket/client"
-      ),
+      // needed in import format
+      modulePath: "@atrilabs/server-client/lib/websocket/client",
     },
   },
   env: {
