@@ -278,6 +278,7 @@ export default function createManifestWebpackConfig(
     },
     resolve: {
       extensions: [".js", ".jsx"],
+      modules: ["node_modules", path.resolve("node_modules")],
     },
   };
 }

@@ -217,7 +217,9 @@ export async function buildManifestPackage(
       `http://localhost:${port}/assets?pkg=${encodeURI(pkg)}&file=`,
       manifestJsPath,
       relativeCompiledFiles,
-      shimsPath,
+      path
+        .relative(getToolPkgInfo()["nodeModule"], shimsPath)
+        .replace(/\\/g, "/"),
       // ignore putting import {Shims} from "path/to/shims.js"
       // in all files from cache src dir
       cacheSrcDir
