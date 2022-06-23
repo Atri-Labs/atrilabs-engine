@@ -191,7 +191,9 @@ export async function buildManifestPackage(
       firstBuild
     );
     const relativeCompiledFiles = compiledFiles.map((file) => {
-      return path.relative(getToolPkgInfo()["nodeModule"], file);
+      return path
+        .relative(getToolPkgInfo()["nodeModule"], file)
+        .replace(/\\/g, "/");
     });
 
     try {
