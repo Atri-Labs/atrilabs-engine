@@ -151,7 +151,7 @@ export default function createManifestWebpackConfig(
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               exclude:
-                /(node_modules\/css-loader)|(node_modules\/style-loader)/,
+                /(node_modules[\/\\]css-loader)|(node_modules[\/\\]style-loader)/,
               use: [
                 {
                   loader: require.resolve("babel-loader"),
