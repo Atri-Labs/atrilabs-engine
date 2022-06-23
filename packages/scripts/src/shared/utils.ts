@@ -754,8 +754,9 @@ export async function extractManifestSchemaEntry(
   const manifestSchemaConfig = await importManifestSchemaConfig(
     manifestSchemaPkgInfo.configFile
   );
-  const modulePath = path.resolve(
-    path.dirname(manifestSchemaPkgInfo.configFile),
+  const modulePath = path.join(
+    manifestSchemaPkg,
+    "lib",
     manifestSchemaConfig.modulePath
   );
   return { ...manifestSchemaConfig, modulePath, ...manifestSchemaPkgInfo };
