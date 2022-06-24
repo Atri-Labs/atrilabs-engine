@@ -59,10 +59,11 @@ export type BuildServerOptions = {
   serverEntry: string;
   serverOutput: string;
   includes: string[];
+  allowList: string[];
 };
 
 export function buildServer(options: BuildServerOptions) {
-  const { mode, serverEntry, serverOutput, includes } = options;
+  const { mode, serverEntry, serverOutput, includes, allowList } = options;
 
   process.env["NODE_ENV"] = mode;
   process.env["BABEL_ENV"] = mode;
@@ -72,6 +73,7 @@ export function buildServer(options: BuildServerOptions) {
     mode,
     publicUrlOrPath: "/",
     shouldUseSourceMap: false,
+    allowList,
   });
 
   webpack(webpackConfig, (err, stats) => {

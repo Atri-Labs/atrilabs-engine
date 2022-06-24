@@ -13,6 +13,7 @@ export type ServerWerbpackConfigOptions = {
   mode: Configuration["mode"];
   publicUrlOrPath: string;
   shouldUseSourceMap: boolean;
+  allowList: string[];
 };
 
 export default function createServerWebpackConfig(
@@ -60,13 +61,24 @@ export default function createServerWebpackConfig(
       },
     ],
   });
+
+  const allowListFunc = (moduleName: string) => {
+    for (let i = 0; i < options.allowList.length; i++) {
+      const allowPkg = options.allowList[i]!;
+      if (moduleName.includes(allowPkg)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const webpackConfig: Configuration = {
     mode: options.mode,
     entry: {
       server: { import: options.paths.serverEntry },
     },
     target: "node",
-    externals: [nodeExternals()],
+    externals: [nodeExternals({ allowlist: allowListFunc })],
     output: {
       path: options.paths.serverOutput,
       pathinfo: isEnvDevelopment,

@@ -20,6 +20,7 @@ try {
     const serverSrc: string = buildInfo["serverSrc"];
     const serverOutput: string = buildInfo["serverOutput"];
     const appSrc: string = buildInfo["appSrc"];
+    const manifestDirs: { pkg: string }[] = buildInfo["manifestDirs"];
     if (
       !(
         serverEntry &&
@@ -32,12 +33,20 @@ try {
     ) {
       throw Error(`Wrong schema of ${buildInfoFilename}.`);
     }
-    const includes = [serverSrc, appSrc];
+    const manifestPkgs = manifestDirs.map((manifestDef) => {
+      if (manifestDef["pkg"]) {
+        return path.dirname(require.resolve(`${manifestDef.pkg}/package.json`));
+      } else {
+        throw Error(`Wrong schema of ${buildInfoFilename}.`);
+      }
+    });
+    const includes = [...manifestPkgs, appSrc, serverSrc];
     buildServer({
       serverEntry: path.resolve(serverEntry),
       serverOutput: path.resolve(serverOutput),
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
+      allowList: manifestDirs.map((dir) => dir.pkg),
     });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);
