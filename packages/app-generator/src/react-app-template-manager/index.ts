@@ -1,6 +1,8 @@
 import {
   atriAppBuildInfoFilename,
   atriAppBuildInfoTemplateFilepath,
+  atriAppServerInfoFilename,
+  atriAppServerInfoTemplateFilepath,
   getFiles,
   reactAppPackageJSON,
 } from "../utils";
@@ -577,6 +579,25 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(dest, JSON.stringify(buildInfoTemplate, null, 2));
   }
 
+  // flush atri-server-info.json
+  function flushAtriServerInfo() {
+    const serverInfoTemplate = JSON.parse(
+      fs.readFileSync(atriAppServerInfoTemplateFilepath).toString()
+    );
+    serverInfoTemplate["pages"] = {};
+    pageImports.forEach((pageImport) => {
+      serverInfoTemplate["pages"][pageImport.route] = {};
+    });
+    const dest = path.resolve(
+      paths.reactAppRootDest,
+      atriAppServerInfoFilename
+    );
+    if (!fs.existsSync(paths.reactAppRootDest)) {
+      fs.mkdirSync(paths.reactAppRootDest);
+    }
+    fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
+  }
+
   return {
     copyTemplate,
     createPage,
@@ -592,5 +613,6 @@ export function createReactAppTemplateManager(
     flushStore,
     flushAtriBuildInfo,
     flushPatchedPackageJSON,
+    flushAtriServerInfo,
   };
 }

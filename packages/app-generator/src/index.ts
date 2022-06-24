@@ -205,6 +205,7 @@ export default async function (
   reactTemplateManager.flushStore();
   reactTemplateManager.flushAtriBuildInfo(toolConfig["manifestDirs"]);
   reactTemplateManager.flushPatchedPackageJSON();
+  reactTemplateManager.flushAtriServerInfo();
 
   const pythonGeneratorFunctions: {
     fn: PythonStubGeneratorFunction;

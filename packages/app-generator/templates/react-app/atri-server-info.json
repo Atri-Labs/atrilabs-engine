@@ -1,0 +1,5 @@
+{
+  "port": 4005,
+  "publicDir": "dist/app",
+  "pages": {}
+}
