@@ -33,7 +33,7 @@ export default function createWebpackConfig(
       loader: require.resolve("source-map-loader"),
     });
   }
-  const { oneOf } = createCommonWebpackConfig({
+  const { oneOf, plugins } = createCommonWebpackConfig({
     isEnvDevelopment,
     isEnvProduction,
     shouldUseSourceMap,
@@ -122,6 +122,7 @@ export default function createWebpackConfig(
             : undefined
         )
       ),
+      ...plugins,
     ],
     resolve: {
       extensions: moduleFileExtensions.map((ext) => `.${ext}`),

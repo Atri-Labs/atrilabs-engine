@@ -46,10 +46,10 @@ const server = app.listen(port, () => {
   if (typeof address === "object" && address !== null) {
     let port = address.port;
     let ip = address.address;
-    console.log(`[publish_app_server] listening on http://${ip}:${port}`);
+    console.log(`[ATRI_SERVER] listening on http://${ip}:${port}`);
   } else if (typeof address === "string") {
-    console.log(`[publish_app_server] listening on http://${address}`);
+    console.log(`[ATRI_SERVER] listening on http://${address}`);
   } else {
-    console.log(`[publish_app_server] cannot listen on ${port}`);
+    console.log(`[ATRI_SERVER] cannot listen on ${port}`);
   }
 });

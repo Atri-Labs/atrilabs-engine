@@ -1,7 +1,7 @@
 import { Configuration, ModuleOptions } from "webpack";
 import { createCommonWebpackConfig } from "./common.webpack.config";
 import { imageInlineSizeLimit, moduleFileExtensions } from "./utils";
-const nodeExternals = require("webpack-node-externals");
+// const nodeExternals = require("webpack-node-externals");
 
 export type ServerWerbpackConfigOptions = {
   paths: {
@@ -23,7 +23,7 @@ export default function createServerWebpackConfig(
   const isEnvDevelopment = options.mode === "development";
   const isEnvProduction = options.mode === "production";
   const rules: ModuleOptions["rules"] = [];
-  const { oneOf } = createCommonWebpackConfig({
+  const { oneOf, plugins } = createCommonWebpackConfig({
     isEnvDevelopment,
     isEnvProduction,
     imageInlineSizeLimit,
@@ -62,15 +62,21 @@ export default function createServerWebpackConfig(
     ],
   });
 
-  const allowListFunc = (moduleName: string) => {
-    for (let i = 0; i < options.allowList.length; i++) {
-      const allowPkg = options.allowList[i]!;
-      if (moduleName.includes(allowPkg)) {
-        return true;
-      }
-    }
-    return false;
-  };
+  /**
+   * The allow list must contain all the dependency of the manifest packages,
+   * and their dependencies dependency and so on. This will entail reading package.json
+   * of all dependencies recursively. Currently we are parking this approach, instead,
+   * we are taking a short route by bundling our node module dependencies as well like express.
+   */
+  // const allowListFunc = (moduleName: string) => {
+  //   for (let i = 0; i < options.allowList.length; i++) {
+  //     const allowPkg = options.allowList[i]!;
+  //     if (moduleName.includes(allowPkg)) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // };
 
   const webpackConfig: Configuration = {
     mode: options.mode,
@@ -78,7 +84,8 @@ export default function createServerWebpackConfig(
       server: { import: options.paths.serverEntry },
     },
     target: "node",
-    externals: [nodeExternals({ allowlist: allowListFunc })],
+    // externals: [nodeExternals({ allowlist: allowListFunc })],
+    externalsPresets: { node: true },
     output: {
       path: options.paths.serverOutput,
       pathinfo: isEnvDevelopment,
@@ -101,6 +108,7 @@ export default function createServerWebpackConfig(
     module: {
       rules,
     },
+    plugins: [...plugins],
   };
   return webpackConfig;
 }

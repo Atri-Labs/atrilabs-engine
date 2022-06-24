@@ -1,4 +1,4 @@
-import { RuleSetRule } from "webpack";
+import { Configuration, RuleSetRule } from "webpack";
 
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -27,8 +27,7 @@ export function createCommonWebpackConfig(
 
   const getStyleLoaders = (cssOptions: any, preProcessor?: string): any => {
     const loaders = [
-      isEnvDevelopment && require.resolve("style-loader"),
-      isEnvProduction && {
+      {
         loader: MiniCssExtractPlugin.loader,
       },
       {
@@ -193,5 +192,14 @@ export function createCommonWebpackConfig(
     },
   ];
 
-  return { oneOf };
+  const plugins: Configuration["plugins"] = [
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: "static/css/[name].[contenthash:8].css",
+      chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+    }),
+  ];
+
+  return { oneOf, plugins };
 }
