@@ -10,7 +10,7 @@ import { ReactComponent as OFH } from "../../assets/size/overflow-hidden.svg";
 import { ReactComponent as OFS } from "../../assets/size/overflow-scroll.svg";
 import { ReactComponent as OFV } from "../../assets/size/overflow-visible.svg";
 import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
-import { ReactComponent as DropDownArrow } from "../../assets/dropdown-icon.svg";
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "./PropertyRender";

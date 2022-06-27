@@ -1,4 +1,9 @@
-import { gray200, gray400, smallText, h5Heading } from "@atrilabs/design-system";
+import {
+  gray200,
+  gray400,
+  smallText,
+  h5Heading,
+} from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as FCAAuto } from "../../assets/fc-align/fca-auto.svg";
 import { ReactComponent as FCAFlexStart } from "../../assets/fc-align/fca-flex-start-icon.svg";
@@ -6,7 +11,7 @@ import { ReactComponent as FCAFlexEnd } from "../../assets/fc-align/fca-flex-end
 import { ReactComponent as FCAFlexCenter } from "../../assets/fc-align/fca-flex-center-icon.svg";
 import { ReactComponent as FCAFlexStretch } from "../../assets/fc-align/fca-stretch-icon.svg";
 import { ReactComponent as FCAFlexBaseline } from "../../assets/fc-align/fca-baseline-icon.svg";
-import { ReactComponent as DropDownArrow } from "../../assets/dropdown-icon.svg";
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 
 import { CssProprtyComponentType } from "../../types";
@@ -24,7 +29,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray200,
     display: "flex",
     paddingBottom: "0.5rem",
-    marginTop:"5px",
+    marginTop: "5px",
     height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
@@ -97,14 +102,14 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
             styles: props.styles,
             patchCb: props.patchCb,
           }}
-          >
-            <FCAAuto />
-            <FCAFlexStart />
-            <FCAFlexCenter />
-            <FCAFlexEnd />
-            <FCAFlexStretch />
-            <FCAFlexBaseline />
-            </PropertyRender>
+        >
+          <FCAAuto />
+          <FCAFlexStart />
+          <FCAFlexCenter />
+          <FCAFlexEnd />
+          <FCAFlexStretch />
+          <FCAFlexBaseline />
+        </PropertyRender>
 
         <div style={styles.option}>
           <div style={{ ...styles.optionName, marginTop: "12px" }}>

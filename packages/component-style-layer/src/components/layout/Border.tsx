@@ -11,7 +11,7 @@ import { ReactComponent as FCAFlexEnd } from "../../assets/fc-align/fca-flex-end
 import { ReactComponent as FCAFlexCenter } from "../../assets/fc-align/fca-flex-center-icon.svg";
 import { ReactComponent as FCAFlexStretch } from "../../assets/fc-align/fca-stretch-icon.svg";
 import { ReactComponent as FCAFlexBaseline } from "../../assets/fc-align/fca-baseline-icon.svg";
-import { ReactComponent as DropDownArrow } from "../../assets/dropdown-icon.svg";
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 
 import { CssProprtyComponentType } from "../../types";
@@ -92,7 +92,6 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             <div style={{ marginRight: "22px" }}>
               <Rectangle style={styles.rect} />
             </div>
-            
           </div>
         </div>
         <div style={styles.option}>
@@ -104,7 +103,6 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             <div style={{ marginRight: "22px" }}>
               <Rectangle style={styles.rect} />
             </div>
-            
           </div>
         </div>
       </div>
