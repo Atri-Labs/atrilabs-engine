@@ -48,7 +48,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     paddingBottom: "0.5rem",
     height: "25px",
-    marginTop:"5px",
+    marginTop: "5px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -112,15 +112,14 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               styleText: "Direction",
               styleArray: ["row", "column", "row-reverse", "column-reverse"],
               patchCb: props.patchCb,
-              styles: props.styles
+              styles: props.styles,
             }}
-            children={[
-              <RightArrow />,
-              <DownArrow />,
-              <LeftArrow />,
-              <UpArrow />,
-            ]}
-          />
+          >
+            <RightArrow />
+            <DownArrow />
+            <LeftArrow />
+            <UpArrow />
+          </PropertyRender>
           <PropertyRender
             styles={{
               styleItem: "alignItems",
@@ -133,16 +132,15 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 "baseline",
               ],
               patchCb: props.patchCb,
-              styles: props.styles
+              styles: props.styles,
             }}
-            children={[
-              <FlexStretch />,
-              <FlexStart />,
-              <FlexCenter />,
-              <FlexEnd />,
-              <FlexBaseline />,
-            ]}
-          />
+          >
+            <FlexStretch />
+            <FlexStart />
+            <FlexCenter />
+            <FlexEnd />
+            <FlexBaseline />
+          </PropertyRender>
 
           <PropertyRender
             styles={{
@@ -156,16 +154,15 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 "space-around",
               ],
               patchCb: props.patchCb,
-              styles: props.styles
+              styles: props.styles,
             }}
-            children={[
-              <JCStart />,
-              <JCCenter />,
-              <JCEnd />,
-              <JCSpaceBetween />,
-              <JCSpaceAround />,
-            ]}
-          />
+          >
+            <JCStart />
+            <JCCenter />
+            <JCEnd />
+            <JCSpaceBetween />
+            <JCSpaceAround />
+          </PropertyRender>
 
           <PropertyRender
             styles={{
@@ -173,10 +170,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               styleText: "Wrap",
               styleArray: ["nowrap", "wrap", "wrap-reverse"],
               patchCb: props.patchCb,
-              styles: props.styles
+              styles: props.styles,
             }}
-            children={[<NoWrap />, <Wrap />, <WrapRev />]}
-          />
+          >
+            <NoWrap /> <Wrap /> <WrapRev />
+          </PropertyRender>
 
           <PropertyRender
             styles={{
@@ -191,17 +189,16 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 "space-around",
               ],
               patchCb: props.patchCb,
-              styles: props.styles
+              styles: props.styles,
             }}
-            children={[
-              <ACFlexStretch />,
-              <ACFlexStart />,
-              <ACFlexCenter />,
-              <ACFlexEnd />,
-              <ACFlexSpaceBetween />,
-              <ACFlexSpaceAround />,
-            ]}
-          />
+          >
+            <ACFlexStretch />
+            <ACFlexStart />
+            <ACFlexCenter />
+            <ACFlexEnd />
+            <ACFlexSpaceBetween />
+            <ACFlexSpaceAround />
+          </PropertyRender>
 
           <div style={styles.option}>
             <div style={{ ...styles.optionName, marginTop: "12px" }}>Gap</div>
