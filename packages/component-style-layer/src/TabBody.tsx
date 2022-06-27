@@ -1,6 +1,9 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React from "react";
+import { Size } from "./components/layout/Size";
+import { Border } from "./components/layout/Border";
 import { Layout } from "./components/layout/Layout";
+import { FlexChild } from "./components/layout/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 export type TabBodyProps = {
@@ -39,7 +42,12 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         value={props.alias}
       />
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
+        <>
+        <Size styles={props.styles} patchCb={props.patchCb} />
+        <Border styles={props.styles} patchCb={props.patchCb} />
         <Layout styles={props.styles} patchCb={props.patchCb} />
+        <FlexChild styles={props.styles} patchCb={props.patchCb} />
+        </>
       ) : null}
     </div>
   );
