@@ -79,7 +79,9 @@ function PropertyRender(props: {
       // Calling patchCb informs the browser forest manager(editor's state manager)
       // to update the state and inform all subscribers about the state update.
       props.styles.patchCb({
-        property: { styles: { styleItem: props.styles.styleArray[index] } },
+        property: {
+          styles: { [props.styles.styleItem]: props.styles.styleArray[index] },
+        },
       });
     },
     [props]
