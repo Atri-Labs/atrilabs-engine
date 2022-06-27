@@ -1,0 +1,38 @@
+{
+  "name": "@atrilabs/manifest-registry-reader-node",
+  "version": "0.0.11",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "lib/manifest-registry-reader-node.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "yarn run build"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "jsdom": "^20.0.0",
+    "react": "^18.2.0",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^16.2.14"
+  }
+}
