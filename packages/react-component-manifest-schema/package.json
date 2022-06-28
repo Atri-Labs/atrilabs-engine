@@ -19,7 +19,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc --project ./tsconfig.json && babel src --out-dir lib -x '.ts' --out-file-extension .cjs"
+    "build": "tsc",
+    "prepublishOnly": "yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
