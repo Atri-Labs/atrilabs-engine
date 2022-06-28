@@ -22,7 +22,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run build",
+    "test": "node __tests__/manifest-registry-reader-node.test.js"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
