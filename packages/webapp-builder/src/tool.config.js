@@ -10,6 +10,12 @@ const forestsConfig = {
     {
       modulePath: "@atrilabs/app-design-forest/lib/cssTree.js",
     },
+    {
+      modulePath: "@atrilabs/app-design-forest/lib/customPropsTree.js",
+    },
+    {
+      modulePath: "@atrilabs/app-design-forest/lib/callbackHandlerTree.js",
+    },
   ],
 };
 
