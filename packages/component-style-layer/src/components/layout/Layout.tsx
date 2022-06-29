@@ -62,6 +62,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "20px",
     border: "0px",
     borderRadius: "2px",
+    display:"flex"
   },
   rectLabel: {
     ...smallText,
@@ -83,11 +84,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     height: "25px",
     marginBottom: "25px",
-    marginTop: "30px"
+    marginTop: "30px",
   },
   optionName: {
     ...smallText,
-    width: "3rem",
+    width: "4rem",
     color: "white",
     display: "flex",
     alignItems: "center",
@@ -188,7 +189,9 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               styles: props.styles,
             }}
           >
-            <NoWrap /> <Wrap /> <WrapRev />
+            <NoWrap />
+            <Wrap />
+            <WrapRev />
           </PropertyRender>
 
           <PropertyRender

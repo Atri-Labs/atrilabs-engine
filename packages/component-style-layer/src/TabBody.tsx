@@ -17,8 +17,10 @@ export type TabBodyProps = {
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
   container: {
+    height: "100%",
     display: "flex",
     flexDirection: "column",
+    overflow: "auto"
   },
 
   // alias container
