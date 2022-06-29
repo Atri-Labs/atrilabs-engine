@@ -11,22 +11,44 @@ export type ComponentCoordsWM = {
   bottomWM: number;
 };
 
+export type PropsSelector = (props: any) => any;
+
+export type ControlledCallback = {
+  type: "controlled";
+  selector: PropsSelector;
+};
+
+export type FileInputCallback = {
+  type: "file_input";
+  selector: PropsSelector;
+};
+
+export type DoNothingCallback = {
+  type: "do_nothing";
+};
+
 /**
- * controlled - This callback type will update the props on client side.
- *              The signature is (oldProps, changeEvent) => (newProps).
- * event      - This callback type will send an event to the backend.
- *              The signature is (eventname, eventdata) => (void).
- * upload     - This callback type will update the form data on client side.
- *              This is primarily used to upload files.
- *              The signature is (file handler | file handlers) => (void).
- *
- * // By default components won't have action handlers. The component creator
- * can define some default action for a component.
- * defaultActionHandler: {
- *  [action]: [{sendFile: props.file}, {sendData: props.data}]
- * }
+ * Callback defines the behavior of a callback with the App's state store.
  */
-export type CallbackType = "controlled" | "event" | "upload";
+export type Callback =
+  | ControlledCallback
+  | FileInputCallback
+  | DoNothingCallback;
+
+export type SendFileCallbackHandler = (
+  | { self: boolean }
+  | { compId: string }
+) & { props: string };
+
+export type SendEventCallbackHandler = boolean;
+
+/**
+ * CallbackHandler defines behavior with the backend whenever a callback is fired.
+ * CallbackHandlers must be serializable because it is store in CallbackHandlerTree.
+ */
+export type CallbackHandler =
+  | SendFileCallbackHandler
+  | SendEventCallbackHandler;
 
 export type AcceptsChildFunction = (info: {
   coords: ComponentCoordsWM;
@@ -51,7 +73,17 @@ export type ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: boolean };
       };
     };
-    attachCallbacks: { [key: string]: { types: CallbackType[] } };
+    attachCallbacks: { [key: string]: Callback[] };
     acceptsChild?: AcceptsChildFunction;
+    /*
+     * By default components won't have callback handlers. The component creator
+     * can define some default handlers for a component.
+     */
+    defaultCallbackHandlers: {
+      [callbackName: string]: {
+        sendFile: SendFileCallbackHandler;
+        sendEventData: SendEventCallbackHandler;
+      }[];
+    };
   };
 };

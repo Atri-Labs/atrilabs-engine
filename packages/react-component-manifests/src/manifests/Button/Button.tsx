@@ -42,6 +42,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {},
+    defaultCallbackHandlers: {},
   },
 };
 
