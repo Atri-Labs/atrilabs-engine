@@ -5,14 +5,15 @@ import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import CustomTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 
 export const Button = forwardRef<
   HTMLButtonElement,
-  { styles: React.CSSProperties }
+  { styles: React.CSSProperties; custom: { text: string } }
 >((props, ref) => {
   return (
     <button ref={ref} style={props.styles}>
-      Click Me!
+      {props.custom.text}
     </button>
   );
 });
@@ -39,6 +40,14 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: { background: "pink" },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
+      },
+      custom: {
+        treeId: CustomTreeId,
+        initialValue: {
+          text: "Submit",
+        },
+        treeOptions: {},
+        canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {},

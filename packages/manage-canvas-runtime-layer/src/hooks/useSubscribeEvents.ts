@@ -16,7 +16,7 @@ import {
 } from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 
 /**
  * This function is an escape hatch and should be removed with urgency.
@@ -108,9 +108,7 @@ function createComponentFromNode(node: TreeNode) {
         parent,
         // TODO: get decorators from manifest
         [],
-        // TODO: create catchers from manifest
         catchers,
-        // TODO: get acceptsChild from manifest
         acceptsChild
       );
     }
@@ -119,7 +117,7 @@ function createComponentFromNode(node: TreeNode) {
 
 export const useSubscribeEvents = () => {
   const tree = useTree(ComponentTreeId);
-  const cssTree = useTree(CssTreeId);
+  // const cssTree = useTree(CssTreeId);
 
   useEffect(() => {
     const currentForest = BrowserForestManager.currentForest;
@@ -159,9 +157,14 @@ export const useSubscribeEvents = () => {
             );
             // use CanvasAPI to create component
             if (manifest) {
-              const component = manifest.component;
+              const component =
+                manifest.component as ReactComponentManifestSchema;
               const propsKeys = Object.keys(component.dev.attachProps);
-              for (let i = 0; i < propsKeys.length; i++) {
+              // only process a link event if the tree is present in attachProps
+              const foundPropKey = propsKeys.find(
+                (key) => component.dev.attachProps[key].treeId !== treeId
+              );
+              if (foundPropKey) {
                 const tree = BrowserForestManager.getForest(
                   currentForest.forestPkgId,
                   currentForest.forestId
@@ -177,7 +180,6 @@ export const useSubscribeEvents = () => {
                       const oldProps = getComponentProps(compId);
                       updateComponentProps(compId, { ...oldProps, ...props });
                     }
-                    break;
                   }
                 }
               }
@@ -198,8 +200,14 @@ export const useSubscribeEvents = () => {
       }
 
       if (update.type === "change") {
-        if (update.treeId === CssTreeId) {
-          const links = Object.values(cssTree.links);
+        const updatedTree = BrowserForestManager.getForest(
+          currentForest.forestPkgId,
+          currentForest.forestId
+        )?.tree(update.treeId);
+        // TODO: check if the updatedTree is in dev.attachProps
+        // similar to how we handle link update above in this file
+        if (updatedTree) {
+          const links = Object.values(updatedTree.links);
           const link = links.find((link) => {
             return link.childId === update.id;
           });
@@ -207,7 +215,7 @@ export const useSubscribeEvents = () => {
             return;
           }
           const compId = link.refId;
-          const cssNode = cssTree.nodes[update.id];
+          const cssNode = updatedTree.nodes[update.id];
           // tranform it into props
           const props = cssNode.state.property;
           if (props) {
@@ -218,7 +226,7 @@ export const useSubscribeEvents = () => {
       }
     });
     return unsub;
-  }, [tree, cssTree]);
+  }, [tree]);
 
   useEffect(() => {
     // TODO
