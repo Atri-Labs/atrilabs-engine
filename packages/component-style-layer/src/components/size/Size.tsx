@@ -3,17 +3,18 @@ import {
   gray400,
   smallText,
   h5Heading,
+  gray800,
+  gray100,
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as OFA } from "../../assets/size/Auto.svg";
 import { ReactComponent as OFH } from "../../assets/size/overflow-hidden.svg";
 import { ReactComponent as OFS } from "../../assets/size/overflow-scroll.svg";
 import { ReactComponent as OFV } from "../../assets/size/overflow-visible.svg";
-import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 
 import { CssProprtyComponentType } from "../../types";
-import PropertyRender from "./PropertyRender";
+import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -32,6 +33,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
+  inputBox: {
+    ...smallText,
+    textAlign: "right",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: gray800,
+    width: "45px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "2px",
+  },
   rectLabel: {
     ...smallText,
     color: gray400,
@@ -39,9 +51,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     lineHeight: "0px",
   },
-  label: {
-    marginTop: "0px",
-    marginBottom: "10px",
+  inputLabel: {
+    position: "relative",
+    textAlign: "center",
+    top: "-10px",
   },
   drop: {
     display: "flex",
@@ -65,57 +78,55 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
-  const [dis4, setDis4] = useState(true);
+  const [showProperties, setshowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setDis4(!dis4)}
+          onClick={() => setshowProperties(!showProperties)}
           style={
-            !dis4
+            !showProperties
               ? { transform: "rotate(-90deg)" }
               : { transform: "rotate(0deg)" }
           }
         />
         <div style={styles.header}>Size</div>
       </div>
-      <div style={dis4 ? { display: "block" } : { display: "none" }}>
+      <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <div style={styles.option}>
           <div style={styles.optionName}>W</div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "17px" }}>
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
-            <div style={{ marginRight: "22px" }}>
-              <p style={styles.label}>Min</p>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "17px" }}>
+              <label style={styles.inputLabel}>Min</label>
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
             <div>
-              <p style={styles.label}>Max</p>
-              <Rectangle style={styles.rect} />
+              <label style={styles.inputLabel}>Max</label>
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
           </div>
         </div>
         <div style={styles.option}>
           <div style={styles.optionName}>H</div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "17px" }}>
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
-            <div style={{ marginRight: "22px" }}>
-              <p style={styles.label}>Min</p>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "17px" }}>
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
             <div>
-              <p style={styles.label}>Max</p>
-              <Rectangle style={styles.rect} />
+              <input type="text" style={styles.inputBox} placeholder="PX" />
             </div>
           </div>
         </div>
 
         <PropertyRender
-          styles={{
+          {...{
             styleItem: "overflow",
             styleText: "Overflow",
             styleArray: ["visible", "scroll", "hidden", "auto"],

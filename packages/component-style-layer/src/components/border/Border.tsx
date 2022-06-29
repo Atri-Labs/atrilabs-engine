@@ -1,21 +1,19 @@
 import {
+  gray100,
   gray200,
   gray400,
+  gray800,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
-import { ReactComponent as FCAAuto } from "../../assets/fc-align/fca-auto.svg";
-import { ReactComponent as FCAFlexStart } from "../../assets/fc-align/fca-flex-start-icon.svg";
-import { ReactComponent as FCAFlexEnd } from "../../assets/fc-align/fca-flex-end-icon.svg";
-import { ReactComponent as FCAFlexCenter } from "../../assets/fc-align/fca-flex-center-icon.svg";
-import { ReactComponent as FCAFlexStretch } from "../../assets/fc-align/fca-stretch-icon.svg";
-import { ReactComponent as FCAFlexBaseline } from "../../assets/fc-align/fca-baseline-icon.svg";
+import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
+import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
+import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
+import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 
 import { CssProprtyComponentType } from "../../types";
-import PropertyRender from "./PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -34,6 +32,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
+  inputBox: {
+    ...smallText,
+    textAlign: "right",
+    color: gray100,
+    padding: "4px",
+    backgroundColor: gray800,
+    width: "45px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "2px",
+  },
   rectLabel: {
     ...smallText,
     color: gray400,
@@ -41,9 +50,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     lineHeight: "0px",
   },
-  label: {
-    marginTop: "0px",
-    marginBottom: "10px",
+  inputLabel: {
+    position: "relative",
+    textAlign: "center",
+    top: "-10px",
   },
   drop: {
     display: "flex",
@@ -56,7 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   optionName: {
     ...smallText,
-    width: "4rem",
+    width: "1.5rem",
     color: "white",
     display: "flex",
     alignItems: "center",
@@ -67,42 +77,52 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
-  const [dis3, setDis3] = useState(true);
+  const [showProperties, setshowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setDis3(!dis3)}
+          onClick={() => setshowProperties(!showProperties)}
           style={
-            !dis3
+            !showProperties
               ? { transform: "rotate(-90deg)" }
               : { transform: "rotate(0deg)" }
           }
         />
         <div style={styles.header}>Border</div>
       </div>
-      <div style={dis3 ? { display: "block" } : { display: "none" }}>
+      <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <div style={styles.option}>
-          <div style={styles.optionName}>R</div>
+          <div style={styles.optionName}>
+            <BR />
+          </div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
+            <input
+              type="text"
+              style={{ ...styles.inputBox, marginRight: "50px" }}
+              placeholder="PX"
+            />
+            <div style={styles.optionName}>
+              <BW />
             </div>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
-            </div>
+            <input type="text" style={styles.inputBox} placeholder="PX" />
           </div>
         </div>
         <div style={styles.option}>
-          <div style={styles.optionName}>S</div>
+          <div style={styles.optionName}>
+            <BS />
+          </div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
+            <input
+              type="text"
+              style={{ ...styles.inputBox, marginRight: "50px" }}
+              placeholder="PX"
+            />
+            <div style={styles.optionName}>
+              <BC />
             </div>
-            <div style={{ marginRight: "22px" }}>
-              <Rectangle style={styles.rect} />
-            </div>
+            <input type="text" style={styles.inputBox} />
           </div>
         </div>
       </div>

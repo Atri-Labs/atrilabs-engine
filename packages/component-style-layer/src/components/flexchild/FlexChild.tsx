@@ -1,4 +1,6 @@
 import {
+  gray100,
+  gray800,
   gray200,
   gray400,
   smallText,
@@ -12,10 +14,9 @@ import { ReactComponent as FCAFlexCenter } from "../../assets/fc-align/fca-flex-
 import { ReactComponent as FCAFlexStretch } from "../../assets/fc-align/fca-stretch-icon.svg";
 import { ReactComponent as FCAFlexBaseline } from "../../assets/fc-align/fca-baseline-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 
 import { CssProprtyComponentType } from "../../types";
-import PropertyRender from "./PropertyRender";
+import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -28,11 +29,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    paddingBottom: "0.5rem",
     marginTop: "5px",
+    paddingBottom: "0.5rem",
     height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
+  },
+  inputBox: {
+    ...smallText,
+    textAlign: "center",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: gray800,
+    width: "30px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "2px",
   },
   rectLabel: {
     ...smallText,
@@ -41,9 +53,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     lineHeight: "0px",
   },
-  label: {
-    marginTop: "0px",
-    marginBottom: "10px",
+  inputLabel: {
+    position: "relative",
+    textAlign: "center",
+    top: "-10px",
   },
   drop: {
     display: "flex",
@@ -52,11 +65,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   option: {
     display: "flex",
     height: "25px",
-    marginBottom: "15px",
+    marginTop: "30px",
+    marginBottom: "15px"
   },
   optionName: {
     ...smallText,
-    width: "4rem",
+    width: "4.5rem",
     color: "white",
     display: "flex",
     alignItems: "center",
@@ -71,24 +85,24 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
-  const [dis2, setDis2] = useState(true);
+  const [showProperties, setshowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setDis2(!dis2)}
+          onClick={() => setshowProperties(!showProperties)}
           style={
-            !dis2
+            !showProperties
               ? { transform: "rotate(-90deg)" }
               : { transform: "rotate(0deg)" }
           }
         />
         <div style={styles.header}>Flex Child</div>
       </div>
-      <div style={dis2 ? { display: "block" } : { display: "none" }}>
+      <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <PropertyRender
-          styles={{
+          {...{
             styleItem: "alignSelf",
             styleText: "Align",
             styleArray: [
@@ -112,21 +126,19 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
         </PropertyRender>
 
         <div style={styles.option}>
-          <div style={{ ...styles.optionName, marginTop: "12px" }}>
-            Override
-          </div>
+          <div style={styles.optionName}>Override</div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "22px" }}>
-              <p style={styles.label}>Grow</p>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "10px" }}>
+              <label style={styles.inputLabel}>Grow</label>
+              <input type="text" style={styles.inputBox}/>
             </div>
-            <div style={{ marginRight: "22px" }}>
-              <p style={styles.label}>Shrink</p>
-              <Rectangle style={styles.rect} />
+            <div style={{ marginRight: "10px" }}>
+              <label style={styles.inputLabel}>Shrink</label>
+              <input type="text" style={styles.inputBox} />
             </div>
             <div>
-              <p style={styles.label}>Order</p>
-              <Rectangle style={styles.rect} />
+              <label style={styles.inputLabel}>Order</label>
+              <input type="text" style={styles.inputBox}  />
             </div>
           </div>
         </div>

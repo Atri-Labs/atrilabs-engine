@@ -1,10 +1,12 @@
 import {
+  gray100,
+  gray800,
   gray200,
   gray400,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as RightArrow } from "../../assets/layout-parent/right-arrow.svg";
 import { ReactComponent as DownArrow } from "../../assets/layout-parent/down-arrow.svg";
@@ -29,11 +31,9 @@ import { ReactComponent as ACFlexCenter } from "../../assets/layout-parent/ac-ce
 import { ReactComponent as ACFlexStretch } from "../../assets/layout-parent/ac-stretch-icon.svg";
 import { ReactComponent as ACFlexSpaceBetween } from "../../assets/layout-parent/ac-space-between-icon.svg";
 import { ReactComponent as ACFlexSpaceAround } from "../../assets/layout-parent/ac-space-around-icon.svg";
-import { ReactComponent as Rectangle } from "../../assets/layout-parent/Rectangle-714.svg";
 
 import { CssProprtyComponentType } from "../../types";
-import PropertyRender from "./PropertyRender";
-import { IconsContainer } from "../../IconsContainer";
+import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -46,11 +46,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
+    marginTop: "5px",
     paddingBottom: "0.5rem",
     height: "25px",
-    marginTop: "5px",
     paddingLeft: "0.5rem",
     userSelect: "none",
+  },
+  inputBox: {
+    ...smallText,
+    textAlign: "right",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: gray800,
+    width: "50px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "2px",
   },
   rectLabel: {
     ...smallText,
@@ -59,9 +70,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     lineHeight: "0px",
   },
-  label: {
-    marginTop: "0px",
-    marginBottom: "10px",
+  inputLabel: {
+    position: "relative",
+    textAlign: "center",
+    top: "-10px",
   },
   drop: {
     display: "flex",
@@ -70,11 +82,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   option: {
     display: "flex",
     height: "25px",
-    marginBottom: "15px",
+    marginBottom: "25px",
+    marginTop: "30px"
   },
   optionName: {
     ...smallText,
-    width: "4rem",
+    width: "3rem",
     color: "white",
     display: "flex",
     alignItems: "center",
@@ -89,25 +102,27 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
-  const [dis1, setDis1] = useState(true);
+  const [showProperties, setshowProperties] = useState(true);
 
   return (
     <>
       <div style={styles.container}>
         <div style={styles.drop}>
           <DropDownArrow
-            onClick={() => setDis1(!dis1)}
+            onClick={() => setshowProperties(!showProperties)}
             style={
-              !dis1
+              !showProperties
                 ? { transform: "rotate(-90deg)" }
                 : { transform: "rotate(0deg)" }
             }
           />
           <div style={styles.header}>Layout - Flex Parent</div>
         </div>
-        <div style={dis1 ? { display: "block" } : { display: "none" }}>
+        <div
+          style={showProperties ? { display: "block" } : { display: "none" }}
+        >
           <PropertyRender
-            styles={{
+            {...{
               styleItem: "flexDirection",
               styleText: "Direction",
               styleArray: ["row", "column", "row-reverse", "column-reverse"],
@@ -121,7 +136,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             <UpArrow />
           </PropertyRender>
           <PropertyRender
-            styles={{
+            {...{
               styleItem: "alignItems",
               styleText: "Align- items",
               styleArray: [
@@ -143,7 +158,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            styles={{
+            {...{
               styleItem: "justifyContent",
               styleText: "Justify-Content",
               styleArray: [
@@ -165,7 +180,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            styles={{
+            {...{
               styleItem: "flexWrap",
               styleText: "Wrap",
               styleArray: ["nowrap", "wrap", "wrap-reverse"],
@@ -177,7 +192,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            styles={{
+            {...{
               styleItem: "alignContent",
               styleText: "Align-Content",
               styleArray: [
@@ -201,17 +216,15 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <div style={styles.option}>
-            <div style={{ ...styles.optionName, marginTop: "12px" }}>Gap</div>
+            <div style={styles.optionName}>Gap</div>
             <div style={styles.rectLabel}>
-              <div style={{ marginRight: "40px" }}>
-                <p style={styles.label}>Row</p>
-                <Rectangle style={styles.rect} />
-                <span style={{ margin: "0px", padding: "0px" }}>PX</span>
+              <div style={{ marginRight: "18px" }}>
+                <label style={styles.inputLabel}>Row</label>
+                <input type="text" style={styles.inputBox} placeholder="PX" />
               </div>
               <div>
-                <p style={styles.label}>Col</p>
-                <Rectangle style={styles.rect} />
-                <span>PX</span>
+                <label style={styles.inputLabel}>Col</label>
+                <input type="text" style={styles.inputBox} placeholder="PX" />
               </div>
             </div>
           </div>

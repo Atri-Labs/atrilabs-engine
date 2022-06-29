@@ -1,6 +1,6 @@
 import { gray200, h5Heading, smallText } from "@atrilabs/design-system";
 import React, { useMemo, useCallback } from "react";
-import { IconsContainer } from "../../IconsContainer";
+import { IconsContainer } from "./IconsContainer";
 import { CssProprtyComponentType } from "../../types";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -37,58 +37,51 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 function PropertyRender(props: {
-  styles: {
-    styleText: string;
-    styleItem: keyof React.CSSProperties;
-    styleArray: (string | number)[];
-    patchCb: CssProprtyComponentType["patchCb"];
-    styles: CssProprtyComponentType["styles"];
-  };
+  styleText: string;
+  styleItem: keyof React.CSSProperties;
+  styleArray: (string | number)[];
+  patchCb: CssProprtyComponentType["patchCb"];
+  styles: CssProprtyComponentType["styles"];
   children: React.ReactNode[];
 }) {
   const styleIndex = useMemo(() => {
-    // It might happen that props.styles.styleArray is undefined
+    // It might happen that props.styleArray is undefined
     // because user has not set any style array yet. This is true
     // for any other CSS property as well. In those cases, the property component,
     // like this Layout component, will set the default CSS property.
-    if (props.styles.styles[props.styles.styleItem] === undefined) {
+    if (props.styles[props.styleItem] === undefined) {
       // return the default CSS value index
-      console.log(props.styles);
       return 0;
     } else {
-      const index = props.styles.styleArray.findIndex(
-        (val) => val === props.styles.styles[props.styles.styleItem]
+      const index = props.styleArray.findIndex(
+        (val) => val === props.styles[props.styleItem]
       );
       if (index >= 0) {
         return index;
       } else {
         console.error(
-          "style array: ",
-          props.styles.styleArray,
-          "styleItem: ",
-          props.styles.styleItem,
           `component-style-layer cannot find a match for the already property. Please report this to Atri Labs team.`
         );
         return 0;
       }
     }
-  }, [props.styles]);
+  }, [props.styleArray, props.styleItem, props.styles]);
 
   const setStyleItemSelectedIndexCb = useCallback(
     (index: number) => {
       // Calling patchCb informs the browser forest manager(editor's state manager)
       // to update the state and inform all subscribers about the state update.
-      props.styles.patchCb({
+      props.patchCb({
         property: {
-          styles: { [props.styles.styleItem]: props.styles.styleArray[index] },
+          styles: { [props.styleItem]: props.styleArray[index] },
         },
       });
     },
     [props]
   );
   return (
-    <div style={styles.option} key={props.styles.styleItem}>
-      <div style={styles.optionName}>{props.styles.styleText}</div>
+    <div style={styles.option} key={props.styleItem}>
+      <div style={styles.optionName}>{props.styleText}</div>
       <div style={styles.optionsIcons}>
         <IconsContainer
           selectedIndex={styleIndex}

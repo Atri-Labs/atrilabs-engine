@@ -6,7 +6,7 @@ import {
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import { IconsContainer } from "../../IconsContainer";
+import { IconsContainer } from "./IconsContainer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -58,13 +58,11 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 function InputRenderer(props: {
-  styles: {
     styleText: string;
     styleValue: number;
     styleItem: string;
     styleUnit: string | number;
     patchCb: CssProprtyComponentType["patchCb"];
-  };
   children: React.ReactNode[];
 }) {
   const [index, setIndex] = useState(0);
@@ -73,7 +71,7 @@ function InputRenderer(props: {
     // because user has not set any style array yet. This is true
     // for any other CSS property as well. In those cases, the property component,
     // like this Layout component, will set the default CSS property.
-    if (props.styles.styleValue === undefined) {
+    if (props.styleValue === undefined) {
       // return the default CSS value index
       return 0;
     } else {
@@ -92,21 +90,21 @@ function InputRenderer(props: {
     //   const index = props.styles.styleValue;
       return index;
     }
-  }, [index, props.styles.styleValue]);
+  }, [index, props.styleValue]);
 
   const setStyleItemSelectedValueCb = useCallback(
     (index: number) => {
       // Calling patchCb informs the browser forest manager(editor's state manager)
       // to update the state and inform all subscribers about the state update.
-      props.styles.patchCb({
+      props.patchCb({
         property: { styles: { styleItem: index } },
       });
     },
     [props]
   );
   return (
-    <div style={styles.option} key={props.styles.styleItem}>
-      <div style={styles.optionName}>{props.styles.styleText}</div>
+    <div style={styles.option} key={props.styleItem}>
+      <div style={styles.optionName}>{props.styleText}</div>
       <div style={styles.optionsIcons}>
         <input type="number" onChange={(e)=>setIndex(Number(e.target.value))}></input>
         <IconsContainer

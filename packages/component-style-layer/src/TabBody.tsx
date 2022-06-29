@@ -1,9 +1,9 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React from "react";
-import { Size } from "./components/layout/Size";
-import { Border } from "./components/layout/Border";
+import { Size } from "./components/size/Size";
+import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
-import { FlexChild } from "./components/layout/FlexChild";
+import { FlexChild } from "./components/flexchild/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 export type TabBodyProps = {
