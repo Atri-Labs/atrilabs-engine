@@ -43,6 +43,7 @@ module.exports = {
     { pkg: "@atrilabs/component-style-layer" },
     { pkg: "@atrilabs/overlay-hints-layer" },
     { pkg: "@atrilabs/publish-app-layer" },
+    { pkg: "@atrilabs/custom-props-layer" },
   ],
   output: "lib",
   services: {
