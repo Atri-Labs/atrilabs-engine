@@ -6,7 +6,7 @@ import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
 export const Button = forwardRef<
   HTMLButtonElement,

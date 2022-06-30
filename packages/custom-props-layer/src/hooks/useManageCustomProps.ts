@@ -1,7 +1,7 @@
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import customPropsTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import CustomPropsTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent } from "@atrilabs/forest";
 import {
@@ -11,7 +11,7 @@ import {
 
 export const useManageCustomProps = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
-  const customPropsTree = useTree(customPropsTreeId);
+  const customPropsTree = useTree(CustomPropsTreeId);
   const [customProps, setCustomProps] = useState<any>({});
   // callback to post patch event -> takes a slice
   const patchCb = useCallback(
@@ -26,7 +26,7 @@ export const useManageCustomProps = (id: string | null) => {
         const customPropsNodeId = customPropsTree.links[id];
         if (customPropsNodeId) {
           const patchEvent: PatchEvent = {
-            type: `PATCH$$${customPropsTreeId}`,
+            type: `PATCH$$${CustomPropsTreeId}`,
             slice,
             id: customPropsNodeId.childId,
           };
@@ -46,7 +46,7 @@ export const useManageCustomProps = (id: string | null) => {
       const currentForest = BrowserForestManager.currentForest;
       const unsub = currentForest.subscribeForest((update) => {
         if (update.type === "change") {
-          if (update.treeId === customPropsTreeId) {
+          if (update.treeId === CustomPropsTreeId) {
             const customPropsNodeLink = customPropsTree.links[id];
             const customPropsNodeId = customPropsNodeLink.childId;
             setCustomProps({
@@ -79,5 +79,6 @@ export const useManageCustomProps = (id: string | null) => {
         );
     }
   }, [id, compTree, customPropsTree]);
+  console.log(customPropsTree);
   return { patchCb, customProps };
 };
