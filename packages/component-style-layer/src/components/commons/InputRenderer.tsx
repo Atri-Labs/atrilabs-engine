@@ -63,7 +63,7 @@ function InputRenderer(props: {
     styleItem: string;
     styleUnit: string | number;
     patchCb: CssProprtyComponentType["patchCb"];
-  children: React.ReactNode[];
+    children: React.ReactNode[];
 }) {
   const [index, setIndex] = useState(0);
   const styleValue = useMemo(() => {

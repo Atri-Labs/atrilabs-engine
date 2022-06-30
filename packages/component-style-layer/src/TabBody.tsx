@@ -20,7 +20,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    overflow: "auto"
+    overflow: "auto",
   },
 
   // alias container
@@ -43,13 +43,17 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
-      {props.treeOptions && props.treeOptions.flexContainerOptions ? (
-        <>
+      {props.treeOptions && props.treeOptions.sizeOptions ? (
         <Size styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.borderOptions ? (
         <Border styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.flexChildOptions ? (
         <FlexChild styles={props.styles} patchCb={props.patchCb} />
-        </>
       ) : null}
     </div>
   );
