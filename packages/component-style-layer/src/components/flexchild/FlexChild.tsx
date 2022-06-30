@@ -85,13 +85,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
-  const [showProperties, setshowProperties] = useState(true);
+  const [showProperties, setShowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setshowProperties(!showProperties)}
+          onClick={() => setShowProperties(!showProperties)}
           style={
             !showProperties
               ? { transform: "rotate(-90deg)" }

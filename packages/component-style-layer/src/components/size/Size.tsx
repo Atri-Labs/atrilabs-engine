@@ -78,13 +78,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
-  const [showProperties, setshowProperties] = useState(true);
+  const [showProperties, setShowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setshowProperties(!showProperties)}
+          onClick={() => setShowProperties(!showProperties)}
           style={
             !showProperties
               ? { transform: "rotate(-90deg)" }
@@ -98,7 +98,21 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>W</div>
           <div style={styles.rectLabel}>
             <div style={{ marginRight: "17px" }}>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
+              <input
+                type='number'
+                value={props.styles.width}
+                onChange={(e) =>
+                  props.patchCb({
+                    property: {
+                      styles: {
+                        [props.styles.borderWidth]: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                style={styles.inputBox}
+                placeholder="PX"
+              />
             </div>
             <div style={{ marginRight: "17px" }}>
               <label style={styles.inputLabel}>Min</label>

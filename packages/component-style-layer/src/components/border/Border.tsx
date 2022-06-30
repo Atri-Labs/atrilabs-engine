@@ -77,13 +77,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
-  const [showProperties, setshowProperties] = useState(true);
+  const [showProperties, setShowProperties] = useState(true);
 
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
         <DropDownArrow
-          onClick={() => setshowProperties(!showProperties)}
+          onClick={() => setShowProperties(!showProperties)}
           style={
             !showProperties
               ? { transform: "rotate(-90deg)" }
