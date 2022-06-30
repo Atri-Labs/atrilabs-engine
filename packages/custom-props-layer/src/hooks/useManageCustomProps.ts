@@ -79,6 +79,5 @@ export const useManageCustomProps = (id: string | null) => {
         );
     }
   }, [id, compTree, customPropsTree]);
-  console.log(customPropsTree);
   return { patchCb, customProps };
 };
