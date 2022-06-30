@@ -3,8 +3,6 @@ import React from "react";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 export type TabBodyProps = {
-  alias: string;
-  setAliasCb: (event: React.ChangeEvent<HTMLInputElement>) => void;
   patchCb: (slice: any) => void;
   customProps: any;
   treeOptions: CSSTreeOptions;
