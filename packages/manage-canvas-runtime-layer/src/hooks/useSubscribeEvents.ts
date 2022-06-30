@@ -142,6 +142,14 @@ export const useSubscribeEvents = () => {
           const compId = linkUpdate.refId;
           const propId = linkUpdate.childId;
           const node = tree.nodes[compId]!;
+          /**
+           * It might happen that the component has not been created yet in cases such as:
+           * The component has been newly created. The props are created first because the
+           * component require the props for their first render.
+           */
+          if (node === undefined) {
+            return;
+          }
           const meta = node.meta;
           const manifestSchemaId = meta.manifestSchemaId;
           const pkg = meta.pkg;
