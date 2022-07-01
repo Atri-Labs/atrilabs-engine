@@ -80,10 +80,10 @@ export type ReactComponentManifestSchema = {
      * can define some default handlers for a component.
      */
     defaultCallbackHandlers: {
-      [callbackName: string]: {
-        sendFile: SendFileCallbackHandler;
-        sendEventData: SendEventCallbackHandler;
-      }[];
+      [callbackName: string]: (
+        | { sendFile: SendFileCallbackHandler }
+        | { sendEventData: SendEventCallbackHandler }
+      )[];
     };
   };
 };

@@ -10,10 +10,14 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
 export const Button = forwardRef<
   HTMLButtonElement,
-  { styles: React.CSSProperties; custom: { text: string } }
+  {
+    styles: React.CSSProperties;
+    custom: { text: string };
+    onClick: (event: React.MouseEvent) => void;
+  }
 >((props, ref) => {
   return (
-    <button ref={ref} style={props.styles}>
+    <button ref={ref} style={props.styles} onClick={props.onClick}>
       {props.custom.text}
     </button>
   );
@@ -57,8 +61,12 @@ const compManifest: ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: false },
       },
     },
-    attachCallbacks: {},
-    defaultCallbackHandlers: {},
+    attachCallbacks: {
+      onClick: [{ type: "do_nothing" }],
+    },
+    defaultCallbackHandlers: {
+      onClick: [{ sendEventData: true }],
+    },
   },
 };
 
