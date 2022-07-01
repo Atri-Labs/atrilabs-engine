@@ -35,6 +35,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
+    outline: "none",
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
@@ -153,14 +154,16 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
               onChange={(e) => handleChange(e, "height")}
               style={styles.inputBox}
             />
-            <span style={{...styles.inputSpan, marginRight: "18px"}}>PX</span>
+            <span style={{ ...styles.inputSpan, marginRight: "18px" }}>PX</span>
             <input
               type="text"
               value={props.styles.minHeight}
               onChange={(e) => handleChange(e, "minHeight")}
               style={styles.inputBox}
             />
-            <span style={{...styles.inputSpan, marginRight: "18.5px"}}>PX</span>
+            <span style={{ ...styles.inputSpan, marginRight: "18.5px" }}>
+              PX
+            </span>
             <input
               type="text"
               value={props.styles.maxHeight}

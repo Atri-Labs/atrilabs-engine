@@ -54,6 +54,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
+    outline: "none",
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
@@ -249,7 +250,9 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 onChange={(e) => handleChange(e, "rowGap")}
                 style={styles.inputBox}
               />
-              <span style={{...styles.inputSpan, marginRight: "15px"}}>PX</span>
+              <span style={{ ...styles.inputSpan, marginRight: "15px" }}>
+                PX
+              </span>
               <label style={styles.inputLabel}>Col</label>
               <input
                 type="text"

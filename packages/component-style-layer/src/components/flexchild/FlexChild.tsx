@@ -37,6 +37,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
+    outline: "none",
     textAlign: "center",
     color: gray100,
     padding: "3px",

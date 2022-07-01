@@ -34,7 +34,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
-    textAlign: "right",
+    outline: "none",
+    textAlign: "left",
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
@@ -84,6 +85,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   optionsIcons: {
     flexGrow: 1,
   },
+  select: {
+    textAlign: "left",
+    height: "50px",
+  },
 };
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
@@ -97,6 +102,21 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       property: {
         styles: {
           [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
+
+  const handleBorderChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: e.target.value,
         },
       },
     });
@@ -127,7 +147,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               onChange={(e) => handleChange(e, "borderRadius")}
               style={styles.inputBox}
             />
-            <span style={{...styles.inputSpan, marginRight: "30px" }}>PX</span>
+            <span style={{ ...styles.inputSpan, marginRight: "30px" }}>PX</span>
             <div style={styles.optionName}>
               <BW />
             </div>
@@ -145,17 +165,37 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             <BS />
           </div>
           <div style={styles.rectLabel}>
-            <input
-              type="select"
-              style={{ ...styles.inputBox, marginRight: "28px", borderRadius: "2px", width: "48px" }}
-            />
+            <select
+              name="borderStyle"
+              onChange={(e) => handleBorderChange(e, "borderStyle")}
+              style={{
+                ...styles.inputBox,
+                marginRight: "28px",
+                borderRadius: "2px",
+                width: "55px",
+                height: "27px",
+              }}
+            >
+              <option style={styles.select} value="solid">
+                Solid
+              </option>
+              <option style={styles.select} value="none">
+                None
+              </option>
+              <option style={styles.select} value="dashed">
+                Dash
+              </option>
+              <option style={styles.select} value="dotted">
+                Dot
+              </option>
+            </select>
             <div style={styles.optionName}>
               <BC />
             </div>
             <input
               type="text"
               value={props.styles.borderColor}
-              onChange={(e) => handleChange(e, "borderColor")}
+              onChange={(e) => handleBorderChange(e, "borderColor")}
               style={{ ...styles.inputBox, width: "50px", borderRadius: "2px" }}
             />
           </div>
