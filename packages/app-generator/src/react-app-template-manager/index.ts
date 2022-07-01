@@ -667,11 +667,11 @@ export function createReactAppTemplateManager(
         const callbackNames = Object.keys(pageCallbackMap[compId].callbacks);
         const hookBody = callbackNames
           .map((callbackName) => {
-            return `\tconst ${callbackName} = useCallback(()=>{\n\t\tcallbackFactory("${alias}", "${pageName}",\n\t\t\t${JSON.stringify(
+            return `\tconst ${callbackName} = useCallback(callbackFactory("${alias}", "${pageName}",\n\t\t\t${JSON.stringify(
               pageCallbackMap[compId].callbacks[callbackName],
               null,
               2
-            )})\n\t}, [])`;
+            )}), [])`;
           })
           .join("\n");
         const returnStatement = `\treturn { ${callbackNames.map(
