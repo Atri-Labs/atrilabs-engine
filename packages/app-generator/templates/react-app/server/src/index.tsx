@@ -39,6 +39,27 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post("/event-handler", express.json(), (req, res) => {
+  console.log("event handler recieved");
+  const pageRoute = req.body["pageRoute"];
+  const pageState = req.body["pageState"];
+  const alias = req.body["alias"];
+  const callbackName = req.body["callbackName"];
+  const eventData = req.body["eventData"];
+  if (
+    typeof pageRoute !== "string" ||
+    typeof pageState !== "object" ||
+    typeof alias !== "string" ||
+    typeof callbackName !== "string"
+  ) {
+    res.status(400).send();
+    return;
+  }
+  console.log(pageRoute, pageState, alias, callbackName, eventData);
+  // TODO: update pageState if success python call otherwise 501
+  res.status(200).send({ pageState });
+});
+
 app.use(express.static(publicDir));
 
 const server = app.listen(port, () => {

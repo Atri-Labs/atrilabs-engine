@@ -635,7 +635,11 @@ export function createReactAppTemplateManager(
     }
   }
 
-  function _flushPageCbs(pageName: string) {
+  function _flushPageCbs(pageImport: {
+    name: string;
+    route: string;
+    source: string;
+  }) {
     /**
      * function usealias1Cbs(){
      *  const onClick = useCallback(()=>{
@@ -652,6 +656,8 @@ export function createReactAppTemplateManager(
      *  return { onClick }
      * }
      */
+    const pageName = pageImport.name;
+    const pageRoute = pageImport.route;
     const pageCallbackMap = callbacksMap[pageName];
     const compIds = Object.keys(pageCallbackMap);
     const importStatements = [
@@ -667,7 +673,7 @@ export function createReactAppTemplateManager(
         const callbackNames = Object.keys(pageCallbackMap[compId].callbacks);
         const hookBody = callbackNames
           .map((callbackName) => {
-            return `\tconst ${callbackName} = useCallback(callbackFactory("${alias}", "${pageName}",\n\t\t\t${JSON.stringify(
+            return `\tconst ${callbackName} = useCallback(callbackFactory("${alias}", "${pageName}", "${pageRoute}", "${callbackName}", \n\t\t\t${JSON.stringify(
               pageCallbackMap[compId].callbacks[callbackName],
               null,
               2
@@ -690,7 +696,7 @@ export function createReactAppTemplateManager(
 
   function flushPageCbs() {
     pageImports.forEach((pageImport) => {
-      _flushPageCbs(pageImport.name);
+      _flushPageCbs(pageImport);
     });
   }
 

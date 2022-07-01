@@ -1,3 +1,5 @@
+import useStore from "../hooks/useStore";
+
 export type CallbackDef = {
   handlers: (
     | { sendEventData: boolean }
@@ -14,20 +16,48 @@ export type CallbackDef = {
   )[];
 };
 
-function sendEventDataFn(arg: any) {
-  console.log("sendEventData:", arg);
+function sendEventDataFn(
+  alias: string,
+  pageName: string,
+  pageRoute: string,
+  callbackName: string,
+  eventData: any
+) {
+  console.log("sendEventData:", eventData);
+  const pageState = useStore.getState()[pageName];
+  fetch("/event-handler", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      alias,
+      pageRoute,
+      callbackName,
+      eventData,
+      pageState,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("got res", res);
+      if (res && res["pageState"])
+        useStore.setState({ [pageName]: res["pageState"] });
+    });
 }
 
 export function callbackFactory(
   alias: string,
   pageName: string,
+  pageRoute: string,
+  callbackName: string,
   callbackDef: CallbackDef
 ) {
   const callbackFn = (eventData: any) => {
     const handlers = callbackDef.handlers;
     handlers.forEach((handler) => {
       if (handler["sendEventData"]) {
-        sendEventDataFn(eventData);
+        sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
       }
     });
     const actions = callbackDef.actions;
