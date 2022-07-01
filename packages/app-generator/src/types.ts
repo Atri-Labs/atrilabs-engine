@@ -21,6 +21,8 @@ export type AppGeneratorOptions = {
   components: { modulePath: string; options: any }[];
   // generates props for a page/forest. options will be passed as custom.
   props: { modulePath: string; options: any }[];
+  // generates callbacks for a page/forest. options will be passes as custom.
+  callbacks: { modulePath: string; options: any }[];
 };
 
 export type ComponentGetter = (meta: { pkg: string; key: string }) =>
@@ -95,3 +97,36 @@ export type PythonStubGeneratorFunction = (
 ) => PythonStubGeneratorOutput;
 
 export type AppBuildOptions = AppGeneratorOptions;
+
+export type CallbackGeneratorOptions = {
+  forestDef: ForestDef;
+  forest: Forest;
+  custom: any;
+};
+
+export type CallbackGeneratorOutput = {
+  [compId: string]: {
+    callbacks: {
+      [callbackName: string]: {
+        handlers: (
+          | { sendEventData: boolean }
+          | {
+              sendFile: ({ self: boolean } | { compId: string }) & {
+                props: string[];
+              };
+            }
+        )[];
+        actions: (
+          | { type: "do_nothing" }
+          | { type: "file_input"; selector: string[] }
+          | { type: "controlled"; selector: string[] }
+        )[];
+      };
+    };
+  };
+};
+
+// returns all the props from a page
+export type CallbackGeneratorFunction = (
+  options: CallbackGeneratorOptions
+) => CallbackGeneratorOutput;

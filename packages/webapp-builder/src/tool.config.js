@@ -113,6 +113,13 @@ module.exports = {
                 options: {},
               },
             ],
+            callbacks: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
+                options: {},
+              },
+            ],
           },
         },
         build: {

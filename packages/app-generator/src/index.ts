@@ -3,6 +3,9 @@ import { createForest, Forest } from "@atrilabs/forest";
 import { createForestMgr } from "./create-forest-mgr";
 import {
   AppGeneratorOptions,
+  CallbackGeneratorFunction,
+  CallbackGeneratorOptions,
+  CallbackGeneratorOutput,
   ComponentGeneratorFunction,
   ComponentGeneratorOptions,
   ComponentGeneratorOutput,
@@ -150,6 +153,42 @@ export default async function (
     reactTemplateManager.addProps(pages[pageId], propsGeneratorOutput);
   });
 
+  const callbackGeneratorFunctions: {
+    fn: CallbackGeneratorFunction;
+    options: CallbackGeneratorOptions;
+  }[] = [];
+  for (let i = 0; i < options.callbacks.length; i++) {
+    const callbackGeneratorModulePath = options.callbacks[i]!.modulePath;
+    const mod = await import(callbackGeneratorModulePath);
+    const defaultFn = mod["default"];
+    if (typeof defaultFn === "function") {
+      callbackGeneratorFunctions.push({
+        fn: defaultFn,
+        options: options.components[i]!.options,
+      });
+    }
+  }
+  pageIds.forEach((pageId) => {
+    const forest = pageForestMap[pageId];
+    let callbackGeneratorOutput: CallbackGeneratorOutput = {};
+    callbackGeneratorFunctions.forEach(({ fn, options }) => {
+      try {
+        const currentOutput = fn({
+          forestDef,
+          forest,
+          custom: options,
+        });
+        callbackGeneratorOutput = {
+          ...callbackGeneratorOutput,
+          ...currentOutput,
+        };
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    reactTemplateManager.addCallbacks(pages[pageId], callbackGeneratorOutput);
+  });
+
   // copy template to the output directory
   reactTemplateManager.copyTemplate();
   // create pages
@@ -163,7 +202,6 @@ export default async function (
   const deps: { [pkg: string]: string } = {};
   const devDeps: { [pkg: string]: string } = {};
   const manifestDirs = toolConfig["manifestDirs"];
-  console.log(manifestDirs);
   if (manifestDirs && Array.isArray(manifestDirs)) {
     manifestDirs.forEach((dir) => {
       const version = getPackageVersion(dir.pkg);

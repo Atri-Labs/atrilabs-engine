@@ -38,7 +38,7 @@ export type Callback =
 export type SendFileCallbackHandler = (
   | { self: boolean }
   | { compId: string }
-) & { props: string };
+) & { props: string[] };
 
 export type SendEventCallbackHandler = boolean;
 

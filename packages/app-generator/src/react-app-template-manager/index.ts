@@ -9,7 +9,11 @@ import {
 import path from "path";
 import fs from "fs";
 import { camelCase } from "lodash";
-import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
+import {
+  CallbackGeneratorOutput,
+  ComponentGeneratorOutput,
+  PropsGeneratorOutput,
+} from "../types";
 import { ToolConfig } from "@atrilabs/core";
 
 export function createReactAppTemplateManager(
@@ -598,6 +602,11 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
   }
 
+  function addCallbacks(
+    page: { name: string },
+    props: CallbackGeneratorOutput
+  ) {}
+
   return {
     copyTemplate,
     createPage,
@@ -614,5 +623,6 @@ export function createReactAppTemplateManager(
     flushAtriBuildInfo,
     flushPatchedPackageJSON,
     flushAtriServerInfo,
+    addCallbacks,
   };
 }
