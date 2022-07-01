@@ -388,7 +388,7 @@ export function createReactAppTemplateManager(
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
       if (isParent) {
-        const start = `<${localIdentifier} {...${alias}Props}>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -397,7 +397,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier} {...${alias}Props}/>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}/>\n`;
         return start;
       }
     }
@@ -448,7 +448,9 @@ export function createReactAppTemplateManager(
           const comp = componentMap[name][compId];
           const alias = comp.alias;
           // component definition
-          const def = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);\n`;
+          const propsDef = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);`;
+          const callbackDef = `const ${alias}Cb = use${alias}Cb()`;
+          const def = `${propsDef}\n${callbackDef}\n`;
           return def;
         })
         .join("");
@@ -465,7 +467,7 @@ export function createReactAppTemplateManager(
     if (importCursorMatch) {
       const currPageImports = pageImportMap[name];
       const sources = Object.keys(currPageImports);
-      const newImportText = sources
+      const compImports = sources
         .map((source) => {
           const importVars = currPageImports[source]
             .map((val) => {
@@ -477,6 +479,16 @@ export function createReactAppTemplateManager(
           return `import { ${importVars} } from "${source}";`;
         })
         .join("\n");
+      const importCbs =
+        "import { " +
+        Object.keys(componentMap[name])
+          .map((compId) => {
+            const alias = componentMap[name][compId].alias;
+            return `use${alias}Cb`;
+          })
+          .join(", ") +
+        ` } from "../page-cbs/${name}";\n`;
+      const newImportText = `${compImports}\n${importCbs}`;
       slices.push({
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,

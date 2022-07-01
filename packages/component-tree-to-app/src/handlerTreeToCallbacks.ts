@@ -21,7 +21,7 @@ const handlerTreeToCallbacks: CallbackGeneratorFunction = (options) => {
           if (keyCallbackMap[key]) {
             output[node.id] = { callbacks: keyCallbackMap[key]! };
           } else {
-            console.log(`Please add key ${key} to keyPropMap`);
+            console.log(`Please add key ${key} to keyCallbackMap`);
           }
         } else {
           console.log(

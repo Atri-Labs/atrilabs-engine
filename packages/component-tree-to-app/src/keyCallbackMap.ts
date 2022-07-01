@@ -15,4 +15,5 @@ export const keyCallbackMap: {
       actions: [{ type: "do_nothing" }],
     },
   },
+  Flex: {},
 };
