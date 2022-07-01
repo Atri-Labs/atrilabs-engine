@@ -35,14 +35,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
-    textAlign: "right",
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
-    width: "45px",
+    width: "25px",
     height: "20px",
     border: "0px",
-    borderRadius: "2px",
+    borderRadius: "2px 0 0 2px",
   },
   rectLabel: {
     ...smallText,
@@ -51,10 +50,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     lineHeight: "0px",
   },
+  inputSpan: {
+    ...smallText,
+    color: gray400,
+    padding: "6px 8px 0 0",
+    backgroundColor: gray800,
+    width: "10px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "0 2px 2px 0",
+  },
   inputLabel: {
     position: "relative",
-    textAlign: "center",
     top: "-10px",
+    right: "-34px",
   },
   drop: {
     display: "flex",
@@ -67,7 +76,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   optionName: {
     ...smallText,
-    width: "4rem",
+    width: "1.35rem",
     color: "white",
     display: "flex",
     alignItems: "center",
@@ -79,6 +88,19 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
 
   return (
     <div style={styles.container}>
@@ -97,45 +119,55 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.option}>
           <div style={styles.optionName}>W</div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "17px" }}>
-              <input
-                type='number'
-                value={props.styles.width}
-                onChange={(e) =>
-                  props.patchCb({
-                    property: {
-                      styles: {
-                        [props.styles.borderWidth]: parseInt(e.target.value),
-                      },
-                    },
-                  })
-                }
-                style={styles.inputBox}
-                placeholder="PX"
-              />
-            </div>
-            <div style={{ marginRight: "17px" }}>
-              <label style={styles.inputLabel}>Min</label>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
-            </div>
-            <div>
-              <label style={styles.inputLabel}>Max</label>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
-            </div>
+            <input
+              type="text"
+              value={props.styles.width}
+              onChange={(e) => handleChange(e, "width")}
+              style={styles.inputBox}
+            />
+            <span style={styles.inputSpan}>PX</span>
+            <label style={styles.inputLabel}>Min</label>
+            <input
+              type="text"
+              value={props.styles.minWidth}
+              onChange={(e) => handleChange(e, "minWidth")}
+              style={styles.inputBox}
+            />
+            <span style={styles.inputSpan}>PX</span>
+            <label style={styles.inputLabel}>Max</label>
+            <input
+              type="text"
+              value={props.styles.maxWidth}
+              onChange={(e) => handleChange(e, "maxWidth")}
+              style={styles.inputBox}
+            />
+            <span style={styles.inputSpan}>PX</span>
           </div>
         </div>
         <div style={styles.option}>
           <div style={styles.optionName}>H</div>
           <div style={styles.rectLabel}>
-            <div style={{ marginRight: "17px" }}>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
-            </div>
-            <div style={{ marginRight: "17px" }}>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
-            </div>
-            <div>
-              <input type="text" style={styles.inputBox} placeholder="PX" />
-            </div>
+            <input
+              type="text"
+              value={props.styles.height}
+              onChange={(e) => handleChange(e, "height")}
+              style={styles.inputBox}
+            />
+            <span style={{...styles.inputSpan, marginRight: "18px"}}>PX</span>
+            <input
+              type="text"
+              value={props.styles.minHeight}
+              onChange={(e) => handleChange(e, "minHeight")}
+              style={styles.inputBox}
+            />
+            <span style={{...styles.inputSpan, marginRight: "18.5px"}}>PX</span>
+            <input
+              type="text"
+              value={props.styles.maxHeight}
+              onChange={(e) => handleChange(e, "maxHeight")}
+              style={styles.inputBox}
+            />
+            <span style={styles.inputSpan}>PX</span>
           </div>
         </div>
 

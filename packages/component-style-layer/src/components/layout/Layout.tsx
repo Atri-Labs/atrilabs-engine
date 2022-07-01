@@ -54,15 +54,23 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputBox: {
     ...smallText,
-    textAlign: "right",
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
-    width: "50px",
+    width: "35px",
     height: "20px",
     border: "0px",
-    borderRadius: "2px",
-    display:"flex"
+    borderRadius: "2px 0 0 2px",
+  },
+  inputSpan: {
+    ...smallText,
+    color: gray400,
+    padding: "6px 8px 0 0",
+    backgroundColor: gray800,
+    width: "10px",
+    height: "20px",
+    border: "0px",
+    borderRadius: "0 2px 2px 0",
   },
   rectLabel: {
     ...smallText,
@@ -73,8 +81,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   inputLabel: {
     position: "relative",
-    textAlign: "center",
     top: "-10px",
+    right: "-38px",
   },
   drop: {
     display: "flex",
@@ -103,14 +111,27 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
-  const [showProperties, setshowProperties] = useState(true);
+  const [showProperties, setShowProperties] = useState(true);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
 
   return (
     <>
       <div style={styles.container}>
         <div style={styles.drop}>
           <DropDownArrow
-            onClick={() => setshowProperties(!showProperties)}
+            onClick={() => setShowProperties(!showProperties)}
             style={
               !showProperties
                 ? { transform: "rotate(-90deg)" }
@@ -221,14 +242,22 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.option}>
             <div style={styles.optionName}>Gap</div>
             <div style={styles.rectLabel}>
-              <div style={{ marginRight: "18px" }}>
-                <label style={styles.inputLabel}>Row</label>
-                <input type="text" style={styles.inputBox} placeholder="PX" />
-              </div>
-              <div>
-                <label style={styles.inputLabel}>Col</label>
-                <input type="text" style={styles.inputBox} placeholder="PX" />
-              </div>
+              <label style={styles.inputLabel}>Row</label>
+              <input
+                type="text"
+                value={props.styles.rowGap}
+                onChange={(e) => handleChange(e, "rowGap")}
+                style={styles.inputBox}
+              />
+              <span style={{...styles.inputSpan, marginRight: "15px"}}>PX</span>
+              <label style={styles.inputLabel}>Col</label>
+              <input
+                type="text"
+                value={props.styles.columnGap}
+                onChange={(e) => handleChange(e, "columnGap")}
+                style={styles.inputBox}
+              />
+              <span style={styles.inputSpan}>PX</span>
             </div>
           </div>
         </div>

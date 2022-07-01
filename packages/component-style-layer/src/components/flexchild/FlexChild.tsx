@@ -66,7 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     height: "25px",
     marginTop: "30px",
-    marginBottom: "15px"
+    marginBottom: "15px",
   },
   optionName: {
     ...smallText,
@@ -86,6 +86,19 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
 
   return (
     <div style={styles.container}>
@@ -130,15 +143,30 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.rectLabel}>
             <div style={{ marginRight: "10px" }}>
               <label style={styles.inputLabel}>Grow</label>
-              <input type="text" style={styles.inputBox}/>
+              <input
+                type="text"
+                value={props.styles.flexGrow}
+                onChange={(e) => handleChange(e, "flexGrow")}
+                style={styles.inputBox}
+              />
             </div>
             <div style={{ marginRight: "10px" }}>
               <label style={styles.inputLabel}>Shrink</label>
-              <input type="text" style={styles.inputBox} />
+              <input
+                type="text"
+                value={props.styles.flexShrink}
+                onChange={(e) => handleChange(e, "flexShrink")}
+                style={styles.inputBox}
+              />
             </div>
             <div>
               <label style={styles.inputLabel}>Order</label>
-              <input type="text" style={styles.inputBox}  />
+              <input
+                type="text"
+                value={props.styles.flexBasis}
+                onChange={(e) => handleChange(e, "flexBasis")}
+                style={styles.inputBox}
+              />
             </div>
           </div>
         </div>
