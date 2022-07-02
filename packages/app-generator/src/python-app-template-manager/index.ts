@@ -72,6 +72,14 @@ export function createPythonAppTemplateManager(
       "import json",
       "from typing import List, Any",
     ].join("\n");
+    const defaultValueMap: any = {};
+    Object.keys(output.vars).forEach((currVar) => {
+      defaultValueMap[currVar] = output.vars[currVar].value;
+    });
+    const defaultStateStatement = `default_state = json.loads('${JSON.stringify(
+      defaultValueMap
+    )}')`;
+    const getDefinedValueDefStatement = `def get_defined_value(state, def_state, key):\n\treturn state[key] if key in state else def_state[key]`;
     const classStatements = classTasks
       .map((classTask) => {
         const { className, attrs } = classTask;
@@ -82,28 +90,36 @@ export function createPythonAppTemplateManager(
               attr.type === "str" || attr.type === "int" || attr.type === "bool"
                 ? ""
                 : "Atri.__";
-            let rhs = `state["${attr.name}"]`;
+            let rhs = `get_defined_value(state, def_state, "${attr.name}")`;
             if (typePrefix === "Atri.__") {
               // python adds _Atri for all inner classes
-              rhs = `Atri._Atri__${attr.type}(state["${attr.name}"])`;
+              rhs = `Atri._Atri__${attr.type}(${rhs}, def_state["${attr.name}"])`;
             }
             return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = ${rhs}`;
           })
           .join("\n");
         const initBody = attrs.length === 0 ? "\t\t\tpass" : attrStatements;
-        return `\tclass __${className}:\n\t\tdef __init__(self, state):\n${initBody}`;
+        return `\tclass __${className}:\n\t\tdef __init__(self, state, def_state):\n${initBody}`;
       })
       .join("\n");
     const AtriClassInitBody =
-      Object.keys(varClassMap)
+      `\t\tglobal default_state\n` +
+      (Object.keys(varClassMap)
         .map((varName) => {
           const className = varClassMap[varName];
-          return `\t\tself.${varName} = self.__${className}(state["${varName}"])`;
+          return `\t\tself.${varName} = self.__${className}(state["${varName}"], default_state["${varName}"])`;
         })
-        .join("\n") || "\t\tpass";
+        .join("\n") || "\t\tpass");
     const AtriClassInitDef = `\tdef __init__(self, state: Any):\n${AtriClassInitBody}`;
     const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${classStatements}`;
-    const newText = importStatements + "\n" + AtriClassDef;
+    const newText =
+      importStatements +
+      "\n" +
+      defaultStateStatement +
+      "\n" +
+      getDefinedValueDefStatement +
+      "\n" +
+      AtriClassDef;
     if (!fs.existsSync(path.dirname(outputRoutePath))) {
       fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }
