@@ -5,6 +5,7 @@ import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
+import stylesModule from "./styles.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -50,6 +51,7 @@ export const Canvas: React.FC = React.memo(() => {
               maxWidth: breakpoint.max,
               width: "100%",
             }}
+            className={stylesModule["canvas-container"]}
             ref={ref}
           >
             {dimension ? (
