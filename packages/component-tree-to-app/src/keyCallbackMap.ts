@@ -16,4 +16,10 @@ export const keyCallbackMap: {
     },
   },
   Flex: {},
+  Input: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "value"] }],
+    },
+  },
 };

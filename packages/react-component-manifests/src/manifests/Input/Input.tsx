@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -13,14 +13,20 @@ export const Input = forwardRef<
   {
     styles: React.CSSProperties;
     custom: { value: string };
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (value: string) => void;
   }
 >((props, ref) => {
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      props.onChange(e.target.value);
+    },
+    [props]
+  );
   return (
     <input
       ref={ref}
       style={props.styles}
-      onChange={props.onChange}
+      onChange={onChange}
       value={props.custom.value}
     />
   );

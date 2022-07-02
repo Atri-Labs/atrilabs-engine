@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -13,11 +13,17 @@ export const Button = forwardRef<
   {
     styles: React.CSSProperties;
     custom: { text: string };
-    onClick: (event: React.MouseEvent) => void;
+    onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
+  const onClick = useCallback(
+    (e: React.MouseEvent) => {
+      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+    },
+    [props]
+  );
   return (
-    <button ref={ref} style={props.styles} onClick={props.onClick}>
+    <button ref={ref} style={props.styles} onClick={onClick}>
       {props.custom.text}
     </button>
   );

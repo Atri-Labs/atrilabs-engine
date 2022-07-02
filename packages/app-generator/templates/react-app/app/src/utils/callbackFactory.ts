@@ -46,6 +46,29 @@ function sendEventDataFn(
     });
 }
 
+function updateAppStore(
+  alias: string,
+  pageName: string,
+  selector: string[],
+  eventData: any
+) {
+  const currentPageState = useStore.getState()[pageName];
+  const currentCompState = currentPageState[alias];
+  let newObj: any = {};
+  let currObj = newObj;
+  selector.forEach((sel, index) => {
+    if (index === selector.length - 1) {
+      currObj[sel] = eventData;
+    } else {
+      currObj[sel] = {};
+    }
+    currObj = currObj[sel];
+  });
+  const newCompState = { ...currentCompState, ...newObj };
+  const newPageState = { ...currentPageState, [alias]: newCompState };
+  useStore.setState({ [pageName]: newPageState });
+}
+
 export function callbackFactory(
   alias: string,
   pageName: string,
@@ -63,8 +86,7 @@ export function callbackFactory(
     const actions = callbackDef.actions;
     actions.forEach((action) => {
       if (action.type === "controlled") {
-        // TODO: use pageName, alias, action.selector to find the field to update
-        // use eventData as the new field value
+        updateAppStore(alias, pageName, action.selector, eventData);
       }
     });
   };

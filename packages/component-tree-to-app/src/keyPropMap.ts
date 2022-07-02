@@ -7,7 +7,16 @@ export const keyPropMap: any = {
   },
   Button: {
     styles: {
-      background: "pink",
+      background: "",
+    },
+    custom: {
+      text: "",
+    },
+  },
+  Input: {
+    styles: {},
+    custom: {
+      value: "",
     },
   },
 };
