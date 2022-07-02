@@ -82,7 +82,12 @@ export function createPythonAppTemplateManager(
               attr.type === "str" || attr.type === "int" || attr.type === "bool"
                 ? ""
                 : "Atri.__";
-            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = state["${attr.name}"]`;
+            let rhs = `state["${attr.name}"]`;
+            if (typePrefix === "Atri.__") {
+              // python adds _Atri for all inner classes
+              rhs = `Atri._Atri__${attr.type}(state["${attr.name}"])`;
+            }
+            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = ${rhs}`;
           })
           .join("\n");
         const initBody = attrs.length === 0 ? "\t\t\tpass" : attrStatements;
