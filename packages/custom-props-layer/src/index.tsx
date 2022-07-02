@@ -20,6 +20,7 @@ export default function () {
             />
           }
           header={<TabHeader />}
+          itemName={"custom"}
         />
       ) : null}
     </>
