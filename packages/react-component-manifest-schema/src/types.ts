@@ -11,7 +11,7 @@ export type ComponentCoordsWM = {
   bottomWM: number;
 };
 
-export type PropsSelector = (props: any) => any;
+export type PropsSelector = string[];
 
 export type ControlledCallback = {
   type: "controlled";
