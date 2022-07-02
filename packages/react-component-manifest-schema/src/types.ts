@@ -11,6 +11,45 @@ export type ComponentCoordsWM = {
   bottomWM: number;
 };
 
+export type PropsSelector = string[];
+
+export type ControlledCallback = {
+  type: "controlled";
+  selector: PropsSelector;
+};
+
+export type FileInputCallback = {
+  type: "file_input";
+  selector: PropsSelector;
+};
+
+export type DoNothingCallback = {
+  type: "do_nothing";
+};
+
+/**
+ * Callback defines the behavior of a callback with the App's state store.
+ */
+export type Callback =
+  | ControlledCallback
+  | FileInputCallback
+  | DoNothingCallback;
+
+export type SendFileCallbackHandler = (
+  | { self: boolean }
+  | { compId: string }
+) & { props: string[] };
+
+export type SendEventCallbackHandler = boolean;
+
+/**
+ * CallbackHandler defines behavior with the backend whenever a callback is fired.
+ * CallbackHandlers must be serializable because it is store in CallbackHandlerTree.
+ */
+export type CallbackHandler =
+  | SendFileCallbackHandler
+  | SendEventCallbackHandler;
+
 export type AcceptsChildFunction = (info: {
   coords: ComponentCoordsWM;
   childCoordinates: ComponentCoordsWM[];
@@ -34,7 +73,17 @@ export type ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: boolean };
       };
     };
-    attachCallbacks: { [key: string]: any };
+    attachCallbacks: { [key: string]: Callback[] };
     acceptsChild?: AcceptsChildFunction;
+    /*
+     * By default components won't have callback handlers. The component creator
+     * can define some default handlers for a component.
+     */
+    defaultCallbackHandlers: {
+      [callbackName: string]: (
+        | { sendFile: SendFileCallbackHandler }
+        | { sendEventData: SendEventCallbackHandler }
+      )[];
+    };
   };
 };

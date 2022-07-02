@@ -42,6 +42,46 @@ export const useSubscribeNewDrop = () => {
               return curr.pkg === pkg && curr.component.meta.key === key;
             }
           );
+
+          /**
+           * First create the props for the component because the component
+           * needs it upon first render. Hence, the order of the api calls is:
+           * 1. Create Props
+           * 2. Create Component
+           * 3. Associate Alias with the Component
+           */
+          // 1. Create Props
+          if (manifest) {
+            const component = manifest.component;
+            const propsKeys = Object.keys(component.dev.attachProps);
+            for (let i = 0; i < propsKeys.length; i++) {
+              const propKey = propsKeys[i];
+              const treeId = component.dev.attachProps[propKey].treeId;
+              const initialValue =
+                component.dev.attachProps[propKey].initialValue;
+              const propCompId = getId();
+              const createEvent: CreateEvent = {
+                id: propCompId,
+                type: `CREATE$$${treeId}`,
+                meta: {},
+                state: {
+                  parent: { id: "", index: 0 },
+                  // NOTE: Introducting a convention to store node value in state's property field
+                  property: { [propKey]: initialValue },
+                },
+              };
+              api.postNewEvent(forestPkgId, forestId, createEvent);
+
+              const linkEvent: LinkEvent = {
+                type: `LINK$$${treeId}`,
+                refId: compId,
+                childId: propCompId,
+              };
+              api.postNewEvent(forestPkgId, forestId, linkEvent);
+            }
+          }
+
+          // 2. Create Component
           const event: CreateEvent = {
             id: compId,
             type: `CREATE$$${ComponentTreeId}`,
@@ -54,7 +94,7 @@ export const useSubscribeNewDrop = () => {
           };
           api.postNewEvent(forestPkgId, forestId, event);
 
-          // TODO: fetch a new alias using key, then emit a alias event
+          // 3. Associate Alias
           api.getNewAlias(forestPkgId, key, (alias) => {
             const setAliasEvent: PatchEvent = {
               id: compId,
@@ -65,38 +105,6 @@ export const useSubscribeNewDrop = () => {
             };
             api.postNewEvent(forestPkgId, forestId, setAliasEvent);
           });
-
-          setTimeout(() => {
-            if (manifest) {
-              const component = manifest.component;
-              const propsKeys = Object.keys(component.dev.attachProps);
-              for (let i = 0; i < propsKeys.length; i++) {
-                const propKey = propsKeys[i];
-                const treeId = component.dev.attachProps[propKey].treeId;
-                const initialValue =
-                  component.dev.attachProps[propKey].initialValue;
-                const propCompId = getId();
-                const createEvent: CreateEvent = {
-                  id: propCompId,
-                  type: `CREATE$$${treeId}`,
-                  meta: {},
-                  state: {
-                    parent: { id: "", index: 0 },
-                    // NOTE: Introducting a convention to store node value in state's property field
-                    property: { [propKey]: initialValue },
-                  },
-                };
-                api.postNewEvent(forestPkgId, forestId, createEvent);
-
-                const linkEvent: LinkEvent = {
-                  type: `LINK$$${treeId}`,
-                  refId: compId,
-                  childId: propCompId,
-                };
-                api.postNewEvent(forestPkgId, forestId, linkEvent);
-              }
-            }
-          }, 3000);
         }
       }
     });

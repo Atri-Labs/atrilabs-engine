@@ -10,6 +10,12 @@ const forestsConfig = {
     {
       modulePath: "@atrilabs/app-design-forest/lib/cssTree.js",
     },
+    {
+      modulePath: "@atrilabs/app-design-forest/lib/customPropsTree.js",
+    },
+    {
+      modulePath: "@atrilabs/app-design-forest/lib/callbackHandlerTree.js",
+    },
   ],
 };
 
@@ -37,6 +43,7 @@ module.exports = {
     { pkg: "@atrilabs/component-style-layer" },
     { pkg: "@atrilabs/overlay-hints-layer" },
     { pkg: "@atrilabs/publish-app-layer" },
+    { pkg: "@atrilabs/custom-props-layer" },
   ],
   output: "lib",
   services: {
@@ -103,6 +110,13 @@ module.exports = {
               {
                 modulePath:
                   "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
+                options: {},
+              },
+            ],
+            callbacks: [
+              {
+                modulePath:
+                  "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
                 options: {},
               },
             ],

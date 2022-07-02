@@ -1,18 +1,30 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
 export const Button = forwardRef<
   HTMLButtonElement,
-  { styles: React.CSSProperties }
+  {
+    styles: React.CSSProperties;
+    custom: { text: string };
+    onClick: (event: { pageX: number; pageY: number }) => void;
+  }
 >((props, ref) => {
+  const onClick = useCallback(
+    (e: React.MouseEvent) => {
+      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+    },
+    [props]
+  );
   return (
-    <button ref={ref} style={props.styles}>
-      Click Me!
+    <button ref={ref} style={props.styles} onClick={onClick}>
+      {props.custom.text}
     </button>
   );
 });
@@ -24,6 +36,12 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
+};
+
+const customTreeOptions: CustomPropsTreeOptions = {
+  dataTypes: {
+    text: "text",
+  },
 };
 
 const compManifest: ReactComponentManifestSchema = {
@@ -40,8 +58,21 @@ const compManifest: ReactComponentManifestSchema = {
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
+      custom: {
+        treeId: CustomTreeId,
+        initialValue: {
+          text: "Submit",
+        },
+        treeOptions: customTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
+      },
     },
-    attachCallbacks: {},
+    attachCallbacks: {
+      onClick: [{ type: "do_nothing" }],
+    },
+    defaultCallbackHandlers: {
+      onClick: [{ sendEventData: true }],
+    },
   },
 };
 

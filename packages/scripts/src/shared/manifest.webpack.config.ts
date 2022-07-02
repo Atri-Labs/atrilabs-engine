@@ -89,7 +89,7 @@ export default function createManifestWebpackConfig(
     output: {
       path: output.path,
       filename: output.filename,
-      library: scriptName,
+      library: { name: scriptName, type: "umd" },
       publicPath,
     },
     devtool: "inline-source-map",
@@ -279,6 +279,11 @@ export default function createManifestWebpackConfig(
     resolve: {
       extensions: [".js", ".jsx"],
       modules: ["node_modules", path.resolve("node_modules")],
+    },
+    optimization: {
+      splitChunks: {
+        chunks: "initial",
+      },
     },
   };
 }

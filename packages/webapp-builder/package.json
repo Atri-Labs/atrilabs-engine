@@ -45,6 +45,7 @@
     "@atrilabs/component-list-layer": "^0.0.11",
     "@atrilabs/component-style-layer": "^0.0.11",
     "@atrilabs/component-tree-to-app": "^0.0.11",
+    "@atrilabs/custom-props-layer": "^0.0.11",
     "@atrilabs/design-system": "^0.0.11",
     "@atrilabs/forest": "^0.0.11",
     "@atrilabs/layer-types": "^0.0.11",
