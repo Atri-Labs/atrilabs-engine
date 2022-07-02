@@ -1,6 +1,7 @@
 import React from "react";
 import { canvasComponentStore } from "./CanvasComponentData";
 import { ComponentRenderer } from "./ComponentRenderer";
+import { dudCallback } from "./utils";
 
 export type DecoratorProps = {
   compId: string;
@@ -30,6 +31,13 @@ export const DecoratorRenderer: React.FC<DecoratorRendererProps> = (props) => {
   } else if (acceptsChild) {
     return <ComponentRenderer compId={props.compId} />;
   } else {
-    return <FCComp {...fcProps} ref={fcRef} />;
+    const callbacks: { [callbackName: string]: () => void } = {};
+    const callbackNames = Object.keys(
+      canvasComponentStore[props.compId].callbacks
+    );
+    callbackNames.forEach((callbackName) => {
+      callbacks[callbackName] = dudCallback;
+    });
+    return <FCComp {...fcProps} ref={fcRef} {...callbacks} />;
   }
 };

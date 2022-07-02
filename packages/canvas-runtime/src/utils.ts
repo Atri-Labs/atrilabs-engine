@@ -265,3 +265,5 @@ export function getAllDescendants(compId: string): string[] {
   }
   return descendants;
 }
+
+export function dudCallback() {}

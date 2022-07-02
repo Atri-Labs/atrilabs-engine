@@ -18,8 +18,7 @@ export const Button = forwardRef<
 >((props, ref) => {
   const onClick = useCallback(
     (e: React.MouseEvent) => {
-      // TEMP CHANGE
-      if (props.onClick) props.onClick({ pageX: e.pageX, pageY: e.pageY });
+      props.onClick({ pageX: e.pageX, pageY: e.pageY });
     },
     [props]
   );
