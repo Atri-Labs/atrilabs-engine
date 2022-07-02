@@ -52,6 +52,7 @@ export type CanvasComponent = {
   decorators: React.FC<any>[];
   catchers: Catcher[];
   acceptsChild: boolean;
+  callbacks: { [callbackName: string]: any };
 };
 
 export type CanvasComponentStore = {
