@@ -88,6 +88,8 @@ export type PythonStubGeneratorOutput = {
       gettable: boolean;
       // whether the variable should be included in updateState call
       updateable: boolean;
+      // callbacks
+      callbacks: CallbackGeneratorOutput["0"]["callbacks"];
     };
   };
 };
