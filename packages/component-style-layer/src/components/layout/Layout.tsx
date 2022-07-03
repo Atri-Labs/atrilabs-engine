@@ -246,7 +246,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Row</label>
               <input
                 type="text"
-                value={props.styles.rowGap}
+                value={props.styles.rowGap || ''}
                 onChange={(e) => handleChange(e, "rowGap")}
                 style={styles.inputBox}
               />
@@ -256,7 +256,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Col</label>
               <input
                 type="text"
-                value={props.styles.columnGap}
+                value={props.styles.columnGap || ''}
                 onChange={(e) => handleChange(e, "columnGap")}
                 style={styles.inputBox}
               />

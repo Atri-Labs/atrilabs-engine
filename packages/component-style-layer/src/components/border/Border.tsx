@@ -143,7 +143,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.rectLabel}>
             <input
               type="text"
-              value={props.styles.borderRadius}
+              value={props.styles.borderRadius || ''}
               onChange={(e) => handleChange(e, "borderRadius")}
               style={styles.inputBox}
             />
@@ -153,7 +153,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             </div>
             <input
               type="text"
-              value={props.styles.borderWidth}
+              value={props.styles.borderWidth || ''}
               onChange={(e) => handleChange(e, "borderWidth")}
               style={styles.inputBox}
             />
@@ -194,7 +194,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             </div>
             <input
               type="text"
-              value={props.styles.borderColor}
+              value={props.styles.borderColor || ''}
               onChange={(e) => handleBorderChange(e, "borderColor")}
               style={{ ...styles.inputBox, width: "50px", borderRadius: "2px" }}
             />
