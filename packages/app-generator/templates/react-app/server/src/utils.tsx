@@ -90,6 +90,7 @@ export function getServerInfo(startDir: string): ServerInfo {
   const serverInfo = JSON.parse(fs.readFileSync(serverInfoPath).toString());
   return {
     port: serverInfo["port"],
+    pythonPort: serverInfo["pythonPort"],
     publicDir: serverInfo["publicDir"],
     pages: serverInfo["pages"],
   };

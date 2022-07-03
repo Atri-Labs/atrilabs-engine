@@ -6,6 +6,7 @@ import {
 import generateModuleId from "@atrilabs/scripts/build/babel/generateModuleId";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import { keyPropMap } from "./keyPropMap";
+import { keyCallbackMap } from "./keyCallbackMap";
 type Options = Omit<PythonStubGeneratorOptions, "custom"> & {
   custom: {
     treeId: string;
@@ -70,6 +71,8 @@ export const pythonStubGenerator: PythonStubGeneratorFunction = (
                     value: value,
                     gettable: true,
                     updateable: true,
+                    // TODO: fill in correct callbacks
+                    callbacks: {},
                   };
                   break;
                 case "module":
@@ -81,6 +84,8 @@ export const pythonStubGenerator: PythonStubGeneratorFunction = (
                         value: value,
                         gettable: true,
                         updateable: true,
+                        // TODO: fill in correct callbacks
+                        callbacks: {},
                       };
                     } catch {}
                   }
@@ -112,15 +117,16 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
         const pkg = node.meta.pkg;
         const key = node.meta.key;
         if (pkg.includes("react-component-manifests")) {
-          if (keyPropMap[key]) {
+          if (keyPropMap[key] && keyCallbackMap[key]) {
             stub.vars[alias] = {
               type: "",
               value: keyPropMap[key],
+              callbacks: keyCallbackMap[key]!,
               gettable: true,
               updateable: true,
             };
           } else {
-            console.log(`Please add key ${key} to keyPropMap`);
+            console.log(`Please add key ${key} to keyPropMap & keyCallbackMap`);
           }
         } else {
           console.log(

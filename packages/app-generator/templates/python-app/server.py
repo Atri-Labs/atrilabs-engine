@@ -33,15 +33,17 @@ def compute_initial_state(route: RouteDetails, incoming_state):
     init_state(atri_obj)
     return atri_obj
 
-def compute_new_state(route: RouteDetails, incoming_state):
+def compute_new_state(route: RouteDetails, incoming_state, event):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
+    getattr(atri_obj, "set_event")(event)
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj)
+    delattr(atri_obj, "event_data")
     return atri_obj
 
 @click.group()
@@ -69,8 +71,12 @@ def serve(obj, port, host):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
+        event_data = req_dict["eventData"]
+        callback_name = req_dict["callbackName"]
+        alias = req_dict["alias"]
+        event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_new_state(routeDetails, state)
+        return compute_new_state(routeDetails, state, event)
 
     uvicorn.run(app, host=host, port=int(port))
 
