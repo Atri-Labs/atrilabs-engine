@@ -10,6 +10,7 @@ export {
 } from "./hooks/useDragDrop";
 export * from "./CanvasAPI";
 export * from "./types";
+export { subscribeOnComponentRendered } from "./DefaultDecorators";
 
 type CanvasRuntimeProps = {
   // layers are children of runtime

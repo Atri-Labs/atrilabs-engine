@@ -127,7 +127,7 @@ type CanvasActivityEvent =
   | BlurEvent;
 
 // context
-type CanvasActivityContext = {
+export type CanvasActivityContext = {
   // component being dragged
   dragged?: {
     id: string;
