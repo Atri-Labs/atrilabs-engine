@@ -28,7 +28,7 @@ export const BorderInput: React.FC<BorderInputProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    if (props.styleItem !== "borderColor") {
+    if (props.styleItem !== "borderColor" && props.styleItem !== "color") {
       props.patchCb({
         property: {
           styles: {
@@ -50,7 +50,7 @@ export const BorderInput: React.FC<BorderInputProps> = (props) => {
     <div>
       <input
         type="text"
-        value={props.styles[props.styleItem] || ""}
+        value={props.styles[props.styleItem] || props.defaultValue}
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
       />

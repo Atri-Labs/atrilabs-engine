@@ -7,6 +7,7 @@ export type SizeInputProps = {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   defaultValue: string;
+  placeHolderText: string;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -43,7 +44,7 @@ export const SizeInput: React.FC<SizeInputProps> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          [styleItem]: parseInt(e.target.value),
+          [styleItem]: parseFloat(e.target.value),
         },
       },
     });
@@ -52,11 +53,11 @@ export const SizeInput: React.FC<SizeInputProps> = (props) => {
     <div style={styles.container}>
       <input
         type="text"
-        value={props.styles[props.styleItem] || ""}
+        value={props.styles[props.styleItem] || props.defaultValue}
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
       />
-      <div style={styles.inputSpan}>PX</div>
+      <div style={styles.inputSpan}>{props.placeHolderText}</div>
     </div>
   );
 };

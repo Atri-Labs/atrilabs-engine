@@ -28,7 +28,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "5px",
+    marginTop: "10px",
     paddingBottom: "0.5rem",
     height: "25px",
     paddingLeft: "0.5rem",
@@ -50,7 +50,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "grid",
     gridTemplateColumns: "3rem 30px 30px 30px",
     columnGap: "20px",
-   rowGap: "3px",
+    rowGap: "3px",
     marginBottom: "25px",
     textAlign: "center",
   },
@@ -58,18 +58,18 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 // CSS Values for different CSS property (The default value must be at position 0)
 // CSS values for flex-direction CSS property (The default value row is at position 0)
+const alignSelfValues = [
+  "auto",
+  "flex-start",
+  "center",
+  "flex-end",
+  "stretch",
+  "baseline",
+];
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const alignSelfValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
 
   return (
     <div style={styles.container}>
@@ -106,7 +106,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
           <div>Shrink</div>
           <div>Order</div>
           <div style={styles.optionName}>Override</div>
-          <div style={styles.gridItem}>
+          <div>
             <FlexChildInput
               styleItem="flexGrow"
               styles={props.styles}
@@ -114,7 +114,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue={0}
             />
           </div>
-          <div style={styles.gridItem}>
+          <div>
             <FlexChildInput
               styleItem="flexShrink"
               styles={props.styles}
@@ -122,7 +122,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue={0}
             />
           </div>
-          <div style={styles.gridItem}>
+          <div>
             <FlexChildInput
               styleItem="order"
               styles={props.styles}

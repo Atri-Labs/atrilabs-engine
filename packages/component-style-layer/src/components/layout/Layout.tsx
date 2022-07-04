@@ -45,7 +45,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "5px",
+    marginTop: "10px",
     paddingBottom: "0.5rem",
     height: "25px",
     paddingLeft: "0.5rem",
@@ -62,7 +62,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "30px",
   },
   optionName: {
-    ...smallText, 
+    ...smallText,
     textAlign: "left",
     color: "white",
     lineHeight: "25px",
@@ -82,49 +82,43 @@ const styles: { [key: string]: React.CSSProperties } = {
 // CSS Values for different CSS property (The default value must be at position 0)
 // CSS values for flex-direction CSS property (The default value row is at position 0)
 
+const directionValues = [
+  "row",
+  "column",
+  "row-reverse",
+  "column-reverse"
+];
+const alignItemValues = [
+  "stretch",
+  "flex-start",
+  "center",
+  "flex-end",
+  "baseline",
+];
+const justifyContentValues = [
+  "flex-start",
+  "center",
+  "flex-end",
+  "space-between",
+  "space-around"
+];
+const wrapValues = [
+  "no-wrap",
+  "wrap",
+  "reverse-wrap"
+];
+const alignContentValues = [
+  "stretch",
+  "flex-start",
+  "center",
+  "flex-end",
+  "space-between",
+  "space-around"
+];
+
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const directionValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
-  const alignItemValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
-  const justifyContentValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
-  const wrapValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
-  const alignContentValues = [
-    "auto",
-    "stretch",
-    "flex-start",
-    "center",
-    "flex-end",
-    "baseline",
-  ];
 
   return (
     <>
@@ -144,11 +138,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           style={showProperties ? { display: "block" } : { display: "none" }}
         >
           <PropertyRender
-              styleItem= "flexDirection"
-              styleText= "Direction"
-              styleArray= {directionValues}
-              patchCb= {props.patchCb}
-              styles= {props.styles}
+            styleItem="flexDirection"
+            styleText="Direction"
+            styleArray={directionValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
           >
             <RightArrow />
             <DownArrow />
@@ -156,11 +150,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             <UpArrow />
           </PropertyRender>
           <PropertyRender
-              styleItem= "alignItems"
-              styleText= "Align-items"
-              styleArray= {alignItemValues}
-              patchCb= {props.patchCb}
-              styles= {props.styles}
+            styleItem="alignItems"
+            styleText="Align-items"
+            styleArray={alignItemValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
           >
             <FlexStretch />
             <FlexStart />
@@ -170,11 +164,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-              styleItem= "justifyContent"
-              styleText= "Justify- content"
-              styleArray= {justifyContentValues}
-              patchCb= {props.patchCb}
-              styles= {props.styles}
+            styleItem="justifyContent"
+            styleText="Justify- content"
+            styleArray={justifyContentValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
           >
             <JCStart />
             <JCCenter />
@@ -184,11 +178,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-              styleItem= "flexWrap"
-              styleText= "Wrap"
-              styleArray= {wrapValues}
-              patchCb= {props.patchCb}
-              styles= {props.styles}
+            styleItem="flexWrap"
+            styleText="Wrap"
+            styleArray={wrapValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
           >
             <NoWrap />
             <Wrap />
@@ -196,11 +190,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-              styleItem= "alignContent"
-              styleText= "Align-content"
-              styleArray= {alignContentValues}
-              patchCb= {props.patchCb}
-              styles= {props.styles}
+            styleItem="alignContent"
+            styleText="Align-content"
+            styleArray={alignContentValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
           >
             <ACFlexStretch />
             <ACFlexStart />
@@ -220,6 +214,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             <div style={styles.gridItem}>
@@ -228,6 +223,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
           </div>

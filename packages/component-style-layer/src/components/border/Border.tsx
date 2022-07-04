@@ -28,7 +28,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "5px",
+    marginTop: "10px",
     paddingBottom: "0.5rem",
     height: "25px",
     paddingLeft: "0.5rem",
@@ -111,6 +111,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
+              placeHolderText="PX"
             />
           </div>
           <div style={styles.optionName}>
@@ -122,6 +123,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
+              placeHolderText="PX"
             />
           </div>
           <div style={styles.optionName}>

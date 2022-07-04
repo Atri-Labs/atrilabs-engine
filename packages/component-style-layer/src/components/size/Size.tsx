@@ -26,9 +26,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "5px",
+    marginTop: "10px",
     paddingBottom: "0.5rem",
-    height: "25px",
+    height: "15px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -83,6 +83,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             <div>
@@ -91,6 +92,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             <div>
@@ -99,6 +101,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             
@@ -109,6 +112,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             <div>
@@ -117,6 +121,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
             <div>
@@ -125,6 +130,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                placeHolderText="PX"
               />
             </div>
           </div>

@@ -5,6 +5,7 @@ import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
 import { FlexChild } from "./components/flexchild/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import { Typography } from "./components/typography/Typography";
 
 export type TabBodyProps = {
   alias: string;
@@ -43,6 +44,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
+      {props.treeOptions && props.treeOptions.typographyOptions ? (
+        <Typography styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
       {props.treeOptions && props.treeOptions.sizeOptions ? (
         <Size styles={props.styles} patchCb={props.patchCb} />
       ) : null}
