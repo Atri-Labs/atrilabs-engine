@@ -16,8 +16,6 @@ type SpacingProp = {
   onMouseDownPaddingRight: (event: any) => void;
   onMouseDownPaddingBottom: (event: any) => void;
   onMouseDownPaddingLeft: (event: any) => void;
-  marginTop: React.CSSProperties["marginTop"];
-  paddingTop: React.CSSProperties["paddingTop"];
 };
 
 const Spacing: React.FC<SpacingProp> = ({
@@ -29,8 +27,6 @@ const Spacing: React.FC<SpacingProp> = ({
   onMouseDownPaddingRight,
   onMouseDownPaddingBottom,
   onMouseDownPaddingLeft,
-  marginTop,
-  paddingTop,
 }) => {
   return (
     <svg
@@ -40,16 +36,14 @@ const Spacing: React.FC<SpacingProp> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <MarginTop
-        onMouseDown={onMouseDownMarginTop}
-      />
-      <MarginLeft />
-      <MarginRight />
-      <MarginBottom />
-      <PaddingTop />
-      <PaddingLeft />
-      <PaddingRight />
-      <PaddingBottom />
+      <MarginTop onMouseDown={onMouseDownMarginTop} />
+      <MarginLeft onMouseDown={onMouseDownMarginLeft} />
+      <MarginRight onMouseDown={onMouseDownMarginRight} />
+      <MarginBottom onMouseDown={onMouseDownMarginBottom} />
+      <PaddingTop onMouseDown={onMouseDownPaddingTop} />
+      <PaddingLeft onMouseDown={onMouseDownPaddingLeft} />
+      <PaddingRight onMouseDown={onMouseDownPaddingRight} />
+      <PaddingBottom onMouseDown={onMouseDownPaddingBottom} />
     </svg>
   );
 };

@@ -108,16 +108,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-// const marginTop = 0;
-// const marginDown = 0;
-// const marginLeft = 0;
-// const marginRight = 0;
-
-// const paddingTop = 0;
-// const paddingDown = 0;
-// const paddingLeft = 0;
-// const paddingRight = 0;
-
 //ACTIONS
 const MOUSE_DOWN = "MOUSE_DOWN";
 const MOUSE_MOVE = "MOUSE_MOVE";
@@ -126,15 +116,15 @@ const MOUSE_LEAVE = "MOUSE_LEAVE";
 //STATES
 const dragging = "dragging";
 // PADDING AREA TYPES
-const paddingTopArea = "paddingTopArea";
-const paddingBottomArea = "paddingBottomArea";
-const paddingRightArea = "paddingRightArea";
-const paddingLeftArea = "paddingLeftArea";
+const paddingTopArea = "paddingTop" as "paddingTop";
+const paddingBottomArea = "paddingBottom" as "paddingBottom";
+const paddingRightArea = "paddingRight" as "paddingRight";
+const paddingLeftArea = "paddingLeft" as "paddingLeft";
 //MARGIN AREA TYPES
-const marginTopArea = "marginTopArea";
-const marginBottomArea = "marginBottomArea";
-const marginLeftArea = "marginLeftArea";
-const marginRightArea = "marginRightArea";
+const marginTopArea = "marginTop" as "marginTop";
+const marginBottomArea = "marginBottom" as "marginBottom";
+const marginLeftArea = "marginLeft" as "marginLeft";
+const marginRightArea = "marginRight" as "marginRight";
 
 const mouseDownAction = assign({
   area: (_context: any, event: any) => {
@@ -255,20 +245,31 @@ const dragMachine = createMachine({
   },
 });
 
+// SpacingProperty is a controlled component
 const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const [toggleClass, setToggleClass] = useState(true);
   const [state, send] = useMachine(dragMachine);
 
+  const marginTopVal = props.styles.marginTop || 0;
+  const marginRightVal = props.styles.marginRight || 0;
+  const marginLeftVal = props.styles.marginLeft || 0;
+  const marginBottomVal = props.styles.marginBottom || 0;
+  const paddingTopVal = props.styles.paddingTop || 0;
+  const paddingRightVal = props.styles.paddingRight || 0;
+  const paddingLeftVal = props.styles.paddingLeft || 0;
+  const paddingBottomVal = props.styles.paddingBottom || 0;
+
+  // callbacks for different areas
   const onMouseDownPaddingTop = useCallback(
     (event: React.MouseEvent) => {
       send({
         type: MOUSE_DOWN,
         event: event,
         area: paddingTopArea,
-        initialValue: props.styles.paddingTop,
+        initialValue: paddingTopVal,
       });
     },
-    [send, props]
+    [send, paddingTopVal]
   );
   const onMouseDownPaddingBottom = useCallback(
     (event: React.MouseEvent) => {
@@ -276,10 +277,10 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingBottomArea,
-        initialValue: props.styles.paddingBottom,
+        initialValue: paddingBottomVal,
       });
     },
-    [send, props]
+    [send, paddingBottomVal]
   );
   const onMouseDownPaddingRight = useCallback(
     (event: React.MouseEvent) => {
@@ -287,10 +288,10 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingRightArea,
-        initialValue: props.styles.paddingRight,
+        initialValue: paddingRightVal,
       });
     },
-    [send, props]
+    [send, paddingRightVal]
   );
   const onMouseDownPaddingLeft = useCallback(
     (event: React.MouseEvent) => {
@@ -298,33 +299,21 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingLeftArea,
-        initialValue: props.styles.paddingLeft,
+        initialValue: paddingLeftVal,
       });
     },
-    [send, props]
+    [send, paddingLeftVal]
   );
-
   const onMouseDownMarginTop = useCallback(
     (event: React.MouseEvent) => {
-      console.log("Mouse Down On Margin Top");
-      const onMouseMove = (event: MouseEvent) => {
-        send({ type: MOUSE_MOVE, event: event });
-      };
-      const onMouseUp = () => {
-        send({ type: MOUSE_UP, event: event });
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
       send({
         type: MOUSE_DOWN,
         event: event,
         area: marginTopArea,
-        initialValue: props.styles.marginTop,
+        initialValue: marginTopVal,
       });
     },
-    [send, props.styles.marginTop]
+    [send, marginTopVal]
   );
   const onMouseDownMarginBottom = useCallback(
     (event: React.MouseEvent) => {
@@ -332,10 +321,10 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginBottomArea,
-        initialValue: props.styles.marginBottom,
+        initialValue: marginBottomVal,
       });
     },
-    [send, props]
+    [send, marginBottomVal]
   );
   const onMouseDownMarginRight = useCallback(
     (event: React.MouseEvent) => {
@@ -343,10 +332,10 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginRightArea,
-        initialValue: props.styles.marginRight,
+        initialValue: marginRightVal,
       });
     },
-    [send, props]
+    [send, marginRightVal]
   );
   const onMouseDownMarginLeft = useCallback(
     (event: React.MouseEvent) => {
@@ -354,46 +343,59 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginLeftArea,
-        initialValue: props.styles.marginLeft,
+        initialValue: marginLeftVal,
       });
     },
-    [send, props]
+    [send, marginLeftVal]
   );
 
+  // add temporary event listeners to window
+  useEffect(() => {
+    if (state.value === dragging) {
+      const onMouseMove = (event: MouseEvent) => {
+        send({ type: MOUSE_MOVE, event: event });
+      };
+      const onMouseUp = () => {
+        send({ type: MOUSE_UP });
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    }
+  }, [state.value, send]);
+
+  // call patch only if the value has changed as compared to previous value
+  // this will prevent un-necessary patchCb calls
   useEffect(() => {
     if (state.value !== dragging) return;
-    if (state.context["area"] === marginTopArea) {
-      const change =
-        state.context["finalMousePosition"] -
-        state.context["initialMousePosition"];
-      let marginTop = 0;
-      if (typeof props.styles.marginTop === "string") {
-        marginTop = parseInt(props.styles.marginTop);
-      }
-      if (typeof props.styles.marginTop === "number") {
-        marginTop = props.styles.marginTop;
-      }
-      const changedValue = marginTop + change;
+    const change =
+      state.context["finalMousePosition"] -
+      state.context["initialMousePosition"];
+    const newValue = state.context.initialValue + change;
+    const oldValue =
+      props.styles[state.context["area"] as keyof React.CSSProperties];
+    if (oldValue !== newValue)
       props.patchCb({
-        property: { styles: { marginTop: changedValue } },
+        property: { styles: { [state.context["area"]]: newValue } },
       });
-    }
   }, [state.context, state.value, props]);
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>Spacing</div>
       {toggleClass && (
         <main style={styles.mainContainer}>
           {/*Margin PlaceHolders*/}
-          <p style={styles.marginTopPlaceHolder}>{props.styles.marginTop}</p>
-          <p style={styles.marginRightPlaceHolder}>0</p>
-          <p style={styles.marginBottomPlaceHolder}>0</p>
-          <p style={styles.marginLeftPlaceHolder}>0</p>
+          <p style={styles.marginTopPlaceHolder}>{marginTopVal}</p>
+          <p style={styles.marginRightPlaceHolder}>{marginRightVal}</p>
+          <p style={styles.marginBottomPlaceHolder}>{marginBottomVal}</p>
+          <p style={styles.marginLeftPlaceHolder}>{marginLeftVal}</p>
           {/*Padding Placeholders*/}
-          <p style={styles.paddingTopPlaceHolder}>0</p>
-          <p style={styles.paddingRightPlaceHolder}>0</p>
-          <p style={styles.paddingBottomPlaceHolder}>0</p>
-          <p style={styles.paddingLeftPlaceHolder}>0</p>
+          <p style={styles.paddingTopPlaceHolder}>{paddingTopVal}</p>
+          <p style={styles.paddingRightPlaceHolder}>{paddingRightVal}</p>
+          <p style={styles.paddingBottomPlaceHolder}>{paddingBottomVal}</p>
+          <p style={styles.paddingLeftPlaceHolder}>{paddingLeftVal}</p>
           {/*Margin Label*/}
           <p style={styles.marginLabel}>Margin</p>
           {/* Padding Label */}
@@ -408,8 +410,6 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
               onMouseDownPaddingRight={onMouseDownPaddingRight}
               onMouseDownPaddingBottom={onMouseDownPaddingBottom}
               onMouseDownPaddingLeft={onMouseDownPaddingLeft}
-              marginTop={props.styles.marginTop || 0}
-              paddingTop={props.styles.paddingTop || 0}
             />
           </div>
         </main>
