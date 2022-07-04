@@ -1,5 +1,5 @@
 import { gray800 } from "@atrilabs/design-system";
-import { ReactComponent as BrushIcon } from "./assets/brush.svg";
+import { ReactComponent as SettingsIcon } from "./assets/settings.svg";
 
 export const TabHeader: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ export const TabHeader: React.FC = () => {
         borderRight: `1px solid ${gray800}`,
       }}
     >
-      <BrushIcon />
+      <SettingsIcon />
     </div>
   );
 };

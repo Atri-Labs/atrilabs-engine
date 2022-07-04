@@ -13,5 +13,9 @@ module.exports = {
       modulePath: "./src/manifests/Flex/Flex.tsx",
       exportedVarName: "Flex",
     },
+    Input: {
+      modulePath: "./src/manifests/Input/Input.tsx",
+      exportedVarName: "Input",
+    },
   },
 };

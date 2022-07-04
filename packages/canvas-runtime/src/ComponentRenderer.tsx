@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import {
   canvasComponentStore,
   canvasComponentTree,
   subscribeCanvasUpdate,
 } from "./CanvasComponentData";
 import { DecoratorRenderer } from "./DecoratorRenderer";
+import { dudCallback } from "./utils";
 export type ComponentRendererProps = {
   compId: string;
 };
@@ -20,6 +21,14 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
   const [childrenId, setChildrenId] = useState<string[]>([]);
 
   const component = canvasComponentStore[props.compId];
+  const componentCallbacks = useMemo(() => {
+    const callbacks: { [callbackName: string]: () => void } = {};
+    const callbackNames = Object.keys(component.callbacks);
+    callbackNames.forEach((callbackName) => {
+      callbacks[callbackName] = dudCallback;
+    });
+    return callbacks;
+  }, [component]);
 
   // It might happen that children have already been stored in the componentTree
   // when this parent component was created, hence, this useEffect just checks
@@ -59,7 +68,11 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
    * create component, assign props, link it with it's ref
    */
   return (
-    <component.comp {...component.props} ref={component.ref}>
+    <component.comp
+      {...component.props}
+      ref={component.ref}
+      {...componentCallbacks}
+    >
       {childrenId.map((childId) => {
         return (
           <DecoratorRenderer

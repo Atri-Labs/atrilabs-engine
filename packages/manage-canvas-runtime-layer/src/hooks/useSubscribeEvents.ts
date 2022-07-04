@@ -90,6 +90,12 @@ function createComponentFromNode(node: TreeNode) {
         manifestComponent.dev.comp || manifestComponent.render.comp;
       const acceptsChild = manifestComponent.dev.acceptsChild;
       const catchers: Catcher[] = [];
+      const callbacks =
+        manifestComponent.dev["attachCallbacks"] &&
+        typeof manifestComponent.dev["attachCallbacks"] === "object" &&
+        !Array.isArray(manifestComponent.dev["attachCallbacks"])
+          ? manifestComponent.dev["attachCallbacks"]
+          : {};
       if (manifestComponent.dev.acceptsChild) {
         // add catchers
         // accept child catcher
@@ -109,7 +115,8 @@ function createComponentFromNode(node: TreeNode) {
         // TODO: get decorators from manifest
         [],
         catchers,
-        acceptsChild
+        acceptsChild,
+        callbacks
       );
     }
   }

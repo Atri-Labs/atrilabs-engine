@@ -5,8 +5,8 @@ import { TabBody } from "./TabBody";
 import { TabHeader } from "./TabHeader";
 
 export default function () {
-  const { showTab, alias, setAliasCb, id } = useShowTab();
-  const { patchCb, customProps, treeOptions } = useManageCustomProps(id);
+  const { showTab, id, treeOptions } = useShowTab();
+  const { patchCb, customProps } = useManageCustomProps(id);
   return (
     <>
       {showTab ? (
@@ -14,14 +14,13 @@ export default function () {
           name="PropertiesTab"
           body={
             <TabBody
-              alias={alias}
-              setAliasCb={setAliasCb}
               patchCb={patchCb}
               customProps={customProps}
               treeOptions={treeOptions}
             />
           }
           header={<TabHeader />}
+          itemName={"custom"}
         />
       ) : null}
     </>

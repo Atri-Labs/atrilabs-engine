@@ -1,76 +1,54 @@
-import { useCallback, useEffect, useState } from "react";
-import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { useEffect, useState } from "react";
+import { useTree, manifestRegistryController } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { PatchEvent } from "@atrilabs/forest";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 
 export const useShowTab = () => {
   const [showTab, setShowTab] = useState<boolean>(false);
-  const tree = useTree(ComponentTreeId);
-  const [alias, setAlias] = useState<string>("");
+  const compTree = useTree(ComponentTreeId);
   const [id, setId] = useState<string | null>(null);
-  const setAliasCb = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (id) {
-        const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-        const forestId = BrowserForestManager.currentForest.forestId;
-        const alias = event.target.value.replace(/\s+/g, "_");
-        const patchEvent: PatchEvent = {
-          type: `PATCH$$${ComponentTreeId}`,
-          id,
-          slice: {
-            alias,
-          },
-        };
-        api.postNewEvent(forestPkgId, forestId, patchEvent);
-      }
-    },
-    [id]
-  );
-  useEffect(() => {
-    const currentForest = BrowserForestManager.currentForest;
-    const unsub = currentForest.subscribeForest((update) => {
-      if (update.type === "change") {
-        const id = update.id;
-        if (
-          tree.nodes[id] &&
-          tree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
-        ) {
-          const alias = tree.nodes[id].state.alias;
-          setAlias(alias);
-        }
-      }
-    });
-    return unsub;
-  }, [tree]);
-
+  const [treeOptions, setTreeOptions] = useState<
+    | ReactComponentManifestSchema["dev"]["attachProps"]["0"]["treeOptions"]
+    | null
+  >(null);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("select", (context) => {
       const id = context.select!.id;
       if (
-        tree.nodes[id] &&
-        tree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
+        compTree.nodes[id] &&
+        compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
       ) {
-        const alias = tree.nodes[id].state.alias;
-        // When a new component is dropped, it is automatically selected, hence, it might
-        // be that no alias has been created till now.
-        if (alias === undefined) {
-          setAlias("");
-        } else {
-          setAlias(alias);
+        const pkg = compTree.nodes[id].meta.pkg;
+        const key = compTree.nodes[id].meta.key;
+        const manifestRegistry =
+          manifestRegistryController.readManifestRegistry();
+        const manifest = manifestRegistry[
+          ReactManifestSchemaId
+        ].components.find((curr) => {
+          return curr.pkg === pkg && curr.component.meta.key === key;
+        });
+        if (manifest) {
+          const manifestComponent: ReactComponentManifestSchema =
+            manifest.component;
+          if (manifestComponent.dev.attachProps["custom"]) {
+            const treeOptions =
+              manifestComponent.dev.attachProps["custom"].treeOptions;
+            setId(id);
+            setShowTab(true);
+            setTreeOptions(treeOptions);
+          }
         }
-        setId(id);
-        setShowTab(true);
       }
     });
     return unsub;
-  }, [tree]);
+  }, [compTree]);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("selectEnd", (context) => {
       setShowTab(false);
     });
     return unsub;
   }, []);
-  return { showTab, alias, setAliasCb, id };
+  return { showTab, id, treeOptions };
 };

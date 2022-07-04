@@ -36,7 +36,16 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
         const childId = tree.links[refId]!.childId;
         const childNode = nodes[childId]!;
         if (childNode.state && childNode.state["property"]) {
-          output[refId] = { props: childNode.state["property"] };
+          if (output[refId] && output[refId]!["props"]) {
+            output[refId] = {
+              props: {
+                ...output[refId]!["props"],
+                ...childNode.state["property"],
+              },
+            };
+          } else {
+            output[refId] = { props: childNode.state["property"] };
+          }
         }
       }
     }

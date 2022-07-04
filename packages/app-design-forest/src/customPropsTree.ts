@@ -1,3 +1,7 @@
+export type CustomPropsTreeOptions = {
+  dataTypes: { [propName: string]: "text" | "number" | "large_text" };
+};
+
 export default function () {
   const validateCreate = () => {
     return true;

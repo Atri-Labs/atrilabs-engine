@@ -11,7 +11,7 @@ export type ComponentCoordsWM = {
   bottomWM: number;
 };
 
-export type PropsSelector = (props: any) => any;
+export type PropsSelector = string[];
 
 export type ControlledCallback = {
   type: "controlled";
@@ -38,7 +38,7 @@ export type Callback =
 export type SendFileCallbackHandler = (
   | { self: boolean }
   | { compId: string }
-) & { props: string };
+) & { props: string[] };
 
 export type SendEventCallbackHandler = boolean;
 
@@ -80,10 +80,10 @@ export type ReactComponentManifestSchema = {
      * can define some default handlers for a component.
      */
     defaultCallbackHandlers: {
-      [callbackName: string]: {
-        sendFile: SendFileCallbackHandler;
-        sendEventData: SendEventCallbackHandler;
-      }[];
+      [callbackName: string]: (
+        | { sendFile: SendFileCallbackHandler }
+        | { sendEventData: SendEventCallbackHandler }
+      )[];
     };
   };
 };

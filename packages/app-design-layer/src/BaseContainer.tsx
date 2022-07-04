@@ -138,23 +138,27 @@ export const BaseContainer: React.FC = () => {
       </div>
       <div style={styles.rightPart}>
         <div style={styles.propertyTabHeader}>
-          {propertyTabItems.map((item, index) => {
-            const style = { ...styles.propertyTabHeaderItem };
-            if (index === selectedTab) {
-              style.background = gray900;
-            }
-            return (
-              <div
-                style={style}
-                onClick={() => {
-                  setSelectedTab(index);
-                }}
-                key={index}
-              >
-                {item.header}
-              </div>
-            );
-          })}
+          {propertyTabItems
+            .sort((a, b) => {
+              return b.itemName < a.itemName ? -1 : 0;
+            })
+            .map((item, index) => {
+              const style = { ...styles.propertyTabHeaderItem };
+              if (index === selectedTab) {
+                style.background = gray900;
+              }
+              return (
+                <div
+                  style={style}
+                  onClick={() => {
+                    setSelectedTab(index);
+                  }}
+                  key={index}
+                >
+                  {item.header}
+                </div>
+              );
+            })}
         </div>
         <div style={styles.propertyTabBody}>
           {propertyTabItems[selectedTab]
