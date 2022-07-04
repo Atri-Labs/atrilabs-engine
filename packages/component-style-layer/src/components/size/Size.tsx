@@ -15,6 +15,7 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
+import { SizeInput } from "../commons/SizeInput";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -33,33 +34,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
-  inputBox: {
-    ...smallText,
-    outline: "none",
-    color: gray100,
-    padding: "3px",
-    backgroundColor: gray800,
-    width: "25px",
-    height: "20px",
-    border: "0px",
-    borderRadius: "2px 0 0 2px",
-  },
   rectLabel: {
     ...smallText,
     color: gray400,
     display: "flex",
-    textAlign: "center",
-    lineHeight: "0px",
-  },
-  inputSpan: {
-    ...smallText,
-    color: gray400,
-    padding: "6px 8px 0 0",
-    backgroundColor: gray800,
-    width: "10px",
-    height: "20px",
-    border: "0px",
-    borderRadius: "0 2px 2px 0",
   },
   inputLabel: {
     position: "relative",
@@ -87,21 +65,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+const overflowValues = ["visible", "scroll", "hidden", "auto"];
+
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: parseInt(e.target.value),
-        },
-      },
-    });
-  };
 
   return (
     <div style={styles.container}>
@@ -120,68 +87,58 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.option}>
           <div style={styles.optionName}>W</div>
           <div style={styles.rectLabel}>
-            <input
-              type="text"
-              value={props.styles.width || ''}
-              onChange={(e) => handleChange(e, "width")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="width"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={styles.inputSpan}>PX</span>
             <label style={styles.inputLabel}>Min</label>
-            <input
-              type="text"
-              value={props.styles.minWidth || ''}
-              onChange={(e) => handleChange(e, "minWidth")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="minWidth"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={styles.inputSpan}>PX</span>
             <label style={styles.inputLabel}>Max</label>
-            <input
-              type="text"
-              value={props.styles.maxWidth || ''}
-              onChange={(e) => handleChange(e, "maxWidth")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="maxWidth"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={styles.inputSpan}>PX</span>
           </div>
         </div>
         <div style={styles.option}>
           <div style={styles.optionName}>H</div>
           <div style={styles.rectLabel}>
-            <input
-              type="text"
-              value={props.styles.height || ''}
-              onChange={(e) => handleChange(e, "height")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="height"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={{ ...styles.inputSpan, marginRight: "18px" }}>PX</span>
-            <input
-              type="text"
-              value={props.styles.minHeight || ''}
-              onChange={(e) => handleChange(e, "minHeight")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="minHeight"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={{ ...styles.inputSpan, marginRight: "18.5px" }}>
-              PX
-            </span>
-            <input
-              type="text"
-              value={props.styles.maxHeight || ''}
-              onChange={(e) => handleChange(e, "maxHeight")}
-              style={styles.inputBox}
+            <SizeInput
+              styleItem="maxHeight"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
             />
-            <span style={styles.inputSpan}>PX</span>
           </div>
         </div>
 
         <PropertyRender
-          {...{
-            styleItem: "overflow",
-            styleText: "Overflow",
-            styleArray: ["visible", "scroll", "hidden", "auto"],
-            patchCb: props.patchCb,
-            styles: props.styles,
-          }}
+          styleItem="overflow"
+          styleText="Overflow"
+          styleArray={overflowValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
         >
           <OFV />
           <OFS />

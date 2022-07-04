@@ -164,8 +164,8 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Order</label>
               <input
                 type="text"
-                value={props.styles.flexBasis || 0}
-                onChange={(e) => handleChange(e, "flexBasis")}
+                value={props.styles.order || ""}
+                onChange={(e) => handleChange(e, "order")}
                 style={styles.inputBox}
               />
             </div>
