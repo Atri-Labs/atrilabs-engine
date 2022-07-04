@@ -146,7 +146,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Grow</label>
               <input
                 type="text"
-                value={props.styles.flexGrow}
+                value={props.styles.flexGrow || 0}
                 onChange={(e) => handleChange(e, "flexGrow")}
                 style={styles.inputBox}
               />
@@ -155,7 +155,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Shrink</label>
               <input
                 type="text"
-                value={props.styles.flexShrink}
+                value={props.styles.flexShrink || 0}
                 onChange={(e) => handleChange(e, "flexShrink")}
                 style={styles.inputBox}
               />
@@ -164,7 +164,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               <label style={styles.inputLabel}>Order</label>
               <input
                 type="text"
-                value={props.styles.flexBasis}
+                value={props.styles.flexBasis || 0}
                 onChange={(e) => handleChange(e, "flexBasis")}
                 style={styles.inputBox}
               />

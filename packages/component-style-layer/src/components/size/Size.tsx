@@ -122,7 +122,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.rectLabel}>
             <input
               type="text"
-              value={props.styles.width}
+              value={props.styles.width || ''}
               onChange={(e) => handleChange(e, "width")}
               style={styles.inputBox}
             />
@@ -130,7 +130,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
             <label style={styles.inputLabel}>Min</label>
             <input
               type="text"
-              value={props.styles.minWidth}
+              value={props.styles.minWidth || ''}
               onChange={(e) => handleChange(e, "minWidth")}
               style={styles.inputBox}
             />
@@ -138,7 +138,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
             <label style={styles.inputLabel}>Max</label>
             <input
               type="text"
-              value={props.styles.maxWidth}
+              value={props.styles.maxWidth || ''}
               onChange={(e) => handleChange(e, "maxWidth")}
               style={styles.inputBox}
             />
@@ -150,14 +150,14 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.rectLabel}>
             <input
               type="text"
-              value={props.styles.height}
+              value={props.styles.height || ''}
               onChange={(e) => handleChange(e, "height")}
               style={styles.inputBox}
             />
             <span style={{ ...styles.inputSpan, marginRight: "18px" }}>PX</span>
             <input
               type="text"
-              value={props.styles.minHeight}
+              value={props.styles.minHeight || ''}
               onChange={(e) => handleChange(e, "minHeight")}
               style={styles.inputBox}
             />
@@ -166,7 +166,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
             </span>
             <input
               type="text"
-              value={props.styles.maxHeight}
+              value={props.styles.maxHeight || ''}
               onChange={(e) => handleChange(e, "maxHeight")}
               style={styles.inputBox}
             />
