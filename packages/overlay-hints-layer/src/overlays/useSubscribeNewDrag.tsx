@@ -8,6 +8,7 @@ import { getId } from "@atrilabs/core";
 import { orange600 } from "@atrilabs/design-system";
 import { useCallback, useEffect, useRef } from "react";
 import { FilledLine } from "../components/FilledLine";
+import { useSubscribeComponentRendered } from "./hooks/useSubscribeComponentRendered";
 
 const thickness = 2;
 
@@ -17,7 +18,7 @@ export const useSubscribeNewDrag = () => {
   const bottomLineHoverId = useRef<string | null>(null);
   const leftLineHoverId = useRef<string | null>(null);
   const prevCaughtBy = useRef<string | null>(null);
-  const removeOverlays = useCallback(() => {
+  const clearOverlays = useCallback(() => {
     if (topLineHoverId.current) {
       removeHintOverlays([topLineHoverId.current]);
       topLineHoverId.current = null;
@@ -35,11 +36,89 @@ export const useSubscribeNewDrag = () => {
       leftLineHoverId.current = null;
     }
   }, []);
+  const renderFn = useCallback(() => {
+    if (
+      topLineHoverId.current &&
+      rightLineHoverId.current &&
+      bottomLineHoverId.current &&
+      leftLineHoverId.current &&
+      prevCaughtBy.current
+    ) {
+      // top line
+      addOrModifyHintOverlays({
+        [topLineHoverId.current]: {
+          compId: prevCaughtBy.current,
+          comp: <FilledLine fill={orange600} />,
+          overlayId: topLineHoverId.current,
+          box: (dim) => {
+            return {
+              dimension: {
+                width: dim.dimension.width,
+                height: thickness,
+              },
+              position: { top: -thickness, left: 0 },
+            };
+          },
+        },
+      });
+      // right line
+      addOrModifyHintOverlays({
+        [rightLineHoverId.current]: {
+          compId: prevCaughtBy.current,
+          comp: <FilledLine fill={orange600} />,
+          overlayId: rightLineHoverId.current,
+          box: (dim) => {
+            return {
+              dimension: {
+                width: thickness,
+                height: dim.dimension.height + 2 * thickness,
+              },
+              position: { top: -thickness, left: dim.dimension.width },
+            };
+          },
+        },
+      });
+      // bottom line
+      addOrModifyHintOverlays({
+        [bottomLineHoverId.current]: {
+          compId: prevCaughtBy.current,
+          comp: <FilledLine fill={orange600} />,
+          overlayId: bottomLineHoverId.current,
+          box: (dim) => {
+            return {
+              dimension: {
+                width: dim.dimension.width,
+                height: thickness,
+              },
+              position: { top: dim.dimension.height, left: 0 },
+            };
+          },
+        },
+      });
+      // left line
+      addOrModifyHintOverlays({
+        [leftLineHoverId.current]: {
+          compId: prevCaughtBy.current,
+          comp: <FilledLine fill={orange600} />,
+          overlayId: leftLineHoverId.current,
+          box: (dim) => {
+            return {
+              dimension: {
+                width: thickness,
+                height: dim.dimension.height + 2 * thickness,
+              },
+              position: { top: -thickness, left: -thickness },
+            };
+          },
+        },
+      });
+    }
+  }, []);
   useEffect(() => {
     const unsub = subscribeNewDrag((_args, _loc, caughtBy) => {
       if (caughtBy) {
         if (prevCaughtBy.current !== caughtBy) {
-          removeOverlays();
+          clearOverlays();
           topLineHoverId.current = getId();
           rightLineHoverId.current = getId();
           bottomLineHoverId.current = getId();
@@ -48,86 +127,20 @@ export const useSubscribeNewDrag = () => {
           return;
         }
         prevCaughtBy.current = caughtBy;
-        // top line
-        addOrModifyHintOverlays({
-          [topLineHoverId.current]: {
-            compId: caughtBy,
-            comp: <FilledLine fill={orange600} />,
-            overlayId: topLineHoverId.current,
-            box: (dim) => {
-              return {
-                dimension: {
-                  width: dim.dimension.width,
-                  height: thickness,
-                },
-                position: { top: -thickness, left: 0 },
-              };
-            },
-          },
-        });
-        // right line
-        addOrModifyHintOverlays({
-          [rightLineHoverId.current]: {
-            compId: caughtBy,
-            comp: <FilledLine fill={orange600} />,
-            overlayId: rightLineHoverId.current,
-            box: (dim) => {
-              return {
-                dimension: {
-                  width: thickness,
-                  height: dim.dimension.height + 2 * thickness,
-                },
-                position: { top: -thickness, left: dim.dimension.width },
-              };
-            },
-          },
-        });
-        // bottom line
-        addOrModifyHintOverlays({
-          [bottomLineHoverId.current]: {
-            compId: caughtBy,
-            comp: <FilledLine fill={orange600} />,
-            overlayId: bottomLineHoverId.current,
-            box: (dim) => {
-              return {
-                dimension: {
-                  width: dim.dimension.width,
-                  height: thickness,
-                },
-                position: { top: dim.dimension.height, left: 0 },
-              };
-            },
-          },
-        });
-        // left line
-        addOrModifyHintOverlays({
-          [leftLineHoverId.current]: {
-            compId: caughtBy,
-            comp: <FilledLine fill={orange600} />,
-            overlayId: leftLineHoverId.current,
-            box: (dim) => {
-              return {
-                dimension: {
-                  width: thickness,
-                  height: dim.dimension.height + 2 * thickness,
-                },
-                position: { top: -thickness, left: -thickness },
-              };
-            },
-          },
-        });
+        renderFn();
       } else {
         prevCaughtBy.current = null;
-        removeOverlays();
+        clearOverlays();
       }
     });
     return unsub;
-  }, [removeOverlays]);
+  }, [clearOverlays, renderFn]);
   useEffect(() => {
     const unsub = subscribeNewDrop(() => {
       prevCaughtBy.current = null;
-      removeOverlays();
+      clearOverlays();
     });
     return unsub;
-  }, [removeOverlays]);
+  }, [clearOverlays]);
+  useSubscribeComponentRendered(renderFn);
 };

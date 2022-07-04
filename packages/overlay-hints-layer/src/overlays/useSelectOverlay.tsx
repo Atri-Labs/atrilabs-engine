@@ -1,12 +1,14 @@
 import {
   addOrModifyHintOverlays,
+  CanvasActivityContext,
   removeHintOverlays,
   subscribeCanvasActivity,
 } from "@atrilabs/canvas-runtime";
 import { getId } from "@atrilabs/core";
 import { orange600 } from "@atrilabs/design-system";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { FilledLine } from "../components/FilledLine";
+import { useSubscribeComponentRendered } from "./hooks/useSubscribeComponentRendered";
 
 const thickness = 2;
 
@@ -15,16 +17,38 @@ export const useSelectOverlay = () => {
   const rightLineHoverId = useRef<string | null>(null);
   const bottomLineHoverId = useRef<string | null>(null);
   const leftLineHoverId = useRef<string | null>(null);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity("select", (context, event) => {
-      topLineHoverId.current = getId();
-      rightLineHoverId.current = getId();
-      bottomLineHoverId.current = getId();
-      leftLineHoverId.current = getId();
+  const currentRenderedContext = useRef<CanvasActivityContext | null>(null);
+  const clearOverlay = useCallback(() => {
+    currentRenderedContext.current = null;
+    if (topLineHoverId.current) {
+      removeHintOverlays([topLineHoverId.current]);
+      topLineHoverId.current = null;
+    }
+    if (rightLineHoverId.current) {
+      removeHintOverlays([rightLineHoverId.current]);
+      rightLineHoverId.current = null;
+    }
+    if (bottomLineHoverId.current) {
+      removeHintOverlays([bottomLineHoverId.current]);
+      bottomLineHoverId.current = null;
+    }
+    if (leftLineHoverId.current) {
+      removeHintOverlays([leftLineHoverId.current]);
+      leftLineHoverId.current = null;
+    }
+  }, []);
+  const renderFn = useCallback(() => {
+    if (
+      topLineHoverId.current &&
+      rightLineHoverId.current &&
+      bottomLineHoverId.current &&
+      leftLineHoverId.current &&
+      currentRenderedContext.current
+    ) {
       // top line
       addOrModifyHintOverlays({
         [topLineHoverId.current]: {
-          compId: context.select?.id!,
+          compId: currentRenderedContext.current.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: topLineHoverId.current,
           box: (dim) => {
@@ -41,7 +65,7 @@ export const useSelectOverlay = () => {
       // right line
       addOrModifyHintOverlays({
         [rightLineHoverId.current]: {
-          compId: context.select?.id!,
+          compId: currentRenderedContext.current.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: rightLineHoverId.current,
           box: (dim) => {
@@ -58,7 +82,7 @@ export const useSelectOverlay = () => {
       // bottom line
       addOrModifyHintOverlays({
         [bottomLineHoverId.current]: {
-          compId: context.select?.id!,
+          compId: currentRenderedContext.current.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: bottomLineHoverId.current,
           box: (dim) => {
@@ -75,7 +99,7 @@ export const useSelectOverlay = () => {
       // left line
       addOrModifyHintOverlays({
         [leftLineHoverId.current]: {
-          compId: context.select?.id!,
+          compId: currentRenderedContext.current.select?.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: leftLineHoverId.current,
           box: (dim) => {
@@ -89,28 +113,24 @@ export const useSelectOverlay = () => {
           },
         },
       });
-    });
-    return unsub;
+    }
   }, []);
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("selectEnd", (context, event) => {
-      if (topLineHoverId.current) {
-        removeHintOverlays([topLineHoverId.current]);
-        topLineHoverId.current = null;
-      }
-      if (rightLineHoverId.current) {
-        removeHintOverlays([rightLineHoverId.current]);
-        rightLineHoverId.current = null;
-      }
-      if (bottomLineHoverId.current) {
-        removeHintOverlays([bottomLineHoverId.current]);
-        bottomLineHoverId.current = null;
-      }
-      if (leftLineHoverId.current) {
-        removeHintOverlays([leftLineHoverId.current]);
-        leftLineHoverId.current = null;
-      }
+    const unsub = subscribeCanvasActivity("select", (context, event) => {
+      topLineHoverId.current = getId();
+      rightLineHoverId.current = getId();
+      bottomLineHoverId.current = getId();
+      leftLineHoverId.current = getId();
+      currentRenderedContext.current = context;
+      renderFn();
     });
     return unsub;
-  }, []);
+  }, [renderFn]);
+  useEffect(() => {
+    const unsub = subscribeCanvasActivity("selectEnd", (context, event) => {
+      clearOverlay();
+    });
+    return unsub;
+  }, [clearOverlay]);
+  useSubscribeComponentRendered(renderFn);
 };
