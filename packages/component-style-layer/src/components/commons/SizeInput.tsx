@@ -19,9 +19,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray100,
     padding: "3px",
     backgroundColor: gray800,
-    width: "25px",
+    width: "30px",
     border: "none",
     borderRadius: "2px 0 0 2px",
+    lineHeight: "20px",
   },
   inputSpan: {
     ...smallText,
@@ -51,7 +52,7 @@ export const SizeInput: React.FC<SizeInputProps> = (props) => {
     <div style={styles.container}>
       <input
         type="text"
-        value={props.styles.width || ""}
+        value={props.styles[props.styleItem] || ""}
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
       />

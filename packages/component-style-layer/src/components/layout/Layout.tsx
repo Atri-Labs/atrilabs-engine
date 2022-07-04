@@ -1,6 +1,4 @@
 import {
-  gray100,
-  gray800,
   gray200,
   gray400,
   smallText,
@@ -34,6 +32,7 @@ import { ReactComponent as ACFlexSpaceAround } from "../../assets/layout-parent/
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
+import { SizeInput } from "../commons/SizeInput";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -52,39 +51,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
-  inputBox: {
-    ...smallText,
-    outline: "none",
-    color: gray100,
-    padding: "3px",
-    backgroundColor: gray800,
-    width: "35px",
-    height: "20px",
-    border: "0px",
-    borderRadius: "2px 0 0 2px",
-  },
-  inputSpan: {
-    ...smallText,
-    color: gray400,
-    padding: "6px 8px 0 0",
-    backgroundColor: gray800,
-    width: "10px",
-    height: "20px",
-    border: "0px",
-    borderRadius: "0 2px 2px 0",
-  },
-  rectLabel: {
-    ...smallText,
-    color: gray400,
-    display: "flex",
-    textAlign: "center",
-    lineHeight: "0px",
-  },
-  inputLabel: {
-    position: "relative",
-    top: "-10px",
-    right: "-38px",
-  },
   drop: {
     display: "flex",
     alignItems: "baseline",
@@ -96,14 +62,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "30px",
   },
   optionName: {
-    ...smallText,
-    width: "4rem",
+    ...smallText, 
+    textAlign: "left",
     color: "white",
-    display: "flex",
-    alignItems: "center",
+    lineHeight: "25px",
   },
-  optionsIcons: {
-    flexGrow: 1,
+  gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "2.5rem 50px 50px",
+    textAlign: "center",
+    columnGap: "25px",
+    rowGap: "3px",
+    marginBottom: "25px",
   },
 };
 
@@ -113,19 +85,46 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: parseInt(e.target.value),
-        },
-      },
-    });
-  };
+  const directionValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
+  const alignItemValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
+  const justifyContentValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
+  const wrapValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
+  const alignContentValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
 
   return (
     <>
@@ -145,13 +144,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           style={showProperties ? { display: "block" } : { display: "none" }}
         >
           <PropertyRender
-            {...{
-              styleItem: "flexDirection",
-              styleText: "Direction",
-              styleArray: ["row", "column", "row-reverse", "column-reverse"],
-              patchCb: props.patchCb,
-              styles: props.styles,
-            }}
+              styleItem= "flexDirection"
+              styleText= "Direction"
+              styleArray= {directionValues}
+              patchCb= {props.patchCb}
+              styles= {props.styles}
           >
             <RightArrow />
             <DownArrow />
@@ -159,19 +156,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             <UpArrow />
           </PropertyRender>
           <PropertyRender
-            {...{
-              styleItem: "alignItems",
-              styleText: "Align- items",
-              styleArray: [
-                "stretch",
-                "flex-start",
-                "center",
-                "flex-end",
-                "baseline",
-              ],
-              patchCb: props.patchCb,
-              styles: props.styles,
-            }}
+              styleItem= "alignItems"
+              styleText= "Align-items"
+              styleArray= {alignItemValues}
+              patchCb= {props.patchCb}
+              styles= {props.styles}
           >
             <FlexStretch />
             <FlexStart />
@@ -181,19 +170,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            {...{
-              styleItem: "justifyContent",
-              styleText: "Justify-Content",
-              styleArray: [
-                "flex-start",
-                "center",
-                "flex-end",
-                "space-between",
-                "space-around",
-              ],
-              patchCb: props.patchCb,
-              styles: props.styles,
-            }}
+              styleItem= "justifyContent"
+              styleText= "Justify- content"
+              styleArray= {justifyContentValues}
+              patchCb= {props.patchCb}
+              styles= {props.styles}
           >
             <JCStart />
             <JCCenter />
@@ -203,13 +184,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            {...{
-              styleItem: "flexWrap",
-              styleText: "Wrap",
-              styleArray: ["nowrap", "wrap", "wrap-reverse"],
-              patchCb: props.patchCb,
-              styles: props.styles,
-            }}
+              styleItem= "flexWrap"
+              styleText= "Wrap"
+              styleArray= {wrapValues}
+              patchCb= {props.patchCb}
+              styles= {props.styles}
           >
             <NoWrap />
             <Wrap />
@@ -217,20 +196,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           </PropertyRender>
 
           <PropertyRender
-            {...{
-              styleItem: "alignContent",
-              styleText: "Align-Content",
-              styleArray: [
-                "stretch",
-                "flex-start",
-                "center",
-                "flex-end",
-                "space-between",
-                "space-around",
-              ],
-              patchCb: props.patchCb,
-              styles: props.styles,
-            }}
+              styleItem= "alignContent"
+              styleText= "Align-content"
+              styleArray= {alignContentValues}
+              patchCb= {props.patchCb}
+              styles= {props.styles}
           >
             <ACFlexStretch />
             <ACFlexStart />
@@ -239,28 +209,26 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             <ACFlexSpaceBetween />
             <ACFlexSpaceAround />
           </PropertyRender>
-
-          <div style={styles.option}>
+          <div style={styles.gridContainer}>
+            <div>&nbsp;</div>
+            <div>Row</div>
+            <div>Col</div>
             <div style={styles.optionName}>Gap</div>
-            <div style={styles.rectLabel}>
-              <label style={styles.inputLabel}>Row</label>
-              <input
-                type="text"
-                value={props.styles.rowGap || ''}
-                onChange={(e) => handleChange(e, "rowGap")}
-                style={styles.inputBox}
+            <div style={styles.gridItem}>
+              <SizeInput
+                styleItem="rowGap"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
               />
-              <span style={{ ...styles.inputSpan, marginRight: "15px" }}>
-                PX
-              </span>
-              <label style={styles.inputLabel}>Col</label>
-              <input
-                type="text"
-                value={props.styles.columnGap || ''}
-                onChange={(e) => handleChange(e, "columnGap")}
-                style={styles.inputBox}
+            </div>
+            <div style={styles.gridItem}>
+              <SizeInput
+                styleItem="columnGap"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
               />
-              <span style={styles.inputSpan}>PX</span>
             </div>
           </div>
         </div>

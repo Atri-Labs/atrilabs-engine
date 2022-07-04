@@ -1,6 +1,4 @@
 import {
-  gray100,
-  gray800,
   gray200,
   gray400,
   smallText,
@@ -17,6 +15,7 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
+import { FlexChildInput } from "../commons/FlexChildInput";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -35,49 +34,25 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
-  inputBox: {
-    ...smallText,
-    outline: "none",
-    textAlign: "center",
-    color: gray100,
-    padding: "3px",
-    backgroundColor: gray800,
-    width: "30px",
-    height: "20px",
-    border: "0px",
-    borderRadius: "2px",
-  },
-  rectLabel: {
-    ...smallText,
-    color: gray400,
-    display: "flex",
-    textAlign: "center",
-    lineHeight: "0px",
-  },
-  inputLabel: {
-    position: "relative",
-    textAlign: "center",
-    top: "-10px",
-  },
   drop: {
     display: "flex",
     alignItems: "baseline",
   },
-  option: {
-    display: "flex",
-    height: "25px",
-    marginTop: "30px",
-    marginBottom: "15px",
-  },
   optionName: {
     ...smallText,
-    width: "4.5rem",
     color: "white",
-    display: "flex",
-    alignItems: "center",
+    textAlign: "left",
+    lineHeight: "25px",
   },
-  optionsIcons: {
-    flexGrow: 1,
+  gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "3rem 30px 30px 30px",
+    columnGap: "20px",
+   rowGap: "3px",
+    marginBottom: "25px",
+    textAlign: "center",
   },
 };
 
@@ -87,19 +62,14 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: parseInt(e.target.value),
-        },
-      },
-    });
-  };
+  const alignSelfValues = [
+    "auto",
+    "stretch",
+    "flex-start",
+    "center",
+    "flex-end",
+    "baseline",
+  ];
 
   return (
     <div style={styles.container}>
@@ -116,20 +86,11 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
       </div>
       <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <PropertyRender
-          {...{
-            styleItem: "alignSelf",
-            styleText: "Align",
-            styleArray: [
-              "auto",
-              "stretch",
-              "flex-start",
-              "center",
-              "flex-end",
-              "baseline",
-            ],
-            styles: props.styles,
-            patchCb: props.patchCb,
-          }}
+          styleItem="alignSelf"
+          styleText="Align"
+          styleArray={alignSelfValues}
+          styles={props.styles}
+          patchCb={props.patchCb}
         >
           <FCAAuto />
           <FCAFlexStart />
@@ -139,36 +100,35 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
           <FCAFlexBaseline />
         </PropertyRender>
 
-        <div style={styles.option}>
+        <div style={styles.gridContainer}>
+          <div>&nbsp;</div>
+          <div>Grow</div>
+          <div>Shrink</div>
+          <div>Order</div>
           <div style={styles.optionName}>Override</div>
-          <div style={styles.rectLabel}>
-            <div style={{ marginRight: "10px" }}>
-              <label style={styles.inputLabel}>Grow</label>
-              <input
-                type="text"
-                value={props.styles.flexGrow || 0}
-                onChange={(e) => handleChange(e, "flexGrow")}
-                style={styles.inputBox}
-              />
-            </div>
-            <div style={{ marginRight: "10px" }}>
-              <label style={styles.inputLabel}>Shrink</label>
-              <input
-                type="text"
-                value={props.styles.flexShrink || 0}
-                onChange={(e) => handleChange(e, "flexShrink")}
-                style={styles.inputBox}
-              />
-            </div>
-            <div>
-              <label style={styles.inputLabel}>Order</label>
-              <input
-                type="text"
-                value={props.styles.order || ""}
-                onChange={(e) => handleChange(e, "order")}
-                style={styles.inputBox}
-              />
-            </div>
+          <div style={styles.gridItem}>
+            <FlexChildInput
+              styleItem="flexGrow"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue={0}
+            />
+          </div>
+          <div style={styles.gridItem}>
+            <FlexChildInput
+              styleItem="flexShrink"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue={0}
+            />
+          </div>
+          <div style={styles.gridItem}>
+            <FlexChildInput
+              styleItem="order"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+            />
           </div>
         </div>
       </div>

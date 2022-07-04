@@ -3,8 +3,6 @@ import {
   gray400,
   smallText,
   h5Heading,
-  gray800,
-  gray100,
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as OFA } from "../../assets/size/Auto.svg";
@@ -34,37 +32,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
-  rectLabel: {
-    ...smallText,
-    color: gray400,
-    display: "flex",
-  },
-  inputLabel: {
-    position: "relative",
-    top: "-10px",
-    right: "-34px",
-  },
   drop: {
     display: "flex",
     alignItems: "baseline",
   },
-  option: {
-    display: "flex",
-    height: "25px",
-    marginBottom: "15px",
-  },
   optionName: {
     ...smallText,
-    width: "1.35rem",
-    color: "white",
-    display: "flex",
-    alignItems: "center",
+    color: "#FFFFFF",
+    lineHeight: "25px",
   },
-  optionsIcons: {
-    flexGrow: 1,
+  gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "10px 50px 50px 50px",
+    gridTemplateRows: "15px 40px",
+    textAlign: "center",
+    columnGap: "16px",
+    marginBottom: "20px",
   },
 };
-
 const overflowValues = ["visible", "scroll", "hidden", "auto"];
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
@@ -84,54 +71,63 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.header}>Size</div>
       </div>
       <div style={showProperties ? { display: "block" } : { display: "none" }}>
-        <div style={styles.option}>
-          <div style={styles.optionName}>W</div>
-          <div style={styles.rectLabel}>
-            <SizeInput
-              styleItem="width"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-            <label style={styles.inputLabel}>Min</label>
-            <SizeInput
-              styleItem="minWidth"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-            <label style={styles.inputLabel}>Max</label>
-            <SizeInput
-              styleItem="maxWidth"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
+          <div style={styles.gridContainer}>
+            <div>&nbsp;</div>
+            <div>&nbsp;</div>
+            <div>Min</div>
+            <div>Max</div>
+            <div style={styles.optionName}>W</div>
+            <div>
+              <SizeInput
+                styleItem="width"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <SizeInput
+                styleItem="minWidth"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <SizeInput
+                styleItem="maxWidth"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            
+            <div style={styles.optionName}>H</div>
+            <div>
+              <SizeInput
+                styleItem="height"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <SizeInput
+                styleItem="minHeight"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <SizeInput
+                styleItem="maxHeight"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
           </div>
-        </div>
-        <div style={styles.option}>
-          <div style={styles.optionName}>H</div>
-          <div style={styles.rectLabel}>
-            <SizeInput
-              styleItem="height"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-            <SizeInput
-              styleItem="minHeight"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-            <SizeInput
-              styleItem="maxHeight"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-        </div>
 
         <PropertyRender
           styleItem="overflow"
