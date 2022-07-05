@@ -139,8 +139,8 @@ socket.on("newEvent", (forestPkgId, pageId, event, socketId) => {
 });
 
 const uploadAssets: BrowserClient["uploadAssets"] = (files, cb) => {
-  socket.emit("uploadAssets", files, (success) => {
-    cb(success);
+  socket.emit("uploadAssets", files, (success, url) => {
+    cb(success, url);
   });
 };
 

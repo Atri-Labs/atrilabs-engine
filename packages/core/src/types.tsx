@@ -117,18 +117,10 @@ export type ToolConfig = {
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
   assetManager: {
-    /**
-     * Options that are used by asset manager as well as other parts of tool.
-     * An asset manager must respect these options.
-     */
-    commonOptions: {
-      // ex. - /assets (no trailing slashes)
-      urlPath: string;
-    };
-    /**
-     * Options specific to the asset manager the tool is using.
-     */
-    options: any;
+    // ex. - /assets (no trailing slashes)
+    urlPath: string;
+    // ex. - node_modules/.targets/assets
+    assetsDir: string;
   };
 };
 
@@ -232,11 +224,11 @@ export type BrowserClient = {
   uploadAssets(
     files: {
       name: string;
-      data: ArrayBuffer;
+      data: string;
       size: number;
       mime: string;
     }[],
-    callback: (success: boolean) => void
+    callback: (success: boolean, urls: string[]) => void
   ): void;
 };
 

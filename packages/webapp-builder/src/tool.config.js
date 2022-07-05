@@ -19,6 +19,8 @@ const forestsConfig = {
   ],
 };
 
+const compileAppOutputDir = "node_modules/.targets";
+
 module.exports = {
   pkgManager: "yarn",
   forests: forestsConfig,
@@ -79,7 +81,7 @@ module.exports = {
           path: require.resolve("@atrilabs/app-generator/lib/index.js"),
           options: {
             appForestPkgId,
-            outputDir: "node_modules/.targets/atri-app",
+            outputDir: `${compileAppOutputDir}/atri-app`,
             controllers: {
               python: {
                 dir: path.resolve(
@@ -128,7 +130,7 @@ module.exports = {
           ),
           options: {
             appForestPkgId,
-            outputDir: "node_modules/.targets/atri-app",
+            outputDir: `${compileAppOutputDir}/atri-app`,
             controllers: {
               python: {
                 dir: path.resolve(
@@ -194,8 +196,7 @@ module.exports = {
   ],
   manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
   assetManager: {
-    commonOptions: {
-      urlPath: "/app-assets",
-    },
+    urlPath: "/app-assets",
+    assetsDir: `${compileAppOutputDir}/assets`,
   },
 };
