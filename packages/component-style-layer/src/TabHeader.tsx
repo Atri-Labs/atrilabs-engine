@@ -1,5 +1,5 @@
 import { gray800 } from "@atrilabs/design-system";
-import { ReactComponent as BrushIcon } from "./assets/brush.svg";
+import { ReactComponent as BrushIcon } from "./assets/layout-parent/brush.svg";
 
 export const TabHeader: React.FC = () => {
   return (
