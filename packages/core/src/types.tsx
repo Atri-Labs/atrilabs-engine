@@ -117,6 +117,8 @@ export type ToolConfig = {
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
   assetManager: {
+    // will be used to fetch the assets by webpack dev server
+    hostname: string;
     // ex. - /assets (no trailing slashes)
     urlPath: string;
     // ex. - node_modules/.targets/assets
@@ -230,6 +232,11 @@ export type BrowserClient = {
     }[],
     callback: (success: boolean, urls: string[]) => void
   ): void;
+  getAssetsInfo: (
+    callback: (assets: {
+      [name: string]: { url: string; mime: string };
+    }) => void
+  ) => void;
 };
 
 export type Script = {

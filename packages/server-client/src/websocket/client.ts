@@ -144,6 +144,12 @@ const uploadAssets: BrowserClient["uploadAssets"] = (files, cb) => {
   });
 };
 
+const getAssetsInfo: BrowserClient["getAssetsInfo"] = (cb) => {
+  socket.emit("getAssetsInfo", (assets) => {
+    cb(assets);
+  });
+};
+
 const client: BrowserClient = {
   getMeta,
   getPages,
@@ -160,6 +166,7 @@ const client: BrowserClient = {
   subscribeOwnEvents,
   getNewAlias,
   uploadAssets,
+  getAssetsInfo,
 };
 
 export default client;

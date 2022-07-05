@@ -20,6 +20,7 @@ const forestsConfig = {
 };
 
 const compileAppOutputDir = "node_modules/.targets";
+const EVENT_SERVER_CLIENT = "http://localhost:4001";
 
 module.exports = {
   pkgManager: "yarn",
@@ -182,7 +183,7 @@ module.exports = {
     },
   },
   env: {
-    EVENT_SERVER_CLIENT: "http://localhost:4001",
+    EVENT_SERVER_CLIENT,
     MANIFEST_SERVER_CLIENT: "http://localhost:4003",
     PUBLISH_SERVER_CLIENT: "http://localhost:4004",
   },
@@ -196,6 +197,7 @@ module.exports = {
   ],
   manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
   assetManager: {
+    hostname: EVENT_SERVER_CLIENT,
     urlPath: "/app-assets",
     assetsDir: `${compileAppOutputDir}/assets`,
   },

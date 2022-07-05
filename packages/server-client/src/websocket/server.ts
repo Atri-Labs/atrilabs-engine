@@ -290,6 +290,17 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       });
       callback(true, returnUrls);
     });
+    socket.on("getAssetsInfo", (callback) => {
+      const assetConf = JSON.parse(fs.readFileSync(assetsConfPath).toString());
+      const names = Object.keys(assetConf);
+      names.forEach((name) => {
+        assetConf[name] = {
+          ...assetConf[name],
+          url: `${assetUrlPrefix}/${name}`,
+        };
+      });
+      callback(assetConf);
+    });
   });
 
   app.use(assetUrlPrefix, express.static(assetsDir));

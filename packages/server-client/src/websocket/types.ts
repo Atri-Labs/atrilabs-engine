@@ -68,6 +68,7 @@ export interface ClientToServerEvents {
     callback: (alias: string) => void
   ) => void;
   uploadAssets: BrowserClient["uploadAssets"];
+  getAssetsInfo: BrowserClient["getAssetsInfo"];
 }
 
 export interface InterServerEvents {}
