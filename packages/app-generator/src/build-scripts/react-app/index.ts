@@ -106,7 +106,8 @@ export default async function buildReactApp(
       reactAppPackageJSON,
       reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
     },
-    options.rootComponentId
+    options.rootComponentId,
+    toolConfig.assetManager
   );
   const pagePropsPromises: Promise<void>[] = [];
   pageIds.forEach((pageId) => {
