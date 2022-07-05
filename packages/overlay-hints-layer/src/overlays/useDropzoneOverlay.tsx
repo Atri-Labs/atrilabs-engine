@@ -1,5 +1,6 @@
 import {
   addOrModifyHintOverlays,
+  CanvasActivityContext,
   removeHintOverlays,
   subscribeCanvasActivity,
 } from "@atrilabs/canvas-runtime";
@@ -7,6 +8,7 @@ import { getId } from "@atrilabs/core";
 import { orange600 } from "@atrilabs/design-system";
 import { useCallback, useEffect, useRef } from "react";
 import { FilledLine } from "../components/FilledLine";
+import { useSubscribeComponentRendered } from "./hooks/useSubscribeComponentRendered";
 
 const thickness = 2;
 
@@ -15,7 +17,9 @@ export const useDropzoneOverlay = () => {
   const rightLineHoverId = useRef<string | null>(null);
   const bottomLineHoverId = useRef<string | null>(null);
   const leftLineHoverId = useRef<string | null>(null);
+  const currentRenderedContext = useRef<CanvasActivityContext | null>(null);
   const clearOverlay = useCallback(() => {
+    currentRenderedContext.current = null;
     if (topLineHoverId.current) {
       removeHintOverlays([topLineHoverId.current]);
       topLineHoverId.current = null;
@@ -33,20 +37,18 @@ export const useDropzoneOverlay = () => {
       leftLineHoverId.current = null;
     }
   }, []);
-  useEffect(() => {
-    const unsub = subscribeCanvasActivity("dropzoneCreated", (context) => {
-      topLineHoverId.current = getId();
-      rightLineHoverId.current = getId();
-      bottomLineHoverId.current = getId();
-      leftLineHoverId.current = getId();
-      if (context.currentDropzone === undefined) {
-        clearOverlay();
-        return;
-      }
+  const renderFn = useCallback(() => {
+    if (
+      topLineHoverId.current &&
+      rightLineHoverId.current &&
+      bottomLineHoverId.current &&
+      leftLineHoverId.current &&
+      currentRenderedContext.current
+    ) {
       // top line
       addOrModifyHintOverlays({
         [topLineHoverId.current]: {
-          compId: context.currentDropzone!.id!,
+          compId: currentRenderedContext.current.currentDropzone!.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: topLineHoverId.current,
           box: (dim) => {
@@ -63,7 +65,7 @@ export const useDropzoneOverlay = () => {
       // right line
       addOrModifyHintOverlays({
         [rightLineHoverId.current]: {
-          compId: context.currentDropzone!.id!,
+          compId: currentRenderedContext.current.currentDropzone!.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: rightLineHoverId.current,
           box: (dim) => {
@@ -80,7 +82,7 @@ export const useDropzoneOverlay = () => {
       // bottom line
       addOrModifyHintOverlays({
         [bottomLineHoverId.current]: {
-          compId: context.currentDropzone!.id!,
+          compId: currentRenderedContext.current.currentDropzone!.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: bottomLineHoverId.current,
           box: (dim) => {
@@ -97,7 +99,7 @@ export const useDropzoneOverlay = () => {
       // left line
       addOrModifyHintOverlays({
         [leftLineHoverId.current]: {
-          compId: context.currentDropzone!.id!,
+          compId: currentRenderedContext.current.currentDropzone!.id!,
           comp: <FilledLine fill={orange600} />,
           overlayId: leftLineHoverId.current,
           box: (dim) => {
@@ -111,9 +113,23 @@ export const useDropzoneOverlay = () => {
           },
         },
       });
+    }
+  }, []);
+  useEffect(() => {
+    const unsub = subscribeCanvasActivity("dropzoneCreated", (context) => {
+      topLineHoverId.current = getId();
+      rightLineHoverId.current = getId();
+      bottomLineHoverId.current = getId();
+      leftLineHoverId.current = getId();
+      if (context.currentDropzone === undefined) {
+        clearOverlay();
+        return;
+      }
+      currentRenderedContext.current = context;
+      renderFn();
     });
     return unsub;
-  }, [clearOverlay]);
+  }, [clearOverlay, renderFn]);
   useEffect(() => {
     const unsub = subscribeCanvasActivity(
       "dropzoneDestroyed",
@@ -123,4 +139,5 @@ export const useDropzoneOverlay = () => {
     );
     return unsub;
   }, [clearOverlay]);
+  useSubscribeComponentRendered(renderFn);
 };

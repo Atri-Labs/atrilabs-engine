@@ -268,6 +268,8 @@ export {
   getCurrentMachineContext,
 } from "./decorators/CanvasActivityDecorator";
 
+export type { CanvasActivityContext } from "./decorators/CanvasActivityDecorator";
+
 export {
   addOrModifyHintOverlays,
   removeHintOverlays,
