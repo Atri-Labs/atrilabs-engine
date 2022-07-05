@@ -259,6 +259,9 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         console.log(err);
       }
     });
+    socket.on("uploadAssets", (files, callback) => {
+      // TODO: save file to a pre-defined location in .targets
+    });
   });
 
   const port = (options && options.port) || 4001;

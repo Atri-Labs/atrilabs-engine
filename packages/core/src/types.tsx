@@ -116,6 +116,20 @@ export type ToolConfig = {
   manifestClient: { path: string };
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
+  assetManager: {
+    /**
+     * Options that are used by asset manager as well as other parts of tool.
+     * An asset manager must respect these options.
+     */
+    commonOptions: {
+      // ex. - /assets (no trailing slashes)
+      urlPath: string;
+    };
+    /**
+     * Options specific to the asset manager the tool is using.
+     */
+    options: any;
+  };
 };
 
 // type for manifest.schema.config.js
@@ -211,6 +225,19 @@ export type BrowserClient = {
   subscribeEvents(cb: EventSubscriber): () => void;
   subscribeExternalEvents(cb: EventSubscriber): () => void;
   subscribeOwnEvents(cb: EventSubscriber): () => void;
+  /**
+   *
+   * @param files Each property of file is derived from the Web API File.
+   */
+  uploadAssets(
+    files: {
+      name: string;
+      data: ArrayBuffer;
+      size: number;
+      mime: string;
+    }[],
+    callback: (success: boolean) => void
+  ): void;
 };
 
 export type Script = {

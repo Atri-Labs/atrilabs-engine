@@ -193,4 +193,9 @@ module.exports = {
     { pkg: "@atrilabs/react-component-manifest-schema" },
   ],
   manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
+  assetManager: {
+    commonOptions: {
+      urlPath: "/app-assets",
+    },
+  },
 };

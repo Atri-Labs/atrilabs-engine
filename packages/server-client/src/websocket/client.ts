@@ -138,6 +138,12 @@ socket.on("newEvent", (forestPkgId, pageId, event, socketId) => {
   }
 });
 
+const uploadAssets: BrowserClient["uploadAssets"] = (files, cb) => {
+  socket.emit("uploadAssets", files, (success) => {
+    cb(success);
+  });
+};
+
 const client: BrowserClient = {
   getMeta,
   getPages,
@@ -153,6 +159,7 @@ const client: BrowserClient = {
   subscribeExternalEvents,
   subscribeOwnEvents,
   getNewAlias,
+  uploadAssets,
 };
 
 export default client;
