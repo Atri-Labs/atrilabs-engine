@@ -1,14 +1,7 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
-import React from "react";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-
-export type TabBodyProps = {
-  alias: string;
-  setAliasCb: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  patchCb: (slice: any) => void;
-  customProps: any;
-  treeOptions: CSSTreeOptions;
-};
+import React, { useMemo } from "react";
+import { TabBodyProps } from "./types";
+import { Text } from "./components/text/Text";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -30,5 +23,17 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Higher Order Component to arrange different sections
 // such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
-  return <div style={styles.container}></div>;
+  const propNames = useMemo(() => {
+    return Object.keys(props.customProps);
+  }, [props]);
+  return (
+    <div style={styles.container}>
+      {propNames.map((propName) => {
+        const propType = props.treeOptions.dataTypes[propName];
+        if (propType === "text")
+          return <Text {...props} propName={propName} key={propName} />;
+        return <React.Fragment key={propName}></React.Fragment>;
+      })}
+    </div>
+  );
 };

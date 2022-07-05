@@ -10,9 +10,10 @@ import {
 } from "./utils";
 import express from "express";
 import path from "path";
+import http from "http";
 
 // constants needed externally
-const { port, publicDir, pages } = getServerInfo(__dirname);
+const { port, publicDir, pages, pythonPort } = getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
 
 createIfNotExistLocalCache();
@@ -37,6 +38,69 @@ app.use((req, res, next) => {
     return;
   }
   next();
+});
+
+app.post("/event-handler", express.json(), (req, res) => {
+  console.log("event handler recieved");
+  const pageRoute = req.body["pageRoute"];
+  const pageState = req.body["pageState"];
+  const alias = req.body["alias"];
+  const callbackName = req.body["callbackName"];
+  const eventData = req.body["eventData"];
+  if (
+    typeof pageRoute !== "string" ||
+    typeof pageState !== "object" ||
+    typeof alias !== "string" ||
+    typeof callbackName !== "string"
+  ) {
+    res.status(400).send();
+    return;
+  }
+  console.log(pageRoute, pageState, alias, callbackName, eventData);
+  // TODO: update pageState if success python call otherwise 501
+  const payload = JSON.stringify({
+    route: pageRoute,
+    state: pageState,
+    alias,
+    callbackName,
+    eventData,
+  });
+  const forward_req = http.request(
+    {
+      hostname: `0.0.0.0`,
+      port: pythonPort,
+      path: "/event",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": payload.length,
+      },
+    },
+    (forward_res) => {
+      console.log(`STATUS: ${forward_res.statusCode}`);
+      console.log(`HEADERS: ${JSON.stringify(forward_res.headers)}`);
+      forward_res.setEncoding("utf8");
+      let data = "";
+      forward_res.on("data", (chunk) => {
+        data = data + chunk;
+      });
+      forward_res.on("end", () => {
+        try {
+          const newPageState = JSON.parse(data);
+          res.status(200).send({ pageState: newPageState });
+        } catch (err) {
+          console.log("Unexpected Forward Response\n", err);
+          res.status(501).send();
+        }
+      });
+    }
+  );
+  forward_req.on("error", (e) => {
+    console.error(`problem with request: ${e.message}`);
+    res.status(501).send();
+  });
+  forward_req.write(payload);
+  forward_req.end();
 });
 
 app.use(express.static(publicDir));

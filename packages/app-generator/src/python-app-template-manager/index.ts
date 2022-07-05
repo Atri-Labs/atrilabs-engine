@@ -3,6 +3,14 @@ import path from "path";
 import fs from "fs";
 import { getFiles } from "@atrilabs/scripts";
 
+const setEventDef =
+  `\tdef set_event(self, event):\n` +
+  `\t\tself.event_data = event["event_data"]\n` +
+  `\t\talias = event["alias"]\n` +
+  `\t\tcallback_name = event["callback_name"]\n` +
+  `\t\tcomp = getattr(self, alias)\n` +
+  `\t\tsetattr(comp, callback_name, True)`;
+
 export function createPythonAppTemplateManager(
   paths: { controllers: string; pythonAppTemplate: string },
   pages: { name: string; route: string }[]
@@ -21,10 +29,15 @@ export function createPythonAppTemplateManager(
   function flushAtriPyFile(page: { name: string; route: string }) {
     const classTasks: {
       className: string;
+      callbackNames: string[];
       attrs: { name: string; type: string }[];
     }[] = [];
     const varClassMap: { [varName: string]: string } = {};
-    function addClassTask(className: string, value: any) {
+    function addClassTask(
+      className: string,
+      value: any,
+      callbackNames: string[]
+    ) {
       const attrs: { name: string; type: string }[] = [];
       const attrNames = Object.keys(value);
       attrNames.forEach((attrName) => {
@@ -47,12 +60,13 @@ export function createPythonAppTemplateManager(
             } else {
               const childClassName = `${className}${attrName}Class`;
               attrs.push({ name: attrName, type: childClassName });
-              addClassTask(childClassName, value[attrName]);
+              // sub-classes don't have callbacks, hence, empty array [] is passed
+              addClassTask(childClassName, value[attrName], []);
             }
             break;
         }
       });
-      classTasks.push({ className, attrs });
+      classTasks.push({ className, attrs, callbackNames });
     }
     const { output } = variableMap[page.name];
     const outputRoutePath = path.resolve(
@@ -65,16 +79,29 @@ export function createPythonAppTemplateManager(
     variableNames.forEach((variableName) => {
       const variable = output.vars[variableName];
       const className = `${variableName}Class`;
-      addClassTask(className, variable.value);
+      addClassTask(className, variable.value, Object.keys(variable.callbacks));
       varClassMap[variableName] = className;
     });
     const importStatements = [
       "import json",
       "from typing import List, Any",
     ].join("\n");
+    const defaultValueMap: any = {};
+    Object.keys(output.vars).forEach((currVar) => {
+      defaultValueMap[currVar] = output.vars[currVar].value;
+    });
+    const defaultStateStatement = `default_state = json.loads('${JSON.stringify(
+      defaultValueMap
+    )}')`;
+    const getDefinedValueDefStatement = `def get_defined_value(state, def_state, key):\n\treturn state[key] if key in state else def_state[key]`;
     const classStatements = classTasks
       .map((classTask) => {
-        const { className, attrs } = classTask;
+        const { className, attrs, callbackNames } = classTask;
+        const callbackStatements = callbackNames
+          .map((callbackName) => {
+            return `\t\t\tself.${callbackName} = False`;
+          })
+          .join("\n");
         const attrStatements = attrs
           .map((attr) => {
             // if type is not str | int | bool then it's a class
@@ -82,23 +109,40 @@ export function createPythonAppTemplateManager(
               attr.type === "str" || attr.type === "int" || attr.type === "bool"
                 ? ""
                 : "Atri.__";
-            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = state["${attr.name}"]`;
+            let rhs = `get_defined_value(state, def_state, "${attr.name}")`;
+            if (typePrefix === "Atri.__") {
+              // python adds _Atri for all inner classes
+              rhs = `Atri._Atri__${attr.type}(${rhs}, def_state["${attr.name}"])`;
+            }
+            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = ${rhs}`;
           })
           .join("\n");
-        const initBody = attrs.length === 0 ? "\t\t\tpass" : attrStatements;
-        return `\tclass __${className}:\n\t\tdef __init__(self, state):\n${initBody}`;
+        const initBody =
+          attrs.length === 0 && callbackNames.length === 0
+            ? "\t\t\tpass"
+            : `${callbackStatements}\n${attrStatements}`;
+        return `\tclass __${className}:\n\t\tdef __init__(self, state, def_state):\n${initBody}`;
       })
       .join("\n");
     const AtriClassInitBody =
-      Object.keys(varClassMap)
+      `\t\tself.event_data = None\n` +
+      `\t\tglobal default_state\n` +
+      (Object.keys(varClassMap)
         .map((varName) => {
           const className = varClassMap[varName];
-          return `\t\tself.${varName} = self.__${className}(state["${varName}"])`;
+          return `\t\tself.${varName} = self.__${className}(state["${varName}"], default_state["${varName}"])`;
         })
-        .join("\n") || "\t\tpass";
+        .join("\n") || "\t\tpass");
     const AtriClassInitDef = `\tdef __init__(self, state: Any):\n${AtriClassInitBody}`;
-    const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${classStatements}`;
-    const newText = importStatements + "\n" + AtriClassDef;
+    const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${setEventDef}\n${classStatements}`;
+    const newText =
+      importStatements +
+      "\n" +
+      defaultStateStatement +
+      "\n" +
+      getDefinedValueDefStatement +
+      "\n" +
+      AtriClassDef;
     if (!fs.existsSync(path.dirname(outputRoutePath))) {
       fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }

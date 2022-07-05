@@ -21,6 +21,7 @@ export const canvasComponentStore: CanvasComponentStore = {
     decorators: bodyDecorators,
     catchers: bodyCatchers,
     acceptsChild: true,
+    callbacks: {},
   },
 };
 

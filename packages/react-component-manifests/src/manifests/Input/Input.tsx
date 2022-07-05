@@ -8,24 +8,27 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Button = forwardRef<
-  HTMLButtonElement,
+export const Input = forwardRef<
+  HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { value: string };
+    onChange: (value: string) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      props.onChange(e.target.value);
     },
     [props]
   );
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.text}
-    </button>
+    <input
+      ref={ref}
+      style={props.styles}
+      onChange={onChange}
+      value={props.custom.value}
+    />
   );
 });
 
@@ -40,47 +43,45 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    value: "text",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Button" },
+  meta: { key: "Input" },
   render: {
-    comp: Button,
+    comp: Input,
   },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { background: "pink" },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          value: "",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Input" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Button", containerStyle: { padding: "1rem" } },
+    props: { name: "Input", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

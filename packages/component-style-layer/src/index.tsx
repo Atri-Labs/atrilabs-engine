@@ -26,6 +26,7 @@ export default function () {
             />
           }
           header={<TabHeader />}
+          itemName={"styles"}
         />
       ) : null}
     </>

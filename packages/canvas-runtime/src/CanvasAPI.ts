@@ -28,7 +28,8 @@ export const createComponent = (
   parent: { id: string; index: number },
   decorators: React.FC<any>[],
   catchers: Catcher[],
-  acceptsChild: boolean
+  acceptsChild: boolean,
+  callbacks: { [callbackName: string]: any }
 ) => {
   const ref = React.createRef<HTMLElement>();
   // prepend default decorators
@@ -52,6 +53,7 @@ export const createComponent = (
     decorators: [...decorators],
     catchers: [...catchers],
     acceptsChild,
+    callbacks,
   };
   // update component tree
   // Notice how we don't check whether the parent node exists. This is because,
@@ -265,6 +267,8 @@ export {
   getCurrentState,
   getCurrentMachineContext,
 } from "./decorators/CanvasActivityDecorator";
+
+export type { CanvasActivityContext } from "./decorators/CanvasActivityDecorator";
 
 export {
   addOrModifyHintOverlays,

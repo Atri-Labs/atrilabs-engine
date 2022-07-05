@@ -9,7 +9,11 @@ import {
 import path from "path";
 import fs from "fs";
 import { camelCase } from "lodash";
-import { ComponentGeneratorOutput, PropsGeneratorOutput } from "../types";
+import {
+  CallbackGeneratorOutput,
+  ComponentGeneratorOutput,
+  PropsGeneratorOutput,
+} from "../types";
 import { ToolConfig } from "@atrilabs/core";
 
 export function createReactAppTemplateManager(
@@ -52,6 +56,11 @@ export function createReactAppTemplateManager(
     "hooks",
     "useStore.js"
   );
+  const pageCbsDestDirectory = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "page-cbs"
+  );
 
   // variables to manage writes in App.jsx
   const pageImports: { name: string; route: string; source: string }[] = [];
@@ -73,6 +82,7 @@ export function createReactAppTemplateManager(
     };
   } = {};
   const propsMap: { [pageName: string]: PropsGeneratorOutput } = {};
+  const callbacksMap: { [pageName: string]: CallbackGeneratorOutput } = {};
 
   function copyAppTemplate() {
     const files = getFiles(paths.reactAppTemplate);
@@ -164,6 +174,10 @@ export function createReactAppTemplateManager(
   function getFilenameForPage(name: string) {
     const filenameWithExt = name[0].toUpperCase() + name.slice(1) + ".jsx";
     return filenameWithExt;
+  }
+
+  function getFilenameForPageCb(name: string) {
+    return getFilenameForPage(name);
   }
 
   function getPageDestPath(name: string) {
@@ -374,7 +388,7 @@ export function createReactAppTemplateManager(
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
       if (isParent) {
-        const start = `<${localIdentifier} {...${alias}Props}>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -383,7 +397,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier} {...${alias}Props}/>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}/>\n`;
         return start;
       }
     }
@@ -434,7 +448,9 @@ export function createReactAppTemplateManager(
           const comp = componentMap[name][compId];
           const alias = comp.alias;
           // component definition
-          const def = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);\n`;
+          const propsDef = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);`;
+          const callbackDef = `const ${alias}Cb = use${alias}Cb()`;
+          const def = `${propsDef}\n${callbackDef}\n`;
           return def;
         })
         .join("");
@@ -451,7 +467,7 @@ export function createReactAppTemplateManager(
     if (importCursorMatch) {
       const currPageImports = pageImportMap[name];
       const sources = Object.keys(currPageImports);
-      const newImportText = sources
+      const compImports = sources
         .map((source) => {
           const importVars = currPageImports[source]
             .map((val) => {
@@ -463,6 +479,16 @@ export function createReactAppTemplateManager(
           return `import { ${importVars} } from "${source}";`;
         })
         .join("\n");
+      const importCbs =
+        "import { " +
+        Object.keys(componentMap[name])
+          .map((compId) => {
+            const alias = componentMap[name][compId].alias;
+            return `use${alias}Cb`;
+          })
+          .join(", ") +
+        ` } from "../page-cbs/${name}";\n`;
+      const newImportText = `${compImports}\n${importCbs}`;
       slices.push({
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,
@@ -598,6 +624,82 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
   }
 
+  function addCallbacks(
+    page: { name: string },
+    callbacks: CallbackGeneratorOutput
+  ) {
+    if (callbacksMap[page.name]) {
+      callbacksMap[page.name] = { ...callbacksMap[page.name], ...callbacks };
+    } else {
+      callbacksMap[page.name] = callbacks;
+    }
+  }
+
+  function _flushPageCbs(pageImport: {
+    name: string;
+    route: string;
+    source: string;
+  }) {
+    /**
+     * function usealias1Cbs(){
+     *  const onClick = useCallback(()=>{
+     *      callbackFactory("${alias}", "${pageName}",
+     *        JSON.parse(JSON.stringify(callbackMap[alias]["onClick"], null, 2)))
+     *  }, [])
+     *  return { onClick }
+     * }
+     *
+     * function usealias2Cbs(){
+     *  const onClick = useCallback(()=>{
+     *      callbackFactory("${alias}", "${pageName}", JSON.parse(JSON.stringify(callbackMap[alias]["onClick"], null, 2)))
+     *  }, [])
+     *  return { onClick }
+     * }
+     */
+    const pageName = pageImport.name;
+    const pageRoute = pageImport.route;
+    const pageCallbackMap = callbacksMap[pageName];
+    const compIds = Object.keys(pageCallbackMap);
+    const importStatements = [
+      `import { useCallback } from "react";`,
+      `import { callbackFactory } from "../utils/callbackFactory";`,
+    ].join("\n");
+    const useHookFns = compIds
+      .map((compId) => {
+        if (componentMap[pageName][compId] === undefined) {
+          return "";
+        }
+        const alias = componentMap[pageName][compId].alias;
+        const callbackNames = Object.keys(pageCallbackMap[compId].callbacks);
+        const hookBody = callbackNames
+          .map((callbackName) => {
+            return `\tconst ${callbackName} = useCallback(callbackFactory("${alias}", "${pageName}", "${pageRoute}", "${callbackName}", \n\t\t\t${JSON.stringify(
+              pageCallbackMap[compId].callbacks[callbackName],
+              null,
+              2
+            )}), [])`;
+          })
+          .join("\n");
+        const returnStatement = `\treturn { ${callbackNames.map(
+          (name) => name
+        )} }`;
+        return `export function use${alias}Cb() {\n${hookBody}\n${returnStatement}\n}`;
+      })
+      .join("\n");
+    const pageCbContent = `${importStatements}\n${useHookFns}`;
+    const destPath = path.resolve(pageCbsDestDirectory, `${pageName}.js`);
+    if (!fs.existsSync(path.dirname(destPath))) {
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    }
+    fs.writeFileSync(destPath, pageCbContent);
+  }
+
+  function flushPageCbs() {
+    pageImports.forEach((pageImport) => {
+      _flushPageCbs(pageImport);
+    });
+  }
+
   return {
     copyTemplate,
     createPage,
@@ -614,5 +716,7 @@ export function createReactAppTemplateManager(
     flushAtriBuildInfo,
     flushPatchedPackageJSON,
     flushAtriServerInfo,
+    addCallbacks,
+    flushPageCbs,
   };
 }

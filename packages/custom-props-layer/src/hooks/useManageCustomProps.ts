@@ -1,15 +1,9 @@
-import {
-  api,
-  BrowserForestManager,
-  manifestRegistryController,
-  useTree,
-} from "@atrilabs/core";
-import React, { useCallback, useEffect, useState } from "react";
+import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { useCallback, useEffect, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import customPropsTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import CustomPropsTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent } from "@atrilabs/forest";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import {
   getComponentProps,
   updateComponentProps,
@@ -17,12 +11,8 @@ import {
 
 export const useManageCustomProps = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
-  const customPropsTree = useTree(customPropsTreeId);
-  const [customProps, setCustomProps] = useState<React.CSSProperties>({});
-  const [treeOptions, setTreeOptions] = useState<
-    | ReactComponentManifestSchema["dev"]["attachProps"]["0"]["treeOptions"]
-    | null
-  >(null);
+  const customPropsTree = useTree(CustomPropsTreeId);
+  const [customProps, setCustomProps] = useState<any>({});
   // callback to post patch event -> takes a slice
   const patchCb = useCallback(
     (slice: any) => {
@@ -33,12 +23,12 @@ export const useManageCustomProps = (id: string | null) => {
       ) {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;
-        const cssNodeId = customPropsTree.links[id];
-        if (cssNodeId) {
+        const customPropsNodeId = customPropsTree.links[id];
+        if (customPropsNodeId) {
           const patchEvent: PatchEvent = {
-            type: `PATCH$$${customPropsTreeId}`,
+            type: `PATCH$$${CustomPropsTreeId}`,
             slice,
-            id: cssNodeId.childId,
+            id: customPropsNodeId.childId,
           };
           api.postNewEvent(forestPkgId, forestId, patchEvent);
         }
@@ -56,14 +46,15 @@ export const useManageCustomProps = (id: string | null) => {
       const currentForest = BrowserForestManager.currentForest;
       const unsub = currentForest.subscribeForest((update) => {
         if (update.type === "change") {
-          if (update.treeId === customPropsTreeId) {
-            const cssNode = customPropsTree.links[id];
-            const cssNodeId = cssNode.childId;
+          if (update.treeId === CustomPropsTreeId) {
+            const customPropsNodeLink = customPropsTree.links[id];
+            const customPropsNodeId = customPropsNodeLink.childId;
             setCustomProps({
-              ...customPropsTree.nodes[cssNodeId].state.property.custom,
+              ...customPropsTree.nodes[customPropsNodeId].state.property.custom,
             });
             // tranform it into props
-            const props = customPropsTree.nodes[cssNodeId].state.property;
+            const props =
+              customPropsTree.nodes[customPropsNodeId].state.property;
             if (props) {
               const oldProps = getComponentProps(id);
               updateComponentProps(id, { ...oldProps, ...props });
@@ -81,39 +72,12 @@ export const useManageCustomProps = (id: string | null) => {
       compTree.nodes[id] &&
       compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
     ) {
-      const cssNodeId = customPropsTree.links[id];
-      if (cssNodeId)
+      const customNodeId = customPropsTree.links[id];
+      if (customNodeId)
         setCustomProps(
-          customPropsTree.nodes[cssNodeId.childId].state.property.custom
+          customPropsTree.nodes[customNodeId.childId].state.property.custom
         );
     }
   }, [id, compTree, customPropsTree]);
-  useEffect(() => {
-    // find component registry
-    if (
-      id &&
-      compTree.nodes[id] &&
-      compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
-    ) {
-      const pkg = compTree.nodes[id].meta.pkg;
-      const key = compTree.nodes[id].meta.key;
-      const manifestRegistry =
-        manifestRegistryController.readManifestRegistry();
-      const manifest = manifestRegistry[ReactManifestSchemaId].components.find(
-        (curr) => {
-          return curr.pkg === pkg && curr.component.meta.key === key;
-        }
-      );
-      if (manifest) {
-        const manifestComponent: ReactComponentManifestSchema =
-          manifest.component;
-        if (manifestComponent.dev.attachProps["custom"]) {
-          const treeOptions =
-            manifestComponent.dev.attachProps["custom"].treeOptions;
-          setTreeOptions(treeOptions);
-        }
-      }
-    }
-  }, [id, compTree]);
-  return { patchCb, customProps, treeOptions };
+  return { patchCb, customProps };
 };
