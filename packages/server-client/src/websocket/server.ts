@@ -278,7 +278,12 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     socket.on("uploadAssets", (files, callback) => {
       const returnUrls: string[] = [];
       files.forEach((file) => {
-        const destPath = path.join(assetsDir, file.name);
+        // dest path should look like /assets/app-assets/a.png
+        const destPath = path.join(
+          assetsDir,
+          assetUrlPrefix.replace("/", ""),
+          file.name
+        );
         fs.writeFileSync(destPath, file.data);
         // keep a record of assets mime type
         const currentConf = JSON.parse(
