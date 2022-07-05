@@ -111,7 +111,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="flexGrow"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue={0}
+              defaultValue=""
             />
           </div>
           <div>
@@ -119,7 +119,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="flexShrink"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue={0}
+              defaultValue=""
             />
           </div>
           <div>

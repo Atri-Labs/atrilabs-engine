@@ -8,6 +8,10 @@ export type SizeInputProps = {
   styles: CssProprtyComponentType["styles"];
   defaultValue: string;
   placeHolderText: string;
+  preProcessor?: (
+    value: string | number | undefined,
+    mode: "read" | "write"
+  ) => number | string;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -44,16 +48,26 @@ export const SizeInput: React.FC<SizeInputProps> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          [styleItem]: parseFloat(e.target.value),
+          [styleItem]: props.preProcessor
+            ? props.preProcessor(e.target.value, "write")
+            : parseInt(e.target.value),
         },
       },
     });
   };
+
   return (
     <div style={styles.container}>
       <input
         type="text"
-        value={props.styles[props.styleItem] || props.defaultValue}
+        value={
+          props.preProcessor
+            ? props.preProcessor(
+                props.styles[props.styleItem]?.toString(),
+                "read"
+              )
+            : props.styles[props.styleItem] || props.defaultValue
+        }
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
       />

@@ -5,7 +5,7 @@ import {
   gray100,
   gray800,
 } from "@atrilabs/design-system";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as LA } from "../../assets/typo/left-align.svg";
 import { ReactComponent as RA } from "../../assets/typo/right-align.svg";
@@ -78,9 +78,37 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
       | React.ChangeEvent<HTMLSelectElement>,
     fontItem: keyof React.CSSProperties
   ) {
-    console.log("Event value", e.target.value);
-    console.log("Font item value", fontItem);
+    props.patchCb({
+      property: {
+        styles: {
+          [fontItem]: parseInt(e.target.value),
+        },
+      },
+    });
   }
+
+  const opacityPreProcessor = useCallback(
+    (value: string | number | undefined, mode: "read" | "write") => {
+      if (value === "" || (typeof value === "string" && !value.trim().length)) {
+        return "";
+      } else if (typeof value === "undefined") {
+        return "";
+      } else if (mode === "read") {
+        if (typeof value === "number") {
+          return value * 100;
+        } else {
+          return parseFloat(value) * 100;
+        }
+      } else {
+        if (typeof value === "number") {
+          return value / 100;
+        } else {
+          return parseFloat(value) / 100;
+        }
+      }
+    },
+    []
+  );
 
   return (
     <div style={styles.container}>
@@ -123,7 +151,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>Weight</div>
           <select
             name="font"
-            onChange={(e) => handleFontChange(e, "fontFamily")}
+            onChange={(e) => handleFontChange(e, "fontWeight")}
             style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
           >
             <option style={styles.select} value={400}>
@@ -193,6 +221,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               patchCb={props.patchCb}
               defaultValue=""
               placeHolderText="%"
+              preProcessor={opacityPreProcessor}
             />
           </div>
           <div>
