@@ -279,18 +279,17 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       const returnUrls: string[] = [];
       files.forEach((file) => {
         // dest path should look like /assets/app-assets/a.png
-        const destPath = path.join(
-          assetsDir,
-          assetUrlPrefix.replace("/", ""),
-          file.name
-        );
+        const destPath = path.join(assetsDir, file.name);
+        if (!fs.existsSync(path.dirname(destPath))) {
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        }
         fs.writeFileSync(destPath, file.data);
         // keep a record of assets mime type
         const currentConf = JSON.parse(
           fs.readFileSync(assetsConfPath).toString()
         );
         currentConf[file.name] = { mime: file.mime };
-        fs.writeFileSync(currentConf, JSON.stringify(currentConf, null, 2));
+        fs.writeFileSync(assetsConfPath, JSON.stringify(currentConf, null, 2));
         returnUrls.push(`${assetUrlPrefix}/${file.name}`);
       });
       callback(true, returnUrls);
