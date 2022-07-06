@@ -23,13 +23,13 @@ export default function () {
       if (files) {
         const assets: {
           name: string;
-          data: string;
+          data: ArrayBuffer;
           size: number;
           mime: string;
         }[] = [];
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const data = await file.text();
+          const data = await file.arrayBuffer();
           const name = file.name;
           const size = file.size;
           const mime = file.type;

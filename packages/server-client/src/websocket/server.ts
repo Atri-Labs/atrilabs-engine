@@ -283,7 +283,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         if (!fs.existsSync(path.dirname(destPath))) {
           fs.mkdirSync(path.dirname(destPath), { recursive: true });
         }
-        fs.writeFileSync(destPath, file.data);
+        fs.createWriteStream(destPath).write(file.data);
         // keep a record of assets mime type
         const currentConf = JSON.parse(
           fs.readFileSync(assetsConfPath).toString()

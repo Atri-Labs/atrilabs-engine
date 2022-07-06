@@ -226,7 +226,7 @@ export type BrowserClient = {
   uploadAssets(
     files: {
       name: string;
-      data: string;
+      data: ArrayBuffer;
       size: number;
       mime: string;
     }[],
