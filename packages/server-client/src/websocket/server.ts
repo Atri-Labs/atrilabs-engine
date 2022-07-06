@@ -37,7 +37,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
   const assetsConfPath = path.join(assetsDir, "assets.config.json");
   const assetUrlPrefix = toolConfig.assetManager.urlPath;
   if (!fs.existsSync(assetsDir)) {
-    fs.mkdirSync(assetsDir);
+    fs.mkdirSync(assetsDir, { recursive: true });
   }
   if (!fs.existsSync(assetsConfPath)) {
     fs.writeFileSync(assetsConfPath, "{}");
