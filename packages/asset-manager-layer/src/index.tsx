@@ -1,7 +1,10 @@
-import { Menu, Container, api } from "@atrilabs/core";
+import { Menu, Container } from "@atrilabs/core";
 import { gray800 } from "@atrilabs/design-system";
 import { useCallback, useState } from "react";
-import { Cross } from "./assets/Cross";
+import {
+  UploadContainer,
+  UploadContainerProps,
+} from "./components/upload-container/UploadContainer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -9,41 +12,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+const modes: UploadContainerProps["modes"] = ["upload_multiple", "draggable"];
+
 export default function () {
   const [showAssetPanel, setShowAssetPanel] = useState(false);
   const showAssetPanelCb = useCallback(() => {
     setShowAssetPanel(true);
   }, []);
-  const closeContainer = useCallback(() => {
+  const onCrossClicked = useCallback(() => {
     setShowAssetPanel(false);
   }, []);
-  const onFileBrowsedCb: React.ChangeEventHandler<HTMLInputElement> =
-    useCallback(async (e) => {
-      const files = e.target.files;
-      if (files) {
-        const assets: {
-          name: string;
-          data: ArrayBuffer;
-          size: number;
-          mime: string;
-        }[] = [];
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          const data = await file.arrayBuffer();
-          const name = file.name;
-          const size = file.size;
-          const mime = file.type;
-          assets.push({ name, data, size, mime });
-        }
-        api.uploadAssets(assets, (success, url) => {
-          if (!success) {
-            console.log("failed");
-          } else {
-            console.log(url);
-          }
-        });
-      }
-    }, []);
   return (
     <>
       <Menu name="AppMenu">
@@ -53,19 +31,7 @@ export default function () {
       </Menu>
       {showAssetPanel ? (
         <Container name="Drop">
-          <div style={styles.dropContainerItem}>
-            <header style={styles.dropContainerItemHeader}>
-              <h4 style={styles.dropContainerItemHeaderH4}>Insert Component</h4>
-              <div style={styles.icons}>
-                <span style={styles.iconsSpan} onClick={closeContainer}>
-                  <Cross />
-                </span>
-              </div>
-            </header>
-            <div>
-              <input type={"file"} multiple={true} onChange={onFileBrowsedCb} />
-            </div>
-          </div>
+          <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
         </Container>
       ) : null}
     </>
