@@ -10,7 +10,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 export default function () {
   return (
     <>
-      <Menu name="PageMenu">
+      <Menu name="AppMenu">
         <div style={styles.iconContainer}>Asset Manager</div>
       </Menu>
     </>
