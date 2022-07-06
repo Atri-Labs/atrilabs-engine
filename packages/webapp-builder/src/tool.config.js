@@ -47,6 +47,7 @@ module.exports = {
     { pkg: "@atrilabs/overlay-hints-layer" },
     { pkg: "@atrilabs/publish-app-layer" },
     { pkg: "@atrilabs/custom-props-layer" },
+    { pkg: "@atrilabs/asset-manager-layer" },
   ],
   output: "lib",
   services: {
