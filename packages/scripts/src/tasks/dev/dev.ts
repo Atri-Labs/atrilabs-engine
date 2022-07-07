@@ -63,6 +63,11 @@ processToolConfig(toolPkgInfo)
           overlay: true,
         },
         hot: true,
+        proxy: {
+          [toolConfig.assetManager.urlPath]: {
+            target: toolConfig.assetManager.hostname,
+          },
+        },
       };
 
       // create compiler
@@ -70,7 +75,10 @@ processToolConfig(toolPkgInfo)
       addCompilerHooks(compiler);
 
       // create dev server
-      const devServer = new WebpackDevServer({ ...serverConfig }, compiler);
+      const devServer = new WebpackDevServer(
+        { ...serverConfig, ...webpackConfig["devServer"] },
+        compiler
+      );
 
       // launch WebpackDevServer
       devServer.startCallback(() => {

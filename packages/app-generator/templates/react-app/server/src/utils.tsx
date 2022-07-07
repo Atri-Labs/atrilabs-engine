@@ -93,5 +93,6 @@ export function getServerInfo(startDir: string): ServerInfo {
     pythonPort: serverInfo["pythonPort"],
     publicDir: serverInfo["publicDir"],
     pages: serverInfo["pages"],
+    publicUrlAssetMap: serverInfo["publicUrlAssetMap"],
   };
 }

@@ -1,8 +1,12 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React from "react";
+import { Size } from "./components/size/Size";
+import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
+import { FlexChild } from "./components/flexchild/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import SpacingProperty from "./components/spacing/SpacingProperty";
+import { Typography } from "./components/typography/Typography";
 
 export type TabBodyProps = {
   alias: string;
@@ -15,8 +19,10 @@ export type TabBodyProps = {
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
   container: {
+    height: "100%",
     display: "flex",
     flexDirection: "column",
+    overflow: "auto",
   },
 
   // alias container
@@ -39,11 +45,24 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
+      {props.treeOptions && props.treeOptions.typographyOptions ? (
+        <Typography styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.sizeOptions ? (
+        <Size styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.borderOptions ? (
+        <Border styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
       ) : null}
+
       {props.treeOptions && props.treeOptions.spacingOptions ? (
         <SpacingProperty styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.flexChildOptions ? (
+        <FlexChild styles={props.styles} patchCb={props.patchCb} />
       ) : null}
     </div>
   );

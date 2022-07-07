@@ -77,7 +77,8 @@ export default async function (
       reactAppPackageJSON,
       reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
     },
-    options.rootComponentId
+    options.rootComponentId,
+    toolConfig.assetManager
   );
 
   const componentGeneratorFunctions: {

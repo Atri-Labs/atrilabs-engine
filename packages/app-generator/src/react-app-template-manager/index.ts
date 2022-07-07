@@ -28,7 +28,8 @@ export function createReactAppTemplateManager(
     reactAppPackageJSON: string;
     reactAppPackageJSONDest: string;
   },
-  rootComponentId: string
+  rootComponentId: string,
+  assetManager: ToolConfig["assetManager"]
 ) {
   const pagesTemplateDirectory = path.resolve(
     paths.reactAppTemplate,
@@ -618,6 +619,13 @@ export function createReactAppTemplateManager(
       paths.reactAppRootDest,
       atriAppServerInfoFilename
     );
+    // add asset url and directory
+    serverInfoTemplate["publicUrlAssetMap"] = {
+      [assetManager.urlPath]: path.relative(
+        paths.reactAppRootDest,
+        path.resolve(assetManager.assetsDir)
+      ),
+    };
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }

@@ -19,6 +19,9 @@ const forestsConfig = {
   ],
 };
 
+const compileAppOutputDir = "node_modules/.targets";
+const EVENT_SERVER_CLIENT = "http://localhost:4001";
+
 module.exports = {
   pkgManager: "yarn",
   forests: forestsConfig,
@@ -44,6 +47,7 @@ module.exports = {
     { pkg: "@atrilabs/overlay-hints-layer" },
     { pkg: "@atrilabs/publish-app-layer" },
     { pkg: "@atrilabs/custom-props-layer" },
+    { pkg: "@atrilabs/asset-manager-layer" },
   ],
   output: "lib",
   services: {
@@ -79,7 +83,7 @@ module.exports = {
           path: require.resolve("@atrilabs/app-generator/lib/index.js"),
           options: {
             appForestPkgId,
-            outputDir: "node_modules/.targets/atri-app",
+            outputDir: `${compileAppOutputDir}/atri-app`,
             controllers: {
               python: {
                 dir: path.resolve(
@@ -128,7 +132,7 @@ module.exports = {
           ),
           options: {
             appForestPkgId,
-            outputDir: "node_modules/.targets/atri-app",
+            outputDir: `${compileAppOutputDir}/atri-app`,
             controllers: {
               python: {
                 dir: path.resolve(
@@ -180,7 +184,7 @@ module.exports = {
     },
   },
   env: {
-    EVENT_SERVER_CLIENT: "http://localhost:4001",
+    EVENT_SERVER_CLIENT,
     MANIFEST_SERVER_CLIENT: "http://localhost:4003",
     PUBLISH_SERVER_CLIENT: "http://localhost:4004",
   },
@@ -193,4 +197,9 @@ module.exports = {
     { pkg: "@atrilabs/react-component-manifest-schema" },
   ],
   manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
+  assetManager: {
+    hostname: EVENT_SERVER_CLIENT,
+    urlPath: "/app-assets",
+    assetsDir: `${compileAppOutputDir}/assets`,
+  },
 };

@@ -2,5 +2,6 @@
   "port": 4005,
   "pythonPort": 4006,
   "publicDir": "dist/app",
-  "pages": {}
+  "pages": {},
+  "publicUrlAssetMap": {}
 }

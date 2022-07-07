@@ -13,7 +13,8 @@ import path from "path";
 import http from "http";
 
 // constants needed externally
-const { port, publicDir, pages, pythonPort } = getServerInfo(__dirname);
+const { port, publicDir, pages, pythonPort, publicUrlAssetMap } =
+  getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
 
 createIfNotExistLocalCache();
@@ -101,6 +102,10 @@ app.post("/event-handler", express.json(), (req, res) => {
   });
   forward_req.write(payload);
   forward_req.end();
+});
+
+Object.keys(publicUrlAssetMap).forEach((url) => {
+  app.use(url, express.static(publicUrlAssetMap[url]));
 });
 
 app.use(express.static(publicDir));
