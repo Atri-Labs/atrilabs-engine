@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import {
   gray200,
   gray800,
+  gray600,
+  gray100,
   gray50,
   smallText,
   h5Heading,
@@ -9,10 +11,10 @@ import {
 import Spacing from "./Spacing";
 import "./Spacing.css";
 import { CssProprtyComponentType } from "../../types";
-
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { assign, createMachine } from "xstate";
 import { useMachine } from "@xstate/react";
-
+export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
@@ -24,6 +26,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...h5Heading,
     color: gray200,
     paddingBottom: "0.5rem",
+    paddingLeft: "0.5rem",
+    marginTop: "10px",
+  },
+  drop: {
+    display: "flex",
+    alignItems: "baseline",
   },
   mainContainer: {
     marginTop: "1rem",
@@ -36,68 +44,116 @@ const styles: { [key: string]: React.CSSProperties } = {
   //Placeholders For Margin
   marginTopPlaceHolder: {
     ...smallText,
-    color: "black",
     position: "absolute",
-    left: "105px",
-    top: "-8px",
+    left: "98px",
+    top: "1px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   marginBottomPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    left: "105px",
-    bottom: "-5px",
+    left: "98px",
+    bottom: "5px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   marginRightPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    right: "24px",
-    top: "35px",
+    right: "-2px",
+    top: "40px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   marginLeftPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    left: "24px",
-    top: "35px",
+    left: "20px",
+    top: "40px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   //Placeholders for Padding
   paddingTopPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    left: "105px",
-    top: "15px",
+    left: "98px",
+    top: "22px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   paddingBottomPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    left: "105px",
-    bottom: "17px",
+    left: "98px",
+    bottom: "26px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   paddingRightPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    right: "60px",
-    top: "35px",
+    right: "33px",
+    top: "40px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   paddingLeftPlaceHolder: {
     ...smallText,
-    color: gray50,
     position: "absolute",
-    left: "60px",
-    top: "35px",
+    left: "55px",
+    top: "40px",
     userSelect: "none",
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: fillColor,
+    width: "18px",
+    border: "none",
+    lineHeight: "10px",
   },
   //Labels for Margin and Padding
   marginLabel: {
@@ -260,16 +316,17 @@ const dragMachine = createMachine({
 // SpacingProperty is a controlled component
 const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const [toggleClass, setToggleClass] = useState(true);
+  const [showProperties, setShowProperties] = useState(true);
   const [state, send] = useMachine(dragMachine);
 
   const marginTopVal = props.styles.marginTop?.toString() || "";
-  const marginRightVal = props.styles.marginRight || 0;
-  const marginLeftVal = props.styles.marginLeft || 0;
-  const marginBottomVal = props.styles.marginBottom || 0;
-  const paddingTopVal = props.styles.paddingTop || 0;
-  const paddingRightVal = props.styles.paddingRight || 0;
-  const paddingLeftVal = props.styles.paddingLeft || 0;
-  const paddingBottomVal = props.styles.paddingBottom || 0;
+  const marginRightVal = props.styles.marginRight?.toString() || "";
+  const marginLeftVal = props.styles.marginLeft?.toString() || "";
+  const marginBottomVal = props.styles.marginBottom?.toString() || "";
+  const paddingTopVal = props.styles.paddingTop?.toString() || "";
+  const paddingRightVal = props.styles.paddingRight?.toString() || "";
+  const paddingLeftVal = props.styles.paddingLeft?.toString() || "";
+  const paddingBottomVal = props.styles.paddingBottom?.toString() || "";
 
   // callbacks for different areas
   const onMouseDownPaddingTop = useCallback(
@@ -278,7 +335,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingTopArea,
-        initialValue: paddingTopVal,
+        initialValue: parseInt(paddingTopVal || "0"),
       });
     },
     [send, paddingTopVal]
@@ -289,7 +346,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingBottomArea,
-        initialValue: paddingBottomVal,
+        initialValue: parseInt(paddingBottomVal || "0"),
       });
     },
     [send, paddingBottomVal]
@@ -300,7 +357,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingRightArea,
-        initialValue: paddingRightVal,
+        initialValue: parseInt(paddingRightVal || "0"),
       });
     },
     [send, paddingRightVal]
@@ -311,7 +368,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: paddingLeftArea,
-        initialValue: paddingLeftVal,
+        initialValue: parseInt(paddingLeftVal || "0"),
       });
     },
     [send, paddingLeftVal]
@@ -333,7 +390,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginBottomArea,
-        initialValue: marginBottomVal,
+        initialValue: parseInt(marginBottomVal || "0"),
       });
     },
     [send, marginBottomVal]
@@ -344,7 +401,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginRightArea,
-        initialValue: marginRightVal,
+        initialValue: parseInt(marginRightVal || "0"),
       });
     },
     [send, marginRightVal]
@@ -355,7 +412,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginLeftArea,
-        initialValue: marginLeftVal,
+        initialValue: parseInt(marginLeftVal || "0"),
       });
     },
     [send, marginLeftVal]
@@ -393,38 +450,149 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       });
   }, [state.context, state.value, props]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeMarginTop = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     console.log(event.target.value);
-
     let attrValue = event.target.value;
     props.patchCb({
       property: { styles: { marginTop: parseInt(attrValue) } },
     });
   };
+  const handleChangeMarginRight = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { marginRight: parseInt(attrValue) } },
+    });
+  };
+  const handleChangeMarginLeft = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { marginLeft: parseInt(attrValue) } },
+    });
+  };
+  const handleChangeMarginBottom = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { marginBottom: parseInt(attrValue) } },
+    });
+  };
+
+  const handleChangePaddingTop = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { paddingTop: parseInt(attrValue) } },
+    });
+  };
+  const handleChangePaddingRight = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { paddingRight: parseInt(attrValue) } },
+    });
+  };
+  const handleChangePaddingLeft = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { paddingLeft: parseInt(attrValue) } },
+    });
+  };
+  const handleChangePaddingBottom = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value);
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { paddingBottom: parseInt(attrValue) } },
+    });
+  };
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>Spacing</div>
-      {toggleClass && (
+      <div style={styles.drop}>
+        <DropDownArrow
+          onClick={() => setShowProperties(!showProperties)}
+          style={
+            !showProperties
+              ? { transform: "rotate(-90deg)" }
+              : { transform: "rotate(0deg)" }
+          }
+        />
+        <div style={styles.header}>Spacing</div>
+      </div>
+      <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <main style={styles.mainContainer}>
           {/*Margin PlaceHolders*/}
           <input
-            id="margintop"
             value={marginTopVal || ""}
-            onChange={handleChange}
+            onChange={handleChangeMarginTop}
             placeholder={marginTopVal || "0"}
             style={styles.marginTopPlaceHolder}
           />
-          <p id="marginright" style={styles.marginRightPlaceHolder}>
-            {marginRightVal}
-          </p>
-          <p style={styles.marginBottomPlaceHolder}>{marginBottomVal}</p>
-          <p style={styles.marginLeftPlaceHolder}>{marginLeftVal}</p>
+          <input
+            value={marginRightVal || ""}
+            onChange={handleChangeMarginRight}
+            placeholder={marginRightVal || "0"}
+            style={styles.marginRightPlaceHolder}
+          />
+          <input
+            value={marginBottomVal || ""}
+            onChange={handleChangeMarginBottom}
+            placeholder={marginBottomVal || "0"}
+            style={styles.marginBottomPlaceHolder}
+          />
+
+          <input
+            value={marginLeftVal || ""}
+            onChange={handleChangeMarginLeft}
+            placeholder={marginLeftVal || "0"}
+            style={styles.marginLeftPlaceHolder}
+          />
           {/*Padding Placeholders*/}
-          <p style={styles.paddingTopPlaceHolder}>{paddingTopVal}</p>
-          <p style={styles.paddingRightPlaceHolder}>{paddingRightVal}</p>
-          <p style={styles.paddingBottomPlaceHolder}>{paddingBottomVal}</p>
-          <p style={styles.paddingLeftPlaceHolder}>{paddingLeftVal}</p>
+          <input
+            value={paddingTopVal || ""}
+            onChange={handleChangePaddingTop}
+            placeholder={paddingTopVal || "0"}
+            style={styles.paddingTopPlaceHolder}
+          />
+
+          <input
+            value={paddingRightVal || ""}
+            onChange={handleChangePaddingRight}
+            placeholder={paddingRightVal || "0"}
+            style={styles.paddingRightPlaceHolder}
+          />
+
+          <input
+            value={paddingBottomVal || ""}
+            onChange={handleChangePaddingBottom}
+            placeholder={paddingBottomVal || "0"}
+            style={styles.paddingBottomPlaceHolder}
+          />
+
+          <input
+            value={paddingLeftVal || ""}
+            onChange={handleChangePaddingLeft}
+            placeholder={paddingLeftVal || "0"}
+            style={styles.paddingLeftPlaceHolder}
+          />
           {/*Margin Label*/}
           <p style={styles.marginLabel}>Margin</p>
           {/* Padding Label */}
@@ -442,7 +610,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
             />
           </div>
         </main>
-      )}
+      </div>
     </div>
   );
 };
