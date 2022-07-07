@@ -50,6 +50,7 @@ try {
       appOutput: path.resolve(appOutput),
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
+      addWatchOptions: false,
     });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);

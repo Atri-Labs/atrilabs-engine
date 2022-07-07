@@ -1,4 +1,4 @@
-import { webpack } from "webpack";
+import { Configuration, webpack } from "webpack";
 import createServerWebpackConfig from "./server.webpack.config";
 import createWebpackConfig from "./webpack.config";
 import path from "path";
@@ -21,6 +21,10 @@ export const moduleFileExtensions = [
   "jsx",
 ];
 
+const watchOptions: Configuration["watchOptions"] = {
+  ignored: `${path.resolve("node_modules")}/**`,
+};
+
 export type BuildTypes = "development" | "production";
 
 export type BuildAppOptions = {
@@ -29,6 +33,7 @@ export type BuildAppOptions = {
   appHtml: string;
   appOutput: string;
   includes: string[];
+  addWatchOptions: boolean;
 };
 
 export function buildApp(options: BuildAppOptions) {
@@ -44,7 +49,12 @@ export function buildApp(options: BuildAppOptions) {
     shouldUseSourceMap: false,
   });
 
-  webpack(webpackConfig, (err, stats) => {
+  if (options.addWatchOptions) {
+    webpackConfig.watch = true;
+    webpackConfig.watchOptions = watchOptions;
+  }
+
+  return webpack(webpackConfig, (err, stats) => {
     if (err) {
       console.log("Error\n", err);
     }
@@ -60,6 +70,7 @@ export type BuildServerOptions = {
   serverOutput: string;
   includes: string[];
   allowList: string[];
+  addWatchOptions: boolean;
 };
 
 export function buildServer(options: BuildServerOptions) {
@@ -76,7 +87,12 @@ export function buildServer(options: BuildServerOptions) {
     allowList,
   });
 
-  webpack(webpackConfig, (err, stats) => {
+  if (options.addWatchOptions) {
+    webpackConfig.watch = true;
+    webpackConfig.watchOptions = watchOptions;
+  }
+
+  return webpack(webpackConfig, (err, stats) => {
     if (err) {
       console.log("Error\n", err);
     }

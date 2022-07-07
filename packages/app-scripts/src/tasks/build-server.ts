@@ -47,6 +47,7 @@ try {
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
       allowList: manifestDirs.map((dir) => dir.pkg),
+      addWatchOptions: false,
     });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);

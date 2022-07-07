@@ -6,7 +6,8 @@
     "buildApp": "atri-react-app-build-app",
     "buildServer": "atri-react-app-build-server",
     "build": "yarn run buildApp && yarn run buildServer",
-    "server": "node dist/server/static/js/bundle.js"
+    "server": "node dist/server/static/js/bundle.js",
+    "dev": "atri-react-app-dev-server"
   },
   "dependencies": {
     "react": "18.0.0",
