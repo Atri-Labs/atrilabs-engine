@@ -36,10 +36,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   //Placeholders For Margin
   marginTopPlaceHolder: {
     ...smallText,
-    color: gray50,
+    color: "black",
     position: "absolute",
     left: "105px",
     top: "-8px",
+    userSelect: "none",
   },
   marginBottomPlaceHolder: {
     ...smallText,
@@ -47,6 +48,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "105px",
     bottom: "-5px",
+    userSelect: "none",
   },
   marginRightPlaceHolder: {
     ...smallText,
@@ -54,6 +56,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     right: "24px",
     top: "35px",
+    userSelect: "none",
   },
   marginLeftPlaceHolder: {
     ...smallText,
@@ -61,6 +64,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "24px",
     top: "35px",
+    userSelect: "none",
   },
   //Placeholders for Padding
   paddingTopPlaceHolder: {
@@ -69,6 +73,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "105px",
     top: "15px",
+    userSelect: "none",
   },
   paddingBottomPlaceHolder: {
     ...smallText,
@@ -76,6 +81,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "105px",
     bottom: "17px",
+    userSelect: "none",
   },
   paddingRightPlaceHolder: {
     ...smallText,
@@ -83,6 +89,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     right: "60px",
     top: "35px",
+    userSelect: "none",
   },
   paddingLeftPlaceHolder: {
     ...smallText,
@@ -90,6 +97,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "60px",
     top: "35px",
+    userSelect: "none",
   },
   //Labels for Margin and Padding
   marginLabel: {
@@ -98,6 +106,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "15px",
     top: "-8px",
+    userSelect: "none",
+    pointerEvents: "none",
   },
   paddingLabel: {
     ...smallText,
@@ -105,6 +115,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "absolute",
     left: "52px",
     top: "13px",
+    userSelect: "none",
+    pointerEvents: "none",
   },
 };
 
@@ -250,7 +262,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const [toggleClass, setToggleClass] = useState(true);
   const [state, send] = useMachine(dragMachine);
 
-  const marginTopVal = props.styles.marginTop || 0;
+  const marginTopVal = props.styles.marginTop?.toString() || "";
   const marginRightVal = props.styles.marginRight || 0;
   const marginLeftVal = props.styles.marginLeft || 0;
   const marginBottomVal = props.styles.marginBottom || 0;
@@ -310,7 +322,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
         type: MOUSE_DOWN,
         event: event,
         area: marginTopArea,
-        initialValue: marginTopVal,
+        initialValue: parseInt(marginTopVal || "0"),
       });
     },
     [send, marginTopVal]
@@ -381,14 +393,31 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       });
   }, [state.context, state.value, props]);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+
+    let attrValue = event.target.value;
+    props.patchCb({
+      property: { styles: { marginTop: parseInt(attrValue) } },
+    });
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>Spacing</div>
       {toggleClass && (
         <main style={styles.mainContainer}>
           {/*Margin PlaceHolders*/}
-          <p style={styles.marginTopPlaceHolder}>{marginTopVal}</p>
-          <p style={styles.marginRightPlaceHolder}>{marginRightVal}</p>
+          <input
+            id="margintop"
+            value={marginTopVal || ""}
+            onChange={handleChange}
+            placeholder={marginTopVal || "0"}
+            style={styles.marginTopPlaceHolder}
+          />
+          <p id="marginright" style={styles.marginRightPlaceHolder}>
+            {marginRightVal}
+          </p>
           <p style={styles.marginBottomPlaceHolder}>{marginBottomVal}</p>
           <p style={styles.marginLeftPlaceHolder}>{marginLeftVal}</p>
           {/*Padding Placeholders*/}
