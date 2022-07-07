@@ -27,6 +27,20 @@ import fs from "fs";
 import { exec } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
 
+function installDependencies(reactAppRootDest: string) {
+  exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+    if (err) {
+      console.log("Installing packages failed with error\n", err);
+    }
+    if (stderr) {
+      console.log("Installing packages stderr\n", stderr);
+    }
+    if (stdout) {
+      console.log("Installed packages\n", stdout);
+    }
+  });
+}
+
 export default async function buildReactApp(
   toolConfig: ToolConfig,
   options: AppBuildOptions
@@ -109,6 +123,10 @@ export default async function buildReactApp(
     options.rootComponentId,
     toolConfig.assetManager
   );
+  // install dependencies if node_modules is missing
+  if (!fs.existsSync(path.resolve(options.outputDir, "node_modules"))) {
+    installDependencies(path.resolve(options.outputDir));
+  }
   const pagePropsPromises: Promise<void>[] = [];
   pageIds.forEach((pageId) => {
     pagePropsPromises.push(
