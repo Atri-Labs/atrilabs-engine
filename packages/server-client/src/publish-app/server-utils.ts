@@ -1,3 +1,4 @@
+import { ToolConfig } from "@atrilabs/core";
 import { exec } from "child_process";
 
 export const GENERATE = "generate";
@@ -23,9 +24,9 @@ export function createTaskQueue(startTask: string, endTask: string) {
 }
 
 // resolve if task success else reject
-type FnQueue = (() => Promise<void>)[];
+type FnQueue = ((toolConfig: ToolConfig) => Promise<void>)[];
 
-async function generateApp() {
+async function generateApp(_toolConfig: ToolConfig) {
   return new Promise<void>((res, rej) => {
     exec("yarn run generateApp", (err, _stdout, stderr) => {
       if (err) {
@@ -41,26 +42,26 @@ async function generateApp() {
   });
 }
 
-async function buildApp() {
-  return new Promise<void>((res, rej) => {
-    exec("yarn run buildApp", (err, _stdout, stderr) => {
-      if (err) {
-        rej();
-        return;
-      }
-      if (stderr) {
-        rej();
-        return;
-      }
-      res();
-    });
-  });
+async function buildApp(toolConfig: ToolConfig) {
+  /**
+   * call getAppInfo
+   * for each page, do:
+   *  try {
+   *    get new props from ipc-server
+   *    if statusCode === 200 and state from the ipc response
+   *  } catch(err){
+   *    use old props from app info
+   *  }
+   * prepare buildOptions from new props and appInfo
+   * run build
+   */
 }
 
 async function deployApp() {}
 
 export function runTaskQueue(
   taskQueue: string[],
+  toolConfig: ToolConfig,
   onUpdate: (task: string, status: "success" | "failed") => void
 ) {
   // create function queue
@@ -80,7 +81,7 @@ export function runTaskQueue(
   // run functions one by one
   function runFn(fnQueue: FnQueue, currFnIndex: number) {
     if (currFnIndex < fnQueue.length) {
-      fnQueue[currFnIndex]!()
+      fnQueue[currFnIndex]!(toolConfig)
         .then(() => {
           onUpdate(taskQueue[currFnIndex]!, "success");
           runFn(fnQueue, currFnIndex + 1);

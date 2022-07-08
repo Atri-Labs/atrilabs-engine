@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-export type ClientName = "atri-cli" | "generator";
+export type ClientName = "atri-cli" | "publish-server";
 
 export interface ServerToClientEvents {
   doComputeInitialState: (

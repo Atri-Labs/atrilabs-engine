@@ -17,7 +17,7 @@ export type PublishServerOptions = {
 };
 
 export default function startPublishServer(
-  _toolConfig: ToolConfig,
+  toolConfig: ToolConfig,
   options: PublishServerOptions
 ) {
   const io = new Server<
@@ -38,7 +38,7 @@ export default function startPublishServer(
       const taskId = uuidv4();
       cb(taskId, taskQueue);
       let num_tasks_completed = 0;
-      runTaskQueue(taskQueue, (_task, status) => {
+      runTaskQueue(taskQueue, toolConfig, (_task, status) => {
         if (status === "success") {
           num_tasks_completed += 1;
           socket.emit(
