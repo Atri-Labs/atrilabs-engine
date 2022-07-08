@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import {
   gray200,
   gray800,
-  gray600,
   gray100,
   gray50,
   smallText,

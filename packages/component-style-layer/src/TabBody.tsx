@@ -7,6 +7,7 @@ import { FlexChild } from "./components/flexchild/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import SpacingProperty from "./components/spacing/SpacingProperty";
 import { Typography } from "./components/typography/Typography";
+import Position from "./components/position/Position";
 
 export type TabBodyProps = {
   alias: string;
@@ -57,7 +58,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
       ) : null}
-
+      {props.treeOptions && props.treeOptions.flexChildOptions ? ( //care
+        <Position styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
       {props.treeOptions && props.treeOptions.spacingOptions ? (
         <SpacingProperty styles={props.styles} patchCb={props.patchCb} />
       ) : null}
