@@ -72,6 +72,12 @@ module.exports = {
         port: 4004,
       },
     },
+    ipcServer: {
+      path: require.resolve("@atrilabs/server-client/lib/ipc-server/server"),
+      options: {
+        port: 4006,
+      },
+    },
   },
   targets: [
     {

@@ -72,6 +72,7 @@ export type ToolConfig = {
     eventServer: { path: string; options: any };
     manifestServer: { path: string; options: any };
     publishServer: { path: string; options: any };
+    ipcServer: { path: string; options: any };
   };
   targets: {
     targetName: string;
