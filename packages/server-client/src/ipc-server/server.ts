@@ -3,11 +3,14 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 import {
+  ClientName,
+  ClientSocket,
   ClientToServerEvents,
   InterServerEvents,
   ServerToClientEvents,
   SocketData,
 } from "./types";
+
 const app = express();
 const server = http.createServer(app);
 
@@ -23,11 +26,26 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
     SocketData
   >(server, { cors: { origin: "*" } });
 
+  const clients: { [key in ClientName]?: ClientSocket } = {};
+
   io.on("connection", (socket) => {
+    let clientName: ClientName;
+    // the socket need to register itself with a name
+    socket.on("registerAs", (incomingClientName) => {
+      clientName = incomingClientName;
+      clients[clientName] = socket;
+    });
     socket.on("computeInitialState", (cb) => {
-      socket.emit("doComputeInitialState", (computedState) => {
-        cb(computedState);
-      });
+      if (clients["atri-cli"] === undefined) {
+        cb(false, "");
+      } else {
+        socket.emit("doComputeInitialState", (success, computedState) => {
+          cb(success, computedState);
+        });
+      }
+    });
+    socket.on("disconnect", () => {
+      clients[clientName] = undefined;
     });
   });
 
