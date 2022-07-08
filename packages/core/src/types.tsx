@@ -78,11 +78,10 @@ export type ToolConfig = {
     targetName: string;
     hint: string;
     description: string;
-    tasks: {
-      generate: { path: string; options: any };
-      build: { path: string; options: any };
-      deploy: { path: string; options: any };
+    tasksHandler: {
+      modulePath: string;
     };
+    options: any;
   }[];
   /**
    * All the clients must default export their API.

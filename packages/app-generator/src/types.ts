@@ -98,7 +98,12 @@ export type PythonStubGeneratorFunction = (
   options: PythonStubGeneratorOptions
 ) => PythonStubGeneratorOutput;
 
-export type AppBuildOptions = AppGeneratorOptions;
+export type AppBuildOptions = {
+  outputDir: string;
+  rootComponentId: string;
+  appInfo: AppInfo;
+  controllerProps: { [pageId: string]: { props: any } };
+};
 
 export type CallbackGeneratorOptions = {
   forestDef: ForestDef;
@@ -132,3 +137,18 @@ export type CallbackGeneratorOutput = {
 export type CallbackGeneratorFunction = (
   options: CallbackGeneratorOptions
 ) => CallbackGeneratorOutput;
+
+export type AppInfo = {
+  pages: {
+    [pageId: string]: {
+      name: string;
+      route: string;
+      componentGeneratorOutput: ComponentGeneratorOutput;
+      propsGeneratorOutput: PropsGeneratorOutput;
+    };
+  };
+};
+
+export type PageState = {
+  [alias: string]: any;
+};

@@ -84,102 +84,52 @@ module.exports = {
       targetName: "Web App",
       hint: "A React App that supports SSR",
       description: "A React App that supports SSR",
-      tasks: {
-        generate: {
-          path: require.resolve("@atrilabs/app-generator/lib/index.js"),
-          options: {
-            appForestPkgId,
-            outputDir: `${compileAppOutputDir}/atri-app`,
-            controllers: {
-              python: {
-                dir: path.resolve(
-                  __dirname,
-                  "..",
-                  "node_modules",
-                  ".targets",
-                  "controllers"
-                ),
-                stubGenerators: [
-                  {
-                    modulePath:
-                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
-                    options: {},
-                  },
-                ],
-              },
-            },
-            rootComponentId: "body",
-            components: [
+      tasksHandler: {
+        modulePath: require.resolve("@atrilabs/app-generator/lib/index.js"),
+      },
+      options: {
+        appForestPkgId,
+        outputDir: `${compileAppOutputDir}/atri-app`,
+        controllers: {
+          python: {
+            dir: path.resolve(
+              __dirname,
+              "..",
+              "node_modules",
+              ".targets",
+              "controllers"
+            ),
+            stubGenerators: [
               {
                 modulePath:
-                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
-                options: {},
-              },
-            ],
-            props: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
-                options: {},
-              },
-            ],
-            callbacks: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
+                  "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
                 options: {},
               },
             ],
           },
         },
-        build: {
-          path: require.resolve(
-            "@atrilabs/app-generator/lib/build-scripts/react-app/index.js"
-          ),
-          options: {
-            appForestPkgId,
-            outputDir: `${compileAppOutputDir}/atri-app`,
-            controllers: {
-              python: {
-                dir: path.resolve(
-                  __dirname,
-                  "..",
-                  "node_modules",
-                  ".targets",
-                  "controllers"
-                ),
-                stubGenerators: [
-                  {
-                    modulePath:
-                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
-                    options: {},
-                  },
-                ],
-              },
-            },
-            rootComponentId: "body",
-            components: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
-                options: {},
-              },
-            ],
-            props: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
-                options: {},
-              },
-            ],
+        rootComponentId: "body",
+        components: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
+            options: {},
           },
-        },
-        deploy: {
-          path: require.resolve(
-            "@atrilabs/app-generator/lib/deploy-scripts/react-app/index.js"
-          ),
-          options: {},
-        },
+        ],
+        props: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
+            options: {},
+          },
+        ],
+        callbacks: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
+            options: {},
+          },
+        ],
       },
     },
   ],
