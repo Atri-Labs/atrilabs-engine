@@ -5,6 +5,7 @@
   "scripts": {
     "buildApp": "atri-react-app-build-app",
     "buildAppNode": "atri-react-app-build-server",
+    "buildServer": "cd server && tsc",
     "build": "yarn run buildApp && yarn run buildAppNode",
     "devServer": "node dist/server/index.js --disable-cache",
     "server": "node dist/server/index.js",
