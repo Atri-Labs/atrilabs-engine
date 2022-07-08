@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import {
+  callCanvasComponentRenderedSubscribers,
   canvasComponentStore,
   canvasComponentTree,
   subscribeCanvasUpdate,
@@ -17,7 +18,7 @@ export type ComponentRendererProps = {
 export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
   // whenver there is a change in the component such as prop change, or new child added etc.
   // the component is force re-rendered
-  const [, forceUpdate] = useReducer((c) => c + 1, 0);
+  const [updateNum, setUpdateNum] = useReducer((c) => c + 1, 0);
   const [childrenId, setChildrenId] = useState<string[]>([]);
 
   const component = canvasComponentStore[props.compId];
@@ -59,10 +60,14 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = (props) => {
           setChildrenId([]);
         }
       }
-      forceUpdate();
+      setUpdateNum();
     });
     return unsub;
   }, [props]);
+
+  useEffect(() => {
+    callCanvasComponentRenderedSubscribers(props.compId, updateNum);
+  }, [props.compId, updateNum]);
 
   /**
    * create component, assign props, link it with it's ref
