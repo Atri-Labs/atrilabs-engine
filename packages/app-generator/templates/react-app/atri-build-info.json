@@ -3,8 +3,8 @@
   "appEntry": "app/src/index.jsx",
   "appHtml": "app/public/index.html",
   "appOutput": "dist/app",
-  "serverSrc": "server/src",
-  "serverEntry": "server/src/index.tsx",
-  "serverOutput": "dist/server",
+  "serverSrc": "app-node/src",
+  "serverEntry": "app-node/src/getAppText.tsx",
+  "serverOutput": "dist/app-node",
   "manifestDirs": []
 }

@@ -1,11 +1,8 @@
-import React from "react";
-import App from "../../app/src/App";
 import {
   createIfNotExistLocalCache,
   getIndexHtmlContent,
   getPageFromCache,
   getServerInfo,
-  renderRoute,
   storePageInCache,
 } from "./utils";
 import express from "express";
@@ -20,25 +17,35 @@ const appDistHtml = path.resolve(publicDir, "index.html");
 createIfNotExistLocalCache();
 
 const app = express();
+const disablePageCache = process.argv.includes("--disable-cache");
 
 app.use((req, res, next) => {
   if (req.method === "GET" && pages[req.originalUrl]) {
-    const finalTextFromCache = getPageFromCache(req.originalUrl);
-    if (finalTextFromCache) {
-      res.send(finalTextFromCache);
-      return;
+    if (!disablePageCache) {
+      const finalTextFromCache = getPageFromCache(req.originalUrl);
+      if (finalTextFromCache) {
+        res.send(finalTextFromCache);
+        return;
+      }
     }
-    const appText = renderRoute(App, req.originalUrl);
-    const appHtmlContent = getIndexHtmlContent(appDistHtml);
-    const finalText = appHtmlContent.replace(
-      '<div id="root"></div>',
-      `<div id="root">${appText}</div>`
+    // read again App.jsx for dev server
+    const getAppTextPath = path.resolve(
+      __dirname,
+      "..",
+      "app-node",
+      "static",
+      "js",
+      "app.bundle.js"
     );
+    delete require.cache[getAppTextPath];
+    const getAppText = require(getAppTextPath)["getAppText"]["getAppText"];
+    const appHtmlContent = getIndexHtmlContent(appDistHtml);
+    const finalText = getAppText(req.originalUrl, appHtmlContent);
     res.send(finalText);
     storePageInCache(req.originalUrl, finalText);
-    return;
+  } else {
+    next();
   }
-  next();
 });
 
 app.post("/event-handler", express.json(), (req, res) => {
@@ -105,7 +112,7 @@ app.post("/event-handler", express.json(), (req, res) => {
 });
 
 Object.keys(publicUrlAssetMap).forEach((url) => {
-  app.use(url, express.static(publicUrlAssetMap[url]));
+  app.use(url, express.static(publicUrlAssetMap[url]!));
 });
 
 app.use(express.static(publicDir));

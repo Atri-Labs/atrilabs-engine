@@ -107,6 +107,14 @@ export const reactAppServerTemplatePath = path.resolve(
   "server"
 );
 
+export const reactAppNodeTemplatePath = path.resolve(
+  __dirname,
+  "..",
+  "templates",
+  "react-app",
+  "app-node"
+);
+
 export const reactAppToCopyToRoot = [
   path.resolve(reactAppRootTemplate, ".eslintrc.json"),
   path.resolve(reactAppRootTemplate, "atri-app-env.d.ts"),
@@ -118,6 +126,10 @@ export function getReactAppDestPath(outputDir: string) {
 
 export function getReactAppServerDestPath(outputDir: string) {
   return path.resolve(outputDir, "server");
+}
+
+export function getReactAppNodeDestPath(outputDir: string) {
+  return path.resolve(outputDir, "app-node");
 }
 
 export function getReactPackageJSONDestPath(outputDir: string) {

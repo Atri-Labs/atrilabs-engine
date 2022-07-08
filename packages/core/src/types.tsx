@@ -226,7 +226,7 @@ export type BrowserClient = {
   uploadAssets(
     files: {
       name: string;
-      data: string;
+      data: ArrayBuffer;
       size: number;
       mime: string;
     }[],
@@ -252,7 +252,10 @@ export type ManifestPkgBundle = ManifestPkg & Script;
 
 export type Cache = {
   [pkg: string]: {
-    // filepath is relative to manifest directory in pkg
-    [filepath: string]: { timestamp: Date };
+    files: {
+      // filepath is relative to manifest directory in pkg
+      [filepath: string]: { timestamp: Date };
+    };
+    freeze?: boolean;
   };
 };

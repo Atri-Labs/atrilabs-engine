@@ -99,7 +99,8 @@ export default function (
           manifestDirs,
           toolConfig.pkgManager,
           port,
-          scriptName
+          scriptName,
+          false
         )
           .then((manifestPkgBundles) => {
             cb(manifestPkgBundles);

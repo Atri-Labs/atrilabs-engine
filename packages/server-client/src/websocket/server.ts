@@ -279,19 +279,18 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       const returnUrls: string[] = [];
       files.forEach((file) => {
         // dest path should look like /assets/app-assets/a.png
-        const destPath = path.join(
-          assetsDir,
-          assetUrlPrefix.replace("/", ""),
-          file.name
-        );
-        fs.writeFileSync(destPath, file.data);
+        const destPath = path.join(assetsDir, file.name);
+        if (!fs.existsSync(path.dirname(destPath))) {
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        }
+        fs.createWriteStream(destPath).write(file.data);
         // keep a record of assets mime type
         const currentConf = JSON.parse(
           fs.readFileSync(assetsConfPath).toString()
         );
         currentConf[file.name] = { mime: file.mime };
-        fs.writeFileSync(currentConf, JSON.stringify(currentConf, null, 2));
-        returnUrls.push(`${assetUrlPrefix}/${file.name}`);
+        fs.writeFileSync(assetsConfPath, JSON.stringify(currentConf, null, 2));
+        returnUrls.push(encodeURIComponent(`${assetUrlPrefix}/${file.name}`));
       });
       callback(true, returnUrls);
     });
@@ -301,7 +300,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       names.forEach((name) => {
         assetConf[name] = {
           ...assetConf[name],
-          url: `${assetUrlPrefix}/${name}`,
+          url: encodeURIComponent(`${assetUrlPrefix}/${name}`),
         };
       });
       callback(assetConf);
