@@ -81,7 +81,7 @@ export default function createServerWebpackConfig(
   const webpackConfig: Configuration = {
     mode: options.mode,
     entry: {
-      server: { import: options.paths.serverEntry },
+      app: { import: options.paths.serverEntry },
     },
     target: "node",
     // externals: [nodeExternals({ allowlist: allowListFunc })],
@@ -92,7 +92,7 @@ export default function createServerWebpackConfig(
       filename: isEnvProduction
         ? "static/js/[name].[contenthash:8].js"
         : isEnvDevelopment
-        ? "static/js/bundle.js"
+        ? "static/js/[name].bundle.js"
         : undefined,
       chunkFilename: isEnvProduction
         ? "static/js/[name].[contenthash:8].chunk.js"
@@ -100,7 +100,10 @@ export default function createServerWebpackConfig(
         ? "static/js/[name].chunk.js"
         : undefined,
       assetModuleFilename: "static/media/[name].[hash][ext]",
-      publicPath: options.publicUrlOrPath,
+      library: {
+        name: "getAppText",
+        type: "commonjs",
+      },
     },
     resolve: {
       extensions: moduleFileExtensions.map((ext) => `.${ext}`),

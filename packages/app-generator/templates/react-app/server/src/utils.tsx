@@ -1,17 +1,6 @@
 import path from "path";
 import fs from "fs";
-import ReactDOMServer from "react-dom/server";
-import { StaticRouter } from "react-router-dom/server";
 import { ServerInfo } from "./types";
-
-export function renderRoute(App: React.FC, route: string): string {
-  const appStr = ReactDOMServer.renderToString(
-    <StaticRouter location={route}>
-      <App />
-    </StaticRouter>
-  );
-  return appStr;
-}
 
 // create local cache directory if not already created
 const localCache = path.resolve(__dirname, ".cache");

@@ -4,9 +4,10 @@
   "private": "true",
   "scripts": {
     "buildApp": "atri-react-app-build-app",
-    "buildServer": "atri-react-app-build-server",
-    "build": "yarn run buildApp && yarn run buildServer",
-    "server": "node dist/server/static/js/bundle.js",
+    "buildAppNode": "atri-react-app-build-server",
+    "build": "yarn run buildApp && yarn run buildAppNode",
+    "devServer": "node dist/server/index.js --disable-cache",
+    "server": "node dist/server/index.js",
     "dev": "atri-react-app-dev-server"
   },
   "dependencies": {

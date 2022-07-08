@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "outDir": "../dist/server",
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "target": "es5",
+    "module": "commonjs",
+    "noEmit": false,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
