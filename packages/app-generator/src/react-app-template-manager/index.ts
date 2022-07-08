@@ -27,6 +27,8 @@ export function createReactAppTemplateManager(
     reactAppRootTemplate: string;
     reactAppPackageJSON: string;
     reactAppPackageJSONDest: string;
+    reactAppNodeTemplatePath: string;
+    reactAppNodeDestPath: string;
   },
   rootComponentId: string,
   assetManager: ToolConfig["assetManager"]
@@ -135,6 +137,33 @@ export function createReactAppTemplateManager(
     });
   }
 
+  function copyAppNodeTemplate() {
+    const files = getFiles(paths.reactAppNodeTemplatePath);
+    files.forEach((file) => {
+      const dirname = path.dirname(file);
+      const relativeDirname = path.relative(
+        paths.reactAppNodeTemplatePath,
+        dirname
+      );
+      const destDirname = path.resolve(
+        paths.reactAppNodeDestPath,
+        relativeDirname
+      );
+      const relativeFilename = path.relative(
+        paths.reactAppNodeTemplatePath,
+        file
+      );
+      const destFilename = path.resolve(
+        paths.reactAppNodeDestPath,
+        relativeFilename
+      );
+      if (!fs.existsSync(destDirname)) {
+        fs.mkdirSync(destDirname, { recursive: true });
+      }
+      fs.writeFileSync(destFilename, fs.readFileSync(file));
+    });
+  }
+
   function copyOthersToRoot() {
     paths.toCopy.forEach((file) => {
       const dirname = path.dirname(file);
@@ -170,6 +199,7 @@ export function createReactAppTemplateManager(
     copyServerTemplate();
     copyOthersToRoot();
     copyPackageJSON();
+    copyAppNodeTemplate();
   }
 
   function getFilenameForPage(name: string) {

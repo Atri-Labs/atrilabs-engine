@@ -1,6 +1,19 @@
 #!/usr/bin/env node
 import { buildManifestPackage } from "../../shared/build-manifest-package";
 import { getToolPkgInfo, importToolConfig } from "../../shared/utils";
+import yargs from "yargs";
+
+const args = yargs(process.argv.slice(2))
+  .boolean("freeze")
+  .alias("freeze", ["f"])
+  .describe("freeze", "freeze the built manifest package for distribution")
+  .parse() as {
+  [x: string]: unknown;
+  freeze: boolean | undefined;
+  f: boolean | undefined;
+  _: (string | number)[];
+  $0: string;
+};
 
 const toolPkgInfo = getToolPkgInfo();
 
@@ -14,11 +27,13 @@ importToolConfig(toolPkgInfo.configFile).then(async (toolConfig) => {
       "number"
   ) {
     const scriptName = "manifestscript";
+    const freeze = args.freeze || false;
     buildManifestPackage(
       toolConfig.manifestDirs,
       toolConfig.pkgManager,
       toolConfig["services"]["manifestServer"]["options"]["port"],
-      scriptName
+      scriptName,
+      freeze
     )
       .then(() => {
         console.log(

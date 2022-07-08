@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-scripts",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -8,7 +8,8 @@
   "main": "lib/index.js",
   "bin": {
     "atri-react-app-build-app": "lib/tasks/build-app.js",
-    "atri-react-app-build-server": "lib/tasks/build-server.js"
+    "atri-react-app-build-server": "lib/tasks/build-server.js",
+    "atri-react-app-dev-server": "lib/tasks/start-dev-server.js"
   },
   "directories": {
     "lib": "lib",
@@ -32,7 +33,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/scripts": "^0.0.11",
+    "@atrilabs/scripts": "^0.0.12",
     "@babel/core": "^7.18.5",
     "@babel/plugin-syntax-flow": "^7.17.12",
     "@babel/plugin-transform-react-jsx": "^7.17.12",
