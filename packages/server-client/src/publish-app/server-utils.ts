@@ -26,7 +26,10 @@ export function createIpcClientSocket(port: number) {
   // on successful connect, emit registerAs
   ipcClientSocket.on("connect", () => {
     console.log("[publish_app_server] connected to ipc server");
-    ipcClientSocket.emit("registerAs", "publish-server");
+    ipcClientSocket.emit("registerAs", "publish-server", (success) => {
+      if (success) console.log("[publish_app_server] registered to ipc server");
+      else console.log("[publish_app_server] failed to register to ipc server");
+    });
   });
   return ipcClientSocket;
 }

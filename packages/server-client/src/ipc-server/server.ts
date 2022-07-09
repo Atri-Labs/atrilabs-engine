@@ -31,16 +31,18 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
   io.on("connection", (socket) => {
     let clientName: ClientName;
     // the socket need to register itself with a name
-    socket.on("registerAs", (incomingClientName) => {
+    socket.on("registerAs", (incomingClientName, callback) => {
       clientName = incomingClientName;
       clients[clientName] = socket;
       console.log("[ipc_server] client registered:", incomingClientName);
+      callback(true);
     });
     socket.on("computeInitialState", (route, pageState, cb) => {
       if (clients["atri-cli"] === undefined) {
         cb(false, "");
       } else {
-        socket.emit(
+        const atriCliSocket = clients["atri-cli"]!;
+        atriCliSocket.emit(
           "doComputeInitialState",
           route,
           pageState,

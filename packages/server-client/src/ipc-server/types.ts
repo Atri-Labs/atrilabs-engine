@@ -13,7 +13,10 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  registerAs: (clientName: ClientName) => void;
+  registerAs: (
+    clientName: ClientName,
+    callback: (success: boolean) => void
+  ) => void;
   computeInitialState: (
     route: string,
     pageState: string,
