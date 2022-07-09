@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 click = "*"
+python-socketio = {extras = ["asyncio_client"], version = "*"}
 
 [dev-packages]
 setuptools = "*"

@@ -99,20 +99,26 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       [pageId: string]: { [alias: string]: any } | undefined;
     } = {};
     pageIds.forEach((pageId) => {
-      // TODO: call ipc-server for each page
-      socket.emit("computeInitialState", (success, computedState) => {
-        if (success) {
-          try {
-            const resp = JSON.parse(computedState);
-            if (resp && resp["statusCode"] === 200)
-              controllerProps[pageId] = resp["state"];
-          } catch (err) {
-            console.log("failed to parse response from computeInitialState");
+      const route = pages[pageId].route;
+      const state = JSON.stringify(pages[pageId].state);
+      socket.emit(
+        "computeInitialState",
+        route,
+        state,
+        (success, computedState) => {
+          if (success) {
+            try {
+              const resp = JSON.parse(computedState);
+              if (resp && resp["statusCode"] === 200)
+                controllerProps[pageId] = resp["state"];
+            } catch (err) {
+              console.log("failed to parse response from computeInitialState");
+            }
+          } else {
+            console.log("computeInitialState failed");
           }
-        } else {
-          console.log("computeInitialState failed");
         }
-      });
+      );
     });
     // call buildApp
     mod.scripts.buildApp(toolConfig, {

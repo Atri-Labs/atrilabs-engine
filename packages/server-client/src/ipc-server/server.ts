@@ -34,14 +34,20 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
     socket.on("registerAs", (incomingClientName) => {
       clientName = incomingClientName;
       clients[clientName] = socket;
+      console.log("[ipc_server] client registered:", incomingClientName);
     });
-    socket.on("computeInitialState", (cb) => {
+    socket.on("computeInitialState", (route, pageState, cb) => {
       if (clients["atri-cli"] === undefined) {
         cb(false, "");
       } else {
-        socket.emit("doComputeInitialState", (success, computedState) => {
-          cb(success, computedState);
-        });
+        socket.emit(
+          "doComputeInitialState",
+          route,
+          pageState,
+          (success, computedState) => {
+            cb(success, computedState);
+          }
+        );
       }
     });
     socket.on("disconnect", () => {

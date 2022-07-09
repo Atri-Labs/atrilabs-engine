@@ -7,7 +7,7 @@ def port_map(host: str, container: str):
 def volume_map(app_dir:str, subdir: str, container_dir: str):
     return os.path.join(app_dir, subdir) + ":" + container_dir
 
-def run(e_port, w_port, m_port, p_port, app_dir):
+def run(e_port, w_port, m_port, p_port, u_port, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
     # create a child process
     child_proc = subprocess.Popen(
@@ -17,6 +17,7 @@ def run(e_port, w_port, m_port, p_port, app_dir):
             "-p", port_map(w_port, "4002"),
             "-p", port_map(m_port, "4003"),
             "-p", port_map(p_port, "4004"),
+            "-p", port_map(u_port, "4006"),
             "-v", volume_map(abs_app_dir, "localdb", "/code/localdb"),
             "-v", volume_map(abs_app_dir, "controllers", "/code/node_modules/.targets/controllers"),
             "-v", volume_map(abs_app_dir, "app", "/code/node_modules/.targets/atri-app"),
@@ -33,9 +34,7 @@ def run(e_port, w_port, m_port, p_port, app_dir):
     # wait for child to terminate
     try:
         os.waitpid(child_proc.pid, 0)
-            
     except KeyboardInterrupt:
         pass
-
     except Exception as e:
         print(e)

@@ -1,6 +1,8 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
+from email.policy import default
 import click
 from commands.open_editor import run as exe_open_editor
+from commands.connect_locally import run as exe_connect_locally
 
 @click.group()
 def main():
@@ -32,46 +34,28 @@ def open():
 @click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
 @click.option('--m-port', default="4003", help='port on which manifest server will be attached')
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
+@click.option('--u-port', default="4006", help='port on which publish server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-def open_editor(e_port, w_port, m_port, p_port, app_dir):
+def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
-    exe_open_editor(e_port, w_port, m_port, p_port, app_dir)
+    exe_open_editor(e_port, w_port, m_port, p_port, u_port, app_dir)
 
-@main.group('run')
-@click.option('--controllers', default='controllers', help='directory that contains controller scripts')
-def run():
-    """Run dev server during development for automatic refresh whenever you make changes to your code or hit publish in your editor.
+@main.group('connect')
+def connect():
+    """This command is intended to connect with ipc server when running locally (not inside docker)
 
-        $ atri run dev-server
+        $ atri connect_local
     """
     pass
 
-@run.command('dev-server')
-def dev_server():
-    """Run dev server during development for automatic refresh whenever you make changes to your code or hit publish in your editor.
-
-        $ atri run dev-server
-    """
-    pass
-
-@main.group('package')
-def package():
-    """Package your app in a docker image:
-
-        $ atri package docker
-    """
-    pass
-
-@package.command('docker')
-def package_as_docker():
-    """Package your app in a docker image:
-
-        $ atri package docker
-    """
-    pass
+@connect.command("local")
+@click.option('--u-port', default="4006", help='port on which publish server will be attached')
+@click.option('--app-dir', default='.', help='directory that contains events/')
+def connect_local(u_port, app_dir):
+    exe_connect_locally(u_port, app_dir)
 
 if __name__ == '__main__':
     main()
