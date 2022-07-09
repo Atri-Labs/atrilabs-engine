@@ -78,6 +78,16 @@ async function generateApp(_toolConfig: ToolConfig) {
   });
 }
 
+function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
+  const pageState = pageStates[pageId];
+  const aliases = Object.keys(pageState);
+  const formattedState: { [alias: string]: any } = {};
+  aliases.forEach((alias) => {
+    formattedState[alias] = pageState[alias];
+  });
+  return formattedState;
+}
+
 async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   const target = toolConfig.targets[0]!;
   import(target.tasksHandler.modulePath).then(async (mod) => {
@@ -87,13 +97,14 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       mod.getAppInfo !== "function"
     ) {
       throw Error(
-        `The target ${target.targetName} tasksHanler.modulePath doesn't export scripts or getAppInfo correctly.`
+        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
       );
     }
     // call getAppInfo
     const appInfo = await mod.getAppInfo(toolConfig, target.options);
     const pages = appInfo.pages;
     const pageIds = Object.keys(pages);
+    const pageStates = mod.getPageStateAsAliasMap(appInfo);
     /**
      * controllerProps[pageId] is defined only if we buildApp succeeds
      * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
@@ -103,7 +114,9 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
     } = {};
     pageIds.forEach((pageId) => {
       const route = pages[pageId].route;
-      const state = JSON.stringify(pages[pageId].state);
+      const state = JSON.stringify(
+        convertPropsIntoPythonFormat(pageStates, pageId)
+      );
       socket.emit(
         "computeInitialState",
         route,

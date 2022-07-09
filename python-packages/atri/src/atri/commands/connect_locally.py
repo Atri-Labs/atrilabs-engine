@@ -47,13 +47,13 @@ async def connect_ipc_server(port: str):
 def handle_ipc_events(sio, paths):
     @sio.on("doComputeInitialState")
     async def doComputeInitialState(route: str, page_state: str):
-        print(route, page_state)
         try:
             app_dir = paths["app_dir"]
+            controllers_dir = os.path.join(app_dir, "controllers")
             child_proc = subprocess.Popen(
                 ["python", "-m", "server", "compute", "--route", route, "state", page_state],
                 stdout=subprocess.PIPE,
-                cwd=app_dir
+                cwd=controllers_dir
                 )
             out = child_proc.stdout.read()
             return out
