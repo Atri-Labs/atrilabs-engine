@@ -1,5 +1,35 @@
 import { ToolConfig } from "@atrilabs/core";
 import { exec } from "child_process";
+import { io, Socket } from "socket.io-client";
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "../ipc-server/types";
+
+export type IPCClientSocket = Socket<
+  ServerToClientEvents,
+  ClientToServerEvents
+>;
+
+export function createIpcClientSocket(port: number) {
+  const ipcClientSocket: IPCClientSocket = io(`http://localhost:${port}`);
+  // show error only if publish server is not able to connect to ipc server
+  // after 5 seconds. The order in which services get bootstraped
+  // cannot be relied upon, hence, we wait some time before reporting error.
+  let connectionTimedOut = false;
+  setTimeout(() => {
+    connectionTimedOut = true;
+  }, 5000);
+  ipcClientSocket.on("connect_error", (err) => {
+    if (connectionTimedOut) console.log("[publish_app_server]", err);
+  });
+  // on successful connect, emit registerAs
+  ipcClientSocket.on("connect", () => {
+    console.log("[publish_app_server] connected to ipc server");
+    ipcClientSocket.emit("registerAs", "publish-server");
+  });
+  return ipcClientSocket;
+}
 
 export const GENERATE = "generate";
 export const BUILD = "build";
@@ -24,7 +54,10 @@ export function createTaskQueue(startTask: string, endTask: string) {
 }
 
 // resolve if task success else reject
-type FnQueue = ((toolConfig: ToolConfig) => Promise<void>)[];
+type FnQueue = ((
+  toolConfig: ToolConfig,
+  ipcSocket: IPCClientSocket
+) => Promise<void>)[];
 
 async function generateApp(_toolConfig: ToolConfig) {
   return new Promise<void>((res, rej) => {
@@ -42,19 +75,52 @@ async function generateApp(_toolConfig: ToolConfig) {
   });
 }
 
-async function buildApp(toolConfig: ToolConfig) {
-  /**
-   * call getAppInfo
-   * for each page, do:
-   *  try {
-   *    get new props from ipc-server
-   *    if statusCode === 200 and state from the ipc response
-   *  } catch(err){
-   *    use old props from app info
-   *  }
-   * prepare buildOptions from new props and appInfo
-   * run build
-   */
+async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
+  const target = toolConfig.targets[0]!;
+  import(target.tasksHandler.modulePath).then((mod) => {
+    if (
+      !mod.scripts &&
+      typeof mod.scripts.buildReactApp !== "function" &&
+      mod.getAppInfo !== "function"
+    ) {
+      throw Error(
+        `The target ${target.targetName} tasksHanler.modulePath doesn't export scripts or getAppInfo correctly.`
+      );
+    }
+    // call getAppInfo
+    const appInfo = mod.getAppInfo(toolConfig, target.options);
+    const pages = appInfo.pages;
+    const pageIds = Object.keys(pages);
+    /**
+     * controllerProps[pageId] is defined only if we buildApp succeeds
+     * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
+     */
+    const controllerProps: {
+      [pageId: string]: { [alias: string]: any } | undefined;
+    } = {};
+    pageIds.forEach((pageId) => {
+      // TODO: call ipc-server for each page
+      socket.emit("computeInitialState", (success, computedState) => {
+        if (success) {
+          try {
+            const resp = JSON.parse(computedState);
+            if (resp && resp["statusCode"] === 200)
+              controllerProps[pageId] = resp["state"];
+          } catch (err) {
+            console.log("failed to parse response from computeInitialState");
+          }
+        } else {
+          console.log("computeInitialState failed");
+        }
+      });
+    });
+    // call buildApp
+    mod.scripts.buildApp(toolConfig, {
+      ...target.options,
+      appInfo,
+      controllerProps,
+    });
+  });
 }
 
 async function deployApp() {}
@@ -62,6 +128,7 @@ async function deployApp() {}
 export function runTaskQueue(
   taskQueue: string[],
   toolConfig: ToolConfig,
+  ipcSocket: IPCClientSocket,
   onUpdate: (task: string, status: "success" | "failed") => void
 ) {
   // create function queue
@@ -81,7 +148,7 @@ export function runTaskQueue(
   // run functions one by one
   function runFn(fnQueue: FnQueue, currFnIndex: number) {
     if (currFnIndex < fnQueue.length) {
-      fnQueue[currFnIndex]!(toolConfig)
+      fnQueue[currFnIndex]!(toolConfig, ipcSocket)
         .then(() => {
           onUpdate(taskQueue[currFnIndex]!, "success");
           runFn(fnQueue, currFnIndex + 1);

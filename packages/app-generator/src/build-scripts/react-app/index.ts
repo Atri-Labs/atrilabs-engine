@@ -45,18 +45,24 @@ function updateAppStoreWithControllerProps(
   const pages = options.appInfo.pages;
   const pageIds = Object.keys(pages);
   pageIds.forEach((pageId) => {
-    const componentGeneratorOutput =
-      options.appInfo.pages[pageId].componentGeneratorOutput;
-    reactTemplateManager.addComponents(pages[pageId], componentGeneratorOutput);
-    const compIds = Object.keys(componentGeneratorOutput);
-    const newProps: PropsGeneratorOutput = {};
-    compIds.forEach((compId) => {
-      const comp = componentGeneratorOutput[compId];
-      newProps[compId] = {
-        props: newProps[comp.alias],
-      };
-    });
-    reactTemplateManager.addProps(pages[pageId], newProps);
+    if (options && options.controllerProps && options.controllerProps[pageId]) {
+      const controllerPropsForPage = options.controllerProps[pageId]!;
+      const componentGeneratorOutput =
+        options.appInfo.pages[pageId].componentGeneratorOutput;
+      reactTemplateManager.addComponents(
+        pages[pageId],
+        componentGeneratorOutput
+      );
+      const compIds = Object.keys(componentGeneratorOutput);
+      const newProps: PropsGeneratorOutput = {};
+      compIds.forEach((compId) => {
+        const comp = componentGeneratorOutput[compId];
+        newProps[compId] = {
+          props: controllerPropsForPage[comp.alias],
+        };
+      });
+      reactTemplateManager.addProps(pages[pageId], newProps);
+    }
   });
 }
 
@@ -77,7 +83,7 @@ export default async function buildReactApp(
   if (!fs.existsSync(path.resolve(options.outputDir, "dist", "server"))) {
     buildServer(path.resolve(options.outputDir));
   }
-  // update props from controller
+  // update props from controller if available
   updateAppStoreWithControllerProps(options, reactTemplateManager);
   reactTemplateManager.flushStore();
 }

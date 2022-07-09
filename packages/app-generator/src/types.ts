@@ -102,7 +102,7 @@ export type AppBuildOptions = {
   outputDir: string;
   rootComponentId: string;
   appInfo: AppInfo;
-  controllerProps: { [pageId: string]: { props: any } };
+  controllerProps: { [pageId: string]: { [alias: string]: any } | undefined };
 };
 
 export type CallbackGeneratorOptions = {
