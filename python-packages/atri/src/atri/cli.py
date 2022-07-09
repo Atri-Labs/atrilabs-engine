@@ -1,8 +1,8 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
-from email.policy import default
 import click
-from commands.open_editor import run as exe_open_editor
-from commands.connect_locally import run as exe_connect_locally
+from .commands.open_editor import run as exe_open_editor
+from .commands.connect_locally import run as exe_connect_locally
+
 
 @click.group()
 def main():
