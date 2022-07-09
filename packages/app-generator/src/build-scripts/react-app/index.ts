@@ -65,8 +65,7 @@ function updateAppStoreWithControllerProps(
       });
       reactTemplateManager.addProps(pages[pageId], newProps);
     } else {
-      console.log("found no props for", pageId);
-      console.log("props are", JSON.stringify(pageState[pageId], null, 2));
+      console.log("found no props for pageId", pageId, "using app info");
       reactTemplateManager.addProps(pages[pageId], pageState[pageId]);
     }
   });
