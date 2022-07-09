@@ -20,7 +20,7 @@ def run(e_port, w_port, m_port, p_port, u_port, app_dir):
             "-p", port_map(u_port, "4006"),
             "-v", volume_map(abs_app_dir, "localdb", "/code/localdb"),
             "-v", volume_map(abs_app_dir, "controllers", "/code/node_modules/.targets/controllers"),
-            "-v", volume_map(abs_app_dir, "app", "/code/node_modules/.targets/atri-app"),
+            "-v", volume_map(abs_app_dir, "atri-app", "/code/node_modules/.targets/atri-app"),
             "-v", volume_map(abs_app_dir, "assets", "/code/node_modules/.targets/assets"),
             "atrilabs/atrieditor"
             ],
