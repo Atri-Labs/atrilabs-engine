@@ -30,17 +30,18 @@ def open():
     pass
 
 @open.command('editor')
-@click.option('--e-port', default="4001", help='port on which event server will be attached')
-@click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
-@click.option('--m-port', default="4003", help='port on which manifest server will be attached')
-@click.option('--p-port', default="4004", help='port on which publish server will be attached')
-@click.option('--u-port', default="4006", help='port on which publish server will be attached')
+@click.option('--e-port', default="3001", help='port on which event server will be attached')
+@click.option('--w-port', default="3002", help='port on which file server will be attached to serve static files')
+@click.option('--m-port', default="3003", help='port on which manifest server will be attached')
+@click.option('--p-port', default="3004", help='port on which publish server will be attached')
+@click.option('--u-port', default="3006", help='port on which publish server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
 def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
+    exe_connect_locally(u_port, app_dir)
     exe_open_editor(e_port, w_port, m_port, p_port, u_port, app_dir)
 
 @main.group('connect')
