@@ -411,7 +411,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="zIndex"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue="0"
+              defaultValue="1"
             />
           </div>
         </div>

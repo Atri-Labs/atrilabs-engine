@@ -35,6 +35,7 @@ export const Input = forwardRef<
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
+  positionOptions: true,
   typographyOptions: true,
   spacingOptions: true,
   sizeOptions: true,

@@ -58,7 +58,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
       ) : null}
-      {props.treeOptions && props.treeOptions.flexChildOptions ? ( //care
+      {props.treeOptions && props.treeOptions.positionOptions ? (
         <Position styles={props.styles} patchCb={props.patchCb} />
       ) : null}
       {props.treeOptions && props.treeOptions.spacingOptions ? (
