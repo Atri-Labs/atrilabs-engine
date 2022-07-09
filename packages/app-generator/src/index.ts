@@ -3,9 +3,14 @@ import deployApp from "./deploy-scripts/react-app";
 import generateApp from "./gen-script";
 
 export { getAppInfo } from "./getAppInfo";
-export { getPageStates } from "./getPageState";
+export {
+  getPageStateAsAliasMap,
+  getPageStateAsCompIdMap,
+} from "./getPageState";
 export const scripts = {
+  // generates the code (both react and python)
   generateApp: generateApp,
+  // build app (install deps and update props from controller)
   buildReactApp: buildReactApp,
   deployApp: deployApp,
 };

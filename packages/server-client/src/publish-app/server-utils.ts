@@ -77,7 +77,7 @@ async function generateApp(_toolConfig: ToolConfig) {
 
 async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   const target = toolConfig.targets[0]!;
-  import(target.tasksHandler.modulePath).then((mod) => {
+  import(target.tasksHandler.modulePath).then(async (mod) => {
     if (
       !mod.scripts &&
       typeof mod.scripts.buildReactApp !== "function" &&
@@ -88,7 +88,7 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       );
     }
     // call getAppInfo
-    const appInfo = mod.getAppInfo(toolConfig, target.options);
+    const appInfo = await mod.getAppInfo(toolConfig, target.options);
     const pages = appInfo.pages;
     const pageIds = Object.keys(pages);
     /**
@@ -121,7 +121,7 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       );
     });
     // call buildApp
-    mod.scripts.buildApp(toolConfig, {
+    mod.scripts.buildReactApp(toolConfig, {
       ...target.options,
       appInfo,
       controllerProps,

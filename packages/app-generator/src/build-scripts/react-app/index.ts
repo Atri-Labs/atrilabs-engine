@@ -5,6 +5,7 @@ import fs from "fs";
 import { exec } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
 import { getReactAppTemplateManager } from "../../getReactTemplateManager";
+import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
   exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
@@ -44,15 +45,16 @@ function updateAppStoreWithControllerProps(
 ) {
   const pages = options.appInfo.pages;
   const pageIds = Object.keys(pages);
+  // if no controller props, then update props from app info
+  const pageState = getPageStateAsCompIdMap(options.appInfo);
   pageIds.forEach((pageId) => {
+    // add components
+    const controllerPropsForPage = options.controllerProps[pageId]!;
+    const componentGeneratorOutput =
+      options.appInfo.pages[pageId].componentGeneratorOutput;
+    reactTemplateManager.addComponents(pages[pageId], componentGeneratorOutput);
+    // add props (maybe from controller or the old ones from app info)
     if (options && options.controllerProps && options.controllerProps[pageId]) {
-      const controllerPropsForPage = options.controllerProps[pageId]!;
-      const componentGeneratorOutput =
-        options.appInfo.pages[pageId].componentGeneratorOutput;
-      reactTemplateManager.addComponents(
-        pages[pageId],
-        componentGeneratorOutput
-      );
       const compIds = Object.keys(componentGeneratorOutput);
       const newProps: PropsGeneratorOutput = {};
       compIds.forEach((compId) => {
@@ -62,6 +64,10 @@ function updateAppStoreWithControllerProps(
         };
       });
       reactTemplateManager.addProps(pages[pageId], newProps);
+    } else {
+      console.log("found no props for", pageId);
+      console.log("props are", JSON.stringify(pageState[pageId], null, 2));
+      reactTemplateManager.addProps(pages[pageId], pageState[pageId]);
     }
   });
 }
