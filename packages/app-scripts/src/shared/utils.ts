@@ -119,4 +119,8 @@ export function setNodeAndBabelEnv(mode: BuildTypes) {
 
 export const buildInfoFilename = "atri-build-info.json";
 
-export const buildInfoFile = path.resolve("atri-build-info.json");
+export const buildInfoFile = path.resolve(buildInfoFilename);
+
+export const serverInfoFilename = "atri-server-info.json";
+
+export const serverInfoFile = path.resolve(serverInfoFilename);

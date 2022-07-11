@@ -111,6 +111,11 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.end();
 });
 
+app.post("/reload-all-dev-sockets", (_req, res) => {
+  console.log("received request to reload all sockets");
+  res.send();
+});
+
 Object.keys(publicUrlAssetMap).forEach((url) => {
   app.use(url, express.static(publicUrlAssetMap[url]!));
 });
