@@ -61,7 +61,7 @@ def handle_ipc_events(sio, paths):
                 cwd=controllers_dir
                 )
             out = child_proc.stdout.read()
-            return out
+            return True, out
         except Exception:
             print("except", traceback.print_exc())
     @sio.on("doBuildPython")

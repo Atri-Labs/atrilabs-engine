@@ -116,37 +116,43 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
         const controllerProps: {
           [pageId: string]: { [alias: string]: any } | undefined;
         } = {};
-        pageIds.forEach((pageId) => {
-          const route = pages[pageId].route;
-          const state = JSON.stringify(
-            convertPropsIntoPythonFormat(pageStates, pageId)
-          );
-          socket.emit(
-            "computeInitialState",
-            route,
-            state,
-            (success, computedState) => {
-              if (success) {
-                try {
-                  const resp = JSON.parse(computedState);
-                  if (resp && resp["statusCode"] === 200)
-                    controllerProps[pageId] = resp["state"];
-                } catch (err) {
-                  console.log(
-                    "failed to parse response from computeInitialState"
-                  );
+        const promises = pageIds.map((pageId) => {
+          return new Promise<void>((resolve) => {
+            const route = pages[pageId].route;
+            const state = JSON.stringify(
+              convertPropsIntoPythonFormat(pageStates, pageId)
+            );
+            socket.emit(
+              "computeInitialState",
+              route,
+              state,
+              (success, computedState) => {
+                if (success) {
+                  try {
+                    const resp = JSON.parse(computedState);
+                    if (resp && resp["statusCode"] === 200) {
+                      controllerProps[pageId] = resp["state"];
+                    }
+                  } catch (err) {
+                    console.log(
+                      "failed to parse response from computeInitialState"
+                    );
+                  }
+                } else {
+                  console.log("computeInitialState failed");
                 }
-              } else {
-                console.log("computeInitialState failed");
+                resolve();
               }
-            }
-          );
+            );
+          });
         });
-        // call buildApp
-        mod.scripts.buildReactApp(toolConfig, {
-          ...target.options,
-          appInfo,
-          controllerProps,
+        Promise.all(promises).then(() => {
+          // call buildApp
+          mod.scripts.buildReactApp(toolConfig, {
+            ...target.options,
+            appInfo,
+            controllerProps,
+          });
         });
       });
     } else console.log("python build failed");

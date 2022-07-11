@@ -274,7 +274,9 @@ export default async function generateApp(
     },
     Object.values(pages)
   );
-  pythonAppTemplateManager.copyTemplate();
+  // don't copy if controllers directory already exists
+  if (!pythonAppTemplateManager.controllersDirExists())
+    pythonAppTemplateManager.copyTemplate();
   pageIds.forEach((pageId) => {
     const page = pages[pageId];
     const forest = pageForestMap[pageId];
