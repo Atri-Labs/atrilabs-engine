@@ -5,10 +5,18 @@ import {
   UploadContainer,
   UploadContainerProps,
 } from "./components/upload-container/UploadContainer";
+import { ReactComponent as AI } from "./images/asset-icon.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "2.5rem",
+  },
+  assetIcon: {
+    width: "34.5%",
   },
 };
 
@@ -26,7 +34,7 @@ export default function () {
     <>
       <Menu name="AppMenu">
         <div style={styles.iconContainer} onClick={showAssetPanelCb}>
-          Asset Manager
+          <AI style={styles.assetIcon} />
         </div>
       </Menu>
       {showAssetPanel ? (
