@@ -9,8 +9,13 @@ export const styles: { [key: string]: React.CSSProperties } = {
   imageContainer: {
     border: "1px solid rgba(31, 41, 55, 0.5)",
     borderRadius: "2px",
-    width: "auto",
+    width: "5.5rem",
     height: "3rem",
+  },
+  image: {
+    width: "5.5rem",
+    height: "3rem",
+    objectFit: "fill",
   },
   imageText: {
     ...smallText,
@@ -21,8 +26,10 @@ export const styles: { [key: string]: React.CSSProperties } = {
 function InputImage(props: any) {
   return (
     <div style={styles.imageBox}>
-      <div style={styles.imageContainer}></div>
-      <p style={styles.imageText}>Image-{props.id}.png</p>
+      <div style={styles.imageContainer}>
+        <img style={styles.image} src={props.url} alt="" />
+      </div>
+      <p style={styles.imageText}>Image-1.png</p>
     </div>
   );
 }

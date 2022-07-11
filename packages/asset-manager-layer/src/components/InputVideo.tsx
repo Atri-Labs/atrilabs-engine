@@ -22,7 +22,7 @@ function InputVideo(props: any) {
   return (
     <div style={styles.container}>
       <VidIp style={styles.videoIcon} />
-      <p style={styles.videoText}>Video-sample-{props.id}.mp3</p>
+      <p style={styles.videoText}>Video-sample-1.mp3</p>
     </div>
   );
 }

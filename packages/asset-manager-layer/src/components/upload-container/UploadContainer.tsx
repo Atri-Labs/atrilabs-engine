@@ -7,17 +7,17 @@ import {
   h1Heading,
   h4Heading,
 } from "@atrilabs/design-system";
-import React, { useCallback } from "react";
-import InputImage from "../InputImage";
+import React, { useCallback, useState } from "react";
 // import InputAudio from "../InputAudio";
+import InputImage from "../InputImage";
 // import InputVideo from "../InputVideo";
 import { Cross } from "./assets/Cross";
 
 export type UploadContainerProps = {
   onCrossClicked?: () => void;
-  onUploadSuccess?: (url: string) => void;
+  onUploadSuccess?: (url: string, mediaType: string) => void;
   onUploadFailed?: () => void;
-  onUploadMultipleSuccess?: (urls: string[]) => void;
+  onUploadMultipleSuccess?: (urls: string[], mediaType: string) => any;
   onSelect?: (url: string) => void;
   // upload mode for allowing upload of new files
   modes?: ("upload" | "upload_multiple" | "draggable" | "select")[];
@@ -81,9 +81,12 @@ export const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
+  const [mediaType, setMediaType] = useState("image");
+
   const onCrossClickCb = useCallback(() => {
     if (props.onCrossClicked) props.onCrossClicked();
   }, [props]);
+
   const onFileBrowsedCb: React.ChangeEventHandler<HTMLInputElement> =
     useCallback(
       async (e) => {
@@ -110,12 +113,13 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
                 if (props.onUploadMultipleSuccess) {
-                  props.onUploadMultipleSuccess(urls);
+                  props.onUploadMultipleSuccess(urls, mediaType);
                 }
               }
             });
           }
         }
+
         if (props.modes && props.modes.includes("upload")) {
           const files = e.target.files;
           if (files && files.length === 1) {
@@ -135,30 +139,15 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               if (!success) {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
-                if (props.onUploadSuccess) props.onUploadSuccess(urls[0]);
+                if (props.onUploadSuccess)
+                  props.onUploadSuccess(urls[0], mediaType);
               }
             });
           }
         }
       },
-      [props]
+      [props, mediaType]
     );
-
-  // const handleChange = useCallback(
-  //   (e: React.ChangeEvent<HTMLSelectElement>, n: number) => {
-  //     if (e.target.value === "audio") {
-  //       for (let i = 0; i < n; i++) {
-  //         <InputAudio />;
-  //       }
-  //     }
-  //     else if (e.target.value === "video") {
-  //       for (let i = 0; i < n; i++) {
-  //         <InputVideo />;
-  //       }
-  //     }
-  //   },
-  //   []
-  // );
 
   return (
     <div style={styles.dropContainerItem}>
@@ -173,6 +162,7 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
       <div>
         <input
           type={"file"}
+          accept={`${mediaType}/*`}
           style={styles.uploadBox}
           multiple={props.modes && props.modes.includes("upload_multiple")}
           onChange={onFileBrowsedCb}
@@ -180,18 +170,20 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
         <div style={styles.selectMediaTypeDiv}>
           <select
             style={styles.selectMediaType}
-            onChange={(e) => console.log(e)}
+            onChange={(e) => {
+              setMediaType(e.target.value);
+            }}
           >
-            <option value="images">Images</option>
+            <option value="image">Images</option>
             <option value="audio">Audio</option>
             <option value="video">Video</option>
           </select>
         </div>
         <div style={styles.container}>
-          <InputImage id="1" />
-          <InputImage id="2" />
-          <InputImage id="3" />
-          <InputImage id="4" />
+          <InputImage url="./Image/love.mp3" />
+          <InputImage url="./Image/love.mp3" />
+          <InputImage url="./Image/love.mp3" />
+          <InputImage url="./Image/love.mp3" />
         </div>
       </div>
     </div>

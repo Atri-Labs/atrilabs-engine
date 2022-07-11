@@ -22,7 +22,7 @@ function InputAudio(props: any) {
   return (
     <div style={styles.container}>
       <AudIp style={styles.audioIcon} />
-      <p style={styles.audioText}>Audio-sample-{props.id}.mp3</p>
+      <p style={styles.audioText}>Audio-sample-1.mp3</p>
     </div>
   );
 }
