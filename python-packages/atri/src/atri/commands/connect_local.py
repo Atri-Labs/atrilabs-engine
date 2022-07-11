@@ -11,12 +11,11 @@ from ..utils.install_package import install_with_pipenv
 from shutil import copy
 import toml
 
-def print_success(success):
-    if success:
-        print("Registered as atri-cli with ipc server.")
-
 async def on_connect(sio):
-    await sio.emit("registerAs", "atri-cli", callback=print_success)
+    def print_success_cb(success):
+        if success:
+            print("Registered as atri-cli with ipc server.")
+    await sio.emit("registerAs", "atri-cli", callback=print_success_cb)
 
 async def connect_ipc_server(port: str):
     print("Connecting to ipc server...")
@@ -64,8 +63,8 @@ def handle_ipc_events(sio, paths):
             return out
         except Exception:
             print("except", traceback.print_exc())
-    @sio.on("doPythonBuild")
-    async def doPythonBuild():
+    @sio.on("doBuildPython")
+    async def doBuildPython():
         app_dir = paths["app_dir"]
         controllers_dir = os.path.join(app_dir, "controllers")
         initial_pipfile_path = os.path.join(controllers_dir, "Pipfile")
@@ -78,8 +77,7 @@ def handle_ipc_events(sio, paths):
                     # copy Pipfile to app_dir
                     copy(initial_pipfile_path, final_pipfile_path)
                     # run pipenv install
-                    child_proc = install_with_pipenv(app_dir)
-                    child_proc.wait()
+                    install_with_pipenv(app_dir)
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
@@ -94,26 +92,27 @@ def handle_ipc_events(sio, paths):
                     # run pipenv install <package_name> for each file in Pipfile inside app_dir
                     for pkg in pkgs:
                         version = pkgs[pkg]
-                        child_proc = install_with_pipenv(app_dir, pkg, version)
-                        child_proc.wait()
+                        install_with_pipenv(app_dir, pkg, version)
                     for pkg in dev_pkgs:
                         version = dev_pkgs[pkg]
-                        child_proc = install_with_pipenv(app_dir, pkg, version)
-                        child_proc.wait()
+                        install_with_pipenv(app_dir, pkg, version)
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
                     print("Failed to detect virtual env type. Currently supported are pipenv")
 
-async def start_ipc_connection(port: str, paths):
-    sio = await connect_ipc_server(port)
-    handle_ipc_events(sio, paths)
-    # Important to call sio.wait if no other task will run
-    # If sio.wait is not called, then the python program will crash in ~30 secs
-    # with error message 'packet queue is empty, aborting'
-    await sio.wait()
-
-def run(u_port, app_dir):
+async def start_ipc_connection(port: str, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
     paths = {"app_dir": abs_app_dir}
-    asyncio.run(start_ipc_connection(u_port, paths))
+    sio = await connect_ipc_server(port)
+    handle_ipc_events(sio, paths)
+    return sio
+
+def run(u_port, app_dir):
+    async def wrapper():
+        # Important to call sio.wait if no other task will run
+        # If sio.wait is not called, then the python program will crash in ~30 secs
+        # with error message 'packet queue is empty, aborting'
+        sio = await start_ipc_connection(u_port, app_dir)
+        await sio.wait()
+    asyncio.run(wrapper())
