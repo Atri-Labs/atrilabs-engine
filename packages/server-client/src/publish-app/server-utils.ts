@@ -1,5 +1,5 @@
 import { ToolConfig } from "@atrilabs/core";
-import { exec } from "child_process";
+import { ChildProcess, exec } from "child_process";
 import { io, Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
@@ -89,7 +89,7 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
 }
 
 async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
-  console.log("calling buildPython");
+  console.log("[publish_app_server]emitting buildPython");
   socket.emit("buildPython", (success) => {
     if (success) {
       console.log("python build success");
@@ -135,11 +135,11 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
                     }
                   } catch (err) {
                     console.log(
-                      "failed to parse response from computeInitialState"
+                      "[publish_app_server]failed to parse response from computeInitialState"
                     );
                   }
                 } else {
-                  console.log("computeInitialState failed");
+                  console.log("[publish_app_server]computeInitialState failed");
                 }
                 resolve();
               }
@@ -159,7 +159,70 @@ async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   });
 }
 
-async function deployApp() {}
+let devProc: ChildProcess;
+let devServerProc: ChildProcess;
+const devControllers: AbortController[] = [];
+async function deployApp(toolConfig: ToolConfig) {
+  const target = toolConfig.targets[0]!;
+  const outputDir = target.options["outputDir"];
+  if (!outputDir && typeof outputDir !== "string") {
+    console.log(
+      "[publish_app_server]Schema of tool.config.js must contain targets[0].options.outputDir"
+    );
+    return;
+  }
+  if (devProc === undefined) {
+    const controller = new AbortController();
+    const { signal } = controller;
+    devControllers.push(controller);
+    devProc = exec("yarn run dev", { cwd: outputDir, signal });
+    devProc.on("error", (err) => {
+      if (err.name !== "AbortError") {
+        console.log("[dev] Process Error\n", err);
+      }
+    });
+    devProc.stdout?.on("data", (data) => {
+      console.log("[dev]\n", data);
+    });
+    devProc.stderr?.on("data", (data) => {
+      console.log("[dev] Error\n", data);
+    });
+  }
+  if (devServerProc === undefined) {
+    const controller = new AbortController();
+    const { signal } = controller;
+    devControllers.push(controller);
+    devServerProc = exec("yarn run devServer", { cwd: outputDir, signal });
+    devServerProc.on("error", (err) => {
+      if (err.name !== "AbortError") {
+        console.log("[devServer] Process Error\n", err);
+      }
+    });
+    devServerProc.stdout?.on("data", (data) => {
+      console.log("[devServer]\n", data);
+    });
+    devServerProc.stderr?.on("data", (data) => {
+      console.log("[devServer] Error\n", data);
+    });
+  }
+  // wait for kill signals
+  ["SIGINT", "SIGTERM"].forEach(function (sig) {
+    process.on(sig, function () {
+      devControllers.forEach((controller) => {
+        controller.abort();
+      });
+      process.exit();
+    });
+  });
+
+  // wait for input on stdin (hold the terminal)
+  process.stdin.on("end", function () {
+    devControllers.forEach((controller) => {
+      controller.abort();
+    });
+    process.exit();
+  });
+}
 
 export function runTaskQueue(
   taskQueue: string[],
