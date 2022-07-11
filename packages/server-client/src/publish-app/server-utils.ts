@@ -89,59 +89,67 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
 }
 
 async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
-  const target = toolConfig.targets[0]!;
-  import(target.tasksHandler.modulePath).then(async (mod) => {
-    if (
-      !mod.scripts &&
-      typeof mod.scripts.buildReactApp !== "function" &&
-      mod.getAppInfo !== "function"
-    ) {
-      throw Error(
-        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
-      );
-    }
-    // call getAppInfo
-    const appInfo = await mod.getAppInfo(toolConfig, target.options);
-    const pages = appInfo.pages;
-    const pageIds = Object.keys(pages);
-    const pageStates = mod.getPageStateAsAliasMap(appInfo);
-    /**
-     * controllerProps[pageId] is defined only if we buildApp succeeds
-     * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
-     */
-    const controllerProps: {
-      [pageId: string]: { [alias: string]: any } | undefined;
-    } = {};
-    pageIds.forEach((pageId) => {
-      const route = pages[pageId].route;
-      const state = JSON.stringify(
-        convertPropsIntoPythonFormat(pageStates, pageId)
-      );
-      socket.emit(
-        "computeInitialState",
-        route,
-        state,
-        (success, computedState) => {
-          if (success) {
-            try {
-              const resp = JSON.parse(computedState);
-              if (resp && resp["statusCode"] === 200)
-                controllerProps[pageId] = resp["state"];
-            } catch (err) {
-              console.log("failed to parse response from computeInitialState");
-            }
-          } else {
-            console.log("computeInitialState failed");
-          }
+  console.log("calling buildPython");
+  socket.emit("buildPython", (success) => {
+    if (success) {
+      console.log("python build success");
+      const target = toolConfig.targets[0]!;
+      import(target.tasksHandler.modulePath).then(async (mod) => {
+        if (
+          !mod.scripts &&
+          typeof mod.scripts.buildReactApp !== "function" &&
+          mod.getAppInfo !== "function"
+        ) {
+          throw Error(
+            `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+          );
         }
-      );
-    });
-    // call buildApp
-    mod.scripts.buildReactApp(toolConfig, {
-      ...target.options,
-      appInfo,
-      controllerProps,
-    });
+        // call getAppInfo
+        const appInfo = await mod.getAppInfo(toolConfig, target.options);
+        const pages = appInfo.pages;
+        const pageIds = Object.keys(pages);
+        const pageStates = mod.getPageStateAsAliasMap(appInfo);
+        /**
+         * controllerProps[pageId] is defined only if we buildApp succeeds
+         * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
+         */
+        const controllerProps: {
+          [pageId: string]: { [alias: string]: any } | undefined;
+        } = {};
+        pageIds.forEach((pageId) => {
+          const route = pages[pageId].route;
+          const state = JSON.stringify(
+            convertPropsIntoPythonFormat(pageStates, pageId)
+          );
+          socket.emit(
+            "computeInitialState",
+            route,
+            state,
+            (success, computedState) => {
+              if (success) {
+                try {
+                  const resp = JSON.parse(computedState);
+                  if (resp && resp["statusCode"] === 200)
+                    controllerProps[pageId] = resp["state"];
+                } catch (err) {
+                  console.log(
+                    "failed to parse response from computeInitialState"
+                  );
+                }
+              } else {
+                console.log("computeInitialState failed");
+              }
+            }
+          );
+        });
+        // call buildApp
+        mod.scripts.buildReactApp(toolConfig, {
+          ...target.options,
+          appInfo,
+          controllerProps,
+        });
+      });
+    } else console.log("python build failed");
   });
 }
 

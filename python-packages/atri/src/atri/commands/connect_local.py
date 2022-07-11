@@ -51,11 +51,12 @@ async def connect_ipc_server(port: str):
 def handle_ipc_events(sio, paths):
     @sio.on("doComputeInitialState")
     async def doComputeInitialState(route: str, page_state: str):
+        print("doComputeInitialState called")
         try:
             app_dir = paths["app_dir"]
             controllers_dir = os.path.join(app_dir, "controllers")
             child_proc = subprocess.Popen(
-                ["python", "-m", "server", "compute", "--route", route, "state", page_state],
+                ["python", "-m", "server", "compute", "--route", route, "--state", page_state],
                 stdout=subprocess.PIPE,
                 cwd=controllers_dir
                 )
@@ -65,19 +66,21 @@ def handle_ipc_events(sio, paths):
             print("except", traceback.print_exc())
     @sio.on("doBuildPython")
     async def doBuildPython():
+        print("doBuildPython called")
         app_dir = paths["app_dir"]
         controllers_dir = os.path.join(app_dir, "controllers")
         initial_pipfile_path = os.path.join(controllers_dir, "Pipfile")
         final_pipfile_path = os.path.join(app_dir, "Pipfile")
         # check if Pipfile exist in controller directory
-        if not os.path.exists(initial_pipfile_path):
+        if os.path.exists(initial_pipfile_path):
             if not in_virtualenv():
                 # check if pipenv is installed otherwise ask user to install it
                 if is_pipenv_installed():
                     # copy Pipfile to app_dir
                     copy(initial_pipfile_path, final_pipfile_path)
                     # run pipenv install
-                    install_with_pipenv(app_dir)
+                    child_proc = install_with_pipenv(app_dir)
+                    await child_proc.wait()
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
@@ -90,16 +93,25 @@ def handle_ipc_events(sio, paths):
                     pkgs = pipfile_data["packages"]
                     dev_pkgs = pipfile_data["dev-packages"]
                     # run pipenv install <package_name> for each file in Pipfile inside app_dir
+                    child_procs_wait = []
                     for pkg in pkgs:
                         version = pkgs[pkg]
-                        install_with_pipenv(app_dir, pkg, version)
+                        if type(version) != str:
+                            version = version["version"]
+                        child_proc = await install_with_pipenv(app_dir, pkg, version)
+                        child_procs_wait.append(child_proc.wait())
                     for pkg in dev_pkgs:
                         version = dev_pkgs[pkg]
-                        install_with_pipenv(app_dir, pkg, version)
+                        if type(version) != str:
+                            version = version["version"]
+                        child_proc = await install_with_pipenv(app_dir, pkg, version)
+                        child_procs_wait.append(child_proc.wait())
+                    await asyncio.wait(child_procs_wait)
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
                     print("Failed to detect virtual env type. Currently supported are pipenv")
+        return True
 
 async def start_ipc_connection(port: str, app_dir):
     abs_app_dir = os.path.abspath(app_dir)

@@ -52,6 +52,12 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
         );
       }
     });
+    socket.on("buildPython", (callback) => {
+      const atriCliSocket = clients["atri-cli"]!;
+      atriCliSocket.emit("doBuildPython", (success) => {
+        callback(success);
+      });
+    });
     socket.on("disconnect", () => {
       clients[clientName] = undefined;
     });

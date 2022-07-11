@@ -8,6 +8,7 @@ export interface ServerToClientEvents {
     pageState: string,
     callback: (success: boolean, computedState: string) => void
   ) => void;
+  doBuildPython: (callback: (success: boolean) => void) => void;
   doStartPythonServer: () => void;
   doReloadPage: () => void;
 }
@@ -22,6 +23,7 @@ export interface ClientToServerEvents {
     pageState: string,
     callback: (success: boolean, computedState: string) => void
   ) => void;
+  buildPython: (callback: (success: boolean) => void) => void;
   startPythonServer: () => void;
   reloadPage: () => void;
 }
