@@ -86,6 +86,7 @@ try {
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
       addWatchOptions: true,
+      wsClientEntry: path.resolve(__dirname, "..", "shared", "wsclient"),
     });
     const serverEntry: string = buildInfo["serverEntry"];
     const serverSrc: string = buildInfo["serverSrc"];

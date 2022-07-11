@@ -1,6 +1,8 @@
 import path from "path";
 import fs from "fs";
 import { ServerInfo } from "./types";
+import { WebSocketServer, WebSocket } from "ws";
+import { Server } from "http";
 
 // create local cache directory if not already created
 const localCache = path.resolve(__dirname, ".cache");
@@ -84,4 +86,28 @@ export function getServerInfo(startDir: string): ServerInfo {
     pages: serverInfo["pages"],
     publicUrlAssetMap: serverInfo["publicUrlAssetMap"],
   };
+}
+
+const wsSockets: WebSocket[] = [];
+export function createWebSocketServer(server: Server) {
+  const wsServer = new WebSocketServer({ server });
+  wsServer.on("connection", (ws) => {
+    wsSockets.push(ws);
+    ws.on("close", () => {
+      const index = wsSockets.findIndex((curr) => curr === ws);
+      if (index >= 0) {
+        wsSockets.splice(index, 1);
+      }
+    });
+  });
+}
+
+export function sendReloadMessage() {
+  wsSockets.forEach((ws) => {
+    ws.send("reload", (err) => {
+      if (err) {
+        console.log("failed to send reload message\n", err);
+      }
+    });
+  });
 }

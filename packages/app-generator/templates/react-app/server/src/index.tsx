@@ -1,8 +1,10 @@
 import {
   createIfNotExistLocalCache,
+  createWebSocketServer,
   getIndexHtmlContent,
   getPageFromCache,
   getServerInfo,
+  sendReloadMessage,
   storePageInCache,
 } from "./utils";
 import express from "express";
@@ -17,6 +19,8 @@ const appDistHtml = path.resolve(publicDir, "index.html");
 createIfNotExistLocalCache();
 
 const app = express();
+const server = http.createServer(app);
+createWebSocketServer(server);
 const disablePageCache = process.argv.includes("--disable-cache");
 
 app.use((req, res, next) => {
@@ -113,6 +117,7 @@ app.post("/event-handler", express.json(), (req, res) => {
 
 app.post("/reload-all-dev-sockets", (_req, res) => {
   console.log("received request to reload all sockets");
+  sendReloadMessage();
   res.send();
 });
 
@@ -122,7 +127,7 @@ Object.keys(publicUrlAssetMap).forEach((url) => {
 
 app.use(express.static(publicDir));
 
-const server = app.listen(port, () => {
+server.listen(port, () => {
   const address = server.address();
   if (typeof address === "object" && address !== null) {
     let port = address.port;

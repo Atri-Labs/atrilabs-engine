@@ -34,16 +34,18 @@ export type BuildAppOptions = {
   appOutput: string;
   includes: string[];
   addWatchOptions: boolean;
+  wsClientEntry?: string;
 };
 
 export function buildApp(options: BuildAppOptions) {
-  const { mode, appEntry, appHtml, appOutput, includes } = options;
+  const { mode, appEntry, appHtml, appOutput, includes, wsClientEntry } =
+    options;
 
   process.env["NODE_ENV"] = mode;
   process.env["BABEL_ENV"] = mode;
 
   const webpackConfig = createWebpackConfig({
-    paths: { appEntry, appHtml, appOutput, includes },
+    paths: { appEntry, appHtml, appOutput, includes, wsClientEntry },
     mode,
     publicUrlOrPath: "/",
     shouldUseSourceMap: false,
