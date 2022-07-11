@@ -1,6 +1,7 @@
 import {
   createIfNotExistLocalCache,
   createWebSocketServer,
+  disablePageCache,
   getIndexHtmlContent,
   getPageFromCache,
   getServerInfo,
@@ -21,7 +22,6 @@ createIfNotExistLocalCache();
 const app = express();
 const server = http.createServer(app);
 createWebSocketServer(server);
-const disablePageCache = process.argv.includes("--disable-cache");
 
 app.use((req, res, next) => {
   if (req.method === "GET" && pages[req.originalUrl]) {
