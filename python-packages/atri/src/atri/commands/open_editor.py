@@ -2,6 +2,7 @@ import os
 import asyncio
 from ..utils.run_shell_cmd import run_shell_cmd
 from .. import __version__
+from ..utils.globals import globals
 
 def port_map(host: str, container: str):
     return host + ":" + container
@@ -24,7 +25,7 @@ async def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
         "-v", volume_map(abs_app_dir, "assets", "/code/node_modules/.targets/assets"),
         "atrilabs/atrieditor:" + __version__
         ])
-    child_proc = await run_shell_cmd(cmd, os.getcwd())
+    child_proc = await run_shell_cmd(cmd, os.getcwd(), not globals["in_debug_mode"])
     return child_proc
 
 def run(e_port, w_port, m_port, p_port, u_port, app_dir):
