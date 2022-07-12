@@ -1,9 +1,11 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
+from email.policy import default
 import click
 import asyncio
 from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
 from .commands.connect_local import run as exe_connect_local, start_ipc_connection
-
+from .utils.globals import globals
+from .commands.check_requisite import check_requisite
 
 @click.group()
 def main():
@@ -37,11 +39,13 @@ def open():
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
+@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
+def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
+    globals["in_debug_mode"] = debug
     exe_open_editor(e_port, w_port, m_port, p_port, u_port, app_dir)
 
 @main.group('connect')
@@ -55,7 +59,9 @@ def connect():
 @connect.command("local")
 @click.option('--u-port', default="4006", help='port on which publish server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-def connect_local(u_port, app_dir):
+@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
+def connect_local(u_port, app_dir, debug):
+    globals["in_debug_mode"] = debug
     exe_connect_local(u_port, app_dir)
 
 @main.command()
@@ -65,7 +71,12 @@ def connect_local(u_port, app_dir):
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-def start(e_port, w_port, m_port, p_port, u_port, app_dir):
+@click.option('--debug', default=False, show_default=True, help='run the command in debug mode')
+def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
+    globals["in_debug_mode"] = debug
+    async def check_req_wrapper():
+        ok = await check_requisite()
+        return ok
     async def open_editor_wrapper():
         child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, u_port, app_dir)
         await child_proc.wait()
@@ -73,15 +84,30 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir):
         sio = await start_ipc_connection(u_port, app_dir)
         await sio.wait()
     async def main_wrapper():
-        open_editor_task = asyncio.create_task(
-            open_editor_wrapper()
+        ok = await check_req_wrapper()
+        if ok:
+            open_editor_task = asyncio.create_task(
+                open_editor_wrapper()
+                )
+            connect_local_task = asyncio.create_task(
+                connect_local_wrapper()
             )
-        connect_local_task = asyncio.create_task(
-            connect_local_wrapper()
-        )
-        await asyncio.wait([open_editor_task, connect_local_task])
+            await asyncio.wait([open_editor_task, connect_local_task])
     # Now run the tasks(in the event loop) 
-    asyncio.run(main_wrapper()) 
+    asyncio.run(main_wrapper())
+
+@main.group()
+def check():
+    pass
+
+@check.command()
+@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
+def req(debug):
+    globals["in_debug_mode"] = debug
+    ok = asyncio.run(check_requisite())
+    if not ok:
+        print("If you want to report this issue,",
+        "please use our discussion forum https://discuss.atrilabs.com")
 
 if __name__ == '__main__':
     main()
