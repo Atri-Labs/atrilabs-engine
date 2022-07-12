@@ -88,81 +88,91 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
   return formattedState;
 }
 
-async function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
+function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   console.log("[publish_app_server]emitting buildPython");
-  socket.emit("buildPython", (success) => {
-    if (success) {
-      console.log("python build success");
-      const target = toolConfig.targets[0]!;
-      import(target.tasksHandler.modulePath).then(async (mod) => {
-        if (
-          !mod.scripts &&
-          typeof mod.scripts.buildReactApp !== "function" &&
-          mod.getAppInfo !== "function"
-        ) {
-          throw Error(
-            `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
-          );
-        }
-        // call getAppInfo
-        const appInfo = await mod.getAppInfo(toolConfig, target.options);
-        const pages = appInfo.pages;
-        const pageIds = Object.keys(pages);
-        const pageStates = mod.getPageStateAsAliasMap(appInfo);
-        /**
-         * controllerProps[pageId] is defined only if we buildApp succeeds
-         * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
-         */
-        const controllerProps: {
-          [pageId: string]: { [alias: string]: any } | undefined;
-        } = {};
-        const promises = pageIds.map((pageId) => {
-          return new Promise<void>((resolve) => {
-            const route = pages[pageId].route;
-            const state = JSON.stringify(
-              convertPropsIntoPythonFormat(pageStates, pageId)
-            );
-            socket.emit(
-              "computeInitialState",
-              route,
-              state,
-              (success, computedState) => {
-                if (success) {
-                  try {
-                    const resp = JSON.parse(computedState);
-                    if (resp && resp["statusCode"] === 200) {
-                      controllerProps[pageId] = resp["state"];
+  return new Promise<void>((res, rej) => {
+    socket.emit("buildPython", (success) => {
+      if (success) {
+        console.log("python build success");
+        const target = toolConfig.targets[0]!;
+        import(target.tasksHandler.modulePath)
+          .then(async (mod) => {
+            if (
+              !mod.scripts &&
+              typeof mod.scripts.buildReactApp !== "function" &&
+              mod.getAppInfo !== "function"
+            ) {
+              throw Error(
+                `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+              );
+            }
+            // call getAppInfo
+            const appInfo = await mod.getAppInfo(toolConfig, target.options);
+            const pages = appInfo.pages;
+            const pageIds = Object.keys(pages);
+            const pageStates = mod.getPageStateAsAliasMap(appInfo);
+            /**
+             * controllerProps[pageId] is defined only if we buildApp succeeds
+             * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
+             */
+            const controllerProps: {
+              [pageId: string]: { [alias: string]: any } | undefined;
+            } = {};
+            const promises = pageIds.map((pageId) => {
+              return new Promise<void>((resolve) => {
+                const route = pages[pageId].route;
+                const state = JSON.stringify(
+                  convertPropsIntoPythonFormat(pageStates, pageId)
+                );
+                socket.emit(
+                  "computeInitialState",
+                  route,
+                  state,
+                  (success, computedState) => {
+                    if (success) {
+                      try {
+                        const resp = JSON.parse(computedState);
+                        if (resp && resp["statusCode"] === 200) {
+                          controllerProps[pageId] = resp["state"];
+                        }
+                      } catch (err) {
+                        console.log(
+                          "[publish_app_server]failed to parse response from computeInitialState"
+                        );
+                      }
+                    } else {
+                      console.log(
+                        "[publish_app_server]computeInitialState failed"
+                      );
                     }
-                  } catch (err) {
-                    console.log(
-                      "[publish_app_server]failed to parse response from computeInitialState"
-                    );
+                    resolve();
                   }
-                } else {
-                  console.log("[publish_app_server]computeInitialState failed");
-                }
-                resolve();
-              }
-            );
-          });
-        });
-        Promise.all(promises).then(() => {
-          // call buildApp
-          mod.scripts.buildReactApp(toolConfig, {
-            ...target.options,
-            appInfo,
-            controllerProps,
-          });
-        });
-      });
-    } else console.log("python build failed");
+                );
+              });
+            });
+            Promise.all(promises).then(() => {
+              // call buildApp
+              mod.scripts.buildReactApp(toolConfig, {
+                ...target.options,
+                appInfo,
+                controllerProps,
+              });
+              res();
+            });
+          })
+          .catch((err) => rej(err));
+      } else {
+        console.log("python build failed");
+        rej();
+      }
+    });
   });
 }
 
 let devProc: ChildProcess;
 let devServerProc: ChildProcess;
 const devControllers: AbortController[] = [];
-async function deployApp(toolConfig: ToolConfig) {
+async function deployApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   const target = toolConfig.targets[0]!;
   const outputDir = target.options["outputDir"];
   if (!outputDir && typeof outputDir !== "string") {
@@ -221,6 +231,10 @@ async function deployApp(toolConfig: ToolConfig) {
       controller.abort();
     });
     process.exit();
+  });
+
+  socket.emit("startPythonServer", (success) => {
+    if (!success) console.log("failed to start python server");
   });
 }
 

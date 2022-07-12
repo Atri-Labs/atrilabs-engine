@@ -1,4 +1,5 @@
 import asyncio
+from asyncio.subprocess import Process
 from math import inf
 import os
 import traceback
@@ -6,6 +7,7 @@ from typing import Any
 import socketio
 import subprocess
 from ..utils.in_venv import in_virtualenv
+from ..utils.run_shell_cmd import run_shell_cmd
 from ..utils.is_pkg_installed import is_pipenv_installed
 from ..utils.install_package import install_with_pipenv
 from shutil import copy
@@ -49,16 +51,16 @@ async def connect_ipc_server(port: str):
     return sio
 
 def handle_ipc_events(sio, paths):
+    python_server_proc = None
     @sio.on("doComputeInitialState")
     async def doComputeInitialState(route: str, page_state: str):
         print("doComputeInitialState called")
         try:
             app_dir = paths["app_dir"]
-            controllers_dir = os.path.join(app_dir, "controllers")
             child_proc = subprocess.Popen(
-                ["python", "-m", "server", "compute", "--route", route, "--state", page_state],
+                ["python", "-m", "controllers.server", "compute", "--route", route, "--state", page_state],
                 stdout=subprocess.PIPE,
-                cwd=controllers_dir
+                cwd=app_dir
                 )
             out = child_proc.stdout.read()
             return True, out
@@ -112,7 +114,15 @@ def handle_ipc_events(sio, paths):
                 else:
                     print("Failed to detect virtual env type. Currently supported are pipenv")
         return True
-
+    @sio.on("doStartPythonServer")
+    async def doStartPythonServer():
+        print("doStartPythonServer called")
+        nonlocal python_server_proc
+        app_dir = paths["app_dir"]
+        if python_server_proc == None:
+            python_server_proc = await run_shell_cmd("python -m controllers.server serve", app_dir)
+            await python_server_proc.wait()
+            python_server_proc = None
 async def start_ipc_connection(port: str, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
     paths = {"app_dir": abs_app_dir}

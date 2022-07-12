@@ -17,8 +17,8 @@ def getRouteDetails(route: str, routes_dir: str) -> RouteDetails:
         replaceWith = ""
     else:
         replaceWith = route.replace("/", ".")
-    atriPy = routes_dir + replaceWith + ".atri"
-    mainPy = routes_dir + replaceWith + ".main"
+    atriPy = "." + routes_dir + replaceWith + ".atri"
+    mainPy = "." + routes_dir + replaceWith + ".main"
     routeDetails: RouteDetails = {"atriPy": atriPy, "mainPy": mainPy}
     return routeDetails
 
@@ -53,7 +53,7 @@ def main(ctx, dir):
     ctx.obj = {"dir": dir}
 
 @main.command("serve")
-@click.option("--port", default="4006")
+@click.option("--port", default="4007")
 @click.option("--host", default="0.0.0.0")
 @click.pass_obj
 def serve(obj, port, host):
