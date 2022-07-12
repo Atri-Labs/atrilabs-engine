@@ -1,0 +1,10 @@
+/* .cp-holder{
+    position: relative;
+    display: flex;
+} */
+.colorPalette{
+    position: absolute;
+    right: 16.5rem;
+    bottom: 1rem;
+    z-index: 99999999;
+}
