@@ -93,7 +93,10 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
             )
             await asyncio.wait([open_editor_task, connect_local_task])
     # Now run the tasks(in the event loop) 
-    asyncio.run(main_wrapper())
+    try:
+        asyncio.run(main_wrapper())
+    except:
+        pass
 
 @main.group()
 def check():
