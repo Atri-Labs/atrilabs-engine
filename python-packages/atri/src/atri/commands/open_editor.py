@@ -1,6 +1,7 @@
 import os
 import asyncio
 from ..utils.run_shell_cmd import run_shell_cmd
+from .. import __version__
 
 def port_map(host: str, container: str):
     return host + ":" + container
@@ -21,7 +22,7 @@ async def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
         "-v", volume_map(abs_app_dir, "controllers", "/code/node_modules/.targets/controllers"),
         "-v", volume_map(abs_app_dir, "atri-app", "/code/node_modules/.targets/atri-app"),
         "-v", volume_map(abs_app_dir, "assets", "/code/node_modules/.targets/assets"),
-        "atrilabs/atrieditor"
+        "atrilabs/atrieditor:" + __version__
         ])
     child_proc = await run_shell_cmd(cmd, os.getcwd())
     return child_proc

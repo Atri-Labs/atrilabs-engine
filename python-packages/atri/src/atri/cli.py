@@ -39,13 +39,13 @@ def open():
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
-def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
+@click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir, no_debug):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
-    globals["in_debug_mode"] = debug
+    globals["in_debug_mode"] = not no_debug
     exe_open_editor(e_port, w_port, m_port, p_port, u_port, app_dir)
 
 @main.group('connect')
@@ -59,9 +59,9 @@ def connect():
 @connect.command("local")
 @click.option('--u-port', default="4006", help='port on which publish server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
-def connect_local(u_port, app_dir, debug):
-    globals["in_debug_mode"] = debug
+@click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def connect_local(u_port, app_dir, no_debug):
+    globals["in_debug_mode"] = not no_debug
     exe_connect_local(u_port, app_dir)
 
 @main.command()
@@ -71,7 +71,7 @@ def connect_local(u_port, app_dir, debug):
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
-@click.option('--debug', default=False, show_default=True, help='run the command in debug mode')
+@click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
 def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
     globals["in_debug_mode"] = debug
     async def check_req_wrapper():
@@ -101,9 +101,9 @@ def check():
     pass
 
 @check.command()
-@click.option('--debug', default=True, show_default=True, help='run the command in debug mode')
-def req(debug):
-    globals["in_debug_mode"] = debug
+@click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def req(no_debug):
+    globals["in_debug_mode"] = not no_debug
     ok = asyncio.run(check_requisite())
     if not ok:
         print("If you want to report this issue,",
