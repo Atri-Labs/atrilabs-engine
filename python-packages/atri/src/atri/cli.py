@@ -1,5 +1,4 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
-from email.policy import default
 import click
 import asyncio
 from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
