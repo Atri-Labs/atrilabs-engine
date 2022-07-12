@@ -83,7 +83,7 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
   const aliases = Object.keys(pageState);
   const formattedState: { [alias: string]: any } = {};
   aliases.forEach((alias) => {
-    formattedState[alias] = pageState[alias];
+    formattedState[alias] = pageState[alias]["props"];
   });
   return formattedState;
 }
