@@ -3,7 +3,7 @@ import { ForestManager } from "@atrilabs/forest";
 
 export function createForestMgr(toolConfig: ToolConfig) {
   const forestManager = require(toolConfig["forestManager"]["path"])["default"](
-    toolConfig["forestManager"]["options"]
+    { ...toolConfig["forestManager"]["options"], mode: "readonly" }
   );
   return forestManager as ForestManager;
 }
