@@ -7,6 +7,8 @@ from .commands.connect_local import run as exe_connect_local, start_ipc_connecti
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
 import webbrowser
+from asyncio.exceptions import CancelledError
+from .utils.printd import printd
 
 @click.group()
 def main():
@@ -98,16 +100,18 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
             )
             try:
                 await asyncio.wait([open_editor_task, connect_local_task])
-            except:
+            except CancelledError:
+                # socket.io AsyncClient throws CancelledError
                 pass
+            except:
+                print("Some error occured while closing atri cli.")
+                printd(sys.exc_info())
+                exit(1)
             sys.stdout.close()
             sys.stderr.close()
             exit(0)
     # Now run the tasks(in the event loop) 
-    try:
-        asyncio.run(main_wrapper())
-    except:
-        pass
+    asyncio.run(main_wrapper())
 
 @main.group()
 def check():
