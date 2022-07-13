@@ -13,7 +13,7 @@ def volume_map(app_dir:str, subdir: str, container_dir: str):
 async def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
     cmd = " ".join([
-        "docker", "run", "--rm", "-it",
+        "docker", "run", "--rm",
         "-p", port_map(e_port, "4001"),
         "-p", port_map(w_port, "4002"),
         "-p", port_map(m_port, "4003"),

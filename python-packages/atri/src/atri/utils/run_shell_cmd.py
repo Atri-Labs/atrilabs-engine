@@ -5,6 +5,7 @@ async def run_shell_cmd(cmd: str, cwd: str, pipe: bool = True):
         cmd,
         stdout=asyncio.subprocess.PIPE if pipe else None,
         stderr=asyncio.subprocess.PIPE if pipe else None,
+        stdin=asyncio.subprocess.DEVNULL if pipe else None,
         cwd=cwd
         )
     return proc
