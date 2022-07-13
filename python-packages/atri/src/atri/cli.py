@@ -102,13 +102,13 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
                 await asyncio.wait([open_editor_task, connect_local_task])
             except CancelledError:
                 # socket.io AsyncClient throws CancelledError
-                pass
+                # closing stderr to prevent showing error
+                sys.stdout.close()
+                sys.stderr.close()
             except:
                 print("Some error occured while closing atri cli.")
                 printd(sys.exc_info())
                 exit(1)
-            sys.stdout.close()
-            sys.stderr.close()
             exit(0)
     # Now run the tasks(in the event loop) 
     asyncio.run(main_wrapper())
