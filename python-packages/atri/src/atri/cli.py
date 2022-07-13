@@ -9,6 +9,7 @@ from .commands.check_requisite import check_requisite
 import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
+import signal
 
 @click.group()
 def main():
@@ -82,6 +83,11 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
         return ok
     async def open_editor_wrapper():
         child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, u_port, app_dir)
+        # terminate docker process if SIGINT, SIGTERM is received
+        def handle_signal(a, b):
+            child_proc.terminate()
+        signal.signal(signal.SIGINT, handle_signal)
+        signal.signal(signal.SIGTERM, handle_signal)
         print("Success! Visit http://localhost:4002 to access the editor.")
         await asyncio.sleep(2)
         webbrowser.open("http://localhost:4002", new=0, autoraise=True)
