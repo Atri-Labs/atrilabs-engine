@@ -5,7 +5,9 @@ import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
 import { FlexChild } from "./components/flexchild/FlexChild";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import SpacingProperty from "./components/spacing/SpacingProperty";
 import { Typography } from "./components/typography/Typography";
+import Position from "./components/position/Position";
 
 export type TabBodyProps = {
   alias: string;
@@ -55,6 +57,12 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.positionOptions ? (
+        <Position styles={props.styles} patchCb={props.patchCb} />
+      ) : null}
+      {props.treeOptions && props.treeOptions.spacingOptions ? (
+        <SpacingProperty styles={props.styles} patchCb={props.patchCb} />
       ) : null}
       {props.treeOptions && props.treeOptions.flexChildOptions ? (
         <FlexChild styles={props.styles} patchCb={props.patchCb} />

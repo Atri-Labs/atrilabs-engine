@@ -25,6 +25,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
   },
   rightPart: {
+    position: "relative",
     height: "100%",
     width: "15rem",
     display: "flex",

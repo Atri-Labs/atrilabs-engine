@@ -76,6 +76,7 @@ const acceptsChild: AcceptsChildFunction = (info: any) => {
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: true,
   flexChildOptions: true,
+  positionOptions: true,
   typographyOptions: true,
   spacingOptions: true,
   sizeOptions: true,
