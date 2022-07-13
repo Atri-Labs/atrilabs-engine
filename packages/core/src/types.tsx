@@ -72,16 +72,16 @@ export type ToolConfig = {
     eventServer: { path: string; options: any };
     manifestServer: { path: string; options: any };
     publishServer: { path: string; options: any };
+    ipcServer: { path: string; options: any };
   };
   targets: {
     targetName: string;
     hint: string;
     description: string;
-    tasks: {
-      generate: { path: string; options: any };
-      build: { path: string; options: any };
-      deploy: { path: string; options: any };
+    tasksHandler: {
+      modulePath: string;
     };
+    options: any;
   }[];
   /**
    * All the clients must default export their API.

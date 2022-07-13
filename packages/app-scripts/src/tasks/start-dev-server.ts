@@ -8,10 +8,44 @@ import {
   buildInfoFile,
   buildInfoFilename,
   buildServer,
+  serverInfoFile,
 } from "../shared/utils";
+import http from "http";
 
 const mode = getMode();
 setNodeAndBabelEnv(mode);
+
+const buildStage = { app: "", server: "" };
+function checkIfBothDone() {
+  if (buildStage["app"] === "done" && buildStage["server"] === "done") {
+    return true;
+  }
+  return false;
+}
+function sendReloadSignalToServer() {
+  const serverInfo = JSON.parse(fs.readFileSync(serverInfoFile).toString());
+  const serverPort: number = serverInfo["port"];
+  const request = http.request({
+    method: "POST",
+    host: "localhost",
+    port: serverPort,
+    path: "/reload-all-dev-sockets",
+  });
+  request.on("response", (resp) => {
+    resp.on("error", (err) => {
+      console.log("response has some error\n", err);
+    });
+  });
+  request.on("error", (err) => {
+    console.log("request failed with error\n", err);
+  });
+  request.end();
+}
+
+function resetBuildStages() {
+  buildStage["app"] = "";
+  buildStage["server"] = "";
+}
 
 try {
   const buildInfo = JSON.parse(fs.readFileSync(buildInfoFile).toString());
@@ -52,6 +86,7 @@ try {
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
       addWatchOptions: true,
+      wsClientEntry: path.resolve(__dirname, "..", "shared", "wsclient"),
     });
     const serverEntry: string = buildInfo["serverEntry"];
     const serverSrc: string = buildInfo["serverSrc"];
@@ -79,18 +114,30 @@ try {
     });
     buildAppCompiler.hooks.watchRun.tap("build-app-watch-run", (_compiler) => {
       console.log("build-app-watch-run called");
+      buildStage["app"] = "pending";
     });
     buildAppCompiler.hooks.done.tap("build-app-done", () => {
       console.log("build-app-done called");
+      buildStage["app"] = "done";
+      if (checkIfBothDone()) {
+        sendReloadSignalToServer();
+        resetBuildStages();
+      }
     });
     buildServerCompiler.hooks.watchRun.tap(
       "build-server-watch-run",
       (_compiler) => {
         console.log("build-server-watch-run called");
+        buildStage["server"] = "pending";
       }
     );
     buildServerCompiler.hooks.done.tap("build-server-done", () => {
       console.log("build-server-done called");
+      buildStage["server"] = "done";
+      if (checkIfBothDone()) {
+        sendReloadSignalToServer();
+        resetBuildStages();
+      }
     });
     // wait for kill signals
     ["SIGINT", "SIGTERM"].forEach(function (sig) {
