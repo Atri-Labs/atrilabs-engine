@@ -24,23 +24,23 @@ def getRouteDetails(route: str, routes_dir: str) -> RouteDetails:
 
 def compute_initial_state(route: RouteDetails, incoming_state):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package="controllers")
+    atri_mod = import_module(atri_py, package=__package__)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package="controllers")
+    main_mod = import_module(main_py, package=__package__)
     init_state = getattr(main_mod, "init_state")
     init_state(atri_obj)
     return atri_obj
 
 def compute_new_state(route: RouteDetails, incoming_state, event):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package="controllers")
+    atri_mod = import_module(atri_py, package=__package__)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     getattr(atri_obj, "set_event")(event)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package="controllers")
+    main_mod = import_module(main_py, package=__package__)
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj)
     delattr(atri_obj, "event_data")
