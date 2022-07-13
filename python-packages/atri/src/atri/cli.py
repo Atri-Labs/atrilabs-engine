@@ -1,4 +1,5 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
+import sys
 import click
 import asyncio
 from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
@@ -91,7 +92,13 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
             connect_local_task = asyncio.create_task(
                 connect_local_wrapper()
             )
-            await asyncio.wait([open_editor_task, connect_local_task])
+            try:
+                await asyncio.wait([open_editor_task, connect_local_task])
+            except:
+                pass
+            sys.stdout.close()
+            sys.stderr.close()
+            exit()
     # Now run the tasks(in the event loop) 
     try:
         asyncio.run(main_wrapper())
