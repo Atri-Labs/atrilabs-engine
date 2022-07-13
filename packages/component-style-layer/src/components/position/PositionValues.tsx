@@ -28,7 +28,7 @@ export const PositionLeft: React.FC<PositionInput> = ({ onMouseDown }) => {
 export const PositionRight: React.FC<PositionInput> = ({ onMouseDown }) => {
   return (
     <path
-      id="postionRightTrapezoid"
+      id="positionRightTrapezoid"
       fill={gray600}
       d="M 165,22 v 56 l -34,-19 v -18 Z"
       onMouseDown={onMouseDown}

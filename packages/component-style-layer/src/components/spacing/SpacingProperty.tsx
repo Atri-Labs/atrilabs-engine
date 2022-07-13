@@ -24,9 +24,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   header: {
     ...h5Heading,
     color: gray200,
+    display: "flex",
+    height: "25px",
     paddingBottom: "0.5rem",
     paddingLeft: "0.5rem",
     marginTop: "10px",
+    userSelect: "none",
   },
   drop: {
     display: "flex",
@@ -37,14 +40,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     position: "relative",
   },
   marginPaddingBoxContainer: {
-    // position: "absolute",
+    position: "relative",
     marginLeft: "0.75rem",
   },
   //Placeholders For Margin
   marginTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "98px",
+    left: "89px",
     top: "1px",
     userSelect: "none",
     outline: "none",
@@ -58,7 +61,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "98px",
+    left: "89px",
     bottom: "5px",
     userSelect: "none",
     outline: "none",
@@ -72,8 +75,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    right: "-2px",
-    top: "40px",
+    left: "172px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -86,8 +89,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "20px",
-    top: "40px",
+    left: "5px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -101,7 +104,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "98px",
+    left: "89px",
     top: "22px",
     userSelect: "none",
     outline: "none",
@@ -115,7 +118,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "98px",
+    left: "89px",
     bottom: "26px",
     userSelect: "none",
     outline: "none",
@@ -129,8 +132,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    right: "33px",
-    top: "40px",
+    left: "136.5px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -143,8 +146,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "55px",
-    top: "40px",
+    left: "40.5px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -159,8 +162,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray50,
     position: "absolute",
-    left: "15px",
-    top: "-8px",
+    left: "4px",
+    top: "-7px",
     userSelect: "none",
     pointerEvents: "none",
   },
@@ -168,7 +171,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray50,
     position: "absolute",
-    left: "52px",
+    left: "40px",
     top: "13px",
     userSelect: "none",
     pointerEvents: "none",
@@ -314,7 +317,6 @@ const dragMachine = createMachine({
 
 // SpacingProperty is a controlled component
 const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
-  const [toggleClass, setToggleClass] = useState(true);
   const [showProperties, setShowProperties] = useState(true);
   const [state, send] = useMachine(dragMachine);
 
@@ -538,65 +540,65 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       </div>
       <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <main style={styles.mainContainer}>
-          {/*Margin PlaceHolders*/}
-          <input
-            value={marginTopVal || ""}
-            onChange={handleChangeMarginTop}
-            placeholder={marginTopVal || "0"}
-            style={styles.marginTopPlaceHolder}
-          />
-          <input
-            value={marginRightVal || ""}
-            onChange={handleChangeMarginRight}
-            placeholder={marginRightVal || "0"}
-            style={styles.marginRightPlaceHolder}
-          />
-          <input
-            value={marginBottomVal || ""}
-            onChange={handleChangeMarginBottom}
-            placeholder={marginBottomVal || "0"}
-            style={styles.marginBottomPlaceHolder}
-          />
-
-          <input
-            value={marginLeftVal || ""}
-            onChange={handleChangeMarginLeft}
-            placeholder={marginLeftVal || "0"}
-            style={styles.marginLeftPlaceHolder}
-          />
-          {/*Padding Placeholders*/}
-          <input
-            value={paddingTopVal || ""}
-            onChange={handleChangePaddingTop}
-            placeholder={paddingTopVal || "0"}
-            style={styles.paddingTopPlaceHolder}
-          />
-
-          <input
-            value={paddingRightVal || ""}
-            onChange={handleChangePaddingRight}
-            placeholder={paddingRightVal || "0"}
-            style={styles.paddingRightPlaceHolder}
-          />
-
-          <input
-            value={paddingBottomVal || ""}
-            onChange={handleChangePaddingBottom}
-            placeholder={paddingBottomVal || "0"}
-            style={styles.paddingBottomPlaceHolder}
-          />
-
-          <input
-            value={paddingLeftVal || ""}
-            onChange={handleChangePaddingLeft}
-            placeholder={paddingLeftVal || "0"}
-            style={styles.paddingLeftPlaceHolder}
-          />
-          {/*Margin Label*/}
-          <p style={styles.marginLabel}>Margin</p>
-          {/* Padding Label */}
-          <p style={styles.paddingLabel}>Padding</p>
           <div style={styles.marginPaddingBoxContainer}>
+            {/*Margin PlaceHolders*/}
+            <input
+              value={marginTopVal || ""}
+              onChange={handleChangeMarginTop}
+              placeholder={marginTopVal || "0"}
+              style={styles.marginTopPlaceHolder}
+            />
+            <input
+              value={marginRightVal || ""}
+              onChange={handleChangeMarginRight}
+              placeholder={marginRightVal || "0"}
+              style={styles.marginRightPlaceHolder}
+            />
+            <input
+              value={marginBottomVal || ""}
+              onChange={handleChangeMarginBottom}
+              placeholder={marginBottomVal || "0"}
+              style={styles.marginBottomPlaceHolder}
+            />
+
+            <input
+              value={marginLeftVal || ""}
+              onChange={handleChangeMarginLeft}
+              placeholder={marginLeftVal || "0"}
+              style={styles.marginLeftPlaceHolder}
+            />
+            {/*Padding Placeholders*/}
+            <input
+              value={paddingTopVal || ""}
+              onChange={handleChangePaddingTop}
+              placeholder={paddingTopVal || "0"}
+              style={styles.paddingTopPlaceHolder}
+            />
+
+            <input
+              value={paddingRightVal || ""}
+              onChange={handleChangePaddingRight}
+              placeholder={paddingRightVal || "0"}
+              style={styles.paddingRightPlaceHolder}
+            />
+
+            <input
+              value={paddingBottomVal || ""}
+              onChange={handleChangePaddingBottom}
+              placeholder={paddingBottomVal || "0"}
+              style={styles.paddingBottomPlaceHolder}
+            />
+
+            <input
+              value={paddingLeftVal || ""}
+              onChange={handleChangePaddingLeft}
+              placeholder={paddingLeftVal || "0"}
+              style={styles.paddingLeftPlaceHolder}
+            />
+            {/*Margin Label*/}
+            <p style={styles.marginLabel}>Margin</p>
+            {/* Padding Label */}
+            <p style={styles.paddingLabel}>Padding</p>
             <Spacing
               onMouseDownMarginTop={onMouseDownMarginTop}
               onMouseDownMarginRight={onMouseDownMarginRight}

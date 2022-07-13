@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import PropertyRender from "../commons/PropertyRender";
 import {
   gray200,
@@ -23,6 +23,7 @@ import { ReactComponent as CN } from "../../assets/position/clear/none-icon.svg"
 import { ReactComponent as CB } from "../../assets/position/clear/both-icon.svg";
 import { BorderInput } from "../commons/BorderInput";
 import PositionTrapezoid from "./PositionTrapezoid";
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 
 export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
@@ -81,7 +82,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "92px",
+    left: "89px",
     top: "22px",
     userSelect: "none",
     outline: "none",
@@ -95,8 +96,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "92px",
-    bottom: "24px",
+    left: "89px",
+    bottom: "22.5px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -109,8 +110,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    right: "45px",
-    top: "40px",
+    left: "136.5px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -123,8 +124,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "45px",
-    top: "40px",
+    left: "42.5px",
+    top: "41px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -135,9 +136,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     lineHeight: "10px",
   },
   positionTrapezoid: {
-    marginRight: "0px",
+    position: "relative",
     display: "flex",
-    paddingLeft: "0px",
   },
 };
 //ACTIONS
@@ -233,6 +233,8 @@ const clearValues = ["none", "left", "right", "both"];
 
 const Position: React.FC<CssProprtyComponentType> = (props) => {
   const [state, send] = useMachine(dragMachine);
+  const [showProperties, setShowProperties] = useState(true);
+
   const positionTopVal = props.styles.top?.toString() || "";
   const positionRightVal = props.styles.right?.toString() || "";
   const positionLeftVal = props.styles.left?.toString() || "";
@@ -347,91 +349,103 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
     <>
       <div style={styles.container}>
         <div style={styles.drop}>
+          <DropDownArrow
+            onClick={() => setShowProperties(!showProperties)}
+            style={
+              !showProperties
+                ? { transform: "rotate(-90deg)" }
+                : { transform: "rotate(0deg)" }
+            }
+          />
           <div style={styles.header}>Position</div>
         </div>
-        <PropertyRender
-          styleItem="position"
-          styleText="Position"
-          styleArray={positionValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
+        <div
+          style={showProperties ? { display: "block" } : { display: "none" }}
         >
-          <PS />
-          <PR />
-          <PA />
-          <PF />
-        </PropertyRender>
-        <div style={styles.mainContainer}>
-          <input
-            value={positionTopVal || ""}
-            onChange={handleChangePositionTop}
-            placeholder={positionTopVal || "0"}
-            style={styles.positionTopPlaceHolder}
-          />
+          <PropertyRender
+            styleItem="position"
+            styleText="Position"
+            styleArray={positionValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <PS />
+            <PR />
+            <PA />
+            <PF />
+          </PropertyRender>
+          <div style={styles.mainContainer}>
+            <div style={styles.positionTrapezoid}>
+              <input
+                value={positionTopVal || ""}
+                onChange={handleChangePositionTop}
+                placeholder={positionTopVal || "0"}
+                style={styles.positionTopPlaceHolder}
+              />
 
-          <input
-            value={positionRightVal || ""}
-            onChange={handleChangePositionRight}
-            placeholder={positionRightVal || "0"}
-            style={styles.positionRightPlaceHolder}
-          />
+              <input
+                value={positionRightVal || ""}
+                onChange={handleChangePositionRight}
+                placeholder={positionRightVal || "0"}
+                style={styles.positionRightPlaceHolder}
+              />
 
-          <input
-            value={positionBottomVal || ""}
-            onChange={handleChangePositionBottom}
-            placeholder={positionBottomVal || "0"}
-            style={styles.positionBottomPlaceHolder}
-          />
+              <input
+                value={positionBottomVal || ""}
+                onChange={handleChangePositionBottom}
+                placeholder={positionBottomVal || "0"}
+                style={styles.positionBottomPlaceHolder}
+              />
 
-          <input
-            value={positionLeftVal || ""}
-            onChange={handleChangePositionLeft}
-            placeholder={positionLeftVal || "0"}
-            style={styles.positionLeftPlaceHolder}
-          />
-          <div style={styles.positionTrapezoid}>
-            <PositionTrapezoid
-              onMouseDownPositionTop={onMouseDownPositionTop}
-              onMouseDownPositionRight={onMouseDownPositionRight}
-              onMouseDownPositionBottom={onMouseDownPositionBottom}
-              onMouseDownPositionLeft={onMouseDownPositionLeft}
-            />
+              <input
+                value={positionLeftVal || ""}
+                onChange={handleChangePositionLeft}
+                placeholder={positionLeftVal || "0"}
+                style={styles.positionLeftPlaceHolder}
+              />
+              <PositionTrapezoid
+                onMouseDownPositionTop={onMouseDownPositionTop}
+                onMouseDownPositionRight={onMouseDownPositionRight}
+                onMouseDownPositionBottom={onMouseDownPositionBottom}
+                onMouseDownPositionLeft={onMouseDownPositionLeft}
+              />
+            </div>
           </div>
-        </div>
-        <div style={styles.zindex}>
-          <div style={styles.optionName}>z-index</div>
-          <div style={{ width: "55px", marginRight: "10px" }}>
-            <BorderInput
-              styleItem="zIndex"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="1"
-            />
+          <div style={styles.zindex}>
+            <div style={styles.optionName}>z-index</div>
+            <div style={{ width: "55px", marginRight: "10px" }}>
+              <BorderInput
+                styleItem="zIndex"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="1"
+              />
+            </div>
           </div>
+          <PropertyRender
+            styleItem="float"
+            styleText="Float"
+            styleArray={floatValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <FN />
+            <FL />
+            <FR />
+          </PropertyRender>
+          <PropertyRender
+            styleItem="clear"
+            styleText="Clear"
+            styleArray={clearValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <CN />
+            <CL />
+            <CR />
+            <CB />
+          </PropertyRender>
         </div>
-        <PropertyRender
-          styleItem="float"
-          styleText="Float"
-          styleArray={floatValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <FN />
-          <FL />
-          <FR />
-        </PropertyRender>
-        <PropertyRender
-          styleItem="clear"
-          styleText="Clear"
-          styleArray={clearValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <CN />
-          <CL />
-          <CR />
-          <CB />
-        </PropertyRender>
       </div>
     </>
   );
