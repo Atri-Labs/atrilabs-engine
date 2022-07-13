@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/runtime-types",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Contains types for globally available identifiers in a runtime package",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
