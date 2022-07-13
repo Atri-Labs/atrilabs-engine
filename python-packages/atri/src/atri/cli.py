@@ -6,6 +6,7 @@ from .commands.open_editor import run as exe_open_editor, open_editor as open_ed
 from .commands.connect_local import run as exe_connect_local, start_ipc_connection
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
+import webbrowser
 
 @click.group()
 def main():
@@ -79,6 +80,9 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
         return ok
     async def open_editor_wrapper():
         child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, u_port, app_dir)
+        print("Success! Visit http://localhost:4002 to access the editor.")
+        await asyncio.sleep(2)
+        webbrowser.open("http://localhost:4002", new=0, autoraise=True)
         await child_proc.wait()
     async def connect_local_wrapper():
         sio = await start_ipc_connection(u_port, app_dir)
@@ -98,7 +102,7 @@ def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
                 pass
             sys.stdout.close()
             sys.stderr.close()
-            exit()
+            exit(0)
     # Now run the tasks(in the event loop) 
     try:
         asyncio.run(main_wrapper())
