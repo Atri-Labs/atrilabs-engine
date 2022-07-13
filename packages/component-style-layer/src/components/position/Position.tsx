@@ -1,11 +1,9 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import PropertyRender from "../commons/PropertyRender";
 import {
   gray200,
-  gray800,
   gray100,
   gray400,
-  gray50,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
@@ -136,10 +134,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     lineHeight: "10px",
   },
-  positionTrapezoid : {
+  positionTrapezoid: {
     marginRight: "0px",
     display: "flex",
-    paddingLeft : "0px",
+    paddingLeft: "0px",
   },
 };
 //ACTIONS
@@ -316,7 +314,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePositionTop = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
     let attrValue = event.target.value;
     props.patchCb({
       property: { styles: { top: parseInt(attrValue) } },
@@ -325,7 +322,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePositionRight = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
     let attrValue = event.target.value;
     props.patchCb({
       property: { styles: { right: parseInt(attrValue) } },
@@ -334,7 +330,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePositionLeft = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
     let attrValue = event.target.value;
     props.patchCb({
       property: { styles: { left: parseInt(attrValue) } },
@@ -343,7 +338,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePositionBottom = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
     let attrValue = event.target.value;
     props.patchCb({
       property: { styles: { bottom: parseInt(attrValue) } },
