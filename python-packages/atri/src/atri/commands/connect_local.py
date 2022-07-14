@@ -85,9 +85,12 @@ def handle_ipc_events(sio, paths):
                     # run pipenv install
                     child_proc = await install_with_pipenv(app_dir)
                     _, stderr = await child_proc.communicate()
-                    if stderr:
+                    if child_proc.returncode != 0:
                         print("Failed: pipenv install")
-                        printd("[stderr]\n", stderr)
+                        if stderr:
+                            printd("[stderr]\n", stderr)
+                    else:
+                        printd("Installed required python packages.")
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
@@ -106,18 +109,24 @@ def handle_ipc_events(sio, paths):
                             version = version["version"]
                         child_proc = await install_with_pipenv(app_dir, pkg, version)
                         _, stderr = await child_proc.communicate()
-                        if stderr:
-                            print("Failed: pipenv install ", pkg, version)
-                            printd("[stderr]\n", stderr)
+                        if child_proc.returncode != 0:
+                            print("Failed: pipenv install", pkg, version)
+                            if stderr:
+                                printd("[stderr]\n", stderr)
+                        else:
+                            printd("Installed", pkg, version)
                     for pkg in dev_pkgs:
                         version = dev_pkgs[pkg]
                         if type(version) != str:
                             version = version["version"]
                         child_proc = await install_with_pipenv(app_dir, pkg, version)
                         _, stderr = await child_proc.communicate()
-                        if stderr:
-                            print("Failed: pipenv install ", pkg, version)
-                            printd("[stderr]\n", stderr)
+                        if child_proc.returncode != 0:
+                            print("Failed: pipenv install", pkg, version)
+                            if stderr:
+                                printd("[stderr]\n", stderr)
+                        else:
+                            printd("Installed", pkg, version)
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
