@@ -8,35 +8,41 @@ import { getReactAppTemplateManager } from "../../getReactTemplateManager";
 import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
-  exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
-    if (err) {
-      console.log("Installing packages failed with error\n", err);
-    }
-    if (stderr) {
-      console.log("Installing packages stderr\n", stderr);
-    }
-    if (stdout) {
-      console.log("Installed packages\n", stdout);
-    }
+  return new Promise<void>((res) => {
+    exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+      if (err) {
+        console.log("Installing packages failed with error\n", err);
+      }
+      if (stderr) {
+        console.log("Installing packages stderr\n", stderr);
+      }
+      if (stdout) {
+        console.log("Installed packages\n", stdout);
+      }
+      res();
+    });
   });
 }
 
 function buildServer(reactAppRootDest: string) {
-  exec(
-    "yarn run buildServer",
-    { cwd: reactAppRootDest },
-    (err, stdout, stderr) => {
-      if (err) {
-        console.log("Build server failed with error\n", err);
+  return new Promise<void>((res) => {
+    exec(
+      "yarn run buildServer",
+      { cwd: reactAppRootDest },
+      (err, stdout, stderr) => {
+        if (err) {
+          console.log("Build server failed with error\n", err);
+        }
+        if (stderr) {
+          console.log("Build server stderr\n", stderr);
+        }
+        if (stdout) {
+          console.log("Server built\n", stdout);
+        }
+        res();
       }
-      if (stderr) {
-        console.log("Build server stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("Server built\n", stdout);
-      }
-    }
-  );
+    );
+  });
 }
 
 function updateAppStoreWithControllerProps(
@@ -82,11 +88,11 @@ export default async function buildReactApp(
   });
   // install dependencies if node_modules is missing
   if (!fs.existsSync(path.resolve(options.outputDir, "node_modules"))) {
-    installDependencies(path.resolve(options.outputDir));
+    await installDependencies(path.resolve(options.outputDir));
   }
   // run tsc if dist/server if missing
   if (!fs.existsSync(path.resolve(options.outputDir, "dist", "server"))) {
-    buildServer(path.resolve(options.outputDir));
+    await buildServer(path.resolve(options.outputDir));
   }
   // update props from controller if available
   updateAppStoreWithControllerProps(options, reactTemplateManager);
