@@ -13,23 +13,27 @@ export const styles: { [key: string]: React.CSSProperties } = {
     height: "3rem",
   },
   image: {
-    width: "5.5rem",
+    width: "6rem",
     height: "3rem",
     objectFit: "fill",
   },
   imageText: {
+    width: "6rem",
     ...smallText,
     color: gray200,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 };
 
-function InputImage(props: any) {
+function InputImage(props: { url: string; imageText: string }) {
   return (
     <div style={styles.imageBox}>
       <div style={styles.imageContainer}>
         <img style={styles.image} src={props.url} alt="" />
       </div>
-      <p style={styles.imageText}>Image-1.png</p>
+      <p style={styles.imageText}>{props.imageText}</p>
     </div>
   );
 }

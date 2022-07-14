@@ -7,17 +7,18 @@ import {
   h1Heading,
   h4Heading,
 } from "@atrilabs/design-system";
-import React, { useCallback, useState } from "react";
-// import InputAudio from "../InputAudio";
+import React, { useCallback, useRef, useState } from "react";
+import InputAudio from "../InputAudio";
 import InputImage from "../InputImage";
-// import InputVideo from "../InputVideo";
+import InputVideo from "../InputVideo";
 import { Cross } from "./assets/Cross";
+import { useGetAssetInfo } from "./hooks/useGetAssetList";
 
 export type UploadContainerProps = {
   onCrossClicked?: () => void;
-  onUploadSuccess?: (url: string, mediaType: string) => void;
+  onUploadSuccess?: (url: string) => void;
   onUploadFailed?: () => void;
-  onUploadMultipleSuccess?: (urls: string[], mediaType: string) => any;
+  onUploadMultipleSuccess?: (urls: string[]) => void;
   onSelect?: (url: string) => void;
   // upload mode for allowing upload of new files
   modes?: ("upload" | "upload_multiple" | "draggable" | "select")[];
@@ -37,7 +38,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
   dropContainerItemHeader: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "0.5rem 1rem 0 1rem",
+    padding: "0.5rem 0.5rem 0 1rem",
   },
   dropContainerItemHeaderH4: {
     ...h1Heading,
@@ -47,30 +48,34 @@ export const styles: { [key: string]: React.CSSProperties } = {
   icons: {},
   iconsSpan: {},
   uploadBox: {
+    display: "none",
+  },
+  selectMediaTypeBtn: {
     ...h4Heading,
+    border: "none",
+    outline: "none",
     background: amber300,
-    boxShadow: "0px 4px 4px rgba(55, 65, 81, 0.5)",
     borderRadius: "4px",
     color: gray900,
-    padding: "5px 10px",
+    padding: "6px 0",
     textAlign: "center",
     justifyContent: "center",
-    width: "11.75rem",
+    width: "13rem",
     margin: "0 1rem",
   },
   selectMediaTypeDiv: {
     background: gray900,
     marginTop: "30px",
-    marginBottom: "10px",
+    marginBottom: "15px",
   },
-  selectMediaType: {
+  selectMediaTypeSelect: {
     background: gray900,
     color: gray300,
     margin: "0 1rem",
     border: "none",
     outline: "none",
     padding: "0.5rem 0",
-    width: "30%",
+    width: "35%",
   },
   container: {
     display: "grid",
@@ -82,6 +87,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
 
 export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
   const [mediaType, setMediaType] = useState("image");
+  const { assetsInfo, getAssetInfo } = useGetAssetInfo();
 
   const onCrossClickCb = useCallback(() => {
     if (props.onCrossClicked) props.onCrossClicked();
@@ -113,7 +119,7 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
                 if (props.onUploadMultipleSuccess) {
-                  props.onUploadMultipleSuccess(urls, mediaType);
+                  props.onUploadMultipleSuccess(urls);
                 }
               }
             });
@@ -139,15 +145,28 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               if (!success) {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
-                if (props.onUploadSuccess)
-                  props.onUploadSuccess(urls[0], mediaType);
+                getAssetInfo();
+                if (props.onUploadSuccess) props.onUploadSuccess(urls[0]);
               }
             });
           }
         }
       },
-      [props, mediaType]
+      [props, getAssetInfo]
     );
+
+  const refEle = useRef<HTMLInputElement>(null);
+
+  const handleInputClick = useCallback(() => {
+    refEle.current?.click();
+  }, []);
+
+  const handleTypeChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setMediaType(e.target.value);
+    },
+    []
+  );
 
   return (
     <div style={styles.dropContainerItem}>
@@ -161,29 +180,41 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
       </header>
       <div>
         <input
+          ref={refEle}
+          accept="image/*,audio/*,video/*"
           type={"file"}
-          accept={`${mediaType}/*`}
           style={styles.uploadBox}
           multiple={props.modes && props.modes.includes("upload_multiple")}
           onChange={onFileBrowsedCb}
         />
+        <button style={styles.selectMediaTypeBtn} onClick={handleInputClick}>
+          Upload Media
+        </button>
+
         <div style={styles.selectMediaTypeDiv}>
           <select
-            style={styles.selectMediaType}
+            style={styles.selectMediaTypeSelect}
             onChange={(e) => {
-              setMediaType(e.target.value);
+              handleTypeChange(e);
             }}
           >
-            <option value="image">Images</option>
+            <option value="images">Images</option>
             <option value="audio">Audio</option>
             <option value="video">Video</option>
           </select>
         </div>
-        <div style={styles.container}>
-          <InputImage url="./Image/love.mp3" />
-          <InputImage url="./Image/love.mp3" />
-          <InputImage url="./Image/love.mp3" />
-          <InputImage url="./Image/love.mp3" />
+        <div>
+          {mediaType === "images" ? (
+            <div style={styles.container}>
+              {assetsInfo["images"].map((i) => (
+                <InputImage url={i.url} imageText={i.name} />
+              ))}
+            </div>
+          ) : mediaType === "audio" ? (
+            assetsInfo["audio"].map((i) => <InputAudio />)
+          ) : (
+            assetsInfo["video"].map((i) => <InputVideo />)
+          )}
         </div>
       </div>
     </div>

@@ -6,9 +6,9 @@ import {
   UploadContainerProps,
 } from "./components/upload-container/UploadContainer";
 import { ReactComponent as AI } from "./images/asset-icon.svg";
-import InputImage from "./components/InputImage";
-import InputAudio from "./components/InputAudio";
-import InputVideo from "./components/InputVideo";
+// import InputImage from "./components/InputImage";
+// import InputAudio from "./components/InputAudio";
+// import InputVideo from "./components/InputVideo";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -42,29 +42,6 @@ export default function () {
     setShowAssetPanel(false);
   }, []);
 
-  const onUploadSuccess = useCallback((url: string, mediaType: string) => {
-    console.log("success");
-  }, []);
-
-  const onSelect = useCallback((url: string) => {}, []);
-
-  const onUploadMultipleSuccess = useCallback(
-    (urls: string[], mediaType: string) => {
-      if (mediaType === "image") {
-        <div style={styles.container}>
-          {urls.map((i: string) => (
-            <InputImage url={i} />
-          ))}
-        </div>;
-      } else if (mediaType === "audio") {
-        return urls.map((i: string) => <InputAudio url={i} />);
-      } else {
-        return urls.map((i: string) => <InputVideo url={i} />);
-      }
-    },
-    []
-  );
-
   return (
     <>
       <Menu name="AppMenu">
@@ -77,9 +54,6 @@ export default function () {
           <UploadContainer
             modes={modes}
             onCrossClicked={onCrossClicked}
-            onUploadSuccess={onUploadSuccess}
-            onUploadMultipleSuccess={onUploadMultipleSuccess}
-            onSelect={onSelect}
           />
         </Container>
       ) : null}
