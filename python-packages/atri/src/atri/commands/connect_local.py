@@ -79,22 +79,25 @@ def handle_ipc_events(sio, paths):
         if os.path.exists(initial_pipfile_path):
             if not in_virtualenv():
                 # check if pipenv is installed otherwise ask user to install it
-                if is_pipenv_installed():
+                if await is_pipenv_installed():
                     # copy Pipfile to app_dir
                     copy(initial_pipfile_path, final_pipfile_path)
                     # run pipenv install
                     child_proc = await install_with_pipenv(app_dir)
                     _, stderr = await child_proc.communicate()
-                    if stderr:
+                    if child_proc.returncode != 0:
                         print("Failed: pipenv install")
-                        printd("[stderr]\n", stderr)
+                        if stderr:
+                            printd("[stderr]\n", stderr)
+                    else:
+                        printd("Installed required python packages.")
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:
                     print("Please install a pipenv or some other virtual environment.")
             else:
                 # detect virtual env type
-                if is_pipenv_installed():
+                if await is_pipenv_installed():
                     # read Pipfile
                     pipfile_data = toml.load(initial_pipfile_path)
                     pkgs = pipfile_data["packages"]
@@ -106,18 +109,24 @@ def handle_ipc_events(sio, paths):
                             version = version["version"]
                         child_proc = await install_with_pipenv(app_dir, pkg, version)
                         _, stderr = await child_proc.communicate()
-                        if stderr:
-                            print("Failed: pipenv install ", pkg, version)
-                            printd("[stderr]\n", stderr)
+                        if child_proc.returncode != 0:
+                            print("Failed: pipenv install", pkg, version)
+                            if stderr:
+                                printd("[stderr]\n", stderr)
+                        else:
+                            printd("Installed", pkg, version)
                     for pkg in dev_pkgs:
                         version = dev_pkgs[pkg]
                         if type(version) != str:
                             version = version["version"]
                         child_proc = await install_with_pipenv(app_dir, pkg, version)
                         _, stderr = await child_proc.communicate()
-                        if stderr:
-                            print("Failed: pipenv install ", pkg, version)
-                            printd("[stderr]\n", stderr)
+                        if child_proc.returncode != 0:
+                            print("Failed: pipenv install", pkg, version)
+                            if stderr:
+                                printd("[stderr]\n", stderr)
+                        else:
+                            printd("Installed", pkg, version)
                     # delete Pipfile from controllers_dir
                     os.remove(initial_pipfile_path)
                 else:

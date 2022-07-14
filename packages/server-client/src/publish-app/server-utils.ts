@@ -89,7 +89,7 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
 }
 
 function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
-  console.log("[publish_app_server]emitting buildPython");
+  console.log("[publish_app_server] emitting buildPython");
   return new Promise<void>((res, rej) => {
     socket.emit("buildPython", (success) => {
       if (success) {
@@ -152,12 +152,22 @@ function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
             });
             Promise.all(promises).then(() => {
               // call buildApp
-              mod.scripts.buildReactApp(toolConfig, {
-                ...target.options,
-                appInfo,
-                controllerProps,
-              });
-              res();
+              mod.scripts
+                .buildReactApp(toolConfig, {
+                  ...target.options,
+                  appInfo,
+                  controllerProps,
+                })
+                .then(() => {
+                  res();
+                })
+                .catch((err: any) => {
+                  console.log(
+                    "[publish_app_server] Error while calling buildReactApp\n",
+                    err
+                  );
+                  rej(err);
+                });
             });
           })
           .catch((err) => rej(err));

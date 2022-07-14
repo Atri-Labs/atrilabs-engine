@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/manage-canvas-runtime-layer",
-  "version": "0.0.13",
+  "version": "0.0.17",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -28,15 +28,15 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^0.0.13",
-    "@atrilabs/canvas-runtime": "^0.0.13",
-    "@atrilabs/canvas-runtime-utils": "^0.0.13",
-    "@atrilabs/core": "^0.0.13",
-    "@atrilabs/design-system": "^0.0.13",
-    "@atrilabs/layer-types": "^0.0.13",
-    "@atrilabs/react-component-manifest-schema": "^0.0.13",
-    "@atrilabs/scripts": "^0.0.13",
-    "eslint-plugin-atrilabs": "^0.0.13",
+    "@atrilabs/app-design-forest": "^0.0.17",
+    "@atrilabs/canvas-runtime": "^0.0.17",
+    "@atrilabs/canvas-runtime-utils": "^0.0.17",
+    "@atrilabs/core": "^0.0.17",
+    "@atrilabs/design-system": "^0.0.17",
+    "@atrilabs/layer-types": "^0.0.17",
+    "@atrilabs/react-component-manifest-schema": "^0.0.17",
+    "@atrilabs/scripts": "^0.0.17",
+    "eslint-plugin-atrilabs": "^0.0.17",
     "typescript": "4.6.3"
   },
   "devDependencies": {

@@ -118,6 +118,7 @@ export const reactAppNodeTemplatePath = path.resolve(
 export const reactAppToCopyToRoot = [
   path.resolve(reactAppRootTemplate, ".eslintrc.json"),
   path.resolve(reactAppRootTemplate, "atri-app-env.d.ts"),
+  path.resolve(reactAppRootTemplate, ".gitignore"),
 ];
 
 export function getReactAppDestPath(outputDir: string) {
