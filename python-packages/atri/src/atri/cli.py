@@ -41,16 +41,17 @@ def open():
 @click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
 @click.option('--m-port', default="4003", help='port on which manifest server will be attached')
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
+@click.option('--d-port', default="4005", help='port on which generate app server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
 @click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def open_editor(e_port, w_port, m_port, p_port, u_port, app_dir, no_debug):
+def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, app_dir, no_debug):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
     globals["in_debug_mode"] = not no_debug
-    exe_open_editor(e_port, w_port, m_port, p_port, u_port, app_dir)
+    exe_open_editor(e_port, w_port, m_port, p_port, d_port, u_port, app_dir)
 
 @main.group('connect')
 def connect():
@@ -73,16 +74,17 @@ def connect_local(u_port, app_dir, no_debug):
 @click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
 @click.option('--m-port', default="4003", help='port on which manifest server will be attached')
 @click.option('--p-port', default="4004", help='port on which publish server will be attached')
+@click.option('--d-port', default="4005", help='port on which generate app server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--app-dir', default='.', help='directory that contains events/')
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def start(e_port, w_port, m_port, p_port, u_port, app_dir, debug):
+def start(e_port, w_port, m_port, p_port, d_port, u_port, app_dir, debug):
     globals["in_debug_mode"] = debug
     async def check_req_wrapper():
         ok = await check_requisite()
         return ok
     async def open_editor_wrapper():
-        child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, u_port, app_dir)
+        child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, d_port, u_port, app_dir)
         # terminate docker process if SIGINT, SIGTERM is received
         def handle_signal(a, b):
             child_proc.terminate()
