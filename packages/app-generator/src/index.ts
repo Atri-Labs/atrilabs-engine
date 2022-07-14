@@ -23,9 +23,11 @@ import {
   getManifest,
   getPackageVersion,
   getReactAppDestPath,
+  getReactAppNodeDestPath,
   getReactAppServerDestPath,
   getReactPackageJSONDestPath,
   pythonAppTemplatePath,
+  reactAppNodeTemplatePath,
   reactAppPackageJSON,
   reactAppRootTemplate,
   reactAppServerTemplatePath,
@@ -76,8 +78,11 @@ export default async function (
       reactAppRootTemplate,
       reactAppPackageJSON,
       reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
+      reactAppNodeTemplatePath: reactAppNodeTemplatePath,
+      reactAppNodeDestPath: getReactAppNodeDestPath(options.outputDir),
     },
-    options.rootComponentId
+    options.rootComponentId,
+    toolConfig.assetManager
   );
 
   const componentGeneratorFunctions: {

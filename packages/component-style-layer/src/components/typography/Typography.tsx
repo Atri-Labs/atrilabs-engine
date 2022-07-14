@@ -17,6 +17,7 @@ import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
+import fonts from "../commons/fonts.json";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -72,20 +73,39 @@ const textAlignValues = ["left", "right", "center", "justify"];
 export const Typography: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
 
-  function handleFontChange(
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
-    fontItem: keyof React.CSSProperties
-  ) {
-    props.patchCb({
-      property: {
-        styles: {
-          [fontItem]: parseInt(e.target.value),
+  const handleFontChange = useCallback(
+    (
+      e:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLSelectElement>,
+      fontItem: keyof React.CSSProperties
+    ) => {
+      props.patchCb({
+        property: {
+          styles: {
+            [fontItem]: parseInt(e.target.value),
+          },
         },
-      },
-    });
-  }
+      });
+    },
+    [props]
+  );
+
+  const handleFontFamChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const styleEle = document.createElement("style");
+      styleEle.innerHTML = `@import url("https://fonts.googleapis.com/css?family=${e.target.value}&display=swap");`;
+      document.body.appendChild(styleEle);
+      props.patchCb({
+        property: {
+          styles: {
+            fontFamily: e.target.value,
+          },
+        },
+      });
+    },
+    [props]
+  );
 
   const opacityPreProcessor = useCallback(
     (value: string | number | undefined, mode: "read" | "write") => {
@@ -129,21 +149,19 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <div>
             <select
               name="fontFamily"
-              onChange={(e) => handleFontChange(e, "fontFamily")}
               style={{ ...styles.inputBox, width: "145px" }}
+              onChange={(e) => handleFontFamChange(e)}
             >
-              <option style={styles.select} value="Inter">
-                Inter
-              </option>
-              <option style={styles.select} value="Roboto">
-                Roboto
-              </option>
-              <option style={styles.select} value="Lora">
-                Lora
-              </option>
-              <option style={styles.select} value="Sans-serif">
-                Sans-serif
-              </option>
+              {fonts.map((i) => (
+                <option
+                  key={i.id}
+                  style={styles.select}
+                  value={i.value}
+                  selected={props.styles.fontFamily === i.value}
+                >
+                  {i.fontFamily}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -232,3 +250,18 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
     </div>
   );
 };
+
+// const loadFont = (name: string, source: string) => {
+//   const font = new FontFace(name, `url(${source})`);
+//   font
+//     .load()
+//     .then(function (loadedFont: any) {
+//       document.fonts.add(loadedFont);
+//       document.body.style.fontFamily = name;
+//       console.log(loadedFont);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// }
+// loadFont(fontName, url);

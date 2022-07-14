@@ -37,7 +37,8 @@ function getAllPaths(manifestPkgInfo: ManifestPkgInfo) {
 async function updateBuildCache(
   buildCacheFile: string,
   manifestDir: string,
-  pkg: string
+  pkg: string,
+  freeze: boolean
 ) {
   // create cache file if not already exist - default value {}
   if (!fs.existsSync(buildCacheFile)) {
@@ -47,14 +48,15 @@ async function updateBuildCache(
   const cache: Cache = JSON.parse(fs.readFileSync(buildCacheFile).toString());
   // re/write timestamp for all files in the manifest directory of pkg
   const files = getFiles(manifestDir);
+  cache[pkg] = {
+    files: {},
+    freeze: freeze,
+  };
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
     const stat = await fs.promises.stat(file);
     const timestamp = stat.mtime;
-    if (!cache[pkg]) {
-      cache[pkg] = {};
-    }
-    cache[pkg]![path.relative(manifestDir, file)] = { timestamp };
+    cache[pkg]!.files[path.relative(manifestDir, file)] = { timestamp };
   }
   // write back to cache file
   fs.writeFileSync(buildCacheFile, JSON.stringify(cache, null, 2));
@@ -77,10 +79,13 @@ async function checkCache(arg: {
     // cahce hit is checked for each package
     // if any file in the manifest packge has changed, cache miss will happen
     if (cache[arg.pkg]) {
+      if (cache[arg.pkg]?.freeze) {
+        return true;
+      }
       const currentFiles = getFiles(arg.manifestDir)
         .map((filename) => path.relative(arg.manifestDir, filename))
         .sort();
-      const cachedFiles = Object.keys(cache[arg.pkg]!).sort();
+      const cachedFiles = Object.keys(cache[arg.pkg]!.files).sort();
       if (currentFiles.length === cachedFiles.length) {
         let hit = true;
         for (let i = 0; i < currentFiles.length; i++) {
@@ -98,7 +103,7 @@ async function checkCache(arg: {
           );
           if (
             currentStat.mtime.getTime() !==
-            new Date(cache[arg.pkg]![cacheFile]!.timestamp).getTime()
+            new Date(cache[arg.pkg]!.files[cacheFile]!.timestamp).getTime()
           ) {
             console.log(`cache miss mtime mistmatch`, cacheFile);
             hit = false;
@@ -143,7 +148,8 @@ export async function buildManifestPackage(
   manifestDirs: ToolConfig["manifestDirs"],
   pkgManager: ToolConfig["pkgManager"],
   port: number,
-  scriptName: string
+  scriptName: string,
+  freeze: boolean
 ) {
   const manifestPkgBundles: ManifestPkgBundle[] = [];
   for (let i = 0; i < manifestDirs.length; i++) {
@@ -175,6 +181,8 @@ export async function buildManifestPackage(
       manifestDir: buildInfo.dir,
     });
     if (hit) {
+      // freeze flag might have to be updated from false to true and vice versa
+      updateBuildCache(buildCacheFile, buildInfo.dir, pkg, freeze);
       manifestPkgBundles.push({
         src: fs.readFileSync(path.resolve(finalBuild, "bundle.js")).toString(),
         scriptName,
@@ -230,7 +238,7 @@ export async function buildManifestPackage(
       pkg: pkg,
     });
     // update cache
-    updateBuildCache(buildCacheFile, buildInfo.dir, pkg);
+    updateBuildCache(buildCacheFile, buildInfo.dir, pkg, freeze);
   }
   return manifestPkgBundles;
 }

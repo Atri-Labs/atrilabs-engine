@@ -1,30 +1,9 @@
 import { useEffect, useMemo, useReducer } from "react";
-import { subscribeCanvasUpdate } from "./CanvasComponentData";
+import {
+  callCanvasComponentRenderedSubscribers,
+  subscribeCanvasUpdate,
+} from "./CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "./DecoratorRenderer";
-
-const canvasComponentRenderedSubscribers: ((
-  compId: string,
-  updateNum: number
-) => void)[] = [];
-export function subscribeOnComponentRendered(
-  cb: (compId: string, updateNum: number) => void
-) {
-  canvasComponentRenderedSubscribers.push(cb);
-  return () => {
-    const index = canvasComponentRenderedSubscribers.findIndex(
-      (curr) => curr === cb
-    );
-    if (index >= 0) {
-      canvasComponentRenderedSubscribers.splice(index, 1);
-    }
-  };
-}
-function callCanvasComponentRenderedSubscribers(
-  compId: string,
-  updateNum: number
-) {
-  canvasComponentRenderedSubscribers.forEach((cb) => cb(compId, updateNum));
-}
 
 /**
  * MutationDecorator is used with components that cannot accept child.

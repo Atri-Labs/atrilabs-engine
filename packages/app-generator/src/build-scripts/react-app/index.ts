@@ -14,8 +14,10 @@ import {
   getComponentFromManifest,
   getForestDef,
   getReactAppDestPath,
+  getReactAppNodeDestPath,
   getReactAppServerDestPath,
   getReactPackageJSONDestPath,
+  reactAppNodeTemplatePath,
   reactAppPackageJSON,
   reactAppRootTemplate,
   reactAppServerTemplatePath,
@@ -26,6 +28,38 @@ import path from "path";
 import fs from "fs";
 import { exec } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
+
+function installDependencies(reactAppRootDest: string) {
+  exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+    if (err) {
+      console.log("Installing packages failed with error\n", err);
+    }
+    if (stderr) {
+      console.log("Installing packages stderr\n", stderr);
+    }
+    if (stdout) {
+      console.log("Installed packages\n", stdout);
+    }
+  });
+}
+
+function buildServer(reactAppRootDest: string) {
+  exec(
+    "yarn run buildServer",
+    { cwd: reactAppRootDest },
+    (err, stdout, stderr) => {
+      if (err) {
+        console.log("Build server failed with error\n", err);
+      }
+      if (stderr) {
+        console.log("Build server stderr\n", stderr);
+      }
+      if (stdout) {
+        console.log("Server built\n", stdout);
+      }
+    }
+  );
+}
 
 export default async function buildReactApp(
   toolConfig: ToolConfig,
@@ -105,9 +139,20 @@ export default async function buildReactApp(
       reactAppRootTemplate,
       reactAppPackageJSON,
       reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
+      reactAppNodeTemplatePath: reactAppNodeTemplatePath,
+      reactAppNodeDestPath: getReactAppNodeDestPath(options.outputDir),
     },
-    options.rootComponentId
+    options.rootComponentId,
+    toolConfig.assetManager
   );
+  // install dependencies if node_modules is missing
+  if (!fs.existsSync(path.resolve(options.outputDir, "node_modules"))) {
+    installDependencies(path.resolve(options.outputDir));
+  }
+  // run tsc if dist/server if missing
+  if (!fs.existsSync(path.resolve(options.outputDir, "dist", "server"))) {
+    buildServer(path.resolve(options.outputDir));
+  }
   const pagePropsPromises: Promise<void>[] = [];
   pageIds.forEach((pageId) => {
     pagePropsPromises.push(

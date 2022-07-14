@@ -8,9 +8,16 @@ import {
   SocketData,
 } from "./types";
 import { reversePageMap } from "./utils";
+import fs from "fs";
+import path from "path";
+import express from "express";
+import cors from "cors";
 
 import http from "http";
-const server = http.createServer();
+const app = express();
+const server = http.createServer(app);
+
+app.use(cors({ origin: "*" }));
 
 export type EventServerOptions = {
   port?: number;
@@ -26,6 +33,15 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
 
   // create one directory and event manager for each of forest
   const getEventManager = createForestMgr(toolConfig).getEventManager;
+  const assetsDir = toolConfig.assetManager.assetsDir;
+  const assetsConfPath = path.join(assetsDir, "assets.config.json");
+  const assetUrlPrefix = toolConfig.assetManager.urlPath;
+  if (!fs.existsSync(assetsDir)) {
+    fs.mkdirSync(assetsDir, { recursive: true });
+  }
+  if (!fs.existsSync(assetsConfPath)) {
+    fs.writeFileSync(assetsConfPath, "{}");
+  }
 
   function getMeta(forestPkgId: string) {
     const eventManager = getEventManager(forestPkgId)!;
@@ -259,7 +275,39 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         console.log(err);
       }
     });
+    socket.on("uploadAssets", (files, callback) => {
+      const returnUrls: string[] = [];
+      files.forEach((file) => {
+        // dest path should look like /assets/app-assets/a.png
+        const destPath = path.join(assetsDir, file.name);
+        if (!fs.existsSync(path.dirname(destPath))) {
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        }
+        fs.createWriteStream(destPath).write(file.data);
+        // keep a record of assets mime type
+        const currentConf = JSON.parse(
+          fs.readFileSync(assetsConfPath).toString()
+        );
+        currentConf[file.name] = { mime: file.mime };
+        fs.writeFileSync(assetsConfPath, JSON.stringify(currentConf, null, 2));
+        returnUrls.push(encodeURIComponent(`${assetUrlPrefix}/${file.name}`));
+      });
+      callback(true, returnUrls);
+    });
+    socket.on("getAssetsInfo", (callback) => {
+      const assetConf = JSON.parse(fs.readFileSync(assetsConfPath).toString());
+      const names = Object.keys(assetConf);
+      names.forEach((name) => {
+        assetConf[name] = {
+          ...assetConf[name],
+          url: encodeURIComponent(`${assetUrlPrefix}/${name}`),
+        };
+      });
+      callback(assetConf);
+    });
   });
+
+  app.use(assetUrlPrefix, express.static(assetsDir));
 
   const port = (options && options.port) || 4001;
   server.listen(port, () => {

@@ -1,3 +1,4 @@
+import { BrowserClient } from "@atrilabs/core";
 import { AnyEvent, Folder, Page } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 
@@ -66,6 +67,8 @@ export interface ClientToServerEvents {
     prefix: string,
     callback: (alias: string) => void
   ) => void;
+  uploadAssets: BrowserClient["uploadAssets"];
+  getAssetsInfo: BrowserClient["getAssetsInfo"];
 }
 
 export interface InterServerEvents {}
