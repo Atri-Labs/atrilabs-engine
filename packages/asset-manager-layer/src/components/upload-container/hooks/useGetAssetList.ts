@@ -1,57 +1,55 @@
 import { api } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
 
-export type FormattedAssetInfo = {
+export type FormattedAssetsInfo = {
   images: { name: string; url: string; mime: string }[];
   video: { name: string; url: string; mime: string }[];
   audio: { name: string; url: string; mime: string }[];
 };
 
-export const useGetAssetInfo = () => {
-  const [assetsInfo, setAssetsInfo] = useState<FormattedAssetInfo>({
+export const useGetAssetsInfo = () => {
+  const [assetsInfo, setAssetsInfo] = useState<FormattedAssetsInfo>({
     images: [],
     video: [],
     audio: [],
   });
 
-  const getAssetInfo = useCallback(() => {
+  const getAssetsInfo = useCallback(() => {
     api.getAssetsInfo((assets) => {
-      const assetsInfo: FormattedAssetInfo = {
+      const assetsInfo: FormattedAssetsInfo = {
         images: [],
         video: [],
         audio: [],
       };
       Object.keys(assets).forEach((key) => {
-        const assetInfo = assets[key];
-        if (assetInfo.mime.includes("image")) {
+        if (assets[key].mime.includes("image")) {
           assetsInfo["images"].push({
             name: key,
-            url: assetInfo.url,
-            mime: assetInfo.mime,
+            url: assets[key].url,
+            mime: assets[key].mime,
           });
-        } else if (assetInfo.mime.includes("audio")) {
+        } else if (assets[key].mime.includes("audio")) {
           assetsInfo["audio"].push({
             name: key,
-            url: assetInfo.url,
-            mime: assetInfo.mime,
+            url: assets[key].url,
+            mime: assets[key].mime,
           });
-        } else if (assetInfo.mime.includes("video")) {
+        } else if (assets[key].mime.includes("video")) {
           assetsInfo["video"].push({
             name: key,
-            url: assetInfo.url,
-            mime: assetInfo.mime,
+            url: assets[key].url,
+            mime: assets[key].mime,
           });
         }
       });
+
+      console.log(assetsInfo);
       setAssetsInfo(assetsInfo);
     });
   }, []);
 
   useEffect(() => {
-    getAssetInfo();
-  }, [getAssetInfo]);
-  // TODO:
-  // convert asset info into categories and sort alphabetically
-  // use mime field to categorize the asset
-  return { assetsInfo, getAssetInfo };
+    getAssetsInfo();
+  }, [getAssetsInfo]);
+  return { assetsInfo, getAssetsInfo };
 };

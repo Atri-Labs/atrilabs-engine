@@ -12,7 +12,7 @@ import InputAudio from "../InputAudio";
 import InputImage from "../InputImage";
 import InputVideo from "../InputVideo";
 import { Cross } from "./assets/Cross";
-import { useGetAssetInfo } from "./hooks/useGetAssetList";
+import { useGetAssetsInfo } from "./hooks/useGetAssetList";
 
 export type UploadContainerProps = {
   onCrossClicked?: () => void;
@@ -30,7 +30,6 @@ export const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid rgba(31, 41, 55, 0.5)",
     width: "15rem",
     height: "100%",
-    boxSizing: "border-box",
     userSelect: "none",
     display: "flex",
     flexDirection: "column",
@@ -38,15 +37,25 @@ export const styles: { [key: string]: React.CSSProperties } = {
   dropContainerItemHeader: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "0.5rem 0.5rem 0 1rem",
+    padding: "0.5rem 1rem",
   },
   dropContainerItemHeaderH4: {
     ...h1Heading,
     color: gray300,
-    marginTop: "0px",
+    margin: "0px",
   },
-  icons: {},
-  iconsSpan: {},
+  icons: {
+    display: "flex",
+    alignItems: "center",
+    height: "100%",
+  },
+  iconsSpan: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    width: "1.3rem",
+  },
   uploadBox: {
     display: "none",
   },
@@ -61,7 +70,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     justifyContent: "center",
     width: "13rem",
-    margin: "0 1rem",
+    margin: "11px 1rem 0 1rem",
   },
   selectMediaTypeDiv: {
     background: gray900,
@@ -77,6 +86,9 @@ export const styles: { [key: string]: React.CSSProperties } = {
     padding: "0.5rem 0",
     width: "35%",
   },
+  dropDownItems: {
+    outline: "none",
+  },
   container: {
     display: "grid",
     padding: "0 1rem",
@@ -86,8 +98,8 @@ export const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
-  const [mediaType, setMediaType] = useState("image");
-  const { assetsInfo, getAssetInfo } = useGetAssetInfo();
+  const [mediaType, setMediaType] = useState("images");
+  const { assetsInfo, getAssetsInfo } = useGetAssetsInfo();
 
   const onCrossClickCb = useCallback(() => {
     if (props.onCrossClicked) props.onCrossClicked();
@@ -120,6 +132,7 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               } else {
                 if (props.onUploadMultipleSuccess) {
                   props.onUploadMultipleSuccess(urls);
+                  getAssetsInfo();
                 }
               }
             });
@@ -145,14 +158,16 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               if (!success) {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
-                getAssetInfo();
-                if (props.onUploadSuccess) props.onUploadSuccess(urls[0]);
+                if (props.onUploadSuccess) {
+                  props.onUploadSuccess(urls[0]);
+                  getAssetsInfo();
+                }
               }
             });
           }
         }
       },
-      [props, getAssetInfo]
+      [props, getAssetsInfo]
     );
 
   const refEle = useRef<HTMLInputElement>(null);
@@ -198,22 +213,32 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               handleTypeChange(e);
             }}
           >
-            <option value="images">Images</option>
-            <option value="audio">Audio</option>
-            <option value="video">Video</option>
+            <option value="images" style={styles.dropDownItems}>
+              Images
+            </option>
+            <option value="audio" style={styles.dropDownItems}>
+              Audio
+            </option>
+            <option value="video" style={styles.dropDownItems}>
+              Video
+            </option>
           </select>
         </div>
         <div>
           {mediaType === "images" ? (
             <div style={styles.container}>
               {assetsInfo["images"].map((i) => (
-                <InputImage url={i.url} imageText={i.name} />
+                <InputImage key={i.name} url={i.url} imageText={i.name} />
               ))}
             </div>
           ) : mediaType === "audio" ? (
-            assetsInfo["audio"].map((i) => <InputAudio />)
+            assetsInfo["audio"].map((i) => (
+              <InputAudio key={i.name} url={i.url} audioText={i.name} />
+            ))
           ) : (
-            assetsInfo["video"].map((i) => <InputVideo />)
+            assetsInfo["video"].map((i) => (
+              <InputVideo key={i.name} url={i.url} videoText={i.name} />
+            ))
           )}
         </div>
       </div>

@@ -18,11 +18,14 @@ export const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-function InputVideo(props: any) {
+function InputVideo(props: { url: string; videoText: string }) {
   return (
     <div style={styles.container}>
       <VidIp style={styles.videoIcon} />
-      <p style={styles.videoText}>Video-sample-1.mp3</p>
+      <video style={styles.videoText}>
+        <source src={props.url} />
+        {props.videoText}
+      </video>
     </div>
   );
 }

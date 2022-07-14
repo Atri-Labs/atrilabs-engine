@@ -18,11 +18,14 @@ export const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-function InputAudio(props: any) {
+function InputAudio(props: { url: string; audioText: string }) {
   return (
     <div style={styles.container}>
       <AudIp style={styles.audioIcon} />
-      <p style={styles.audioText}>Audio-sample-1.mp3</p>
+      <audio style={styles.audioText}>
+        <source src={props.url} />
+        {props.audioText}
+      </audio>
     </div>
   );
 }
