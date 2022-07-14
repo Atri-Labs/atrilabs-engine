@@ -79,7 +79,7 @@ def handle_ipc_events(sio, paths):
         if os.path.exists(initial_pipfile_path):
             if not in_virtualenv():
                 # check if pipenv is installed otherwise ask user to install it
-                if is_pipenv_installed():
+                if await is_pipenv_installed():
                     # copy Pipfile to app_dir
                     copy(initial_pipfile_path, final_pipfile_path)
                     # run pipenv install
@@ -97,7 +97,7 @@ def handle_ipc_events(sio, paths):
                     print("Please install a pipenv or some other virtual environment.")
             else:
                 # detect virtual env type
-                if is_pipenv_installed():
+                if await is_pipenv_installed():
                     # read Pipfile
                     pipfile_data = toml.load(initial_pipfile_path)
                     pkgs = pipfile_data["packages"]
