@@ -10,11 +10,26 @@ def port_map(host: str, container: str):
 def volume_map(app_dir:str, subdir: str, container_dir: str):
     return os.path.join(app_dir, subdir) + ":" + container_dir
 
+def create_env(name: str, value: str):
+    return name + "=" + value
+
+def host_map(container: str, host: str):
+    return container + ":" + host
+
 async def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
+    host_uri_inside_docker = "host.docker.internal"
+    atri_controller_host = host_uri_inside_docker + ":" + c_port
     cmd = " ".join([
         "docker", "run", "--rm",
-        "--network", "host",
+        "-p", port_map(e_port, "4001"),
+        "-p", port_map(w_port, "4002"),
+        "-p", port_map(m_port, "4003"),
+        "-p", port_map(p_port, "4004"),
+        "-p", port_map(d_port, "4005"),
+        "-p", port_map(u_port, "4006"),
+        "-e", create_env("ATRI_CONTROLLER_HOST", atri_controller_host),
+        "--add-host", host_map(host_uri_inside_docker, "host-gateway"),
         "-v", volume_map(abs_app_dir, "localdb", "/code/localdb"),
         "-v", volume_map(abs_app_dir, "controllers", "/code/node_modules/.targets/controllers"),
         "-v", volume_map(abs_app_dir, "atri-app", "/code/node_modules/.targets/atri-app"),
