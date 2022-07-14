@@ -83,12 +83,13 @@ app.post("/event-handler", express.json(), (req, res) => {
     callbackName,
     eventData,
   });
-  const hostOptions: http.RequestOptions = controllerHost
-    ? { host: controllerHost }
-    : { hostname: `0.0.0.0`, port: pythonPort };
+  const [controllerHostname, controllerPort] = (controllerHost || "").split(
+    ":"
+  );
   const forward_req = http.request(
     {
-      ...hostOptions,
+      hostname: controllerHostname || "0.0.0.0",
+      port: controllerPort ? parseInt(controllerPort) : pythonPort,
       path: "/event",
       method: "POST",
       headers: {
