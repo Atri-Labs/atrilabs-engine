@@ -22,7 +22,7 @@ export function createReactAppTemplateManager(
     reactAppServerTemplate: string;
     reactAppDest: string;
     reactAppServerDest: string;
-    toCopy: string[];
+    toCopy: { path: string; outputFilename?: string }[];
     reactAppRootDest: string;
     reactAppRootTemplate: string;
     reactAppPackageJSON: string;
@@ -166,21 +166,23 @@ export function createReactAppTemplateManager(
 
   function copyOthersToRoot() {
     paths.toCopy.forEach((file) => {
-      const dirname = path.dirname(file);
+      const dirname = path.dirname(file.path);
+      // .gitignore .eslintrc does not get copied to npm, hence, their names are renamed
+      const outputFilename = file.outputFilename || path.basename(file.path);
       const relativeDirname = path.relative(
         paths.reactAppRootTemplate,
         dirname
       );
       const destDirname = path.resolve(paths.reactAppRootDest, relativeDirname);
-      const relativeFilename = path.relative(paths.reactAppRootTemplate, file);
       const destFilename = path.resolve(
         paths.reactAppRootDest,
-        relativeFilename
+        relativeDirname,
+        outputFilename
       );
       if (!fs.existsSync(destDirname)) {
         fs.mkdirSync(destDirname, { recursive: true });
       }
-      fs.writeFileSync(destFilename, fs.readFileSync(file));
+      fs.writeFileSync(destFilename, fs.readFileSync(file.path));
     });
   }
 

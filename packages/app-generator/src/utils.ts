@@ -115,10 +115,21 @@ export const reactAppNodeTemplatePath = path.resolve(
   "app-node"
 );
 
-export const reactAppToCopyToRoot = [
-  path.resolve(reactAppRootTemplate, ".eslintrc.json"),
-  path.resolve(reactAppRootTemplate, "atri-app-env.d.ts"),
-  path.resolve(reactAppRootTemplate, ".gitignore"),
+export const reactAppToCopyToRoot: {
+  path: string;
+  // .gitignore .eslintrc.json files are not copied to published npm repo
+  // hence, their name has been changed so that they get copied.
+  outputFilename?: string;
+}[] = [
+  {
+    path: path.resolve(reactAppRootTemplate, "eslint.config.json"),
+    outputFilename: ".eslintrc.json",
+  },
+  { path: path.resolve(reactAppRootTemplate, "atri-app-env.d.ts") },
+  {
+    path: path.resolve(reactAppRootTemplate, "gitignore.txt"),
+    outputFilename: ".gitignore",
+  },
 ];
 
 export function getReactAppDestPath(outputDir: string) {
