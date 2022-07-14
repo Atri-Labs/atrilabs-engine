@@ -11,6 +11,7 @@ export type CreateWebpackConfigOptions = {
     appHtml: string;
     // include app src & manifest packages
     includes: string[];
+    wsClientEntry?: string;
   };
   mode: Configuration["mode"];
   publicUrlOrPath: string;
@@ -72,18 +73,23 @@ export default function createWebpackConfig(
     ],
   });
 
+  const entries: Configuration["entry"] = {
+    app: { import: options.paths.appEntry },
+  };
+  if (options.paths.wsClientEntry) {
+    entries["wsclient"] = { import: options.paths.wsClientEntry };
+  }
+
   const webpackConfig: Configuration = {
     mode: options.mode,
-    entry: {
-      main: { import: options.paths.appEntry },
-    },
+    entry: entries,
     output: {
       path: options.paths.appOutput,
       pathinfo: isEnvDevelopment,
       filename: isEnvProduction
         ? "static/js/[name].[contenthash:8].js"
         : isEnvDevelopment
-        ? "static/js/bundle.js"
+        ? "static/js/[name].bundle.js"
         : undefined,
       chunkFilename: isEnvProduction
         ? "static/js/[name].[contenthash:8].chunk.js"

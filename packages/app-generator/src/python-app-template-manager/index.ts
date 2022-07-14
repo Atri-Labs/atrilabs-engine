@@ -238,6 +238,9 @@ export function createPythonAppTemplateManager(
       }
     }
   }
+  function controllersDirExists() {
+    return fs.existsSync(path.resolve(paths.controllers));
+  }
   return {
     addVariables,
     flushAtriPyFiles,
@@ -248,5 +251,6 @@ export function createPythonAppTemplateManager(
     createInitPyFile,
     initPyFileExists,
     createInitPyRecursively,
+    controllersDirExists,
   };
 }

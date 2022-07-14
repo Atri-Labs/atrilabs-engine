@@ -14,6 +14,8 @@ import {
 
 export type LowDbEventManagerOptions = {
   dbDir: string;
+  // readonly mode forces open data bases to read everytime createLowDbEventManager fn is called
+  mode?: "readonly";
 };
 
 function metaFile(dbDir: string) {
@@ -174,41 +176,68 @@ const openDbs: OpenDbs = {
   events: {},
 };
 
-function getMetaDb(dbDir: string): LowdbSync<any> {
+function getMetaDb(dbDir: string, mode?: "readonly"): LowdbSync<any> {
+  const file = metaFile(dbDir);
   if (openDbs.meta) {
+    if (mode === "readonly") {
+      openDbs.meta.setState(JSON.parse(fs.readFileSync(file).toString()));
+    }
     return openDbs.meta;
   }
-  const metaDb = Lowdb(new FileSync<AliasDbSchema>(metaFile(dbDir)));
+  const metaDb = Lowdb(new FileSync<AliasDbSchema>(file));
   metaDb.read();
   openDbs.meta = metaDb;
   return metaDb;
 }
 
-function getAliasDb(dbDir: string): LowdbSync<AliasDbSchema> {
+function getAliasDb(
+  dbDir: string,
+  mode?: "readonly"
+): LowdbSync<AliasDbSchema> {
+  const file = aliasFile(dbDir);
   if (openDbs.alias) {
+    if (mode === "readonly") {
+      openDbs.alias.setState(JSON.parse(fs.readFileSync(file).toString()));
+    }
     return openDbs.alias;
   }
-  const aliasDb = Lowdb(new FileSync<AliasDbSchema>(aliasFile(dbDir)));
+  const aliasDb = Lowdb(new FileSync<AliasDbSchema>(file));
   aliasDb.read();
   openDbs.alias = aliasDb;
   return aliasDb;
 }
 
-function getPagesDb(dbDir: string): LowdbSync<PagesDbSchema> {
+function getPagesDb(
+  dbDir: string,
+  mode?: "readonly"
+): LowdbSync<PagesDbSchema> {
+  const file = pagesFile(dbDir);
   if (openDbs.pages) {
+    if (mode === "readonly") {
+      openDbs.pages.setState(JSON.parse(fs.readFileSync(file).toString()));
+    }
     return openDbs.pages;
   }
-  const pagesDb = Lowdb(new FileSync<PagesDbSchema>(pagesFile(dbDir)));
+  const pagesDb = Lowdb(new FileSync<PagesDbSchema>(file));
   pagesDb.read();
   openDbs.pages = pagesDb;
   return pagesDb;
 }
 
-function getEventsDb(dbDir: string, pageId: string): LowdbSync<EvensDbSchema> {
+function getEventsDb(
+  dbDir: string,
+  pageId: string,
+  mode?: "readonly"
+): LowdbSync<EvensDbSchema> {
+  const eventsFile = eventFile(dbDir, pageId);
   if (openDbs.events![pageId]) {
+    if (mode === "readonly") {
+      openDbs.events![pageId]!.setState(
+        JSON.parse(fs.readFileSync(eventsFile).toString())
+      );
+    }
     return openDbs.events![pageId]!;
   }
-  const eventsFile = eventFile(dbDir, pageId);
   const eventsDb = Lowdb(new FileSync<EvensDbSchema>(eventsFile));
   eventsDb.read();
   // If events file is empty, lowdb writes {} by default. We override it for events file.
@@ -257,11 +286,11 @@ export default function createLowDbEventManager(
     }
   }
 
-  const metaDb = getMetaDb(dbDir);
+  const metaDb = getMetaDb(dbDir, options.mode);
 
-  const pagesDb = getPagesDb(dbDir);
+  const pagesDb = getPagesDb(dbDir, options.mode);
 
-  const aliasDb = getAliasDb(dbDir);
+  const aliasDb = getAliasDb(dbDir, options.mode);
 
   function meta() {
     return metaDb.getState();
@@ -314,18 +343,18 @@ export default function createLowDbEventManager(
   }
 
   function storeEvent(pageId: Page["id"], event: AnyEvent) {
-    const eventsDb = getEventsDb(dbDir, pageId);
+    const eventsDb = getEventsDb(dbDir, pageId, options.mode);
     eventsDb.getState().push(event);
   }
 
   function fetchEvents(pageId: Page["id"]): AnyEvent[] {
     // open pages db if not already open
-    const eventsDb = getEventsDb(dbDir, pageId);
+    const eventsDb = getEventsDb(dbDir, pageId, options.mode);
     return eventsDb.getState();
   }
 
   function writeBackCompressedEvents(pageId: Page["id"], events: AnyEvent[]) {
-    const eventsDb = getEventsDb(dbDir, pageId);
+    const eventsDb = getEventsDb(dbDir, pageId, options.mode);
     eventsDb.setState(events);
   }
 
@@ -357,7 +386,7 @@ export default function createLowDbEventManager(
           aliasDb.write();
         }
         if ([storeEvent].includes(target)) {
-          const eventsDb = getEventsDb(dbDir, args[0]);
+          const eventsDb = getEventsDb(dbDir, args[0], options.mode);
           eventsDb.write();
         }
         return returnValue;

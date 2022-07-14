@@ -1,5 +1,9 @@
 import { ToolConfig } from "@atrilabs/core";
-import { runTaskQueue, createTaskQueue } from "./server-utils";
+import {
+  runTaskQueue,
+  createTaskQueue,
+  createIpcClientSocket,
+} from "./server-utils";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -17,7 +21,7 @@ export type PublishServerOptions = {
 };
 
 export default function startPublishServer(
-  _toolConfig: ToolConfig,
+  toolConfig: ToolConfig,
   options: PublishServerOptions
 ) {
   const io = new Server<
@@ -26,6 +30,10 @@ export default function startPublishServer(
     InterServerEvents,
     SocketData
   >(server, { cors: { origin: "*" } });
+
+  const ipcClientSocket = createIpcClientSocket(
+    toolConfig["services"]["ipcServer"].options.port || 4006
+  );
 
   io.on("connection", (socket) => {
     socket.on("runTasks", (startTask, endTask, cb) => {
@@ -38,7 +46,7 @@ export default function startPublishServer(
       const taskId = uuidv4();
       cb(taskId, taskQueue);
       let num_tasks_completed = 0;
-      runTaskQueue(taskQueue, (_task, status) => {
+      runTaskQueue(taskQueue, toolConfig, ipcClientSocket, (_task, status) => {
         if (status === "success") {
           num_tasks_completed += 1;
           socket.emit(

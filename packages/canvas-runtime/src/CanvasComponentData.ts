@@ -56,3 +56,27 @@ export function subscribeCanvasUpdate(compId: string, cb: () => void) {
     }
   };
 }
+
+const canvasComponentRenderedSubscribers: ((
+  compId: string,
+  updateNum: number
+) => void)[] = [];
+export function subscribeOnComponentRendered(
+  cb: (compId: string, updateNum: number) => void
+) {
+  canvasComponentRenderedSubscribers.push(cb);
+  return () => {
+    const index = canvasComponentRenderedSubscribers.findIndex(
+      (curr) => curr === cb
+    );
+    if (index >= 0) {
+      canvasComponentRenderedSubscribers.splice(index, 1);
+    }
+  };
+}
+export function callCanvasComponentRenderedSubscribers(
+  compId: string,
+  updateNum: number
+) {
+  canvasComponentRenderedSubscribers.forEach((cb) => cb(compId, updateNum));
+}

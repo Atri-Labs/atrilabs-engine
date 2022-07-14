@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { ToolConfig } from "@atrilabs/core";
 import yargs from "yargs";
 import { runTargetTask } from "../../shared/runTargetTask";
 import { getToolPkgInfo, importToolConfig } from "../../shared/utils";
@@ -22,7 +21,7 @@ const toolPkgInfo = getToolPkgInfo();
 
 if (!(args instanceof Promise)) {
   const targetName = args.target;
-  const task = args.task as keyof ToolConfig["targets"]["0"]["tasks"];
+  const task = args.task as "generate" | "build" | "deploy";
   importToolConfig(toolPkgInfo.configFile).then((toolConfig) => {
     const target = toolConfig.targets.find(
       (curr) => curr.targetName === targetName
