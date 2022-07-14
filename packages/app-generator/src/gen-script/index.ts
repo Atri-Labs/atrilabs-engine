@@ -274,9 +274,12 @@ export default async function generateApp(
     },
     Object.values(pages)
   );
-  // don't copy if controllers directory already exists
-  if (!pythonAppTemplateManager.controllersDirExists())
-    pythonAppTemplateManager.copyTemplate();
+  // controllers directory might exist already if running inside docker container
+  // because when we volume map a host path with container path, if the host path
+  // doesn't exist, then docker run command creates that path on host machine.
+  // Hence, we will not copy template only if controllers/server.py file doesn't exist.
+  if (!pythonAppTemplateManager.serverPyExists())
+    pythonAppTemplateManager.copyTemplate(false);
   pageIds.forEach((pageId) => {
     const page = pages[pageId];
     const forest = pageForestMap[pageId];

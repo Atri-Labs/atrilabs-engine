@@ -53,16 +53,24 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
       }
     });
     socket.on("buildPython", (callback) => {
-      const atriCliSocket = clients["atri-cli"]!;
-      atriCliSocket.emit("doBuildPython", (success) => {
-        callback(success);
-      });
+      if (clients["atri-cli"] === undefined) {
+        callback(false);
+      } else {
+        const atriCliSocket = clients["atri-cli"]!;
+        atriCliSocket.emit("doBuildPython", (success) => {
+          callback(success);
+        });
+      }
     });
     socket.on("startPythonServer", (callback) => {
-      const atriCliSocket = clients["atri-cli"]!;
-      atriCliSocket.emit("doStartPythonServer", (success) => {
-        callback(success);
-      });
+      if (clients["atri-cli"] === undefined) {
+        callback(false);
+      } else {
+        const atriCliSocket = clients["atri-cli"]!;
+        atriCliSocket.emit("doStartPythonServer", (success) => {
+          callback(success);
+        });
+      }
     });
     socket.on("disconnect", () => {
       clients[clientName] = undefined;
