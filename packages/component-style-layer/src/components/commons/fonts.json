@@ -1,0 +1,47 @@
+[
+  {
+    "id": "0",
+    "fontFamily": "",
+    "value": ""
+  },
+  {
+    "id": "1",
+    "fontFamily": "Inter",
+    "value": "Inter"
+  },
+  {
+    "id": "2",
+    "fontFamily": "Roboto",
+    "value": "Roboto"
+  },
+  {
+    "id": "3",
+    "fontFamily": "Lora",
+    "value": "Lora"
+  },
+  {
+    "id": "4",
+    "fontFamily": "Poppins",
+    "value": "Poppins"
+  },
+  {
+    "id": "5",
+    "fontFamily": "Montserrat",
+    "value": "Montserrat"
+  },
+  {
+    "id": "6",
+    "fontFamily": "Raleway",
+    "value": "Raleway"
+  },
+  {
+    "id": "8",
+    "fontFamily": "Ubuntu",
+    "value": "Ubuntu"
+  },
+  {
+    "id": "9",
+    "fontFamily": "Rubik",
+    "value": "Rubik"
+  }
+]
