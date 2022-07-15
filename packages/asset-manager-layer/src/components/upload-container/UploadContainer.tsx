@@ -33,6 +33,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
     userSelect: "none",
     display: "flex",
     flexDirection: "column",
+    boxSizing: "border-box",
   },
   dropContainerItemHeader: {
     display: "flex",
