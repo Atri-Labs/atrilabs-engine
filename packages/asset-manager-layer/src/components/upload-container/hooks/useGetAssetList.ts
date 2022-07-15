@@ -42,8 +42,6 @@ export const useGetAssetsInfo = () => {
           });
         }
       });
-
-      console.log(assetsInfo);
       setAssetsInfo(assetsInfo);
     });
   }, []);

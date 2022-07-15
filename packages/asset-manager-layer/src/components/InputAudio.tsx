@@ -1,16 +1,16 @@
 import { gray200, smallText } from "@atrilabs/design-system";
 import React from "react";
-import { ReactComponent as AudIp } from "./upload-container/assets/audio-icon.svg";
+import { ReactComponent as AudIp } from "../assets/audio-icon.svg";
 
 export const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     borderBottom: "1px solid rgba(31, 41, 55, 0.5)",
-    alignItems: "baseline",
-    padding: "0 1rem",
+    padding: "0 0.5rem",
+    alignItems: "center",
   },
   audioIcon: {
-    marginRight: "10px",
+    padding: "0.5rem",
   },
   audioText: {
     ...smallText,
@@ -21,11 +21,10 @@ export const styles: { [key: string]: React.CSSProperties } = {
 function InputAudio(props: { url: string; audioText: string }) {
   return (
     <div style={styles.container}>
-      <AudIp style={styles.audioIcon} />
-      <audio style={styles.audioText}>
-        <source src={props.url} />
-        {props.audioText}
-      </audio>
+      <div style={styles.audioIcon}>
+        <AudIp />
+      </div>
+      <span style={styles.audioText}>{props.audioText}</span>
     </div>
   );
 }

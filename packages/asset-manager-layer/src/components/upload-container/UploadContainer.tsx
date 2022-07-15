@@ -11,7 +11,7 @@ import React, { useCallback, useRef, useState } from "react";
 import InputAudio from "../InputAudio";
 import InputImage from "../InputImage";
 import InputVideo from "../InputVideo";
-import { Cross } from "./assets/Cross";
+import { Cross } from "../../assets/Cross";
 import { useGetAssetsInfo } from "./hooks/useGetAssetList";
 
 export type UploadContainerProps = {
@@ -68,14 +68,13 @@ export const styles: { [key: string]: React.CSSProperties } = {
     color: gray900,
     padding: "6px 0",
     textAlign: "center",
-    justifyContent: "center",
     width: "13rem",
-    margin: "11px 1rem 0 1rem",
+    margin: "11px 0",
   },
   selectMediaTypeDiv: {
     background: gray900,
-    marginTop: "30px",
-    marginBottom: "15px",
+    width: "100%",
+    marginBottom: "11px",
   },
   selectMediaTypeSelect: {
     background: gray900,
@@ -130,9 +129,9 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               if (!success) {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
+                getAssetsInfo();
                 if (props.onUploadMultipleSuccess) {
                   props.onUploadMultipleSuccess(urls);
-                  getAssetsInfo();
                 }
               }
             });
@@ -158,9 +157,9 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
               if (!success) {
                 if (props.onUploadFailed) props.onUploadFailed();
               } else {
+                getAssetsInfo();
                 if (props.onUploadSuccess) {
                   props.onUploadSuccess(urls[0]);
-                  getAssetsInfo();
                 }
               }
             });
@@ -193,7 +192,13 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
           </span>
         </div>
       </header>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <input
           ref={refEle}
           accept="image/*,audio/*,video/*"
@@ -212,6 +217,7 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
             onChange={(e) => {
               handleTypeChange(e);
             }}
+            value={mediaType}
           >
             <option value="images" style={styles.dropDownItems}>
               Images
@@ -224,7 +230,7 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
             </option>
           </select>
         </div>
-        <div>
+        <div style={{ width: "100%" }}>
           {mediaType === "images" ? (
             <div style={styles.container}>
               {assetsInfo["images"].map((i) => (

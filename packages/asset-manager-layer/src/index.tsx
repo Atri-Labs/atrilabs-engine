@@ -5,10 +5,7 @@ import {
   UploadContainer,
   UploadContainerProps,
 } from "./components/upload-container/UploadContainer";
-import { ReactComponent as AI } from "./images/asset-icon.svg";
-// import InputImage from "./components/InputImage";
-// import InputAudio from "./components/InputAudio";
-// import InputVideo from "./components/InputVideo";
+import { ReactComponent as AI } from "./assets/asset-icon.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -51,10 +48,7 @@ export default function () {
       </Menu>
       {showAssetPanel ? (
         <Container name="Drop">
-          <UploadContainer
-            modes={modes}
-            onCrossClicked={onCrossClicked}
-          />
+          <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
         </Container>
       ) : null}
     </>
