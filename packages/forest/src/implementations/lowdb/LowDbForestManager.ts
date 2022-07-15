@@ -6,6 +6,7 @@ import createLowDbEventManager from "./LowDbEventManager";
 export type LowDbForestManagerOptions = {
   forestDir: string;
   forestsConfig: ForestsConfig;
+  mode?: "readonly";
 };
 
 function getForestDirPath(forestDir: string, forestname: string) {
@@ -22,7 +23,8 @@ function checkIfDirExists(forestDir: string, forestname: string) {
 // create one directory and event manager for each of forest
 export function createEventManagers(
   forestDir: string,
-  forestsConfig: ForestsConfig
+  forestsConfig: ForestsConfig,
+  mode?: "readonly"
 ) {
   const forestnames = Object.keys(forestsConfig);
   const eventManagers: { [forestname: string]: EventManager } = {};
@@ -36,6 +38,7 @@ export function createEventManagers(
     // create event manager
     const eventManager = createLowDbEventManager({
       dbDir: getForestDirPath(forestDir, forestname),
+      mode,
     });
     eventManagers[forestname] = eventManager;
   });
@@ -47,7 +50,8 @@ export default function createLowDbForestManager(
 ): ForestManager {
   const eventManagers = createEventManagers(
     options.forestDir,
-    options.forestsConfig
+    options.forestsConfig,
+    options.mode
   );
   function getEventManager(name: string) {
     if (eventManagers[name] === undefined)

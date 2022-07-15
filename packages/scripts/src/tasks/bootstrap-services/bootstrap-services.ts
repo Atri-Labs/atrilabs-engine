@@ -50,11 +50,24 @@ function startPublishServer() {
   return controller;
 }
 
+function startIpcServer() {
+  const runIpcServerFile = path.resolve(__dirname, "runIpcServer.js");
+  const controller = new AbortController();
+  const { signal } = controller;
+  const ipcServer = fork(runIpcServerFile, [], { signal });
+  ipcServer.on("error", (err) => {
+    if (!err.toString().includes("AbortError"))
+      console.log(`IPC Server exited with error\n${err}`);
+  });
+  return controller;
+}
+
 const controllers = [
   startEventServer(),
   startFileServer(),
   startManifestServer(),
   startPublishServer(),
+  startIpcServer(),
 ];
 
 // wait for kill signals

@@ -20,7 +20,24 @@ const forestsConfig = {
 };
 
 const compileAppOutputDir = "node_modules/.targets";
-const EVENT_SERVER_CLIENT = "http://localhost:4001";
+const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
+  ? parseInt(process.env["EVENT_SERVER_PORT"])
+  : 4001;
+const FILE_SERVER_PORT = process.env["FILE_SERVER_PORT"]
+  ? parseInt(process.env["FILE_SERVER_PORT"])
+  : 4002;
+const EVENT_SERVER_CLIENT = `http://localhost:${EVENT_SERVER_PORT}`;
+const MANIFEST_SERVER_PORT = process.env["MANIFEST_SERVER_PORT"]
+  ? parseInt(process.env["MANIFEST_SERVER_PORT"])
+  : 4003;
+const MANIFEST_SERVER_CLIENT = `http://localhost:${MANIFEST_SERVER_PORT}`;
+const PUBLISH_SERVER_PORT = process.env["PUBLISH_SERVER_PORT"]
+  ? parseInt(process.env["PUBLISH_SERVER_PORT"])
+  : 4004;
+const PUBLISH_SERVER_CLIENT = `http://localhost:${PUBLISH_SERVER_PORT}`;
+const IPC_SERVER_PORT = process.env["IPC_SERVER_PORT"]
+  ? parseInt(process.env["IPC_SERVER_PORT"])
+  : 4006;
 
 module.exports = {
   pkgManager: "yarn",
@@ -55,21 +72,31 @@ module.exports = {
       path: require.resolve("@atrilabs/server-client/lib/file-server"),
       options: {
         dir: path.resolve("lib"),
+        port: FILE_SERVER_PORT,
       },
     },
     eventServer: {
       path: require.resolve("@atrilabs/server-client/lib/websocket/server"),
+      options: {
+        port: EVENT_SERVER_PORT,
+      },
     },
     manifestServer: {
       path: require.resolve("@atrilabs/server-client/lib/manifest/server"),
       options: {
-        port: 4003,
+        port: MANIFEST_SERVER_PORT,
       },
     },
     publishServer: {
       path: require.resolve("@atrilabs/server-client/lib/publish-app/server"),
       options: {
-        port: 4004,
+        port: PUBLISH_SERVER_PORT,
+      },
+    },
+    ipcServer: {
+      path: require.resolve("@atrilabs/server-client/lib/ipc-server/server"),
+      options: {
+        port: IPC_SERVER_PORT,
       },
     },
   },
@@ -78,102 +105,52 @@ module.exports = {
       targetName: "Web App",
       hint: "A React App that supports SSR",
       description: "A React App that supports SSR",
-      tasks: {
-        generate: {
-          path: require.resolve("@atrilabs/app-generator/lib/index.js"),
-          options: {
-            appForestPkgId,
-            outputDir: `${compileAppOutputDir}/atri-app`,
-            controllers: {
-              python: {
-                dir: path.resolve(
-                  __dirname,
-                  "..",
-                  "node_modules",
-                  ".targets",
-                  "controllers"
-                ),
-                stubGenerators: [
-                  {
-                    modulePath:
-                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
-                    options: {},
-                  },
-                ],
-              },
-            },
-            rootComponentId: "body",
-            components: [
+      tasksHandler: {
+        modulePath: require.resolve("@atrilabs/app-generator/lib/index.js"),
+      },
+      options: {
+        appForestPkgId,
+        outputDir: `${compileAppOutputDir}/atri-app`,
+        controllers: {
+          python: {
+            dir: path.resolve(
+              __dirname,
+              "..",
+              "node_modules",
+              ".targets",
+              "controllers"
+            ),
+            stubGenerators: [
               {
                 modulePath:
-                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
-                options: {},
-              },
-            ],
-            props: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
-                options: {},
-              },
-            ],
-            callbacks: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
+                  "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
                 options: {},
               },
             ],
           },
         },
-        build: {
-          path: require.resolve(
-            "@atrilabs/app-generator/lib/build-scripts/react-app/index.js"
-          ),
-          options: {
-            appForestPkgId,
-            outputDir: `${compileAppOutputDir}/atri-app`,
-            controllers: {
-              python: {
-                dir: path.resolve(
-                  __dirname,
-                  "..",
-                  "node_modules",
-                  ".targets",
-                  "controllers"
-                ),
-                stubGenerators: [
-                  {
-                    modulePath:
-                      "@atrilabs/component-tree-to-app/lib/pythonStubGenerator.js",
-                    options: {},
-                  },
-                ],
-              },
-            },
-            rootComponentId: "body",
-            components: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
-                options: {},
-              },
-            ],
-            props: [
-              {
-                modulePath:
-                  "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
-                options: {},
-              },
-            ],
+        rootComponentId: "body",
+        components: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/componentTreeToComponentDef.js",
+            options: {},
           },
-        },
-        deploy: {
-          path: require.resolve(
-            "@atrilabs/app-generator/lib/deploy-scripts/react-app/index.js"
-          ),
-          options: {},
-        },
+        ],
+        props: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/childTreeToProps.js",
+            options: {},
+          },
+        ],
+        callbacks: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/handlerTreeToCallbacks.js",
+            options: {},
+          },
+        ],
       },
     },
   ],
@@ -185,8 +162,8 @@ module.exports = {
   },
   env: {
     EVENT_SERVER_CLIENT,
-    MANIFEST_SERVER_CLIENT: "http://localhost:4003",
-    PUBLISH_SERVER_CLIENT: "http://localhost:4004",
+    MANIFEST_SERVER_CLIENT,
+    PUBLISH_SERVER_CLIENT,
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {

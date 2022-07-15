@@ -1,5 +1,9 @@
 import { ToolConfig } from "@atrilabs/core";
-import { runTaskQueue, createTaskQueue } from "./server-utils";
+import {
+  runTaskQueue,
+  createTaskQueue,
+  createIpcClientSocket,
+} from "./server-utils";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -17,7 +21,7 @@ export type PublishServerOptions = {
 };
 
 export default function startPublishServer(
-  _toolConfig: ToolConfig,
+  toolConfig: ToolConfig,
   options: PublishServerOptions
 ) {
   const io = new Server<
@@ -27,8 +31,17 @@ export default function startPublishServer(
     SocketData
   >(server, { cors: { origin: "*" } });
 
+  const ipcClientSocket = createIpcClientSocket(
+    toolConfig["services"]["ipcServer"].options.port || 4006
+  );
+
   io.on("connection", (socket) => {
+    console.log("[PUBLISH_SERVER] Socket connected", socket.id);
+    socket.on("disconnect", () => {
+      console.log("[PUBLISH_SERVER] Socket Disconnected", socket.id);
+    });
     socket.on("runTasks", (startTask, endTask, cb) => {
+      console.log("[PUBLISH_SERVER]runTasks received");
       const taskQueue = createTaskQueue(startTask, endTask);
       // check if task request is invalid
       if (taskQueue.length === 0) {
@@ -38,7 +51,8 @@ export default function startPublishServer(
       const taskId = uuidv4();
       cb(taskId, taskQueue);
       let num_tasks_completed = 0;
-      runTaskQueue(taskQueue, (_task, status) => {
+      runTaskQueue(taskQueue, toolConfig, ipcClientSocket, (task, status) => {
+        console.log("task queue callback called for task", task, status);
         if (status === "success") {
           num_tasks_completed += 1;
           socket.emit(

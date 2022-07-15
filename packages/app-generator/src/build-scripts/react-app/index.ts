@@ -1,262 +1,100 @@
 import { ToolConfig } from "@atrilabs/core";
-import { createForest, Forest } from "@atrilabs/forest";
-import { createForestMgr } from "../../create-forest-mgr";
-import {
-  AppBuildOptions,
-  ComponentGeneratorFunction,
-  ComponentGeneratorOptions,
-  ComponentGeneratorOutput,
-  PropsGeneratorFunction,
-  PropsGeneratorOptions,
-  PropsGeneratorOutput,
-} from "../../types";
-import {
-  getComponentFromManifest,
-  getForestDef,
-  getReactAppDestPath,
-  getReactAppNodeDestPath,
-  getReactAppServerDestPath,
-  getReactPackageJSONDestPath,
-  reactAppNodeTemplatePath,
-  reactAppPackageJSON,
-  reactAppRootTemplate,
-  reactAppServerTemplatePath,
-  reactAppTemplatePath,
-  reactAppToCopyToRoot,
-} from "../../utils";
+import { AppBuildOptions, PropsGeneratorOutput } from "../../types";
 import path from "path";
 import fs from "fs";
 import { exec } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
+import { getReactAppTemplateManager } from "../../getReactTemplateManager";
+import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
-  exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
-    if (err) {
-      console.log("Installing packages failed with error\n", err);
-    }
-    if (stderr) {
-      console.log("Installing packages stderr\n", stderr);
-    }
-    if (stdout) {
-      console.log("Installed packages\n", stdout);
-    }
+  return new Promise<void>((res) => {
+    exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+      if (err) {
+        console.log("Installing packages failed with error\n", err);
+      }
+      if (stderr) {
+        console.log("Installing packages stderr\n", stderr);
+      }
+      if (stdout) {
+        console.log("Installed packages\n", stdout);
+      }
+      res();
+    });
   });
 }
 
 function buildServer(reactAppRootDest: string) {
-  exec(
-    "yarn run buildServer",
-    { cwd: reactAppRootDest },
-    (err, stdout, stderr) => {
-      if (err) {
-        console.log("Build server failed with error\n", err);
+  return new Promise<void>((res) => {
+    exec(
+      "yarn run buildServer",
+      { cwd: reactAppRootDest },
+      (err, stdout, stderr) => {
+        if (err) {
+          console.log("Build server failed with error\n", err);
+        }
+        if (stderr) {
+          console.log("Build server stderr\n", stderr);
+        }
+        if (stdout) {
+          console.log("Server built\n", stdout);
+        }
+        res();
       }
-      if (stderr) {
-        console.log("Build server stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("Server built\n", stdout);
-      }
+    );
+  });
+}
+
+function updateAppStoreWithControllerProps(
+  options: AppBuildOptions,
+  reactTemplateManager: ReturnType<typeof createReactAppTemplateManager>
+) {
+  const pages = options.appInfo.pages;
+  const pageIds = Object.keys(pages);
+  // if no controller props, then update props from app info
+  const pageState = getPageStateAsCompIdMap(options.appInfo);
+  pageIds.forEach((pageId) => {
+    // add components
+    const controllerPropsForPage = options.controllerProps[pageId]!;
+    const componentGeneratorOutput =
+      options.appInfo.pages[pageId].componentGeneratorOutput;
+    reactTemplateManager.addComponents(pages[pageId], componentGeneratorOutput);
+    // add props (maybe from controller or the old ones from app info)
+    if (options && options.controllerProps && options.controllerProps[pageId]) {
+      const compIds = Object.keys(componentGeneratorOutput);
+      const newProps: PropsGeneratorOutput = {};
+      compIds.forEach((compId) => {
+        const comp = componentGeneratorOutput[compId];
+        newProps[compId] = {
+          props: controllerPropsForPage[comp.alias],
+        };
+      });
+      reactTemplateManager.addProps(pages[pageId], newProps);
+    } else {
+      console.log("found no props for pageId", pageId, "using app info");
+      reactTemplateManager.addProps(pages[pageId], pageState[pageId]);
     }
-  );
+  });
 }
 
 export default async function buildReactApp(
   toolConfig: ToolConfig,
   options: AppBuildOptions
 ) {
-  // get/create forest def
-  const forestDef = getForestDef(toolConfig, options.appForestPkgId);
-  if (forestDef === undefined) {
-    return;
-  }
-  const forestManager = createForestMgr(toolConfig);
-  const eventManager = forestManager.getEventManager(options.appForestPkgId);
-  // create forest for each page
-  // get all pages
-  const pages = eventManager.pages();
-  const pageForestMap: { [pageId: string]: Forest } = {};
-  const pageIds = Object.keys(pages);
-  pageIds.forEach((pageId) => {
-    pageForestMap[pageId] = createForest(forestDef);
+  const reactTemplateManager = getReactAppTemplateManager({
+    outputDir: options.outputDir,
+    rootComponentId: options.rootComponentId,
+    assetManager: toolConfig.assetManager,
   });
-  // call handle event for each page
-  pageIds.forEach((pageId) => {
-    const events = eventManager.fetchEvents(pageId);
-    events.forEach((event) => {
-      pageForestMap[pageId].handleEvent(event);
-    });
-  });
-  const controllersDir = options.controllers.python.dir;
-  const serverFile = path.resolve(controllersDir, "server.py");
-  if (!fs.existsSync(serverFile)) {
-    console.log(
-      `Module Not Found. server.py file doesn't exist in controller directory ${controllersDir}`
-    );
-    return;
-  }
-
-  const componentGeneratorFunctions: {
-    fn: ComponentGeneratorFunction;
-    options: ComponentGeneratorOptions;
-  }[] = [];
-  for (let i = 0; i < options.components.length; i++) {
-    const componentGeneratorModulePath = options.components[i]!.modulePath;
-    const mod = await import(componentGeneratorModulePath);
-    const defaultFn = mod["default"];
-    if (typeof defaultFn === "function") {
-      componentGeneratorFunctions.push({
-        fn: defaultFn,
-        options: options.components[i]!.options,
-      });
-    }
-  }
-  const propsGeneratorFunctions: {
-    fn: PropsGeneratorFunction;
-    options: PropsGeneratorOptions;
-  }[] = [];
-  for (let i = 0; i < options.props.length; i++) {
-    const propsGeneratorModulePath = options.props[i]!.modulePath;
-    const mod = await import(propsGeneratorModulePath);
-    const defaultFn = mod["default"];
-    if (typeof defaultFn === "function") {
-      propsGeneratorFunctions.push({
-        fn: defaultFn,
-        options: options.components[i]!.options,
-      });
-    }
-  }
-  const reactAppDestPath = getReactAppDestPath(options.outputDir);
-  const reactAppServerDestPath = getReactAppServerDestPath(options.outputDir);
-  const reactTemplateManager = createReactAppTemplateManager(
-    {
-      reactAppTemplate: reactAppTemplatePath,
-      reactAppDest: reactAppDestPath,
-      reactAppServerTemplate: reactAppServerTemplatePath,
-      reactAppServerDest: reactAppServerDestPath,
-      reactAppRootDest: options.outputDir,
-      toCopy: reactAppToCopyToRoot,
-      reactAppRootTemplate,
-      reactAppPackageJSON,
-      reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
-      reactAppNodeTemplatePath: reactAppNodeTemplatePath,
-      reactAppNodeDestPath: getReactAppNodeDestPath(options.outputDir),
-    },
-    options.rootComponentId,
-    toolConfig.assetManager
-  );
   // install dependencies if node_modules is missing
   if (!fs.existsSync(path.resolve(options.outputDir, "node_modules"))) {
-    installDependencies(path.resolve(options.outputDir));
+    await installDependencies(path.resolve(options.outputDir));
   }
   // run tsc if dist/server if missing
   if (!fs.existsSync(path.resolve(options.outputDir, "dist", "server"))) {
-    buildServer(path.resolve(options.outputDir));
+    await buildServer(path.resolve(options.outputDir));
   }
-  const pagePropsPromises: Promise<void>[] = [];
-  pageIds.forEach((pageId) => {
-    pagePropsPromises.push(
-      new Promise((resolve) => {
-        // create props for state
-        let componentGeneratorOutput: ComponentGeneratorOutput = {};
-        let propsGeneratorOutput: PropsGeneratorOutput = {};
-        const forest = pageForestMap[pageId];
-        componentGeneratorFunctions.forEach(({ fn, options }) => {
-          try {
-            const currentOutput = fn({
-              forestDef,
-              forest,
-              getComponentFromManifest,
-              custom: options,
-            });
-            componentGeneratorOutput = {
-              ...componentGeneratorOutput,
-              ...currentOutput,
-            };
-          } catch (err) {
-            console.log(err);
-          }
-        });
-        // We need props generator output as initial state
-        propsGeneratorFunctions.forEach(({ fn, options }) => {
-          try {
-            const currentOutput = fn({
-              forestDef,
-              forest,
-              custom: options,
-            });
-            propsGeneratorOutput = {
-              ...propsGeneratorOutput,
-              ...currentOutput,
-            };
-          } catch (err) {
-            console.log(err);
-          }
-        });
-        const compIds = Object.keys(componentGeneratorOutput);
-        const pageState: { [alias: string]: any } = {};
-        compIds.forEach((compId) => {
-          if (propsGeneratorOutput[compId]) {
-            const alias = componentGeneratorOutput[compId].alias;
-            const props = propsGeneratorOutput[compId].props;
-            pageState[alias] = props;
-          } else {
-            console.log(`WARNING: props not found for ${compId}`);
-          }
-        });
-        exec(
-          `python -m server compute --route '${
-            pages[pageId].route || "/"
-          }' --state '${JSON.stringify(pageState)}'`,
-          { cwd: controllersDir },
-          (err, stdout, stderr) => {
-            if (err) {
-              console.log(
-                `Failed to run server.py for route ${pages[pageId].route}`
-              );
-            }
-            if (stdout) {
-              try {
-                const newProps = JSON.parse(stdout);
-                if (
-                  newProps &&
-                  newProps["statusCode"] === 200 &&
-                  newProps["state"]
-                ) {
-                  reactTemplateManager.addComponents(
-                    pages[pageId],
-                    componentGeneratorOutput
-                  );
-                  const newPropsOuputFormat: PropsGeneratorOutput = {};
-                  compIds.forEach((compId) => {
-                    const comp = componentGeneratorOutput[compId];
-                    newPropsOuputFormat[compId] = {
-                      props: newProps["state"][comp.alias],
-                    };
-                  });
-                  reactTemplateManager.addProps(
-                    pages[pageId],
-                    newPropsOuputFormat
-                  );
-                }
-              } catch (err) {
-                console.log(
-                  `JSON decode error for route ${pages[pageId].route}`
-                );
-              }
-            }
-            if (stderr) {
-              console.log(
-                `Error while running server.py for route ${pages[pageId].route}:\n`,
-                stderr
-              );
-            }
-            resolve();
-          }
-        );
-      })
-    );
-  });
-  await Promise.all(pagePropsPromises);
+  // update props from controller if available
+  updateAppStoreWithControllerProps(options, reactTemplateManager);
   reactTemplateManager.flushStore();
 }

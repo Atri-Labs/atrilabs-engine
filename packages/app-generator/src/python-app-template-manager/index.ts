@@ -153,7 +153,7 @@ export function createPythonAppTemplateManager(
       flushAtriPyFile(page);
     });
   }
-  function copyTemplate() {
+  function copyTemplate(overwrite: boolean) {
     const files = getFiles(paths.pythonAppTemplate);
     files.forEach((file) => {
       const dirname = path.dirname(file);
@@ -164,7 +164,12 @@ export function createPythonAppTemplateManager(
       if (!fs.existsSync(destDirname)) {
         fs.mkdirSync(destDirname, { recursive: true });
       }
-      fs.writeFileSync(destFilename, fs.readFileSync(file));
+      if (
+        (fs.existsSync(destFilename) && overwrite) ||
+        !fs.existsSync(destFilename)
+      ) {
+        fs.writeFileSync(destFilename, fs.readFileSync(file));
+      }
     });
   }
   // CAUTION: This will overridde existing main.py file
@@ -176,7 +181,7 @@ export function createPythonAppTemplateManager(
       "main.py"
     );
     if (!fs.existsSync(path.dirname(outputRouteMainPyPath))) {
-      fs.mkdirSync(path.dirname(outputRouteMainPyPath));
+      fs.mkdirSync(path.dirname(outputRouteMainPyPath), { recursive: true });
     }
     fs.writeFileSync(
       outputRouteMainPyPath,
@@ -190,15 +195,13 @@ export function createPythonAppTemplateManager(
       page.route.replace(/^([\/]*)/, ""),
       "main.py"
     );
-    if (fs.existsSync(outputRouteMainPyPath)) {
-      return true;
-    }
-    return false;
+    return fs.existsSync(outputRouteMainPyPath);
   }
   function createMainPyRecursively(page: { name: string; route: string }) {
+    // routesSplits for /a/b/c will be ["", "a", "b", "c"], notice the first empty string
     const routeSplits = page.route.split("/");
     for (let i = routeSplits.length; i > 0; i--) {
-      const currRoute = "/" + routeSplits.slice(0, i).join("/");
+      const currRoute = "/" + routeSplits.slice(1, i).join("/");
       if (!mainPyFileExists({ name: page.name, route: currRoute })) {
         createMainPyFile({ name: page.name, route: currRoute });
       }
@@ -213,30 +216,34 @@ export function createPythonAppTemplateManager(
       "__init__.py"
     );
     if (!fs.existsSync(path.dirname(outputRouteInitPyPath))) {
-      fs.mkdirSync(path.dirname(outputRouteInitPyPath));
+      fs.mkdirSync(path.dirname(outputRouteInitPyPath), { recursive: true });
     }
     fs.writeFileSync(outputRouteInitPyPath, "");
   }
   function initPyFileExists(page: { name: string; route: string }) {
-    const outputRouteMainPyPath = path.resolve(
+    const outputRouteInitPyPath = path.resolve(
       paths.controllers,
       "routes",
       page.route.replace(/^([\/]*)/, ""),
       "__init__.py"
     );
-    if (fs.existsSync(outputRouteMainPyPath)) {
-      return true;
-    }
-    return false;
+    return fs.existsSync(outputRouteInitPyPath);
   }
   function createInitPyRecursively(page: { name: string; route: string }) {
+    // routesSplits for /a/b/c will be ["", "a", "b", "c"], notice the first empty string
     const routeSplits = page.route.split("/");
     for (let i = routeSplits.length; i > 0; i--) {
-      const currRoute = "/" + routeSplits.slice(0, i).join("/");
+      const currRoute = "/" + routeSplits.slice(1, i).join("/");
       if (!initPyFileExists({ name: page.name, route: currRoute })) {
         createInitPyFile({ name: page.name, route: currRoute });
       }
     }
+  }
+  function controllersDirExists() {
+    return fs.existsSync(path.resolve(paths.controllers));
+  }
+  function serverPyExists() {
+    return fs.existsSync(path.resolve(paths.controllers, "server.py"));
   }
   return {
     addVariables,
@@ -248,5 +255,7 @@ export function createPythonAppTemplateManager(
     createInitPyFile,
     initPyFileExists,
     createInitPyRecursively,
+    controllersDirExists,
+    serverPyExists,
   };
 }

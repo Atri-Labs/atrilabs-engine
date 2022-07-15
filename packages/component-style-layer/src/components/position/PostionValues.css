@@ -1,0 +1,16 @@
+#positionTopTrapezoid:hover{
+    fill: #6b7280;
+    cursor: pointer;
+}
+#positionLeftTrapezoid:hover{
+    fill: #6b7280;
+    cursor: pointer;
+}
+#positionRightTrapezoid:hover{
+    fill: #6b7280;
+    cursor: pointer;
+}
+#positionBottomTrapezoid:hover{
+    fill: #6b7280;
+    cursor: pointer;
+}

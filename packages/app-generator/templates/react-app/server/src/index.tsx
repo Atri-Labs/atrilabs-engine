@@ -1,8 +1,11 @@
 import {
   createIfNotExistLocalCache,
+  createWebSocketServer,
+  disablePageCache,
   getIndexHtmlContent,
   getPageFromCache,
   getServerInfo,
+  sendReloadMessage,
   storePageInCache,
 } from "./utils";
 import express from "express";
@@ -10,14 +13,21 @@ import path from "path";
 import http from "http";
 
 // constants needed externally
-const { port, publicDir, pages, pythonPort, publicUrlAssetMap } =
-  getServerInfo(__dirname);
+const {
+  port,
+  publicDir,
+  pages,
+  pythonPort,
+  publicUrlAssetMap,
+  controllerHost,
+} = getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
 
 createIfNotExistLocalCache();
 
 const app = express();
-const disablePageCache = process.argv.includes("--disable-cache");
+const server = http.createServer(app);
+createWebSocketServer(server);
 
 app.use((req, res, next) => {
   if (req.method === "GET" && pages[req.originalUrl]) {
@@ -73,10 +83,13 @@ app.post("/event-handler", express.json(), (req, res) => {
     callbackName,
     eventData,
   });
+  const [controllerHostname, controllerPort] = (controllerHost || "").split(
+    ":"
+  );
   const forward_req = http.request(
     {
-      hostname: `0.0.0.0`,
-      port: pythonPort,
+      hostname: controllerHostname || "0.0.0.0",
+      port: controllerPort ? parseInt(controllerPort) : pythonPort,
       path: "/event",
       method: "POST",
       headers: {
@@ -111,13 +124,19 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.end();
 });
 
+app.post("/reload-all-dev-sockets", (_req, res) => {
+  console.log("received request to reload all sockets");
+  sendReloadMessage();
+  res.send();
+});
+
 Object.keys(publicUrlAssetMap).forEach((url) => {
   app.use(url, express.static(publicUrlAssetMap[url]!));
 });
 
 app.use(express.static(publicDir));
 
-const server = app.listen(port, () => {
+server.listen(port, () => {
   const address = server.address();
   if (typeof address === "object" && address !== null) {
     let port = address.port;

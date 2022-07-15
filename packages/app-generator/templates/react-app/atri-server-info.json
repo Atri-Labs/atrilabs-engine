@@ -1,6 +1,6 @@
 {
   "port": 4005,
-  "pythonPort": 4006,
+  "pythonPort": 4007,
   "publicDir": "dist/app",
   "pages": {},
   "publicUrlAssetMap": {}

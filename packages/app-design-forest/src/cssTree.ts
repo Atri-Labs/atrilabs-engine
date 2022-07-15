@@ -1,6 +1,7 @@
 export type CSSTreeOptions = {
   flexContainerOptions: boolean;
   flexChildOptions: boolean;
+  positionOptions: boolean;
   typographyOptions: boolean;
   spacingOptions: boolean;
   sizeOptions: boolean;

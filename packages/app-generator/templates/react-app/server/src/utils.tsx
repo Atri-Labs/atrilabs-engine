@@ -1,6 +1,8 @@
 import path from "path";
 import fs from "fs";
 import { ServerInfo } from "./types";
+import { WebSocketServer, WebSocket } from "ws";
+import { Server } from "http";
 
 // create local cache directory if not already created
 const localCache = path.resolve(__dirname, ".cache");
@@ -41,8 +43,9 @@ export function getPageFromCache(url: string): string | null {
 }
 
 let indexHtmlContent = "";
+export const disablePageCache = process.argv.includes("--disable-cache");
 export function getIndexHtmlContent(appHtml: string) {
-  if (indexHtmlContent === "") {
+  if (indexHtmlContent === "" || disablePageCache) {
     if (fs.existsSync(appHtml)) {
       indexHtmlContent = fs.readFileSync(appHtml).toString();
     } else {
@@ -83,5 +86,30 @@ export function getServerInfo(startDir: string): ServerInfo {
     publicDir: serverInfo["publicDir"],
     pages: serverInfo["pages"],
     publicUrlAssetMap: serverInfo["publicUrlAssetMap"],
+    controllerHost: process.env["ATRI_CONTROLLER_HOST"],
   };
+}
+
+const wsSockets: WebSocket[] = [];
+export function createWebSocketServer(server: Server) {
+  const wsServer = new WebSocketServer({ server });
+  wsServer.on("connection", (ws) => {
+    wsSockets.push(ws);
+    ws.on("close", () => {
+      const index = wsSockets.findIndex((curr) => curr === ws);
+      if (index >= 0) {
+        wsSockets.splice(index, 1);
+      }
+    });
+  });
+}
+
+export function sendReloadMessage() {
+  wsSockets.forEach((ws) => {
+    ws.send("reload", (err) => {
+      if (err) {
+        console.log("failed to send reload message\n", err);
+      }
+    });
+  });
 }
