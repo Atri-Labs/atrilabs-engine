@@ -151,14 +151,10 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               name="fontFamily"
               style={{ ...styles.inputBox, width: "145px" }}
               onChange={(e) => handleFontFamChange(e)}
+              value={props.styles.fontFamily || fonts[0].fontFamily}
             >
               {fonts.map((i) => (
-                <option
-                  key={i.id}
-                  style={styles.select}
-                  value={i.value}
-                  selected={props.styles.fontFamily === i.value}
-                >
+                <option key={i.id} style={styles.select} value={i.value}>
                   {i.fontFamily}
                 </option>
               ))}
@@ -171,6 +167,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
             name="font"
             onChange={(e) => handleFontChange(e, "fontWeight")}
             style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
+            value={props.styles.fontWeight || 400}
           >
             <option style={styles.select} value={400}>
               Regular
@@ -250,18 +247,3 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
     </div>
   );
 };
-
-// const loadFont = (name: string, source: string) => {
-//   const font = new FontFace(name, `url(${source})`);
-//   font
-//     .load()
-//     .then(function (loadedFont: any) {
-//       document.fonts.add(loadedFont);
-//       document.body.style.fontFamily = name;
-//       console.log(loadedFont);
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-// }
-// loadFont(fontName, url);
