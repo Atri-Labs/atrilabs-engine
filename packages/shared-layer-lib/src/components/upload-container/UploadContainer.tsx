@@ -14,6 +14,8 @@ import InputVideo from "./InputVideo";
 import { Cross } from "../../assets/Cross";
 import { useGetAssetsInfo } from "./hooks/useGetAssetList";
 
+export type UploadMode = "upload" | "upload_multiple" | "draggable" | "select";
+
 export type UploadContainerProps = {
   onCrossClicked?: () => void;
   onUploadSuccess?: (url: string) => void;
@@ -21,7 +23,7 @@ export type UploadContainerProps = {
   onUploadMultipleSuccess?: (urls: string[]) => void;
   onSelect?: (url: string) => void;
   // upload mode for allowing upload of new files
-  modes?: ("upload" | "upload_multiple" | "draggable" | "select")[];
+  modes?: UploadMode[];
 };
 
 export const styles: { [key: string]: React.CSSProperties } = {

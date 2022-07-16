@@ -1,6 +1,6 @@
 import { gray200, smallText } from "@atrilabs/design-system";
 import React from "react";
-import { ReactComponent as VidIp } from "../assets/video-icon.svg";
+import { ReactComponent as VidIp } from "../../assets/video-icon.svg";
 
 export const styles: { [key: string]: React.CSSProperties } = {
   container: {

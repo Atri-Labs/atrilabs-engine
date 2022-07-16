@@ -1,6 +1,6 @@
 import { gray200, smallText } from "@atrilabs/design-system";
 import React from "react";
-import { ReactComponent as AudIp } from "../assets/audio-icon.svg";
+import { ReactComponent as AudIp } from "../../assets/audio-icon.svg";
 
 export const styles: { [key: string]: React.CSSProperties } = {
   container: {

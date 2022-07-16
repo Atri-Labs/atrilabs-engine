@@ -1,1 +1,1 @@
-export { UploadContainer } from "./components";
+export * from "./components";
