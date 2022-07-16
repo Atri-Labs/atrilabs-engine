@@ -63,17 +63,24 @@ type FnQueue = ((
 ) => Promise<void>)[];
 
 async function generateApp(_toolConfig: ToolConfig) {
+  console.log("[publish_app_server] generate app called");
   return new Promise<void>((res, rej) => {
-    exec("yarn run generateApp", (err, _stdout, stderr) => {
+    const child_proc = exec("yarn run generateApp", (err, stdout, stderr) => {
       if (err) {
-        rej();
-        return;
+        console.log("[publish_app_server] Generate app error\n", err);
       }
       if (stderr) {
-        rej();
-        return;
+        console.log("[publish_app_server] Generate app stderr\n", stderr);
       }
-      res();
+      if (stdout) {
+        console.log("[publish_app_server] Generate app stdout\n", stdout);
+      }
+      if (child_proc.exitCode != 0) {
+        console.log("[publish_app_server] return code", child_proc.exitCode);
+        rej();
+      } else {
+        res();
+      }
     });
   });
 }

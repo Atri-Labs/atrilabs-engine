@@ -290,7 +290,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         );
         currentConf[file.name] = { mime: file.mime };
         fs.writeFileSync(assetsConfPath, JSON.stringify(currentConf, null, 2));
-        returnUrls.push(encodeURIComponent(`${assetUrlPrefix}/${file.name}`));
+        returnUrls.push(encodeURI(`${assetUrlPrefix}/${file.name}`));
       });
       callback(true, returnUrls);
     });
@@ -300,7 +300,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       names.forEach((name) => {
         assetConf[name] = {
           ...assetConf[name],
-          url: encodeURIComponent(`${assetUrlPrefix}/${name}`),
+          url: encodeURI(`${assetUrlPrefix}/${name}`),
         };
       });
       callback(assetConf);

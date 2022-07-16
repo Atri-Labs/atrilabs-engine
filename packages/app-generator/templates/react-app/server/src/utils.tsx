@@ -86,6 +86,7 @@ export function getServerInfo(startDir: string): ServerInfo {
     publicDir: serverInfo["publicDir"],
     pages: serverInfo["pages"],
     publicUrlAssetMap: serverInfo["publicUrlAssetMap"],
+    controllerHost: process.env["ATRI_CONTROLLER_HOST"],
   };
 }
 

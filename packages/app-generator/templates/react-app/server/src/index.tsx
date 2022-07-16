@@ -13,8 +13,14 @@ import path from "path";
 import http from "http";
 
 // constants needed externally
-const { port, publicDir, pages, pythonPort, publicUrlAssetMap } =
-  getServerInfo(__dirname);
+const {
+  port,
+  publicDir,
+  pages,
+  pythonPort,
+  publicUrlAssetMap,
+  controllerHost,
+} = getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
 
 createIfNotExistLocalCache();
@@ -77,10 +83,13 @@ app.post("/event-handler", express.json(), (req, res) => {
     callbackName,
     eventData,
   });
+  const [controllerHostname, controllerPort] = (controllerHost || "").split(
+    ":"
+  );
   const forward_req = http.request(
     {
-      hostname: `0.0.0.0`,
-      port: pythonPort,
+      hostname: controllerHostname || "0.0.0.0",
+      port: controllerPort ? parseInt(controllerPort) : pythonPort,
       path: "/event",
       method: "POST",
       headers: {

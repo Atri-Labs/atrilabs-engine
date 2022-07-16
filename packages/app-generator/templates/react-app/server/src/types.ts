@@ -7,4 +7,7 @@ export type ServerInfo = {
   publicUrlAssetMap: {
     [url: string]: string;
   };
+  // host can be host.internal.docker:4005 etc. If host is provided,
+  // pythonPort will be ignored.
+  controllerHost?: string;
 };
