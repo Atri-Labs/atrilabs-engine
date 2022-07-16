@@ -17,6 +17,7 @@ import { CssProprtyComponentType } from "../../types";
 import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
 import { ColorPickerAsset } from "../commons/ColorPickerAsset";
+import { Cross } from "../../icons/Cross";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -154,28 +155,42 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BC />
           </div>
-          <div
-            className="cp-holder"
-            onClick={() => {
-              setShowCp(!showCp);
-            }}
-          >
+          <div className="cp-holder">
             <div
               style={showCp ? { display: "block" } : { display: "none" }}
               className="colorPalette"
             >
+              <div className="cpinfo">
+                <p>Border Color</p>
+                <span
+                  onClick={() => {
+                    setShowCp(!showCp);
+                    console.log("hello");
+                  }}
+                >
+                  <Cross />
+                </span>
+              </div>
+
               <ColorPickerAsset
                 styleItem="borderColor"
                 styles={props.styles}
                 patchCb={props.patchCb}
               />
             </div>
-            <BorderInput
-              styleItem="borderColor"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
+            <div
+              onClick={() => {
+                setShowCp(true);
+                console.log("hi");
+              }}
+            >
+              <BorderInput
+                styleItem="borderColor"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
           </div>
         </div>
       </div>

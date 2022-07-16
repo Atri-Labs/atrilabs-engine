@@ -11,9 +11,12 @@ export type ColorPickerProps = {
 
 export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
   //Internal state is being used to record the last color dragged to in the palette.
-  const [color, setColor] = useColor("hex", "");
+  const [color, setColor] = useColor(
+    "hex",
+    (props.styles[props.styleItem] as string | undefined) || ""
+  );
 
-  const handleChange =(
+  const handleChange = (
     color: string,
     styleItem: keyof React.CSSProperties
   ) => {
