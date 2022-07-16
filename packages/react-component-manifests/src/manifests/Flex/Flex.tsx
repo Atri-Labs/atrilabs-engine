@@ -81,6 +81,7 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
+  backgroundOptions: true,
 };
 
 const compManifest: ReactComponentManifestSchema = {

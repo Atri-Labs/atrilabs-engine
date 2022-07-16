@@ -8,6 +8,8 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import SpacingProperty from "./components/spacing/SpacingProperty";
 import { Typography } from "./components/typography/Typography";
 import Position from "./components/position/Position";
+import { Background } from "./components/background/Background";
+import { CssProprtyComponentType } from "./types";
 
 export type TabBodyProps = {
   alias: string;
@@ -15,6 +17,7 @@ export type TabBodyProps = {
   patchCb: (slice: any) => void;
   styles: React.CSSProperties;
   treeOptions: CSSTreeOptions;
+  openAssetManager: CssProprtyComponentType["openAssetManager"];
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -47,25 +50,60 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         value={props.alias}
       />
       {props.treeOptions && props.treeOptions.typographyOptions ? (
-        <Typography styles={props.styles} patchCb={props.patchCb} />
+        <Typography
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.sizeOptions ? (
-        <Size styles={props.styles} patchCb={props.patchCb} />
+        <Size
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.borderOptions ? (
-        <Border styles={props.styles} patchCb={props.patchCb} />
+        <Border
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
-        <Layout styles={props.styles} patchCb={props.patchCb} />
+        <Layout
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.positionOptions ? (
-        <Position styles={props.styles} patchCb={props.patchCb} />
+        <Position
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.spacingOptions ? (
-        <SpacingProperty styles={props.styles} patchCb={props.patchCb} />
+        <SpacingProperty
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
       {props.treeOptions && props.treeOptions.flexChildOptions ? (
-        <FlexChild styles={props.styles} patchCb={props.patchCb} />
+        <FlexChild
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.backgroundOptions ? (
+        <Background
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+        />
       ) : null}
     </div>
   );
