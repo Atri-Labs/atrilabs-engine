@@ -1,5 +1,5 @@
 import { gray200, smallText } from "@atrilabs/design-system";
-import React from "react";
+import React, { useCallback } from "react";
 import { ReactComponent as VidIp } from "../../assets/video-icon.svg";
 
 export const styles: { [key: string]: React.CSSProperties } = {
@@ -8,6 +8,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
     borderBottom: "1px solid rgba(31, 41, 55, 0.5)",
     padding: "0 0.5rem",
     alignItems: "center",
+    cursor: "pointer",
   },
   videoIcon: {
     padding: "0.5rem",
@@ -18,9 +19,16 @@ export const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-function InputVideo(props: { url: string; videoText: string }) {
+function InputVideo(props: {
+  url: string;
+  videoText: string;
+  onSelect: (url: string) => void;
+}) {
+  const onSelectCb = useCallback(() => {
+    props.onSelect(props.url);
+  }, [props]);
   return (
-    <div style={styles.container}>
+    <div style={styles.container} onClick={onSelectCb}>
       <div style={styles.videoIcon}>
         <VidIp />
       </div>

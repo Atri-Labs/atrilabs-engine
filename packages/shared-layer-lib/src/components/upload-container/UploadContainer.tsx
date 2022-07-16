@@ -185,6 +185,15 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
     []
   );
 
+  const onSelectCb = useCallback(
+    (url: string) => {
+      if (props.onSelect && props.modes?.includes("select")) {
+        props.onSelect(url);
+      }
+    },
+    [props]
+  );
+
   return (
     <div style={styles.dropContainerItem}>
       <header style={styles.dropContainerItemHeader}>
@@ -237,16 +246,31 @@ export const UploadContainer: React.FC<UploadContainerProps> = (props) => {
           {mediaType === "images" ? (
             <div style={styles.container}>
               {assetsInfo["images"].map((i) => (
-                <InputImage key={i.name} url={i.url} imageText={i.name} />
+                <InputImage
+                  key={i.name}
+                  url={i.url}
+                  imageText={i.name}
+                  onSelect={onSelectCb}
+                />
               ))}
             </div>
           ) : mediaType === "audio" ? (
             assetsInfo["audio"].map((i) => (
-              <InputAudio key={i.name} url={i.url} audioText={i.name} />
+              <InputAudio
+                key={i.name}
+                url={i.url}
+                audioText={i.name}
+                onSelect={onSelectCb}
+              />
             ))
           ) : (
             assetsInfo["video"].map((i) => (
-              <InputVideo key={i.name} url={i.url} videoText={i.name} />
+              <InputVideo
+                key={i.name}
+                url={i.url}
+                videoText={i.name}
+                onSelect={onSelectCb}
+              />
             ))
           )}
         </div>
