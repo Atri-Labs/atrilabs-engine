@@ -4,5 +4,8 @@ import React from "react";
 export type CssProprtyComponentType = {
   styles: React.CSSProperties;
   patchCb: (slice: any) => void;
-  openAssetManager: (modes: UploadMode[], styleItem: string) => void;
+  openAssetManager: (
+    modes: UploadMode[],
+    styleItem: keyof React.CSSProperties
+  ) => void;
 };

@@ -3,9 +3,8 @@ import { TabBody } from "./TabBody";
 import { TabHeader } from "./TabHeader";
 import { useShowTab } from "./hooks/useShowTab";
 import { useManageCSS } from "./hooks/useManageCSS";
-import { useCallback, useState } from "react";
-import { CssProprtyComponentType } from "./types";
-import { UploadContainer, UploadMode } from "@atrilabs/shared-layer-lib";
+import { UploadContainer } from "@atrilabs/shared-layer-lib";
+import { useUploadAssetManager } from "./hooks/useUploadAssetManager";
 
 /*
 This serves as the Data Manager component for this layer.
@@ -14,18 +13,14 @@ export default function () {
   // show tab and set alias
   const { showTab, alias, setAliasCb, id } = useShowTab();
   const { patchCb, styles, treeOptions } = useManageCSS(id);
-  const [showAssetPanel, setShowAssetPanel] = useState<boolean>(false);
-  const [modes, setModes] = useState<UploadMode[]>([]);
-  const onCrossClicked = useCallback(() => {
-    setModes([]);
-    setShowAssetPanel(false);
-  }, []);
-  const openAssetManager = useCallback<
-    CssProprtyComponentType["openAssetManager"]
-  >((modes, styleItem) => {
-    setShowAssetPanel(true);
-    setModes(modes);
-  }, []);
+  const {
+    openAssetManager,
+    modes,
+    onCrossClicked,
+    onSelect,
+    onUploadSuccess,
+    showAssetPanel,
+  } = useUploadAssetManager(patchCb);
   return (
     <>
       {showTab ? (
@@ -47,7 +42,12 @@ export default function () {
       ) : null}
       {showAssetPanel ? (
         <Container name="Drop">
-          <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
+          <UploadContainer
+            modes={modes}
+            onCrossClicked={onCrossClicked}
+            onUploadSuccess={onUploadSuccess}
+            onSelect={onSelect}
+          />
         </Container>
       ) : null}
     </>

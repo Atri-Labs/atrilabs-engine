@@ -65,7 +65,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const onClickCb = useCallback(() => {}, []);
+  const onClickCb = useCallback(() => {
+    props.openAssetManager(["select", "upload"], "backgroundImage");
+  }, [props]);
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
