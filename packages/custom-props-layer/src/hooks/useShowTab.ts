@@ -37,6 +37,7 @@ export const useShowTab = () => {
               manifestComponent.dev.attachProps["custom"].treeOptions;
             setId(id);
             setShowTab(true);
+            console.log("treeoptions", treeOptions);
             setTreeOptions(treeOptions);
           }
         }

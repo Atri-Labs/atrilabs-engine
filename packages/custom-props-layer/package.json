@@ -35,6 +35,7 @@
     "@atrilabs/layer-types": "^0.0.21",
     "@atrilabs/react-component-manifest-schema": "^0.0.21",
     "@atrilabs/scripts": "^0.0.21",
+    "@atrilabs/shared-layer-lib": "^0.0.21",
     "eslint-plugin-atrilabs": "^0.0.21",
     "typescript": "4.6.3"
   },
