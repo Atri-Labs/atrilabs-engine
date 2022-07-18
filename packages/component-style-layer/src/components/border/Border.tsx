@@ -136,6 +136,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               name="borderStyle"
               onChange={(e) => handleBorderChange(e, "borderStyle")}
               style={styles.inputBox}
+              value={props.styles.borderStyle || "none"}
             >
               <option style={styles.select} value="none">
                 none

@@ -251,7 +251,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="opacity"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue="1"
+              defaultValue="100"
               placeHolderText="%"
               preProcessor={opacityPreProcessor}
             />
