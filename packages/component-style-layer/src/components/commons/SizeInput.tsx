@@ -66,10 +66,11 @@ export const SizeInput: React.FC<SizeInputProps> = (props) => {
                 props.styles[props.styleItem]?.toString(),
                 "read"
               )
-            : props.styles[props.styleItem] || props.defaultValue
+            : props.styles[props.styleItem] || ""
         }
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
+        placeholder={props.defaultValue}
       />
       <div style={styles.inputSpan}>{props.placeHolderText}</div>
     </div>

@@ -28,22 +28,26 @@ export const FlexChildInput: React.FC<FlexChildInputProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    
-      props.patchCb({
-        property: {
-          styles: {
-            [styleItem]: parseInt(e.target.value),
-          },
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
         },
-      });
+      },
+    });
   };
   return (
     <div>
       <input
         type="text"
-        value={props.styles[props.styleItem] || props.defaultValue}
+        value={props.styles[props.styleItem] || ""}
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
+        placeholder={
+          typeof props.defaultValue === "number"
+            ? props.defaultValue.toString()
+            : props.defaultValue
+        }
       />
     </div>
   );
