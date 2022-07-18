@@ -113,7 +113,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="borderRadius"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue=""
+              defaultValue="0"
               placeHolderText="PX"
             />
           </div>
@@ -139,16 +139,16 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               style={styles.inputBox}
             >
               <option style={styles.select} value="none">
-                None
+                none
               </option>
               <option style={styles.select} value="solid">
-                Solid
+                solid
               </option>
               <option style={styles.select} value="dashed">
-                Dash
+                dashed
               </option>
               <option style={styles.select} value="dotted">
-                Dot
+                dotted
               </option>
             </select>
           </div>

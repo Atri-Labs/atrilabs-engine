@@ -171,7 +171,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
             value={props.styles.fontWeight || 400}
           >
             <option style={styles.select} value={400}>
-              Regular
+              Normal
             </option>
             <option style={styles.select} value={100}>
               Thin
@@ -251,7 +251,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="opacity"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue=""
+              defaultValue="1"
               placeHolderText="%"
               preProcessor={opacityPreProcessor}
             />
