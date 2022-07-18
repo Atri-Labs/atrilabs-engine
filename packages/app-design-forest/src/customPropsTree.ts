@@ -1,5 +1,7 @@
 export type CustomPropsTreeOptions = {
-  dataTypes: { [propName: string]: "text" | "number" | "large_text" };
+  dataTypes: {
+    [propName: string]: "text" | "number" | "large_text" | "static_asset";
+  };
 };
 
 export default function () {
