@@ -71,6 +71,7 @@ const BorderOptions: React.CSSProperties = {
 
 const BackgroundOptions: React.CSSProperties = {
   backgroundImage: "",
+  backgroundColor: "",
 };
 
 const PositionOptions: React.CSSProperties = {
@@ -78,13 +79,13 @@ const PositionOptions: React.CSSProperties = {
   float: "none",
   clear: "none",
   // NOTE: default value is auto
-  top: "0",
+  top: "",
   // NOTE: default value is auto
-  left: "0",
+  left: "",
   // NOTE: default value is auto
-  bottom: "0",
+  bottom: "",
   // NOTE: default value is auto
-  right: "0",
+  right: "",
   // NOTE: default value is auto
   zIndex: "",
 };
