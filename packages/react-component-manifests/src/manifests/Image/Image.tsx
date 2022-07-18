@@ -8,7 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Img = forwardRef<
+export const Image = forwardRef<
   HTMLImageElement,
   {
     styles: React.CSSProperties;
@@ -54,7 +54,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "Image" },
   render: {
-    comp: Img,
+    comp: Image,
   },
   dev: {
     decorators: [],

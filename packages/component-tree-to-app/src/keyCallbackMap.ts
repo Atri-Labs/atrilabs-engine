@@ -22,4 +22,5 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "value"] }],
     },
   },
+  Image: {},
 };

@@ -17,9 +17,9 @@ module.exports = {
       modulePath: "./src/manifests/Input/Input.tsx",
       exportedVarName: "Input",
     },
-    Img: {
-      modulePath: "./src/manifests/Input/Img.tsx",
-      exportedVarName: "Img",
+    Image: {
+      modulePath: "./src/manifests/Image/Image.tsx",
+      exportedVarName: "Image",
     },
   },
 };
