@@ -12,7 +12,6 @@ import { ReactComponent as RA } from "../../assets/typo/right-align.svg";
 import { ReactComponent as CA } from "../../assets/typo/center-align.svg";
 import { ReactComponent as JA } from "../../assets/typo/justify-align.svg";
 import { ReactComponent as MH } from "../../assets/typo/more-horizontal.svg";
-import { ColorPickerAsset } from "../commons/ColorPickerAsset";
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInput } from "../commons/SizeInput";
@@ -72,7 +71,6 @@ const textAlignValues = ["left", "right", "center", "justify"];
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Typography: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const [showCp, setShowCp] = useState(false);
 
   const handleFontChange = useCallback(
     (
@@ -223,22 +221,11 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.option}>
           <div style={styles.optionName}>Color</div>
           <div
-            className="cp-holder"
             onClick={() => {
-              setShowCp(!showCp);
+              props.openPalette("color", "Color");
             }}
             style={{ width: "55px", marginRight: "10px" }}
           >
-            <div
-              style={showCp ? { display: "block" } : { display: "none" }}
-              className="colorPalette"
-            >
-              <ColorPickerAsset
-                styleItem="color"
-                styles={props.styles}
-                patchCb={props.patchCb}
-              />
-            </div>
             <BorderInput
               styleItem="color"
               styles={props.styles}
