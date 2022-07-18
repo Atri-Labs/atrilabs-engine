@@ -10,9 +10,28 @@ import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
 import signal
+from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
+from . import supported_virt_types
+import questionary
+
+find_and_set_app_directory()
+
+class QuestionaryOption(click.Option):
+
+    def __init__(self, param_decls=None, **attrs):
+        click.Option.__init__(self, param_decls, **attrs)
+        if not isinstance(self.type, click.Choice):
+            raise Exception('ChoiceOption type arg must be click.Choice')
+
+    def prompt_for_value(self, ctx):
+        if is_virtualenv_set():
+            return None
+        val = questionary.select(self.prompt, choices=self.type.choices).unsafe_ask()
+        return val
 
 @click.group()
-def main():
+@click.option("--virt-type", type=click.Choice(supported_virt_types, case_sensitive=False), prompt="Select virtual environment type. Use arrow keys.", cls=QuestionaryOption)
+def main(virt_type: str):
     """Open up the visual editor:
 
         $ atri open editor
@@ -26,7 +45,8 @@ def main():
         $ atri run dev-server
     
     """
-    pass
+    if not is_virtualenv_set():
+        set_virtualenv_type(virt_type)
 
 @main.group('open')
 def open():
