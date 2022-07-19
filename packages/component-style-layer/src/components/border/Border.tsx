@@ -12,9 +12,11 @@ import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
+import "./ColorPalette.css";
 import { CssProprtyComponentType } from "../../types";
 import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
+import { ColorPickerAsset } from "../commons/ColorPickerAsset";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -70,6 +72,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+  const [showCp, setShowCp] = useState(false);
 
   const handleBorderChange = (
     e:
@@ -152,19 +155,28 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BC />
           </div>
-          <div>
+          <div
+            className="cp-holder"
+            onClick={() => {
+              setShowCp(!showCp);
+            }}
+          >
             <div
-              onClick={() => {
-                props.openPalette("borderColor", "Border Color");
-              }}
+              style={showCp ? { display: "block" } : { display: "none" }}
+              className="colorPalette"
             >
-              <BorderInput
+              <ColorPickerAsset
                 styleItem="borderColor"
                 styles={props.styles}
                 patchCb={props.patchCb}
-                defaultValue=""
               />
             </div>
+            <BorderInput
+              styleItem="borderColor"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+            />
           </div>
         </div>
       </div>
