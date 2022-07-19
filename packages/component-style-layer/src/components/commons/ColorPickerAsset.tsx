@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CssProprtyComponentType } from "../../types";
-import { ColorPicker, useColor } from "react-color-palette";
+import { ColorPicker, useColor, toColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
 import { Cross } from "../../icons/Cross";
 import { h5Heading } from "@atrilabs/design-system";
@@ -19,6 +19,15 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
     "hex",
     (props.styles[props.styleItem] as string | undefined) || ""
   );
+
+  useEffect(() => {
+    setColor(
+      toColor(
+        "hex",
+        (props.styles[props.styleItem] as string | undefined) || ""
+      )
+    );
+  }, [props.styleItem, props.styles, setColor]);
 
   const handleChange = (
     color: string,
