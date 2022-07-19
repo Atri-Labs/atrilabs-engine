@@ -10,9 +10,11 @@ import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
 import signal
-from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
+from .find_app_root import find_and_set_app_directory, is_virtualenv_set, set_virtualenv_type
 from . import supported_virt_types
 import questionary
+from pathlib import Path
+from .errors import SELECTED_VIRTENV_NOT_INSTALLED, DOCKER_NOT_INSTALLED
 
 find_and_set_app_directory()
 
@@ -64,14 +66,14 @@ def open():
 @click.option('--d-port', default="4005", help='port on which generate app server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--c-port', default="4007", help='port on which generated python server will be attached')
-@click.option('--app-dir', default='.', help='directory that contains events/')
 @click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir, no_debug):
+def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug):
     """Open up editor in browser using command -
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
     globals["in_debug_mode"] = not no_debug
+    app_dir = str(Path.cwd())
     exe_open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
 
 @main.group('connect')
@@ -84,10 +86,10 @@ def connect():
 
 @connect.command("local")
 @click.option('--u-port', default="4006", help='port on which publish server will be attached')
-@click.option('--app-dir', default='.', help='directory that contains events/')
 @click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def connect_local(u_port, app_dir, no_debug):
+def connect_local(u_port, no_debug):
     globals["in_debug_mode"] = not no_debug
+    app_dir = str(Path.cwd())
     exe_connect_local(u_port, app_dir)
 
 @main.command()
@@ -98,10 +100,10 @@ def connect_local(u_port, app_dir, no_debug):
 @click.option('--d-port', default="4005", help='port on which generate app server will be attached')
 @click.option('--u-port', default="4006", help='port on which ipc server will be attached')
 @click.option('--c-port', default="4007", help='port on which generated python server will be attached')
-@click.option('--app-dir', default='.', help='directory that contains events/')
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir, debug):
+def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
     globals["in_debug_mode"] = debug
+    app_dir = str(Path.cwd())
     async def check_req_wrapper():
         ok = await check_requisite()
         return ok
@@ -121,7 +123,7 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir, debug
         await sio.wait()
     async def main_wrapper():
         ok = await check_req_wrapper()
-        if ok:
+        if ok == 0:
             open_editor_task = asyncio.create_task(
                 open_editor_wrapper()
                 )
@@ -140,6 +142,12 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir, debug
                 printd(sys.exc_info())
                 exit(1)
             exit(0)
+        else:
+            if ok == DOCKER_NOT_INSTALLED:
+                print("Error: docker not installed. Please install docker.")
+            if ok == SELECTED_VIRTENV_NOT_INSTALLED:
+                print("Error: The selected virtual environment is not installed. \
+                Please check atri.app.json file to find your selected virtual env type.")
     # Now run the tasks(in the event loop) 
     asyncio.run(main_wrapper())
 

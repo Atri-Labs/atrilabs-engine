@@ -1,5 +1,7 @@
 import asyncio
 from ..utils.printd import printd
+from ..errors import DOCKER_NOT_INSTALLED, SELECTED_VIRTENV_NOT_INSTALLED
+from ..utils.is_pkg_installed import is_selected_virtenv_installed
 
 async def check_docker_installed():
     child_proc = await asyncio.create_subprocess_shell(
@@ -19,8 +21,14 @@ async def check_docker_installed():
         return False
     return True
 
+async def check_selected_virtenv_is_installed():
+    return await is_selected_virtenv_installed()
+
 async def check_requisite():
     is_docker_installed = await check_docker_installed()
-    if is_docker_installed:
-        return True
-    return False
+    is_selected_virtenv_installed = await check_selected_virtenv_is_installed()
+    if not is_docker_installed:
+        return DOCKER_NOT_INSTALLED
+    if not is_selected_virtenv_installed:
+        return SELECTED_VIRTENV_NOT_INSTALLED
+    return 0
