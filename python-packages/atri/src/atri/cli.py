@@ -10,15 +10,17 @@ import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
 import signal
-from .find_app_root import find_and_set_app_directory, is_virtualenv_set, set_virtualenv_type
+from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
 from . import supported_virt_types
 import questionary
 from pathlib import Path
-from .errors import SELECTED_VIRTENV_NOT_INSTALLED, DOCKER_NOT_INSTALLED
+from .utils.conda_utils import get_conda_env_list, get_working_env_name, set_working_env_name, get_active_env_name, is_pkg_installed_in_env
+from typing import Union
+from .utils.handle_error import error_to_message
 
 find_and_set_app_directory()
 
-class QuestionaryOption(click.Option):
+class VirtTypeQuestion(click.Option):
 
     def __init__(self, param_decls=None, **attrs):
         click.Option.__init__(self, param_decls, **attrs)
@@ -27,13 +29,32 @@ class QuestionaryOption(click.Option):
 
     def prompt_for_value(self, ctx):
         if is_virtualenv_set():
+            ctx.obj = {"virt_type": get_virtualenv_type()}
             return None
+        val = questionary.select(self.prompt, choices=self.type.choices).unsafe_ask()
+        ctx.obj = {"virt_type": val}
+        return val
+
+class DefaultEnvNameQuestion(click.Option):
+
+    def __init__(self, param_decls=None, **attrs):
+        click.Option.__init__(self, param_decls, **attrs)
+        if not isinstance(self.type, click.Choice):
+            raise Exception('ChoiceOption type arg must be click.Choice')
+
+    def prompt_for_value(self, ctx):
+        if ctx.obj["virt_type"] != "conda":
+            return None
+        active_env_name = get_active_env_name(str(Path.cwd()))
+        if active_env_name != "base":
+            return active_env_name
         val = questionary.select(self.prompt, choices=self.type.choices).unsafe_ask()
         return val
 
 @click.group()
-@click.option("--virt-type", type=click.Choice(supported_virt_types, case_sensitive=False), prompt="Select virtual environment type. Use arrow keys.", cls=QuestionaryOption)
-def main(virt_type: str):
+@click.option("--virt-type", type=click.Choice(supported_virt_types, case_sensitive=False), prompt="Select virtual environment type", cls=VirtTypeQuestion, is_eager=True)
+@click.option("--working-env", type=click.Choice(get_conda_env_list(str(Path.cwd())), case_sensitive=False), prompt="Select name of the conda virtual env", cls=DefaultEnvNameQuestion)
+def main(virt_type: Union[str, None], working_env: Union[str, None]):
     """Open up the visual editor:
 
         $ atri open editor
@@ -47,8 +68,10 @@ def main(virt_type: str):
         $ atri run dev-server
     
     """
-    if not is_virtualenv_set():
+    if virt_type != None:
         set_virtualenv_type(virt_type)
+    if working_env != None:
+        set_working_env_name(working_env)
 
 @main.group('open')
 def open():
@@ -90,7 +113,19 @@ def connect():
 def connect_local(u_port, no_debug):
     globals["in_debug_mode"] = not no_debug
     app_dir = str(Path.cwd())
-    exe_connect_local(u_port, app_dir)
+    async def check_req_wrapper():
+        ok = await check_requisite()
+        return ok
+    async def connect_local_wrapper():
+        sio = await start_ipc_connection(u_port, app_dir)
+        await sio.wait()
+    async def main_wrapper():
+        ok = await check_req_wrapper()
+        if ok == 0:
+            await connect_local_wrapper()
+        else:
+            error_to_message(ok)
+    asyncio.run(main_wrapper())
 
 @main.command()
 @click.option('--e-port', default="4001", help='port on which event server will be attached')
@@ -143,11 +178,7 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
                 exit(1)
             exit(0)
         else:
-            if ok == DOCKER_NOT_INSTALLED:
-                print("Error: docker not installed. Please install docker.")
-            if ok == SELECTED_VIRTENV_NOT_INSTALLED:
-                print("Error: The selected virtual environment is not installed. \
-                Please check atri.app.json file to find your selected virtual env type.")
+             error_to_message(ok)
     # Now run the tasks(in the event loop) 
     asyncio.run(main_wrapper())
 

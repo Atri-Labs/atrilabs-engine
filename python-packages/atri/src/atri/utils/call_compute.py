@@ -2,6 +2,8 @@ from ..find_app_root import get_virtualenv_type
 from ..errors import UNKNOWN_VIRT_TYPE
 from .. import supported_virt_types
 import subprocess
+from .conda_utils import get_working_env_name
+
 
 def get_common_command(route: str, page_state: str):
     common_command = ["python", "-m", "controllers.server", "compute", "--route", route, "--state", page_state]
@@ -18,7 +20,7 @@ async def pipenv_call_compute(app_dir: str, route: str, page_state: str):
 
 async def conda_call_compute(app_dir: str, route: str, page_state: str):
     child_proc = subprocess.Popen(
-        ["conda", "run", *get_common_command(route, page_state)],
+        ["conda", "run", "-n", get_working_env_name(), *get_common_command(route, page_state)],
         stdout=subprocess.PIPE,
         cwd=app_dir
         )
