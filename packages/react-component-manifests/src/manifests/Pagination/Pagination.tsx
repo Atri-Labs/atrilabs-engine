@@ -7,25 +7,21 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import { Pagination } from "antd";
+import "../styles.css";
 
-export const Button = forwardRef<
-  HTMLButtonElement,
+export const PaginationComponent = forwardRef<
+  HTMLElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { defaultValue: number; total: number };
   }
->((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
+>((props) => {
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.text}
-    </button>
+    <Pagination
+      defaultCurrent={props.custom.defaultValue}
+      total={props.custom.total}
+    />
   );
 });
 
@@ -47,40 +43,24 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Button" },
+  meta: { key: "Pagination" },
   render: {
-    comp: Button,
+    comp: PaginationComponent,
   },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          defaultCurrent: 1,
+          total: 50,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -96,10 +76,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Pagination" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Button", containerStyle: { padding: "1rem" } },
+    props: { name: "Pagination", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
