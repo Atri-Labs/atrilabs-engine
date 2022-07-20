@@ -11,17 +11,19 @@ import { Pagination } from "antd";
 import "../styles.css";
 
 export const PaginationComponent = forwardRef<
-  HTMLElement,
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { defaultValue: number; total: number };
+    custom: { current: number; total: number };
   }
->((props) => {
+>((props, ref) => {
   return (
-    <Pagination
-      defaultCurrent={props.custom.defaultValue}
-      total={props.custom.total}
-    />
+    <div ref={ref} style={props.styles}>
+      <Pagination
+        defaultCurrent={props.custom.current}
+        total={props.custom.total}
+      />
+    </div>
   );
 });
 
@@ -59,7 +61,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          defaultCurrent: 1,
+          current: 1,
           total: 50,
         },
         treeOptions: customTreeOptions,
