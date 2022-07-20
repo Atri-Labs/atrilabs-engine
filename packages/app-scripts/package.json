@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-scripts",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -33,7 +33,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/scripts": "^0.0.21",
+    "@atrilabs/scripts": "^0.0.22",
     "@babel/core": "^7.18.5",
     "@babel/plugin-syntax-flow": "^7.17.12",
     "@babel/plugin-transform-react-jsx": "^7.17.12",

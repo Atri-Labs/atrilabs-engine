@@ -65,8 +65,15 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const onClickCb = useCallback(() => {
+  const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
+  }, [props]);
+  const onBackgroundImageClearClickCb = useCallback(() => {
+    props.patchCb({
+      property: {
+        styles: { backgroundImage: "" },
+      },
+    });
   }, [props]);
   return (
     <div style={styles.container}>
@@ -85,8 +92,9 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={styles.optionName}>Image</span>
           <AssetInputButton
-            onClick={onClickCb}
+            onClick={onBackgroundImgeClickCb}
             assetName={props.styles.backgroundImage || "Select Image"}
+            onClearClick={onBackgroundImageClearClickCb}
           />
         </div>
       </div>
