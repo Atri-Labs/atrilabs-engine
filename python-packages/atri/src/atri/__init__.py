@@ -1,6 +1,6 @@
 # __version__ is used in docker run command to identify
 # the version of docker image to run
-__version__ = "0.0.22"
+__version__ = "0.0.23"
 
 supported_virt_types = ["pipenv", "conda"]
 
