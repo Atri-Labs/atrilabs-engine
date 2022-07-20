@@ -40,7 +40,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    current: "number",
+    total: "number"
   },
 };
 
