@@ -1,12 +1,25 @@
 #!/usr/bin/python
+import sys
 from fastapi import FastAPI, Request
-from importlib import import_module
+import importlib
 import click
 import json
 import uvicorn
 from typing import TypedDict
 from jsonpickle import encode
 
+in_prod = False
+
+def import_module(mod_name: str):
+    # always import un-imported module
+    mod_name_with_pkg_prefix = __package__ + mod_name
+    if mod_name_with_pkg_prefix not in sys.modules:
+        return importlib.import_module(mod_name, package=__package__)
+    # handle already imported module
+    if in_prod:
+        return sys.modules[mod_name_with_pkg_prefix]
+    else:
+        return importlib.reload(sys.modules[mod_name_with_pkg_prefix])
 
 class RouteDetails(TypedDict):
     atriPy: str
@@ -24,23 +37,23 @@ def getRouteDetails(route: str, routes_dir: str) -> RouteDetails:
 
 def compute_initial_state(route: RouteDetails, incoming_state):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package=__package__)
+    atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package=__package__)
+    main_mod = import_module(main_py)
     init_state = getattr(main_mod, "init_state")
     init_state(atri_obj)
     return atri_obj
 
 def compute_new_state(route: RouteDetails, incoming_state, event):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package=__package__)
+    atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     getattr(atri_obj, "set_event")(event)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package=__package__)
+    main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj)
     delattr(atri_obj, "event_data")
@@ -55,8 +68,12 @@ def main(ctx, dir):
 @main.command("serve")
 @click.option("--port", default="4007")
 @click.option("--host", default="0.0.0.0")
+@click.option("--prod", is_flag=True, default=False, show_default=True)
 @click.pass_obj
-def serve(obj, port, host):
+def serve(obj, port, host, prod):
+    global in_prod
+    in_prod = prod
+
     app = FastAPI()
 
     @app.post("/init")
