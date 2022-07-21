@@ -21,5 +21,9 @@ module.exports = {
       modulePath: "./src/manifests/Image/Image.tsx",
       exportedVarName: "Image",
     },
+    Upload: {
+      modulePath: "./src/manifests/Upload/Upload.tsx",
+      exportedVarName: "Upload",
+    },
   },
 };
