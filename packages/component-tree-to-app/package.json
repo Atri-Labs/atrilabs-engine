@@ -26,6 +26,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/app-design-forest": "^0.0.23",
     "@atrilabs/app-generator": "^0.0.23",
     "@atrilabs/react-component-manifest-schema": "^0.0.23",
     "@atrilabs/scripts": "^0.0.23",

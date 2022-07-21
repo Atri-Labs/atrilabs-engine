@@ -4,6 +4,7 @@ import {
 } from "@atrilabs/app-generator";
 import { generateModuleId } from "@atrilabs/scripts";
 import { keyCallbackMap } from "./keyCallbackMap";
+import { extractCallbackHandlers } from "./utils";
 const handlerTreeToCallbacks: CallbackGeneratorFunction = (options) => {
   const output: CallbackGeneratorOutput = {};
   const componentTreeId = generateModuleId(
@@ -19,7 +20,17 @@ const handlerTreeToCallbacks: CallbackGeneratorFunction = (options) => {
         const key = node.meta.key;
         if (pkg.includes("react-component-manifests")) {
           if (keyCallbackMap[key]) {
-            output[node.id] = { callbacks: keyCallbackMap[key]! };
+            // merge handlers from callbackHandlerTree with keyCallbackMap
+            const callbackInfo: typeof keyCallbackMap[""] = JSON.parse(
+              JSON.stringify(keyCallbackMap[key])
+            );
+            const handlers = extractCallbackHandlers(options.forest, node.id);
+            const callbackNames = Object.keys(callbackInfo);
+            callbackNames.forEach((callbackName) => {
+              callbackInfo![callbackName]!.handlers =
+                handlers[callbackName] || [];
+            });
+            output[node.id] = { callbacks: callbackInfo };
           } else {
             console.log(`Please add key ${key} to keyCallbackMap`);
           }
