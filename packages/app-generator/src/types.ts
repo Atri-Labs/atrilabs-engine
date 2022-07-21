@@ -60,7 +60,9 @@ export type PropsGeneratorOptions = {
   custom: any;
 };
 
-export type PropsGeneratorOutput = { [compId: string]: { props: any } };
+export type PropsGeneratorOutput = {
+  [compId: string]: { props: any; ioProps?: any };
+};
 
 // returns all the props from a page
 export type PropsGeneratorFunction = (

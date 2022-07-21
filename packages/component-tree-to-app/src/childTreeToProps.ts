@@ -3,6 +3,7 @@ import {
   PropsGeneratorOutput,
 } from "@atrilabs/app-generator";
 import { generateModuleId } from "@atrilabs/scripts";
+import { keyIoPropMap } from "./keyIoPropMap";
 
 // will exclude trees in options.custom.excludes
 const childTreeToProps: PropsGeneratorFunction = (options) => {
@@ -20,6 +21,16 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
       }
     });
   }
+
+  const componentTreeId = generateModuleId(
+    "@atrilabs/app-design-forest/lib/componentTree"
+  );
+  const forest = options.forest;
+  const componentTree = forest.tree(componentTreeId);
+  if (!componentTree) {
+    throw Error("Component Tree not found in forest.");
+  }
+
   const treeDefs = options.forestDef.trees;
   for (let i = 0; i < treeDefs.length; i++) {
     const treeDef = treeDefs[i]!;
@@ -32,6 +43,7 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
       const nodes = tree.nodes;
       const refIds = Object.keys(tree.links);
       for (let j = 0; j < refIds.length; j++) {
+        // add props
         const refId = refIds[j]!;
         const childId = tree.links[refId]!.childId;
         const childNode = nodes[childId]!;
@@ -45,6 +57,18 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
             };
           } else {
             output[refId] = { props: childNode.state["property"] };
+          }
+        }
+        // add ioProps
+        if (
+          componentTree.nodes[refId]!.meta.key &&
+          keyIoPropMap[componentTree.nodes[refId]!.meta.key]
+        ) {
+          const ioProps = keyIoPropMap[componentTree.nodes[refId]!.meta.key];
+          if (output[refId]) {
+            output[refId]!["ioProps"] = ioProps;
+          } else {
+            output[refId] = { ioProps, props: {} };
           }
         }
       }

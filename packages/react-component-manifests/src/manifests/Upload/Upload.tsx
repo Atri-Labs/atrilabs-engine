@@ -1,6 +1,9 @@
 import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import type {
+  ReactComponentManifestSchema,
+  IoProp,
+} from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
@@ -8,12 +11,18 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
+const fileIoProp: IoProp = {
+  type: "files",
+  mode: "upload",
+};
+
 export const Upload = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { multiple: boolean; files: FileList };
+    custom: { multiple: boolean };
     onChange: (files: FileList) => void;
+    io: { files: FileList };
   }
 >((props, ref) => {
   const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -45,8 +54,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    multuple: "text",
-    files: "static_asset",
+    multuple: "boolean",
   },
 };
 
@@ -74,10 +82,15 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "file_input", selector: ["custom", "files"] }],
+      onChange: [{ type: "file_input", selector: ["io", "files"] }],
     },
     defaultCallbackHandlers: {
-      onChange: [{ sendFile: { self: true, props: ["custom", "files"] } }],
+      onChange: [{ sendFile: { self: true, props: ["io", "files"] } }],
+    },
+    ioProps: {
+      io: {
+        files: fileIoProp,
+      },
     },
   },
 };

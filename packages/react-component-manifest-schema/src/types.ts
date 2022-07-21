@@ -110,7 +110,7 @@ export type ReactComponentManifestSchema = {
       [callbackName: string]: CallbackHandler;
     };
     ioProps?: {
-      [key: string]: IoProp;
+      [propName: string]: { [key: string]: IoProp };
     };
   };
 };

@@ -23,4 +23,10 @@ export const keyCallbackMap: {
     },
   },
   Image: {},
+  Upload: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "file_input", selector: ["io", "files"] }],
+    },
+  },
 };
