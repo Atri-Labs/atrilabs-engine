@@ -57,6 +57,18 @@ export type AcceptsChildFunction = (info: {
   props: any;
 }) => number;
 
+export type IoProp = {
+  mode: "upload" | "download" | "duplex";
+  type: "files" | "stream";
+};
+
+// An utility type to easily write type for props passed to a manifest component
+export type IoType<T extends IoProp> = T["type"] extends "files"
+  ? FileList
+  : T["type"] extends "stream"
+  ? Blob
+  : never;
+
 export type ReactComponentManifestSchema = {
   meta: { key: string };
   render: {
@@ -84,6 +96,9 @@ export type ReactComponentManifestSchema = {
         | { sendFile: SendFileCallbackHandler }
         | { sendEventData: SendEventCallbackHandler }
       )[];
+    };
+    ioProps?: {
+      [key: string]: IoProp;
     };
   };
 };
