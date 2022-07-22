@@ -618,7 +618,12 @@ export function createReactAppTemplateManager(
       const componentIds = Object.keys(components);
       const propsForPage = componentIds.map((compId) => {
         const alias = components[compId].alias;
-        const props = propsMap[pageName][compId].ioProps;
+        const props =
+          propsMap[pageName] &&
+          propsMap[pageName][compId] &&
+          propsMap[pageName][compId].ioProps
+            ? propsMap[pageName][compId].ioProps
+            : undefined;
         return { alias, props };
       });
       return { propsForPage, pageName };

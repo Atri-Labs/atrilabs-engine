@@ -61,7 +61,8 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
         }
         // add ioProps
         if (
-          componentTree.nodes[refId]!.meta.key &&
+          componentTree.nodes[refId]?.meta &&
+          componentTree.nodes[refId]?.meta.key &&
           keyIoPropMap[componentTree.nodes[refId]!.meta.key]
         ) {
           const ioProps = keyIoPropMap[componentTree.nodes[refId]!.meta.key];
