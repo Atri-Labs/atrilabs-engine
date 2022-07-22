@@ -67,7 +67,7 @@ function sendEventInFormDataFn(
   formdata.set("alias", alias);
   formdata.set("pageRoute", pageRoute);
   formdata.set("callbackName", callbackName);
-  formdata.set("eventData", eventData);
+  formdata.set("eventData", JSON.stringify(eventData));
   formdata.set("pageState", JSON.stringify(pageState));
   // append files in the same order as in filesMetadata
   const selectedFileMetadata: {
@@ -77,13 +77,16 @@ function sendEventInFormDataFn(
   }[] = [];
   const selectedFilelists: FileList[] = [];
   filesMetadata.forEach((fileMetadata) => {
-    const aliasProp = useIoStore[pageName][fileMetadata.alias];
+    const aliasProp = useIoStore.getState()[pageName][fileMetadata.alias];
     if (aliasProp) {
       const selector = fileMetadata.selector;
       let curr = aliasProp;
       for (let i = 0; i < selector.length; i++) {
-        if (curr[selector[i]] && curr[selector[i]] instanceof FileList) {
-          if (i === fileMetadata.selector.length - 1) {
+        if (curr[selector[i]]) {
+          if (
+            i === selector.length - 1 &&
+            curr[selector[i]] instanceof FileList
+          ) {
             selectedFileMetadata.push({
               ...fileMetadata,
               count: curr[selector[i]].length,
@@ -100,7 +103,7 @@ function sendEventInFormDataFn(
   });
   formdata.set("filesMetadata", JSON.stringify(selectedFileMetadata));
   // all files will be appended in order [...filelist1, ...filelist2]
-  selectedFilelists.forEach((selectedFilelist, listIndex) => {
+  selectedFilelists.forEach((selectedFilelist) => {
     for (let fileIndex = 0; fileIndex < selectedFilelist.length; fileIndex++) {
       const file = selectedFilelist[fileIndex];
       formdata.append(`files`, file);
@@ -199,21 +202,17 @@ export function callbackFactory(
       sendEventData?: CallbackDef["handlers"]["0"];
       sendFiles?: CallbackDef["handlers"];
       navigate?: boolean;
-    } = {
-      sendEventData: callbackDef["handlers"]["0"],
-      sendFiles: callbackDef["handlers"],
-      navigate: false,
-    };
+    } = {};
 
     handlers.forEach((handler) => {
       if (handler["sendEventData"]) {
-        jobs["sendEventData"] = handler["sendEventData"];
+        jobs["sendEventData"] = handler;
       }
       if (handler["sendFile"]) {
         if (jobs["sendFiles"]) {
-          jobs["sendFiles"].push(handler["sendFile"]);
+          jobs["sendFiles"].push(handler);
         } else {
-          jobs["sendFiles"] = [handler["sendFile"]];
+          jobs["sendFiles"] = [handler];
         }
       }
     });
@@ -231,7 +230,7 @@ export function callbackFactory(
         pageName,
         pageRoute,
         callbackName,
-        callbackDef,
+        eventData,
         filesMetadata
       );
     } else if (jobs["sendEventData"]) {

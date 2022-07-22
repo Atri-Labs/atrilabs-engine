@@ -39,6 +39,7 @@ const server = http.createServer(app);
 createWebSocketServer(server);
 
 app.use((req, res, next) => {
+  console.log("request received");
   if (req.method === "GET" && pages[req.originalUrl]) {
     if (!disablePageCache) {
       const finalTextFromCache = getPageFromCache(req.originalUrl);
@@ -63,12 +64,12 @@ app.use((req, res, next) => {
     res.send(finalText);
     storePageInCache(req.originalUrl, finalText);
   } else {
+    console.log("req rec");
     next();
   }
 });
 
 app.post("/event-handler", express.json(), (req, res) => {
-  console.log("event handler recieved");
   const pageRoute = req.body["pageRoute"];
   const pageState = req.body["pageState"];
   const alias = req.body["alias"];
@@ -83,7 +84,6 @@ app.post("/event-handler", express.json(), (req, res) => {
     res.status(400).send();
     return;
   }
-  console.log(pageRoute, pageState, alias, callbackName, eventData);
   // TODO: update pageState if success python call otherwise 501
   const payload = JSON.stringify({
     route: pageRoute,
@@ -104,8 +104,6 @@ app.post("/event-handler", express.json(), (req, res) => {
       },
     },
     (forward_res) => {
-      console.log(`STATUS: ${forward_res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(forward_res.headers)}`);
       forward_res.setEncoding("utf8");
       let data = "";
       forward_res.on("data", (chunk) => {
@@ -130,7 +128,7 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.end();
 });
 
-app.post(
+app.use(
   "/event-in-form-handler",
   createProxyMiddleware({
     target: `http://${controllerHostname}:${controllerPort}`,

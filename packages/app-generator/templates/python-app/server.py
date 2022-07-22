@@ -1,11 +1,11 @@
 #!/usr/bin/python
 import sys
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form, UploadFile
 import importlib
 import click
 import json
 import uvicorn
-from typing import TypedDict
+from typing import List, TypedDict, Union
 from jsonpickle import encode
 
 in_prod = False
@@ -59,6 +59,21 @@ def compute_new_state(route: RouteDetails, incoming_state, event):
     delattr(atri_obj, "event_data")
     return atri_obj
 
+def compute_new_state_with_form(route: RouteDetails, incoming_state, event, filesMetadata: List[dict[str, str]], files: Union[List[UploadFile], None]):
+    atri_py = route["atriPy"]
+    atri_mod = import_module(atri_py)
+    Atri = getattr(atri_mod, "Atri")
+    # TODO: loop through file meta data and set files of type List[UploadFile]
+    # merge with incoming state, so that this will happen automatically
+    atri_obj = Atri(incoming_state)
+    getattr(atri_obj, "set_event")(event)
+    main_py = route["mainPy"]
+    main_mod = import_module(main_py)
+    handle_event = getattr(main_mod, "handle_event")
+    handle_event(atri_obj)
+    delattr(atri_obj, "event_data")
+    return atri_obj
+
 @click.group()
 @click.option("--dir", default="routes", help="relative path for directory containing controller for each route")
 @click.pass_context
@@ -94,6 +109,22 @@ def serve(obj, port, host, prod):
         event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
         routeDetails = getRouteDetails(route, obj["dir"])
         return compute_new_state(routeDetails, state, event)
+
+    @app.post("/event-in-form-handler")
+    async def handle_event_with_form(
+        files: Union[List[UploadFile], None] = None,
+        alias: str = Form(),
+        pageRoute: str = Form(),
+        callbackName: str = Form(),
+        eventData: str = Form(),
+        pageState: str = Form(),
+        filesMetadata: str = Form()
+        ):
+        print("num files...", len(files))
+        filesMetaDataArr = json.loads(filesMetadata)
+        event = {"event_data": json.loads(eventData), "callback_name": callbackName, "alias": alias}
+        routeDetails = getRouteDetails(pageRoute, obj["dir"])
+        return compute_new_state_with_form(routeDetails, json.loads(pageState), event, filesMetaDataArr, files)
 
     uvicorn.run(app, host=host, port=int(port))
 
