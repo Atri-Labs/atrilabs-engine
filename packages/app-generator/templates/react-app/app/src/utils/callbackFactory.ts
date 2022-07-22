@@ -1,4 +1,5 @@
 import useStore from "../hooks/useStore";
+import useIoStore from "../hooks/useIoStore";
 
 export type CallbackDef = {
   handlers: (
@@ -69,6 +70,32 @@ function updateAppStore(
   useStore.setState({ [pageName]: newPageState });
 }
 
+function updateAppIoStore(
+  alias: string,
+  pageName: string,
+  selector: string[],
+  eventData: any
+) {
+  const currentPageState = useIoStore.getState()[pageName];
+  const currentCompState = currentPageState[alias];
+  // not all components will have an entry in ioStore
+  if (currentCompState) {
+    let newObj: any = {};
+    let currObj = newObj;
+    selector.forEach((sel, index) => {
+      if (index === selector.length - 1) {
+        currObj[sel] = eventData;
+      } else {
+        currObj[sel] = {};
+      }
+      currObj = currObj[sel];
+    });
+    const newCompState = { ...currentCompState, ...newObj };
+    const newPageState = { ...currentPageState, [alias]: newCompState };
+    useIoStore.setState({ [pageName]: newPageState });
+  }
+}
+
 export function callbackFactory(
   alias: string,
   pageName: string,
@@ -87,6 +114,9 @@ export function callbackFactory(
     actions.forEach((action) => {
       if (action.type === "controlled") {
         updateAppStore(alias, pageName, action.selector, eventData);
+      }
+      if (action.type === "file_input") {
+        updateAppIoStore(alias, pageName, action.selector, eventData);
       }
     });
   };
