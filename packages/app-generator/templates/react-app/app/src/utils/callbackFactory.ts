@@ -18,10 +18,15 @@ export type CallbackDef = {
 };
 
 function sendEventDataFn(
+  // alias of component on which event was fired
   alias: string,
+  // name of the page in which the event was fired
   pageName: string,
+  // route of the page in which the event was fired
   pageRoute: string,
+  // name of the callback that fired this event
   callbackName: string,
+  // data passed in the callback
   eventData: any
 ) {
   console.log("sendEventData:", eventData);
@@ -38,6 +43,72 @@ function sendEventDataFn(
       eventData,
       pageState,
     }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log("got res", res);
+      if (res && res["pageState"])
+        useStore.setState({ [pageName]: res["pageState"] });
+    });
+}
+
+function sendEventInFormDataFn(
+  alias: string,
+  pageName: string,
+  pageRoute: string,
+  callbackName: string,
+  eventData: any,
+  // information required to access file from useIoStore
+  filesMetadata: { alias: string; selector: string[] }[]
+) {
+  console.log("sendEventInFormData:", eventData);
+  const pageState = useStore.getState()[pageName];
+  const formdata = new FormData();
+  formdata.set("alias", alias);
+  formdata.set("pageRoute", pageRoute);
+  formdata.set("callbackName", callbackName);
+  formdata.set("eventData", eventData);
+  formdata.set("pageState", JSON.stringify(pageState));
+  // append files in the same order as in filesMetadata
+  const selectedFileMetadata: {
+    alias: string;
+    selector: string[];
+    count: number;
+  }[] = [];
+  const selectedFilelists: FileList[] = [];
+  filesMetadata.forEach((fileMetadata) => {
+    const aliasProp = useIoStore[pageName][fileMetadata.alias];
+    if (aliasProp) {
+      const selector = fileMetadata.selector;
+      let curr = aliasProp;
+      for (let i = 0; i < selector.length; i++) {
+        if (curr[selector[i]] && curr[selector[i]] instanceof FileList) {
+          if (i === fileMetadata.selector.length - 1) {
+            selectedFileMetadata.push({
+              ...fileMetadata,
+              count: curr[selector[i]].length,
+            });
+            selectedFilelists.push(curr[selector[i]]);
+          } else {
+            curr = curr[selector[i]];
+          }
+        } else {
+          break;
+        }
+      }
+    }
+  });
+  formdata.set("filesMetadata", JSON.stringify(selectedFileMetadata));
+  // all files will be appended in order [...filelist1, ...filelist2]
+  selectedFilelists.forEach((selectedFilelist, listIndex) => {
+    for (let fileIndex = 0; fileIndex < selectedFilelist.length; fileIndex++) {
+      const file = selectedFilelist[fileIndex];
+      formdata.append(`files`, file);
+    }
+  });
+  fetch("/event-in-form-handler", {
+    method: "POST",
+    body: formdata,
   })
     .then((res) => res.json())
     .then((res) => {
@@ -93,6 +164,7 @@ function updateAppIoStore(
     const newCompState = { ...currentCompState, ...newObj };
     const newPageState = { ...currentPageState, [alias]: newCompState };
     useIoStore.setState({ [pageName]: newPageState });
+    console.log("useIoStore", useIoStore.getState());
   }
 }
 
@@ -104,12 +176,7 @@ export function callbackFactory(
   callbackDef: CallbackDef
 ) {
   const callbackFn = (eventData: any) => {
-    const handlers = callbackDef.handlers;
-    handlers.forEach((handler) => {
-      if (handler["sendEventData"]) {
-        sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
-      }
-    });
+    // actions will be executed first and then handlers will be called
     const actions = callbackDef.actions;
     actions.forEach((action) => {
       if (action.type === "controlled") {
@@ -119,6 +186,58 @@ export function callbackFactory(
         updateAppIoStore(alias, pageName, action.selector, eventData);
       }
     });
+    const handlers = callbackDef.handlers;
+
+    /**
+     * Either one sendEventData job or multiple sendFiles job can be performed.
+     * Both cannot be performed in a single request.
+     *
+     * A navigate job is always preformed at last. A job that has been run prior
+     * to navigate can be either of sendEventData or sendFiles.
+     */
+    const jobs: {
+      sendEventData?: CallbackDef["handlers"]["0"];
+      sendFiles?: CallbackDef["handlers"];
+      navigate?: boolean;
+    } = {
+      sendEventData: callbackDef["handlers"]["0"],
+      sendFiles: callbackDef["handlers"],
+      navigate: false,
+    };
+
+    handlers.forEach((handler) => {
+      if (handler["sendEventData"]) {
+        jobs["sendEventData"] = handler["sendEventData"];
+      }
+      if (handler["sendFile"]) {
+        if (jobs["sendFiles"]) {
+          jobs["sendFiles"].push(handler["sendFile"]);
+        } else {
+          jobs["sendFiles"] = [handler["sendFile"]];
+        }
+      }
+    });
+
+    if (jobs["sendFiles"]) {
+      const filesMetadata = jobs["sendFiles"].map((handler) => {
+        const formFieldAlias = handler["sendFile"]["self"]
+          ? alias
+          : handler["sendFile"]["alias"];
+        const formFieldSelector = handler["sendFile"]["props"];
+        return { alias: formFieldAlias, selector: formFieldSelector };
+      });
+      sendEventInFormDataFn(
+        alias,
+        pageName,
+        pageRoute,
+        callbackName,
+        callbackDef,
+        filesMetadata
+      );
+    } else if (jobs["sendEventData"]) {
+      sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
+    }
   };
+
   return callbackFn;
 }

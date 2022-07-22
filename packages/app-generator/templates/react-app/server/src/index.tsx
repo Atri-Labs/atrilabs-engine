@@ -11,6 +11,7 @@ import {
 import express from "express";
 import path from "path";
 import http from "http";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 // constants needed externally
 const {
@@ -22,6 +23,14 @@ const {
   controllerHost,
 } = getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
+
+const [controllerHostnameRaw, controllerPortRaw] = (controllerHost || "").split(
+  ":"
+);
+const controllerHostname = controllerHostnameRaw || "0.0.0.0";
+const controllerPort = controllerPortRaw
+  ? parseInt(controllerPortRaw)
+  : pythonPort;
 
 createIfNotExistLocalCache();
 
@@ -83,13 +92,10 @@ app.post("/event-handler", express.json(), (req, res) => {
     callbackName,
     eventData,
   });
-  const [controllerHostname, controllerPort] = (controllerHost || "").split(
-    ":"
-  );
   const forward_req = http.request(
     {
-      hostname: controllerHostname || "0.0.0.0",
-      port: controllerPort ? parseInt(controllerPort) : pythonPort,
+      hostname: controllerHostname,
+      port: controllerPort,
       path: "/event",
       method: "POST",
       headers: {
@@ -123,6 +129,13 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.write(payload);
   forward_req.end();
 });
+
+app.post(
+  "/event-in-form-handler",
+  createProxyMiddleware({
+    target: `http://${controllerHostname}:${controllerPort}`,
+  })
+);
 
 app.post("/reload-all-dev-sockets", (_req, res) => {
   console.log("received request to reload all sockets");
