@@ -8,11 +8,11 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Label = forwardRef<
-  HTMLLabelElement,
+export const Radio = forwardRef<
+  HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { label: string };
+    custom: { name: string; label: string };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -23,9 +23,17 @@ export const Label = forwardRef<
     [props]
   );
   return (
-    <label ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.label}
-    </label>
+    <div style={{ display: "flex" }}>
+      <input
+        type="radio"
+        ref={ref}
+        style={props.styles}
+        onClick={onClick}
+        name={props.custom.name}
+        value={props.custom.label}
+      />
+      <label>{props.custom.label}</label>
+    </div>
   );
 });
 
@@ -42,28 +50,33 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    name: "text",
     label: "text",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Label" },
+  meta: { key: "Radio" },
   render: {
-    comp: Label,
+    comp: Radio,
   },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          cursor: "pointer",
+          opacity: "0",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          label: "Label Text",
+          name: "Category Name",
+          label: "Radio",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -79,10 +92,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Label" } },
+  panel: { comp: CommonIcon, props: { name: "Radio" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Label", containerStyle: { padding: "1rem" } },
+    props: { name: "Radio", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
