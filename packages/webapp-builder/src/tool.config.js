@@ -20,6 +20,9 @@ const forestsConfig = {
 };
 
 const compileAppOutputDir = "node_modules/.targets";
+const defaultTemplateDir = "./templates";
+const userTemplateDir = "./node_modules/.targets/atri_templates";
+
 const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
   ? parseInt(process.env["EVENT_SERVER_PORT"])
   : 4001;
@@ -178,5 +181,9 @@ module.exports = {
     hostname: EVENT_SERVER_CLIENT,
     urlPath: "/app-assets",
     assetsDir: `${compileAppOutputDir}/assets`,
+  },
+  templateManager: {
+    defaultDirs: [defaultTemplateDir],
+    dirs: [userTemplateDir],
   },
 };

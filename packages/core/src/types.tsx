@@ -124,6 +124,12 @@ export type ToolConfig = {
     // ex. - node_modules/.targets/assets
     assetsDir: string;
   };
+  templateManager: {
+    // directories that have packaged templates
+    defaultDirs?: string[];
+    // directories that have templates created by user
+    dirs?: string[];
+  };
 };
 
 // type for manifest.schema.config.js
