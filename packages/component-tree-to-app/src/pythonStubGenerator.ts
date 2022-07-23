@@ -7,6 +7,7 @@ import generateModuleId from "@atrilabs/scripts/build/babel/generateModuleId";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import { keyPropMap } from "./keyPropMap";
 import { keyCallbackMap } from "./keyCallbackMap";
+import { keyIoPropMap } from "./keyIoPropMap";
 import { extractCallbackHandlers } from "./utils";
 type Options = Omit<PythonStubGeneratorOptions, "custom"> & {
   custom: {
@@ -131,6 +132,7 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
             stub.vars[alias] = {
               type: "",
               value: keyPropMap[key],
+              ioProps: keyIoPropMap[key],
               callbacks: callbackInfo,
               gettable: true,
               updateable: true,
