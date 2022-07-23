@@ -1,12 +1,25 @@
 #!/usr/bin/python
-from fastapi import FastAPI, Request
-from importlib import import_module
+import sys
+from fastapi import FastAPI, Request, Form, UploadFile
+import importlib
 import click
 import json
 import uvicorn
-from typing import TypedDict
+from typing import List, TypedDict, Union
 from jsonpickle import encode
 
+in_prod = False
+
+def import_module(mod_name: str):
+    # always import un-imported module
+    mod_name_with_pkg_prefix = __package__ + mod_name
+    if mod_name_with_pkg_prefix not in sys.modules:
+        return importlib.import_module(mod_name, package=__package__)
+    # handle already imported module
+    if in_prod:
+        return sys.modules[mod_name_with_pkg_prefix]
+    else:
+        return importlib.reload(sys.modules[mod_name_with_pkg_prefix])
 
 class RouteDetails(TypedDict):
     atriPy: str
@@ -24,23 +37,38 @@ def getRouteDetails(route: str, routes_dir: str) -> RouteDetails:
 
 def compute_initial_state(route: RouteDetails, incoming_state):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package=__package__)
+    atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package=__package__)
+    main_mod = import_module(main_py)
     init_state = getattr(main_mod, "init_state")
     init_state(atri_obj)
     return atri_obj
 
 def compute_new_state(route: RouteDetails, incoming_state, event):
     atri_py = route["atriPy"]
-    atri_mod = import_module(atri_py, package=__package__)
+    atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
     atri_obj = Atri(incoming_state)
     getattr(atri_obj, "set_event")(event)
     main_py = route["mainPy"]
-    main_mod = import_module(main_py, package=__package__)
+    main_mod = import_module(main_py)
+    handle_event = getattr(main_mod, "handle_event")
+    handle_event(atri_obj)
+    delattr(atri_obj, "event_data")
+    return atri_obj
+
+def compute_new_state_with_form(route: RouteDetails, incoming_state, event, filesMetadata: List[dict[str, str]], files: Union[List[UploadFile], None]):
+    atri_py = route["atriPy"]
+    atri_mod = import_module(atri_py)
+    Atri = getattr(atri_mod, "Atri")
+    # TODO: loop through file meta data and set files of type List[UploadFile]
+    # merge with incoming state, so that this will happen automatically
+    atri_obj = Atri(incoming_state)
+    getattr(atri_obj, "set_event")(event)
+    main_py = route["mainPy"]
+    main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj)
     delattr(atri_obj, "event_data")
@@ -55,8 +83,12 @@ def main(ctx, dir):
 @main.command("serve")
 @click.option("--port", default="4007")
 @click.option("--host", default="0.0.0.0")
+@click.option("--prod", is_flag=True, default=False, show_default=True)
 @click.pass_obj
-def serve(obj, port, host):
+def serve(obj, port, host, prod):
+    global in_prod
+    in_prod = prod
+
     app = FastAPI()
 
     @app.post("/init")
@@ -77,6 +109,22 @@ def serve(obj, port, host):
         event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
         routeDetails = getRouteDetails(route, obj["dir"])
         return compute_new_state(routeDetails, state, event)
+
+    @app.post("/event-in-form-handler")
+    async def handle_event_with_form(
+        files: Union[List[UploadFile], None] = None,
+        alias: str = Form(),
+        pageRoute: str = Form(),
+        callbackName: str = Form(),
+        eventData: str = Form(),
+        pageState: str = Form(),
+        filesMetadata: str = Form()
+        ):
+        print("num files...", len(files))
+        filesMetaDataArr = json.loads(filesMetadata)
+        event = {"event_data": json.loads(eventData), "callback_name": callbackName, "alias": alias}
+        routeDetails = getRouteDetails(pageRoute, obj["dir"])
+        return compute_new_state_with_form(routeDetails, json.loads(pageState), event, filesMetaDataArr, files)
 
     uvicorn.run(app, host=host, port=int(port))
 

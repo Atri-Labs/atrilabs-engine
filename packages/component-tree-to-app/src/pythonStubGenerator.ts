@@ -7,6 +7,7 @@ import generateModuleId from "@atrilabs/scripts/build/babel/generateModuleId";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import { keyPropMap } from "./keyPropMap";
 import { keyCallbackMap } from "./keyCallbackMap";
+import { extractCallbackHandlers } from "./utils";
 type Options = Omit<PythonStubGeneratorOptions, "custom"> & {
   custom: {
     treeId: string;
@@ -118,10 +119,19 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
         const key = node.meta.key;
         if (pkg.includes("react-component-manifests")) {
           if (keyPropMap[key] && keyCallbackMap[key]) {
+            const callbackInfo: typeof keyCallbackMap[""] = JSON.parse(
+              JSON.stringify(keyCallbackMap[key])
+            );
+            const handlers = extractCallbackHandlers(options.forest, node.id);
+            const callbackNames = Object.keys(callbackInfo);
+            callbackNames.forEach((callbackName) => {
+              callbackInfo![callbackName]!.handlers =
+                handlers[callbackName] || [];
+            });
             stub.vars[alias] = {
               type: "",
               value: keyPropMap[key],
-              callbacks: keyCallbackMap[key]!,
+              callbacks: callbackInfo,
               gettable: true,
               updateable: true,
             };

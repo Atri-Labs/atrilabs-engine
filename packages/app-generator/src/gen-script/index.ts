@@ -246,6 +246,7 @@ export default async function generateApp(
   reactTemplateManager.flushPages();
   // update store using editor events
   reactTemplateManager.flushStore();
+  reactTemplateManager.flushIoStore();
   reactTemplateManager.flushAtriBuildInfo(toolConfig["manifestDirs"]);
   reactTemplateManager.flushPatchedPackageJSON();
   reactTemplateManager.flushAtriServerInfo();

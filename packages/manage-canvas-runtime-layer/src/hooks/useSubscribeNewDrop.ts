@@ -9,7 +9,9 @@ import {
 } from "@atrilabs/core";
 import { CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 
 export const useSubscribeNewDrop = () => {
   const tree = useTree(ComponentTreeId);
@@ -81,7 +83,33 @@ export const useSubscribeNewDrop = () => {
             }
           }
 
-          // 2. Create Component
+          // 2. Create Callback Handlers
+          if (manifest) {
+            const component =
+              manifest.component as ReactComponentManifestSchema;
+            const defaultCallbacks = component.dev.defaultCallbackHandlers;
+            const callbackCompId = getId();
+            const createEvent: CreateEvent = {
+              id: callbackCompId,
+              type: `CREATE$$${CallbackTreeId}`,
+              meta: {},
+              state: {
+                parent: { id: "", index: 0 },
+                // NOTE: Introducting a convention to store node value in state's property field
+                property: { callbacks: defaultCallbacks },
+              },
+            };
+            api.postNewEvent(forestPkgId, forestId, createEvent);
+
+            const linkEvent: LinkEvent = {
+              type: `LINK$$${CallbackTreeId}`,
+              refId: compId,
+              childId: callbackCompId,
+            };
+            api.postNewEvent(forestPkgId, forestId, linkEvent);
+          }
+
+          // 3. Create Component
           const event: CreateEvent = {
             id: compId,
             type: `CREATE$$${ComponentTreeId}`,

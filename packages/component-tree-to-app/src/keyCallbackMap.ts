@@ -8,7 +8,7 @@ export const keyCallbackMap: {
       /**
        * handlers are collected from callbackHandlerTree & defaultCallbackHandlers
        */
-      handlers: [{ sendEventData: true }],
+      handlers: [],
       /**
        * actions come directly from the manifest
        */
@@ -23,4 +23,10 @@ export const keyCallbackMap: {
     },
   },
   Image: {},
+  Upload: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "file_input", selector: ["io", "files"] }],
+    },
+  },
 };

@@ -59,6 +59,18 @@ export function createReactAppTemplateManager(
     "hooks",
     "useStore.js"
   );
+  const useIoStoreDestPath = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "hooks",
+    "useIoStore.js"
+  );
+  const useIoStoreTemplatePath = path.resolve(
+    paths.reactAppTemplate,
+    "src",
+    "hooks",
+    "useIoStore.js"
+  );
   const pageCbsDestDirectory = path.resolve(
     paths.reactAppDest,
     "src",
@@ -598,6 +610,59 @@ export function createReactAppTemplateManager(
     }
   }
 
+  // This function requires addComponents and addProps to already have been run
+  function flushIoStore() {
+    const pageNames = Object.keys(componentMap);
+    const propsForAllPages = pageNames.map((pageName) => {
+      const components = componentMap[pageName]!;
+      const componentIds = Object.keys(components);
+      const propsForPage = componentIds.map((compId) => {
+        const alias = components[compId].alias;
+        const props =
+          propsMap[pageName] &&
+          propsMap[pageName][compId] &&
+          propsMap[pageName][compId].ioProps
+            ? propsMap[pageName][compId].ioProps
+            : undefined;
+        return { alias, props };
+      });
+      return { propsForPage, pageName };
+    });
+    // create data to put in useStore
+    const useIoStoreData: { [pageName: string]: { [alias: string]: any } } = {};
+    propsForAllPages.forEach((propsForPage) => {
+      const aliasPropsMap: { [alias: string]: any } = {};
+      propsForPage.propsForPage.forEach((aliasProps) => {
+        // add props only if component has ioProps field
+        if (aliasProps.props)
+          aliasPropsMap[aliasProps.alias] = aliasProps.props;
+      });
+      useIoStoreData[propsForPage.pageName] = aliasPropsMap;
+    });
+    // although we expect copyTemplate to have been run already
+    if (!fs.existsSync(path.dirname(useIoStoreDestPath))) {
+      fs.mkdirSync(path.dirname(useIoStoreDestPath), { recursive: true });
+    }
+    // copy useStore again (in case it's polluted)
+    const useIoStoreTemplateText = fs
+      .readFileSync(useIoStoreTemplatePath)
+      .toString();
+    const dataCursorMatch =
+      useIoStoreTemplateText.match(/\/\/\sDATA\sCURSOR\n/);
+    if (dataCursorMatch) {
+      const newText = replaceText(useIoStoreTemplateText, [
+        {
+          index: dataCursorMatch.index!,
+          length: dataCursorMatch[0].length,
+          replaceWith: `return ${JSON.stringify(useIoStoreData, null, 2)}`,
+        },
+      ]);
+      fs.writeFileSync(useIoStoreDestPath, newText);
+    } else {
+      console.log("useIoStore data cursor match is null");
+    }
+  }
+
   // add dependencies to destination package.json
   let dependencies: { [pkg: string]: string } = {};
   let devDependencies: { [pkg: string]: string } = {};
@@ -758,5 +823,6 @@ export function createReactAppTemplateManager(
     flushAtriServerInfo,
     addCallbacks,
     flushPageCbs,
+    flushIoStore,
   };
 }

@@ -11,6 +11,7 @@ import {
 import express from "express";
 import path from "path";
 import http from "http";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 // constants needed externally
 const {
@@ -23,6 +24,14 @@ const {
 } = getServerInfo(__dirname);
 const appDistHtml = path.resolve(publicDir, "index.html");
 
+const [controllerHostnameRaw, controllerPortRaw] = (controllerHost || "").split(
+  ":"
+);
+const controllerHostname = controllerHostnameRaw || "0.0.0.0";
+const controllerPort = controllerPortRaw
+  ? parseInt(controllerPortRaw)
+  : pythonPort;
+
 createIfNotExistLocalCache();
 
 const app = express();
@@ -30,6 +39,7 @@ const server = http.createServer(app);
 createWebSocketServer(server);
 
 app.use((req, res, next) => {
+  console.log("request received");
   if (req.method === "GET" && pages[req.originalUrl]) {
     if (!disablePageCache) {
       const finalTextFromCache = getPageFromCache(req.originalUrl);
@@ -54,12 +64,12 @@ app.use((req, res, next) => {
     res.send(finalText);
     storePageInCache(req.originalUrl, finalText);
   } else {
+    console.log("req rec");
     next();
   }
 });
 
 app.post("/event-handler", express.json(), (req, res) => {
-  console.log("event handler recieved");
   const pageRoute = req.body["pageRoute"];
   const pageState = req.body["pageState"];
   const alias = req.body["alias"];
@@ -74,7 +84,6 @@ app.post("/event-handler", express.json(), (req, res) => {
     res.status(400).send();
     return;
   }
-  console.log(pageRoute, pageState, alias, callbackName, eventData);
   // TODO: update pageState if success python call otherwise 501
   const payload = JSON.stringify({
     route: pageRoute,
@@ -83,13 +92,10 @@ app.post("/event-handler", express.json(), (req, res) => {
     callbackName,
     eventData,
   });
-  const [controllerHostname, controllerPort] = (controllerHost || "").split(
-    ":"
-  );
   const forward_req = http.request(
     {
-      hostname: controllerHostname || "0.0.0.0",
-      port: controllerPort ? parseInt(controllerPort) : pythonPort,
+      hostname: controllerHostname,
+      port: controllerPort,
       path: "/event",
       method: "POST",
       headers: {
@@ -98,8 +104,6 @@ app.post("/event-handler", express.json(), (req, res) => {
       },
     },
     (forward_res) => {
-      console.log(`STATUS: ${forward_res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(forward_res.headers)}`);
       forward_res.setEncoding("utf8");
       let data = "";
       forward_res.on("data", (chunk) => {
@@ -123,6 +127,13 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.write(payload);
   forward_req.end();
 });
+
+app.use(
+  "/event-in-form-handler",
+  createProxyMiddleware({
+    target: `http://${controllerHostname}:${controllerPort}`,
+  })
+);
 
 app.post("/reload-all-dev-sockets", (_req, res) => {
   console.log("received request to reload all sockets");
