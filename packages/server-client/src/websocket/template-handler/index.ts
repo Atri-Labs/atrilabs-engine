@@ -23,7 +23,7 @@ export function overwriteTemplate(
 export function getTemplateList(dir: string) {
   const filenames = getFiles(path.resolve(dir));
   return filenames.map((filename) => {
-    filename.replace(/(\.json)/g, "");
+    return filename.replace(/(\.json)/g, "");
   });
 }
 

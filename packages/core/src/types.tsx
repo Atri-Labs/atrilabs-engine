@@ -172,6 +172,14 @@ export type EventSubscriber = (
   event: AnyEvent
 ) => void;
 
+export interface TemplateInfo {
+  userDirs: string[];
+  defaultDirs: string[];
+}
+
+// array of filenames without extension
+export type TemplateNames = string[];
+
 export type BrowserClient = {
   getMeta(forestPkgId: string, onData: (meta: any) => void): void;
   getPages(
@@ -242,6 +250,33 @@ export type BrowserClient = {
     callback: (assets: {
       [name: string]: { url: string; mime: string };
     }) => void
+  ) => void;
+  getTemplateInfo: (callback: (info: TemplateInfo) => void) => void;
+  getTemplateList: (
+    dir: string,
+    callback: (names: TemplateNames) => void
+  ) => void;
+  createTemplate: (
+    dir: string,
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
+  ) => void;
+  overwriteTemplate: (
+    dir: string,
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
+  ) => void;
+  deleteTemplate: (
+    dir: string,
+    name: string,
+    callback: (success: boolean) => void
+  ) => void;
+  getTemplateEvents: (
+    dir: string,
+    name: string,
+    callback: (events: AnyEvent[]) => void
   ) => void;
 };
 

@@ -14,6 +14,13 @@ import express from "express";
 import cors from "cors";
 
 import http from "http";
+import {
+  createTemplate,
+  deleteTemplate,
+  getTemplateEvents,
+  getTemplateList,
+  overwriteTemplate,
+} from "./template-handler";
 const app = express();
 const server = http.createServer(app);
 
@@ -304,6 +311,33 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         };
       });
       callback(assetConf);
+    });
+
+    socket.on("getTemplateInfo", (callback) => {
+      const info = {
+        defaultDirs: toolConfig.templateManager.defaultDirs || [],
+        userDirs: toolConfig.templateManager.dirs || [],
+      };
+      callback(info);
+    });
+    socket.on("getTemplateList", (dir, callback) => {
+      callback(getTemplateList(dir));
+    });
+    socket.on("createTemplate", (dir, name, events, callback) => {
+      createTemplate(dir, name, events);
+      callback(true);
+    });
+    socket.on("overwriteTemplate", (dir, name, events, callback) => {
+      overwriteTemplate(dir, name, events);
+      callback(true);
+    });
+    socket.on("deleteTemplate", (dir, name, callback) => {
+      deleteTemplate(dir, name);
+      callback(true);
+    });
+    socket.on("getTemplateEvents", (dir, name, callback) => {
+      const events = getTemplateEvents(dir, name);
+      callback(events || []);
     });
   });
 
