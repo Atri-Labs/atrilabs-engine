@@ -2,15 +2,14 @@ module.exports = {
   modulePath: "./index",
   requires: {
     menu: {
-      BaseHeaderMenu: "BaseHeaderMenu",
-      BaseFooterMenu: "BaseFooterMenu",
+      PageMenu: "PageMenu",
     },
     containers: {
-      Logo: "Logo",
-      BaseContainer: "BaseContainer",
-      OverlayContainer: "OverlayContainer",
+      Drop: "Drop",
     },
   },
   exposes: {},
   decorators: [],
+  runtime: { pkg: "@atrilabs/canvas-runtime" },
+  manifestSchema: [{ pkg: "@atrilabs/react-component-manifest-schema" }],
 };
