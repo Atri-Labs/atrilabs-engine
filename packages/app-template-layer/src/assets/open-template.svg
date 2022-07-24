@@ -1,3 +1,5 @@
-<svg width="64" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g data-bx-workspace="master" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><defs></defs><rect x="57.759" y="40.947" width="33.573" height="58.043" style="fill: rgb(255, 255, 255);"></rect><rect x="95.788" y="40.541" width="39.183" height="25.207" style="fill: rgb(255, 250, 250);"></rect><rect x="95.563" y="69.903" width="39.183" height="28.923" style="fill: rgb(255, 255, 255);"></rect></g>
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="7.69163" height="18" rx="1" fill="white"/>
+<rect x="8.32599" width="9.67401" height="7.86076" rx="1" fill="white"/>
+<rect x="8.32599" y="9" width="9.67401" height="9" rx="1" fill="white"/>
 </svg>
