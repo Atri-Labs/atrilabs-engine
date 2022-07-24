@@ -11,6 +11,7 @@ import {
 import { ReactComponent as OpenTemplateIcon } from "./assets/open-template.svg";
 import { Cross } from "./assets/Cross";
 import { useComponentSelected } from "./hooks/useComponentSelected";
+import { useCreateTemplate } from "./hooks/useCreateTemplate";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -81,6 +82,10 @@ export default function () {
   }, []);
 
   const { selected } = useComponentSelected();
+
+  const createTemplate = useCreateTemplate();
+
+  if (selected) console.log(createTemplate(selected));
 
   return (
     <>
