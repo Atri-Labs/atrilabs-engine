@@ -21,11 +21,14 @@ async def is_conda_installed():
     return False
 
 def is_conda_installed_sync() -> bool:
-    child_proc = subprocess.Popen(["conda", "--version"], stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL)
-    child_proc.wait()
-    if child_proc.returncode == 0:
-        return True
-    return False
+    try:
+        child_proc = subprocess.Popen(["conda", "--version"], stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL)
+        child_proc.wait()
+        if child_proc.returncode == 0:
+            return True
+        return False
+    except:
+        return False
 
 async def is_selected_virtenv_installed():
     virt_type = get_virtualenv_type()
