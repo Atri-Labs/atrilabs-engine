@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Container, Menu } from "@atrilabs/core";
+import { api, Container, Menu } from "@atrilabs/core";
 import {
   gray300,
   gray700,
@@ -12,6 +12,7 @@ import { ReactComponent as OpenTemplateIcon } from "./assets/open-template.svg";
 import { Cross } from "./assets/Cross";
 import { useComponentSelected } from "./hooks/useComponentSelected";
 import { useCreateTemplate } from "./hooks/useCreateTemplate";
+import { useTemplateApi } from "./hooks/useTemplateApi";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -73,6 +74,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export default function () {
+  const { templatesData, callCreateTeamplateApi } = useTemplateApi();
+
   const [showDropPanel, setShowDropContianer] = useState<boolean>(false);
   const openDropContainer = useCallback(() => {
     setShowDropContianer(true);
@@ -82,10 +85,17 @@ export default function () {
   }, []);
 
   const { selected } = useComponentSelected();
-
   const createTemplate = useCreateTemplate();
+  const onCreateTemplateClickCb = useCallback(() => {
+    if (selected && templatesData) {
+      const templateEvents = createTemplate(selected);
+      if (templateEvents.length > 0) {
+        callCreateTeamplateApi(templateEvents, "someone");
+      }
+    }
+  }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
 
-  if (selected) console.log(createTemplate(selected));
+  console.log("tempalted", templatesData);
 
   return (
     <>
@@ -114,7 +124,7 @@ export default function () {
 
       {selected ? (
         <Menu name="PublishMenu">
-          <div style={styles.outerDiv} onClick={() => {}}>
+          <div style={styles.outerDiv} onClick={onCreateTemplateClickCb}>
             Create Template
           </div>
         </Menu>
