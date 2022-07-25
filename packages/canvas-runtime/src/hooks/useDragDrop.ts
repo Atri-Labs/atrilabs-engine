@@ -11,6 +11,7 @@ import {
   isMachineLocked,
   lockMachineForCompDrop,
   lockMachineForDataDrop,
+  lockMachineForTemplateDrop,
   setDataDropTarget,
   unlockMachine,
   unsetDataDropTarget,
@@ -102,6 +103,9 @@ export function startDrag(dragComp: DragComp, dragData: DragData) {
   if (dragData.type === "src") {
     // For data drop, the target is known during drag & drop only
     lockMachineForDataDrop();
+  }
+  if (dragData.type === "template") {
+    lockMachineForTemplateDrop(dragData.data.newTemplateRootId);
   }
 }
 
@@ -266,6 +270,7 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
           );
           if (caughtBy) {
             // inform drop subscribers
+            console.log("calling callNewDropSubscribers");
             callNewDropSubscribers(
               state.context.startDragArgs,
               event.loc,

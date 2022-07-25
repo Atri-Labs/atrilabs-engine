@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { Container, Menu } from "@atrilabs/core";
+import { Container, getId, Menu } from "@atrilabs/core";
 import {
   amber300,
   gray300,
@@ -16,6 +16,8 @@ import { Cross } from "./assets/Cross";
 import { useComponentSelected } from "./hooks/useComponentSelected";
 import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { useTemplateApi } from "./hooks/useTemplateApi";
+import { startDrag } from "@atrilabs/canvas-runtime";
+import { DragTemplateComp } from "./components/DragTemplateComp";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -150,6 +152,19 @@ export default function () {
                 </div>
                 {templatesData?.user.names.map((name) => {
                   const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  const onMouseDownCb = () => {
+                    startDrag(
+                      { comp: DragTemplateComp, props: { text: formatName } },
+                      {
+                        type: "template",
+                        data: {
+                          dir: templatesData.default.dir,
+                          name: name,
+                          newTemplateRootId: getId(),
+                        },
+                      }
+                    );
+                  };
                   return (
                     <div
                       key={name}
@@ -159,6 +174,7 @@ export default function () {
                         ...h4Heading,
                         color: gray300,
                       }}
+                      onMouseDown={onMouseDownCb}
                     >
                       {formatName}
                     </div>
@@ -178,6 +194,19 @@ export default function () {
                 </div>
                 {templatesData?.default.names.map((name) => {
                   const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  const onMouseDownCb = () => {
+                    startDrag(
+                      { comp: DragTemplateComp, props: { text: formatName } },
+                      {
+                        type: "template",
+                        data: {
+                          dir: templatesData.default.dir,
+                          name: name,
+                          newTemplateRootId: getId(),
+                        },
+                      }
+                    );
+                  };
                   return (
                     <div
                       key={name}
@@ -187,6 +216,7 @@ export default function () {
                         ...h4Heading,
                         color: gray300,
                       }}
+                      onMouseDown={onMouseDownCb}
                     >
                       {formatName}
                     </div>
