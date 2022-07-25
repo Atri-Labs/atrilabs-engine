@@ -136,6 +136,64 @@ export default function () {
                 </span>
               </div>
             </header>
+            <div>
+              <div>
+                <div
+                  style={{
+                    padding: "0.5rem",
+                    backgroundColor: gray900,
+                    ...h4Heading,
+                    color: gray300,
+                  }}
+                >
+                  User Templates
+                </div>
+                {templatesData?.user.names.map((name) => {
+                  const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  return (
+                    <div
+                      key={name}
+                      style={{
+                        padding: "0.5rem",
+                        borderBottom: `1px solid ${gray900}`,
+                        ...h4Heading,
+                        color: gray300,
+                      }}
+                    >
+                      {formatName}
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <div
+                  style={{
+                    padding: "0.5rem",
+                    backgroundColor: gray900,
+                    ...h4Heading,
+                    color: gray300,
+                  }}
+                >
+                  Default Templates
+                </div>
+                {templatesData?.default.names.map((name) => {
+                  const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  return (
+                    <div
+                      key={name}
+                      style={{
+                        padding: "0.5rem",
+                        borderBottom: `1px solid ${gray900}`,
+                        ...h4Heading,
+                        color: gray300,
+                      }}
+                    >
+                      {formatName}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </Container>
       ) : null}
