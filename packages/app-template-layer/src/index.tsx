@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { api, Container, Menu } from "@atrilabs/core";
+import { Container, Menu } from "@atrilabs/core";
 import {
   amber300,
   gray300,
