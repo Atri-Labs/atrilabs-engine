@@ -9,29 +9,28 @@ import {
 import { useEffect } from "react";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import { CreateEvent } from "@atrilabs/forest";
+import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 
 export const useSubscribeTemplateDrop = () => {
   const tree = useTree(ComponentTreeId);
   useEffect(() => {
     const unsub = subscribeNewDrop((args, loc, caughtBy) => {
-      console.log("new drop for template");
-      // get index
-      // find manifest from manifest registry
-      const manifestRegistry =
-        manifestRegistryController.readManifestRegistry();
-      let index = 0;
-      if (caughtBy === "body") {
-        index = getComponentIndexInsideBody(loc);
-      } else {
-        // Don't process if caughtBy/parent does not belong to component tree
-        if (!tree.nodes[caughtBy]) {
-          return;
-        }
-        index = getComponentIndex(tree, caughtBy, loc, manifestRegistry);
-      }
-
       if (args.dragData.type === "template") {
+        // get index
+        // find manifest from manifest registry
+        const manifestRegistry =
+          manifestRegistryController.readManifestRegistry();
+        let index = 0;
+        if (caughtBy === "body") {
+          index = getComponentIndexInsideBody(loc);
+        } else {
+          // Don't process if caughtBy/parent does not belong to component tree
+          if (!tree.nodes[caughtBy]) {
+            return;
+          }
+          index = getComponentIndex(tree, caughtBy, loc, manifestRegistry);
+        }
+
         const { dir, name } = args.dragData.data;
         api.getTemplateEvents(dir, name, (events) => {
           const replacementIdMap: { [oldId: string]: string } = {};
@@ -45,7 +44,7 @@ export const useSubscribeTemplateDrop = () => {
             }
           }
           events.forEach((event) => {
-            if (event.type.match("CREATE")) {
+            if (event.type.match(/^CREATE/)) {
               const createEvent = event as CreateEvent;
               // replace all components with new id
               createEvent.id = createOrReturnNew(createEvent.id);
@@ -58,6 +57,11 @@ export const useSubscribeTemplateDrop = () => {
                   createEvent.state.parent.id
                 );
               }
+            }
+            if (event.type.match(/^LINK/)) {
+              const linkEvent = event as LinkEvent;
+              linkEvent.childId = createOrReturnNew(linkEvent.childId);
+              linkEvent.refId = createOrReturnNew(linkEvent.refId);
             }
             const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
             const forestId = BrowserForestManager.currentForest.forestId;

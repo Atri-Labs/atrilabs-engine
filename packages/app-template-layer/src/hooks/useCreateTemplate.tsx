@@ -7,7 +7,13 @@ import {
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
-import { AnyEvent, CreateEvent, TreeNode } from "@atrilabs/forest";
+import {
+  AnyEvent,
+  CreateEvent,
+  LinkEvent,
+  TreeLink,
+  TreeNode,
+} from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 
@@ -33,7 +39,12 @@ export const useCreateTemplate = () => {
       }
 
       function getComponentPropsNodes(nodeId: string) {
-        const propNodes: { propNode: TreeNode; propTreeId: string }[] = [];
+        // refId is needed to create LINK event
+        const propNodes: {
+          propNode: TreeNode;
+          propTreeId: string;
+          link: TreeLink;
+        }[] = [];
         const manifest = getComponentManifest(nodeId);
         if (manifest) {
           const manifestComponent =
@@ -48,7 +59,7 @@ export const useCreateTemplate = () => {
               if (link) {
                 const propNodeId = link.childId;
                 const propNode = propTree.nodes[propNodeId];
-                propNodes.push({ propNode, propTreeId: treeId });
+                propNodes.push({ propNode, propTreeId: treeId, link });
               }
             }
           });
@@ -91,33 +102,47 @@ export const useCreateTemplate = () => {
       // convert prop nodes to events first
       allCapturedNodes.forEach((currNodeId) => {
         const propNodes = getComponentPropsNodes(currNodeId);
-        propNodes.forEach(({ propNode, propTreeId }) => {
-          const event: CreateEvent = {
+        propNodes.forEach(({ propNode, propTreeId, link }) => {
+          // create CreateEvent and LinkEvent
+          const createEvent: CreateEvent = {
             type: `CREATE$$${propTreeId}`,
             id: propNode.id,
             meta: propNode.meta,
             state: propNode.state,
           };
-          events.push(event);
+          events.push(createEvent);
+          const linkEvent: LinkEvent = {
+            type: `LINK$$${propTreeId}`,
+            ...link,
+          };
+          events.push(linkEvent);
         });
       });
 
       // convert defaultCallbackHandlers to events
-      const manifest = getComponentManifest(selectedId)!;
-      const component = manifest.component as ReactComponentManifestSchema;
-      const defaultCallbacks = component.dev.defaultCallbackHandlers;
-      const callbackCompId = getId();
-      const callbackCreateEvent: CreateEvent = {
-        id: callbackCompId,
-        type: `CREATE$$${CallbackTreeId}`,
-        meta: {},
-        state: {
-          parent: { id: "", index: 0 },
-          // NOTE: Following a convention to store node value in state's property field
-          property: { callbacks: defaultCallbacks },
-        },
-      };
-      events.push(callbackCreateEvent);
+      allCapturedNodes.forEach((currNodeId) => {
+        const manifest = getComponentManifest(currNodeId)!;
+        const component = manifest.component as ReactComponentManifestSchema;
+        const defaultCallbacks = component.dev.defaultCallbackHandlers;
+        const callbackCompId = getId();
+        const callbackCreateEvent: CreateEvent = {
+          id: callbackCompId,
+          type: `CREATE$$${CallbackTreeId}`,
+          meta: {},
+          state: {
+            parent: { id: "", index: 0 },
+            // NOTE: Following a convention to store node value in state's property field
+            property: { callbacks: defaultCallbacks },
+          },
+        };
+        events.push(callbackCreateEvent);
+        const callbackLinkEvent: LinkEvent = {
+          type: `LINK$$${CallbackTreeId}`,
+          refId: currNodeId,
+          childId: callbackCompId,
+        };
+        events.push(callbackLinkEvent);
+      });
 
       // convert component nodes to events at last
       allCapturedNodes.forEach((currNodeId) => {
