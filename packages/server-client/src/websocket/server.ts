@@ -50,6 +50,23 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     fs.writeFileSync(assetsConfPath, "{}");
   }
 
+  const userTemplateDirs = toolConfig.templateManager.dirs;
+  if (userTemplateDirs) {
+    userTemplateDirs.forEach((dir) => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+  }
+  const defaultTemplateDirs = toolConfig.templateManager.defaultDirs;
+  if (defaultTemplateDirs) {
+    defaultTemplateDirs.forEach((dir) => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+  }
+
   function getMeta(forestPkgId: string) {
     const eventManager = getEventManager(forestPkgId)!;
     const meta = eventManager.meta();
