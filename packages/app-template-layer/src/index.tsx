@@ -1,10 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { api, Container, Menu } from "@atrilabs/core";
 import {
+  amber300,
   gray300,
   gray700,
   gray800,
+  gray900,
   h1Heading,
+  h4Heading,
   IconMenu,
   smallText,
 } from "@atrilabs/design-system";
@@ -86,13 +89,28 @@ export default function () {
 
   const { selected } = useComponentSelected();
   const createTemplate = useCreateTemplate();
+  const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
+    useState<boolean>(false);
+  const createTempalateInputRef = useRef<HTMLInputElement>(null);
   const onCreateTemplateClickCb = useCallback(() => {
-    if (selected && templatesData) {
+    console.log("onCreateTemplateClickCb");
+    setShowCreateTemplatePopup(true);
+  }, []);
+  const onCreateTemplatePopupCrossClickCb = useCallback(() => {
+    console.log("onCreateTemplatePopupCrossClickCb");
+    setShowCreateTemplatePopup(false);
+  }, []);
+  const onCreateClickCb = useCallback(() => {
+    if (selected && templatesData && createTempalateInputRef.current) {
       const templateEvents = createTemplate(selected);
       if (templateEvents.length > 0) {
-        callCreateTeamplateApi(templateEvents, "someone");
+        callCreateTeamplateApi(
+          templateEvents,
+          createTempalateInputRef.current.value
+        );
       }
     }
+    setShowCreateTemplatePopup(false);
   }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
 
   console.log("tempalted", templatesData);
@@ -124,8 +142,54 @@ export default function () {
 
       {selected ? (
         <Menu name="PublishMenu">
-          <div style={styles.outerDiv} onClick={onCreateTemplateClickCb}>
+          <div style={styles.outerDiv} onClickCapture={onCreateTemplateClickCb}>
             Create Template
+            {showCreateTemplatePopup ? (
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-9rem",
+                  right: 0,
+                  zIndex: 1,
+                  background: gray800,
+                  padding: "1rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: "0.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>Create Template</span>
+                  <span onClickCapture={onCreateTemplatePopupCrossClickCb}>
+                    <Cross />
+                  </span>
+                </div>
+                <label htmlFor="templateName">Template Name</label>
+                <input ref={createTempalateInputRef} id="templateName" />
+                <button
+                  style={{
+                    ...h4Heading,
+                    border: "none",
+                    outline: "none",
+                    background: amber300,
+                    borderRadius: "4px",
+                    color: gray900,
+                    padding: "6px 0",
+                    textAlign: "center",
+                    width: "13rem",
+                  }}
+                  onClickCapture={onCreateClickCb}
+                >
+                  Create
+                </button>
+              </div>
+            ) : null}
           </div>
         </Menu>
       ) : null}
