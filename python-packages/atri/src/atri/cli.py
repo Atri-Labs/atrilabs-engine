@@ -1,9 +1,11 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
 import sys
+from atri.errors import NO_CONDA_ENVIRONMENT_FOUND
+from atri.utils.is_pkg_installed import is_conda_installed_sync
 import click
 import asyncio
 from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
-from .commands.connect_local import run as exe_connect_local, start_ipc_connection
+from .commands.connect_local import start_ipc_connection
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
 import webbrowser
@@ -14,8 +16,8 @@ from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_v
 from . import supported_virt_types
 import questionary
 from pathlib import Path
-from .utils.conda_utils import get_conda_env_list, get_working_env_name, set_working_env_name, get_active_env_name, is_pkg_installed_in_env
-from typing import Union
+from .utils.conda_utils import get_conda_env_list, set_working_env_name, get_active_env_name
+from typing import List, Union
 from .utils.handle_error import error_to_message
 
 find_and_set_app_directory()
@@ -48,12 +50,20 @@ class DefaultEnvNameQuestion(click.Option):
         active_env_name = get_active_env_name(str(Path.cwd()))
         if active_env_name != "base":
             return active_env_name
+        if len(self.type.choices) == 0:
+            print("Please create a conda environment first.")
+            exit(NO_CONDA_ENVIRONMENT_FOUND)
         val = questionary.select(self.prompt, choices=self.type.choices).unsafe_ask()
         return val
 
+def get_conda_env_list_if_conda_installed() -> List[str]:
+    if is_conda_installed_sync():
+        return get_conda_env_list(str(Path.cwd()))
+    return []
+
 @click.group()
 @click.option("--virt-type", type=click.Choice(supported_virt_types, case_sensitive=False), prompt="Select virtual environment type", cls=VirtTypeQuestion, is_eager=True)
-@click.option("--working-env", type=click.Choice(get_conda_env_list(str(Path.cwd())), case_sensitive=False), prompt="Select name of the conda virtual env", cls=DefaultEnvNameQuestion)
+@click.option("--working-env", type=click.Choice(get_conda_env_list_if_conda_installed(), case_sensitive=False), prompt="Select name of the conda virtual env", cls=DefaultEnvNameQuestion)
 def main(virt_type: Union[str, None], working_env: Union[str, None]):
     """Open up the visual editor:
 
