@@ -270,7 +270,6 @@ export const useDragDrop = (containerRef: React.RefObject<HTMLElement>) => {
           );
           if (caughtBy) {
             // inform drop subscribers
-            console.log("calling callNewDropSubscribers");
             callNewDropSubscribers(
               state.context.startDragArgs,
               event.loc,
