@@ -6,12 +6,14 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "lib/index.js",
+  "bin": "lib/app/app.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,6 +23,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "buildExe": "tsc --project app.tsconfig.json",
+    "packageExe": "yarn run buildExe && pkg --no-bytecode --public-packages '*' --public --out-path ./dist .",
     "build": "build-atri-tool",
     "start": "dev-atri-tool",
     "server": "bootstrap-atri-services",
@@ -69,6 +73,7 @@
     "@babel/plugin-transform-react-jsx": "^7.17.3",
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
+    "pkg": "^5.8.0",
     "prettier": "^2.6.2"
   }
 }
