@@ -31,9 +31,13 @@ export const useSubscribeTemplateDrop = () => {
           index = getComponentIndex(tree, caughtBy, loc, manifestRegistry);
         }
 
+        const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+        const forestId = BrowserForestManager.currentForest.forestId;
         const { dir, name, newTemplateRootId } = args.dragData.data;
+
         api.getTemplateEvents(dir, name, (events) => {
           const replacementIdMap: { [oldId: string]: string } = {};
+
           function createOrReturnNew(oldId: string) {
             if (replacementIdMap[oldId]) {
               return replacementIdMap[oldId];
@@ -46,39 +50,70 @@ export const useSubscribeTemplateDrop = () => {
           function replaceWithId(oldId: string, newId: string) {
             replacementIdMap[oldId] = newId;
           }
-          // find create event with templateRoot as parent
-          // and add that to replacementIdMap
-          events.forEach((event) => {
-            if (event.type.match(/^CREATE/)) {
-              const createEvent = event as CreateEvent;
-              if (createEvent.state.parent.id === "templateRoot") {
-                replaceWithId(createEvent.id, newTemplateRootId);
-                createEvent.id = newTemplateRootId;
-              }
-            }
-          });
-          events.forEach((event) => {
-            if (event.type.match(/^CREATE/)) {
-              const createEvent = event as CreateEvent;
-              // replace all components with new id
-              if (createEvent.state.parent.id === "templateRoot") {
-                // templateRoot will be replaced by the parent (caughtBy) in which template is dropped
-                createEvent.state.parent = { id: caughtBy, index };
+
+          const idAliasMap: { [oldId: string]: string } = {};
+
+          const aliasPromises = events.map((event) => {
+            return new Promise<void>((resolve) => {
+              if (event.type.match(/^CREATE/)) {
+                const createEvent = event as CreateEvent;
+                // get alias if key field exists in meta
+                if (createEvent.meta["key"]) {
+                  api.getNewAlias(
+                    forestPkgId,
+                    createEvent.meta["key"],
+                    (alias) => {
+                      idAliasMap[createEvent.id] = alias;
+                      resolve();
+                    }
+                  );
+                } else {
+                  // resolve immidiately if no key field exists
+                  resolve();
+                }
               } else {
-                createEvent.id = createOrReturnNew(createEvent.id);
-                createEvent.state.parent.id = createOrReturnNew(
-                  createEvent.state.parent.id
-                );
+                resolve();
               }
-            }
-            if (event.type.match(/^LINK/)) {
-              const linkEvent = event as LinkEvent;
-              linkEvent.childId = createOrReturnNew(linkEvent.childId);
-              linkEvent.refId = createOrReturnNew(linkEvent.refId);
-            }
-            const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-            const forestId = BrowserForestManager.currentForest.forestId;
-            api.postNewEvent(forestPkgId, forestId, event);
+            });
+          });
+
+          Promise.all(aliasPromises).then(() => {
+            // find create event with templateRoot as parent
+            // and add that to replacementIdMap
+            events.forEach((event) => {
+              if (event.type.match(/^CREATE/)) {
+                const createEvent = event as CreateEvent;
+                if (createEvent.state.parent.id === "templateRoot") {
+                  replaceWithId(createEvent.id, newTemplateRootId);
+                }
+              }
+            });
+            events.forEach((event) => {
+              if (event.type.match(/^CREATE/)) {
+                const createEvent = event as CreateEvent;
+                const oldId = createEvent.id;
+                if (idAliasMap[oldId]) {
+                  createEvent.state.alias = idAliasMap[oldId];
+                }
+                // replace all components with new id
+                if (createEvent.state.parent.id === "templateRoot") {
+                  createEvent.id = newTemplateRootId;
+                  // templateRoot will be replaced by the parent (caughtBy) in which template is dropped
+                  createEvent.state.parent = { id: caughtBy, index };
+                } else {
+                  createEvent.id = createOrReturnNew(createEvent.id);
+                  createEvent.state.parent.id = createOrReturnNew(
+                    createEvent.state.parent.id
+                  );
+                }
+              }
+              if (event.type.match(/^LINK/)) {
+                const linkEvent = event as LinkEvent;
+                linkEvent.childId = createOrReturnNew(linkEvent.childId);
+                linkEvent.refId = createOrReturnNew(linkEvent.refId);
+              }
+              api.postNewEvent(forestPkgId, forestId, event);
+            });
           });
         });
       }
