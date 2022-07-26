@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
-import { getCompDropTarget, unlockMachine } from "./CanvasActivityDecorator";
+import {
+  getCompDropTarget,
+  getTemplateRootId,
+  unlockMachine,
+} from "./CanvasActivityDecorator";
 
 const newCompRendererdSubscribers: ((compId: string) => void)[] = [];
 
@@ -21,6 +25,15 @@ export const UnlockCanvasActivityMachineDecorator: React.FC<DecoratorProps> = (
     const dropCompTarget = getCompDropTarget();
     if (dropCompTarget === props.compId) {
       unlockMachine();
+      newCompRendererdSubscribers.forEach((cb) => {
+        cb(props.compId);
+      });
+    }
+
+    const dropNewTemplateRootId = getTemplateRootId();
+    if (dropNewTemplateRootId === props.compId) {
+      unlockMachine();
+      // Shall we notify new component rendered for all children of template?
       newCompRendererdSubscribers.forEach((cb) => {
         cb(props.compId);
       });

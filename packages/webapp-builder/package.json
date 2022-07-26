@@ -37,6 +37,7 @@
     "@atrilabs/app-design-layer": "^0.0.25",
     "@atrilabs/app-generator": "^0.0.25",
     "@atrilabs/app-page-layer": "^0.0.25",
+    "@atrilabs/app-template-layer": "^0.0.25",
     "@atrilabs/asset-manager-layer": "^0.0.25",
     "@atrilabs/atri-icon-layer": "^0.0.25",
     "@atrilabs/base-layer": "^0.0.25",

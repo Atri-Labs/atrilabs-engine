@@ -7,14 +7,18 @@ export type Dimension = {
   scale: number;
 };
 
-export type DragComp = { comp: React.FC; props: any };
+export type DragComp = { comp: React.FC<any>; props: any };
 
 export type DragData =
   | {
       type: "component";
       data: { pkg: string; key: string; manifestSchema: string; id: string };
     }
-  | { type: "src"; data: { src: string } };
+  | { type: "src"; data: { src: string } }
+  | {
+      type: "template";
+      data: { dir: string; name: string; newTemplateRootId: string };
+    };
 
 export type StartDragArgs = {
   dragComp: DragComp;

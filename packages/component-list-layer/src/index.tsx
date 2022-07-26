@@ -73,7 +73,7 @@ export default function () {
 
   const components = useManifestRegistry();
 
-  const startDargCb = useCallback((...args: Parameters<typeof startDrag>) => {
+  const startDragCb = useCallback((...args: Parameters<typeof startDrag>) => {
     startDrag(...args);
   }, []);
   return (
@@ -103,7 +103,7 @@ export default function () {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      startDargCb(comp.component.drag, {
+                      startDragCb(comp.component.drag, {
                         type: "component",
                         data: {
                           key: comp.component.renderSchema.meta.key,
