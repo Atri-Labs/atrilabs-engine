@@ -31,7 +31,7 @@ export const useSubscribeTemplateDrop = () => {
           index = getComponentIndex(tree, caughtBy, loc, manifestRegistry);
         }
 
-        const { dir, name } = args.dragData.data;
+        const { dir, name, newTemplateRootId } = args.dragData.data;
         api.getTemplateEvents(dir, name, (events) => {
           const replacementIdMap: { [oldId: string]: string } = {};
           function createOrReturnNew(oldId: string) {
@@ -43,16 +43,29 @@ export const useSubscribeTemplateDrop = () => {
               return newId;
             }
           }
+          function replaceWithId(oldId: string, newId: string) {
+            replacementIdMap[oldId] = newId;
+          }
+          // find create event with templateRoot as parent
+          // and add that to replacementIdMap
+          events.forEach((event) => {
+            if (event.type.match(/^CREATE/)) {
+              const createEvent = event as CreateEvent;
+              if (createEvent.state.parent.id === "templateRoot") {
+                replaceWithId(createEvent.id, newTemplateRootId);
+                createEvent.id = newTemplateRootId;
+              }
+            }
+          });
           events.forEach((event) => {
             if (event.type.match(/^CREATE/)) {
               const createEvent = event as CreateEvent;
               // replace all components with new id
-              createEvent.id = createOrReturnNew(createEvent.id);
               if (createEvent.state.parent.id === "templateRoot") {
-                // change parent of top template component with caughtBy
+                // templateRoot will be replaced by the parent (caughtBy) in which template is dropped
                 createEvent.state.parent = { id: caughtBy, index };
               } else {
-                // create or return new id replacement for old id
+                createEvent.id = createOrReturnNew(createEvent.id);
                 createEvent.state.parent.id = createOrReturnNew(
                   createEvent.state.parent.id
                 );
