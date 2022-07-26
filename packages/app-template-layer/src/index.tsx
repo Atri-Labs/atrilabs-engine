@@ -115,8 +115,6 @@ export default function () {
     setShowCreateTemplatePopup(false);
   }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
 
-  console.log("tempalted", templatesData);
-
   return (
     <>
       <Menu name="PageMenu">
