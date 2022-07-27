@@ -77,8 +77,8 @@ async function generateApp(_toolConfig: ToolConfig) {
       "--target",
       "Web App",
     ]);
-    child_proc.on("exit", (code) => {
-      console.log("[server-utils] generateApp received code\n", code);
+    child_proc.on("close", (code) => {
+      console.log("[server-utils] generateApp received code", code);
       if (code === 0) res();
       else rej();
     });
