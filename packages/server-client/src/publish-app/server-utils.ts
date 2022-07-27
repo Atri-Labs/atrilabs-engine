@@ -65,6 +65,8 @@ type FnQueue = ((
 async function generateApp(_toolConfig: ToolConfig) {
   console.log("[publish_app_server] generate app called");
   return new Promise<void>((res, rej) => {
+    // TODO: Should we run it by importing the generate module
+    // like in buildApp function below?
     const generateAppScriptPath = require.resolve(
       "@atrilabs/scripts/build/tasks/run-target/index.js"
     );
@@ -103,6 +105,8 @@ function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       if (success) {
         console.log("python build success");
         const target = toolConfig.targets[0]!;
+        // TODO: Should we fork a process from @atrilabs/scripts instead of importing
+        // like in the generateApp function above?
         import(target.tasksHandler.modulePath)
           .then(async (mod) => {
             if (
