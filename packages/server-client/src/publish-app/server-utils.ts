@@ -1,5 +1,5 @@
 import { ToolConfig } from "@atrilabs/core";
-import { ChildProcess, exec } from "child_process";
+import { ChildProcess, exec, fork } from "child_process";
 import { io, Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
@@ -65,22 +65,23 @@ type FnQueue = ((
 async function generateApp(_toolConfig: ToolConfig) {
   console.log("[publish_app_server] generate app called");
   return new Promise<void>((res, rej) => {
-    const child_proc = exec("yarn run generateApp", (err, stdout, stderr) => {
-      if (err) {
-        console.log("[publish_app_server] Generate app error\n", err);
-      }
-      if (stderr) {
-        console.log("[publish_app_server] Generate app stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("[publish_app_server] Generate app stdout\n", stdout);
-      }
-      if (child_proc.exitCode != 0) {
-        console.log("[publish_app_server] return code", child_proc.exitCode);
-        rej();
-      } else {
-        res();
-      }
+    const generateAppScriptPath = require.resolve(
+      "@atrilabs/scripts/build/tasks/run-target/index.js"
+    );
+    const child_proc = fork(generateAppScriptPath, [
+      "--task",
+      "generate",
+      "--target",
+      "Web App",
+    ]);
+    child_proc.on("exit", (code) => {
+      console.log("[server-utils] generateApp received code\n", code);
+      if (code === 0) res();
+      else rej();
+    });
+    child_proc.on("error", (err) => {
+      console.log("[server-utils] generateApp err\n", err);
+      rej();
     });
   });
 }
