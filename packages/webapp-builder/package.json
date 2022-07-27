@@ -82,7 +82,8 @@
       "lib/**/*",
       "src/**/*",
       "node_modules/lowdb/**/*",
-      "node_modules/.cache/@atrilabs/build/manifests"
+      "node_modules/.cache/@atrilabs/build/manifests",
+      "node_modules/npm/**/*"
     ]
   }
 }
