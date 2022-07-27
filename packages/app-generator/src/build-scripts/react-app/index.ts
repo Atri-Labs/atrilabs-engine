@@ -2,23 +2,28 @@ import { ToolConfig } from "@atrilabs/core";
 import { AppBuildOptions, PropsGeneratorOutput } from "../../types";
 import path from "path";
 import fs from "fs";
-import { exec, fork } from "child_process";
+import { fork } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
 import { getReactAppTemplateManager } from "../../getReactTemplateManager";
 import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
   return new Promise<void>((res) => {
-    exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+    const runNpmInstallScriptPath = path.resolve(
+      process.env["TOOL_ROOT_PATH"] || process.cwd(),
+      "node_modules",
+      "npm",
+      "bin",
+      "npm-cli.js"
+    );
+    const child_proc = fork(runNpmInstallScriptPath, { cwd: reactAppRootDest });
+    child_proc.on("error", (err) => {
       if (err) {
-        console.log("Installing packages failed with error\n", err);
+        console.log("Build server failed with error\n", err);
       }
-      if (stderr) {
-        console.log("Installing packages stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("Installed packages\n", stdout);
-      }
+    });
+    child_proc.on("close", (code) => {
+      console.log("Generated app's server built with code", code);
       res();
     });
   });
