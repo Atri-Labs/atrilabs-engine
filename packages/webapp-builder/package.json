@@ -75,5 +75,13 @@
     "eslint-config-react-app": "^7.0.1",
     "pkg": "^5.8.0",
     "prettier": "^2.6.2"
+  },
+  "pkg": {
+    "assets": [
+      "lib/**/*",
+      "src/**/*",
+      "node_modules/lowdb/**/*",
+      "node_modules/.cache/@atrilabs/build/manifests"
+    ]
   }
 }

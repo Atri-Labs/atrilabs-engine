@@ -2,6 +2,9 @@ import fs from "fs";
 import path from "path";
 
 console.log("App is running...");
+
+process.env["APP_ROOT_PATH"] = path.resolve(__dirname, "..", "..");
+
 function getFiles(dir: string): string[] {
   const files: string[] = [];
   const dirents = fs.readdirSync(dir, { withFileTypes: true });
@@ -14,10 +17,14 @@ function getFiles(dir: string): string[] {
   });
   return files;
 }
+
 try {
   console.log("[__dirname]", __dirname);
-  const allFiles = getFiles(path.resolve(__dirname, "..", "..", "..", ".."));
-  fs.writeFileSync("filelist.txt", allFiles.join("\n"));
+  const filelist = getFiles(
+    path.resolve(__dirname, "..", "..", "node_modules")
+  );
+  fs.writeFileSync("filelist.txt", filelist.join("\n"));
+  console.log(JSON.stringify(module.paths, null, 2));
   const resolvedPath = require.resolve("@atrilabs/scripts");
   console.log("[Resolved path 1]", resolvedPath);
   const resolvedPath2 = require.resolve(

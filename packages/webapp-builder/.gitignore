@@ -1,2 +1,6 @@
 localdb/
 dist/
+assets/
+atri_app/
+atri_templates/
+controllers/
