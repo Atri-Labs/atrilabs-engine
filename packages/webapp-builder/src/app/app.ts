@@ -3,7 +3,7 @@ import path from "path";
 
 console.log("App is running...");
 
-process.env["APP_ROOT_PATH"] = path.resolve(__dirname, "..", "..");
+process.env["TOOL_ROOT_PATH"] = path.resolve(__dirname, "..", "..");
 
 function getFiles(dir: string): string[] {
   const files: string[] = [];

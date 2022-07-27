@@ -4,3 +4,6 @@ assets/
 atri_app/
 atri_templates/
 controllers/
+Pipfile
+Pipfile.lock
+atri.app.json

@@ -49,7 +49,7 @@ function findFileWithoutExtension(filename: string) {
 }
 
 export function getToolPkgInfo(): ToolPkgInfo {
-  const toolDir = process.cwd();
+  const toolDir = path.resolve(process.env["TOOL_ROOT_PATH"] || process.cwd());
   const toolSrc = path.resolve(toolDir, "src");
   const toolConfigFile = path.resolve(toolSrc, "tool.config.js");
   const toolNodeModule = path.resolve(toolDir, "node_modules");
