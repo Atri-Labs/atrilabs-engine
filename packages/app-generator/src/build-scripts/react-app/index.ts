@@ -9,14 +9,10 @@ import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
   return new Promise<void>((res) => {
-    const runNpmInstallScriptPath = path.resolve(
-      process.env["TOOL_ROOT_PATH"] || process.cwd(),
-      "node_modules",
-      "npm",
-      "bin",
-      "npm-cli.js"
-    );
-    const child_proc = fork(runNpmInstallScriptPath, { cwd: reactAppRootDest });
+    const runNpmInstallScriptPath = require.resolve("npm");
+    const child_proc = fork(runNpmInstallScriptPath, ["install"], {
+      cwd: reactAppRootDest,
+    });
     child_proc.on("error", (err) => {
       if (err) {
         console.log("Build server failed with error\n", err);
