@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useCallback } from "react";
+import React, { useState, useRef, forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -7,91 +7,59 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import Chevron from "./Chevron";
+import "./Accordion.css";
 
-export type CarouselItemTypes = {
-  children: string;
-  width: string;
+export type AccordionComponentTypes = {
+  title: string;
+  description: string;
 };
 
-export type CarouseWrapperTypes = {
-  children: any; //CARE
-};
-
-export const CarouselItem: React.FC<CarouselItemTypes> = ({
-  children,
-  width,
+export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
+  title,
+  description,
 }) => {
-  return (
-    <div className="carousel-item" style={{ width: width }}>
-      {children}
-    </div>
-  );
-};
+  const [setActive, setActiveState] = useState<string>("");
+  const [setHeight, setHeightState] = useState<string>("0px");
+  const [setRotate, setRotateState] = useState<string>("accordion-icon");
 
-export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
-  children,
-}) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const content = useRef<HTMLDivElement>(null);
 
-  const updateIndex = (newIndex: number) => {
-    if (newIndex < 0) {
-      newIndex = React.Children.count(children) - 1;
-    } else if (newIndex >= React.Children.count(children)) {
-      newIndex = 0;
+  function toggleAccordion() {
+    setActiveState(setActive === "" ? "active" : "");
+    if (content.current != null) {
+      setHeightState(
+        setActive === "active" ? "0px" : `${content.current.scrollHeight}px`
+      );
     }
-    setActiveIndex(newIndex);
-  };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!paused) {
-        updateIndex(activeIndex + 1);
-      }
-    }, 3000);
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  });
+    setRotateState(
+      setActive === "active" ? "accordion-icon" : "accordion-icon rotate"
+    );
+  }
 
   return (
-    <div
-      className="carousel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    <div className="accordion-section">
+      <button className={`accordion ${setActive}`} onClick={toggleAccordion}>
+        <p className="accordion-title">{title}</p>
+        <Chevron className={`${setRotate}`} fill={"#777"} />
+      </button>
       <div
-        className="inner"
-        style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+        ref={content}
+        style={{ height: `${setHeight}` }}
+        className="accordion-content"
       >
-        {React.Children.map(children, (child) => {
-          return React.cloneElement(child, { width: "100%" });
-        })}
-      </div>
-      <div className="indicators">
-        {React.Children.map(children, (child, index) => {
-          return (
-            <button
-              className={`${index === activeIndex ? "active" : ""}`}
-              onClick={() => {
-                updateIndex(index);
-              }}
-            ></button>
-          );
-        })}
+        <div className="accordion-text">{description}</div>
       </div>
     </div>
   );
 };
 
-export const Carousel = forwardRef<
+export const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { items: [] };
+    custom: { title: []; description: [] };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -103,11 +71,12 @@ export const Carousel = forwardRef<
   );
   return (
     <div ref={ref} style={props.styles} onClick={onClick}>
-      <CarouselWrapper>
-        {props.custom.items.map((item, i) => (
-          <CarouselItem width="100%">{item}</CarouselItem>
-        ))}
-      </CarouselWrapper>
+      {props.custom.title.map((title, i) => (
+        <AccordionComponent
+          title={title}
+          description={props.custom.description[i]}
+        />
+      ))}
     </div>
   );
 });
@@ -125,14 +94,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    items: "array",
+    title: "array",
+    description: "array",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Carousel" },
+  meta: { key: "Accordion" },
   render: {
-    comp: Carousel,
+    comp: Accordion,
   },
   dev: {
     decorators: [],
@@ -146,7 +116,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [],
+          title: [],
+          description: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -162,10 +133,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Carousel" } },
+  panel: { comp: CommonIcon, props: { name: "Accordion" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Carousel", containerStyle: { padding: "1rem" } },
+    props: { name: "Accordion", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
