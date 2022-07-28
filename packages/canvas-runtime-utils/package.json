@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/canvas-runtime-utils",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -28,7 +28,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime": "^0.0.26",
+    "@atrilabs/canvas-runtime": "^0.0.27",
     "typescript": "^4.7.3"
   }
 }

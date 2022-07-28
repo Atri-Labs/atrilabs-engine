@@ -3,6 +3,8 @@ import asyncio
 from ..utils.run_shell_cmd import run_shell_cmd
 from .. import __version__
 from ..utils.globals import globals
+import signal
+import webbrowser
 
 def port_map(host: str, container: str):
     return host + ":" + container
@@ -51,3 +53,15 @@ def run(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir):
     except Exception as e:
         if e.args[0] != 10:
             print(e)
+
+async def open_editor_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir):
+    child_proc = await open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
+    # terminate docker process if SIGINT, SIGTERM is received
+    def handle_signal(a, b):
+        child_proc.terminate()
+    signal.signal(signal.SIGINT, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+    print("Success! Visit http://localhost:4002 to access the editor.")
+    await asyncio.sleep(2)
+    webbrowser.open("http://localhost:4002", new=0, autoraise=True)
+    await child_proc.wait()

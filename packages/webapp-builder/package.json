@@ -1,17 +1,19 @@
 {
   "name": "@atrilabs/webapp-builder",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "lib/index.js",
+  "bin": "lib/app/app.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,6 +23,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "buildExe": "tsc --project app.tsconfig.json",
+    "packageExe": "yarn run buildExe && pkg --no-bytecode --public-packages '*' --public --out-path ./dist .",
     "build": "build-atri-tool",
     "start": "dev-atri-tool",
     "server": "bootstrap-atri-services",
@@ -33,32 +37,33 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^0.0.26",
-    "@atrilabs/app-design-layer": "^0.0.26",
-    "@atrilabs/app-generator": "^0.0.26",
-    "@atrilabs/app-page-layer": "^0.0.26",
-    "@atrilabs/app-template-layer": "^0.0.26",
-    "@atrilabs/asset-manager-layer": "^0.0.26",
-    "@atrilabs/atri-icon-layer": "^0.0.26",
-    "@atrilabs/base-layer": "^0.0.26",
-    "@atrilabs/canvas-breakpoint-layer": "^0.0.26",
-    "@atrilabs/canvas-runtime": "^0.0.26",
-    "@atrilabs/component-icon-manifest-schema": "^0.0.26",
-    "@atrilabs/component-list-layer": "^0.0.26",
-    "@atrilabs/component-style-layer": "^0.0.26",
-    "@atrilabs/component-tree-to-app": "^0.0.26",
-    "@atrilabs/custom-props-layer": "^0.0.26",
-    "@atrilabs/design-system": "^0.0.26",
-    "@atrilabs/forest": "^0.0.26",
-    "@atrilabs/layer-types": "^0.0.26",
-    "@atrilabs/load-forest-data-layer": "^0.0.26",
-    "@atrilabs/manage-canvas-runtime-layer": "^0.0.26",
-    "@atrilabs/overlay-hints-layer": "^0.0.26",
-    "@atrilabs/publish-app-layer": "^0.0.26",
-    "@atrilabs/react-component-manifest-schema": "^0.0.26",
-    "@atrilabs/react-component-manifests": "^0.0.26",
-    "@atrilabs/scripts": "^0.0.26",
-    "@atrilabs/server-client": "^0.0.26",
+    "@atrilabs/app-design-forest": "^0.0.27",
+    "@atrilabs/app-design-layer": "^0.0.27",
+    "@atrilabs/app-generator": "^0.0.27",
+    "@atrilabs/app-page-layer": "^0.0.27",
+    "@atrilabs/app-template-layer": "^0.0.27",
+    "@atrilabs/asset-manager-layer": "^0.0.27",
+    "@atrilabs/atri-icon-layer": "^0.0.27",
+    "@atrilabs/base-layer": "^0.0.27",
+    "@atrilabs/canvas-breakpoint-layer": "^0.0.27",
+    "@atrilabs/canvas-runtime": "^0.0.27",
+    "@atrilabs/component-icon-manifest-schema": "^0.0.27",
+    "@atrilabs/component-list-layer": "^0.0.27",
+    "@atrilabs/component-style-layer": "^0.0.27",
+    "@atrilabs/component-tree-to-app": "^0.0.27",
+    "@atrilabs/custom-props-layer": "^0.0.27",
+    "@atrilabs/design-system": "^0.0.27",
+    "@atrilabs/forest": "^0.0.27",
+    "@atrilabs/layer-types": "^0.0.27",
+    "@atrilabs/load-forest-data-layer": "^0.0.27",
+    "@atrilabs/manage-canvas-runtime-layer": "^0.0.27",
+    "@atrilabs/overlay-hints-layer": "^0.0.27",
+    "@atrilabs/publish-app-layer": "^0.0.27",
+    "@atrilabs/react-component-manifest-schema": "^0.0.27",
+    "@atrilabs/react-component-manifests": "^0.0.27",
+    "@atrilabs/scripts": "^0.0.27",
+    "@atrilabs/server-client": "^0.0.27",
+    "npm": "^8.15.0",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "typescript": "^4.6.4"
@@ -69,6 +74,16 @@
     "@babel/plugin-transform-react-jsx": "^7.17.3",
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
+    "pkg": "^5.8.0",
     "prettier": "^2.6.2"
+  },
+  "pkg": {
+    "assets": [
+      "lib/**/*",
+      "src/**/*",
+      "node_modules/lowdb/**/*",
+      "node_modules/.cache/@atrilabs/build/manifests",
+      "node_modules/npm/**/*"
+    ]
   }
 }

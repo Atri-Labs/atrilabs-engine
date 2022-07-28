@@ -4,14 +4,13 @@ from atri.errors import NO_CONDA_ENVIRONMENT_FOUND
 from atri.utils.is_pkg_installed import is_conda_installed_sync
 import click
 import asyncio
-from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
+from .commands.open_editor import run as exe_open_editor
 from .commands.connect_local import start_ipc_connection
+from .commands.open_exe import open_exe_wrapper
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
-import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
-import signal
 from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
 from . import supported_virt_types
 import questionary
@@ -109,6 +108,24 @@ def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug
     app_dir = str(Path.cwd())
     exe_open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
 
+@open.command('exe')
+@click.option('--e-port', default="4001", help='port on which event server will be attached')
+@click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
+@click.option('--m-port', default="4003", help='port on which manifest server will be attached')
+@click.option('--p-port', default="4004", help='port on which publish server will be attached')
+@click.option('--d-port', default="4005", help='port on which generate app server will be attached')
+@click.option('--u-port', default="4006", help='port on which ipc server will be attached')
+@click.option('--c-port', default="4007", help='port on which generated python server will be attached')
+@click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def open_exe(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug):
+    """Open up editor in browser using command -
+
+        $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
+    """
+    globals["in_debug_mode"] = not no_debug
+    app_dir = str(Path.cwd())
+    asyncio.run(open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir))
+
 @main.group('connect')
 def connect():
     """This command is intended to connect with ipc server when running locally (not inside docker)
@@ -152,31 +169,20 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
     async def check_req_wrapper():
         ok = await check_requisite()
         return ok
-    async def open_editor_wrapper():
-        child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
-        # terminate docker process if SIGINT, SIGTERM is received
-        def handle_signal(a, b):
-            child_proc.terminate()
-        signal.signal(signal.SIGINT, handle_signal)
-        signal.signal(signal.SIGTERM, handle_signal)
-        print("Success! Visit http://localhost:4002 to access the editor.")
-        await asyncio.sleep(2)
-        webbrowser.open("http://localhost:4002", new=0, autoraise=True)
-        await child_proc.wait()
     async def connect_local_wrapper():
         sio = await start_ipc_connection(u_port, app_dir)
         await sio.wait()
     async def main_wrapper():
         ok = await check_req_wrapper()
         if ok == 0:
-            open_editor_task = asyncio.create_task(
-                open_editor_wrapper()
+            open_exe_task = asyncio.create_task(
+                open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
                 )
             connect_local_task = asyncio.create_task(
                 connect_local_wrapper()
             )
             try:
-                await asyncio.wait([open_editor_task, connect_local_task])
+                await asyncio.wait([open_exe_task, connect_local_task])
             except CancelledError:
                 # socket.io AsyncClient throws CancelledError
                 # closing stderr to prevent showing error

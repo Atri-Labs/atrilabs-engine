@@ -19,9 +19,10 @@ const forestsConfig = {
   ],
 };
 
-const compileAppOutputDir = "node_modules/.targets";
+// path pointing to process.cwd
+const compileAppOutputDir = process.cwd();
 const defaultTemplateDir = "./templates";
-const userTemplateDir = "./node_modules/.targets/atri_templates";
+const userTemplateDir = "atri_templates";
 
 const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
   ? parseInt(process.env["EVENT_SERVER_PORT"])
@@ -75,7 +76,7 @@ module.exports = {
     fileServer: {
       path: require.resolve("@atrilabs/server-client/lib/file-server"),
       options: {
-        dir: path.resolve("lib"),
+        dir: path.resolve(__dirname, "..", "lib"),
         port: FILE_SERVER_PORT,
       },
     },
@@ -114,16 +115,10 @@ module.exports = {
       },
       options: {
         appForestPkgId,
-        outputDir: `${compileAppOutputDir}/atri-app`,
+        outputDir: `${compileAppOutputDir}/atri_app`,
         controllers: {
           python: {
-            dir: path.resolve(
-              __dirname,
-              "..",
-              "node_modules",
-              ".targets",
-              "controllers"
-            ),
+            dir: `${compileAppOutputDir}/controllers`,
             stubGenerators: [
               {
                 modulePath:

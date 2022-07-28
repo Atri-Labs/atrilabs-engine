@@ -2,23 +2,24 @@ import { ToolConfig } from "@atrilabs/core";
 import { AppBuildOptions, PropsGeneratorOutput } from "../../types";
 import path from "path";
 import fs from "fs";
-import { exec } from "child_process";
+import { fork } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
 import { getReactAppTemplateManager } from "../../getReactTemplateManager";
 import { getPageStateAsCompIdMap } from "../../getPageState";
 
 function installDependencies(reactAppRootDest: string) {
   return new Promise<void>((res) => {
-    exec("yarn install", { cwd: reactAppRootDest }, (err, stdout, stderr) => {
+    const runNpmInstallScriptPath = require.resolve("npm");
+    const child_proc = fork(runNpmInstallScriptPath, ["install"], {
+      cwd: reactAppRootDest,
+    });
+    child_proc.on("error", (err) => {
       if (err) {
-        console.log("Installing packages failed with error\n", err);
+        console.log("Build server failed with error\n", err);
       }
-      if (stderr) {
-        console.log("Installing packages stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("Installed packages\n", stdout);
-      }
+    });
+    child_proc.on("close", (code) => {
+      console.log("Generated app's server built with code", code);
       res();
     });
   });
@@ -26,22 +27,24 @@ function installDependencies(reactAppRootDest: string) {
 
 function buildServer(reactAppRootDest: string) {
   return new Promise<void>((res) => {
-    exec(
-      "yarn run buildServer",
-      { cwd: reactAppRootDest },
-      (err, stdout, stderr) => {
-        if (err) {
-          console.log("Build server failed with error\n", err);
-        }
-        if (stderr) {
-          console.log("Build server stderr\n", stderr);
-        }
-        if (stdout) {
-          console.log("Server built\n", stdout);
-        }
-        res();
-      }
+    const serverDestDirectoryPath = path.join(reactAppRootDest, "server");
+    const tscPath = path.join(
+      reactAppRootDest,
+      "node_modules",
+      "typescript",
+      "bin",
+      "tsc"
     );
+    const child_proc = fork(tscPath, { cwd: serverDestDirectoryPath });
+    child_proc.on("error", (err) => {
+      if (err) {
+        console.log("Build server failed with error\n", err);
+      }
+    });
+    child_proc.on("close", (code) => {
+      console.log("Generated app's server built with code", code);
+      res();
+    });
   });
 }
 
