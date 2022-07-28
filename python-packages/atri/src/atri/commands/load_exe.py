@@ -86,6 +86,8 @@ def unzip_downloaded_file():
         zip_ref.extractall(str(extract_destination))
     # rename unzipped content
     Path.rename(extract_destination / get_unzipped_remote_filename(), get_unzipped_host_path())
+    # change permission to 774 (0o represents octal)
+    os.chmod(str(get_unzipped_host_path()), 0o774)
 
 def exe_exists():
     unzipped_exe_path = get_unzipped_host_path()
