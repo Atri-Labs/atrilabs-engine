@@ -106,7 +106,7 @@ def clean_after_download():
     if os.path.exists(downloaded_zip):
         os.remove(str(downloaded_zip))
 
-def load_exe():
+def load_exe_if_not_exists():
     create_atri_dir_if_not_exist()
     if not exe_exists():
         clean_before_download()
