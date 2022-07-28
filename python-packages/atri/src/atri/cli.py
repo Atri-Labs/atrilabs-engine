@@ -7,6 +7,7 @@ import asyncio
 from .commands.open_editor import run as exe_open_editor
 from .commands.connect_local import start_ipc_connection
 from .commands.open_exe import open_exe_wrapper
+from .commands.load_exe import load_exe_if_not_exists
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
 from asyncio.exceptions import CancelledError
@@ -81,6 +82,7 @@ def main(virt_type: Union[str, None], working_env: Union[str, None]):
         set_virtualenv_type(virt_type)
     if working_env != None:
         set_working_env_name(working_env)
+    load_exe_if_not_exists()
 
 @main.group('open')
 def open():
