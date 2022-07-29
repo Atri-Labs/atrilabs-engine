@@ -60,7 +60,7 @@ export const App: React.FC = () => {
   return (
     <div style={styles.outerDiv}>
       {overlayContainer ? (
-        <div style={styles.overlayContainer}>{overlayContainer}</div>
+        <div style={styles.overlayContainer}>{overlayContainer.node}</div>
       ) : null}
       <div style={styles.leftPanel}>
         <div style={styles.logo}>{logoItem ? logoItem : null}</div>

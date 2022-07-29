@@ -11,7 +11,10 @@ import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 
 export type MenuItem = ReactNode | ReactNode[];
 
-export type ContainerItem = ReactNode | ReactNode[];
+export type ContainerItem = {
+  node: ReactNode | ReactNode[];
+  onClose: () => void;
+};
 
 export type TabItem = { header: ReactNode; body: ReactNode; itemName: string };
 

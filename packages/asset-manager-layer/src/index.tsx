@@ -47,7 +47,7 @@ export default function () {
         </div>
       </Menu>
       {showAssetPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={onCrossClicked}>
           <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
         </Container>
       ) : null}

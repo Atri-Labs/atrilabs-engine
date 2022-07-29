@@ -129,12 +129,12 @@ export const BaseContainer: React.FC = () => {
         </div>
         <div style={styles.body} ref={dragZoneRef}>
           <div style={styles.dropContainer}>
-            {dropContainerItem ? dropContainerItem : null}
+            {dropContainerItem ? dropContainerItem.node : null}
           </div>
           <div style={styles.canvasContainer}>
-            {canvasContainerItem ? canvasContainerItem : null}
+            {canvasContainerItem ? canvasContainerItem.node : null}
           </div>
-          {playgroundContainerItem ? playgroundContainerItem : null}
+          {playgroundContainerItem ? playgroundContainerItem.node : null}
         </div>
       </div>
       <div style={styles.rightPart}>

@@ -126,7 +126,7 @@ export default function () {
       </Menu>
 
       {showDropPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={closeContainer}>
           <div style={styles.dropContainerItem}>
             <header style={styles.dropContainerItemHeader}>
               <h4 style={styles.dropContainerItemHeaderH4}>Select Template</h4>

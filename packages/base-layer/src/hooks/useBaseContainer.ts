@@ -3,13 +3,13 @@ import { ContainerItem } from "@atrilabs/core";
 import { baseContainer } from "../exposed";
 
 export const useBaseContainer = () => {
-  const [container, setContainer] = useState<ContainerItem | null>(
-    baseContainer.items()[0]
+  const [container, setContainer] = useState<ContainerItem["node"] | null>(
+    baseContainer.items()[0] ? baseContainer.items()[0]["node"] : null
   );
   useEffect(() => {
-    const { unsubscribe } = baseContainer.listen(({ item, event }) => {
+    const { unsubscribe } = baseContainer.listen(({ node, event }) => {
       if (event === "registered") {
-        setContainer(item);
+        setContainer(node);
       }
     });
     return () => {

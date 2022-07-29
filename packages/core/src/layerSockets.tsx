@@ -19,7 +19,7 @@ const subscribers: {
   };
   containers: {
     [name: string]: ((payload: {
-      item: ContainerItem;
+      node: ReactNode | ReactNode[];
       event: SubscribeEvent;
     }) => void)[];
   };
@@ -101,23 +101,27 @@ export function container(name: string) {
   }
 
   const register = (item: ContainerItem): void => {
-    containerRegistry[name]!.items.push(item);
+    // close previous container item
+    containerRegistry[name]!.items.forEach((item) => item.onClose());
+    // Containers won't remember the history of items they have rendered till now.
+    // Hence, replacing all the contents of items with just one new item.
+    containerRegistry[name]!.items = [item];
     if (subscribers.containers[name]) {
       subscribers.containers[name].forEach((cb) =>
-        cb({ item, event: "registered" })
+        cb({ node: item.node, event: "registered" })
       );
     }
   };
 
-  const unregister = (item: ContainerItem): void => {
+  const unregister = (node: ContainerItem["node"]): void => {
     const foundIndex = containerRegistry[name]!.items.findIndex(
-      (value) => value === item
+      (value) => value.node === node
     );
     if (foundIndex >= 0) {
       containerRegistry[name]!.items.splice(foundIndex, 1);
       if (subscribers.containers[name]) {
         subscribers.containers[name].forEach((cb) =>
-          cb({ item, event: "unregistered" })
+          cb({ node, event: "unregistered" })
         );
       }
     }
@@ -127,7 +131,7 @@ export function container(name: string) {
     const item = containerRegistry[name]!.items.pop();
     if (subscribers.containers[name] && item) {
       subscribers.containers[name].forEach((cb) =>
-        cb({ item, event: "unregistered" })
+        cb({ node: item.node, event: "unregistered" })
       );
     }
   };
@@ -137,7 +141,10 @@ export function container(name: string) {
   };
 
   const listen = (
-    cb: (payload: { item: ContainerItem; event: SubscribeEvent }) => void
+    cb: (payload: {
+      node: ReactNode | ReactNode[];
+      event: SubscribeEvent;
+    }) => void
   ) => {
     if (subscribers.containers[name]) {
       subscribers.containers[name].push(cb);
@@ -223,8 +230,9 @@ export function tab(name: string) {
 }
 
 export type ContainerProps = {
-  children: ReactNode | ReactNode[];
+  children: ReactNode;
   name: string;
+  onClose: () => void;
 };
 
 export const Container: React.FC<ContainerProps> = (props) => {
@@ -232,10 +240,13 @@ export const Container: React.FC<ContainerProps> = (props) => {
     const namedContainer = container(props.name);
     if (Array.isArray(props.children)) {
       props.children.forEach((child) => {
-        namedContainer?.register(child);
+        namedContainer?.register({ node: child, onClose: props.onClose });
       });
     } else {
-      namedContainer?.register(props.children);
+      namedContainer?.register({
+        node: props.children,
+        onClose: props.onClose,
+      });
     }
     return () => {
       if (Array.isArray(props.children)) {

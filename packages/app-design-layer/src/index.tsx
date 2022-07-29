@@ -1,5 +1,5 @@
 import { BaseContainer } from "./BaseContainer";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { BrowserForestManager } from "@atrilabs/core";
 import { Container, Menu } from "@atrilabs/core";
 import { ReactComponent as DesignIcon } from "./assets/design-icon.svg";
@@ -26,6 +26,7 @@ export default function () {
       );
     }
   }, []);
+  const onBaseContainerClose = useCallback(() => {}, []);
   return (
     <>
       <Menu name="BaseHeaderMenu">
@@ -35,7 +36,7 @@ export default function () {
           </IconMenu>
         </div>
       </Menu>
-      <Container name="BaseContainer">
+      <Container name="BaseContainer" onClose={onBaseContainerClose}>
         <BaseContainer />
       </Container>
     </>
