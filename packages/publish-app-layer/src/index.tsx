@@ -7,7 +7,7 @@ import {
   blue600,
   gray500,
 } from "@atrilabs/design-system";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Cross } from "./components/Cross";
 import {
   DeployCompletedInfo,
@@ -45,6 +45,15 @@ export default function () {
   const onCrossClickCb = useCallback(() => {
     setShowPopup(false);
   }, []);
+  // open http://localhost:4005
+  const devWindow = useRef<Window | null>(null);
+  useEffect(() => {
+    if (status.deploy) {
+      if (devWindow.current == null || devWindow.current.closed)
+        devWindow.current = window.open("http://localhost:4005", "_blank");
+      window.focus();
+    }
+  }, [status]);
   return (
     <>
       <Menu name="PublishMenu" order={1}>
