@@ -234,7 +234,7 @@ export default function () {
               <div
                 style={{
                   position: "absolute",
-                  bottom: "-9rem",
+                  top: "2.5rem",
                   right: 0,
                   zIndex: 1,
                   background: gray800,
