@@ -72,4 +72,17 @@ export type CanvasComponentTree = {
 
 export type Position = { top: number; left: number };
 
-export type BoxDimension = { width: number; height: number };
+export type BoxDimension = {
+  // border and padding included
+  width: number;
+  // border and padding included
+  height: number;
+  marginTop: number;
+  marginBottom: number;
+  marginLeft: number;
+  marginRight: number;
+  paddingLeft: number;
+  paddingRight: number;
+  paddingTop: number;
+  paddingBottom: number;
+};
