@@ -78,7 +78,7 @@ export default function () {
   }, []);
   return (
     <>
-      <Menu name="PageMenu">
+      <Menu name="PageMenu" order={0}>
         <div style={styles.iconContainer}>
           <IconMenu onClick={onClick} active={false}>
             <Insert />

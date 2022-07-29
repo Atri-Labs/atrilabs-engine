@@ -9,7 +9,7 @@ import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
  * The runtime entry function must manage the layers as deemed fit.
  */
 
-export type MenuItem = ReactNode | ReactNode[];
+export type MenuItem = { nodes: ReactNode | ReactNode[]; order: number };
 
 export type ContainerItem = {
   node: ReactNode | ReactNode[];

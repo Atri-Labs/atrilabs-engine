@@ -46,7 +46,7 @@ export default function () {
   return (
     <>
       {breakpoint ? <CanvasController breakpoint={breakpoint} /> : null}
-      <Menu name="CanvasMenu">
+      <Menu name="CanvasMenu" order={0}>
         <div style={styles.iconContainer}>
           <IconMenu
             onClick={setDesktop}

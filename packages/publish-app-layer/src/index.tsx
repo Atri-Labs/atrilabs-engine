@@ -30,7 +30,7 @@ export default function () {
   const [showPopup, setShowPopup] = useState(false);
   return (
     <>
-      <Menu name="PublishMenu">
+      <Menu name="PublishMenu" order={1}>
         <div
           style={styles.outerDiv}
           onClick={() => {

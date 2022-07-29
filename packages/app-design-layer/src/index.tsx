@@ -29,7 +29,7 @@ export default function () {
   const onBaseContainerClose = useCallback(() => {}, []);
   return (
     <>
-      <Menu name="BaseHeaderMenu">
+      <Menu name="BaseHeaderMenu" order={0}>
         <div style={{ height: "2.5rem", borderBottom: `1px solid ${gray800}` }}>
           <IconMenu onClick={() => {}}>
             <DesignIcon />

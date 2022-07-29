@@ -5,7 +5,7 @@ import {
   UploadContainer,
   UploadContainerProps,
 } from "./components/upload-container/UploadContainer";
-import { ReactComponent as AI } from "./assets/asset-icon.svg";
+import { ReactComponent as AssetIcon } from "./assets/asset-icon.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -41,9 +41,9 @@ export default function () {
 
   return (
     <>
-      <Menu name="AppMenu">
+      <Menu name="PageMenu" order={2}>
         <div style={styles.iconContainer} onClick={showAssetPanelCb}>
-          <AI style={styles.assetIcon} />
+          <AssetIcon style={styles.assetIcon} />
         </div>
       </Menu>
       {showAssetPanel ? (

@@ -117,7 +117,7 @@ export default function () {
 
   return (
     <>
-      <Menu name="PageMenu">
+      <Menu name="PageMenu" order={1}>
         <div style={styles.iconContainer}>
           <IconMenu onClick={openDropContainer} active={false}>
             <OpenTemplateIcon />
@@ -227,7 +227,7 @@ export default function () {
       ) : null}
 
       {selected ? (
-        <Menu name="PublishMenu">
+        <Menu name="PublishMenu" order={0}>
           <div style={styles.outerDiv} onClickCapture={onCreateTemplateClickCb}>
             Create Template
             {showCreateTemplatePopup ? (

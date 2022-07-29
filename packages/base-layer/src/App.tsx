@@ -67,12 +67,12 @@ export const App: React.FC = () => {
         <div style={styles.menuContainer}>
           <div style={styles.headerMenu}>
             {headerMenuItems.flat().map((Item, index) => {
-              return <React.Fragment key={index}>{Item}</React.Fragment>;
+              return <React.Fragment key={index}>{Item.nodes}</React.Fragment>;
             })}
           </div>
           <div style={styles.footerMenu}>
             {footerMenuItems.flat().map((Item, index) => {
-              return <React.Fragment key={index}>{Item}</React.Fragment>;
+              return <React.Fragment key={index}>{Item.nodes}</React.Fragment>;
             })}
           </div>
         </div>

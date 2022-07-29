@@ -103,26 +103,34 @@ export const BaseContainer: React.FC = () => {
           <div style={styles.leftHeader}>
             <div style={styles.appMenu}>
               {appMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
             <div style={styles.pageMenu}>
               {pageMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
           <div style={styles.middleHeader}>
             <div style={styles.canvasMenu}>
               {canvasMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
           <div style={styles.rightHeader}>
             <div style={styles.publishMenu}>
               {publishMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
