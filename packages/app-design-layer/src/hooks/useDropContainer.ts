@@ -13,6 +13,6 @@ export const useDropContainer = () => {
     return () => {
       unsubscribe();
     };
-  }, [setContainer]);
+  }, []);
   return container;
 };
