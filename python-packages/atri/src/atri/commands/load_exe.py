@@ -39,7 +39,7 @@ def download_zip():
         r.raise_for_status()
         with open(full_filepath_in_host, "wb") as f:
             count = 1
-            chunk_size = 8196
+            chunk_size = 81960
             total_size = int(r.headers["Content-Length"])
             for chunk in r.iter_content(chunk_size=chunk_size):
                 if chunk:
