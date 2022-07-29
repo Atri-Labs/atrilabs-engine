@@ -950,7 +950,8 @@ const keyupListener = (event: KeyboardEvent) => {
   keyUpCbs.forEach((cb) => cb(service.state.context, { type: "keyup", event }));
 };
 subscribe("focus", (context) => {
-  if (context.select?.id) {
+  // on page change, contex.select.id might not exist in canvasComponentStore
+  if (context.select?.id && canvasComponentStore[context.select.id]) {
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keyup",
       keyupListener
@@ -958,7 +959,8 @@ subscribe("focus", (context) => {
   }
 });
 subscribe("blur", (context) => {
-  if (context.select?.id) {
+  // on page change, contex.select.id might not exist in canvasComponentStore
+  if (context.select?.id && canvasComponentStore[context.select.id]) {
     canvasComponentStore[context.select.id].ref.current?.removeEventListener(
       "keyup",
       keyupListener
