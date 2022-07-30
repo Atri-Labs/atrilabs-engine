@@ -7,10 +7,31 @@ import { createReactAppTemplateManager } from "../../react-app-template-manager"
 import { getReactAppTemplateManager } from "../../getReactTemplateManager";
 import { getPageStateAsCompIdMap } from "../../getPageState";
 
-function installDependencies(reactAppRootDest: string) {
+function installDependenciesWithNpm(reactAppRootDest: string) {
   return new Promise<void>((res) => {
     const runNpmInstallScriptPath = require.resolve("npm");
     const child_proc = fork(runNpmInstallScriptPath, ["install"], {
+      cwd: reactAppRootDest,
+      env: {
+        PKG_EXECPATH: "PKG_INVOKE_NODEJS",
+      },
+    });
+    child_proc.on("error", (err) => {
+      if (err) {
+        console.log("Build server failed with error\n", err);
+      }
+    });
+    child_proc.on("close", (code) => {
+      console.log("Generated app's server built with code", code);
+      res();
+    });
+  });
+}
+
+function installDependencies(reactAppRootDest: string) {
+  return new Promise<void>((res) => {
+    const runYarnInstallScriptPath = require.resolve("yarn");
+    const child_proc = fork(runYarnInstallScriptPath, ["install"], {
       cwd: reactAppRootDest,
       env: {
         PKG_EXECPATH: "PKG_INVOKE_NODEJS",
