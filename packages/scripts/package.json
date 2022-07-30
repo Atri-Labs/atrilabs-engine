@@ -31,7 +31,7 @@
   "scripts": {
     "clean": "rimraf build",
     "build": "tsc",
-    "prepublishOnly": "yarn run clean && yarn run build",
+    "prepublishOnly": "yarn run build",
     "test": "jest"
   },
   "bugs": {

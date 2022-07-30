@@ -32,7 +32,7 @@
     "buildManifests": "build-manifest-pkg --freeze",
     "generateApp": "run-atri-target --task generate --target 'Web App'",
     "buildApp": "run-atri-target --task build --target 'Web App'",
-    "prepublishOnly": "yarn run clean && yarn run build"
+    "prepublishOnly": "yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
