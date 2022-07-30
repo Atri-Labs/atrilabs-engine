@@ -12,6 +12,9 @@ function installDependencies(reactAppRootDest: string) {
     const runNpmInstallScriptPath = require.resolve("npm");
     const child_proc = fork(runNpmInstallScriptPath, ["install"], {
       cwd: reactAppRootDest,
+      env: {
+        PKG_EXECPATH: "PKG_INVOKE_NODEJS",
+      },
     });
     child_proc.on("error", (err) => {
       if (err) {

@@ -675,6 +675,10 @@ export function createReactAppTemplateManager(
   }
 
   function flushPatchedPackageJSON() {
+    // Do not write package.json if already exists
+    if (fs.existsSync(paths.reactAppPackageJSONDest)) {
+      return;
+    }
     const reactAppPackageJSONObj = require(reactAppPackageJSON);
     reactAppPackageJSONObj["dependencies"] = {
       ...reactAppPackageJSONObj["dependencies"],
