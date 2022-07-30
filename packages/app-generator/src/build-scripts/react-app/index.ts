@@ -30,7 +30,7 @@ function installDependenciesWithNpm(reactAppRootDest: string) {
 
 function installDependencies(reactAppRootDest: string) {
   return new Promise<void>((res) => {
-    const runYarnInstallScriptPath = require.resolve("yarn");
+    const runYarnInstallScriptPath = require.resolve("yarn/bin/yarn.js");
     const child_proc = fork(runYarnInstallScriptPath, ["install"], {
       cwd: reactAppRootDest,
       env: {
