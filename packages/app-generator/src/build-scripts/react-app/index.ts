@@ -33,9 +33,6 @@ function installDependencies(reactAppRootDest: string) {
     const runYarnInstallScriptPath = require.resolve("yarn/bin/yarn.js");
     const child_proc = fork(runYarnInstallScriptPath, ["install"], {
       cwd: reactAppRootDest,
-      env: {
-        PKG_EXECPATH: "PKG_INVOKE_NODEJS",
-      },
     });
     child_proc.on("error", (err) => {
       if (err) {
