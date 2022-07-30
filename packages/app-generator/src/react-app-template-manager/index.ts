@@ -202,6 +202,9 @@ export function createReactAppTemplateManager(
     const file = path.resolve(paths.reactAppPackageJSON);
     const destDirname = path.resolve(paths.reactAppRootDest);
     const destFilename = path.resolve(paths.reactAppRootDest, "package.json");
+    if (fs.existsSync(destFilename)) {
+      return;
+    }
     if (!fs.existsSync(destDirname)) {
       fs.mkdirSync(destDirname, { recursive: true });
     }
