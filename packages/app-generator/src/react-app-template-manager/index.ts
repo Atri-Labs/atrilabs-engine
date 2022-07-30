@@ -198,24 +198,10 @@ export function createReactAppTemplateManager(
     });
   }
 
-  function copyPackageJSON() {
-    const file = path.resolve(paths.reactAppPackageJSON);
-    const destDirname = path.resolve(paths.reactAppRootDest);
-    const destFilename = path.resolve(paths.reactAppRootDest, "package.json");
-    if (fs.existsSync(destFilename)) {
-      return;
-    }
-    if (!fs.existsSync(destDirname)) {
-      fs.mkdirSync(destDirname, { recursive: true });
-    }
-    fs.writeFileSync(destFilename, fs.readFileSync(file));
-  }
-
   function copyTemplate() {
     copyAppTemplate();
     copyServerTemplate();
     copyOthersToRoot();
-    copyPackageJSON();
     copyAppNodeTemplate();
   }
 
