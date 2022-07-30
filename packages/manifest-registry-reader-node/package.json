@@ -21,8 +21,9 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "tsc",
-    "prepublishOnly": "yarn run build",
+    "prepublishOnly": "yarn run clean && yarn run build",
     "test": "node __tests__/manifest-registry-reader-node.test.js"
   },
   "bugs": {

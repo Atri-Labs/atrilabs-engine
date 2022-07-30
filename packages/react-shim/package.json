@@ -22,8 +22,10 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "tsc",
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "prepublishOnly": "yarn run clean && yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

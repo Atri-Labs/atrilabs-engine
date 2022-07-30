@@ -25,13 +25,14 @@
   "scripts": {
     "buildExe": "tsc --project app.tsconfig.json",
     "packageExe": "yarn run buildExe && pkg --no-bytecode --public-packages '*' --public --out-path ./dist .",
+    "clean": "rimraf lib && rimraf dist",
     "build": "build-atri-tool",
     "start": "dev-atri-tool",
     "server": "bootstrap-atri-services",
     "buildManifests": "build-manifest-pkg --freeze",
     "generateApp": "run-atri-target --task generate --target 'Web App'",
     "buildApp": "run-atri-target --task build --target 'Web App'",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run clean && yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

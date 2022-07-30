@@ -21,8 +21,9 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "build-atri-runtime",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run clean && yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
