@@ -21,7 +21,7 @@ const CanvasRuntime: React.FC<CanvasRuntimeProps> = (props) => {
   return (
     <>
       {props.children}
-      <Container name="Canvas">
+      <Container name="Canvas" onClose={() => {}}>
         <Canvas />
       </Container>
     </>

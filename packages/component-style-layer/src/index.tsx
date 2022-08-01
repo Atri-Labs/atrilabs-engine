@@ -23,7 +23,7 @@ export default function () {
   } = useUploadAssetManager(patchCb);
   return (
     <>
-      {showTab ? (
+      {showTab && id ? (
         <Tab
           name="PropertiesTab"
           body={
@@ -34,6 +34,7 @@ export default function () {
               styles={styles}
               treeOptions={treeOptions}
               openAssetManager={openAssetManager}
+              compId={id}
             />
           }
           header={<TabHeader />}
@@ -41,7 +42,7 @@ export default function () {
         />
       ) : null}
       {showAssetPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={onCrossClicked}>
           <UploadContainer
             modes={modes}
             onCrossClicked={onCrossClicked}

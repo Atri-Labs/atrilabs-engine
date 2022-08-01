@@ -69,6 +69,14 @@ export interface ClientToServerEvents {
   ) => void;
   uploadAssets: BrowserClient["uploadAssets"];
   getAssetsInfo: BrowserClient["getAssetsInfo"];
+
+  // template related events
+  getTemplateInfo: BrowserClient["getTemplateInfo"];
+  getTemplateList: BrowserClient["getTemplateList"];
+  createTemplate: BrowserClient["createTemplate"];
+  overwriteTemplate: BrowserClient["overwriteTemplate"];
+  deleteTemplate: BrowserClient["deleteTemplate"];
+  getTemplateEvents: BrowserClient["getTemplateEvents"];
 }
 
 export interface InterServerEvents {}

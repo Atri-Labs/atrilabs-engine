@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/core",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "This package contains code for compilation and bundling of atrilabs package.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,6 +21,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "tsc",
     "prepublishOnly": "yarn run build"
   },
@@ -37,7 +38,7 @@
     "react-dom": "18.0.0"
   },
   "dependencies": {
-    "@atrilabs/forest": "^0.0.23",
+    "@atrilabs/forest": "^0.0.35",
     "uuid": "^8.3.2"
   }
 }

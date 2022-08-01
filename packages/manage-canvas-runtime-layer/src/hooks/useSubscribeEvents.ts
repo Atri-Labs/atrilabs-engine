@@ -100,7 +100,11 @@ function createComponentFromNode(node: TreeNode) {
         // add catchers
         // accept child catcher
         const componentCatcher: Catcher = (dragData, _loc) => {
-          if (dragData.type === "component" || dragData.type === "redrop") {
+          if (
+            dragData.type === "component" ||
+            dragData.type === "redrop" ||
+            dragData.type === "template"
+          ) {
             return true;
           }
           return false;

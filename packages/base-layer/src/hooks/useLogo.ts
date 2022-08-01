@@ -3,13 +3,13 @@ import { ContainerItem } from "@atrilabs/core";
 import { logoContainer } from "../exposed";
 
 export const useLogo = () => {
-  const [logoItem, setLogoItem] = useState<ContainerItem | null>(
-    logoContainer.items()[0]
+  const [logoItem, setLogoItem] = useState<ContainerItem["node"] | null>(
+    logoContainer.items()[0] ? logoContainer.items()[0]["node"] : null
   );
   useEffect(() => {
-    const { unsubscribe } = logoContainer.listen(({ item, event }) => {
+    const { unsubscribe } = logoContainer.listen(({ node, event }) => {
       if (event === "registered") {
-        setLogoItem(item);
+        setLogoItem(node);
       }
     });
     return () => {

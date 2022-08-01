@@ -3,6 +3,7 @@ import {
   runTaskQueue,
   createTaskQueue,
   createIpcClientSocket,
+  watchControllersDir,
 } from "./server-utils";
 import {
   ClientToServerEvents,
@@ -34,6 +35,8 @@ export default function startPublishServer(
   const ipcClientSocket = createIpcClientSocket(
     toolConfig["services"]["ipcServer"].options.port || 4006
   );
+
+  watchControllersDir(toolConfig, ipcClientSocket);
 
   io.on("connection", (socket) => {
     console.log("[PUBLISH_SERVER] Socket connected", socket.id);

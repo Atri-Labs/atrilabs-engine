@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/manifest-shims",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -19,7 +19,9 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc"
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "prepublishOnly": "yarn run build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

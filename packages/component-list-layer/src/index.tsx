@@ -73,12 +73,12 @@ export default function () {
 
   const components = useManifestRegistry();
 
-  const startDargCb = useCallback((...args: Parameters<typeof startDrag>) => {
+  const startDragCb = useCallback((...args: Parameters<typeof startDrag>) => {
     startDrag(...args);
   }, []);
   return (
     <>
-      <Menu name="PageMenu">
+      <Menu name="PageMenu" order={0}>
         <div style={styles.iconContainer}>
           <IconMenu onClick={onClick} active={false}>
             <Insert />
@@ -86,7 +86,7 @@ export default function () {
         </div>
       </Menu>
       {showInsertPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={closeContainer}>
           <div style={styles.dropContainerItem}>
             <header style={styles.dropContainerItemHeader}>
               <h4 style={styles.dropContainerItemHeaderH4}>Insert Component</h4>
@@ -103,7 +103,7 @@ export default function () {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      startDargCb(comp.component.drag, {
+                      startDragCb(comp.component.drag, {
                         type: "component",
                         data: {
                           key: comp.component.renderSchema.meta.key,

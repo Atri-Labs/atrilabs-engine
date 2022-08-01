@@ -1,6 +1,6 @@
 import asyncio
 from ..utils.printd import printd
-from ..errors import DOCKER_NOT_INSTALLED, SELECTED_VIRTENV_NOT_INSTALLED, PYTHON_NOT_INSTALLED, PIP_NOT_INSTALLED
+from ..errors import SELECTED_VIRTENV_NOT_INSTALLED, PYTHON_NOT_INSTALLED, PIP_NOT_INSTALLED
 from ..utils.is_pkg_installed import is_selected_virtenv_installed
 from ..find_app_root import get_virtualenv_type
 from ..utils.conda_utils import is_pkg_installed_in_env, get_working_env_name
@@ -28,10 +28,7 @@ async def check_selected_virtenv_is_installed():
     return await is_selected_virtenv_installed()
 
 async def check_requisite():
-    is_docker_installed = await check_docker_installed()
     is_selected_virtenv_installed = await check_selected_virtenv_is_installed()
-    if not is_docker_installed:
-        return DOCKER_NOT_INSTALLED
     if not is_selected_virtenv_installed:
         return SELECTED_VIRTENV_NOT_INSTALLED
     if get_virtualenv_type() == "conda":

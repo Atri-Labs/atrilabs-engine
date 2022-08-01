@@ -9,7 +9,7 @@ export type HintOverlay = {
   comp: React.ReactNode;
   box: (comp: { dimension: BoxDimension }) => {
     position: Position;
-    dimension: BoxDimension;
+    dimension: { width: number; height: number };
   };
 };
 
@@ -50,8 +50,29 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
         const comp = canvasComponentStore[props.compId].ref.current!;
         const bodyCoords = getCoords(body);
         const compCoords = getCoords(comp);
+        const {
+          marginBottom,
+          marginTop,
+          marginLeft,
+          marginRight,
+          paddingLeft,
+          paddingRight,
+          paddingTop,
+          paddingBottom,
+        } = getComputedStyle(comp);
         const box = props.box({
-          dimension: { height: compCoords.height, width: compCoords.width },
+          dimension: {
+            height: compCoords.height,
+            width: compCoords.width,
+            marginBottom: parseFloat(marginBottom),
+            marginLeft: parseFloat(marginLeft),
+            marginRight: parseFloat(marginRight),
+            marginTop: parseFloat(marginTop),
+            paddingBottom: parseFloat(paddingBottom),
+            paddingTop: parseFloat(paddingTop),
+            paddingLeft: parseFloat(paddingLeft),
+            paddingRight: parseFloat(paddingRight),
+          },
         });
         setBox(box);
         setBodyPosition({ top: bodyCoords.top, left: bodyCoords.left });

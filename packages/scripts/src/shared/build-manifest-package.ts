@@ -180,9 +180,8 @@ export async function buildManifestPackage(
       pkg,
       manifestDir: buildInfo.dir,
     });
+    // NOTE: freeze flag has to be changed manually in the cache.json file in a hit case
     if (hit) {
-      // freeze flag might have to be updated from false to true and vice versa
-      updateBuildCache(buildCacheFile, buildInfo.dir, pkg, freeze);
       manifestPkgBundles.push({
         src: fs.readFileSync(path.resolve(finalBuild, "bundle.js")).toString(),
         scriptName,

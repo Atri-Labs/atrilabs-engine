@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/layer-types",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "Contains types for globally available identifiers in a layer package",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -19,9 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
+  "scripts": {},
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },

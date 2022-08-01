@@ -1,21 +1,23 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
 import sys
+from atri.errors import NO_CONDA_ENVIRONMENT_FOUND
+from atri.utils.is_pkg_installed import is_conda_installed_sync
 import click
 import asyncio
-from .commands.open_editor import run as exe_open_editor, open_editor as open_editor_fn
-from .commands.connect_local import run as exe_connect_local, start_ipc_connection
+from .commands.open_editor import run as exe_open_editor
+from .commands.connect_local import start_ipc_connection
+from .commands.open_exe import open_exe_wrapper
+from .commands.load_exe import load_exe_if_not_exists
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
-import webbrowser
 from asyncio.exceptions import CancelledError
 from .utils.printd import printd
-import signal
 from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
 from . import supported_virt_types
 import questionary
 from pathlib import Path
-from .utils.conda_utils import get_conda_env_list, get_working_env_name, set_working_env_name, get_active_env_name, is_pkg_installed_in_env
-from typing import Union
+from .utils.conda_utils import get_conda_env_list, set_working_env_name, get_active_env_name
+from typing import List, Union
 from .utils.handle_error import error_to_message
 
 find_and_set_app_directory()
@@ -48,12 +50,20 @@ class DefaultEnvNameQuestion(click.Option):
         active_env_name = get_active_env_name(str(Path.cwd()))
         if active_env_name != "base":
             return active_env_name
+        if len(self.type.choices) == 0:
+            print("Please create a conda environment first.")
+            exit(NO_CONDA_ENVIRONMENT_FOUND)
         val = questionary.select(self.prompt, choices=self.type.choices).unsafe_ask()
         return val
 
+def get_conda_env_list_if_conda_installed() -> List[str]:
+    if is_conda_installed_sync():
+        return get_conda_env_list(str(Path.cwd()))
+    return []
+
 @click.group()
 @click.option("--virt-type", type=click.Choice(supported_virt_types, case_sensitive=False), prompt="Select virtual environment type", cls=VirtTypeQuestion, is_eager=True)
-@click.option("--working-env", type=click.Choice(get_conda_env_list(str(Path.cwd())), case_sensitive=False), prompt="Select name of the conda virtual env", cls=DefaultEnvNameQuestion)
+@click.option("--working-env", type=click.Choice(get_conda_env_list_if_conda_installed(), case_sensitive=False), prompt="Select name of the conda virtual env", cls=DefaultEnvNameQuestion)
 def main(virt_type: Union[str, None], working_env: Union[str, None]):
     """Open up the visual editor:
 
@@ -72,6 +82,7 @@ def main(virt_type: Union[str, None], working_env: Union[str, None]):
         set_virtualenv_type(virt_type)
     if working_env != None:
         set_working_env_name(working_env)
+    load_exe_if_not_exists()
 
 @main.group('open')
 def open():
@@ -98,6 +109,24 @@ def open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug
     globals["in_debug_mode"] = not no_debug
     app_dir = str(Path.cwd())
     exe_open_editor(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
+
+@open.command('exe')
+@click.option('--e-port', default="4001", help='port on which event server will be attached')
+@click.option('--w-port', default="4002", help='port on which file server will be attached to serve static files')
+@click.option('--m-port', default="4003", help='port on which manifest server will be attached')
+@click.option('--p-port', default="4004", help='port on which publish server will be attached')
+@click.option('--d-port', default="4005", help='port on which generate app server will be attached')
+@click.option('--u-port', default="4006", help='port on which ipc server will be attached')
+@click.option('--c-port', default="4007", help='port on which generated python server will be attached')
+@click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def open_exe(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug):
+    """Open up editor in browser using command -
+
+        $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
+    """
+    globals["in_debug_mode"] = not no_debug
+    app_dir = str(Path.cwd())
+    asyncio.run(open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir))
 
 @main.group('connect')
 def connect():
@@ -142,31 +171,20 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
     async def check_req_wrapper():
         ok = await check_requisite()
         return ok
-    async def open_editor_wrapper():
-        child_proc = await open_editor_fn(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
-        # terminate docker process if SIGINT, SIGTERM is received
-        def handle_signal(a, b):
-            child_proc.terminate()
-        signal.signal(signal.SIGINT, handle_signal)
-        signal.signal(signal.SIGTERM, handle_signal)
-        print("Success! Visit http://localhost:4002 to access the editor.")
-        await asyncio.sleep(2)
-        webbrowser.open("http://localhost:4002", new=0, autoraise=True)
-        await child_proc.wait()
     async def connect_local_wrapper():
         sio = await start_ipc_connection(u_port, app_dir)
         await sio.wait()
     async def main_wrapper():
         ok = await check_req_wrapper()
         if ok == 0:
-            open_editor_task = asyncio.create_task(
-                open_editor_wrapper()
+            open_exe_task = asyncio.create_task(
+                open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir)
                 )
             connect_local_task = asyncio.create_task(
                 connect_local_wrapper()
             )
             try:
-                await asyncio.wait([open_editor_task, connect_local_task])
+                await asyncio.wait([open_exe_task, connect_local_task])
             except CancelledError:
                 # socket.io AsyncClient throws CancelledError
                 # closing stderr to prevent showing error

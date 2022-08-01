@@ -9,9 +9,12 @@ import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
  * The runtime entry function must manage the layers as deemed fit.
  */
 
-export type MenuItem = ReactNode | ReactNode[];
+export type MenuItem = { nodes: ReactNode | ReactNode[]; order: number };
 
-export type ContainerItem = ReactNode | ReactNode[];
+export type ContainerItem = {
+  node: ReactNode | ReactNode[];
+  onClose: () => void;
+};
 
 export type TabItem = { header: ReactNode; body: ReactNode; itemName: string };
 
@@ -124,6 +127,12 @@ export type ToolConfig = {
     // ex. - node_modules/.targets/assets
     assetsDir: string;
   };
+  templateManager: {
+    // directories that have packaged templates
+    defaultDirs?: string[];
+    // directories that have templates created by user
+    dirs?: string[];
+  };
 };
 
 // type for manifest.schema.config.js
@@ -165,6 +174,14 @@ export type EventSubscriber = (
   pageId: string,
   event: AnyEvent
 ) => void;
+
+export interface TemplateInfo {
+  userDirs: string[];
+  defaultDirs: string[];
+}
+
+// array of filenames without extension
+export type TemplateNames = string[];
 
 export type BrowserClient = {
   getMeta(forestPkgId: string, onData: (meta: any) => void): void;
@@ -236,6 +253,33 @@ export type BrowserClient = {
     callback: (assets: {
       [name: string]: { url: string; mime: string };
     }) => void
+  ) => void;
+  getTemplateInfo: (callback: (info: TemplateInfo) => void) => void;
+  getTemplateList: (
+    dir: string,
+    callback: (names: TemplateNames) => void
+  ) => void;
+  createTemplate: (
+    dir: string,
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
+  ) => void;
+  overwriteTemplate: (
+    dir: string,
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
+  ) => void;
+  deleteTemplate: (
+    dir: string,
+    name: string,
+    callback: (success: boolean) => void
+  ) => void;
+  getTemplateEvents: (
+    dir: string,
+    name: string,
+    callback: (events: AnyEvent[]) => void
   ) => void;
 };
 

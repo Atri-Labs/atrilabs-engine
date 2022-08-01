@@ -1,10 +1,12 @@
 import { ToolConfig } from "@atrilabs/core";
-import { ChildProcess, exec } from "child_process";
+import { ChildProcess, fork } from "child_process";
 import { io, Socket } from "socket.io-client";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "../ipc-server/types";
+import path from "path";
+import chokidar from "chokidar";
 
 export type IPCClientSocket = Socket<
   ServerToClientEvents,
@@ -65,22 +67,25 @@ type FnQueue = ((
 async function generateApp(_toolConfig: ToolConfig) {
   console.log("[publish_app_server] generate app called");
   return new Promise<void>((res, rej) => {
-    const child_proc = exec("yarn run generateApp", (err, stdout, stderr) => {
-      if (err) {
-        console.log("[publish_app_server] Generate app error\n", err);
-      }
-      if (stderr) {
-        console.log("[publish_app_server] Generate app stderr\n", stderr);
-      }
-      if (stdout) {
-        console.log("[publish_app_server] Generate app stdout\n", stdout);
-      }
-      if (child_proc.exitCode != 0) {
-        console.log("[publish_app_server] return code", child_proc.exitCode);
-        rej();
-      } else {
-        res();
-      }
+    // TODO: Should we run it by importing the generate module
+    // like in buildApp function below?
+    const generateAppScriptPath = require.resolve(
+      "@atrilabs/scripts/build/tasks/run-target/index.js"
+    );
+    const child_proc = fork(generateAppScriptPath, [
+      "--task",
+      "generate",
+      "--target",
+      "Web App",
+    ]);
+    child_proc.on("close", (code) => {
+      console.log("[server-utils] generateApp received code", code);
+      if (code === 0) res();
+      else rej();
+    });
+    child_proc.on("error", (err) => {
+      console.log("[server-utils] generateApp err\n", err);
+      rej();
     });
   });
 }
@@ -102,6 +107,8 @@ function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
       if (success) {
         console.log("python build success");
         const target = toolConfig.targets[0]!;
+        // TODO: Should we fork a process from @atrilabs/scripts instead of importing
+        // like in the generateApp function above?
         import(target.tasksHandler.modulePath)
           .then(async (mod) => {
             if (
@@ -202,34 +209,55 @@ async function deployApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
     const controller = new AbortController();
     const { signal } = controller;
     devControllers.push(controller);
-    devProc = exec("yarn run dev", { cwd: outputDir, signal });
+    const watchServerPath = path.resolve(
+      outputDir,
+      "node_modules/@atrilabs/app-scripts/lib/tasks/start-dev-server.js"
+    );
+    try {
+      devProc = fork(watchServerPath, {
+        signal,
+        cwd: outputDir,
+        stdio: ["pipe", "pipe", "pipe", "ipc"],
+      });
+    } catch (err) {
+      console.log("Error while starting watch server for app\n", err);
+    }
     devProc.on("error", (err) => {
       if (err.name !== "AbortError") {
         console.log("[dev] Process Error\n", err);
       }
     });
     devProc.stdout?.on("data", (data) => {
-      console.log("[dev]\n", data);
+      console.log("[dev]\n", data.toString());
     });
     devProc.stderr?.on("data", (data) => {
-      console.log("[dev] Error\n", data);
+      console.log("[dev] Error\n", `${data}`);
     });
   }
   if (devServerProc === undefined) {
     const controller = new AbortController();
     const { signal } = controller;
     devControllers.push(controller);
-    devServerProc = exec("yarn run devServer", { cwd: outputDir, signal });
+    const appServerScriptPath = path.resolve(outputDir, "dist/server/index.js");
+    try {
+      devServerProc = fork(appServerScriptPath, ["--disable-cache"], {
+        signal,
+        cwd: outputDir,
+        stdio: ["pipe", "pipe", "pipe", "ipc"],
+      });
+    } catch (err) {
+      console.log("Error while starting dev server for app\n", err);
+    }
     devServerProc.on("error", (err) => {
       if (err.name !== "AbortError") {
         console.log("[devServer] Process Error\n", err);
       }
     });
     devServerProc.stdout?.on("data", (data) => {
-      console.log("[devServer]\n", data);
+      console.log("[devServer]\n", data.toString());
     });
     devServerProc.stderr?.on("data", (data) => {
-      console.log("[devServer] Error\n", data);
+      console.log("[devServer] Error\n", `${data}`);
     });
   }
   // wait for kill signals
@@ -290,4 +318,32 @@ export function runTaskQueue(
   }
   let currFnIndex = 0;
   runFn(fnQueue, currFnIndex);
+}
+
+export function watchControllersDir(
+  toolConfig: ToolConfig,
+  socket: IPCClientSocket
+) {
+  // watch python controllers
+  if (
+    toolConfig.targets[0] &&
+    toolConfig.targets[0].options &&
+    toolConfig.targets[0].options.controllers &&
+    toolConfig.targets[0].options.controllers["python"] &&
+    toolConfig.targets[0].options.controllers["python"]["dir"]
+  ) {
+    const pythonControllersDir =
+      toolConfig.targets[0]?.options.controllers["python"]["dir"];
+
+    // watch only main.py files in routes directory
+    const watcher = chokidar.watch(
+      path.join(pythonControllersDir, "routes") + "/**/*"
+    );
+    watcher.on("change", (path) => {
+      if (path.match("main.py")) {
+        console.log("Change in main.py file:", path);
+        buildApp(toolConfig, socket);
+      }
+    });
+  }
 }

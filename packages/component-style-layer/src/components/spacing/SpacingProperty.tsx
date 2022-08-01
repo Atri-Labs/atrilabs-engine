@@ -13,6 +13,7 @@ import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { assign, createMachine } from "xstate";
 import { useMachine } from "@xstate/react";
+import { useMarginOverlay } from "./hooks/useMarginOverlay";
 export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -451,11 +452,23 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       });
   }, [state.context, state.value, props]);
 
+  // show margin overlays when in draggin state
+  const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay();
+  useEffect(() => {
+    if (state.value === dragging) {
+      // display overlay
+      createMarginOverlay(props.compId);
+    }
+    if (state.value !== dragging) {
+      // clean overlay
+      removeMarginOverlay();
+    }
+  }, [props, state.value, createMarginOverlay, removeMarginOverlay]);
+
   const handleChangeMarginTop = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { marginTop: parseInt(attrValue) } },
     });
@@ -463,8 +476,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangeMarginRight = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { marginRight: parseInt(attrValue) } },
     });
@@ -472,8 +484,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangeMarginLeft = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { marginLeft: parseInt(attrValue) } },
     });
@@ -481,8 +492,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangeMarginBottom = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { marginBottom: parseInt(attrValue) } },
     });
@@ -491,8 +501,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePaddingTop = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { paddingTop: parseInt(attrValue) } },
     });
@@ -500,8 +509,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePaddingRight = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { paddingRight: parseInt(attrValue) } },
     });
@@ -509,8 +517,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePaddingLeft = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { paddingLeft: parseInt(attrValue) } },
     });
@@ -518,8 +525,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const handleChangePaddingBottom = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
-    let attrValue = event.target.value;
+    const attrValue = event.target.value;
     props.patchCb({
       property: { styles: { paddingBottom: parseInt(attrValue) } },
     });

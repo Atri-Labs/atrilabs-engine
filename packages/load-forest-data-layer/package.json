@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/load-forest-data-layer",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,6 +21,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "build-atri-layer",
     "prepublishOnly": "yarn run build"
   },
@@ -28,11 +29,11 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.23",
-    "@atrilabs/design-system": "^0.0.23",
-    "@atrilabs/layer-types": "^0.0.23",
-    "@atrilabs/scripts": "^0.0.23",
-    "eslint-plugin-atrilabs": "^0.0.23",
+    "@atrilabs/core": "^0.0.35",
+    "@atrilabs/design-system": "^0.0.35",
+    "@atrilabs/layer-types": "^0.0.35",
+    "@atrilabs/scripts": "^0.0.35",
+    "eslint-plugin-atrilabs": "^0.0.35",
     "typescript": "4.6.3"
   },
   "devDependencies": {

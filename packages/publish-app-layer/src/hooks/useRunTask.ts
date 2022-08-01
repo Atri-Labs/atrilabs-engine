@@ -6,10 +6,20 @@ const socket = io(server_addr);
 
 export const useRunTask = () => {
   const [inProgress, setInProgress] = useState(false);
-  const [numTasksLeft, setNumTasksLeft] = useState<number | null>(null);
+  const [lastRunStatus, setLastRunStatus] = useState<{
+    generate: boolean;
+    build: boolean;
+    deploy: boolean;
+  } | null>(null);
+  const [status, setStatus] = useState({
+    generate: false,
+    build: false,
+    deploy: false,
+  });
   const callRunTaskApi = useCallback(() => {
     if (!inProgress) {
       setInProgress(true);
+      setStatus({ generate: false, build: false, deploy: false });
       socket.emit(
         "runTasks",
         "generate",
@@ -18,8 +28,6 @@ export const useRunTask = () => {
           console.log("taskId", taskId);
           if (taskId === null) {
             setInProgress(false);
-          } else {
-            setNumTasksLeft(taskQueue.length);
           }
         }
       );
@@ -35,18 +43,35 @@ export const useRunTask = () => {
         _taskQueue: string[],
         taskFailed?: boolean
       ) => {
+        const status = { generate: false, build: false, deploy: false };
+        if (num_tasks_left === 3) {
+          setStatus(status);
+        }
+        if (num_tasks_left === 2) {
+          status.generate = true;
+          setStatus(status);
+        }
+        if (num_tasks_left === 1) {
+          status.generate = true;
+          status.build = true;
+          setStatus(status);
+        }
+        // task can either complete or fail
+        if (num_tasks_left === 0) {
+          setInProgress(false);
+          status.generate = true;
+          status.build = true;
+          status.deploy = true;
+          setStatus(status);
+          setLastRunStatus(status);
+        }
         if (taskFailed) {
           setInProgress(false);
-          setNumTasksLeft(null);
-        } else if (num_tasks_left === 0) {
-          setInProgress(false);
-          setNumTasksLeft(num_tasks_left);
-        } else {
-          setNumTasksLeft(num_tasks_left);
+          setStatus(status);
+          setLastRunStatus(status);
         }
-        console.log(num_tasks_left);
       }
     );
   }, []);
-  return { callRunTaskApi, inProgress, numTasksLeft };
+  return { callRunTaskApi, inProgress, lastRunStatus, status };
 };

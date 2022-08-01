@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-design-forest",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -20,6 +20,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "tsc",
     "prepublishOnly": "yarn run build"
   },
@@ -27,6 +28,6 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/forest": "^0.0.23"
+    "@atrilabs/forest": "^0.0.35"
   }
 }
