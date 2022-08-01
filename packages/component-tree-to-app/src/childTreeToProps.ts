@@ -45,6 +45,10 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
       for (let j = 0; j < refIds.length; j++) {
         // add props
         const refId = refIds[j]!;
+        // component might have been deleted
+        if (componentTree.nodes[refId] === undefined) {
+          continue;
+        }
         const childId = tree.links[refId]!.childId;
         const childNode = nodes[childId]!;
         if (childNode.state && childNode.state["property"]) {
