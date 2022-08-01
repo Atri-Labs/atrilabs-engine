@@ -6,6 +6,7 @@ import {
   ServerToClientEvents,
 } from "../ipc-server/types";
 import path from "path";
+import chokidar from "chokidar";
 
 export type IPCClientSocket = Socket<
   ServerToClientEvents,
@@ -317,4 +318,32 @@ export function runTaskQueue(
   }
   let currFnIndex = 0;
   runFn(fnQueue, currFnIndex);
+}
+
+export function watchControllersDir(
+  toolConfig: ToolConfig,
+  socket: IPCClientSocket
+) {
+  // watch python controllers
+  if (
+    toolConfig.targets[0] &&
+    toolConfig.targets[0].options &&
+    toolConfig.targets[0].options.controllers &&
+    toolConfig.targets[0].options.controllers["python"] &&
+    toolConfig.targets[0].options.controllers["python"]["dir"]
+  ) {
+    const pythonControllersDir =
+      toolConfig.targets[0]?.options.controllers["python"]["dir"];
+
+    // watch only main.py files in routes directory
+    const watcher = chokidar.watch(
+      path.join(pythonControllersDir, "routes") + "/**/*"
+    );
+    watcher.on("change", (path) => {
+      if (path.match("main.py")) {
+        console.log("Change in main.py file:", path);
+        buildApp(toolConfig, socket);
+      }
+    });
+  }
 }
