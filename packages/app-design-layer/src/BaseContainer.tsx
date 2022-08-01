@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { gray700, gray800, gray900 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
@@ -96,6 +96,11 @@ export const BaseContainer: React.FC = () => {
   const dragZoneRef = useRef<HTMLDivElement>(null);
   attachRef("Dragzone", dragZoneRef);
   const playgroundContainerItem = usePlaygroundContainer();
+  useEffect(() => {
+    if (propertyTabItems.length < selectedTab) {
+      setSelectedTab(0);
+    }
+  }, [propertyTabItems, selectedTab]);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
