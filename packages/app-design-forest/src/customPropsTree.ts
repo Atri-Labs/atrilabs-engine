@@ -1,6 +1,15 @@
 export type CustomPropsTreeOptions = {
   dataTypes: {
-    [propName: string]: "text" | "number" | "large_text" | "static_asset" | "boolean" | "array" | "color";
+    [propName: string]:
+      | "text"
+      | "number"
+      | "large_text"
+      | "static_asset"
+      | "boolean"
+      | "array"
+      | "color"
+      | "array_boolean"
+      | "array_number";
   };
 };
 
