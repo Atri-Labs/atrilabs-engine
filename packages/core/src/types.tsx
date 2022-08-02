@@ -116,7 +116,11 @@ export type ToolConfig = {
    * This client will be responsible to manage manifestRegistry
    * by communicating with manifestServer
    */
-  manifestClient: { path: string };
+  manifestClient: {
+    path: string;
+    // devPath is the client to be used for development of components
+    devPath: string;
+  };
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
   assetManager: {

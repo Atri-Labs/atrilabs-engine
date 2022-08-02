@@ -167,6 +167,7 @@ module.exports = {
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {
     path: require.resolve("@atrilabs/server-client/lib/manifest/client"),
+    devPath: require.resolve("@atrilabs/server-client/lib/manifest/devClient"),
   },
   manifestSchema: [
     { pkg: "@atrilabs/component-icon-manifest-schema" },
