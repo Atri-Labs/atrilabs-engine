@@ -7,12 +7,14 @@ import { Boolean } from "./components/boolean/Boolean";
 import { LargeText } from "./components/large-text/LargeText";
 import { ListField } from "./components/list/ListField";
 import { Number } from "./components/number/Number";
+import { BooleanList } from "./components/boolean-list/BooleanList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
   container: {
     display: "flex",
     flexDirection: "column",
+    padding: "1rem",
   },
 
   // alias container
@@ -48,6 +50,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return <ListField {...props} propName={propName} key={propName} />;
         if (propType === "number")
           return <Number {...props} propName={propName} key={propName} />;
+        if (propType === "array_boolean")
+          return <BooleanList {...props} propName={propName} key={propName} />;
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>
