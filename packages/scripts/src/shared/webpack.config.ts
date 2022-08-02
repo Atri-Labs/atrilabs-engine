@@ -294,7 +294,7 @@ export default function createWebpackConfig(
         }),
     ].filter(Boolean),
     resolve: {
-      extensions: [".js", ".jsx"],
+      extensions: [".js", ".jsx", ".ts", ".tsx"],
     },
   };
   return webpackConfig;
