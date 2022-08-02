@@ -13,42 +13,39 @@ import "./Accordion.css";
 export type AccordionComponentTypes = {
   title: string;
   description: string;
+  open: boolean;
+  onTitleClick: () => void;
 };
 
 export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   title,
   description,
+  open,
+  onTitleClick,
 }) => {
-  const [setActive, setActiveState] = useState<string>("");
-  const [setHeight, setHeightState] = useState<string>("0px");
-  const [setRotate, setRotateState] = useState<string>("accordion-icon");
-
   const content = useRef<HTMLDivElement>(null);
-
-  function toggleAccordion() {
-    setActiveState(setActive === "" ? "active" : "");
-    if (content.current != null) {
-      setHeightState(
-        setActive === "active" ? "0px" : `${content.current.scrollHeight}px`
-      );
-    }
-
-    setRotateState(
-      setActive === "active" ? "accordion-icon" : "accordion-icon rotate"
-    );
-  }
 
   return (
     <div className="accordion-section">
-      <button className={`accordion ${setActive}`} onClick={toggleAccordion}>
-        <Chevron className={`${setRotate}`} fill={"#777"} />
+      <button
+        className={`accordion ${open ? "active" : ""}`}
+        onClick={() => {
+          onTitleClick();
+        }}
+      >
+        <Chevron
+          className={`${open ? "accordion-icon rotate" : "accordion-icon"}`}
+          fill={"#777"}
+        />
         <p className="accordion-title" style={{ marginLeft: "1rem" }}>
           {title}
         </p>
       </button>
       <div
         ref={content}
-        style={{ height: `${setHeight}` }}
+        style={{
+          height: `${open ? content.current?.scrollHeight + "px" : "0px"}`,
+        }}
         className="accordion-content"
       >
         <div className="accordion-text">{description}</div>
@@ -61,23 +58,23 @@ export const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string[]; description: string[] };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { title: string[]; description: string[]; open: boolean[] };
+    onTitleClick: (open: boolean[]) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
   return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
+    <div ref={ref} style={props.styles}>
       {props.custom.title.map((title, i) => (
         <AccordionComponent
           key={i}
           title={title}
           description={props.custom.description[i]}
+          onTitleClick={() => {
+            const open = [...props.custom.open];
+            open[i] = !open[i];
+            props.onTitleClick(open);
+          }}
+          open={props.custom.open[i]}
         />
       ))}
     </div>
@@ -88,8 +85,8 @@ export const DevAccordian = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string[]; description: string[] };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { title: string[]; description: string[]; open: boolean[] };
+    onTitleClick: (open: boolean[]) => void;
   }
 >((props, ref) => {
   const modifiedTitleArray =
@@ -98,12 +95,15 @@ export const DevAccordian = forwardRef<
     props.custom.description.length === 0
       ? ["Description will appear here."]
       : props.custom.description;
+  const modifiedOpenArray =
+    props.custom.open.length === 0 ? [false] : props.custom.open;
   return (
     <Accordion
       {...props}
       custom={{
         title: modifiedTitleArray,
         description: modifiedDescriptionArray,
+        open: modifiedOpenArray,
       }}
       ref={ref}
     />
@@ -125,7 +125,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     title: "array",
     description: "array",
-    closed: "array_boolean",
+    open: "array_boolean",
   },
 };
 
@@ -149,17 +149,16 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           title: [],
           description: [],
+          open: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 
