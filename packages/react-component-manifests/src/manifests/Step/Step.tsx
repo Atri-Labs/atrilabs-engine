@@ -26,7 +26,7 @@ export const Step = forwardRef<
   return (
     <div ref={ref} style={props.styles} onClick={onClick} className="parent">
       {props.custom.title.map((step, i) => (
-        <div className="step-wrapper">
+        <div className="step-wrapper" key={i}>
           {props.custom.current > i ? (
             <div className="icon-holder">
               <div
