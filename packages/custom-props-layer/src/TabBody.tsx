@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
 import { Text } from "./components/text/Text";
 import { StaticAsset } from "./components/static-asset/StaticAsset";
+import { Boolean } from "./components/boolean/Boolean";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -36,6 +37,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return <Text {...props} propName={propName} key={propName} />;
         if (propType === "static_asset")
           return <StaticAsset {...props} propName={propName} key={propName} />;
+        if (propType === "boolean")
+          return <Boolean {...props} propName={propName} key={propName} />;
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>
