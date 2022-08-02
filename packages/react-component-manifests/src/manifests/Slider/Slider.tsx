@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useState, useEffect } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -7,25 +7,55 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import "./Slider.css";
 
-export const Button = forwardRef<
-  HTMLButtonElement,
+export const Range = forwardRef<
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: {};
+    onChange: (value: string) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      props.onChange(e.target.value);
     },
     [props]
   );
+  const [width, setWidth] = useState("0px");
+  function changeProgress(event: React.ChangeEvent<HTMLInputElement>) {
+    setWidth(`${Number(event.target.value) * 4}px`);
+  }
+  useEffect(() => {
+    console.log(width);
+  }, [width]);
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.text}
-    </button>
+    <div ref={ref} style={props.styles} onChange={onChange}>
+      <div className="input-holder">
+        <input
+          className="input-slider"
+          style={{ width: `200px` }}
+          value="42"
+          type="range"
+          min="0"
+          max="50"
+          onChange={(e) => changeProgress(e)}
+        ></input>
+
+        <div
+          style={{
+            backgroundColor: "#91d5ff",
+            height: "6px",
+            borderRadius: "8px",
+            width: `${width}`,
+            marginTop: "-11px",
+            zIndex: "2",
+            position: "relative",
+          }}
+        ></div>
+      </div>
+    </div>
   );
 });
 
@@ -41,65 +71,42 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    text: "text",
-  },
+  dataTypes: {},
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Button" },
+  meta: { key: "Range" },
   render: {
-    comp: Button,
+    comp: Range,
   },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {
-          text: "Submit",
-        },
+        initialValue: {},
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Range" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Button", containerStyle: { padding: "1rem" } },
+    props: { name: "Range", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

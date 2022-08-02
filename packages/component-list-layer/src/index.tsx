@@ -13,6 +13,7 @@ import { ReactComponent as Insert } from "./assets/insert.svg";
 import { Cross } from "./assets/Cross";
 import { useManifestRegistry } from "./hooks/useManifestRegistry";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import "./utils/manifests";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {

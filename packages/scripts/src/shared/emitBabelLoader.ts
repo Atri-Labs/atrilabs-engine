@@ -219,6 +219,10 @@ export default function emitBabelLoader(
             ],
             isEnvDevelopment && require("react-refresh/babel"),
           ].filter(Boolean),
+          presets: [
+            "@babel/preset-typescript",
+            ["@babel/preset-react", { runtime: "automatic" }],
+          ],
           babelrc: false,
           configFile: false,
         },

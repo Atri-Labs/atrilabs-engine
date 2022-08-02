@@ -5,10 +5,12 @@ import { ClientToServerEvents, ServerToClientEvents } from "./types";
 import type { ManifestRegistry } from "@atrilabs/core";
 import { manifestRegistryController } from "@atrilabs/core";
 
+// @ts-ignore
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_MANIFEST_SERVER_CLIENT"] as string
 );
 
+// @ts-ignore
 function registerComponents(scriptName: string, pkg: string) {
   //do stuff with the script
   const handle = (window as any)[scriptName];
@@ -34,14 +36,18 @@ function registerComponents(scriptName: string, pkg: string) {
   );
 }
 
-socket.emit("sendManifestScripts", (bundles) => {
-  console.log("received bundles", bundles);
-  bundles.forEach((bundle) => {
-    const pkg = bundle.pkg;
-    const scriptName = bundle.scriptName;
-    const script = document.createElement("script");
-    script.innerHTML = bundle.src;
-    document.body.appendChild(script);
-    registerComponents(scriptName, pkg);
-  });
-});
+/**
+ * Temporarily disabling fetching of manifests. Once support to add
+ * external components is ready, we can switch this back on.
+ */
+// socket.emit("sendManifestScripts", (bundles) => {
+//   console.log("received bundles", bundles);
+//   bundles.forEach((bundle) => {
+//     const pkg = bundle.pkg;
+//     const scriptName = bundle.scriptName;
+//     const script = document.createElement("script");
+//     script.innerHTML = bundle.src;
+//     document.body.appendChild(script);
+//     registerComponents(scriptName, pkg);
+//   });
+// });

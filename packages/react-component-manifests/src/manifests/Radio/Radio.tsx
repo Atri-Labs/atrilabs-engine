@@ -8,11 +8,11 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Button = forwardRef<
-  HTMLButtonElement,
+export const Radio = forwardRef<
+  HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
+    custom: { name: string; label: string };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -23,9 +23,17 @@ export const Button = forwardRef<
     [props]
   );
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.text}
-    </button>
+    <div style={{ display: "flex" }}>
+      <input
+        type="radio"
+        ref={ref}
+        style={props.styles}
+        onClick={onClick}
+        name={props.custom.name}
+        value={props.custom.label}
+      />
+      <label>{props.custom.label}</label>
+    </div>
   );
 });
 
@@ -42,14 +50,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    name: "text",
+    label: "text",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Button" },
+  meta: { key: "Radio" },
   render: {
-    comp: Button,
+    comp: Radio,
   },
   dev: {
     decorators: [],
@@ -57,22 +66,8 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
           cursor: "pointer",
-          userSelect: "none",
+          opacity: "0",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -80,7 +75,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          name: "Category Name",
+          label: "Radio",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -96,10 +92,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Radio" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Button", containerStyle: { padding: "1rem" } },
+    props: { name: "Radio", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

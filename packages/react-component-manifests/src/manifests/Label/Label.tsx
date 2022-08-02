@@ -8,11 +8,11 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Button = forwardRef<
-  HTMLButtonElement,
+export const Label = forwardRef<
+  HTMLLabelElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
+    custom: { label: string };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -23,9 +23,9 @@ export const Button = forwardRef<
     [props]
   );
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.text}
-    </button>
+    <label ref={ref} style={props.styles} onClick={onClick}>
+      {props.custom.label}
+    </label>
   );
 });
 
@@ -42,45 +42,28 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    label: "text",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Button" },
+  meta: { key: "Label" },
   render: {
-    comp: Button,
+    comp: Label,
   },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          label: "Label Text",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -96,10 +79,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Button" } },
+  panel: { comp: CommonIcon, props: { name: "Label" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Button", containerStyle: { padding: "1rem" } },
+    props: { name: "Label", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

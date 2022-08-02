@@ -6,11 +6,10 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "directories": {
-    "lib": "lib"
+    "lib": "src"
   },
   "files": [
-    "src",
-    "lib"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
