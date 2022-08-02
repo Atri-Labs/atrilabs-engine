@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef, useCallback } from "react";
+import React, { forwardRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -108,18 +108,11 @@ export const Countdown = forwardRef<
   {
     styles: React.CSSProperties;
     custom: { days: 1 };
-    onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
   return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
-      <CountdownAsset noOfDays={5} />
+    <div ref={ref} style={props.styles}>
+      <CountdownAsset noOfDays={props.custom.days} />
     </div>
   );
 });
@@ -138,6 +131,14 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     days: "number",
+    hours: "number",
+    minutes: "number",
+    seconds: "number",
+    frozen: "boolean",
+    showDays: "boolean",
+    showHours: "boolean",
+    showMinutes: "boolean",
+    showSeconds: "boolean",
   },
 };
 
@@ -164,12 +165,8 @@ const compManifest: ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: false },
       },
     },
-    attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
-    },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    attachCallbacks: {},
+    defaultCallbackHandlers: {},
   },
 };
 
