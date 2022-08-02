@@ -6,6 +6,7 @@ import { StaticAsset } from "./components/static-asset/StaticAsset";
 import { Boolean } from "./components/boolean/Boolean";
 import { LargeText } from "./components/large-text/LargeText";
 import { ListField } from "./components/list/ListField";
+import { Number } from "./components/number/Number";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -45,6 +46,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return <LargeText {...props} propName={propName} key={propName} />;
         if (propType === "array")
           return <ListField {...props} propName={propName} key={propName} />;
+        if (propType === "number")
+          return <Number {...props} propName={propName} key={propName} />;
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>
