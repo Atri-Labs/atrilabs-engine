@@ -125,6 +125,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     title: "array",
     description: "array",
+    closed: "array_boolean",
   },
 };
 

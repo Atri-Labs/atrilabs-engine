@@ -45,7 +45,9 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {},
+  dataTypes: {
+    active: "boolean",
+  },
 };
 
 const compManifest: ReactComponentManifestSchema = {
