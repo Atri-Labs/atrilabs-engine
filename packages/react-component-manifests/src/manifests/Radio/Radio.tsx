@@ -12,25 +12,25 @@ export const Radio = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { name: string; label: string };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { name: string; label: string; checked: boolean };
+    onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+  const onChangeCb: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      props.onChange(e.target.checked);
     },
     [props]
   );
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "inline-block" }} ref={ref}>
       <input
         type="radio"
-        ref={ref}
         style={props.styles}
-        onClick={onClick}
+        onChange={onChangeCb}
         name={props.custom.name}
         value={props.custom.label}
+        checked={props.custom.checked}
       />
       <label>{props.custom.label}</label>
     </div>
@@ -52,6 +52,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     name: "text",
     label: "text",
+    checked: "boolean",
   },
 };
 
@@ -67,7 +68,6 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {
           cursor: "pointer",
-          opacity: "0",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -75,18 +75,19 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          name: "Category Name",
+          name: "",
           label: "Radio",
+          checked: false,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "checked"] }],
     },
     defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
+      onChange: [{ sendEventData: true }],
     },
   },
 };
