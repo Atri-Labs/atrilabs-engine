@@ -71,7 +71,11 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {},
+  dataTypes: {
+    startValue: "number",
+    endValue: "number",
+    value: "number",
+  },
 };
 
 const compManifest: ReactComponentManifestSchema = {
