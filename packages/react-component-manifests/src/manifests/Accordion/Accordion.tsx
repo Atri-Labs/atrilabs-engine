@@ -41,8 +41,10 @@ export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   return (
     <div className="accordion-section">
       <button className={`accordion ${setActive}`} onClick={toggleAccordion}>
-        <p className="accordion-title">{title}</p>
         <Chevron className={`${setRotate}`} fill={"#777"} />
+        <p className="accordion-title" style={{ marginLeft: "1rem" }}>
+          {title}
+        </p>
       </button>
       <div
         ref={content}
@@ -59,7 +61,7 @@ export const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: []; description: [] };
+    custom: { title: string[]; description: string[] };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -73,11 +75,38 @@ export const Accordion = forwardRef<
     <div ref={ref} style={props.styles} onClick={onClick}>
       {props.custom.title.map((title, i) => (
         <AccordionComponent
+          key={i}
           title={title}
           description={props.custom.description[i]}
         />
       ))}
     </div>
+  );
+});
+
+export const DevAccordian = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: { title: string[]; description: string[] };
+    onClick: (event: { pageX: number; pageY: number }) => void;
+  }
+>((props, ref) => {
+  const modifiedTitleArray =
+    props.custom.title.length === 0 ? ["Title"] : props.custom.title;
+  const modifiedDescriptionArray =
+    props.custom.description.length === 0
+      ? ["Description will appear here."]
+      : props.custom.description;
+  return (
+    <Accordion
+      {...props}
+      custom={{
+        title: modifiedTitleArray,
+        description: modifiedDescriptionArray,
+      }}
+      ref={ref}
+    />
   );
 });
 
@@ -105,6 +134,7 @@ const compManifest: ReactComponentManifestSchema = {
     comp: Accordion,
   },
   dev: {
+    comp: DevAccordian,
     decorators: [],
     attachProps: {
       styles: {
