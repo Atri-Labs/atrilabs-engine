@@ -13,20 +13,24 @@ export const Toggle = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: {};
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { active: boolean };
+    onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      props.onChange(e.target.checked);
     },
-    [props]
+    []
   );
   return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
+    <div ref={ref} style={{ ...props.styles, display: "inline-flex" }}>
       <label className="switch">
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          onChange={onChange}
+          checked={props.custom.active}
+        />
         <span className="slider round"></span>
       </label>
     </div>
@@ -72,10 +76,10 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "active"] }],
     },
     defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
+      onChange: [{ sendEventData: true }],
     },
   },
 };

@@ -9,11 +9,11 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Slider.css";
 
-export const Range = forwardRef<
+export const Slider = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: {};
+    custom: { value: number; startValue: number; endValue: number };
     onChange: (value: string) => void;
   }
 >((props, ref) => {
@@ -36,10 +36,10 @@ export const Range = forwardRef<
         <input
           className="input-slider"
           style={{ width: `200px` }}
-          value="42"
+          value={props.custom.value}
           type="range"
-          min="0"
-          max="50"
+          min={props.custom.startValue}
+          max={props.custom.endValue}
           onChange={(e) => changeProgress(e)}
         ></input>
 
@@ -79,9 +79,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Range" },
+  meta: { key: "Slider" },
   render: {
-    comp: Range,
+    comp: Slider,
   },
   dev: {
     decorators: [],
@@ -101,16 +101,17 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onFinish: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Range" } },
+  panel: { comp: CommonIcon, props: { name: "Slider" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Range", containerStyle: { padding: "1rem" } },
+    props: { name: "Slider", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

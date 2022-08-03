@@ -63,7 +63,6 @@ const compManifest: ReactComponentManifestSchema = {
           boxSizing: "border-box",
           fontVariant: "tabular-nums",
           fontFeatureSettings: "tnum",
-          width: "100%",
           paddingTop: "4px",
           paddingLeft: "11px",
           paddingBottom: "4p",

@@ -126,6 +126,8 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     items: "array",
+    startTile: "number",
+    imageItems: "array_static_asset",
   },
 };
 
