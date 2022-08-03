@@ -9,7 +9,7 @@ export const Number: React.FC<ComponentProps> = (props) => {
       props.patchCb({
         property: {
           custom: {
-            [props.propName]: parseFloat(e.target.value),
+            [props.propName]: e.target.value ? parseFloat(e.target.value) : "",
           },
         },
       });

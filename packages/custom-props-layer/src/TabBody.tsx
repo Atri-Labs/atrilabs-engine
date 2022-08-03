@@ -8,6 +8,8 @@ import { LargeText } from "./components/large-text/LargeText";
 import { ListField } from "./components/list/ListField";
 import { Number } from "./components/number/Number";
 import { BooleanList } from "./components/boolean-list/BooleanList";
+import { NumberList } from "./components/number-list/NumberList";
+import { StaticAssetList } from "./components/static-asset-list/StaticAssetList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -51,6 +53,12 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return <Number {...props} propName={propName} key={propName} />;
         if (propType === "array_boolean")
           return <BooleanList {...props} propName={propName} key={propName} />;
+        if (propType === "array_number")
+          return <NumberList {...props} propName={propName} key={propName} />;
+        if (propType === "array_static_asset")
+          return (
+            <StaticAssetList {...props} propName={propName} key={propName} />
+          );
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>
