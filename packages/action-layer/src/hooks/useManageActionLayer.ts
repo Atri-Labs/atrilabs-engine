@@ -162,11 +162,17 @@ export const useManageActionLayer = (id: string | null) => {
 
   // get all callbacks associated with component from manifest
   const callbackNames = useMemo(() => {
+    const callbackNames: string[] = [];
     if (id) {
       const compNode = compTree.nodes[id];
       if (compNode.meta && compNode.meta.key)
-        getComponentManifest(compNode.meta.key);
+        callbackNames.push(
+          ...Object.keys(
+            getComponentManifest(compNode.meta.key).dev.attachCallbacks
+          )
+        );
     }
+    return callbackNames;
   }, [id, compTree]);
 
   return { patchCb, callbacks, fileUploadAliases, routes, callbackNames };

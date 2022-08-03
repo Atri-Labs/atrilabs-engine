@@ -6,14 +6,21 @@ import { TabHeader } from "./TabHeader";
 
 export default function () {
   const { showTab, id } = useShowTab();
-  const { patchCb, callbacks } = useManageActionLayer(id);
+  const { patchCb, callbacks, callbackNames } = useManageActionLayer(id);
 
   return (
     <>
       {showTab && id ? (
         <Tab
           name="PropertiesTab"
-          body={<TabBody patchCb={patchCb} compId={id} callbacks={callbacks} />}
+          body={
+            <TabBody
+              patchCb={patchCb}
+              compId={id}
+              callbacks={callbacks}
+              callbackNames={callbackNames}
+            />
+          }
           header={<TabHeader />}
           itemName={"Actions"}
         />
