@@ -33,7 +33,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
   const propNames = useMemo(() => {
     return Object.keys(props.treeOptions.dataTypes);
   }, [props]);
-  console.log(props);
   return (
     <div style={styles.container}>
       {propNames.map((propName) => {
