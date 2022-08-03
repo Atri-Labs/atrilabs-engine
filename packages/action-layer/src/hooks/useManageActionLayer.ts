@@ -8,7 +8,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import {
+  CallbackHandler,
+  ReactComponentManifestSchema,
+} from "@atrilabs/react-component-manifest-schema/lib/types";
 import { PatchEvent } from "@atrilabs/forest";
 
 function getFileUploadManifests() {
@@ -33,12 +36,23 @@ function getFileUploadManifests() {
   return fileUploadManifests;
 }
 
+function getComponentManifest(key: string) {
+  const registry = manifestRegistryController.readManifestRegistry();
+  const manifest = registry[ReactManifestSchemaId].components.find(
+    (manifest) => {
+      const manifestComp = manifest.component as ReactComponentManifestSchema;
+      return manifestComp.meta.key === key;
+    }
+  );
+  return manifest?.component as ReactComponentManifestSchema;
+}
+
 export const useManageActionLayer = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
   const callbackTree = useTree(CallbackTreeId);
-  const [callbacks, setCallbacks] = useState<{ [callbackName: string]: {} }>(
-    {}
-  );
+  const [callbacks, setCallbacks] = useState<{
+    [callbackName: string]: CallbackHandler;
+  }>({});
   // callback to post patch event -> takes a slice
   const patchCb = useCallback(
     (slice: any) => {
@@ -146,5 +160,14 @@ export const useManageActionLayer = (id: string | null) => {
     });
   }, []);
 
-  return { patchCb, callbacks, fileUploadAliases, routes };
+  // get all callbacks associated with component from manifest
+  const callbackNames = useMemo(() => {
+    if (id) {
+      const compNode = compTree.nodes[id];
+      if (compNode.meta && compNode.meta.key)
+        getComponentManifest(compNode.meta.key);
+    }
+  }, [id, compTree]);
+
+  return { patchCb, callbacks, fileUploadAliases, routes, callbackNames };
 };
