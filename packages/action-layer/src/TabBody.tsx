@@ -31,6 +31,10 @@ function callbackHandlerToText(handler: CallbackHandler["0"]) {
   return "Unknown action";
 }
 
+function surelyReutrnArray(arr: any[]) {
+  return arr || [];
+}
+
 export const TabBody: React.FC<TabBodyProps> = (props) => {
   const { fileUploadActions } = useFileUploadAliases();
   const { routes } = usePageRoutes();
@@ -73,7 +77,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     (callbackName: string, index: number, value: number) => {
       // value === 0 implies that user selected the already selected option
       if (value === 0) return;
-      const previousActions = [...props.callbacks[callbackName]];
+      const previousActions = [
+        ...surelyReutrnArray(props.callbacks[callbackName]),
+      ];
       const action = options[value - 1].action;
       previousActions.splice(index, 1, action);
       props.patchCb({
@@ -89,7 +95,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
 
   const onInsertAction = useCallback(
     (callbackName: string) => {
-      const previousActions = [...props.callbacks[callbackName]];
+      const previousActions = [
+        ...surelyReutrnArray(props.callbacks[callbackName]),
+      ];
       const defaultAction: CallbackHandler["0"] = { sendEventData: true };
       previousActions.push(defaultAction);
       props.patchCb({
@@ -105,7 +113,9 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
 
   const onRemoveAction = useCallback(
     (callbackName: string, index: number) => {
-      const previousActions = [...props.callbacks[callbackName]];
+      const previousActions = [
+        ...surelyReutrnArray(props.callbacks[callbackName]),
+      ];
       previousActions.splice(index, 1);
       props.patchCb({
         property: {
@@ -143,39 +153,41 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               </div>
             </div>
 
-            {props.callbacks[callbackName].map((handler, index) => {
-              const selectedActionText = callbackHandlerToText(handler);
-              return (
-                <div key={index} style={{ display: "flex", gap: "1rem" }}>
-                  <select
-                    onChange={(e) => {
-                      onChangeAction(
-                        callbackName,
-                        index,
-                        parseInt(e.target.value)
-                      );
-                    }}
-                  >
-                    <option value={0}>{selectedActionText}</option>
-                    {options.map((option) => {
-                      return (
-                        <option key={option.value} value={option.value}>
-                          {callbackHandlerToText(option.action)}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <div
-                    style={{ display: "flex", alignItems: "center" }}
-                    onClick={() => {
-                      onRemoveAction(callbackName, index);
-                    }}
-                  >
-                    <MinusIcon />
+            {surelyReutrnArray(props.callbacks[callbackName]).map(
+              (handler, index) => {
+                const selectedActionText = callbackHandlerToText(handler);
+                return (
+                  <div key={index} style={{ display: "flex", gap: "1rem" }}>
+                    <select
+                      onChange={(e) => {
+                        onChangeAction(
+                          callbackName,
+                          index,
+                          parseInt(e.target.value)
+                        );
+                      }}
+                    >
+                      <option value={0}>{selectedActionText}</option>
+                      {options.map((option) => {
+                        return (
+                          <option key={option.value} value={option.value}>
+                            {callbackHandlerToText(option.action)}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => {
+                        onRemoveAction(callbackName, index);
+                      }}
+                    >
+                      <MinusIcon />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
         );
       })}
