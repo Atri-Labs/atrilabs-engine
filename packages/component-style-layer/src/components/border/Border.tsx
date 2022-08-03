@@ -155,28 +155,19 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BC />
           </div>
-          <div
-            className="cp-holder"
-            onClick={() => {
-              setShowCp(!showCp);
-            }}
-          >
+          <div>
             <div
-              style={showCp ? { display: "block" } : { display: "none" }}
-              className="colorPalette"
+              onClick={() => {
+                props.openPalette("borderColor", "Border Color");
+              }}
             >
-              <ColorPickerAsset
+              <BorderInput
                 styleItem="borderColor"
                 styles={props.styles}
                 patchCb={props.patchCb}
+                defaultValue=""
               />
             </div>
-            <BorderInput
-              styleItem="borderColor"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
           </div>
         </div>
       </div>

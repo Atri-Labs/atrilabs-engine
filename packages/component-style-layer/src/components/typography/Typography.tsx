@@ -223,22 +223,11 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.option}>
           <div style={styles.optionName}>Color</div>
           <div
-            className="cp-holder"
             onClick={() => {
-              setShowCp(!showCp);
+              props.openPalette("color", "Color");
             }}
             style={{ width: "55px", marginRight: "10px" }}
           >
-            <div
-              style={showCp ? { display: "block" } : { display: "none" }}
-              className="colorPalette"
-            >
-              <ColorPickerAsset
-                styleItem="color"
-                styles={props.styles}
-                patchCb={props.patchCb}
-              />
-            </div>
             <BorderInput
               styleItem="color"
               styles={props.styles}
