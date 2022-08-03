@@ -32,7 +32,7 @@ export default function () {
   } = useShowColorPalette();
   return (
     <>
-      {showTab ? (
+      {showTab && id ? (
         <Tab
           name="PropertiesTab"
           body={
@@ -45,6 +45,7 @@ export default function () {
                 treeOptions={treeOptions}
                 openAssetManager={openAssetManager}
                 openPalette={openPalette}
+                compId={id}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div
@@ -70,7 +71,7 @@ export default function () {
         />
       ) : null}
       {showAssetPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={onCrossClicked}>
           <UploadContainer
             modes={modes}
             onCrossClicked={onCrossClicked}

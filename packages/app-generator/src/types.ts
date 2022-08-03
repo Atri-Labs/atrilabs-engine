@@ -86,6 +86,15 @@ export type PythonStubGeneratorOutput = {
       type: any;
       // initial value
       value: any;
+      // ioProps
+      ioProps?: {
+        [propName: string]: {
+          [propName: string]: {
+            mode: "upload" | "download" | "duplex";
+            type: "files" | "stream";
+          };
+        };
+      };
       // whether the variable should be returned in getState call
       gettable: boolean;
       // whether the variable should be included in updateState call

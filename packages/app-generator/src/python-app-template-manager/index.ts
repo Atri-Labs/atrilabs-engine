@@ -11,6 +11,8 @@ const setEventDef =
   `\t\tcomp = getattr(self, alias)\n` +
   `\t\tsetattr(comp, callback_name, True)`;
 
+const UploadFileType = "Optional[List[UploadFile]]";
+
 export function createPythonAppTemplateManager(
   paths: { controllers: string; pythonAppTemplate: string },
   pages: { name: string; route: string }[]
@@ -30,43 +32,105 @@ export function createPythonAppTemplateManager(
     const classTasks: {
       className: string;
       callbackNames: string[];
-      attrs: { name: string; type: string }[];
+      attrs: { name: string; type: string; isIoPropInstance: boolean }[];
+      isIoPropClass: boolean;
     }[] = [];
     const varClassMap: { [varName: string]: string } = {};
     function addClassTask(
       className: string,
       value: any,
-      callbackNames: string[]
+      callbackNames: string[],
+      ioProps?: PythonStubGeneratorOutput["vars"]["0"]["ioProps"]
     ) {
-      const attrs: { name: string; type: string }[] = [];
+      const attrs: { name: string; type: string; isIoPropInstance: boolean }[] =
+        [];
       const attrNames = Object.keys(value);
       attrNames.forEach((attrName) => {
         switch (typeof value[attrName]) {
           case "string":
-            attrs.push({ name: attrName, type: "str" });
+            attrs.push({
+              name: attrName,
+              type: "str",
+              isIoPropInstance: false,
+            });
             break;
           case "boolean":
-            attrs.push({ name: attrName, type: "bool" });
+            attrs.push({
+              name: attrName,
+              type: "bool",
+              isIoPropInstance: false,
+            });
             break;
           case "number":
-            attrs.push({ name: attrName, type: "int" });
+            attrs.push({
+              name: attrName,
+              type: "int",
+              isIoPropInstance: false,
+            });
             break;
           case "object":
             if (value[attrName] === null) {
               console.log("null values are not accepted");
             }
             if (Array.isArray(value[attrName])) {
-              attrs.push({ name: attrName, type: "List[Any]" });
+              attrs.push({
+                name: attrName,
+                type: "List[Any]",
+                isIoPropInstance: false,
+              });
             } else {
               const childClassName = `${className}${attrName}Class`;
-              attrs.push({ name: attrName, type: childClassName });
+              attrs.push({
+                name: attrName,
+                type: childClassName,
+                isIoPropInstance: false,
+              });
               // sub-classes don't have callbacks, hence, empty array [] is passed
               addClassTask(childClassName, value[attrName], []);
             }
             break;
         }
       });
-      classTasks.push({ className, attrs, callbackNames });
+      // add attributes from ioProps
+      // it will be a double loop
+      if (ioProps) {
+        const attrNames = Object.keys(ioProps);
+        attrNames.forEach((attrName) => {
+          // add attribute to parent class
+          const childClassName = `${className}${attrName}Class`;
+          attrs.push({
+            name: attrName,
+            type: childClassName,
+            isIoPropInstance: true,
+          });
+          const subAttrNames = Object.keys(ioProps[attrName]);
+          const childAttrs: { name: string; type: string }[] = [];
+          subAttrNames.forEach((subAttrName) => {
+            const subAttr = ioProps[attrName][subAttrName];
+            if (subAttr.type === "files" && subAttr.mode === "upload") {
+              childAttrs.push({
+                type: UploadFileType,
+                name: subAttrName,
+              });
+            }
+          });
+          // add a class task for each attribute of ioProps
+          classTasks.push({
+            className: childClassName,
+            attrs: childAttrs.map((attr) => {
+              return { ...attr, isIoPropInstance: false };
+            }),
+            callbackNames: [],
+            isIoPropClass: true,
+          });
+        });
+      }
+      classTasks.push({
+        className,
+        attrs,
+        callbackNames,
+        isIoPropClass: false,
+      });
     }
     const { output } = variableMap[page.name];
     const outputRoutePath = path.resolve(
@@ -79,12 +143,19 @@ export function createPythonAppTemplateManager(
     variableNames.forEach((variableName) => {
       const variable = output.vars[variableName];
       const className = `${variableName}Class`;
-      addClassTask(className, variable.value, Object.keys(variable.callbacks));
+      // TODO: pass variable.ioProp as well
+      addClassTask(
+        className,
+        variable.value,
+        Object.keys(variable.callbacks),
+        variable.ioProps
+      );
       varClassMap[variableName] = className;
     });
     const importStatements = [
       "import json",
-      "from typing import List, Any",
+      "from typing import List, Any, Optional",
+      "from fastapi import UploadFile",
     ].join("\n");
     const defaultValueMap: any = {};
     Object.keys(output.vars).forEach((currVar) => {
@@ -104,15 +175,26 @@ export function createPythonAppTemplateManager(
           .join("\n");
         const attrStatements = attrs
           .map((attr) => {
-            // if type is not str | int | bool then it's a class
+            // if type is not str | int | bool | UploadFileType then it's a class
+            // decide type prefix
             const typePrefix =
-              attr.type === "str" || attr.type === "int" || attr.type === "bool"
+              attr.type === "str" ||
+              attr.type === "int" ||
+              attr.type === "bool" ||
+              attr.type === UploadFileType
                 ? ""
                 : "Atri.__";
+            // decide rhs
             let rhs = `get_defined_value(state, def_state, "${attr.name}")`;
-            if (typePrefix === "Atri.__") {
+            if (attr.type === UploadFileType) {
+              rhs = `None`;
+            } else if (typePrefix === "Atri.__") {
               // python adds _Atri for all inner classes
-              rhs = `Atri._Atri__${attr.type}(${rhs}, def_state["${attr.name}"])`;
+              if (attr.isIoPropInstance) {
+                rhs = `Atri._Atri__${attr.type}()`;
+              } else {
+                rhs = `Atri._Atri__${attr.type}(${rhs}, def_state["${attr.name}"])`;
+              }
             }
             return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = ${rhs}`;
           })
@@ -121,7 +203,11 @@ export function createPythonAppTemplateManager(
           attrs.length === 0 && callbackNames.length === 0
             ? "\t\t\tpass"
             : `${callbackStatements}\n${attrStatements}`;
-        return `\tclass __${className}:\n\t\tdef __init__(self, state, def_state):\n${initBody}`;
+        // decide init definition
+        const initDef = classTask.isIoPropClass
+          ? `__init__(self)`
+          : `__init__(self, state, def_state)`;
+        return `\tclass __${className}:\n\t\tdef ${initDef}:\n${initBody}`;
       })
       .join("\n");
     const AtriClassInitBody =

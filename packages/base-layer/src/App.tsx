@@ -60,19 +60,19 @@ export const App: React.FC = () => {
   return (
     <div style={styles.outerDiv}>
       {overlayContainer ? (
-        <div style={styles.overlayContainer}>{overlayContainer}</div>
+        <div style={styles.overlayContainer}>{overlayContainer.node}</div>
       ) : null}
       <div style={styles.leftPanel}>
         <div style={styles.logo}>{logoItem ? logoItem : null}</div>
         <div style={styles.menuContainer}>
           <div style={styles.headerMenu}>
             {headerMenuItems.flat().map((Item, index) => {
-              return <React.Fragment key={index}>{Item}</React.Fragment>;
+              return <React.Fragment key={index}>{Item.nodes}</React.Fragment>;
             })}
           </div>
           <div style={styles.footerMenu}>
             {footerMenuItems.flat().map((Item, index) => {
-              return <React.Fragment key={index}>{Item}</React.Fragment>;
+              return <React.Fragment key={index}>{Item.nodes}</React.Fragment>;
             })}
           </div>
         </div>

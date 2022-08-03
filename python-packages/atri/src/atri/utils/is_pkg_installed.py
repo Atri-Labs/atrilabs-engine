@@ -1,3 +1,4 @@
+import subprocess
 from .run_shell_cmd import run_shell_cmd
 import os
 from .globals import globals
@@ -18,6 +19,16 @@ async def is_conda_installed():
     if child_proc.returncode == 0:
         return True
     return False
+
+def is_conda_installed_sync() -> bool:
+    try:
+        child_proc = subprocess.Popen(["conda", "--version"], stderr=subprocess.PIPE, stdout=subprocess.PIPE, stdin=subprocess.DEVNULL)
+        child_proc.wait()
+        if child_proc.returncode == 0:
+            return True
+        return False
+    except:
+        return False
 
 async def is_selected_virtenv_installed():
     virt_type = get_virtualenv_type()

@@ -152,7 +152,7 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
   return (
     <div style={styles.createPage}>
       {showDeleteDialog ? (
-        <Container name="OverlayContainer">
+        <Container name="OverlayContainer" onClose={onCancel}>
           <ConfirmDelete
             onCancel={onCancel}
             onDelete={onDelete}

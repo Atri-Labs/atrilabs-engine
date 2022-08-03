@@ -37,7 +37,7 @@ export default function () {
         />
       ) : null}
       {showAssetPanel ? (
-        <Container name="Drop">
+        <Container name="Drop" onClose={onCrossClicked}>
           <UploadContainer
             modes={modes}
             onCrossClicked={onCrossClicked}

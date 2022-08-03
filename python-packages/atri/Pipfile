@@ -8,6 +8,7 @@ click = "*"
 python-socketio = {extras = ["asyncio_client"], version = "*"}
 toml = "*"
 questionary = "*"
+requests = "*"
 
 [dev-packages]
 setuptools = "*"

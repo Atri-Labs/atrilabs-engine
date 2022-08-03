@@ -5,7 +5,7 @@ import importlib
 import click
 import json
 import uvicorn
-from typing import List, TypedDict, Union
+from typing import Any, List, TypedDict, Union
 from jsonpickle import encode
 
 in_prod = False
@@ -59,14 +59,28 @@ def compute_new_state(route: RouteDetails, incoming_state, event):
     delattr(atri_obj, "event_data")
     return atri_obj
 
-def compute_new_state_with_form(route: RouteDetails, incoming_state, event, filesMetadata: List[dict[str, str]], files: Union[List[UploadFile], None]):
+def merge_files_with_atri_obj(atri: Any, filesMetadata: List[dict], files: Union[List[UploadFile], None]):
+    curr_start = 0
+    for meta in filesMetadata:
+        count = meta["count"]
+        selector = meta["selector"]
+        alias = meta["alias"]
+        curr_obj = getattr(atri, alias)
+        for index, curr_sel in enumerate(selector):
+            if index == len(selector) - 1:
+                setattr(curr_obj, curr_sel, files[curr_start:count])
+            else:
+                curr_obj = getattr(curr_obj, curr_sel)
+        curr_start = curr_start + count
+
+def compute_new_state_with_files(route: RouteDetails, incoming_state, event, filesMetadata: List[dict], files: Union[List[UploadFile], None]):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
-    # TODO: loop through file meta data and set files of type List[UploadFile]
-    # merge with incoming state, so that this will happen automatically
     atri_obj = Atri(incoming_state)
     getattr(atri_obj, "set_event")(event)
+    if len(filesMetadata) > 0:
+        merge_files_with_atri_obj(atri_obj, filesMetadata, files)
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
@@ -120,11 +134,10 @@ def serve(obj, port, host, prod):
         pageState: str = Form(),
         filesMetadata: str = Form()
         ):
-        print("num files...", len(files))
-        filesMetaDataArr = json.loads(filesMetadata)
+        filesMetadataArr = json.loads(filesMetadata)
         event = {"event_data": json.loads(eventData), "callback_name": callbackName, "alias": alias}
         routeDetails = getRouteDetails(pageRoute, obj["dir"])
-        return compute_new_state_with_form(routeDetails, json.loads(pageState), event, filesMetaDataArr, files)
+        return compute_new_state_with_files(routeDetails, json.loads(pageState), event, filesMetadataArr, files)
 
     uvicorn.run(app, host=host, port=int(port))
 

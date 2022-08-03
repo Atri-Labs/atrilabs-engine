@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 
 export default function () {
   return (
-    <Container name="Logo">
+    <Container name="Logo" onClose={() => {}}>
       <Logo />
     </Container>
   );

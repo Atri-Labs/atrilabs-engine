@@ -92,7 +92,7 @@ export const Canvas: React.FC = React.memo(() => {
         ) : null}
       </div>
       {overlay ? (
-        <Container name="PlaygroundOverlayContainer">
+        <Container name="PlaygroundOverlayContainer" onClose={() => {}}>
           <div style={overlay.style}>
             <overlay.comp {...overlay.props} />
           </div>

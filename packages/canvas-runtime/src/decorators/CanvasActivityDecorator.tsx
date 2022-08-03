@@ -22,6 +22,7 @@ const lockCompDrop = "lockCompDrop" as "lockCompDrop";
 const lockDataDrop = "lockDataDrop" as "lockDataDrop";
 const lockDataDropIdle = "lockDataDropIdle" as "lockDataDropIdle";
 const lockDataDropSet = "lockDataDropSet" as "lockDataDropSet";
+const lockTemplateDrop = "lockTemplateDrop" as "lockTemplateDrop";
 
 // events
 type OVER = "OVER";
@@ -31,6 +32,7 @@ type AUTO = "AUTO";
 type OUT_OF_CANVAS = "OUT_OF_CANVAS";
 type LOCK_COMP_DROP = "LOCK_COMP_DROP"; // dropping new component
 type LOCK_DATA_DROP = "LOCK_DATA_DROP"; // dropping src etc.
+type LOCK_TEMPLATE_DROP = "LOCK_TEMPLATE_DROP"; // dropping a template
 type UNLOCK_EVENT = "UNLOCK_EVENT";
 type CANCEL_LOCK_EVENT = "CANCEL_LOCK_EVENT";
 type SET_DATA_DROP_TARGET = "SET_DATA_DROP_TARGET";
@@ -73,6 +75,11 @@ type LockCompDropEvent = {
 
 type LockDataDropEvent = {
   type: LOCK_DATA_DROP;
+};
+
+type LockTemplateDrop = {
+  type: LOCK_TEMPLATE_DROP;
+  newTemplateRootId: string;
 };
 
 type SetDropTargetEvent = {
@@ -118,6 +125,7 @@ type CanvasActivityEvent =
   | OutOfCanvasEvent
   | LockCompDropEvent
   | LockDataDropEvent
+  | LockTemplateDrop
   | UnlockEvent
   | CancelLockEvent
   | SetDropTargetEvent
@@ -155,6 +163,9 @@ export type CanvasActivityContext = {
   };
   dropData?: {
     id: string;
+  };
+  dropTemplate?: {
+    newTemplateRootId: string;
   };
 };
 
@@ -341,6 +352,12 @@ const onLockCompDrop = assign<CanvasActivityContext, LockCompDropEvent>({
   },
 });
 
+const onLockTemplateDrop = assign<CanvasActivityContext, LockTemplateDrop>({
+  dropTemplate: (_context, event) => {
+    return { newTemplateRootId: event.newTemplateRootId };
+  },
+});
+
 const onSetLockDataDrop = assign<CanvasActivityContext, SetDropTargetEvent>({
   dropData: (_context, event) => {
     return { id: event.targetId };
@@ -360,6 +377,15 @@ const selectOnUnlockCompDrop = assign<CanvasActivityContext, UnlockEvent>({
     return { id: context.dropComp!.id };
   },
   dropComp: () => {
+    return undefined;
+  },
+});
+
+const selectOnUnlockTemplateDrop = assign<CanvasActivityContext, UnlockEvent>({
+  select: (context) => {
+    return { id: context.dropTemplate!.newTemplateRootId };
+  },
+  dropTemplate: () => {
     return undefined;
   },
 });
@@ -386,6 +412,10 @@ const canvasActivityMachine = createMachine<
         OVER: { target: hover, actions: [onHoverStart] },
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
         LOCK_DATA_DROP: { target: lockDataDrop },
+        LOCK_TEMPLATE_DROP: {
+          target: lockTemplateDrop,
+          actions: [onLockTemplateDrop],
+        },
       },
       entry: assign({}),
     },
@@ -420,6 +450,10 @@ const canvasActivityMachine = createMachine<
         },
         LOCK_COMP_DROP: { target: lockCompDrop, actions: [onLockCompDrop] },
         LOCK_DATA_DROP: { target: lockDataDrop },
+        LOCK_TEMPLATE_DROP: {
+          target: lockTemplateDrop,
+          actions: [onLockTemplateDrop],
+        },
         CLEAR_CANVAS_EVENT: { target: idle },
         DELETE_COMPONENT_EVENT: {
           target: idle,
@@ -604,6 +638,13 @@ const canvasActivityMachine = createMachine<
             },
           },
         },
+      },
+    },
+    [lockTemplateDrop]: {
+      on: {
+        UNLOCK_EVENT: { target: select, actions: [selectOnUnlockTemplateDrop] },
+        CANCEL_LOCK_EVENT: { target: idle },
+        CLEAR_CANVAS_EVENT: { target: idle },
       },
     },
   },
@@ -813,6 +854,10 @@ function lockMachineForDataDrop() {
   service.send({ type: "LOCK_DATA_DROP" });
 }
 
+function lockMachineForTemplateDrop(newTemplateRootId: string) {
+  service.send({ type: "LOCK_TEMPLATE_DROP", newTemplateRootId });
+}
+
 function setDataDropTarget(targetId: string) {
   service.send({ type: "SET_DATA_DROP_TARGET", targetId });
 }
@@ -835,6 +880,10 @@ function getCompDropTarget() {
 
 function getDataDropTarget() {
   return service.state.context.dropData?.id;
+}
+
+function getTemplateRootId() {
+  return service.state.context.dropTemplate?.newTemplateRootId;
 }
 
 function isMachineLocked() {
@@ -901,7 +950,8 @@ const keyupListener = (event: KeyboardEvent) => {
   keyUpCbs.forEach((cb) => cb(service.state.context, { type: "keyup", event }));
 };
 subscribe("focus", (context) => {
-  if (context.select?.id) {
+  // on page change, contex.select.id might not exist in canvasComponentStore
+  if (context.select?.id && canvasComponentStore[context.select.id]) {
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keyup",
       keyupListener
@@ -909,7 +959,8 @@ subscribe("focus", (context) => {
   }
 });
 subscribe("blur", (context) => {
-  if (context.select?.id) {
+  // on page change, contex.select.id might not exist in canvasComponentStore
+  if (context.select?.id && canvasComponentStore[context.select.id]) {
     canvasComponentStore[context.select.id].ref.current?.removeEventListener(
       "keyup",
       keyupListener
@@ -938,11 +989,13 @@ export {
   CanvasActivityDecorator,
   lockMachineForCompDrop,
   lockMachineForDataDrop,
+  lockMachineForTemplateDrop,
   unlockMachine,
   cancelMachineLock,
   setDataDropTarget,
   unsetDataDropTarget,
   getCompDropTarget,
+  getTemplateRootId,
   getDataDropTarget,
   isMachineLocked,
   emitClearCanvasEvent,

@@ -54,6 +54,20 @@ export function createForest(def: ForestDef): Forest {
   // called as a result of deleting something in root tree
   const linkEvents: { [refId: string]: LinkEvent[] } = {};
 
+  function createReverseMap(nodes: Tree["nodes"]) {
+    const reverseMap: { [parentId: string]: string[] } = {};
+    Object.keys(nodes).forEach((nodeId) => {
+      const node = nodes[nodeId]!;
+      const parentId = node.state.parent.id;
+      if (reverseMap[parentId]) {
+        reverseMap[parentId]!.push(nodeId);
+      } else {
+        reverseMap[parentId] = [nodeId];
+      }
+    });
+    return reverseMap;
+  }
+
   function handleEvent(event: AnyEvent) {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
@@ -127,19 +141,27 @@ export function createForest(def: ForestDef): Forest {
     if (event.type.startsWith("DELETE")) {
       const delEvent = event as DeleteEvent;
       const treeId = delEvent.type.slice("DELETE$$".length);
-      // if event is from a root tree, call unlink on all child tree
-      if (isRootTree(treeId)) {
-        if (linkEvents[delEvent.id]) {
-          linkEvents[delEvent.id]!.forEach((event) => {
-            const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-            handleEvent(unlinkEvent);
-          });
-        }
+      // find all children and add them to be delete array
+      const nodesToBeDeleted = [delEvent.id];
+      const reverseMap = createReverseMap(treeMap[treeId]!.nodes);
+      if (reverseMap[delEvent.id]) {
+        nodesToBeDeleted.push(...reverseMap[delEvent.id]!);
       }
-      const parentId = treeMap[treeId]!.nodes[delEvent.id]!.state.parent.id;
-      delete treeMap[treeId]!.nodes[delEvent.id];
-      forestUpdateSubscribers.forEach((cb) => {
-        cb({ type: "dewire", childId: delEvent.id, parentId, treeId });
+      nodesToBeDeleted.reverse().forEach((nodeId) => {
+        // if event is from a root tree, call unlink on all child tree
+        if (isRootTree(treeId)) {
+          if (linkEvents[nodeId]) {
+            linkEvents[nodeId]!.forEach((event) => {
+              const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
+              handleEvent(unlinkEvent);
+            });
+          }
+        }
+        const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
+        delete treeMap[treeId]!.nodes[nodeId];
+        forestUpdateSubscribers.forEach((cb) => {
+          cb({ type: "dewire", childId: nodeId, parentId, treeId });
+        });
       });
     }
     if (event.type.startsWith("LINK")) {

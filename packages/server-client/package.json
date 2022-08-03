@@ -1,11 +1,10 @@
 {
   "name": "@atrilabs/server-client",
-  "version": "0.0.23",
+  "version": "0.0.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "lib/server-client.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -21,6 +20,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
+    "clean": "rimraf lib",
     "build": "tsc",
     "prepublishOnly": "yarn run build"
   },
@@ -28,10 +28,11 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.23",
-    "@atrilabs/forest": "^0.0.23",
-    "@atrilabs/manifest-shims": "^0.0.23",
-    "@atrilabs/scripts": "^0.0.23",
+    "@atrilabs/core": "^0.0.35",
+    "@atrilabs/forest": "^0.0.35",
+    "@atrilabs/manifest-shims": "^0.0.35",
+    "@atrilabs/scripts": "^0.0.35",
+    "chokidar": "^3.5.3",
     "express": "^4.18.1",
     "socket.io": "^4.5.0",
     "socket.io-client": "^4.5.0",

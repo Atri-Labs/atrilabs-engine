@@ -7,14 +7,18 @@ export type Dimension = {
   scale: number;
 };
 
-export type DragComp = { comp: React.FC; props: any };
+export type DragComp = { comp: React.FC<any>; props: any };
 
 export type DragData =
   | {
       type: "component";
       data: { pkg: string; key: string; manifestSchema: string; id: string };
     }
-  | { type: "src"; data: { src: string } };
+  | { type: "src"; data: { src: string } }
+  | {
+      type: "template";
+      data: { dir: string; name: string; newTemplateRootId: string };
+    };
 
 export type StartDragArgs = {
   dragComp: DragComp;
@@ -68,4 +72,17 @@ export type CanvasComponentTree = {
 
 export type Position = { top: number; left: number };
 
-export type BoxDimension = { width: number; height: number };
+export type BoxDimension = {
+  // border and padding included
+  width: number;
+  // border and padding included
+  height: number;
+  marginTop: number;
+  marginBottom: number;
+  marginLeft: number;
+  marginRight: number;
+  paddingLeft: number;
+  paddingRight: number;
+  paddingTop: number;
+  paddingBottom: number;
+};

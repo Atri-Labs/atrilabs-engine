@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { gray700, gray800, gray900 } from "@atrilabs/design-system";
 import { useAppMenu } from "./hooks/useAppMenu";
 import { useCanvasMenu } from "./hooks/useCanvasMenu";
@@ -96,6 +96,11 @@ export const BaseContainer: React.FC = () => {
   const dragZoneRef = useRef<HTMLDivElement>(null);
   attachRef("Dragzone", dragZoneRef);
   const playgroundContainerItem = usePlaygroundContainer();
+  useEffect(() => {
+    if (propertyTabItems.length < selectedTab) {
+      setSelectedTab(0);
+    }
+  }, [propertyTabItems, selectedTab]);
   return (
     <div style={styles.outerDiv}>
       <div style={styles.leftPart}>
@@ -103,38 +108,46 @@ export const BaseContainer: React.FC = () => {
           <div style={styles.leftHeader}>
             <div style={styles.appMenu}>
               {appMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
             <div style={styles.pageMenu}>
               {pageMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
           <div style={styles.middleHeader}>
             <div style={styles.canvasMenu}>
               {canvasMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
           <div style={styles.rightHeader}>
             <div style={styles.publishMenu}>
               {publishMenuItems.flat().map((Item, index) => {
-                return <React.Fragment key={index}>{Item}</React.Fragment>;
+                return (
+                  <React.Fragment key={index}>{Item.nodes}</React.Fragment>
+                );
               })}
             </div>
           </div>
         </div>
         <div style={styles.body} ref={dragZoneRef}>
           <div style={styles.dropContainer}>
-            {dropContainerItem ? dropContainerItem : null}
+            {dropContainerItem ? dropContainerItem.node : null}
           </div>
           <div style={styles.canvasContainer}>
-            {canvasContainerItem ? canvasContainerItem : null}
+            {canvasContainerItem ? canvasContainerItem.node : null}
           </div>
-          {playgroundContainerItem ? playgroundContainerItem : null}
+          {playgroundContainerItem ? playgroundContainerItem.node : null}
         </div>
       </div>
       <div style={styles.rightPart}>

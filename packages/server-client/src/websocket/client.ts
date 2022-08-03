@@ -150,6 +150,44 @@ const getAssetsInfo: BrowserClient["getAssetsInfo"] = (cb) => {
   });
 };
 
+const getTemplateInfo: BrowserClient["getTemplateInfo"] = (cb) => {
+  socket.emit("getTemplateInfo", cb);
+};
+
+const getTemplateList: BrowserClient["getTemplateList"] = (dir, cb) => {
+  socket.emit("getTemplateList", dir, cb);
+};
+
+const createTemplate: BrowserClient["createTemplate"] = (
+  dir,
+  name,
+  events,
+  cb
+) => {
+  socket.emit("createTemplate", dir, name, events, cb);
+};
+
+const overwriteTemplate: BrowserClient["overwriteTemplate"] = (
+  dir,
+  name,
+  events,
+  cb
+) => {
+  socket.emit("overwriteTemplate", dir, name, events, cb);
+};
+
+const deleteTemplate: BrowserClient["deleteTemplate"] = (dir, name, cb) => {
+  socket.emit("deleteTemplate", dir, name, cb);
+};
+
+const getTemplateEvents: BrowserClient["getTemplateEvents"] = (
+  dir,
+  name,
+  cb
+) => {
+  socket.emit("getTemplateEvents", dir, name, cb);
+};
+
 const client: BrowserClient = {
   getMeta,
   getPages,
@@ -167,6 +205,12 @@ const client: BrowserClient = {
   getNewAlias,
   uploadAssets,
   getAssetsInfo,
+  getTemplateInfo,
+  getTemplateList,
+  createTemplate,
+  overwriteTemplate,
+  deleteTemplate,
+  getTemplateEvents,
 };
 
 export default client;
