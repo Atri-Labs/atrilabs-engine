@@ -10,6 +10,7 @@ import { Number } from "./components/number/Number";
 import { BooleanList } from "./components/boolean-list/BooleanList";
 import { NumberList } from "./components/number-list/NumberList";
 import { StaticAssetList } from "./components/static-asset-list/StaticAssetList";
+import { Color } from "./components/color/Color";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -59,6 +60,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return (
             <StaticAssetList {...props} propName={propName} key={propName} />
           );
+        if (propType === "color")
+          return <Color {...props} propName={propName} key={propName} />;
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>
