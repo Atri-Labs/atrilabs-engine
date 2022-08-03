@@ -70,6 +70,7 @@ module.exports = {
     { pkg: "@atrilabs/custom-props-layer" },
     { pkg: "@atrilabs/asset-manager-layer" },
     { pkg: "@atrilabs/app-template-layer" },
+    { pkg: "@atrilabs/action-layer" },
   ],
   output: "lib",
   services: {

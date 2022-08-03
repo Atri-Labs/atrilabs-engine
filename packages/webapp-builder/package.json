@@ -38,6 +38,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/action-layer": "^0.0.35",
     "@atrilabs/app-design-forest": "^0.0.35",
     "@atrilabs/app-design-layer": "^0.0.35",
     "@atrilabs/app-generator": "^0.0.35",
