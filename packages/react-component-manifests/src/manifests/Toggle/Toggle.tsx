@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useMemo } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -13,7 +13,7 @@ export const Toggle = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { active: boolean };
+    custom: { active: boolean; activeColor: string; inactiveColor: string };
     onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
@@ -21,8 +21,13 @@ export const Toggle = forwardRef<
     (e) => {
       props.onChange(e.target.checked);
     },
-    []
+    [props]
   );
+  const color = useMemo(() => {
+    return props.custom.active
+      ? props.custom.activeColor
+      : props.custom.inactiveColor;
+  }, [props]);
   return (
     <div ref={ref} style={{ ...props.styles, display: "inline-flex" }}>
       <label className="switch">
@@ -31,7 +36,13 @@ export const Toggle = forwardRef<
           onChange={onChange}
           checked={props.custom.active}
         />
-        <span className="slider round"></span>
+        <span
+          className="slider round"
+          style={{
+            backgroundColor: color,
+            boxShadow: `0 0 1px ${color}`,
+          }}
+        ></span>
       </label>
     </div>
   );
@@ -51,6 +62,8 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     active: "boolean",
+    activeColor: "color",
+    inactiveColor: "color",
   },
 };
 
@@ -70,7 +83,11 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          activeColor: "#2196f3",
+          active: false,
+          inactiveColor: "#CCCCCC",
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
