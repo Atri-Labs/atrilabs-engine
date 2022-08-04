@@ -1,19 +1,17 @@
 import React, { useCallback, useState } from "react";
-import { Container, getId, Menu } from "@atrilabs/core";
+import { Container, Menu } from "@atrilabs/core";
 import {
   gray300,
   gray700,
   gray800,
-  gray900,
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
-import { startDrag } from "@atrilabs/canvas-runtime";
 import { ReactComponent as Insert } from "./assets/insert.svg";
 import { Cross } from "./assets/Cross";
 import { useManifestRegistry } from "./hooks/useManifestRegistry";
-import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import "./utils/manifests";
+import { CategoryList } from "./components/CategoryList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -53,14 +51,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "100% !important",
   },
   // ===============main layout=====================
-  mainContainer: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr 1fr",
-  },
-  compContainer: {
-    border: `1px solid ${gray900}`,
-    padding: "1rem 0",
-  },
 };
 
 export default function () {
@@ -72,11 +62,8 @@ export default function () {
     setShowInsertPanel(false);
   }, []);
 
-  const components = useManifestRegistry();
+  const { categorizedComponents } = useManifestRegistry();
 
-  const startDragCb = useCallback((...args: Parameters<typeof startDrag>) => {
-    startDrag(...args);
-  }, []);
   return (
     <>
       <Menu name="PageMenu" order={0}>
@@ -97,31 +84,43 @@ export default function () {
                 </span>
               </div>
             </header>
-            <div style={styles.mainContainer}>
-              {components.map((comp, index) => {
-                return (
-                  <div
-                    style={styles.compContainer}
-                    key={comp.pkg + index}
-                    onMouseDown={() => {
-                      startDragCb(comp.component.drag, {
-                        type: "component",
-                        data: {
-                          key: comp.component.renderSchema.meta.key,
-                          pkg: comp.pkg,
-                          manifestSchema: ReactComponentManifestSchemaId,
-                          id: getId(),
-                        },
-                      });
-                    }}
-                  >
-                    <comp.component.panel.comp
-                      {...comp.component.panel.props}
+            {categorizedComponents["Layout"] ? (
+              <CategoryList
+                categorizedComponents={categorizedComponents}
+                categoryName={"Layout"}
+              />
+            ) : null}
+            {categorizedComponents["Basics"] ? (
+              <CategoryList
+                categorizedComponents={categorizedComponents}
+                categoryName={"Basics"}
+              />
+            ) : null}
+            {categorizedComponents["Data"] ? (
+              <CategoryList
+                categorizedComponents={categorizedComponents}
+                categoryName={"Data"}
+              />
+            ) : null}
+            {
+              /**Display other categories */
+              Object.keys(categorizedComponents)
+                .filter(
+                  (value) =>
+                    value !== "Layout" && value !== "Basics" && value !== "Data"
+                )
+                .sort((a, b) => {
+                  return a < b ? -1 : 0;
+                })
+                .map((categoryName) => {
+                  return (
+                    <CategoryList
+                      categorizedComponents={categorizedComponents}
+                      categoryName={categoryName}
                     />
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })
+            }
           </div>
         </Container>
       ) : null}
