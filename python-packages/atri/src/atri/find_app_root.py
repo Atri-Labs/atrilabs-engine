@@ -7,12 +7,13 @@ from .utils.printd import printd
 
 def find_atri_root_dir():
     curr_dir = Path.cwd()
-    root = Path(curr_dir.root)
-
-    while curr_dir != root:
+    while True:
         attempt = curr_dir / app_config_file
-        if attempt.exists():
+        if os.path.exists(str(attempt)):
             return curr_dir
+        # already at root, cannot go up anymore
+        if str(curr_dir) == str(curr_dir.parent):
+            return None
         curr_dir = curr_dir.parent
 
     return None
