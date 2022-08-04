@@ -12,11 +12,9 @@ import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import "./ColorPalette.css";
 import { CssProprtyComponentType } from "../../types";
 import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
-import { ColorPickerAsset } from "../commons/ColorPickerAsset";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -72,7 +70,6 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const [showCp, setShowCp] = useState(false);
 
   const handleBorderChange = (
     e:
