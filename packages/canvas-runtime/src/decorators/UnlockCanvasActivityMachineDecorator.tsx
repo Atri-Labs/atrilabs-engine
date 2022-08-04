@@ -52,5 +52,23 @@ export const UnlockCanvasActivityMachineDecorator: React.FC<DecoratorProps> = (
       }
     }
   }, [props.compId]);
+  useEffect(() => {
+    function setDescendantsTabIndexToNegOne(element: Element) {
+      // make all descendants un-focusable
+      const count = element.childElementCount;
+      const childElements = element.children;
+      for (let i = 0; i < count; i++) {
+        const childElement = childElements[i];
+        setDescendantsTabIndexToNegOne(childElement);
+        childElement.setAttribute("tabindex", "-1");
+        childElement.setAttribute("disabled", "true");
+      }
+    }
+    if (canvasComponentStore[props.compId].ref.current) {
+      setDescendantsTabIndexToNegOne(
+        canvasComponentStore[props.compId].ref.current!
+      );
+    }
+  }, [props.compId]);
   return <DecoratorRenderer {...props} />;
 };

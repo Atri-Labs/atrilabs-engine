@@ -470,7 +470,14 @@ const canvasActivityMachine = createMachine<
                 BLUR_EVENT: { target: unfocused, cond: blurredSelected },
               },
               entry: (context, event) => {
-                focusedCbs.forEach((cb) => cb(context, event));
+                // TODO: exit out of focused state if this if condition fails
+                if (canvasComponentStore[context.select!.id].ref.current) {
+                  canvasComponentStore[
+                    context.select!.id
+                  ].ref.current!.tabIndex = 0;
+                  canvasComponentStore[context.select!.id].ref.current!.focus();
+                  focusedCbs.forEach((cb) => cb(context, event));
+                }
               },
               exit: (context, event) => {
                 blurCbs.forEach((cb) => cb(context, event));
