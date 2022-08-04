@@ -47,6 +47,7 @@ export const useShowTab = () => {
   useEffect(() => {
     const unsub = subscribeCanvasActivity("selectEnd", (context) => {
       setShowTab(false);
+      setId(null);
     });
     return unsub;
   }, []);

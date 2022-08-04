@@ -82,7 +82,7 @@ export const useManageActionLayer = (id: string | null) => {
     const callbackNames: string[] = [];
     if (id) {
       const compNode = compTree.nodes[id];
-      if (compNode.meta && compNode.meta.key)
+      if (compNode && compNode.meta && compNode.meta.key)
         callbackNames.push(
           ...Object.keys(
             getComponentManifest(compNode.meta.key).dev.attachCallbacks
