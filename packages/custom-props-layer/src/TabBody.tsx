@@ -11,6 +11,8 @@ import { BooleanList } from "./components/boolean-list/BooleanList";
 import { NumberList } from "./components/number-list/NumberList";
 import { StaticAssetList } from "./components/static-asset-list/StaticAssetList";
 import { Color } from "./components/color/Color";
+import { InternalLink } from "./components/internal-link/InternalLink";
+import { usePageRoutes } from "./hooks/usePageRoutes";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -36,32 +38,111 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
   const propNames = useMemo(() => {
     return Object.keys(props.treeOptions.dataTypes);
   }, [props]);
+  const { routes } = usePageRoutes();
+
   return (
     <div style={styles.container}>
       {propNames.map((propName) => {
         const propType = props.treeOptions.dataTypes[propName];
         if (propType === "text")
-          return <Text {...props} propName={propName} key={propName} />;
+          return (
+            <Text
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "static_asset")
-          return <StaticAsset {...props} propName={propName} key={propName} />;
+          return (
+            <StaticAsset
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "boolean")
-          return <Boolean {...props} propName={propName} key={propName} />;
+          return (
+            <Boolean
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "large_text")
-          return <LargeText {...props} propName={propName} key={propName} />;
+          return (
+            <LargeText
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "array")
-          return <ListField {...props} propName={propName} key={propName} />;
+          return (
+            <ListField
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "number")
-          return <Number {...props} propName={propName} key={propName} />;
+          return (
+            <Number
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "array_boolean")
-          return <BooleanList {...props} propName={propName} key={propName} />;
+          return (
+            <BooleanList
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "array_number")
-          return <NumberList {...props} propName={propName} key={propName} />;
+          return (
+            <NumberList
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         if (propType === "array_static_asset")
           return (
-            <StaticAssetList {...props} propName={propName} key={propName} />
+            <StaticAssetList
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
           );
         if (propType === "color")
-          return <Color {...props} propName={propName} key={propName} />;
+          return (
+            <Color
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        if (propType === "internal_link")
+          return (
+            <InternalLink
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>

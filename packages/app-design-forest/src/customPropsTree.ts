@@ -10,7 +10,8 @@ export type CustomPropsTreeOptions = {
       | "color"
       | "array_boolean"
       | "array_number"
-      | "array_static_asset";
+      | "array_static_asset"
+      | "internal_link";
   };
 };
 
