@@ -72,7 +72,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Link" },
+  meta: { key: "Link", category: "Basics" },
   render: {
     comp: Link,
   },

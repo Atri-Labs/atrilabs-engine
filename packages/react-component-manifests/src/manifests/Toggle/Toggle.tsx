@@ -68,7 +68,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Toggle" },
+  meta: { key: "Toggle", category: "Basics" },
   render: {
     comp: Toggle,
   },

@@ -47,7 +47,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Label" },
+  meta: { key: "Label", category: "Basics" },
   render: {
     comp: Label,
   },

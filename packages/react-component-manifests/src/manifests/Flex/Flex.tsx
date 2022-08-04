@@ -85,7 +85,7 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Flex" },
+  meta: { key: "Flex", category: "Layout" },
   render: {
     comp: Flex,
   },

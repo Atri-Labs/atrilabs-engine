@@ -85,7 +85,7 @@ export type IoType<T extends IoProp> = T["type"] extends "files"
   : never;
 
 export type ReactComponentManifestSchema = {
-  meta: { key: string };
+  meta: { key: string; category: string };
   render: {
     comp: FC<any>;
   };

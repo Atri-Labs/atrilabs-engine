@@ -57,7 +57,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Radio" },
+  meta: { key: "Radio", category: "Basics" },
   render: {
     comp: Radio,
   },

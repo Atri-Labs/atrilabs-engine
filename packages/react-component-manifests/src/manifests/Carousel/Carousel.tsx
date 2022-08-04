@@ -134,7 +134,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Carousel" },
+  meta: { key: "Carousel", category: "Basics" },
   render: {
     comp: Carousel,
   },
