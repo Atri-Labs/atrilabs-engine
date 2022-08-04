@@ -199,15 +199,15 @@ export const Countdown = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      days: 1;
-      hours: 21;
-      minutes: 54;
-      seconds: 42;
-      frozen: true;
-      showDays: true;
-      showHours: true;
-      showMinutes: true;
-      showSeconds: true;
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+      frozen: boolean;
+      showDays: boolean;
+      showHours: boolean;
+      showMinutes: boolean;
+      showSeconds: boolean;
     };
   }
 >((props, ref) => {
