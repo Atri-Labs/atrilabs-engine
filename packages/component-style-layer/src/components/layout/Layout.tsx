@@ -82,12 +82,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 // CSS Values for different CSS property (The default value must be at position 0)
 // CSS values for flex-direction CSS property (The default value row is at position 0)
 
-const directionValues = [
-  "row",
-  "column",
-  "row-reverse",
-  "column-reverse"
-];
+const directionValues = ["row", "column", "row-reverse", "column-reverse"];
 const alignItemValues = [
   "stretch",
   "flex-start",
@@ -100,20 +95,16 @@ const justifyContentValues = [
   "center",
   "flex-end",
   "space-between",
-  "space-around"
+  "space-around",
 ];
-const wrapValues = [
-  "no-wrap",
-  "wrap",
-  "reverse-wrap"
-];
+const wrapValues = ["no-wrap", "wrap", "reverse-wrap"];
 const alignContentValues = [
   "stretch",
   "flex-start",
   "center",
   "flex-end",
   "space-between",
-  "space-around"
+  "space-around",
 ];
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
@@ -132,7 +123,7 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
                 : { transform: "rotate(0deg)" }
             }
           />
-          <div style={styles.header}>Layout - Flex Parent</div>
+          <div style={styles.header}>Layout</div>
         </div>
         <div
           style={showProperties ? { display: "block" } : { display: "none" }}
