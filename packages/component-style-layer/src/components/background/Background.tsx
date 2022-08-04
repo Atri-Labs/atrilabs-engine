@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { AssetInputButton } from "../commons/ButtonInputCombo";
+import { BorderInput } from "../commons/BorderInput";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -88,7 +89,14 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Background</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "20px", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
+        {/**Background Image */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={styles.optionName}>Image</span>
           <AssetInputButton
@@ -96,6 +104,23 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             assetName={props.styles.backgroundImage || "Select Image"}
             onClearClick={onBackgroundImageClearClickCb}
           />
+        </div>
+        {/**Background Color */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <span style={styles.optionName}>Color</span>
+          <div
+            onClick={() => {
+              props.openPalette("backgroundColor", "Background Color");
+            }}
+            style={{ width: "55px", marginRight: "10px" }}
+          >
+            <BorderInput
+              styleItem="color"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+            />
+          </div>
         </div>
       </div>
     </div>
