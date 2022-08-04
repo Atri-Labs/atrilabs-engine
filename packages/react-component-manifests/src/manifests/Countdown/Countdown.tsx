@@ -228,6 +228,27 @@ export const Countdown = forwardRef<
   );
 });
 
+export const DevCountdown = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: {
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+      frozen: boolean;
+      showDays: boolean;
+      showHours: boolean;
+      showMinutes: boolean;
+      showSeconds: boolean;
+    };
+  }
+>((props, ref) => {
+  props.custom.frozen = true;
+  return <Countdown ref={ref} {...props} />;
+});
+
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
@@ -259,6 +280,7 @@ const compManifest: ReactComponentManifestSchema = {
     comp: Countdown,
   },
   dev: {
+    comp: DevCountdown,
     decorators: [],
     attachProps: {
       styles: {

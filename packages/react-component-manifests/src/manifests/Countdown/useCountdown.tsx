@@ -16,7 +16,11 @@ const useCountdown = (
   );
 
   useEffect(() => {
-    let interval: ReturnType<typeof setTimeout>; //CARE
+    setCountDown(countDownDate - new Date().getTime());
+  }, [countDownDate]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setTimeout>;
     if (!isFrozen) {
       interval = setInterval(() => {
         setCountDown(countDownDate - new Date().getTime());
@@ -24,7 +28,7 @@ const useCountdown = (
     }
 
     return () => clearInterval(interval);
-  }, [countDownDate]);
+  }, [countDownDate, isFrozen]);
 
   return getReturnValues(countDown);
 };
