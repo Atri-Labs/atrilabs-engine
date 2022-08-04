@@ -106,7 +106,9 @@ export const Carousel = forwardRef<
     <div ref={ref} style={props.styles} onClick={onClick}>
       <CarouselWrapper>
         {props.custom.items.map((item, i) => (
-          <CarouselItem width="100%">{item}</CarouselItem>
+          <CarouselItem width="100%" key={i}>
+            {item}
+          </CarouselItem>
         ))}
       </CarouselWrapper>
     </div>
@@ -133,7 +135,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Carousel" },
+  meta: { key: "Carousel", category: "Basics" },
   render: {
     comp: Carousel,
   },

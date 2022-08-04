@@ -1,51 +1,11 @@
-import {
-  api,
-  BrowserForestManager,
-  manifestRegistryController,
-  useTree,
-} from "@atrilabs/core";
+import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import {
-  CallbackHandler,
-  ReactComponentManifestSchema,
-} from "@atrilabs/react-component-manifest-schema/lib/types";
+import { CallbackHandler } from "@atrilabs/react-component-manifest-schema/lib/types";
 import { PatchEvent } from "@atrilabs/forest";
-
-function getFileUploadManifests() {
-  const fileUploadManifests: { pkg: string; key: string }[] = [];
-  const registry = manifestRegistryController.readManifestRegistry();
-  registry[ReactManifestSchemaId].components.forEach((manifest) => {
-    const component: ReactComponentManifestSchema = manifest.component;
-    if (component.dev.ioProps) {
-      Object.keys(component.dev.ioProps).forEach((propName) => {
-        Object.keys(component.dev.ioProps![propName]).forEach((key) => {
-          const ioProp = component.dev.ioProps![propName][key];
-          if (ioProp.mode === "upload" && ioProp.type === "files") {
-            fileUploadManifests.push({
-              pkg: manifest.pkg,
-              key: component.meta.key,
-            });
-          }
-        });
-      });
-    }
-  });
-  return fileUploadManifests;
-}
-
-function getComponentManifest(key: string) {
-  const registry = manifestRegistryController.readManifestRegistry();
-  const manifest = registry[ReactManifestSchemaId].components.find(
-    (manifest) => {
-      const manifestComp = manifest.component as ReactComponentManifestSchema;
-      return manifestComp.meta.key === key;
-    }
-  );
-  return manifest?.component as ReactComponentManifestSchema;
-}
+import { getComponentManifest } from "../utils";
 
 export const useManageActionLayer = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
@@ -116,56 +76,13 @@ export const useManageActionLayer = (id: string | null) => {
         });
     }
   }, [id, compTree, callbackTree]);
-  // get all components from manifest registry with ioProps field set
-  const [fileUploadManifests, setFileUploadManifests] = useState<
-    { pkg: string; key: string }[]
-  >([]);
-  useEffect(() => {
-    const fileUploadManifests = getFileUploadManifests();
-    setFileUploadManifests(fileUploadManifests);
-
-    manifestRegistryController.subscribe(() => {
-      const fileUploadManifests = getFileUploadManifests();
-      setFileUploadManifests(fileUploadManifests);
-    });
-  }, []);
-  // get alias of all components with pkg and key in fileUploadManifests
-  const fileUploadAliases = useMemo(() => {
-    const aliases: string[] = [];
-    const nodeIds = Object.keys(compTree.nodes);
-    nodeIds.forEach((nodeId) => {
-      const { key, pkg } = compTree.nodes[nodeId].meta;
-      const { alias } = compTree.nodes[nodeId].state.alias;
-      if (key && pkg && alias) {
-        const found = fileUploadManifests.find((manifest) => {
-          return manifest.pkg === pkg && manifest.key === key;
-        });
-        if (found) {
-          aliases.push(alias);
-        }
-      }
-    });
-    return aliases;
-  }, [fileUploadManifests, compTree]);
-
-  // get all page routes
-  const routes = useMemo(() => {
-    const routes: string[] = [];
-    const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-    api.getPages(forestPkgId, (pages) => {
-      const pageIds = Object.keys(pages);
-      pageIds.forEach((pageId) => {
-        routes.push(pages[pageId].route);
-      });
-    });
-  }, []);
 
   // get all callbacks associated with component from manifest
   const callbackNames = useMemo(() => {
     const callbackNames: string[] = [];
     if (id) {
       const compNode = compTree.nodes[id];
-      if (compNode.meta && compNode.meta.key)
+      if (compNode && compNode.meta && compNode.meta.key)
         callbackNames.push(
           ...Object.keys(
             getComponentManifest(compNode.meta.key).dev.attachCallbacks
@@ -175,5 +92,17 @@ export const useManageActionLayer = (id: string | null) => {
     return callbackNames;
   }, [id, compTree]);
 
-  return { patchCb, callbacks, fileUploadAliases, routes, callbackNames };
+  const getAlias = useCallback(
+    (id: string) => {
+      return compTree.nodes[id].state.alias as string | undefined;
+    },
+    [compTree]
+  );
+
+  return {
+    patchCb,
+    callbacks,
+    callbackNames,
+    getAlias,
+  };
 };

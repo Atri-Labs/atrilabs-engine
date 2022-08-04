@@ -79,7 +79,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Slider" },
+  meta: { key: "Slider", category: "Basics" },
   render: {
     comp: Slider,
   },

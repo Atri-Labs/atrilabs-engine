@@ -130,7 +130,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Accordion" },
+  meta: { key: "Accordion", category: "Basics" },
   render: {
     comp: Accordion,
   },

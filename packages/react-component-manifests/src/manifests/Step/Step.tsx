@@ -104,7 +104,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Step" },
+  meta: { key: "Step", category: "Basics" },
   render: {
     comp: Step,
   },

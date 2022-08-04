@@ -12,7 +12,6 @@ import { ReactComponent as RA } from "../../assets/typo/right-align.svg";
 import { ReactComponent as CA } from "../../assets/typo/center-align.svg";
 import { ReactComponent as JA } from "../../assets/typo/justify-align.svg";
 import { ReactComponent as MH } from "../../assets/typo/more-horizontal.svg";
-import { ColorPickerAsset } from "../commons/ColorPickerAsset";
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInput } from "../commons/SizeInput";

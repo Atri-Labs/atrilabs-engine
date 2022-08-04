@@ -6,7 +6,8 @@ import { TabHeader } from "./TabHeader";
 
 export default function () {
   const { showTab, id } = useShowTab();
-  const { patchCb, callbacks, callbackNames } = useManageActionLayer(id);
+  const { patchCb, callbacks, callbackNames, getAlias } =
+    useManageActionLayer(id);
 
   return (
     <>
@@ -19,6 +20,7 @@ export default function () {
               compId={id}
               callbacks={callbacks}
               callbackNames={callbackNames}
+              getAlias={getAlias}
             />
           }
           header={<TabHeader />}

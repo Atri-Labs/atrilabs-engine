@@ -59,7 +59,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Upload" },
+  meta: { key: "Upload", category: "Basics" },
   render: {
     comp: Upload,
   },

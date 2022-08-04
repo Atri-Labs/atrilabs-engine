@@ -50,7 +50,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Input" },
+  meta: { key: "Input", category: "Basics" },
   render: {
     comp: Input,
   },

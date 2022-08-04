@@ -7,32 +7,48 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import { Link as RouterLink } from "react-router-dom";
 
-export const Radio = forwardRef<
-  HTMLInputElement,
+export const Link = forwardRef<
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { name: string; label: string; checked: boolean };
-    onChange: (checked: boolean) => void;
+    custom: { text: string; url: string };
+    onClick: () => void;
   }
 >((props, ref) => {
-  const onChangeCb: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      props.onChange(e.target.checked);
-    },
-    [props]
-  );
+  const onClick = useCallback(() => {
+    props.onClick();
+  }, [props]);
   return (
-    <div style={{ display: "inline-block" }} ref={ref}>
-      <input
-        type="radio"
-        style={props.styles}
-        onChange={onChangeCb}
-        name={props.custom.name}
-        value={props.custom.label}
-        checked={props.custom.checked}
-      />
-      <label>{props.custom.label}</label>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      onClick={onClick}
+    >
+      <RouterLink to={props.custom.url}>{props.custom.text}</RouterLink>
+    </div>
+  );
+});
+
+export const DevLink = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: { text: string; url: string };
+    onClick: () => void;
+  }
+>((props, ref) => {
+  const onClick = useCallback(() => {
+    props.onClick();
+  }, [props]);
+  return (
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      onClick={onClick}
+    >
+      {props.custom.text}
     </div>
   );
 });
@@ -50,53 +66,50 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    name: "text",
-    label: "text",
-    checked: "boolean",
+    text: "text",
+    url: "internal_link",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Radio", category: "Basics" },
+  meta: { key: "Link", category: "Basics" },
   render: {
-    comp: Radio,
+    comp: Link,
   },
   dev: {
+    comp: DevLink,
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          cursor: "pointer",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          name: "",
-          label: "Radio",
-          checked: false,
+          text: "Link",
+          url: "/",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "checked"] }],
+      onClick: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
-      onChange: [{ sendEventData: true }],
+      onClick: [{ sendEventData: true }],
     },
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Radio" } },
+  panel: { comp: CommonIcon, props: { name: "Link" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Radio", containerStyle: { padding: "1rem" } },
+    props: { name: "Link", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

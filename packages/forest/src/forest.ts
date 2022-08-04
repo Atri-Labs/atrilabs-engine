@@ -1,4 +1,4 @@
-import { merge } from "lodash";
+import { mergeWith } from "lodash";
 import { createTree } from "./tree";
 import {
   CreateEvent,
@@ -13,6 +13,13 @@ import {
   Forest,
   ForestUpdateSubscriber,
 } from "./types";
+
+function mergeStateCustomizer(obj: any, src: any) {
+  // replace array instead of default merge
+  if (Array.isArray(obj)) {
+    return src;
+  }
+}
 
 export function createForest(def: ForestDef): Forest {
   const treeDefs = def.trees;
@@ -100,11 +107,12 @@ export function createForest(def: ForestDef): Forest {
             const oldIndex =
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
-              tree(treeId)!.nodes[patchEvent.id]!["state"] = merge(
+              tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
                 JSON.parse(
                   JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
                 ),
-                JSON.parse(JSON.stringify(patchEvent.slice))
+                JSON.parse(JSON.stringify(patchEvent.slice)),
+                mergeStateCustomizer
               );
               forestUpdateSubscribers.forEach((cb) => {
                 cb({
@@ -127,11 +135,12 @@ export function createForest(def: ForestDef): Forest {
           }
         }
         // patch other fields
-        tree(treeId)!.nodes[patchEvent.id]!["state"] = merge(
+        tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
           JSON.parse(
             JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
           ),
-          JSON.parse(JSON.stringify(patchEvent.slice))
+          JSON.parse(JSON.stringify(patchEvent.slice)),
+          mergeStateCustomizer
         );
         forestUpdateSubscribers.forEach((cb) => {
           cb({ type: "change", id: patchEvent.id, treeId });

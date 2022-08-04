@@ -52,7 +52,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Image" },
+  meta: { key: "Image", category: "Basics" },
   render: {
     comp: Image,
   },

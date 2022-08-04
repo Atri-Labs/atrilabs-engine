@@ -275,7 +275,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Countdown" },
+  meta: { key: "Countdown", category: "Basics" },
   render: {
     comp: Countdown,
   },
