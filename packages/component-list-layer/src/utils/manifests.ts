@@ -14,6 +14,7 @@ import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/S
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
 import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/Toggle/Toggle";
 import UploadManifests from "@atrilabs/react-component-manifests/src/manifests/Upload/Upload";
+import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -75,6 +76,7 @@ const defaultImports = [
   StepManifests,
   ToggleManifests,
   UploadManifests,
+  Link,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
