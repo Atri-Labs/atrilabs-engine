@@ -17,6 +17,7 @@ export const InternalLink: React.FC<ComponentProps> = (props) => {
     },
     [props]
   );
+
   return (
     <div>
       <div style={{ color: "white" }}>{props.propName}</div>
