@@ -72,7 +72,6 @@ const textAlignValues = ["left", "right", "center", "justify"];
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Typography: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const [showCp, setShowCp] = useState(false);
 
   const handleFontChange = useCallback(
     (

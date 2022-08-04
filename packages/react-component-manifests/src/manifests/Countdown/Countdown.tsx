@@ -41,6 +41,10 @@ export type ShowCounterComponentTypes = {
   hours: number;
   minutes: number;
   seconds: number;
+  showDays: boolean;
+  showHours: boolean;
+  showMinutes: boolean;
+  showSeconds: boolean;
 };
 
 export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
@@ -48,27 +52,85 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   hours,
   minutes,
   seconds,
+  showDays,
+  showHours,
+  showMinutes,
+  showSeconds,
 }) => {
   return (
     <div className="show-counter">
-      <DateTimeDisplay value={days} type={"Days"} />
-      <p>:</p>
-      <DateTimeDisplay value={hours} type={"Hours"} />
-      <p>:</p>
-      <DateTimeDisplay value={minutes} type={"Mins"} />
-      <p>:</p>
-      <DateTimeDisplay value={seconds} type={"Seconds"} />
+      {showDays && (
+        <div style={{ display: "flex" }}>
+          <DateTimeDisplay value={days} type={"Days"} />
+        </div>
+      )}
+      <div
+        style={
+          showDays === false ||
+          (showHours === false &&
+            showMinutes === false &&
+            showSeconds === false)
+            ? { display: "none" }
+            : { display: "flex" }
+        }
+      >
+        <p>:</p>
+      </div>
+      {showHours && (
+        <div style={{ display: "flex" }}>
+          <DateTimeDisplay value={hours} type={"Hours"} />
+        </div>
+      )}
+      <div
+        style={
+          showHours === false ||
+          (showMinutes === false && showSeconds === false)
+            ? { display: "none" }
+            : { display: "flex" }
+        }
+      >
+        <p>:</p>
+      </div>
+      {showMinutes && (
+        <div style={{ display: "flex" }}>
+          <DateTimeDisplay value={minutes} type={"Mins"} />
+        </div>
+      )}
+      <div
+        style={
+          showMinutes === false || showSeconds === false
+            ? { display: "none" }
+            : { display: "flex" }
+        }
+      >
+        <p>:</p>
+      </div>
+      {showSeconds && (
+        <div style={{ display: "flex" }}>
+          <DateTimeDisplay value={seconds} type={"Seconds"} />
+        </div>
+      )}
     </div>
   );
 };
 export type CountdownTimerComponentTypes = {
+  isFrozen: boolean;
   targetDate: number;
+  showDays: boolean;
+  showHours: boolean;
+  showMinutes: boolean;
+  showSeconds: boolean;
 };
 
 export const CountdownTimer: React.FC<CountdownTimerComponentTypes> = ({
+  isFrozen,
   targetDate,
+  showDays,
+  showHours,
+  showMinutes,
+  showSeconds,
 }) => {
-  const [days, hours, minutes, seconds] = useCountdown(targetDate);
+  const [days, hours, minutes, seconds] = useCountdown(targetDate, isFrozen);
 
   if (days + hours + minutes + seconds <= 0) {
     return <ExpiredNotice />;
@@ -79,26 +141,55 @@ export const CountdownTimer: React.FC<CountdownTimerComponentTypes> = ({
         hours={hours}
         minutes={minutes}
         seconds={seconds}
+        showDays={showDays}
+        showHours={showHours}
+        showMinutes={showMinutes}
+        showSeconds={showSeconds}
       />
     );
   }
 };
 
 export type CountdownAssetComponentTypes = {
+  isFrozen: boolean;
   noOfDays: number;
+  noOfHours: number;
+  noOfMinutes: number;
+  noOfSeconds: number;
+  showDays: boolean;
+  showHours: boolean;
+  showMinutes: boolean;
+  showSeconds: boolean;
 };
 
 export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
+  isFrozen,
   noOfDays,
+  noOfHours,
+  noOfMinutes,
+  noOfSeconds,
+  showDays,
+  showHours,
+  showMinutes,
+  showSeconds,
 }) => {
-  const dayss = noOfDays;
-  const days = dayss * 24 * 60 * 60 * 1000;
+  const days = noOfDays * 24 * 60 * 60 * 1000;
+  const hours = noOfHours * 60 * 60 * 1000;
+  const minutes = noOfMinutes * 60 * 1000;
+  const seconds = noOfSeconds * 1000;
   const now = new Date().getTime();
-  const dateTimeAfterThreeDays = Number(now) + days;
+  const dateTimeAfterGivenTime = Number(now) + days + hours + minutes + seconds;
 
   return (
     <div>
-      <CountdownTimer targetDate={dateTimeAfterThreeDays} />
+      <CountdownTimer
+        isFrozen={isFrozen}
+        targetDate={dateTimeAfterGivenTime}
+        showDays={showDays}
+        showHours={showHours}
+        showMinutes={showMinutes}
+        showSeconds={showSeconds}
+      />
     </div>
   );
 };
@@ -107,12 +198,32 @@ export const Countdown = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { days: 1 };
+    custom: {
+      days: 1;
+      hours: 21;
+      minutes: 54;
+      seconds: 42;
+      frozen: true;
+      showDays: true;
+      showHours: true;
+      showMinutes: true;
+      showSeconds: true;
+    };
   }
 >((props, ref) => {
   return (
     <div ref={ref} style={props.styles}>
-      <CountdownAsset noOfDays={props.custom.days} />
+      <CountdownAsset
+        isFrozen={props.custom.frozen}
+        noOfDays={props.custom.days}
+        noOfHours={props.custom.hours}
+        noOfMinutes={props.custom.minutes}
+        noOfSeconds={props.custom.seconds}
+        showDays={props.custom.showDays}
+        showHours={props.custom.showHours}
+        showMinutes={props.custom.showMinutes}
+        showSeconds={props.custom.showSeconds}
+      />
     </div>
   );
 });
@@ -160,6 +271,14 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           days: 1,
+          hours: 1,
+          minutes: 1,
+          seconds: 1,
+          frozen: true,
+          showDays: true,
+          showHours: true,
+          showMinutes: true,
+          showSeconds: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

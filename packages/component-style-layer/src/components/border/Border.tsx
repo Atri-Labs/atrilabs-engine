@@ -72,7 +72,6 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const [showCp, setShowCp] = useState(false);
 
   const handleBorderChange = (
     e:
