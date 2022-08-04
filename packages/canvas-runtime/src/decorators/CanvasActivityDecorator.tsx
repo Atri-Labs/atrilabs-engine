@@ -40,6 +40,7 @@ type UNSET_DATA_DROP_TARGET = "UNSET_DATA_DROP_TARGET";
 type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
 type DELETE_COMPONENT_EVENT = "DELETE_COMPONENT_EVENT";
 type BLUR_EVENT = "BLUR_EVENT";
+type MANUAL_SELECT = "MANUAL_SELECT";
 
 type OverEvent = {
   type: OVER;
@@ -117,6 +118,12 @@ type BlurEvent = {
   id: string;
 };
 
+// A select event raised manually
+type ManualSelectEvent = {
+  type: MANUAL_SELECT;
+  id: string;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -132,7 +139,8 @@ type CanvasActivityEvent =
   | UnsetDropTargetEvent
   | ClearCanvasEvent
   | DeleteComponentEvent
-  | BlurEvent;
+  | BlurEvent
+  | ManualSelectEvent;
 
 // context
 export type CanvasActivityContext = {
@@ -399,6 +407,12 @@ const selectOnUnlockDataDrop = assign<CanvasActivityContext, UnlockEvent>({
   },
 });
 
+const onManualSelect = assign<CanvasActivityContext, ManualSelectEvent>({
+  select: (_context, event) => {
+    return { id: event.id };
+  },
+});
+
 const canvasActivityMachine = createMachine<
   CanvasActivityContext,
   CanvasActivityEvent
@@ -416,6 +430,7 @@ const canvasActivityMachine = createMachine<
           target: lockTemplateDrop,
           actions: [onLockTemplateDrop],
         },
+        MANUAL_SELECT: { target: select, actions: [onManualSelect] },
       },
       entry: assign({}),
     },
@@ -425,6 +440,7 @@ const canvasActivityMachine = createMachine<
         DOWN: { target: pressed },
         OUT_OF_CANVAS: { target: idle },
         CLEAR_CANVAS_EVENT: { target: idle },
+        MANUAL_SELECT: { target: select, actions: [onManualSelect] },
       },
       entry: (context, event) => {
         hoverCbs.forEach((cb) => cb(context, event));
@@ -459,6 +475,7 @@ const canvasActivityMachine = createMachine<
           target: idle,
           cond: deletedSelectedComponent,
         },
+        MANUAL_SELECT: { target: select, actions: [onManualSelect] },
       },
       type: "parallel",
       states: {
@@ -989,6 +1006,11 @@ function subscribeKeyup(
   };
 }
 
+// set select from widget navigatore or key up etc.
+function raiseSelectEvent(compId: string) {
+  service.send({ type: "MANUAL_SELECT", id: compId });
+}
+
 // ===================================================================
 
 export {
@@ -1010,4 +1032,5 @@ export {
   sendDeleteComponent,
   getCurrentMachineContext,
   subscribeKeyup,
+  raiseSelectEvent,
 };

@@ -266,6 +266,7 @@ export {
   subscribe as subscribeCanvasActivity,
   getCurrentState,
   getCurrentMachineContext,
+  raiseSelectEvent,
 } from "./decorators/CanvasActivityDecorator";
 
 export type { CanvasActivityContext } from "./decorators/CanvasActivityDecorator";
