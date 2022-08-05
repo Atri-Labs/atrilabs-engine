@@ -5,10 +5,13 @@ export type CanvasControllerProps = {
   breakpoint: Breakpoint;
 };
 
-let currentBreakpoint: Breakpoint = { min: 600, max: 900 };
+// null for desktop breakpoint
+let currentBreakpoint: Breakpoint | null = null;
 
-const breakpointPointSubscribers: ((point: Breakpoint) => void)[] = [];
-export const subscribeBreakpointChange = (cb: (point: Breakpoint) => void) => {
+const breakpointPointSubscribers: ((point: Breakpoint | null) => void)[] = [];
+export const subscribeBreakpointChange = (
+  cb: (point: Breakpoint | null) => void
+) => {
   breakpointPointSubscribers.push(cb);
   return {
     unsub: () => {

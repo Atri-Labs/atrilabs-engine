@@ -41,7 +41,7 @@ export const useManageCSS = (id: string | null) => {
           if (cssNode) {
             const styles = cssNode.state.property.styles;
             const breakpoints = cssNode.state.breakpoints;
-            if (breakpoints) {
+            if (breakpoints && breakpoint) {
               const effectiveStyle = getEffectiveStyle(
                 breakpoint,
                 breakpoints,

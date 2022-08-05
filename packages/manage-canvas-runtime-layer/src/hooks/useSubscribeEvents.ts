@@ -67,7 +67,7 @@ function createPropsFromManifestComponent(
         // temporary fix: handle breakpoint for styles prop only
 
         if (value) {
-          if (breakpoints && propKey === "styles") {
+          if (breakpoints && propKey === "styles" && breakpoint) {
             const styles = getEffectiveStyle(
               breakpoint,
               breakpoints,
