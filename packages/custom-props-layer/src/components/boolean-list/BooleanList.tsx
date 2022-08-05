@@ -3,6 +3,8 @@ import { ComponentProps } from "../../types";
 import { ReactComponent as AddIcon } from "../../assets/add.svg";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { gray300 } from "@atrilabs/design-system";
+import { RearrangeList } from "@atrilabs/shared-layer-lib";
+import { ReactComponent as ThreeDots } from "../../assets/more-vertical.svg";
 
 export const BooleanList: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
@@ -46,6 +48,21 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
     },
     [props, propValue]
   );
+  const onReposition = useCallback(
+    (deleteAt: number, insertAt: number) => {
+      const updatedValue = [...propValue];
+      const deletedItem = updatedValue.splice(deleteAt, 1)[0];
+      updatedValue.splice(insertAt, 0, deletedItem);
+      props.patchCb({
+        property: {
+          custom: {
+            [props.propName]: updatedValue,
+          },
+        },
+      });
+    },
+    [propValue, props]
+  );
   return (
     <div>
       <div
@@ -60,33 +77,44 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
           <AddIcon />
         </div>
       </div>
-      {Array.isArray(propValue)
-        ? propValue.map((value, index) => {
-            return (
-              <div
-                key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
+      {Array.isArray(propValue) ? (
+        <RearrangeList
+          onReposition={onReposition}
+          iconItem={
+            <div style={{ width: "24px", height: "24px" }}>
+              <ThreeDots />
+            </div>
+          }
+          items={propValue.map((value, index) => {
+            return {
+              node: (
                 <div
-                  onClick={() => {
-                    editValueCb(index);
-                  }}
-                  style={{ flexGrow: 1, background: gray300 }}
+                  key={index}
+                  style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  {value.toString()}
+                  <div
+                    onClick={() => {
+                      editValueCb(index);
+                    }}
+                    style={{ flexGrow: 1, background: gray300 }}
+                  >
+                    {value.toString()}
+                  </div>
+                  <div
+                    style={{ display: "flex", alignItems: "center" }}
+                    onClick={() => {
+                      deleteValueCb(index);
+                    }}
+                  >
+                    <MinusIcon />
+                  </div>
                 </div>
-                <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  onClick={() => {
-                    deleteValueCb(index);
-                  }}
-                >
-                  <MinusIcon />
-                </div>
-              </div>
-            );
-          })
-        : null}
+              ),
+              key: index.toString(),
+            };
+          })}
+        />
+      ) : null}
     </div>
   );
 };

@@ -71,7 +71,7 @@ export const RearrangeList: React.FC<RearrangeListProps> = (props) => {
                 setMouseDownIndex(index);
               }}
             >
-              Icon
+              {props.iconItem}
             </div>
             <div>{item.node}</div>
           </div>
