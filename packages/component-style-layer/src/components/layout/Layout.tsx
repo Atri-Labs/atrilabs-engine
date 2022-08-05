@@ -147,25 +147,95 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             patchCb={props.patchCb}
             styles={props.styles}
           >
-            <FlexStretch />
-            <FlexStart />
-            <FlexCenter />
-            <FlexEnd />
-            <FlexBaseline />
+            <FlexStretch
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(-90deg)"
+                  : "",
+              }}
+            />
+            <FlexStart
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(-90deg)"
+                  : "",
+              }}
+            />
+            <FlexCenter
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(-90deg)"
+                  : "",
+              }}
+            />
+            <FlexEnd
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(-90deg)"
+                  : "",
+              }}
+            />
+            <FlexBaseline
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(-90deg)"
+                  : "",
+              }}
+            />
           </PropertyRender>
 
           <PropertyRender
             styleItem="justifyContent"
-            styleText="Justify- content"
+            styleText="Justify-content"
             styleArray={justifyContentValues}
             patchCb={props.patchCb}
             styles={props.styles}
           >
-            <JCStart />
-            <JCCenter />
-            <JCEnd />
-            <JCSpaceBetween />
-            <JCSpaceAround />
+            <JCStart
+              style={{
+                transform:
+                  props.styles.flexDirection === "column"
+                    ? "rotate(90deg)"
+                    : props.styles.flexDirection === "column-reverse"
+                    ? "rotate(-90deg)"
+                    : props.styles.flexDirection === "row-reverse"
+                    ? "rotate(180deg)"
+                    : "",
+              }}
+            />
+            <JCCenter
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(90deg)"
+                  : "",
+              }}
+            />
+            <JCEnd
+              style={{
+                transform:
+                  props.styles.flexDirection === "column"
+                    ? "rotate(90deg)"
+                    : props.styles.flexDirection === "column-reverse"
+                    ? "rotate(-90deg)"
+                    : props.styles.flexDirection === "row-reverse"
+                    ? "rotate(180deg)"
+                    : "",
+              }}
+            />
+            <JCSpaceBetween
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(90deg)"
+                  : "",
+              }}
+            />
+            <JCSpaceAround
+              style={{
+                transform: props.styles.flexDirection?.startsWith("column")
+                  ? "rotate(90deg)"
+                  : "",
+              }}
+            />
           </PropertyRender>
 
           <PropertyRender
