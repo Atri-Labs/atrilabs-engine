@@ -31,6 +31,7 @@
   "dependencies": {
     "@atrilabs/app-design-forest": "^0.0.35",
     "@atrilabs/canvas-runtime": "^0.0.35",
+    "@atrilabs/canvas-runtime-utils": "^0.0.35",
     "@atrilabs/core": "^0.0.35",
     "@atrilabs/design-system": "^0.0.35",
     "@atrilabs/layer-types": "^0.0.35",

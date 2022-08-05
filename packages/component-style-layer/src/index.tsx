@@ -14,7 +14,7 @@ This serves as the Data Manager component for this layer.
 export default function () {
   // show tab and set alias
   const { showTab, alias, setAliasCb, id } = useShowTab();
-  const { patchCb, styles, treeOptions } = useManageCSS(id);
+  const { patchCb, styles, treeOptions, breakpoint } = useManageCSS(id);
   const {
     openAssetManager,
     modes,
@@ -46,6 +46,7 @@ export default function () {
                 openAssetManager={openAssetManager}
                 openPalette={openPalette}
                 compId={id}
+                breakpoint={breakpoint}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div

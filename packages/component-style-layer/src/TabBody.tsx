@@ -10,6 +10,7 @@ import { Typography } from "./components/typography/Typography";
 import Position from "./components/position/Position";
 import { Background } from "./components/background/Background";
 import { CssProprtyComponentType } from "./types";
+import { Breakpoint } from "@atrilabs/canvas-runtime";
 
 export type TabBodyProps = {
   alias: string;
@@ -20,6 +21,7 @@ export type TabBodyProps = {
   openAssetManager: CssProprtyComponentType["openAssetManager"];
   openPalette: CssProprtyComponentType["openPalette"];
   compId: string;
+  breakpoint: Breakpoint | null;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
