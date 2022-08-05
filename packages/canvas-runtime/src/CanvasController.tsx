@@ -21,6 +21,7 @@ export const subscribeBreakpointChange = (cb: (point: Breakpoint) => void) => {
   };
 };
 
+// set breakpoint using CanvasController React.FC
 export const CanvasController: React.FC<CanvasControllerProps> = (props) => {
   useEffect(() => {
     currentBreakpoint = props.breakpoint;
@@ -30,3 +31,7 @@ export const CanvasController: React.FC<CanvasControllerProps> = (props) => {
   }, [props.breakpoint]);
   return <></>;
 };
+
+export function getCurrentBreakpoint() {
+  return currentBreakpoint;
+}

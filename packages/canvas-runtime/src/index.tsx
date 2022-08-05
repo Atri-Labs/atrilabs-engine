@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { Container } from "@atrilabs/core";
 import { Canvas } from "./Canvas";
-export { CanvasController } from "./CanvasController";
+export {
+  CanvasController,
+  subscribeBreakpointChange,
+  getCurrentBreakpoint,
+} from "./CanvasController";
 export {
   startDrag,
   subscribeNewDrop,
