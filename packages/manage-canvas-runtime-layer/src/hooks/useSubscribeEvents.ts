@@ -11,12 +11,14 @@ import {
   createComponent,
   deleteComponent,
   getComponentProps,
+  getCurrentBreakpoint,
   updateComponentParent,
   updateComponentProps,
 } from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
 
 /**
  * This function is an escape hatch and should be removed with urgency.
@@ -51,6 +53,7 @@ function createPropsFromManifestComponent(
 ) {
   const propsKeys = Object.keys(manifetComponent.dev.attachProps);
   const props: { [key: string]: any } = {};
+  const breakpoint = getCurrentBreakpoint();
   for (let i = 0; i < propsKeys.length; i++) {
     const propKey = propsKeys[i];
     const treeId = manifetComponent.dev.attachProps[propKey].treeId;
@@ -60,7 +63,21 @@ function createPropsFromManifestComponent(
         const propNodeId = tree.links[compId].childId;
         // convention that state.property field in tree contains the value
         const value = tree.nodes[propNodeId].state.property;
-        if (value) props[propKey] = value[propKey];
+        const breakpoints = tree.nodes[propNodeId].state.breakpoints;
+        // temporary fix: handle breakpoint for styles prop only
+
+        if (value) {
+          if (breakpoints && propKey === "styles") {
+            const styles = getEffectiveStyle(
+              breakpoint,
+              breakpoints,
+              value["styles"]
+            );
+            props[propKey] = styles;
+          } else {
+            props[propKey] = value[propKey];
+          }
+        }
       }
     }
   }
