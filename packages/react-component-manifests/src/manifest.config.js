@@ -25,9 +25,9 @@ module.exports = {
       modulePath: "./src/manifests/Upload/Upload.tsx",
       exportedVarName: "Upload",
     },
-    Accordian: {
+    Accordion: {
       modulePath: "./src/manifests/Accordion/Accordion.tsx",
-      exportedVarName: "Accordian",
+      exportedVarName: "Accordion",
     },
     Carousel: {
       modulePath: "./src/manifests/Carousel/Carousel.tsx",

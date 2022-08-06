@@ -29,7 +29,7 @@ export const keyCallbackMap: {
       actions: [{ type: "file_input", selector: ["io", "files"] }],
     },
   },
-  Accordian: {},
+  Accordion: {},
   Carousel: {},
   Countdown: {},
   Link: {},

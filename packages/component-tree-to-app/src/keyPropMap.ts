@@ -131,7 +131,7 @@ export const keyPropMap: any = {
     styles: { ...FlexChildStyle },
     custom: { multiple: false },
   },
-  Accordian: {
+  Accordion: {
     styles: { ...FlexChildStyle },
     custom: { title: [], description: [], open: [] },
   },
