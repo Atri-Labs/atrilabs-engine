@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 export type useCountdownHookType = {
   targetDate: number;
   countDown: number;
+  isFrozen: boolean;
 };
-const useCountdown = (targetDate: useCountdownHookType["targetDate"]) => {
+const useCountdown = (
+  targetDate: useCountdownHookType["targetDate"],
+  isFrozen: useCountdownHookType["isFrozen"]
+) => {
   const countDownDate = new Date(targetDate).getTime();
 
   const [countDown, setCountDown] = useState(
@@ -12,12 +16,19 @@ const useCountdown = (targetDate: useCountdownHookType["targetDate"]) => {
   );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountDown(countDownDate - new Date().getTime());
-    }, 1000);
+    setCountDown(countDownDate - new Date().getTime());
+  }, [countDownDate]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setTimeout>;
+    if (!isFrozen) {
+      interval = setInterval(() => {
+        setCountDown(countDownDate - new Date().getTime());
+      }, 1000);
+    }
 
     return () => clearInterval(interval);
-  }, [countDownDate]);
+  }, [countDownDate, isFrozen]);
 
   return getReturnValues(countDown);
 };

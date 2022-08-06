@@ -8,11 +8,11 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-export const Label = forwardRef<
-  HTMLLabelElement,
+export const TextBox = forwardRef<
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { label: string };
+    custom: { text: string };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -23,9 +23,9 @@ export const Label = forwardRef<
     [props]
   );
   return (
-    <label ref={ref} style={props.styles} onClick={onClick}>
-      {props.custom.label}
-    </label>
+    <div ref={ref} style={props.styles} onClick={onClick}>
+      {props.custom.text}
+    </div>
   );
 });
 
@@ -42,14 +42,14 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    label: "text",
+    text: "text",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Label", category: "Basics" },
+  meta: { key: "TextBox", category: "Basics" },
   render: {
-    comp: Label,
+    comp: TextBox,
   },
   dev: {
     decorators: [],
@@ -63,7 +63,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          label: "Label Text",
+          text: "Your text Here!",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -79,10 +79,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Label" } },
+  panel: { comp: CommonIcon, props: { name: "TextBox" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Label", containerStyle: { padding: "1rem" } },
+    props: { name: "TextBox", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

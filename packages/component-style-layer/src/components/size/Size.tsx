@@ -14,6 +14,7 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInput } from "../commons/SizeInput";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -78,7 +79,7 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
             <div>Max</div>
             <div style={styles.optionName}>W</div>
             <div>
-              <SizeInput
+              <SizeInputWithUnits
                 styleItem="width"
                 styles={props.styles}
                 patchCb={props.patchCb}

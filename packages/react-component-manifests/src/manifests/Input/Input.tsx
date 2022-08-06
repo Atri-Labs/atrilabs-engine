@@ -12,7 +12,7 @@ export const Input = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { value: string };
+    custom: { value: string; placeholder: string };
     onChange: (value: string) => void;
   }
 >((props, ref) => {
@@ -27,6 +27,7 @@ export const Input = forwardRef<
       ref={ref}
       style={props.styles}
       onChange={onChange}
+      placeholder={props.custom.placeholder}
       value={props.custom.value}
     />
   );
@@ -46,6 +47,7 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     value: "text",
+    placeholder: "text",
   },
 };
 
@@ -65,7 +67,7 @@ const compManifest: ReactComponentManifestSchema = {
           fontFeatureSettings: "tnum",
           paddingTop: "4px",
           paddingLeft: "11px",
-          paddingBottom: "4p",
+          paddingBottom: "4px",
           paddingRight: "11px",
           color: "#000000d9",
           fontSize: "14px",
@@ -83,6 +85,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           value: "",
+          placeHolder: "Placeholder Text",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
