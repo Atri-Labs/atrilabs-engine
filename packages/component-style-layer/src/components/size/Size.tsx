@@ -72,69 +72,69 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         <div style={styles.header}>Size</div>
       </div>
       <div style={showProperties ? { display: "block" } : { display: "none" }}>
-          <div style={styles.gridContainer}>
-            <div>&nbsp;</div>
-            <div>&nbsp;</div>
-            <div>Min</div>
-            <div>Max</div>
-            <div style={styles.optionName}>W</div>
-            <div>
-              <SizeInputWithUnits
-                styleItem="width"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
-            <div>
-              <SizeInput
-                styleItem="minWidth"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
-            <div>
-              <SizeInput
-                styleItem="maxWidth"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
-            
-            <div style={styles.optionName}>H</div>
-            <div>
-              <SizeInput
-                styleItem="height"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
-            <div>
-              <SizeInput
-                styleItem="minHeight"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
-            <div>
-              <SizeInput
-                styleItem="maxHeight"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                placeHolderText="PX"
-              />
-            </div>
+        <div style={styles.gridContainer}>
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+          <div>Min</div>
+          <div>Max</div>
+          <div style={styles.optionName}>W</div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="width"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
           </div>
+          <div>
+            <SizeInput
+              styleItem="minWidth"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
+          </div>
+          <div>
+            <SizeInput
+              styleItem="maxWidth"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
+          </div>
+
+          <div style={styles.optionName}>H</div>
+          <div>
+            <SizeInput
+              styleItem="height"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
+          </div>
+          <div>
+            <SizeInput
+              styleItem="minHeight"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
+          </div>
+          <div>
+            <SizeInput
+              styleItem="maxHeight"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+              placeHolderText="PX"
+            />
+          </div>
+        </div>
 
         <PropertyRender
           styleItem="overflow"
