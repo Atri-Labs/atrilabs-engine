@@ -575,6 +575,18 @@ export function createReactAppTemplateManager(
 
   // This function requires addComponents and addProps to already have been run
   function flushStore() {
+    // read template
+    // although we expect copyTemplate to have been run already
+    if (!fs.existsSync(path.dirname(useStoreDestPath))) {
+      fs.mkdirSync(path.dirname(useStoreDestPath), { recursive: true });
+    }
+    // copy useStore again (in case it's polluted)
+    const useStoreTemplateText = fs
+      .readFileSync(useStoreTemplatePath)
+      .toString();
+
+    // create slices
+    const slices: { index: number; length: number; replaceWith: string }[] = [];
     const pageNames = Object.keys(componentMap);
     const propsForAllPages = pageNames.map((pageName) => {
       const components = componentMap[pageName]!;
@@ -587,42 +599,75 @@ export function createReactAppTemplateManager(
           propsMap[pageName][compId].props
             ? propsMap[pageName][compId].props
             : {};
-        return { alias, props };
+        const breakpointProps =
+          propsMap[pageName] &&
+          propsMap[pageName][compId] &&
+          propsMap[pageName][compId].breakpointProps
+            ? propsMap[pageName][compId].breakpointProps!
+            : {};
+        return { alias, props, breakpointProps };
       });
       return { propsForPage, pageName };
     });
-    // create data to put in useStore
-    const useStoreData: { [pageName: string]: { [alias: string]: any } } = {};
+    // create desktop mode props to put in useStore
+    const desktopPropsData: { [pageName: string]: { [alias: string]: any } } =
+      {};
     propsForAllPages.forEach((propsForPage) => {
       const aliasPropsMap: { [alias: string]: any } = {};
       propsForPage.propsForPage.forEach((aliasProps) => {
         aliasPropsMap[aliasProps.alias] = aliasProps.props;
       });
-      useStoreData[propsForPage.pageName] = aliasPropsMap;
+      desktopPropsData[propsForPage.pageName] = aliasPropsMap;
     });
-    // although we expect copyTemplate to have been run already
-    if (!fs.existsSync(path.dirname(useStoreDestPath))) {
-      fs.mkdirSync(path.dirname(useStoreDestPath), { recursive: true });
-    }
-    // copy useStore again (in case it's polluted)
-    const useStoreTemplateText = fs
-      .readFileSync(useStoreTemplatePath)
-      .toString();
-    const dataCursorMatch = useStoreTemplateText.match(
+    const dataCursor1Match = useStoreTemplateText.match(
       /\/\*\sDATA\s1\sCURSOR.*\n/
     );
-    if (dataCursorMatch) {
-      const newText = replaceText(useStoreTemplateText, [
-        {
-          index: dataCursorMatch.index!,
-          length: dataCursorMatch[0].length,
-          replaceWith: `...${JSON.stringify(useStoreData, null, 2)}`,
-        },
-      ]);
-      fs.writeFileSync(useStoreDestPath, newText);
+    if (dataCursor1Match) {
+      slices.push({
+        index: dataCursor1Match.index!,
+        length: dataCursor1Match[0].length,
+        replaceWith: `...${JSON.stringify(desktopPropsData, null, 2)}`,
+      });
     } else {
       console.log("useStore data cursor match is null");
     }
+
+    const breakpointPropsData: {
+      [pageName: string]: { [maxWidth: string]: { [alias: string]: any } };
+    } = {};
+    propsForAllPages.forEach(({ propsForPage, pageName }) => {
+      breakpointPropsData[pageName] = {};
+      const maxWidthLevelData: {
+        [maxWidth: string]: { [alias: string]: any };
+      } = {};
+      propsForPage.forEach(({ alias, breakpointProps }) => {
+        const widths = Object.keys(breakpointProps);
+        widths.forEach((width) => {
+          if (maxWidthLevelData[width]) {
+            maxWidthLevelData[width][alias] = breakpointProps[width];
+          } else {
+            maxWidthLevelData[width] = { [alias]: breakpointProps[width] };
+          }
+        });
+      });
+      breakpointPropsData[pageName] = maxWidthLevelData;
+    });
+    const dataCursor2Match = useStoreTemplateText.match(
+      /\/\*\sDATA\s2\sCURSOR.*\n/
+    );
+    if (dataCursor2Match) {
+      slices.push({
+        index: dataCursor2Match.index!,
+        length: dataCursor2Match[0].length,
+        replaceWith: `...${JSON.stringify(breakpointPropsData, null, 2)}`,
+      });
+    } else {
+      console.log("useStore data cursor match is null");
+    }
+
+    // write slices
+    const newText = replaceText(useStoreTemplateText, slices);
+    fs.writeFileSync(useStoreDestPath, newText);
   }
 
   // This function requires addComponents and addProps to already have been run

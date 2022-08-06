@@ -5,6 +5,19 @@ import {
 import { generateModuleId } from "@atrilabs/scripts";
 import { keyIoPropMap } from "./keyIoPropMap";
 
+function transformBreakpointProps(data: {
+  [maxWidth: string]: { property: any };
+}) {
+  const result: { [maxWidth: string]: any } = {};
+  const maxWidths = Object.keys(data);
+  maxWidths.forEach((maxWidth) => {
+    if (data[maxWidth]!.property) {
+      result[maxWidth] = data[maxWidth]!.property;
+    }
+  });
+  return result;
+}
+
 // will exclude trees in options.custom.excludes
 const childTreeToProps: PropsGeneratorFunction = (options) => {
   const output: PropsGeneratorOutput = {};
@@ -58,9 +71,20 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
                 ...output[refId]!["props"],
                 ...childNode.state["property"],
               },
+              breakpointProps: {
+                ...output[refId]!["breakpointProps"],
+                ...(childNode.state["breakpoints"]
+                  ? transformBreakpointProps(childNode.state["breakpoints"])
+                  : {}),
+              },
             };
           } else {
-            output[refId] = { props: childNode.state["property"] };
+            output[refId] = {
+              props: childNode.state["property"],
+              breakpointProps: childNode.state["breakpoints"]
+                ? transformBreakpointProps(childNode.state["breakpoints"])
+                : {},
+            };
           }
         }
         // add ioProps

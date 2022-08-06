@@ -61,7 +61,11 @@ export type PropsGeneratorOptions = {
 };
 
 export type PropsGeneratorOutput = {
-  [compId: string]: { props: any; ioProps?: any };
+  [compId: string]: {
+    props: any;
+    ioProps?: any;
+    breakpointProps?: { [maxWidth: string]: any };
+  };
 };
 
 // returns all the props from a page
