@@ -131,4 +131,50 @@ export const keyPropMap: any = {
     styles: { ...FlexChildStyle },
     custom: { multiple: false },
   },
+  Accordian: {
+    styles: { ...FlexChildStyle },
+    custom: { title: [], description: [], open: [] },
+  },
+  Carousel: {
+    styles: { ...FlexChildStyle },
+    custom: { items: [], startTile: 0, imageItems: [] },
+  },
+  Countdown: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      days: 1,
+      hours: 1,
+      minutes: 1,
+      seconds: 1,
+      frozen: true,
+      showDays: true,
+      showHours: true,
+      showMinutes: true,
+      showSeconds: true,
+    },
+  },
+  Link: {
+    styles: { ...FlexChildStyle },
+    custom: { text: "Link", url: "/" },
+  },
+  Radio: {
+    styles: { ...FlexChildStyle },
+    custom: { name: "", label: "Radio", checked: false },
+  },
+  Slider: {
+    styles: { ...FlexChildStyle },
+    custom: { startValue: 0, endValue: 100, value: 50 },
+  },
+  Step: {
+    styles: { ...FlexChildStyle },
+    custom: { color: "#336699", current: 1, title: [], description: [] },
+  },
+  TextBox: {
+    styles: { ...FlexChildStyle },
+    custom: { text: "Your text Here!" },
+  },
+  Toggle: {
+    styles: { ...FlexChildStyle },
+    custom: { activeColor: "#2196f3", active: false, inactiveColor: "#CCCCCC" },
+  },
 };

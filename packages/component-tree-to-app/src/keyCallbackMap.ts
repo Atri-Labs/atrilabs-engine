@@ -29,4 +29,13 @@ export const keyCallbackMap: {
       actions: [{ type: "file_input", selector: ["io", "files"] }],
     },
   },
+  Accordian: {},
+  Carousel: {},
+  Countdown: {},
+  Link: {},
+  Radio: {},
+  Slider: {},
+  Step: {},
+  TextBox: {},
+  Toggle: {},
 };

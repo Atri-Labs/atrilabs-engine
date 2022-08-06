@@ -25,5 +25,41 @@ module.exports = {
       modulePath: "./src/manifests/Upload/Upload.tsx",
       exportedVarName: "Upload",
     },
+    Accordian: {
+      modulePath: "./src/manifests/Accordion/Accordion.tsx",
+      exportedVarName: "Accordian",
+    },
+    Carousel: {
+      modulePath: "./src/manifests/Carousel/Carousel.tsx",
+      exportedVarName: "Carousel",
+    },
+    Countdown: {
+      modulePath: "./src/manifests/Countdown/Countdown.tsx",
+      exportedVarName: "Countdown",
+    },
+    Link: {
+      modulePath: "./src/manifests/Link/Link.tsx",
+      exportedVarName: "Link",
+    },
+    Radio: {
+      modulePath: "./src/manifests/Radio/Radio.tsx",
+      exportedVarName: "Radio",
+    },
+    Slider: {
+      modulePath: "./src/manifests/Slider/Slider.tsx",
+      exportedVarName: "Slider",
+    },
+    Step: {
+      modulePath: "./src/manifests/Step/Step.tsx",
+      exportedVarName: "Step",
+    },
+    TextBox: {
+      modulePath: "./src/manifests/TextBox/TextBox.tsx",
+      exportedVarName: "TextBox",
+    },
+    Toggle: {
+      modulePath: "./src/manifests/Toggle/Toggle.tsx",
+      exportedVarName: "Toggle",
+    },
   },
 };
