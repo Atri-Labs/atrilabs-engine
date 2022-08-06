@@ -129,18 +129,14 @@ function updateAppStore(
   eventData: any
 ) {
   const currentPageState = useStore.getState()[pageName];
-  const currentCompState = currentPageState[alias];
-  let newObj: any = {};
-  let currObj = newObj;
+  const newCompState = JSON.parse(JSON.stringify(currentPageState[alias]));
+  let currObj = newCompState;
   selector.forEach((sel, index) => {
     if (index === selector.length - 1) {
       currObj[sel] = eventData;
-    } else {
-      currObj[sel] = {};
     }
     currObj = currObj[sel];
   });
-  const newCompState = { ...currentCompState, ...newObj };
   const newPageState = { ...currentPageState, [alias]: newCompState };
   useStore.setState({ [pageName]: newPageState });
 }
@@ -152,20 +148,16 @@ function updateAppIoStore(
   eventData: any
 ) {
   const currentPageState = useIoStore.getState()[pageName];
-  const currentCompState = currentPageState[alias];
+  const newCompState = JSON.parse(JSON.stringify(currentPageState[alias]));
   // not all components will have an entry in ioStore
-  if (currentCompState) {
-    let newObj: any = {};
-    let currObj = newObj;
+  if (newCompState) {
+    let currObj = newCompState;
     selector.forEach((sel, index) => {
       if (index === selector.length - 1) {
         currObj[sel] = eventData;
-      } else {
-        currObj[sel] = {};
       }
       currObj = currObj[sel];
     });
-    const newCompState = { ...currentCompState, ...newObj };
     const newPageState = { ...currentPageState, [alias]: newCompState };
     useIoStore.setState({ [pageName]: newPageState });
     console.log("useIoStore", useIoStore.getState());
