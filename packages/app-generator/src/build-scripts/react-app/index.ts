@@ -90,6 +90,7 @@ function updateAppStoreWithControllerProps(
       compIds.forEach((compId) => {
         const comp = componentGeneratorOutput[compId];
         newProps[compId] = {
+          ...options.appInfo.pages[pageId].propsGeneratorOutput[compId],
           props: controllerPropsForPage[comp.alias],
         };
       });

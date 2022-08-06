@@ -49,9 +49,9 @@ function getEffectiveBreakpointWidths(pageName, windowWidth) {
 function getEffectivePropsForPage(pageName) {
   const { width } = getViewportDimension();
   // effectiveProps initially has local changes
-  let effectiveProps = JSON.stringify({
-    ...useStore.getState()[pageName],
-  });
+  let effectiveProps = JSON.parse(
+    JSON.stringify(useStore.getState()[pageName])
+  );
   const effectiveWidths = getEffectiveBreakpointWidths(pageName, width);
   effectiveWidths.forEach((effectiveWidth) => {
     const compAliases = Object.keys(breakpointProps[pageName][effectiveWidth]);
