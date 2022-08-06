@@ -473,6 +473,30 @@ export function createReactAppTemplateManager(
     } else {
       console.log("jsx cursor not found");
     }
+    const pageName1CursorMatch = pageText.match(
+      /\/\*\sPAGE\sNAME\s1\sCURSOR.*\)/
+    );
+    if (pageName1CursorMatch) {
+      slices.push({
+        index: pageName1CursorMatch.index!,
+        length: pageName1CursorMatch[0].length,
+        replaceWith: `"${name}")`,
+      });
+    } else {
+      console.log("page name 1 cursor not found");
+    }
+    const pageName2CursorMatch = pageText.match(
+      /\/\*\sPAGE\sNAME\s2\sCURSOR.*\)/
+    );
+    if (pageName2CursorMatch) {
+      slices.push({
+        index: pageName2CursorMatch.index!,
+        length: pageName2CursorMatch[0].length,
+        replaceWith: `"${name}")`,
+      });
+    } else {
+      console.log("page name 2 cursor not found");
+    }
     // define component props, callbacks, refs etc.
     const componentCursorMatch = pageText.match(/\/\/\sCOMPONENT\sCURSOR.*\n/);
     if (componentCursorMatch) {
@@ -584,13 +608,15 @@ export function createReactAppTemplateManager(
     const useStoreTemplateText = fs
       .readFileSync(useStoreTemplatePath)
       .toString();
-    const dataCursorMatch = useStoreTemplateText.match(/\/\/\sDATA\sCURSOR\n/);
+    const dataCursorMatch = useStoreTemplateText.match(
+      /\/\*\sDATA\s1\sCURSOR.*\n/
+    );
     if (dataCursorMatch) {
       const newText = replaceText(useStoreTemplateText, [
         {
           index: dataCursorMatch.index!,
           length: dataCursorMatch[0].length,
-          replaceWith: `return ${JSON.stringify(useStoreData, null, 2)}`,
+          replaceWith: `...${JSON.stringify(useStoreData, null, 2)}`,
         },
       ]);
       fs.writeFileSync(useStoreDestPath, newText);
