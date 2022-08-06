@@ -5,10 +5,12 @@ const useStore = create((set) => {
 });
 
 const desktopModeProps = {
-  /* DATA CURSOR */
+  /* DATA 1 CURSOR */
 };
 
-const breakpointProps = {};
+const breakpointProps = {
+  /* DATA 2 CURSOR */
+};
 
 function getViewportDimension() {
   const width = Math.max(
