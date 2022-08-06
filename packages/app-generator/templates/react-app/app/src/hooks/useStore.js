@@ -4,6 +4,10 @@ const useStore = create((set) => {
   return {};
 });
 
+export function updateStoreStateFromController(pageName, newState) {
+  useStore.setState({ [pageName]: newState });
+}
+
 const desktopModeProps = {
   /* DATA 1 CURSOR */
 };
@@ -29,20 +33,39 @@ function getEffectiveBreakpointWidths(pageName, windowWidth) {
     return [];
   }
   const widths = Object.keys(breakpointProps[pageName]);
-  return widths.filter((curr) => {
-    return curr >= windowWidth;
-  });
+  return widths
+    .filter((curr) => {
+      return parseInt(curr) >= windowWidth;
+    })
+    .sort((a, b) => {
+      return parseInt(a) - parseInt(b);
+    });
 }
 
+/**
+ *
+ * effective props is combination of
+ */
 function getEffectivePropsForPage(pageName) {
   const { width } = getViewportDimension();
-  let effectiveProps = JSON.stringify(desktopModeProps[pageName]);
+  // effectiveProps initially has local changes
+  let effectiveProps = JSON.stringify({
+    ...useStore.getState()[pageName],
+  });
   const effectiveWidths = getEffectiveBreakpointWidths(pageName, width);
   effectiveWidths.forEach((effectiveWidth) => {
-    effectiveProps = {
-      ...effectiveProps,
-      ...breakpointProps[pageName][effectiveWidth],
-    };
+    const compAliases = Object.keys(breakpointProps[pageName][effectiveWidth]);
+    compAliases.forEach((compAlias) => {
+      const propNames = Object.keys(
+        breakpointProps[pageName][effectiveWidth][compAlias]
+      );
+      propNames.forEach((propName) => {
+        effectiveProps[compAlias][propName] = {
+          ...useStore.getState()[pageName][compAlias][propName],
+          ...breakpointProps[pageName][effectiveWidth][compAlias][propName],
+        };
+      });
+    });
   });
   return effectiveProps;
 }

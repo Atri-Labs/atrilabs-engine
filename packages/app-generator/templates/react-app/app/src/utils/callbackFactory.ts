@@ -1,4 +1,4 @@
-import useStore from "../hooks/useStore";
+import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
 
 export type CallbackDef = {
@@ -48,7 +48,7 @@ function sendEventDataFn(
     .then((res) => {
       console.log("got res", res);
       if (res && res["pageState"])
-        useStore.setState({ [pageName]: res["pageState"] });
+        updateStoreStateFromController(pageName, res["pageState"]);
     });
 }
 
@@ -116,8 +116,9 @@ function sendEventInFormDataFn(
     .then((res) => res.json())
     .then((res) => {
       console.log("got res", res);
-      if (res && res["pageState"])
-        useStore.setState({ [pageName]: res["pageState"] });
+      if (res && res["pageState"]) {
+        updateStoreStateFromController(pageName, res["pageState"]);
+      }
     });
 }
 
