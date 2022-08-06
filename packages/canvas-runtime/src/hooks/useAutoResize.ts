@@ -3,11 +3,11 @@ import { Dimension } from "../types";
 
 export const useAutoResize = (
   parent: RefObject<HTMLElement>,
-  breakpoint: { min: number; max: number } | undefined
+  breakpoint: { min: number; max: number } | null
 ) => {
   const [dimension, setDimension] = useState<Dimension>();
   useEffect(() => {
-    if (breakpoint === undefined) return;
+    if (breakpoint === null) return;
 
     const rescale = () => {
       if (parent.current) {

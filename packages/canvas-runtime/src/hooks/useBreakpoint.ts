@@ -3,7 +3,7 @@ import { subscribeBreakpointChange } from "../CanvasController";
 import { Breakpoint } from "../types";
 
 export const useBreakpoint = () => {
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>();
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
   useEffect(() => {
     const { unsub, value } = subscribeBreakpointChange((point) => {
       setBreakpoint(point);
