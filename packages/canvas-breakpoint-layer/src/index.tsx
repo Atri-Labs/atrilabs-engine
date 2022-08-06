@@ -15,7 +15,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 const breakpoints = {
-  desktop: { min: 900, max: 1200 },
+  desktop: null,
   tablet: { min: 800, max: 991 },
   landscape: { min: 550, max: 767 },
   portrait: { min: 300, max: 478 },
@@ -24,7 +24,7 @@ const breakpoints = {
 export default function () {
   console.log("canvas-breakpoint-layer loaded");
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>();
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>();
 
   // set initial breakpoint at Desktop
   useEffect(() => {
