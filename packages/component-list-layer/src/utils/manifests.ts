@@ -8,7 +8,7 @@ import CountdownManifests from "@atrilabs/react-component-manifests/src/manifest
 import FlexManifests from "@atrilabs/react-component-manifests/src/manifests/Flex/Flex";
 import ImageManifests from "@atrilabs/react-component-manifests/src/manifests/Image/Image";
 import InputManifests from "@atrilabs/react-component-manifests/src/manifests/Input/Input";
-import LabelManifests from "@atrilabs/react-component-manifests/src/manifests/Label/Label";
+import TextboxManifests from "@atrilabs/react-component-manifests/src/manifests/TextBox/TextBox";
 import RadioManifests from "@atrilabs/react-component-manifests/src/manifests/Radio/Radio";
 import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/Slider/Slider";
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
@@ -70,7 +70,7 @@ const defaultImports = [
   FlexManifests,
   ImageManifests,
   InputManifests,
-  LabelManifests,
+  TextboxManifests,
   RadioManifests,
   SliderManifests,
   StepManifests,
