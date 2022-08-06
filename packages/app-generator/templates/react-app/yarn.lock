@@ -10,12 +10,12 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@atrilabs/app-scripts@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@atrilabs/app-scripts/-/app-scripts-0.0.30.tgz#482bbd99cb90cf124d512f527bb18c4a744bfd73"
-  integrity sha512-nVZ1ERf5X7W/FxCODwZElds9mIByiSFKySlsfAdAxri4ZUEbk4Tw6Tk7wHB3nDk+YW6grJWPZy0PsA53dZC4MQ==
+"@atrilabs/app-scripts@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@atrilabs/app-scripts/-/app-scripts-0.0.35.tgz#08e0468cef021ec4e366f32254ce53cf696a28bc"
+  integrity sha512-k1CWxULVx+2vMCkCHJSUmAN8PLP0o5wUNMZBtBfhxQvRhIEaRv4Rb87WTby+vABqsu5HkxjYin6/kAW20ZiRLA==
   dependencies:
-    "@atrilabs/scripts" "^0.0.30"
+    "@atrilabs/scripts" "^0.0.35"
     "@babel/core" "^7.18.5"
     "@babel/plugin-syntax-flow" "^7.17.12"
     "@babel/plugin-transform-react-jsx" "^7.17.12"
@@ -48,29 +48,29 @@
     webpack-cli "^4.10.0"
     webpack-node-externals "^3.0.0"
 
-"@atrilabs/core@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@atrilabs/core/-/core-0.0.30.tgz#38f8472fde4c906cc5a49453fc0a2faa9d140bb4"
-  integrity sha512-nDtPN/R+b2eiArd7FXsUQGLo8Mo8vQFuwvJD7KTptDfEy9WjaKXIAWCCeQm5chuGDTdhQ1hgexxdXqy2rshCiQ==
+"@atrilabs/core@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@atrilabs/core/-/core-0.0.35.tgz#2da64065daa06f3fe6893fc7901fa549eb1e4a64"
+  integrity sha512-+K4engVu2BlYVqEx0JW2nAFH6SPY0wi7EevWZii1npqXgnp0sDBW2YcZzR4tHiUt6ioNuHsX5IU4apeEEMOEFQ==
   dependencies:
-    "@atrilabs/forest" "^0.0.30"
+    "@atrilabs/forest" "^0.0.35"
     uuid "^8.3.2"
 
-"@atrilabs/forest@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@atrilabs/forest/-/forest-0.0.30.tgz#437729484b85be2f4edc2a6012fd65d2e00afea0"
-  integrity sha512-RLahBLhVOk5IOx0YTA+rhGWHqxnTtADbAvBU/CtNR/4MUVBweZJhf4e9D0YTVXDxi3PsbrWQ0E7rRC2cjMgCvg==
+"@atrilabs/forest@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@atrilabs/forest/-/forest-0.0.35.tgz#641368ab3b02331201d856daee6e24659f51bad0"
+  integrity sha512-3pvJRV7hXW+CYgOtwyCFcyXqQ7Wrj3/KKFcRlvDoSPsvJ2FHlzKy1BBnqq5d/OKoYyNCa/0iu5/8u822PoHGzA==
   dependencies:
     lodash "4.17.21"
     lowdb "1.0.0"
     typescript "4.6.3"
 
-"@atrilabs/scripts@^0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@atrilabs/scripts/-/scripts-0.0.30.tgz#5ba48c9b0bedf5ed60349788ba486c341ee6734f"
-  integrity sha512-PlDIdPuhktpN+S+DA1mXA3y0jcUu1SJciyAr1l0G9Xig99Lx7/Jtk+YWZa0MSzo2b+twCLF7HIyUAjUP+VylnA==
+"@atrilabs/scripts@^0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@atrilabs/scripts/-/scripts-0.0.35.tgz#a611bb8c69f72623ec0e7138316a7e4a832b18ae"
+  integrity sha512-BrEPgGtCkJORXwhZMj48ieEVq2InPeiuMIklImS2ne0VLrG8dFyqP/G9kw1ib6No88bxgPoryRYuGvhbPGsi5Q==
   dependencies:
-    "@atrilabs/core" "^0.0.30"
+    "@atrilabs/core" "^0.0.35"
     "@babel/core" "^7.17.9"
     "@babel/preset-env" "^7.16.11"
     "@pmmmwh/react-refresh-webpack-plugin" "^0.5.5"
