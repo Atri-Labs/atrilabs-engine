@@ -1,5 +1,11 @@
 import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
+import { navigateInternally } from "./navigate";
+
+export type NavigationCallbackHandler = {
+  type: "internal" | "external";
+  url: string;
+};
 
 export type CallbackDef = {
   handlers: (
@@ -9,6 +15,7 @@ export type CallbackDef = {
           props: string[];
         };
       }
+    | { navigate: NavigationCallbackHandler }
   )[];
   actions: (
     | { type: "do_nothing" }
@@ -194,7 +201,7 @@ export function callbackFactory(
     const jobs: {
       sendEventData?: CallbackDef["handlers"]["0"];
       sendFiles?: CallbackDef["handlers"];
-      navigate?: boolean;
+      navigate?: string;
     } = {};
 
     handlers.forEach((handler) => {
@@ -207,6 +214,9 @@ export function callbackFactory(
         } else {
           jobs["sendFiles"] = [handler];
         }
+      }
+      if ("navigate" in handler && handler.navigate.type === "internal") {
+        jobs["navigate"] = handler.navigate.url;
       }
     });
 
@@ -228,6 +238,9 @@ export function callbackFactory(
       );
     } else if (jobs["sendEventData"]) {
       sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
+    }
+    if (jobs["navigate"]) {
+      navigateInternally(jobs["navigate"]);
     }
   };
 

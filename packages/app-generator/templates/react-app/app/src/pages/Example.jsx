@@ -1,9 +1,18 @@
-import { useLayoutEffect } from "react";
-import { useEffect } from "react";
+import { useLayoutEffect, useEffect } from "react";
 import useStore, { setEffectivePropsForPage } from "../hooks/useStore";
+import { useNavigate } from "react-router-dom";
+import { subscribeInternalNavigation } from "../utils/navigate";
 // IMPORT CURSOR
 
 export default function Example() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const unsub = subscribeInternalNavigation((url) => {
+      navigate(url, { replace: true });
+    });
+    return unsub;
+  }, [navigate]);
+
   useLayoutEffect(()=>{
     setEffectivePropsForPage(/* PAGE NAME 1 CURSOR */)
   }, [])
