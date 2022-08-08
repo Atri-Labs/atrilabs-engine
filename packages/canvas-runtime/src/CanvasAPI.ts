@@ -267,6 +267,7 @@ export {
   getCurrentState,
   getCurrentMachineContext,
   raiseSelectEvent,
+  raiseHoverEvent,
 } from "./decorators/CanvasActivityDecorator";
 
 export type { CanvasActivityContext } from "./decorators/CanvasActivityDecorator";

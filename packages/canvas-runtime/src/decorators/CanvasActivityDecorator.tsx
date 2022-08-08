@@ -41,6 +41,7 @@ type CLEAR_CANVAS_EVENT = "CLEAR_CANVAS_EVENT";
 type DELETE_COMPONENT_EVENT = "DELETE_COMPONENT_EVENT";
 type BLUR_EVENT = "BLUR_EVENT";
 type MANUAL_SELECT = "MANUAL_SELECT";
+type MANUAL_HOVER = "MANUAL_HOVER";
 
 type OverEvent = {
   type: OVER;
@@ -124,6 +125,11 @@ type ManualSelectEvent = {
   id: string;
 };
 
+type ManualHoverEvent = {
+  type: MANUAL_HOVER;
+  id: string;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -140,7 +146,8 @@ type CanvasActivityEvent =
   | ClearCanvasEvent
   | DeleteComponentEvent
   | BlurEvent
-  | ManualSelectEvent;
+  | ManualSelectEvent
+  | ManualHoverEvent;
 
 // context
 export type CanvasActivityContext = {
@@ -177,17 +184,23 @@ export type CanvasActivityContext = {
   };
 };
 
-const overAnother = (context: CanvasActivityContext, event: OverEvent) => {
+const overAnother = (
+  context: CanvasActivityContext,
+  event: OverEvent | ManualHoverEvent
+) => {
   return context.hover?.id !== event.id;
 };
 
-const overNotSelected = (context: CanvasActivityContext, event: OverEvent) => {
+const overNotSelected = (
+  context: CanvasActivityContext,
+  event: OverEvent | ManualHoverEvent
+) => {
   return context.select?.id !== event.id;
 };
 
 const hoverWhileSelectedGuard = (
   context: CanvasActivityContext,
-  event: OverEvent
+  event: OverEvent | ManualHoverEvent
 ) => {
   return overAnother(context, event) && overNotSelected(context, event);
 };
@@ -260,7 +273,10 @@ const blurredSelected = (context: CanvasActivityContext, event: BlurEvent) => {
   return context.select?.id === event.id;
 };
 
-const onHoverStart = assign<CanvasActivityContext, OverEvent>({
+const onHoverStart = assign<
+  CanvasActivityContext,
+  OverEvent | ManualHoverEvent
+>({
   hover: (_context, event) => {
     return { id: event.id };
   },
@@ -431,6 +447,7 @@ const canvasActivityMachine = createMachine<
           actions: [onLockTemplateDrop],
         },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
+        MANUAL_HOVER: { target: hover, actions: [onHoverStart] },
       },
       entry: assign({}),
     },
@@ -441,6 +458,11 @@ const canvasActivityMachine = createMachine<
         OUT_OF_CANVAS: { target: idle },
         CLEAR_CANVAS_EVENT: { target: idle },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
+        MANUAL_HOVER: {
+          target: hover,
+          cond: overAnother,
+          actions: [onHoverStart],
+        },
       },
       entry: (context, event) => {
         hoverCbs.forEach((cb) => cb(context, event));
@@ -515,11 +537,29 @@ const canvasActivityMachine = createMachine<
                   cond: overNotSelected,
                   actions: [onHoverStart],
                 },
+                MANUAL_HOVER: {
+                  target: hoverWhileSelected,
+                  cond: overNotSelected,
+                  actions: [onHoverStart],
+                },
               },
             },
             [hoverWhileSelected]: {
               on: {
                 OVER: [
+                  {
+                    target: hoverWhileSelected,
+                    cond: hoverWhileSelectedGuard,
+                    actions: [onHoverStart],
+                  },
+                  {
+                    target: selectIdle,
+                    cond: (context, event) => {
+                      return !overNotSelected(context, event);
+                    },
+                  },
+                ],
+                MANUAL_HOVER: [
                   {
                     target: hoverWhileSelected,
                     cond: hoverWhileSelectedGuard,
@@ -1011,6 +1051,10 @@ function raiseSelectEvent(compId: string) {
   service.send({ type: "MANUAL_SELECT", id: compId });
 }
 
+function raiseHoverEvent(compId: string) {
+  service.send({ type: "MANUAL_HOVER", id: compId });
+}
+
 // ===================================================================
 
 export {
@@ -1033,4 +1077,5 @@ export {
   getCurrentMachineContext,
   subscribeKeyup,
   raiseSelectEvent,
+  raiseHoverEvent,
 };
