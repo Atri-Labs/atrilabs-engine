@@ -33,7 +33,7 @@ import { ReactComponent as ACFlexSpaceAround } from "../../assets/layout-parent/
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
-import { SizeInput } from "../commons/SizeInput";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -272,21 +272,19 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
             <div>Col</div>
             <div style={styles.optionName}>Gap</div>
             <div style={styles.gridItem}>
-              <SizeInput
+              <SizeInputWithUnits
                 styleItem="rowGap"
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
-                placeHolderText="PX"
               />
             </div>
             <div style={styles.gridItem}>
-              <SizeInput
+              <SizeInputWithUnits
                 styleItem="columnGap"
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
-                placeHolderText="PX"
               />
             </div>
           </div>
