@@ -1,5 +1,5 @@
 import { gray100, gray400, gray800, smallText } from "@atrilabs/design-system";
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { CssProprtyComponentType } from "../../types";
 import "./SizeInputWithUnits.css";
 
@@ -44,7 +44,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   props
 ) => {
-  const getDigitIndex = (value: any) => {
+  const getDigitIndex = (value: string) => {
     let digitIndex;
     value = String(value);
     console.log(value);
@@ -58,20 +58,29 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   };
 
   const getNumericValue = (value: string) => {
+    console.log(value);
     let digitIndex = getDigitIndex(value);
     return value.substring(0, digitIndex);
   };
-  const getUnitIndex = (value: string) => {
+
+  const getUnitIndex = useCallback((value: string) => {
+    console.log(value);
     let digitIndex = getDigitIndex(value) || 0;
     return value.substring(digitIndex, value.length);
-  };
+  }, []);
 
   const [unit, setUnit] = useState(
     getUnitIndex(String(props.styles[props.styleItem])) === "auto"
       ? ""
       : getUnitIndex(String(props.styles[props.styleItem]))
   );
-
+  useEffect(() => {
+    setUnit(
+      getUnitIndex(String(props.styles[props.styleItem])) === "auto"
+        ? ""
+        : getUnitIndex(String(props.styles[props.styleItem]))
+    );
+  }, [props.styles, props.styleItem, getUnitIndex]);
   const parseValueUnit = (e: string, unit: string) => {
     return e.concat(unit);
   };
