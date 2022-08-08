@@ -19,9 +19,13 @@ import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?
 
 export const useCreateTemplate = () => {
   const componentTree = useTree(ComponentTreeId);
+  const callbackTree = useTree(CallbackTreeId);
 
   const createTemplate = useCallback(
-    (selectedId: string) => {
+    (
+      selectedId: string,
+      options: { copyCallbacks: boolean; copyDefaulCallbacks: boolean }
+    ) => {
       function getComponentNode(nodeId: string) {
         return componentTree.nodes[nodeId];
       }
@@ -119,30 +123,56 @@ export const useCreateTemplate = () => {
         });
       });
 
+      // convert callback nodes to events
+      if (options.copyCallbacks) {
+        allCapturedNodes.forEach((currNodeId) => {
+          const callbackLink = callbackTree.links[currNodeId];
+          if (callbackLink) {
+            const callbackNode = callbackTree.nodes[callbackLink.childId];
+            const callbackCompId = getId();
+            const callbackCreateEvent: CreateEvent = {
+              id: callbackCompId,
+              type: `CREATE$$${CallbackTreeId}`,
+              meta: callbackNode.meta,
+              state: JSON.parse(JSON.stringify(callbackNode.state)),
+            };
+            events.push(callbackCreateEvent);
+            const callbackLinkEvent: LinkEvent = {
+              type: `LINK$$${CallbackTreeId}`,
+              refId: currNodeId,
+              childId: callbackCompId,
+            };
+            events.push(callbackLinkEvent);
+          }
+        });
+      }
+
       // convert defaultCallbackHandlers to events
-      allCapturedNodes.forEach((currNodeId) => {
-        const manifest = getComponentManifest(currNodeId)!;
-        const component = manifest.component as ReactComponentManifestSchema;
-        const defaultCallbacks = component.dev.defaultCallbackHandlers;
-        const callbackCompId = getId();
-        const callbackCreateEvent: CreateEvent = {
-          id: callbackCompId,
-          type: `CREATE$$${CallbackTreeId}`,
-          meta: {},
-          state: {
-            parent: { id: "", index: 0 },
-            // NOTE: Following a convention to store node value in state's property field
-            property: { callbacks: defaultCallbacks },
-          },
-        };
-        events.push(callbackCreateEvent);
-        const callbackLinkEvent: LinkEvent = {
-          type: `LINK$$${CallbackTreeId}`,
-          refId: currNodeId,
-          childId: callbackCompId,
-        };
-        events.push(callbackLinkEvent);
-      });
+      if (options.copyDefaulCallbacks) {
+        allCapturedNodes.forEach((currNodeId) => {
+          const manifest = getComponentManifest(currNodeId)!;
+          const component = manifest.component as ReactComponentManifestSchema;
+          const defaultCallbacks = component.dev.defaultCallbackHandlers;
+          const callbackCompId = getId();
+          const callbackCreateEvent: CreateEvent = {
+            id: callbackCompId,
+            type: `CREATE$$${CallbackTreeId}`,
+            meta: {},
+            state: {
+              parent: { id: "", index: 0 },
+              // NOTE: Following a convention to store node value in state's property field
+              property: { callbacks: defaultCallbacks },
+            },
+          };
+          events.push(callbackCreateEvent);
+          const callbackLinkEvent: LinkEvent = {
+            type: `LINK$$${CallbackTreeId}`,
+            refId: currNodeId,
+            childId: callbackCompId,
+          };
+          events.push(callbackLinkEvent);
+        });
+      }
 
       // convert component nodes to events at last
       allCapturedNodes.forEach((currNodeId) => {
@@ -164,7 +194,7 @@ export const useCreateTemplate = () => {
 
       return events;
     },
-    [componentTree]
+    [componentTree, callbackTree]
   );
 
   return createTemplate;

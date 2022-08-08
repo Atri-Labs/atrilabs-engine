@@ -104,7 +104,10 @@ export default function () {
   }, []);
   const onCreateClickCb = useCallback(() => {
     if (selected && templatesData && createTempalateInputRef.current) {
-      const templateEvents = createTemplate(selected);
+      const templateEvents = createTemplate(selected, {
+        copyCallbacks: true,
+        copyDefaulCallbacks: false,
+      });
       if (templateEvents.length > 0) {
         callCreateTeamplateApi(
           templateEvents,
