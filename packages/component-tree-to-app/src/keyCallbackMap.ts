@@ -31,6 +31,10 @@ export const keyCallbackMap: {
       handlers: [],
       actions: [{ type: "file_input", selector: ["io", "files"] }],
     },
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
   },
   Accordion: {
     onTitleClick: {

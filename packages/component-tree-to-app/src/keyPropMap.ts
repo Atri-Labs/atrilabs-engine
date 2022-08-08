@@ -129,7 +129,12 @@ export const keyPropMap: any = {
   },
   Upload: {
     styles: { ...FlexChildStyle },
-    custom: { multiple: false },
+    custom: {
+      multiple: false,
+      showFilename: true,
+      text: "Upload",
+      disabled: false,
+    },
   },
   Accordion: {
     styles: { ...FlexChildStyle },
