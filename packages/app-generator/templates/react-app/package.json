@@ -7,7 +7,7 @@
     "buildAppNode": "atri-react-app-build-server",
     "buildServer": "cd server && tsc",
     "build": "yarn run buildApp && yarn run buildAppNode",
-    "devServer": "node dist/server/index.js --disable-cache",
+    "devServer": "node dist/server/index.js --dev",
     "server": "node dist/server/index.js",
     "dev": "atri-react-app-dev-server"
   },
