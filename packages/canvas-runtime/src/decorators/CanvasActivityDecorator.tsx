@@ -169,6 +169,7 @@ export type CanvasActivityContext = {
   };
   hover?: {
     id: string;
+    manualHover: boolean;
   };
   select?: {
     id: string;
@@ -273,12 +274,25 @@ const blurredSelected = (context: CanvasActivityContext, event: BlurEvent) => {
   return context.select?.id === event.id;
 };
 
+const notManualHover = (context: CanvasActivityContext) => {
+  return context.hover?.manualHover ? false : true;
+};
+
 const onHoverStart = assign<
   CanvasActivityContext,
   OverEvent | ManualHoverEvent
 >({
   hover: (_context, event) => {
-    return { id: event.id };
+    return { id: event.id, manualHover: false };
+  },
+});
+
+const onManualHoverStart = assign<
+  CanvasActivityContext,
+  OverEvent | ManualHoverEvent
+>({
+  hover: (_context, event) => {
+    return { id: event.id, manualHover: true };
   },
 });
 
@@ -447,7 +461,7 @@ const canvasActivityMachine = createMachine<
           actions: [onLockTemplateDrop],
         },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
-        MANUAL_HOVER: { target: hover, actions: [onHoverStart] },
+        MANUAL_HOVER: { target: hover, actions: [onManualHoverStart] },
       },
       entry: assign({}),
     },
@@ -455,13 +469,13 @@ const canvasActivityMachine = createMachine<
       on: {
         OVER: { target: hover, cond: overAnother, actions: [onHoverStart] },
         DOWN: { target: pressed },
-        OUT_OF_CANVAS: { target: idle },
+        OUT_OF_CANVAS: { target: idle, cond: notManualHover },
         CLEAR_CANVAS_EVENT: { target: idle },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
         MANUAL_HOVER: {
           target: hover,
           cond: overAnother,
-          actions: [onHoverStart],
+          actions: [onManualHoverStart],
         },
       },
       entry: (context, event) => {
@@ -540,7 +554,7 @@ const canvasActivityMachine = createMachine<
                 MANUAL_HOVER: {
                   target: hoverWhileSelected,
                   cond: overNotSelected,
-                  actions: [onHoverStart],
+                  actions: [onManualHoverStart],
                 },
               },
             },
@@ -563,7 +577,7 @@ const canvasActivityMachine = createMachine<
                   {
                     target: hoverWhileSelected,
                     cond: hoverWhileSelectedGuard,
-                    actions: [onHoverStart],
+                    actions: [onManualHoverStart],
                   },
                   {
                     target: selectIdle,
@@ -572,7 +586,7 @@ const canvasActivityMachine = createMachine<
                     },
                   },
                 ],
-                OUT_OF_CANVAS: { target: selectIdle },
+                OUT_OF_CANVAS: { target: selectIdle, cond: notManualHover },
               },
               entry: (context, event) => {
                 hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
