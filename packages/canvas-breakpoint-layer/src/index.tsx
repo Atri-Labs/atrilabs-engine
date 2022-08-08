@@ -15,7 +15,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 const breakpoints = {
-  desktop: { min: 900, max: 1200 },
+  desktop: null,
   tablet: { min: 800, max: 991 },
   landscape: { min: 550, max: 767 },
   portrait: { min: 300, max: 478 },
@@ -24,7 +24,7 @@ const breakpoints = {
 export default function () {
   console.log("canvas-breakpoint-layer loaded");
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>();
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
 
   // set initial breakpoint at Desktop
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function () {
   }, []);
   return (
     <>
-      {breakpoint ? <CanvasController breakpoint={breakpoint} /> : null}
+      <CanvasController breakpoint={breakpoint} />
       <Menu name="CanvasMenu" order={0}>
         <div style={styles.iconContainer}>
           <IconMenu

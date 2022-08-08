@@ -1,17 +1,20 @@
 export const keyCallbackMap: {
   [key: string]: {
-    [callbackName: string]: { handlers: any[]; actions: any[] };
+    [callbackName: string]: {
+      /**
+       * handlers are collected from callbackHandlerTree & defaultCallbackHandlers
+       */
+      handlers: any[];
+      /**
+       * actions come directly from the manifest
+       */
+      actions: any[];
+    };
   };
 } = {
   Button: {
     onClick: {
-      /**
-       * handlers are collected from callbackHandlerTree & defaultCallbackHandlers
-       */
       handlers: [],
-      /**
-       * actions come directly from the manifest
-       */
       actions: [{ type: "do_nothing" }],
     },
   },
@@ -28,14 +31,44 @@ export const keyCallbackMap: {
       handlers: [],
       actions: [{ type: "file_input", selector: ["io", "files"] }],
     },
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
   },
-  Accordion: {},
+  Accordion: {
+    onTitleClick: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "open"] }],
+    },
+  },
   Carousel: {},
   Countdown: {},
   Link: {},
-  Radio: {},
-  Slider: {},
+  Radio: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "checked"] }],
+    },
+  },
+  Slider: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "value"] }],
+    },
+  },
   Step: {},
   TextBox: {},
-  Toggle: {},
+  Toggle: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "active"] }],
+    },
+  },
+  Menu: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "open"] }],
+    },
+  },
 };

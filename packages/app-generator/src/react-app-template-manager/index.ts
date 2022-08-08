@@ -422,7 +422,7 @@ export function createReactAppTemplateManager(
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
       if (isParent) {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -431,7 +431,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb}/>\n`;
+        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}/>\n`;
         return start;
       }
     }
@@ -507,8 +507,9 @@ export function createReactAppTemplateManager(
           const alias = comp.alias;
           // component definition
           const propsDef = `const ${alias}Props = useStore((state)=>state["${name}"]["${alias}"]);`;
+          const ioPropsDef = `const ${alias}IoProps = useIoStore((state)=>state["${name}"]["${alias}"]);`;
           const callbackDef = `const ${alias}Cb = use${alias}Cb()`;
-          const def = `${propsDef}\n${callbackDef}\n`;
+          const def = `${propsDef}\n${ioPropsDef}\n${callbackDef}\n`;
           return def;
         })
         .join("");

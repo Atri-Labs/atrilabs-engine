@@ -43,9 +43,9 @@ export function getPageFromCache(url: string): string | null {
 }
 
 let indexHtmlContent = "";
-export const disablePageCache = process.argv.includes("--disable-cache");
+export const isDevelopment = process.argv.includes("--dev");
 export function getIndexHtmlContent(appHtml: string) {
-  if (indexHtmlContent === "" || disablePageCache) {
+  if (indexHtmlContent === "" || isDevelopment) {
     if (fs.existsSync(appHtml)) {
       indexHtmlContent = fs.readFileSync(appHtml).toString();
     } else {

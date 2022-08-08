@@ -129,7 +129,12 @@ export const keyPropMap: any = {
   },
   Upload: {
     styles: { ...FlexChildStyle },
-    custom: { multiple: false },
+    custom: {
+      multiple: false,
+      showFilename: true,
+      text: "Upload",
+      disabled: false,
+    },
   },
   Accordion: {
     styles: { ...FlexChildStyle },
@@ -176,5 +181,17 @@ export const keyPropMap: any = {
   Toggle: {
     styles: { ...FlexChildStyle },
     custom: { activeColor: "#2196f3", active: false, inactiveColor: "#CCCCCC" },
+  },
+  Menu: {
+    styles: { ...FlexStyle },
+    custom: {
+      open: true,
+      iconHeight: 24,
+      iconWidth: 24,
+      src: "",
+      strokeColor: "",
+      gap: 0,
+      alignRight: false,
+    },
   },
 };

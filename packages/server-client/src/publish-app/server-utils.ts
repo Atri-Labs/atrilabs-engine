@@ -240,7 +240,7 @@ async function deployApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
     devControllers.push(controller);
     const appServerScriptPath = path.resolve(outputDir, "dist/server/index.js");
     try {
-      devServerProc = fork(appServerScriptPath, ["--disable-cache"], {
+      devServerProc = fork(appServerScriptPath, ["--dev"], {
         signal,
         cwd: outputDir,
         stdio: ["pipe", "pipe", "pipe", "ipc"],

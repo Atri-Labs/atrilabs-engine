@@ -181,7 +181,8 @@ export function createPythonAppTemplateManager(
               attr.type === "str" ||
               attr.type === "int" ||
               attr.type === "bool" ||
-              attr.type === UploadFileType
+              attr.type === UploadFileType ||
+              attr.type === "List[Any]"
                 ? ""
                 : "Atri.__";
             // decide rhs

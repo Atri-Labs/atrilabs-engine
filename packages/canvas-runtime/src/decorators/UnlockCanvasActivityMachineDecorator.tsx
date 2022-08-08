@@ -66,7 +66,10 @@ export const UnlockCanvasActivityMachineDecorator: React.FC<DecoratorProps> = (
         }
       }
     }
-    if (canvasComponentStore[props.compId].ref.current) {
+    if (
+      canvasComponentStore[props.compId].ref.current &&
+      !canvasComponentStore[props.compId].acceptsChild
+    ) {
       setDescendantsTabIndexToNegOne(
         canvasComponentStore[props.compId].ref.current!
       );

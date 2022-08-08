@@ -316,6 +316,14 @@ const dragMachine = createMachine({
   },
 });
 
+function convertSizeWithUnitsToString(size: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() : "";
+}
+
+function convertSizeWithUnitsToStringWithUnits(size: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + "px" : "";
+}
+
 // SpacingProperty is a controlled component
 const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
@@ -446,10 +454,15 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     const newValue = state.context.initialValue + change;
     const oldValue =
       props.styles[state.context["area"] as keyof React.CSSProperties];
-    if (oldValue !== newValue)
+    if (typeof oldValue === "string" && parseFloat(oldValue) !== newValue) {
       props.patchCb({
-        property: { styles: { [state.context["area"]]: newValue } },
+        property: { styles: { [state.context["area"]]: newValue + "px" } },
       });
+    } else if (oldValue !== newValue) {
+      props.patchCb({
+        property: { styles: { [state.context["area"]]: newValue + "px" } },
+      });
+    }
   }, [state.context, state.value, props]);
 
   // show margin overlays when in draggin state
@@ -470,7 +483,9 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { marginTop: parseInt(attrValue) } },
+      property: {
+        styles: { marginTop: convertSizeWithUnitsToStringWithUnits(attrValue) },
+      },
     });
   };
   const handleChangeMarginRight = (
@@ -478,7 +493,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { marginRight: parseInt(attrValue) } },
+      property: {
+        styles: {
+          marginRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
   const handleChangeMarginLeft = (
@@ -486,7 +505,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { marginLeft: parseInt(attrValue) } },
+      property: {
+        styles: {
+          marginLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
   const handleChangeMarginBottom = (
@@ -494,7 +517,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { marginBottom: parseInt(attrValue) } },
+      property: {
+        styles: {
+          marginBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
 
@@ -503,7 +530,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { paddingTop: parseInt(attrValue) } },
+      property: {
+        styles: {
+          paddingTop: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
   const handleChangePaddingRight = (
@@ -511,7 +542,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { paddingRight: parseInt(attrValue) } },
+      property: {
+        styles: {
+          paddingRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
   const handleChangePaddingLeft = (
@@ -519,7 +554,11 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { paddingLeft: parseInt(attrValue) } },
+      property: {
+        styles: {
+          paddingLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
   const handleChangePaddingBottom = (
@@ -527,12 +566,21 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     const attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { paddingBottom: parseInt(attrValue) } },
+      property: {
+        styles: {
+          paddingBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+        },
+      },
     });
   };
 
   return (
-    <div style={styles.container}>
+    <div
+      style={{
+        ...styles.container,
+        userSelect: state.value === dragging ? "none" : "auto",
+      }}
+    >
       <div style={styles.drop}>
         <DropDownArrow
           onClick={() => setShowProperties(!showProperties)}
@@ -549,56 +597,58 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.marginPaddingBoxContainer}>
             {/*Margin PlaceHolders*/}
             <input
-              value={marginTopVal || ""}
+              value={convertSizeWithUnitsToString(marginTopVal) || ""}
               onChange={handleChangeMarginTop}
-              placeholder={marginTopVal || "0"}
+              placeholder={convertSizeWithUnitsToString(marginTopVal) || "0"}
               style={styles.marginTopPlaceHolder}
             />
             <input
-              value={marginRightVal || ""}
+              value={convertSizeWithUnitsToString(marginRightVal) || ""}
               onChange={handleChangeMarginRight}
-              placeholder={marginRightVal || "0"}
+              placeholder={convertSizeWithUnitsToString(marginRightVal) || "0"}
               style={styles.marginRightPlaceHolder}
             />
             <input
-              value={marginBottomVal || ""}
+              value={convertSizeWithUnitsToString(marginBottomVal) || ""}
               onChange={handleChangeMarginBottom}
-              placeholder={marginBottomVal || "0"}
+              placeholder={convertSizeWithUnitsToString(marginBottomVal) || "0"}
               style={styles.marginBottomPlaceHolder}
             />
 
             <input
-              value={marginLeftVal || ""}
+              value={convertSizeWithUnitsToString(marginLeftVal) || ""}
               onChange={handleChangeMarginLeft}
-              placeholder={marginLeftVal || "0"}
+              placeholder={convertSizeWithUnitsToString(marginLeftVal) || "0"}
               style={styles.marginLeftPlaceHolder}
             />
             {/*Padding Placeholders*/}
             <input
-              value={paddingTopVal || ""}
+              value={convertSizeWithUnitsToString(paddingTopVal) || ""}
               onChange={handleChangePaddingTop}
-              placeholder={paddingTopVal || "0"}
+              placeholder={convertSizeWithUnitsToString(paddingTopVal) || "0"}
               style={styles.paddingTopPlaceHolder}
             />
 
             <input
-              value={paddingRightVal || ""}
+              value={convertSizeWithUnitsToString(paddingRightVal) || ""}
               onChange={handleChangePaddingRight}
-              placeholder={paddingRightVal || "0"}
+              placeholder={convertSizeWithUnitsToString(paddingRightVal) || "0"}
               style={styles.paddingRightPlaceHolder}
             />
 
             <input
-              value={paddingBottomVal || ""}
+              value={convertSizeWithUnitsToString(paddingBottomVal) || ""}
               onChange={handleChangePaddingBottom}
-              placeholder={paddingBottomVal || "0"}
+              placeholder={
+                convertSizeWithUnitsToString(paddingBottomVal) || "0"
+              }
               style={styles.paddingBottomPlaceHolder}
             />
 
             <input
-              value={paddingLeftVal || ""}
+              value={convertSizeWithUnitsToString(paddingLeftVal) || ""}
               onChange={handleChangePaddingLeft}
-              placeholder={paddingLeftVal || "0"}
+              placeholder={convertSizeWithUnitsToString(paddingLeftVal) || "0"}
               style={styles.paddingLeftPlaceHolder}
             />
             {/*Margin Label*/}

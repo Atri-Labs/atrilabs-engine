@@ -1,5 +1,11 @@
 import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
+import { navigateInternally } from "./navigate";
+
+export type NavigationCallbackHandler = {
+  type: "internal" | "external";
+  url: string;
+};
 
 export type CallbackDef = {
   handlers: (
@@ -9,6 +15,7 @@ export type CallbackDef = {
           props: string[];
         };
       }
+    | { navigate: NavigationCallbackHandler }
   )[];
   actions: (
     | { type: "do_nothing" }
@@ -129,18 +136,14 @@ function updateAppStore(
   eventData: any
 ) {
   const currentPageState = useStore.getState()[pageName];
-  const currentCompState = currentPageState[alias];
-  let newObj: any = {};
-  let currObj = newObj;
+  const newCompState = JSON.parse(JSON.stringify(currentPageState[alias]));
+  let currObj = newCompState;
   selector.forEach((sel, index) => {
     if (index === selector.length - 1) {
       currObj[sel] = eventData;
-    } else {
-      currObj[sel] = {};
     }
     currObj = currObj[sel];
   });
-  const newCompState = { ...currentCompState, ...newObj };
   const newPageState = { ...currentPageState, [alias]: newCompState };
   useStore.setState({ [pageName]: newPageState });
 }
@@ -152,20 +155,16 @@ function updateAppIoStore(
   eventData: any
 ) {
   const currentPageState = useIoStore.getState()[pageName];
-  const currentCompState = currentPageState[alias];
+  const newCompState = JSON.parse(JSON.stringify(currentPageState[alias]));
   // not all components will have an entry in ioStore
-  if (currentCompState) {
-    let newObj: any = {};
-    let currObj = newObj;
+  if (newCompState) {
+    let currObj = newCompState;
     selector.forEach((sel, index) => {
       if (index === selector.length - 1) {
         currObj[sel] = eventData;
-      } else {
-        currObj[sel] = {};
       }
       currObj = currObj[sel];
     });
-    const newCompState = { ...currentCompState, ...newObj };
     const newPageState = { ...currentPageState, [alias]: newCompState };
     useIoStore.setState({ [pageName]: newPageState });
     console.log("useIoStore", useIoStore.getState());
@@ -202,7 +201,7 @@ export function callbackFactory(
     const jobs: {
       sendEventData?: CallbackDef["handlers"]["0"];
       sendFiles?: CallbackDef["handlers"];
-      navigate?: boolean;
+      navigate?: string;
     } = {};
 
     handlers.forEach((handler) => {
@@ -215,6 +214,9 @@ export function callbackFactory(
         } else {
           jobs["sendFiles"] = [handler];
         }
+      }
+      if ("navigate" in handler && handler.navigate.type === "internal") {
+        jobs["navigate"] = handler.navigate.url;
       }
     });
 
@@ -236,6 +238,9 @@ export function callbackFactory(
       );
     } else if (jobs["sendEventData"]) {
       sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
+    }
+    if (jobs["navigate"]) {
+      navigateInternally(jobs["navigate"]);
     }
   };
 

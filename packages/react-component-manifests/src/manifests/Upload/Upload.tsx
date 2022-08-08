@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   ReactComponentManifestSchema,
@@ -20,29 +20,64 @@ export const Upload = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { multiple: boolean };
+    custom: {
+      multiple: boolean;
+      showFilename: boolean;
+      text: string;
+      disabled: boolean;
+    };
     onChange: (files: FileList) => void;
     io: { files: FileList };
   }
 >((props, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       if (e.target.files) props.onChange(e.target.files);
     },
     [props]
   );
+  const onClickCb = useCallback(() => {
+    const inputEl = inputRef.current;
+    if (inputEl && !props.custom.disabled) {
+      inputEl.click();
+    }
+  }, [props.custom.disabled]);
   return (
-    <input
+    <div
       ref={ref}
-      type={"file"}
-      multiple={props.custom.multiple}
-      onChange={onChange}
-    />
+      style={{
+        ...props.styles,
+        display: "inline-flex",
+      }}
+      onClick={onClickCb}
+    >
+      <div>{props.custom.text}</div>
+      {props.custom.showFilename ? (
+        <div style={{ fontSize: "0.75em" }}>
+          {props.io && props.io.files && props.io.files[0]
+            ? props.io.files[0].name
+            : "No files selected"}
+        </div>
+      ) : null}
+      <input
+        ref={inputRef}
+        type={"file"}
+        multiple={props.custom.multiple}
+        onChange={onChange}
+        style={{ display: "none" }}
+      />
+    </div>
   );
 });
 
+const DevUpload: typeof Upload = forwardRef((props, ref) => {
+  props.custom.disabled = true;
+  return <Upload {...props} ref={ref} />;
+});
+
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -55,6 +90,9 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     multuple: "boolean",
+    showFilename: "boolean",
+    text: "text",
+    disabled: "boolean",
   },
 };
 
@@ -64,11 +102,30 @@ const compManifest: ReactComponentManifestSchema = {
     comp: Upload,
   },
   dev: {
+    comp: DevUpload,
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          alignItems: "center",
+          color: "#fff",
+          backgroundColor: "#1890ff",
+          paddingTop: "8px",
+          paddingLeft: "15px",
+          paddingBottom: "8px",
+          paddingRight: "15px",
+          fontSize: "16px",
+          borderRadius: "2px",
+          outline: "none",
+          fontWeight: 400,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "#1890ff",
+          cursor: "pointer",
+          userSelect: "none",
+          columnGap: "12px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -76,6 +133,9 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           multiple: false,
+          showFilename: true,
+          text: "Upload",
+          disabled: false,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

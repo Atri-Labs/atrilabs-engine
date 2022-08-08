@@ -1,36 +1,41 @@
 import {
   createIfNotExistLocalCache,
   createWebSocketServer,
-  disablePageCache,
+  isDevelopment,
   getIndexHtmlContent,
   getPageFromCache,
   getServerInfo,
   sendReloadMessage,
   storePageInCache,
+  findNearestNodeModulesDirectory,
 } from "./utils";
 import express from "express";
 import path from "path";
 import http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { watch } from "chokidar";
 
 // constants needed externally
-const {
-  port,
-  publicDir,
-  pages,
-  pythonPort,
-  publicUrlAssetMap,
-  controllerHost,
-} = getServerInfo(__dirname);
-const appDistHtml = path.resolve(publicDir, "index.html");
+const serverInfo = getServerInfo(__dirname);
+const nodeModulesPath = findNearestNodeModulesDirectory(__dirname, null);
+const watcher = watch([
+  path.resolve(nodeModulesPath, "..", "atri-server-info.json"),
+]);
 
-const [controllerHostnameRaw, controllerPortRaw] = (controllerHost || "").split(
-  ":"
-);
+watcher.on("change", () => {
+  const { pages } = getServerInfo(__dirname);
+  serverInfo.pages = pages;
+});
+
+const appDistHtml = path.resolve(serverInfo.publicDir, "index.html");
+
+const [controllerHostnameRaw, controllerPortRaw] = (
+  serverInfo.controllerHost || ""
+).split(":");
 const controllerHostname = controllerHostnameRaw || "0.0.0.0";
 const controllerPort = controllerPortRaw
   ? parseInt(controllerPortRaw)
-  : pythonPort;
+  : serverInfo.pythonPort;
 
 createIfNotExistLocalCache();
 
@@ -39,9 +44,9 @@ const server = http.createServer(app);
 createWebSocketServer(server);
 
 app.use((req, res, next) => {
-  console.log("request received");
-  if (req.method === "GET" && pages[req.originalUrl]) {
-    if (!disablePageCache) {
+  console.log("request received", req.originalUrl);
+  if (req.method === "GET" && serverInfo.pages[req.originalUrl]) {
+    if (!isDevelopment) {
       const finalTextFromCache = getPageFromCache(req.originalUrl);
       if (finalTextFromCache) {
         res.send(finalTextFromCache);
@@ -141,13 +146,13 @@ app.post("/reload-all-dev-sockets", (_req, res) => {
   res.send();
 });
 
-Object.keys(publicUrlAssetMap).forEach((url) => {
-  app.use(url, express.static(publicUrlAssetMap[url]!));
+Object.keys(serverInfo.publicUrlAssetMap).forEach((url) => {
+  app.use(url, express.static(serverInfo.publicUrlAssetMap[url]!));
 });
 
-app.use(express.static(publicDir));
+app.use(express.static(serverInfo.publicDir));
 
-server.listen(port, () => {
+server.listen(serverInfo.port, () => {
   const address = server.address();
   if (typeof address === "object" && address !== null) {
     let port = address.port;
@@ -156,6 +161,6 @@ server.listen(port, () => {
   } else if (typeof address === "string") {
     console.log(`[ATRI_SERVER] listening on http://${address}`);
   } else {
-    console.log(`[ATRI_SERVER] cannot listen on ${port}`);
+    console.log(`[ATRI_SERVER] cannot listen on ${serverInfo.port}`);
   }
 });
