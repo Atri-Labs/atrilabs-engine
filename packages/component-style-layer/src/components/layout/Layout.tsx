@@ -3,6 +3,7 @@ import {
   gray400,
   smallText,
   h5Heading,
+  gray300,
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
@@ -106,6 +107,7 @@ const alignContentValues = [
   "space-between",
   "space-around",
 ];
+const displayValues = ["flex", "inline-flex", "none"];
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Layout: React.FC<CssProprtyComponentType> = (props) => {
@@ -288,6 +290,18 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
               />
             </div>
           </div>
+
+          <PropertyRender
+            styleItem="display"
+            styleText="Display"
+            styleArray={displayValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <div style={{ ...smallText, color: gray300 }}>flex</div>
+            <div style={{ ...smallText, color: gray300 }}>inline</div>
+            <div style={{ ...smallText, color: gray300 }}>none</div>
+          </PropertyRender>
         </div>
       </div>
     </>
