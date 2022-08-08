@@ -13,8 +13,8 @@ import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg"
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -105,24 +105,22 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             <BR />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="borderRadius"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue="0"
-              placeHolderText="PX"
             />
           </div>
           <div style={styles.optionName}>
             <BW />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="borderWidth"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
           <div style={styles.optionName}>

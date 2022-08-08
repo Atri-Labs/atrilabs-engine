@@ -8,7 +8,6 @@ export type SizeInputWithUnitsProps = {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   defaultValue: string;
-  placeHolderText: string;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -47,7 +46,6 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   const getDigitIndex = (value: string) => {
     let digitIndex;
     value = String(value);
-    console.log(value);
     for (let i = 0; i < value.length; i++) {
       if ((value[i] >= "a" && value[i] <= "z") || value[i] === "%") {
         digitIndex = i;
@@ -58,13 +56,11 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   };
 
   const getNumericValue = (value: string) => {
-    console.log(value);
     let digitIndex = getDigitIndex(value);
     return value.substring(0, digitIndex);
   };
 
   const getUnitIndex = useCallback((value: string) => {
-    console.log(value);
     let digitIndex = getDigitIndex(value) || 0;
     return value.substring(digitIndex, value.length);
   }, []);

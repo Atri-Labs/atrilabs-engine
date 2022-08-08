@@ -10,10 +10,8 @@ import { ReactComponent as OFH } from "../../assets/size/overflow-hidden.svg";
 import { ReactComponent as OFS } from "../../assets/size/overflow-scroll.svg";
 import { ReactComponent as OFV } from "../../assets/size/overflow-visible.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
-import { SizeInput } from "../commons/SizeInput";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -84,54 +82,48 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="minWidth"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="maxWidth"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
 
           <div style={styles.optionName}>H</div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="height"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="minHeight"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
           <div>
-            <SizeInput
+            <SizeInputWithUnits
               styleItem="maxHeight"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
         </div>

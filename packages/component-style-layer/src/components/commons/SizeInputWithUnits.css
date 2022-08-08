@@ -11,6 +11,7 @@
   height: 26px;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
+  padding: 0px 1px;
 }
 
 .dropdown {
@@ -20,6 +21,7 @@
 }
 
 .dropdown-content {
+  z-index: 2;
   display: none;
   background-color: #1f2937;
   width: 25px;

@@ -17,6 +17,7 @@ import PropertyRender from "../commons/PropertyRender";
 import { SizeInput } from "../commons/SizeInput";
 import { BorderInput } from "../commons/BorderInput";
 import fonts from "../commons/fonts.json";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -43,6 +44,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "28px",
     border: "none",
     borderRadius: "2px",
+  },
+  inputBoxWithUnits: {
+    ...smallText,
+    textAlign: "center",
   },
   select: {
     textAlign: "left",
@@ -196,13 +201,12 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               Black
             </option>
           </select>
-          <div style={{ width: "45px", lineHeight: "35px" }}>
-            <SizeInput
+          <div style={styles.inputBoxWithUnits}>
+            <SizeInputWithUnits
               styleItem="fontSize"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              placeHolderText="PX"
             />
           </div>
         </div>
