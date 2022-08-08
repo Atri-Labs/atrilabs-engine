@@ -72,13 +72,13 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   const [unit, setUnit] = useState(
     getUnitIndex(String(props.styles[props.styleItem])) === "auto"
       ? ""
-      : getUnitIndex(String(props.styles[props.styleItem]))
+      : getUnitIndex(String(props.styles[props.styleItem] || "px"))
   );
   useEffect(() => {
     setUnit(
       getUnitIndex(String(props.styles[props.styleItem])) === "auto"
         ? ""
-        : getUnitIndex(String(props.styles[props.styleItem]))
+        : getUnitIndex(String(props.styles[props.styleItem] || "px"))
     );
   }, [props.styles, props.styleItem, getUnitIndex]);
   const parseValueUnit = (e: string, unit: string) => {
