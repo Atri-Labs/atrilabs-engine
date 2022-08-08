@@ -1,5 +1,5 @@
 import { gray100, gray400, gray800, smallText } from "@atrilabs/design-system";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { CssProprtyComponentType } from "../../types";
 import "./SizeInputWithUnits.css";
 
@@ -65,20 +65,14 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
     return value.substring(digitIndex, value.length);
   }, []);
 
-  const [unit, setUnit] = useState(
-    getUnitIndex(String(props.styles[props.styleItem])) === "auto"
+  const unit = useMemo(() => {
+    return getUnitIndex(String(props.styles[props.styleItem])) === "auto"
       ? ""
-      : getUnitIndex(String(props.styles[props.styleItem] || "px"))
-  );
-  useEffect(() => {
-    setUnit(
-      getUnitIndex(String(props.styles[props.styleItem])) === "auto"
-        ? ""
-        : getUnitIndex(String(props.styles[props.styleItem] || "px"))
-    );
+      : getUnitIndex(String(props.styles[props.styleItem] || "px"));
   }, [props.styles, props.styleItem, getUnitIndex]);
+
   const parseValueUnit = (e: string, unit: string) => {
-    return e.concat(unit);
+    return e ? e.concat(unit) : "";
   };
 
   const handleChange = (
@@ -99,9 +93,7 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
     unitValue: string,
     styleItem: keyof React.CSSProperties
   ) => {
-    setUnit(unitValue);
     if (unitValue === "auto") {
-      setUnit("");
       props.patchCb({
         property: {
           styles: {
