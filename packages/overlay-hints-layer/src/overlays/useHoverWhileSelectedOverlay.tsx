@@ -118,7 +118,7 @@ export const useHoverWhileSelectedOverlay = () => {
   useEffect(() => {
     const unsub = subscribeCanvasActivity(
       "hoverWhileSelected",
-      (context, event) => {
+      (context, _event) => {
         topLineHoverId.current = getId();
         rightLineHoverId.current = getId();
         bottomLineHoverId.current = getId();
@@ -132,7 +132,7 @@ export const useHoverWhileSelectedOverlay = () => {
   useEffect(() => {
     const unsub = subscribeCanvasActivity(
       "hoverWhileSelectedEnd",
-      (context, event) => {
+      (_context, _event) => {
         clearOverlay();
       }
     );

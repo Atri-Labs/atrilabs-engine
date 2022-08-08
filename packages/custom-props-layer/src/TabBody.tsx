@@ -13,6 +13,7 @@ import { StaticAssetList } from "./components/static-asset-list/StaticAssetList"
 import { Color } from "./components/color/Color";
 import { InternalLink } from "./components/internal-link/InternalLink";
 import { usePageRoutes } from "./hooks/usePageRoutes";
+import { ComponentSelector } from "./components/component-selector/ComponentSelector";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -137,6 +138,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         if (propType === "internal_link")
           return (
             <InternalLink
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        if (propType === "component_selector")
+          return (
+            <ComponentSelector
               {...props}
               propName={propName}
               key={propName}

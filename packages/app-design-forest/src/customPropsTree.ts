@@ -11,7 +11,8 @@ export type CustomPropsTreeOptions = {
       | "array_boolean"
       | "array_number"
       | "array_static_asset"
-      | "internal_link";
+      | "internal_link"
+      | "component_selector";
   };
 };
 
