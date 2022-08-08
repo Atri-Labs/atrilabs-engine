@@ -1,5 +1,6 @@
 import { useLayoutEffect, useEffect } from "react";
 import useStore, { setEffectivePropsForPage } from "../hooks/useStore";
+import useIoStore from "../hooks/useIoStore";
 import { useNavigate } from "react-router-dom";
 import { subscribeInternalNavigation } from "../utils/navigate";
 // IMPORT CURSOR
