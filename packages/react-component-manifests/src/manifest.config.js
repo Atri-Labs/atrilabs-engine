@@ -61,5 +61,9 @@ module.exports = {
       modulePath: "./src/manifests/Toggle/Toggle.tsx",
       exportedVarName: "Toggle",
     },
+    Menu: {
+      modulePath: "./src/manifests/Menu/Menu.tsx",
+      exportedVarName: "Menu",
+    },
   },
 };

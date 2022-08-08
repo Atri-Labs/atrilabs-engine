@@ -65,4 +65,10 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "active"] }],
     },
   },
+  Menu: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "open"] }],
+    },
+  },
 };

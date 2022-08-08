@@ -182,4 +182,16 @@ export const keyPropMap: any = {
     styles: { ...FlexChildStyle },
     custom: { activeColor: "#2196f3", active: false, inactiveColor: "#CCCCCC" },
   },
+  Menu: {
+    styles: { ...FlexStyle },
+    custom: {
+      open: true,
+      iconHeight: 24,
+      iconWidth: 24,
+      src: "",
+      strokeColor: "",
+      gap: 0,
+      alignRight: false,
+    },
+  },
 };
