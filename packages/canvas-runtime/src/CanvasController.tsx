@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Breakpoint } from "./types";
 
 export type CanvasControllerProps = {
-  breakpoint: Breakpoint;
+  // null to set desktop
+  breakpoint: Breakpoint | null;
 };
 
 // null for desktop breakpoint

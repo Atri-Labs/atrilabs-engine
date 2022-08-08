@@ -24,7 +24,7 @@ const breakpoints = {
 export default function () {
   console.log("canvas-breakpoint-layer loaded");
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>();
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
 
   // set initial breakpoint at Desktop
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function () {
   }, []);
   return (
     <>
-      {breakpoint ? <CanvasController breakpoint={breakpoint} /> : null}
+      <CanvasController breakpoint={breakpoint} />
       <Menu name="CanvasMenu" order={0}>
         <div style={styles.iconContainer}>
           <IconMenu

@@ -53,6 +53,13 @@ export const useManageCSS = (id: string | null) => {
                 styles: effectiveStyle,
               });
             }
+            if (breakpoint === null) {
+              const oldProps = getComponentProps(nodeId);
+              updateComponentProps(nodeId, {
+                ...oldProps,
+                styles: { ...styles },
+              });
+            }
           }
         }
       });
