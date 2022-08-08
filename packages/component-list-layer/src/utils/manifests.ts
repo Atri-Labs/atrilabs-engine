@@ -16,6 +16,7 @@ import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/T
 import UploadManifests from "@atrilabs/react-component-manifests/src/manifests/Upload/Upload";
 import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 import MenuManifests from "@atrilabs/react-component-manifests/src/manifests/Menu/Menu";
+import LineChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/LineChart/LineChart";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -79,6 +80,7 @@ const defaultImports = [
   UploadManifests,
   Link,
   MenuManifests,
+  LineChartManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);

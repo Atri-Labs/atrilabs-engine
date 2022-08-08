@@ -3,7 +3,7 @@ import { ComponentProps } from "../../types";
 
 export const Boolean: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || false;
   }, [props]);
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

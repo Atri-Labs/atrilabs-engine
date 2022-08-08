@@ -3911,6 +3911,11 @@
     "@svgr/plugin-jsx" "^6.2.1"
     "@svgr/plugin-svgo" "^6.2.0"
 
+"@toast-ui/chart@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@toast-ui/chart/-/chart-4.4.3.tgz#e3a5e00a1ce542cbefdba4ae6238828ccef5e7eb"
+  integrity sha512-lvv4g39uwl1DmsdlfrLxSf/qCGus7fDwWrWGlc5w9rcBidrWjZyFNmzfQC0Y/VycOPJR6YqfgPyY59R6+5eBsw==
+
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
