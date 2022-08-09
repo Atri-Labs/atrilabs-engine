@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -21,38 +21,86 @@ export const LineChart = forwardRef<
     custom: {
       width: number;
       height: number;
-      series: {
-        name: string;
-        data: { category: string | number; value: number }[];
-        color?: string;
-        type?: string;
-        animate?: boolean;
+      cartesianGrid?: { show?: boolean; strokeDasharray?: string };
+      data: {
+        [key: string]: number | string;
       }[];
+      options?: {
+        [key: string]: {
+          stroke?: string;
+          fill?: string;
+          type?: string;
+          animate?: boolean;
+          order?: number;
+        };
+      };
+      toolTip?: { show?: boolean };
+      legend?: { show?: boolean };
+      xAxis?: { show?: boolean; key?: string };
+      yAxis?: { show?: boolean };
     };
   }
 >((props, ref) => {
+  const xAxisKey = useMemo(() => {
+    return props.custom.xAxis?.key || "x";
+  }, [props.custom]);
+
+  const areOrderProvided = useMemo(() => {
+    if (props.custom.data.length > 0) {
+      const keys = Object.keys(props.custom.data[0]);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (key === xAxisKey) continue;
+        if (props.custom.options?.[key]?.order === undefined) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }, [props.custom, xAxisKey]);
+
+  const sortedKeys = useMemo(() => {
+    if (props.custom.data.length > 0) {
+      return Object.keys(props.custom.data[0])
+        .filter((key) => key !== xAxisKey)
+        .sort((a, b) => {
+          if (areOrderProvided) {
+            return (
+              props.custom.options![a]!.order! -
+              props.custom.options![b]!.order!
+            );
+          }
+          return a < b ? -1 : 0;
+        });
+    }
+    return [];
+  }, [areOrderProvided, props.custom, xAxisKey]);
+
   return (
     <div ref={ref}>
       <LineChartRechart
         width={props.custom.width}
         height={props.custom.height}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        data={props.custom.data}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={"category"} allowDuplicatedCategory={false} />
-        <YAxis dataKey={"value"} />
-        <Tooltip />
-        <Legend />
-        {props.custom.series.map((s) => {
+        {props.custom.cartesianGrid?.show ? (
+          <CartesianGrid
+            strokeDasharray={props.custom.cartesianGrid?.strokeDasharray}
+          />
+        ) : null}
+        {props.custom.xAxis?.show ? <XAxis dataKey={xAxisKey} /> : null}
+        {props.custom.yAxis?.show ? <YAxis /> : null}
+        {props.custom.toolTip?.show ? <Tooltip /> : null}
+        {props.custom.legend?.show ? <Legend /> : null}
+        {sortedKeys.map((key) => {
           return (
             <Line
-              type={s.type || "linear"}
-              dataKey={"value"}
-              data={s.data}
-              name={s.name}
-              key={s.name}
-              stroke={s.color || "#8884d8"}
-              isAnimationActive={s.animate}
+              key={key}
+              dataKey={key}
+              type={props.custom.options?.[key]?.type}
+              stroke={props.custom.options?.[key]?.stroke}
+              fill={props.custom.options?.[key]?.fill}
+              isAnimationActive={props.custom.options?.[key]?.animate}
             />
           );
         })}
@@ -62,31 +110,72 @@ export const LineChart = forwardRef<
 });
 
 export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
-  props.custom.series = [
-    {
-      name: "Series 1",
-      data: [
-        { category: "A", value: 2400 },
-        { category: "B", value: 1398 },
-        { category: "C", value: 9800 },
-        { category: "D", value: 3908 },
-        { category: "E", value: 4800 },
-        { category: "F", value: 3800 },
-        { category: "G", value: 4300 },
-      ],
-      color: "#8884d8",
-      type: "monotone",
-      animate: false,
-    },
-  ];
-  return <LineChart {...props} ref={ref} />;
+  const custom = useMemo(() => {
+    const data = [
+      {
+        x: "Page A",
+        uv: 4000,
+        pv: 2400,
+        amt: 2400,
+      },
+      {
+        x: "Page B",
+        uv: 3000,
+        pv: 1398,
+        amt: 2210,
+      },
+      {
+        x: "Page C",
+        uv: 2000,
+        pv: 9800,
+        amt: 2290,
+      },
+      {
+        x: "Page D",
+        uv: 2780,
+        pv: 3908,
+        amt: 2000,
+      },
+      {
+        x: "Page E",
+        uv: 1890,
+        pv: 4800,
+        amt: 2181,
+      },
+      {
+        x: "Page F",
+        uv: 2390,
+        pv: 3800,
+        amt: 2500,
+      },
+      {
+        x: "Page G",
+        uv: 3490,
+        pv: 4300,
+        amt: 2100,
+      },
+    ];
+    const options = {
+      uv: { animate: false },
+      pv: { animate: false },
+      amt: { animate: false },
+    };
+    return { ...props.custom, data: data, options };
+  }, [props.custom]);
+
+  return <LineChart {...props} ref={ref} custom={custom} />;
 });
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     width: "number",
     height: "number",
-    series: "array",
+    data: "array",
+    options: "map",
+    toolTip: "map",
+    legend: "map",
+    xAxis: "map",
+    yAxis: "map",
   },
 };
 
@@ -104,7 +193,11 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           width: 400,
           height: 400,
-          series: [],
+          data: [],
+          xAxis: { show: true, key: "x" },
+          yAxis: { show: true },
+          toolTip: { show: true },
+          legend: { show: true },
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
