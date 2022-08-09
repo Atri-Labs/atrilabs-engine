@@ -7,7 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { LineChart as ToastLineChart, LineChartOptions } from "@toast-ui/chart";
+import type { LineChartOptions } from "@toast-ui/chart";
 
 export const LineChart = forwardRef<
   HTMLDivElement,
@@ -16,53 +16,56 @@ export const LineChart = forwardRef<
     custom: { animation?: boolean; spline?: boolean };
   }
 >((props, ref) => {
-  const chart = useRef<ToastLineChart | null>(null);
+  const chart = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    if (containerRef.current) {
-      const data = {
-        series: [
-          {
-            name: "SiteA",
-            data: [
-              { x: 1, y: 202 },
-              { x: 7, y: 350 },
-              { x: 8, y: 213 },
-              { x: 9, y: 230 },
-              { x: 12, y: 230 },
-            ],
+    import("@toast-ui/chart").then((mod) => {
+      if (containerRef.current) {
+        const ToastLineChart = mod.LineChart;
+        const data = {
+          series: [
+            {
+              name: "SiteA",
+              data: [
+                { x: 1, y: 202 },
+                { x: 7, y: 350 },
+                { x: 8, y: 213 },
+                { x: 9, y: 230 },
+                { x: 12, y: 230 },
+              ],
+            },
+            {
+              name: "SiteB",
+              data: [
+                { x: 1, y: 312 },
+                { x: 3, y: 320 },
+                { x: 7, y: 300 },
+                { x: 9, y: 320 },
+                { x: 13, y: 20 },
+              ],
+            },
+          ],
+        };
+        const options: LineChartOptions = {
+          series: {
+            spline: props.custom.spline || false,
           },
-          {
-            name: "SiteB",
-            data: [
-              { x: 1, y: 312 },
-              { x: 3, y: 320 },
-              { x: 7, y: 300 },
-              { x: 9, y: 320 },
-              { x: 13, y: 20 },
-            ],
+          chart: {
+            animation: props.custom.animation || false,
           },
-        ],
-      };
-      const options: LineChartOptions = {
-        series: {
-          spline: props.custom.spline || false,
-        },
-        chart: {
-          animation: props.custom.animation || false,
-        },
-      };
-      if (chart.current) {
-        chart.current.destroy();
+        };
+        if (chart.current) {
+          chart.current.destroy();
+        }
+        const newchart = new ToastLineChart({
+          el: containerRef.current,
+          data,
+          options,
+        });
+        chart.current = newchart;
       }
-      const newchart = new ToastLineChart({
-        el: containerRef.current,
-        data,
-        options,
-      });
-      chart.current = newchart;
-    }
+    });
   }, [props.custom]);
 
   return (
