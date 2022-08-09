@@ -18,6 +18,7 @@ import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 import MenuManifests from "@atrilabs/react-component-manifests/src/manifests/Menu/Menu";
 import LineChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/LineChart/LineChart";
 import BarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/BarChart/BarChart";
+import AreaChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/AreaChart/AreaChart";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -83,6 +84,7 @@ const defaultImports = [
   MenuManifests,
   LineChartManifests,
   BarChartManifests,
+  AreaChartManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
