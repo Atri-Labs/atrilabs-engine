@@ -197,8 +197,9 @@ export const keyPropMap: any = {
   LineChart: {
     styles: { ...FlexChildStyle },
     custom: {
-      animation: false,
-      spline: false,
+      width: 400,
+      height: 400,
+      series: [],
     },
   },
 };
