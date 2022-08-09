@@ -194,4 +194,11 @@ export const keyPropMap: any = {
       alignRight: false,
     },
   },
+  LineChart: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      animation: false,
+      spline: false,
+    },
+  },
 };

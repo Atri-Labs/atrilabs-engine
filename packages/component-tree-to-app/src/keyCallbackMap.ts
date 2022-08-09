@@ -71,4 +71,5 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "open"] }],
     },
   },
+  LineChart: {},
 };
