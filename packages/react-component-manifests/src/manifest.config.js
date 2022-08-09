@@ -69,5 +69,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/LineChart/LineChart.tsx",
       exportedVarName: "LineChart",
     },
+    BarChart: {
+      modulePath: "./src/manifests/charts/BarChart/BarChart.tsx",
+      exportedVarName: "BarChart",
+    },
   },
 };
