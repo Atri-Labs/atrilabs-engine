@@ -180,9 +180,11 @@ export const useManageCSS = (id: string | null) => {
       if (manifest) {
         const manifestComponent: ReactComponentManifestSchema =
           manifest.component;
-        const treeOptions =
-          manifestComponent.dev.attachProps["styles"].treeOptions;
-        setTreeOptions(treeOptions);
+        if (manifestComponent.dev.attachProps["styles"]) {
+          const treeOptions =
+            manifestComponent.dev.attachProps["styles"].treeOptions;
+          setTreeOptions(treeOptions);
+        }
       }
     }
   }, [id, compTree]);

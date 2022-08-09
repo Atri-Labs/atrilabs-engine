@@ -1,109 +1,92 @@
-import React, { forwardRef, useLayoutEffect, useMemo, useRef } from "react";
+import React, { forwardRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import type { LineChartOptions } from "@toast-ui/chart";
+import {
+  LineChart as LineChartRechart,
+  CartesianGrid,
+  YAxis,
+  XAxis,
+  Line,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 export const LineChart = forwardRef<
   HTMLDivElement,
   {
-    styles: React.CSSProperties;
-    custom: { animation?: boolean; spline?: boolean };
+    custom: {
+      width: number;
+      height: number;
+      series: {
+        name: string;
+        data: { category: string | number; value: number }[];
+        color?: string;
+        type?: string;
+        animate?: boolean;
+      }[];
+    };
   }
 >((props, ref) => {
-  const chart = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    import("@toast-ui/chart").then((mod) => {
-      if (containerRef.current) {
-        const ToastLineChart = mod.LineChart;
-        const data = {
-          series: [
-            {
-              name: "SiteA",
-              data: [
-                { x: 1, y: 202 },
-                { x: 7, y: 350 },
-                { x: 8, y: 213 },
-                { x: 9, y: 230 },
-                { x: 12, y: 230 },
-              ],
-            },
-            {
-              name: "SiteB",
-              data: [
-                { x: 1, y: 312 },
-                { x: 3, y: 320 },
-                { x: 7, y: 300 },
-                { x: 9, y: 320 },
-                { x: 13, y: 20 },
-              ],
-            },
-          ],
-        };
-        const options: LineChartOptions = {
-          series: {
-            spline: props.custom.spline || false,
-          },
-          chart: {
-            animation: props.custom.animation || false,
-          },
-        };
-        if (chart.current) {
-          chart.current.destroy();
-        }
-        const newchart = new ToastLineChart({
-          el: containerRef.current,
-          data,
-          options,
-        });
-        chart.current = newchart;
-      }
-    });
-  }, [props.custom]);
-
   return (
-    <div ref={ref} style={props.styles}>
-      <div ref={containerRef} style={{ width: "100%", height: "100%" }}></div>
+    <div ref={ref}>
+      <LineChartRechart
+        width={props.custom.width}
+        height={props.custom.height}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey={"category"} allowDuplicatedCategory={false} />
+        <YAxis dataKey={"value"} />
+        <Tooltip />
+        <Legend />
+        {props.custom.series.map((s) => {
+          return (
+            <Line
+              type={s.type || "linear"}
+              dataKey={"value"}
+              data={s.data}
+              name={s.name}
+              key={s.name}
+              stroke={s.color || "#8884d8"}
+              isAnimationActive={s.animate}
+            />
+          );
+        })}
+      </LineChartRechart>
     </div>
   );
 });
 
 export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
-  props.custom.animation = false;
-  const key = useMemo(() => {
-    return `w${props.styles.width}h${props.styles.height}minW${props.styles.minWidth}minH${props.styles.minHeight}maxW${props.styles.maxWidth}maxH${props.styles.maxHeight}`;
-  }, [
-    props.styles.width,
-    props.styles.height,
-    props.styles.minWidth,
-    props.styles.minHeight,
-    props.styles.maxWidth,
-    props.styles.maxHeight,
-  ]);
-  return <LineChart {...props} ref={ref} key={key} />;
+  props.custom.series = [
+    {
+      name: "Series 1",
+      data: [
+        { category: "A", value: 2400 },
+        { category: "B", value: 1398 },
+        { category: "C", value: 9800 },
+        { category: "D", value: 3908 },
+        { category: "E", value: 4800 },
+        { category: "F", value: 3800 },
+        { category: "G", value: 4300 },
+      ],
+      color: "#8884d8",
+      type: "monotone",
+      animate: false,
+    },
+  ];
+  return <LineChart {...props} ref={ref} />;
 });
-
-const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  backgroundOptions: true,
-};
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    animation: "boolean",
+    width: "number",
+    height: "number",
+    series: "array",
   },
 };
 
@@ -116,18 +99,13 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevLineChart,
     decorators: [],
     attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {
-          height: "400px",
-          width: "400px",
-        },
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          width: 400,
+          height: 400,
+          series: [],
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
