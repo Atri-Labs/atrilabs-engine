@@ -12,18 +12,29 @@ import "./Carousel.css";
 export type CarouselItemTypes = {
   children: string;
   width: string;
+  backgroundImage: string;
 };
 
 export type CarouseWrapperTypes = {
   children: any; //CARE
+  startTile: number;
 };
 
 export const CarouselItem: React.FC<CarouselItemTypes> = ({
   children,
   width,
+  backgroundImage,
 }) => {
   return (
-    <div className="carousel-item" style={{ width: width }}>
+    <div
+      className="carousel-item"
+      style={{
+        width: width,
+        backgroundImage: `url(
+          ${backgroundImage}
+        )`,
+      }}
+    >
       {children}
     </div>
   );
@@ -31,8 +42,9 @@ export const CarouselItem: React.FC<CarouselItemTypes> = ({
 
 export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
   children,
+  startTile,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(startTile - 1);
   const [paused, setPaused] = useState(false);
 
   const updateIndex = (newIndex: number) => {
@@ -92,7 +104,7 @@ export const Carousel = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { items: [] };
+    custom: { items: []; startTile: number; imageItems: [] };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -104,9 +116,13 @@ export const Carousel = forwardRef<
   );
   return (
     <div ref={ref} style={props.styles} onClick={onClick}>
-      <CarouselWrapper>
+      <CarouselWrapper startTile={props.custom.startTile}>
         {props.custom.items.map((item, i) => (
-          <CarouselItem width="100%" key={i}>
+          <CarouselItem
+            width="100%"
+            key={i}
+            backgroundImage={props.custom.imageItems[i]}
+          >
             {item}
           </CarouselItem>
         ))}

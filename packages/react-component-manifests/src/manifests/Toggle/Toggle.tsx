@@ -9,6 +9,41 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Toggle.css";
 
+export type ToggleComponentTypes = {
+  isOn: boolean;
+  onColor: string;
+  offColor: string;
+  handleToggle: any;
+};
+
+export const ToggleHelper: React.FC<ToggleComponentTypes> = ({
+  isOn,
+  onColor,
+  offColor,
+  handleToggle,
+}) => {
+  return (
+    <div className="toggle-holder">
+      <input
+        checked={isOn}
+        onChange={handleToggle}
+        className="toggle-switch-checkbox"
+        id="toggle-switch-new"
+        type="checkbox"
+      />
+      <label
+        style={
+          isOn ? { background: `${onColor}` } : { background: `${offColor}` }
+        }
+        className="toggle-switch-label"
+        htmlFor="toggle-switch-new"
+      >
+        <span className="toggle-switch-button" />
+      </label>
+    </div>
+  );
+};
+
 export const Toggle = forwardRef<
   HTMLDivElement,
   {
@@ -19,31 +54,19 @@ export const Toggle = forwardRef<
 >((props, ref) => {
   const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
+      console.log("changed");
       props.onChange(e.target.checked);
     },
     [props]
   );
-  const color = useMemo(() => {
-    return props.custom.active
-      ? props.custom.activeColor
-      : props.custom.inactiveColor;
-  }, [props]);
   return (
     <div ref={ref} style={{ ...props.styles, display: "inline-flex" }}>
-      <label className="switch">
-        <input
-          type="checkbox"
-          onChange={onChange}
-          checked={props.custom.active}
-        />
-        <span
-          className="slider round"
-          style={{
-            backgroundColor: color,
-            boxShadow: `0 0 1px ${color}`,
-          }}
-        ></span>
-      </label>
+      <ToggleHelper
+        isOn={props.custom.active}
+        onColor={props.custom.activeColor}
+        offColor={props.custom.inactiveColor}
+        handleToggle={onChange}
+      />
     </div>
   );
 });
@@ -77,7 +100,10 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          width: "100px",
+          height: "50px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

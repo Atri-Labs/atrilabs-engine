@@ -23,6 +23,7 @@
 
 .indicators button {
   margin: 5px;
+  border: none;
   width: 30px !important;
   margin-top: -15px !important;
   position: relative;
