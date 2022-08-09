@@ -59,6 +59,23 @@ export const AreaChart = forwardRef<
     return true;
   }, [props.custom, xAxisKey]);
 
+  const sortedKeys = useMemo(() => {
+    if (props.custom.data.length > 0) {
+      return Object.keys(props.custom.data[0])
+        .filter((key) => key !== xAxisKey)
+        .sort((a, b) => {
+          if (areOrderProvided) {
+            return (
+              props.custom.options![a]!.order! -
+              props.custom.options![b]!.order!
+            );
+          }
+          return a < b ? -1 : 0;
+        });
+    }
+    return [];
+  }, [areOrderProvided, props.custom, xAxisKey]);
+
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <AreaChartRechart
@@ -75,88 +92,79 @@ export const AreaChart = forwardRef<
         {props.custom.yAxis?.show ? <YAxis /> : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
-        {props.custom.data.length > 0
-          ? Object.keys(props.custom.data[0])
-              .filter((key) => key !== xAxisKey)
-              .sort((a, b) => {
-                if (areOrderProvided) {
-                  return (
-                    props.custom.options![a]!.order! -
-                    props.custom.options![b]!.order!
-                  );
-                }
-                return a < b ? -1 : 0;
-              })
-              .map((key) => {
-                return (
-                  <Area
-                    key={key}
-                    dataKey={key}
-                    stackId="1"
-                    type={props.custom.options?.[key]?.type}
-                    stroke={props.custom.options?.[key]?.stroke}
-                    fill={props.custom.options?.[key]?.fill}
-                    isAnimationActive={props.custom.options?.[key]?.animate}
-                  />
-                );
-              })
-          : null}
+        {sortedKeys.map((key) => {
+          return (
+            <Area
+              key={key}
+              dataKey={key}
+              stackId="1"
+              type={props.custom.options?.[key]?.type}
+              stroke={props.custom.options?.[key]?.stroke}
+              fill={props.custom.options?.[key]?.fill}
+              isAnimationActive={props.custom.options?.[key]?.animate}
+            />
+          );
+        })}
       </AreaChartRechart>
     </div>
   );
 });
 
 export const DevBarChart: typeof AreaChart = forwardRef((props, ref) => {
-  props.custom.data = [
-    {
-      x: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      x: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      x: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      x: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      x: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      x: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      x: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
-  props.custom.options = {
-    uv: { animate: false },
-    pv: { animate: false },
-    amt: { animate: false },
-  };
-  return <AreaChart {...props} ref={ref} />;
+  const custom = useMemo(() => {
+    const data = [
+      {
+        x: "Page A",
+        uv: 4000,
+        pv: 2400,
+        amt: 2400,
+      },
+      {
+        x: "Page B",
+        uv: 3000,
+        pv: 1398,
+        amt: 2210,
+      },
+      {
+        x: "Page C",
+        uv: 2000,
+        pv: 9800,
+        amt: 2290,
+      },
+      {
+        x: "Page D",
+        uv: 2780,
+        pv: 3908,
+        amt: 2000,
+      },
+      {
+        x: "Page E",
+        uv: 1890,
+        pv: 4800,
+        amt: 2181,
+      },
+      {
+        x: "Page F",
+        uv: 2390,
+        pv: 3800,
+        amt: 2500,
+      },
+      {
+        x: "Page G",
+        uv: 3490,
+        pv: 4300,
+        amt: 2100,
+      },
+    ];
+    const options = {
+      uv: { animate: false },
+      pv: { animate: false },
+      amt: { animate: false },
+    };
+    return { ...props.custom, data: data, options };
+  }, [props.custom]);
+
+  return <AreaChart {...props} ref={ref} custom={custom} />;
 });
 
 const customTreeOptions: CustomPropsTreeOptions = {
