@@ -77,5 +77,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/AreaChart/AreaChart.tsx",
       exportedVarName: "AreaChart",
     },
+    ScatterChart: {
+      modulePath: "./src/manifests/charts/ScatterChart/ScatterChart.tsx",
+      exportedVarName: "ScatterChart",
+    },
   },
 };
