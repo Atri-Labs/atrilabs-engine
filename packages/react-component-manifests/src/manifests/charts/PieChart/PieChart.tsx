@@ -106,6 +106,7 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
         outerRadius: "40%",
         showLabel: true,
         fill: "#0088FE",
+        animate: false,
       },
       {
         cx: "50%",
@@ -113,6 +114,7 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
         innerRadius: "65%",
         showLabel: true,
         fill: "#00C49F",
+        animate: false,
       },
     ];
     return { ...props.custom, data, options };
