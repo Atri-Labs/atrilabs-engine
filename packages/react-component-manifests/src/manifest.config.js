@@ -81,5 +81,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/ScatterChart/ScatterChart.tsx",
       exportedVarName: "ScatterChart",
     },
+    PieChart: {
+      modulePath: "./src/manifests/charts/PieChart/PieChart.tsx",
+      exportedVarName: "PieChart",
+    },
   },
 };
