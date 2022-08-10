@@ -85,5 +85,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/PieChart/PieChart.tsx",
       exportedVarName: "PieChart",
     },
+    HistogramChart: {
+      modulePath: "./src/manifests/charts/HistogramChart/HistogramChart.tsx",
+      exportedVarName: "HistogramChart",
+    },
   },
 };
