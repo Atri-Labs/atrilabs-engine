@@ -14,13 +14,14 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 export const BarChart = forwardRef<
   HTMLDivElement,
   {
+    styles: React.CSSProperties;
     custom: {
-      width: number;
-      height: number;
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
       // row-wise data
       data: {
@@ -81,10 +82,18 @@ export const BarChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <BarChartRechart
-        width={props.custom.width}
-        height={props.custom.height}
+        width={
+          typeof props.styles.width === "string"
+            ? parseInt(props.styles.width)
+            : props.styles.width
+        }
+        height={
+          typeof props.styles.height === "string"
+            ? parseInt(props.styles.height)
+            : props.styles.height
+        }
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         data={props.custom.data}
       >
@@ -172,6 +181,17 @@ export const DevBarChart: typeof BarChart = forwardRef((props, ref) => {
   return <BarChart {...props} ref={ref} custom={custom} />;
 });
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: false,
+  flexChildOptions: false,
+  positionOptions: false,
+  typographyOptions: false,
+  spacingOptions: false,
+  sizeOptions: true,
+  borderOptions: false,
+  backgroundOptions: false,
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     width: "number",
@@ -195,11 +215,15 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevBarChart,
     decorators: [],
     attachProps: {
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { width: "400px", height: "400px" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          width: 400,
-          height: 400,
           data: [],
           xAxis: { show: true, key: "x" },
           yAxis: { show: true },

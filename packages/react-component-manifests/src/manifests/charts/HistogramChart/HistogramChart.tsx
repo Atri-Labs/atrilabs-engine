@@ -15,13 +15,14 @@ import {
   Legend,
   Line,
 } from "recharts";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 export const HistogramChart = forwardRef<
   HTMLDivElement,
   {
+    styles: React.CSSProperties;
     custom: {
-      width: number;
-      height: number;
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
       // row-wise data
       data: {
@@ -53,10 +54,18 @@ export const HistogramChart = forwardRef<
   }, [props.custom]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <ComposedChart
-        width={props.custom.width}
-        height={props.custom.height}
+        width={
+          typeof props.styles.width === "string"
+            ? parseInt(props.styles.width)
+            : props.styles.width
+        }
+        height={
+          typeof props.styles.height === "string"
+            ? parseInt(props.styles.height)
+            : props.styles.height
+        }
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         data={props.custom.data}
         barGap={0}
@@ -164,6 +173,17 @@ export const DevHistogramChart: typeof HistogramChart = forwardRef(
   }
 );
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: false,
+  flexChildOptions: false,
+  positionOptions: false,
+  typographyOptions: false,
+  spacingOptions: false,
+  sizeOptions: true,
+  borderOptions: false,
+  backgroundOptions: false,
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     width: "number",
@@ -186,11 +206,15 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevHistogramChart,
     decorators: [],
     attachProps: {
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { width: "400px", height: "400px" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          width: 400,
-          height: 400,
           data: [],
           xAxis: { show: true, key: "x" },
           yAxis: { show: true, key: "y" },

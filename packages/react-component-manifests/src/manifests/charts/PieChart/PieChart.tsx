@@ -6,13 +6,14 @@ import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { PieChart as PieChartRechart, Pie, Tooltip, Legend } from "recharts";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 export const PieChart = forwardRef<
   HTMLDivElement,
   {
+    styles: React.CSSProperties;
     custom: {
-      width: number;
-      height: number;
       data:
         | {
             [key: string]: string | number;
@@ -56,8 +57,16 @@ export const PieChart = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <PieChartRechart
-        width={props.custom.width}
-        height={props.custom.height}
+        width={
+          typeof props.styles.width === "string"
+            ? parseInt(props.styles.width)
+            : props.styles.width
+        }
+        height={
+          typeof props.styles.height === "string"
+            ? parseInt(props.styles.height)
+            : props.styles.height
+        }
         data={props.custom.data}
       >
         {props.custom.toolTip?.show ? <Tooltip /> : null}
@@ -123,6 +132,17 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
   return <PieChart {...props} ref={ref} custom={custom} />;
 });
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: false,
+  flexChildOptions: false,
+  positionOptions: false,
+  typographyOptions: false,
+  spacingOptions: false,
+  sizeOptions: true,
+  borderOptions: false,
+  backgroundOptions: false,
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     width: "number",
@@ -144,11 +164,15 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevPieChart,
     decorators: [],
     attachProps: {
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { width: "400px", height: "400px" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          width: 400,
-          height: 400,
           data: [],
           toolTip: { show: true },
           legend: { show: true },

@@ -17,13 +17,14 @@ import {
 import { CandleStickPlot } from "./types";
 import { useCandleStickPlot } from "./useCandleStick";
 import { DotBar, HorizonBar } from "./components";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
 export const CandleStick = forwardRef<
   HTMLDivElement,
   {
+    styles: React.CSSProperties;
     custom: {
-      width: number;
-      height: number;
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
       data: CandleStickPlot[];
       options?: {
@@ -54,8 +55,16 @@ export const CandleStick = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <ComposedChart
-        width={props.custom.width}
-        height={props.custom.height}
+        width={
+          typeof props.styles.width === "string"
+            ? parseInt(props.styles.width)
+            : props.styles.width
+        }
+        height={
+          typeof props.styles.height === "string"
+            ? parseInt(props.styles.height)
+            : props.styles.height
+        }
         data={candleStickData}
       >
         {props.custom.cartesianGrid?.show ? (
@@ -170,6 +179,17 @@ export const DevCandleStickChart: typeof CandleStick = forwardRef(
   }
 );
 
+const cssTreeOptions: CSSTreeOptions = {
+  flexContainerOptions: false,
+  flexChildOptions: false,
+  positionOptions: false,
+  typographyOptions: false,
+  spacingOptions: false,
+  sizeOptions: true,
+  borderOptions: false,
+  backgroundOptions: false,
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     width: "number",
@@ -192,11 +212,15 @@ const compManifest: ReactComponentManifestSchema = {
     comp: DevCandleStickChart,
     decorators: [],
     attachProps: {
+      styles: {
+        treeId: CSSTreeId,
+        initialValue: { width: "400px", height: "400px" },
+        treeOptions: cssTreeOptions,
+        canvasOptions: { groupByBreakpoint: true },
+      },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          width: 400,
-          height: 400,
           data: [],
           options: {
             whisker: {
