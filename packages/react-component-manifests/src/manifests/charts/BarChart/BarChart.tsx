@@ -240,10 +240,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "BarChart" } },
+  panel: { comp: CommonIcon, props: { name: "Bar" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "BarChart", containerStyle: { padding: "1rem" } },
+    props: { name: "Bar", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

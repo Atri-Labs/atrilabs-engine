@@ -233,10 +233,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "LineChart" } },
+  panel: { comp: CommonIcon, props: { name: "Line" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "LineChart", containerStyle: { padding: "1rem" } },
+    props: { name: "Line", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

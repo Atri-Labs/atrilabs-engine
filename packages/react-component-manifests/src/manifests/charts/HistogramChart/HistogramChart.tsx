@@ -232,10 +232,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "HistogramChart" } },
+  panel: { comp: CommonIcon, props: { name: "Histogram" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "HistogramChart", containerStyle: { padding: "1rem" } },
+    props: { name: "Histogram", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

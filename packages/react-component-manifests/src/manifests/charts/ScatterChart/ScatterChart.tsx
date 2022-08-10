@@ -161,8 +161,8 @@ export const DevBarChart: typeof ScatterChart = forwardRef((props, ref) => {
       ],
     ];
     const options = [
-      { name: "pv", shape: "circle" as SymbolType },
-      { name: "uv", shape: "cross" as SymbolType },
+      { name: "pv", shape: "circle" as SymbolType, animate: false },
+      { name: "uv", shape: "cross" as SymbolType, animate: false },
     ];
     return { ...props.custom, data, options };
   }, [props.custom]);
@@ -228,10 +228,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "ScatterChart" } },
+  panel: { comp: CommonIcon, props: { name: "Scatter" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "ScatterChart", containerStyle: { padding: "1rem" } },
+    props: { name: "Scatter", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

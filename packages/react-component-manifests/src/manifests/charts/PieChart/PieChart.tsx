@@ -187,10 +187,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "PieChart" } },
+  panel: { comp: CommonIcon, props: { name: "Pie" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "PieChart", containerStyle: { padding: "1rem" } },
+    props: { name: "Pie", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
