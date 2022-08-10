@@ -22,6 +22,7 @@ import AreaChartManifests from "@atrilabs/react-component-manifests/src/manifest
 import ScatterChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/ScatterChart/ScatterChart";
 import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/PieChart/PieChart";
 import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
+import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -91,6 +92,7 @@ const defaultImports = [
   ScatterChartManifests,
   PieChartManifests,
   HistogramChartManifests,
+  CandleStickManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);

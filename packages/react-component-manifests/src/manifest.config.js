@@ -89,5 +89,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/HistogramChart/HistogramChart.tsx",
       exportedVarName: "HistogramChart",
     },
+    CandleStick: {
+      modulePath: "./src/manifests/charts/CandleStick/CandleStick.tsx",
+      exportedVarName: "CandleStick",
+    },
   },
 };
