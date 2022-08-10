@@ -24,7 +24,7 @@ export const BarChart = forwardRef<
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
       // row-wise data
       data: {
-        [key: string]: number | string;
+        [key: string]: number | string | number[];
       }[];
       // options for each bar
       options?: {
