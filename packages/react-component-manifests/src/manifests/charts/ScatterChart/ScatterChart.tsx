@@ -183,8 +183,6 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    width: "number",
-    height: "number",
     data: "array",
     options: "array",
     toolTip: "map",

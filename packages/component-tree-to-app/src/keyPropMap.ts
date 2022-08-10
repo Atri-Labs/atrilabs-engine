@@ -195,11 +195,93 @@ export const keyPropMap: any = {
     },
   },
   LineChart: {
-    styles: { ...FlexChildStyle },
+    styles: { ...SizeOptions },
     custom: {
-      width: 400,
-      height: 400,
-      series: [],
+      data: [],
+      xAxis: { show: true, key: "x" },
+      yAxis: { show: true },
+      toolTip: { show: true },
+      legend: { show: true },
+      options: {},
+    },
+  },
+  AreaChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      xAxis: { show: true, key: "x" },
+      yAxis: { show: true },
+      toolTip: { show: true },
+      legend: { show: true },
+      options: {},
+    },
+  },
+  BarChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      xAxis: { show: true, key: "x" },
+      yAxis: { show: true },
+      toolTip: { show: true },
+      legend: { show: true },
+      stacked: false,
+      options: {},
+    },
+  },
+  CandleStick: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      options: {
+        whisker: {
+          fill: "#0088FE",
+          stroke: "#0088FE",
+          strokeWidth: "5",
+          strokeDasharray: "5",
+        },
+        box: {
+          fill: "#00C49F",
+        },
+        dot: {
+          fill: "#FFBB28",
+        },
+      },
+      toolTip: { show: true },
+      legend: { show: true },
+      xAxis: { show: true },
+      yAxis: { show: true },
+    },
+  },
+  HistogramChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      xAxis: { show: true, key: "x" },
+      yAxis: { show: true, key: "y" },
+      options: { line: { type: "monotone", strokeWidth: 2 } },
+      toolTip: { show: true },
+      legend: { show: true },
+    },
+  },
+  PieChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      toolTip: { show: true },
+      legend: { show: true },
+      options: {},
+      keys: {},
+    },
+  },
+  ScatterChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      xAxis: { show: true, key: "x" },
+      yAxis: { show: true },
+      toolTip: { show: true },
+      legend: { show: true },
+      options: {},
     },
   },
 };
