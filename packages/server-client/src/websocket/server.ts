@@ -12,6 +12,7 @@ import fs from "fs";
 import path from "path";
 import express from "express";
 import cors from "cors";
+import { compressEvents } from "@atrilabs/forest";
 
 import http from "http";
 import {
@@ -264,7 +265,8 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         initialLoadForest(forestPkgId);
         const eventManager = getEventManager(forestPkgId);
         const events = eventManager.fetchEvents(pageId);
-        callback(events);
+        const compressedEvents = compressEvents(events);
+        callback(compressedEvents);
       } catch (err) {
         console.log(
           `[websocket-server] Following error occured in fetchEvents message handler`

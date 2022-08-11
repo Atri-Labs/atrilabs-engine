@@ -1,3 +1,10 @@
+/**
+ *
+ * IMPORTANT NOTE:
+ *
+ * Provide the unset value, not the default value.
+ *
+ */
 // default CSS values for Layout
 const Layout: React.CSSProperties = {
   display: "flex",
@@ -194,11 +201,103 @@ export const keyPropMap: any = {
       alignRight: false,
     },
   },
-  LineChart: {
-    styles: { ...FlexChildStyle },
+  AreaChart: {
+    styles: { ...SizeOptions },
     custom: {
-      animation: false,
-      spline: false,
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
+      options: {},
+    },
+  },
+  BarChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
+      stacked: false,
+      options: {},
+    },
+  },
+  CandleStick: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      animate: false,
+      options: {
+        whisker: {
+          fill: "",
+          stroke: "",
+          strokeWidth: "",
+          strokeDasharray: "",
+        },
+        box: {
+          fill: "",
+        },
+        dot: {
+          fill: "",
+          stroke: "",
+        },
+      },
+      toolTip: { show: false },
+      legend: { show: false },
+      xAxis: { show: false },
+      yAxis: { show: false },
+    },
+  },
+  HistogramChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false, key: "" },
+      options: { line: { type: "", strokeWidth: 0 } },
+      toolTip: { show: false },
+      legend: { show: false },
+    },
+  },
+  LineChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
+      options: {},
+    },
+  },
+  PieChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      data: [],
+      toolTip: { show: false },
+      legend: { show: false },
+      options: [],
+      keys: { value: "" },
+    },
+  },
+  ScatterChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "", name: "", unit: "" },
+      yAxis: { show: false, key: "", name: "", unit: "" },
+      zAxis: { show: false, key: "", name: "", unit: "" },
+      toolTip: { show: false },
+      legend: { show: false },
+      options: [],
     },
   },
 };

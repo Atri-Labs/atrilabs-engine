@@ -17,6 +17,12 @@ import UploadManifests from "@atrilabs/react-component-manifests/src/manifests/U
 import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 import MenuManifests from "@atrilabs/react-component-manifests/src/manifests/Menu/Menu";
 import LineChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/LineChart/LineChart";
+import BarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/BarChart/BarChart";
+import AreaChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/AreaChart/AreaChart";
+import ScatterChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/ScatterChart/ScatterChart";
+import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/PieChart/PieChart";
+import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
+import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -81,6 +87,12 @@ const defaultImports = [
   Link,
   MenuManifests,
   LineChartManifests,
+  BarChartManifests,
+  AreaChartManifests,
+  ScatterChartManifests,
+  PieChartManifests,
+  HistogramChartManifests,
+  CandleStickManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);

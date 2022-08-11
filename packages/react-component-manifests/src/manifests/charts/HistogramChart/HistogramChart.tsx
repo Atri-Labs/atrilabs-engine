@@ -6,39 +6,42 @@ import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import {
-  LineChart as LineChartRechart,
+  ComposedChart,
   CartesianGrid,
   YAxis,
   XAxis,
-  Line,
+  Bar,
   Tooltip,
   Legend,
+  Line,
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
-export const LineChart = forwardRef<
+export const HistogramChart = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
+      // row-wise data
       data: {
-        [key: string]: number | string;
+        [key: string]: number;
       }[];
+      // options for each bar
       options?: {
-        [key: string]: {
+        line?: {
           stroke?: string;
-          fill?: string;
-          type?: string;
           animate?: boolean;
-          order?: number;
+          type?: string;
+          strokeWidth?: number;
         };
+        bar?: { fill?: string; stroke?: string; animate?: boolean };
       };
       toolTip?: { show?: boolean };
       legend?: { show?: boolean };
       xAxis?: { show?: boolean; key?: string };
-      yAxis?: { show?: boolean };
+      yAxis?: { show?: boolean; key?: string };
     };
   }
 >((props, ref) => {
@@ -46,40 +49,13 @@ export const LineChart = forwardRef<
     return props.custom.xAxis?.key || "x";
   }, [props.custom]);
 
-  const areOrderProvided = useMemo(() => {
-    if (props.custom.data.length > 0) {
-      const keys = Object.keys(props.custom.data[0]);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        if (key === xAxisKey) continue;
-        if (props.custom.options?.[key]?.order === undefined) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }, [props.custom, xAxisKey]);
-
-  const sortedKeys = useMemo(() => {
-    if (props.custom.data.length > 0) {
-      return Object.keys(props.custom.data[0])
-        .filter((key) => key !== xAxisKey)
-        .sort((a, b) => {
-          if (areOrderProvided) {
-            return (
-              props.custom.options![a]!.order! -
-              props.custom.options![b]!.order!
-            );
-          }
-          return a < b ? -1 : 0;
-        });
-    }
-    return [];
-  }, [areOrderProvided, props.custom, xAxisKey]);
+  const yAxisKey = useMemo(() => {
+    return props.custom.yAxis?.key || "y";
+  }, [props.custom]);
 
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
-      <LineChartRechart
+      <ComposedChart
         width={
           typeof props.styles.width === "string"
             ? parseInt(props.styles.width)
@@ -90,90 +66,112 @@ export const LineChart = forwardRef<
             ? parseInt(props.styles.height)
             : props.styles.height
         }
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         data={props.custom.data}
+        barGap={0}
+        barCategoryGap={0}
       >
         {props.custom.cartesianGrid?.show ? (
           <CartesianGrid
             strokeDasharray={props.custom.cartesianGrid?.strokeDasharray}
           />
         ) : null}
-        {props.custom.xAxis?.show ? <XAxis dataKey={xAxisKey} /> : null}
+        {props.custom.xAxis?.show ? (
+          <XAxis
+            dataKey={xAxisKey}
+            type={"number"}
+            padding={{ left: 40, right: 40 }}
+          />
+        ) : null}
         {props.custom.yAxis?.show ? <YAxis /> : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
-        {sortedKeys.map((key) => {
-          return (
-            <Line
-              key={key}
-              dataKey={key}
-              type={props.custom.options?.[key]?.type}
-              stroke={props.custom.options?.[key]?.stroke}
-              fill={props.custom.options?.[key]?.fill}
-              isAnimationActive={props.custom.options?.[key]?.animate}
-            />
-          );
-        })}
-      </LineChartRechart>
+
+        <Bar
+          dataKey={yAxisKey}
+          stroke={props.custom.options?.bar?.stroke}
+          fill={props.custom.options?.bar?.fill}
+          isAnimationActive={props.custom.options?.bar?.animate}
+        />
+        <Line
+          type={props.custom.options?.line?.type}
+          dataKey={yAxisKey}
+          stroke={props.custom.options?.line?.stroke}
+          isAnimationActive={props.custom.options?.line?.animate}
+          strokeWidth={props.custom.options?.line?.strokeWidth}
+        />
+      </ComposedChart>
     </div>
   );
 });
 
-export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
-  const custom = useMemo(() => {
-    const data = [
-      {
-        x: "Page A",
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-      },
-      {
-        x: "Page B",
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-      },
-      {
-        x: "Page C",
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-      },
-      {
-        x: "Page D",
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-      },
-      {
-        x: "Page E",
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-      },
-      {
-        x: "Page F",
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-      },
-      {
-        x: "Page G",
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
-      },
-    ];
-    const options = {
-      uv: { animate: false },
-      pv: { animate: false },
-      amt: { animate: false },
-    };
-    return { ...props.custom, data: data, options };
-  }, [props.custom]);
+export const DevHistogramChart: typeof HistogramChart = forwardRef(
+  (props, ref) => {
+    const custom = useMemo(() => {
+      const data = [
+        {
+          x: 0,
+          y: 4000,
+        },
+        {
+          x: 1,
+          y: 3000,
+        },
+        {
+          x: 2,
+          y: 2000,
+        },
+        {
+          x: 3,
+          y: 2780,
+        },
+        {
+          x: 4,
+          y: 1890,
+        },
+        {
+          x: 5,
+          y: 2390,
+        },
+        {
+          x: 6,
+          y: 3490,
+        },
+        {
+          x: 7,
+          y: 3000,
+        },
+        {
+          x: 8,
+          y: 2990,
+        },
+        {
+          x: 9,
+          y: 2590,
+        },
+        {
+          x: 10,
+          y: 2090,
+        },
+        {
+          x: 11,
+          y: 1890,
+        },
+        {
+          x: 12,
+          y: 1690,
+        },
+      ];
+      const options = {
+        line: { ...props.custom.options?.line, animate: false },
+        bar: { ...props.custom.options?.bar, animate: false },
+      };
+      return { ...props.custom, data, options };
+    }, [props.custom]);
 
-  return <LineChart {...props} ref={ref} custom={custom} />;
-});
+    return <HistogramChart {...props} ref={ref} custom={custom} />;
+  }
+);
 
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
@@ -199,12 +197,12 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "LineChart", category: "Data" },
+  meta: { key: "HistogramChart", category: "Data" },
   render: {
-    comp: LineChart,
+    comp: HistogramChart,
   },
   dev: {
-    comp: DevLineChart,
+    comp: DevHistogramChart,
     decorators: [],
     attachProps: {
       styles: {
@@ -218,7 +216,8 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           data: [],
           xAxis: { show: true, key: "x" },
-          yAxis: { show: true },
+          yAxis: { show: true, key: "y" },
+          options: { line: { type: "monotone", strokeWidth: 2 } },
           toolTip: { show: true },
           legend: { show: true },
         },
@@ -232,10 +231,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Line" } },
+  panel: { comp: CommonIcon, props: { name: "Histogram" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Line", containerStyle: { padding: "1rem" } },
+    props: { name: "Histogram", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

@@ -72,4 +72,10 @@ export const keyCallbackMap: {
     },
   },
   LineChart: {},
+  AreaChart: {},
+  BarChart: {},
+  CandleStick: {},
+  HistogramChart: {},
+  PieChart: {},
+  ScatterChart: {},
 };

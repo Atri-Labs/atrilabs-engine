@@ -6,26 +6,28 @@ import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import {
-  LineChart as LineChartRechart,
+  BarChart as BarChartRechart,
   CartesianGrid,
   YAxis,
   XAxis,
-  Line,
+  Bar,
   Tooltip,
   Legend,
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
-export const LineChart = forwardRef<
+export const BarChart = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
       cartesianGrid?: { show?: boolean; strokeDasharray?: string };
+      // row-wise data
       data: {
-        [key: string]: number | string;
+        [key: string]: number | string | number[];
       }[];
+      // options for each bar
       options?: {
         [key: string]: {
           stroke?: string;
@@ -39,6 +41,8 @@ export const LineChart = forwardRef<
       legend?: { show?: boolean };
       xAxis?: { show?: boolean; key?: string };
       yAxis?: { show?: boolean };
+      // Bar Chart specific options
+      stacked?: boolean;
     };
   }
 >((props, ref) => {
@@ -79,7 +83,7 @@ export const LineChart = forwardRef<
 
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
-      <LineChartRechart
+      <BarChartRechart
         width={
           typeof props.styles.width === "string"
             ? parseInt(props.styles.width)
@@ -90,6 +94,7 @@ export const LineChart = forwardRef<
             ? parseInt(props.styles.height)
             : props.styles.height
         }
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         data={props.custom.data}
       >
         {props.custom.cartesianGrid?.show ? (
@@ -103,9 +108,10 @@ export const LineChart = forwardRef<
         {props.custom.legend?.show ? <Legend /> : null}
         {sortedKeys.map((key) => {
           return (
-            <Line
+            <Bar
               key={key}
               dataKey={key}
+              stackId={props.custom.stacked ? "1" : undefined}
               type={props.custom.options?.[key]?.type}
               stroke={props.custom.options?.[key]?.stroke}
               fill={props.custom.options?.[key]?.fill}
@@ -113,12 +119,12 @@ export const LineChart = forwardRef<
             />
           );
         })}
-      </LineChartRechart>
+      </BarChartRechart>
     </div>
   );
 });
 
-export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
+export const DevBarChart: typeof BarChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
       {
@@ -172,7 +178,7 @@ export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
     return { ...props.custom, data: data, options };
   }, [props.custom]);
 
-  return <LineChart {...props} ref={ref} custom={custom} />;
+  return <BarChart {...props} ref={ref} custom={custom} />;
 });
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -195,16 +201,17 @@ const customTreeOptions: CustomPropsTreeOptions = {
     legend: "map",
     xAxis: "map",
     yAxis: "map",
+    stacked: "boolean",
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "LineChart", category: "Data" },
+  meta: { key: "BarChart", category: "Data" },
   render: {
-    comp: LineChart,
+    comp: BarChart,
   },
   dev: {
-    comp: DevLineChart,
+    comp: DevBarChart,
     decorators: [],
     attachProps: {
       styles: {
@@ -232,10 +239,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Line" } },
+  panel: { comp: CommonIcon, props: { name: "Bar" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Line", containerStyle: { padding: "1rem" } },
+    props: { name: "Bar", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

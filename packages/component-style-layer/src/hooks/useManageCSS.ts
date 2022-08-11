@@ -184,6 +184,8 @@ export const useManageCSS = (id: string | null) => {
           const treeOptions =
             manifestComponent.dev.attachProps["styles"].treeOptions;
           setTreeOptions(treeOptions);
+        } else {
+          setTreeOptions(null);
         }
       }
     }

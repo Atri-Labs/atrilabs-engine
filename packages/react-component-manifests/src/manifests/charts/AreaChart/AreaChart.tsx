@@ -6,18 +6,18 @@ import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import {
-  LineChart as LineChartRechart,
+  AreaChart as AreaChartRechart,
   CartesianGrid,
   YAxis,
   XAxis,
-  Line,
+  Area,
   Tooltip,
   Legend,
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 
-export const LineChart = forwardRef<
+export const AreaChart = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -79,7 +79,7 @@ export const LineChart = forwardRef<
 
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
-      <LineChartRechart
+      <AreaChartRechart
         width={
           typeof props.styles.width === "string"
             ? parseInt(props.styles.width)
@@ -103,9 +103,10 @@ export const LineChart = forwardRef<
         {props.custom.legend?.show ? <Legend /> : null}
         {sortedKeys.map((key) => {
           return (
-            <Line
+            <Area
               key={key}
               dataKey={key}
+              stackId="1"
               type={props.custom.options?.[key]?.type}
               stroke={props.custom.options?.[key]?.stroke}
               fill={props.custom.options?.[key]?.fill}
@@ -113,12 +114,12 @@ export const LineChart = forwardRef<
             />
           );
         })}
-      </LineChartRechart>
+      </AreaChartRechart>
     </div>
   );
 });
 
-export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
+export const DevBarChart: typeof AreaChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
       {
@@ -172,7 +173,7 @@ export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
     return { ...props.custom, data: data, options };
   }, [props.custom]);
 
-  return <LineChart {...props} ref={ref} custom={custom} />;
+  return <AreaChart {...props} ref={ref} custom={custom} />;
 });
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -199,12 +200,12 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "LineChart", category: "Data" },
+  meta: { key: "AreaChart", category: "Data" },
   render: {
-    comp: LineChart,
+    comp: AreaChart,
   },
   dev: {
-    comp: DevLineChart,
+    comp: DevBarChart,
     decorators: [],
     attachProps: {
       styles: {
@@ -232,10 +233,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Line" } },
+  panel: { comp: CommonIcon, props: { name: "Area" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Line", containerStyle: { padding: "1rem" } },
+    props: { name: "Area", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
