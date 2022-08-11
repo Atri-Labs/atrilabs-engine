@@ -10,7 +10,10 @@ from .commands.open_exe import open_exe_wrapper
 from .commands.load_exe import load_exe_if_not_exists
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
-from asyncio.exceptions import CancelledError
+if sys.version_info >= (3, 8):
+    from asyncio.exceptions import CancelledError
+else:
+    from asyncio import CancelledError
 from .utils.printd import printd
 from .find_app_root import find_and_set_app_directory, get_virtualenv_type, is_virtualenv_set, set_virtualenv_type
 from . import supported_virt_types

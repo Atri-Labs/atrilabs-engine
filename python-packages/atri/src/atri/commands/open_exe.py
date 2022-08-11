@@ -4,7 +4,6 @@ from .load_exe import get_unzipped_host_path
 from ..utils.run_shell_cmd import run_shell_cmd
 from ..utils.globals import globals
 import signal
-import asyncio
 import webbrowser
 from ..utils.wait_till_file_server_ready import wait_till_file_server_ready
 

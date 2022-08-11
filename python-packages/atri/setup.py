@@ -67,7 +67,7 @@ setuptools.setup(
     },
     author="Atri Labs",
     author_email="shyam.swaroop@atrilabs.com",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     license="GPLv3",
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
