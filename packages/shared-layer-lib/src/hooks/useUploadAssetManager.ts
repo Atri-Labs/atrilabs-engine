@@ -17,6 +17,8 @@ export const useUploadAssetManager = ({
   const [linkAssetToSelector, setLinkAssetToSelector] = useState<
     string[] | null
   >(null);
+  const [appendToArray, setAppendToArray] =
+    useState<Parameters<OpenAssetManagerCallabck>["2"]>();
 
   const callPatchCbWithUrl = useCallback(
     (selector: string[], url: string) => {
@@ -25,8 +27,21 @@ export const useUploadAssetManager = ({
       for (let i = 0; i < selector.length; i++) {
         const key = selector[i];
         if (i === selector.length - 1) {
-          if (wrapInUrl) curr[key] = `url("${url}")`;
-          else curr[key] = url;
+          const value = wrapInUrl ? `url("${url}")` : url;
+          if (appendToArray) {
+            const copyArray = [...appendToArray.currentArray];
+            if (
+              appendToArray.index >= 0 &&
+              appendToArray.index < copyArray.length
+            ) {
+              copyArray.splice(appendToArray.index, 1, value);
+            } else if (appendToArray.index < 0) {
+              copyArray.push(value);
+            }
+            curr[key] = copyArray;
+          } else {
+            curr[key] = value;
+          }
         } else {
           curr[key] = {};
         }
@@ -34,7 +49,7 @@ export const useUploadAssetManager = ({
       }
       patchCb(obj);
     },
-    [patchCb, wrapInUrl]
+    [patchCb, wrapInUrl, appendToArray]
   );
 
   const onCrossClicked = useCallback(() => {
@@ -44,10 +59,11 @@ export const useUploadAssetManager = ({
   }, []);
 
   const openAssetManager = useCallback<OpenAssetManagerCallabck>(
-    (modes, selector) => {
+    (modes, selector, appendToArray) => {
       setShowAssetPanel(true);
       setModes(modes);
       setLinkAssetToSelector(selector);
+      setAppendToArray(appendToArray);
     },
     []
   );

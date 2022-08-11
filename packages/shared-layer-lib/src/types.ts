@@ -8,5 +8,9 @@ export type UseUploadAssetManagerOptions = {
 
 export type OpenAssetManagerCallabck = (
   modes: UploadMode[],
-  selector: string[]
+  selector: string[],
+  appendToArray?: {
+    currentArray: string[];
+    index: number;
+  }
 ) => void;

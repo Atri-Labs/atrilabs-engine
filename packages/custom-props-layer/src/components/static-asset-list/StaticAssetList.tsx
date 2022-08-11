@@ -12,7 +12,8 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
     (index: number) => {
       props.openAssetManager(
         ["select", "upload"],
-        ["property", "custom", props.propName, index.toString()]
+        ["property", "custom", props.propName],
+        { currentArray: props.customProps[props.propName] || [], index }
       );
     },
     [props]
@@ -58,10 +59,10 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
           <AddIcon />
         </div>
       </div>
-      <div style={{ color: "white" }}>{props.propName}</div>
       {srcs.map((value, index) => {
         return (
           <AssetInputButton
+            key={index}
             assetName={value || "Select Image"}
             onClick={() => {
               onClick(index);
