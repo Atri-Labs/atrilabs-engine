@@ -71,11 +71,16 @@ export function createPythonAppTemplateManager(
           case "object":
             if (value[attrName] === null) {
               console.log("null values are not accepted");
-            }
-            if (Array.isArray(value[attrName])) {
+            } else if (Array.isArray(value[attrName])) {
               attrs.push({
                 name: attrName,
                 type: "List[Any]",
+                isIoPropInstance: false,
+              });
+            } else if (Object.keys(value[attrName]).length === 0) {
+              attrs.push({
+                name: attrName,
+                type: "dict",
                 isIoPropInstance: false,
               });
             } else {
@@ -182,7 +187,8 @@ export function createPythonAppTemplateManager(
               attr.type === "int" ||
               attr.type === "bool" ||
               attr.type === UploadFileType ||
-              attr.type === "List[Any]"
+              attr.type === "List[Any]" ||
+              attr.type === "dict"
                 ? ""
                 : "Atri.__";
             // decide rhs

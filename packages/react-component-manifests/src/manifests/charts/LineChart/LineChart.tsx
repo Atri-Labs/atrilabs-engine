@@ -188,6 +188,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    cartesianGrid: "map",
     data: "array",
     options: "map",
     toolTip: "map",

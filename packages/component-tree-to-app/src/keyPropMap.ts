@@ -1,3 +1,10 @@
+/**
+ *
+ * IMPORTANT NOTE:
+ *
+ * Provide the unset value, not the default value.
+ *
+ */
 // default CSS values for Layout
 const Layout: React.CSSProperties = {
   display: "flex",
@@ -194,36 +201,27 @@ export const keyPropMap: any = {
       alignRight: false,
     },
   },
-  LineChart: {
-    styles: { ...SizeOptions },
-    custom: {
-      data: [],
-      xAxis: { show: true, key: "x" },
-      yAxis: { show: true },
-      toolTip: { show: true },
-      legend: { show: true },
-      options: {},
-    },
-  },
   AreaChart: {
     styles: { ...SizeOptions },
     custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
       data: [],
-      xAxis: { show: true, key: "x" },
-      yAxis: { show: true },
-      toolTip: { show: true },
-      legend: { show: true },
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
       options: {},
     },
   },
   BarChart: {
     styles: { ...SizeOptions },
     custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
       data: [],
-      xAxis: { show: true, key: "x" },
-      yAxis: { show: true },
-      toolTip: { show: true },
-      legend: { show: true },
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
       stacked: false,
       options: {},
     },
@@ -232,56 +230,74 @@ export const keyPropMap: any = {
     styles: { ...SizeOptions },
     custom: {
       data: [],
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      animate: false,
       options: {
         whisker: {
-          fill: "#0088FE",
-          stroke: "#0088FE",
-          strokeWidth: "5",
-          strokeDasharray: "5",
+          fill: "",
+          stroke: "",
+          strokeWidth: "",
+          strokeDasharray: "",
         },
         box: {
-          fill: "#00C49F",
+          fill: "",
         },
         dot: {
-          fill: "#FFBB28",
+          fill: "",
+          stroke: "",
         },
       },
-      toolTip: { show: true },
-      legend: { show: true },
-      xAxis: { show: true },
-      yAxis: { show: true },
+      toolTip: { show: false },
+      legend: { show: false },
+      xAxis: { show: false },
+      yAxis: { show: false },
     },
   },
   HistogramChart: {
     styles: { ...SizeOptions },
     custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
       data: [],
-      xAxis: { show: true, key: "x" },
-      yAxis: { show: true, key: "y" },
-      options: { line: { type: "monotone", strokeWidth: 2 } },
-      toolTip: { show: true },
-      legend: { show: true },
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false, key: "" },
+      options: { line: { type: "", strokeWidth: 0 } },
+      toolTip: { show: false },
+      legend: { show: false },
+    },
+  },
+  LineChart: {
+    styles: { ...SizeOptions },
+    custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
+      data: [],
+      xAxis: { show: false, key: "" },
+      yAxis: { show: false },
+      toolTip: { show: false },
+      legend: { show: false },
+      options: {},
     },
   },
   PieChart: {
     styles: { ...SizeOptions },
     custom: {
       data: [],
-      toolTip: { show: true },
-      legend: { show: true },
-      options: {},
-      keys: {},
+      toolTip: { show: false },
+      legend: { show: false },
+      options: [],
+      keys: { value: "" },
     },
   },
   ScatterChart: {
     styles: { ...SizeOptions },
     custom: {
+      cartesianGrid: { show: false, strokeDasharray: "" },
       data: [],
-      xAxis: { show: true, key: "x" },
-      yAxis: { show: true },
-      toolTip: { show: true },
-      legend: { show: true },
-      options: {},
+      xAxis: { show: false, key: "", name: "", unit: "" },
+      yAxis: { show: false, key: "", name: "", unit: "" },
+      zAxis: { show: false, key: "", name: "", unit: "" },
+      toolTip: { show: false },
+      legend: { show: false },
+      options: [],
     },
   },
 };
