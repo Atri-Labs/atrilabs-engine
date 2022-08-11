@@ -5,3 +5,8 @@ __version__ = "0.0.36"
 supported_virt_types = ["pipenv", "conda"]
 
 app_config_file = "atri.app.json"
+
+assets_dir = "assets"
+atri_templates_dir = "atri_templates"
+controllers_dir = "controllers"
+atri_app_dir = "atri_app"
