@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useCallback } from "react";
+import React, { useEffect, forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -23,34 +23,52 @@ export const Step = forwardRef<
     },
     [props]
   );
+
   return (
     <div ref={ref} style={props.styles} onClick={onClick} className="parent">
       {props.custom.title.map((step, i) => (
-        <div className="step-wrapper" key={i}>
-          {props.custom.current > i ? (
+        <div
+          className="step-wrapper"
+          key={i}
+          style={{ width: `${100 / props.custom.title.length}%` }}
+        >
+          {props.custom.current > i + 1 ? (
             <div className="icon-holder">
-              <div
-                // Need to change the implementation of tick mark.
-                className="step-icon-done"
-                style={{
-                  borderWidth: "1px",
-                  borderStyle: "solid",
-                  borderColor: `${props.custom.color}`,
-                }}
-              ></div>
+              <span className="step-icon-done">
+                <div
+                  style={{
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-circle"
+                ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-stem"
+                ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-kick "
+                ></div>
+              </span>
             </div>
-          ) : props.custom.current === i ? (
+          ) : props.custom.current === i + 1 ? (
             <div className="icon-holder">
               <div
                 className="step-icon"
                 style={{ backgroundColor: `${props.custom.color}` }}
               >
-                {i}
+                {i + 1}
               </div>
             </div>
           ) : (
             <div className="icon-holder">
-              <div className="step-icon-notreached">{i}</div>
+              <div className="step-icon-notreached">{i + 1}</div>
             </div>
           )}
           {i <= props.custom.current ? (
@@ -65,14 +83,15 @@ export const Step = forwardRef<
             </div>
           )}
 
-          {i < props.custom.title.length - 1 && i < props.custom.current ? (
+          {i + 1 < props.custom.title.length && i + 1 < props.custom.current ? (
             <div className="progress-holder">
               <div
                 className="step-progress"
                 style={{ backgroundColor: `${props.custom.color}` }}
               ></div>
             </div>
-          ) : i < props.custom.title.length - 1 && i >= props.custom.current ? (
+          ) : i + 1 < props.custom.title.length &&
+            i + 1 >= props.custom.current ? (
             <div className="progress-holder">
               <div className="step-progress-notreached"></div>
             </div>

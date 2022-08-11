@@ -1,14 +1,18 @@
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
 import { ReactComponent as AddIcon } from "../../assets/add.svg";
 
 export const StaticAssetList: React.FC<ComponentProps> = (props) => {
+  const srcs = useMemo(() => {
+    return (props.customProps[props.propName] || []) as string[];
+  }, [props.customProps, props.propName]);
   const onClick = useCallback(
     (index: number) => {
       props.openAssetManager(
         ["select", "upload"],
-        ["property", "custom", props.propName, index.toString()]
+        ["property", "custom", props.propName],
+        { currentArray: props.customProps[props.propName] || [], index }
       );
     },
     [props]
@@ -16,7 +20,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
 
   const onClearClick = useCallback(
     (index: number) => {
-      const previousSrcs = props.customProps[props.propName] as string[];
+      const previousSrcs = srcs;
       previousSrcs.splice(index, 1);
       props.patchCb({
         property: {
@@ -26,11 +30,11 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
         },
       });
     },
-    [props]
+    [props, srcs]
   );
 
   const onInsertClick = useCallback(() => {
-    const previousSrcs = props.customProps[props.propName] as string[];
+    const previousSrcs = srcs;
     props.patchCb({
       property: {
         custom: {
@@ -38,7 +42,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
         },
       },
     });
-  }, [props]);
+  }, [props, srcs]);
 
   return (
     <div>
@@ -54,10 +58,10 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
           <AddIcon />
         </div>
       </div>
-      <div style={{ color: "white" }}>{props.propName}</div>
-      {(props.customProps[props.propName] as string[]).map((value, index) => {
+      {srcs.map((value, index) => {
         return (
           <AssetInputButton
+            key={index}
             assetName={value || "Select Image"}
             onClick={() => {
               onClick(index);
