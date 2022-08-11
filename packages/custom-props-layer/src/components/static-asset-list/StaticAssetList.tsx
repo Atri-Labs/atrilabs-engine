@@ -5,7 +5,6 @@ import { ReactComponent as AddIcon } from "../../assets/add.svg";
 
 export const StaticAssetList: React.FC<ComponentProps> = (props) => {
   const srcs = useMemo(() => {
-    console.log(props.customProps[props.propName]);
     return (props.customProps[props.propName] || []) as string[];
   }, [props.customProps, props.propName]);
   const onClick = useCallback(
