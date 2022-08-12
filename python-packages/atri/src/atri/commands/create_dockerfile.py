@@ -22,6 +22,7 @@ def create_dockerfile_with_pipenv(out_file: str = "Dockerfile"):
 
     docker_commands: List[str] = []
     docker_commands.append("FROM atrilabs/node16brew")
+    docker_commands.append("RUN mkdir {}".format(code_dir))
 
     output_path = Path(pipenv_root_dir) / out_file
 
