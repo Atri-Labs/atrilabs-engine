@@ -11,7 +11,7 @@ def pipenv_where():
     child_process.wait()
     if child_process.returncode == 0:
         out = child_process.stdout.read().decode()[:-1]
-        print(out)
+        printd("Pipenv project root -", out)
         return out
     else:
         print("Failed to detect pipenv project's root directory.")
