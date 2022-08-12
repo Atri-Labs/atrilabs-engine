@@ -75,7 +75,13 @@ def create_dockerfile_with_pipenv(out_file: str = "Dockerfile"):
     # install python packages
     docker_commands.append("RUN python3 -m pip install pipenv")
     docker_commands.append("WORKDIR {}".format(code_dir))
-    docker_commands.append("RUN pipenv install")
+    docker_commands.extend([
+        "ENV LANG C.UTF-8",
+        "ENV LC_ALL C.UTF-8",
+        "ENV PYTHONDONTWRITEBYTECODE 1",
+        "ENV PYTHONFAULTHANDLER 1"
+        ])
+    docker_commands.append("RUN PIPENV_VENV_IN_PROJECT=1 pipenv install")
 
     docker_commands.append("USER python_user")
     docker_commands.append('CMD ["{}"]'.format(start_script_path))
