@@ -26,7 +26,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   rightPart: {
     position: "relative",
-    height: "100%",
+    minHeight: "100%",
     width: "15rem",
     display: "flex",
     background: gray700,
@@ -42,10 +42,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     borderBottom: `1px solid ${gray800}`,
   },
-  body: { display: "flex", flexGrow: 1, position: "relative" },
+  body: {
+    display: "flex",
+    flexGrow: 1,
+    position: "relative",
+    height: "calc(100% - 2.5rem)",
+  },
 
   // children of body
-  dropContainer: {},
+  dropContainer: {
+    overflow: "auto",
+  },
   canvasContainer: {
     position: "relative",
     flexGrow: 1,

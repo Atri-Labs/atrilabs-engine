@@ -31,7 +31,7 @@ export const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: gray700,
     border: "1px solid rgba(31, 41, 55, 0.5)",
     width: "15rem",
-    height: "100%",
+    minHeight: "100%",
     userSelect: "none",
     display: "flex",
     flexDirection: "column",

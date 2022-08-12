@@ -19,7 +19,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   dropContainerItem: {
     width: "15rem",
-    height: `100%`,
+    minHeight: `100%`,
     backgroundColor: gray700,
     boxSizing: "border-box",
     userSelect: "none",

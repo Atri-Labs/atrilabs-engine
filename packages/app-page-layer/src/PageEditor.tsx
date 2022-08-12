@@ -22,7 +22,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
   pageCont: {
     width: "15rem",
-    height: `100%`,
+    minHeight: `100%`,
     backgroundColor: gray700,
     // position is set to relative to display dialog box next to it
     position: "relative",
