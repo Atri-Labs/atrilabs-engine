@@ -22,6 +22,7 @@ def create_dockerfile_with_pipenv(out_file: str = "Dockerfile"):
 
     docker_commands: List[str] = []
     docker_commands.append("FROM atrilabs/node16brew")
+    docker_commands.append("USER python_user")
     docker_commands.append("RUN mkdir {}".format(code_dir))
 
     output_path = Path(pipenv_root_dir) / out_file
@@ -54,22 +55,29 @@ def create_dockerfile_with_pipenv(out_file: str = "Dockerfile"):
     docker_commands.append("COPY {} {}/{}".format(atri_app_rel_path, code_dir, atri_app_rel_path))
     docker_commands.append("COPY {} {}/{}".format(app_config_file_rel_path, code_dir, app_config_file_rel_path))
 
-    # install npm packages
-    docker_commands.append("WORKDIR {}/{}".format(code_dir, atri_app_rel_path))
-    docker_commands.append("RUN yarn install && yarn run build && yarn run buildServer")
-
-    # install python packages
-    docker_commands.append("WORKDIR {}".format(code_dir))
-    docker_commands.append("RUN pipenv install")
-
     # TODO: add command to execute python controller server & node server
     start_script_commands: List[str] = []
-    start_script_commands.append("cd {}/{}".format(code_dir, controllers_rel_path))
+    start_script_commands.append("cd {}".format(code_dir))
     start_script_commands.append("pipenv run {} &".format(get_common_command()))
     start_script_commands.append("cd {}/{}".format(code_dir, atri_app_rel_path))
     start_script_commands.append("yarn run server".format(get_common_command()))  
 
     docker_commands.append('RUN echo "{}" > {}'.format("\\n".join(start_script_commands), start_script_path))
+
+    # change ownership of /home/python_user
+    docker_commands.append("USER root")
+    docker_commands.append("RUN chown -R python_user {}".format(user_dir))
+
+    # install npm packages
+    docker_commands.append("WORKDIR {}/{}".format(code_dir, atri_app_rel_path))
+    docker_commands.append("RUN yarn install && yarn run build && yarn run buildServer")
+
+    # install python packages
+    docker_commands.append("RUN python3 -m pip install pipenv")
+    docker_commands.append("WORKDIR {}".format(code_dir))
+    docker_commands.append("RUN pipenv install")
+
+    docker_commands.append("USER python_user")
     docker_commands.append('CMD ["{}"]'.format(start_script_path))
 
     with open(output_path, "w") as f:
