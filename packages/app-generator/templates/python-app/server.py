@@ -5,7 +5,11 @@ import importlib
 import click
 import json
 import uvicorn
-from typing import Any, List, TypedDict, Union
+from typing import Any, List, Union
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
 from jsonpickle import encode
 
 in_prod = False
