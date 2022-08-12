@@ -8,8 +8,11 @@ def pipenv_where():
         stdin=subprocess.DEVNULL,
         stderr=subprocess.PIPE
         )
+    child_process.wait()
     if child_process.returncode == 0:
-        return str(child_process.stdout.read())
+        out = child_process.stdout.read().decode()[:-1]
+        print(out)
+        return out
     else:
         print("Failed to detect pipenv project's root directory.")
         printd("[pipenv_where] STDOUT", child_process.stdout.read())

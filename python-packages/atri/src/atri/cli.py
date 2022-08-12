@@ -22,6 +22,8 @@ from pathlib import Path
 from .utils.conda_utils import get_conda_env_list, set_working_env_name, get_active_env_name
 from typing import List, Union
 from .utils.handle_error import error_to_message
+from . import app_config_file
+from .commands.create_dockerfile import create_dockerfile_with_pipenv
 
 find_and_set_app_directory()
 
@@ -85,7 +87,6 @@ def main(virt_type: Union[str, None], working_env: Union[str, None]):
         set_virtualenv_type(virt_type)
     if working_env != None:
         set_working_env_name(working_env)
-    load_exe_if_not_exists()
 
 @main.group('open')
 def open():
@@ -127,6 +128,7 @@ def open_exe(e_port, w_port, m_port, p_port, d_port, u_port, c_port, no_debug):
 
         $ atri open editor --e-port 4001 --w-port 4002 --app-dir atri
     """
+    load_exe_if_not_exists()
     globals["in_debug_mode"] = not no_debug
     app_dir = str(Path.cwd())
     asyncio.run(open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir))
@@ -169,6 +171,7 @@ def connect_local(u_port, no_debug):
 @click.option('--c-port', default="4007", help='port on which generated python server will be attached')
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
 def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
+    load_exe_if_not_exists()
     globals["in_debug_mode"] = debug
     app_dir = str(Path.cwd())
     async def check_req_wrapper():
@@ -206,6 +209,23 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
 @main.group()
 def check():
     pass
+
+@main.group("create")
+def create():
+    pass
+
+@create.command("dockerfile")
+@click.option('--file', default="Dockerfile", show_default=True, help='Name of the output Dockerfile')
+def create_dockerfile(file):
+    virt_type = get_virtualenv_type()
+    if virt_type == "pipenv":
+        create_dockerfile_with_pipenv(file)
+    elif virt_type == "conda":
+        print("Sorry! We don't support packaging for conda environment yet.")
+    elif virt_type == None:
+        print("Cannot detect python environment type. Please check {}.".format(app_config_file))
+    else:
+        print("We don't support {} virtual environment.".format(virt_type))
 
 @check.command()
 @click.option('--no-debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
