@@ -17,6 +17,7 @@ try {
   const buildInfo = JSON.parse(fs.readFileSync(buildInfoFile).toString());
   if (buildInfo) {
     const serverEntry: string = buildInfo["serverEntry"];
+    const serverSideEntry: string = buildInfo["serverSideEntry"];
     const serverSrc: string = buildInfo["serverSrc"];
     const serverOutput: string = buildInfo["serverOutput"];
     const appSrc: string = buildInfo["appSrc"];
@@ -48,6 +49,7 @@ try {
       mode,
       allowList: manifestDirs.map((dir) => dir.pkg),
       addWatchOptions: false,
+      serverSideEntry: path.resolve(serverSideEntry),
     });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);

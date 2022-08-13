@@ -89,6 +89,7 @@ try {
       wsClientEntry: path.resolve(__dirname, "..", "shared", "wsclient"),
     });
     const serverEntry: string = buildInfo["serverEntry"];
+    const serverSideEntry: string = buildInfo["serverSideEntry"];
     const serverSrc: string = buildInfo["serverSrc"];
     const serverOutput: string = buildInfo["serverOutput"];
     if (
@@ -98,7 +99,9 @@ try {
         serverOutput &&
         typeof serverOutput === "string" &&
         serverSrc &&
-        typeof serverSrc === "string"
+        typeof serverSrc === "string" &&
+        serverSideEntry &&
+        typeof serverSideEntry === "string"
       )
     ) {
       throw Error(`Wrong schema of ${buildInfoFilename}.`);
@@ -111,6 +114,7 @@ try {
       mode,
       allowList: manifestDirs.map((dir) => dir.pkg),
       addWatchOptions: true,
+      serverSideEntry: path.resolve(serverSideEntry),
     });
     buildAppCompiler.hooks.watchRun.tap("build-app-watch-run", (_compiler) => {
       console.log("build-app-watch-run called");

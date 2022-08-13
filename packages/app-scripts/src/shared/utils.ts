@@ -73,16 +73,24 @@ export type BuildServerOptions = {
   includes: string[];
   allowList: string[];
   addWatchOptions: boolean;
+  serverSideEntry: string;
 };
 
 export function buildServer(options: BuildServerOptions) {
-  const { mode, serverEntry, serverOutput, includes, allowList } = options;
+  const {
+    mode,
+    serverEntry,
+    serverOutput,
+    includes,
+    allowList,
+    serverSideEntry,
+  } = options;
 
   process.env["NODE_ENV"] = mode;
   process.env["BABEL_ENV"] = mode;
 
   const webpackConfig = createServerWebpackConfig({
-    paths: { serverEntry, serverOutput, includes },
+    paths: { serverEntry, serverOutput, includes, serverSideEntry },
     mode,
     publicUrlOrPath: "/",
     shouldUseSourceMap: false,

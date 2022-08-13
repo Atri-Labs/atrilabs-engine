@@ -9,6 +9,8 @@ export type ServerWerbpackConfigOptions = {
     serverOutput: string;
     // include app src & manifest packages
     includes: string[];
+    // useStore to be used on server side
+    serverSideEntry: string;
   };
   mode: Configuration["mode"];
   publicUrlOrPath: string;
@@ -82,6 +84,7 @@ export default function createServerWebpackConfig(
     mode: options.mode,
     entry: {
       app: { import: options.paths.serverEntry },
+      serverSide: { import: options.paths.serverSideEntry },
     },
     target: "node",
     // externals: [nodeExternals({ allowlist: allowListFunc })],

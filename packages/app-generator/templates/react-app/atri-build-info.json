@@ -5,6 +5,7 @@
   "appOutput": "dist/app",
   "serverSrc": "app-node/src",
   "serverEntry": "app-node/src/getAppText.tsx",
+  "serverSideEntry": "app/src/hooks/useStore.js",
   "serverOutput": "dist/app-node",
   "manifestDirs": []
 }
