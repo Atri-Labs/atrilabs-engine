@@ -14,6 +14,7 @@ import { Color } from "./components/color/Color";
 import { InternalLink } from "./components/internal-link/InternalLink";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { ComponentSelector } from "./components/component-selector/ComponentSelector";
+import { ExternalLink } from "./components/external-link/ExternalLink";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -147,6 +148,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         if (propType === "component_selector")
           return (
             <ComponentSelector
+              {...props}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        if (propType === "external_link")
+          return (
+            <ExternalLink
               {...props}
               propName={propName}
               key={propName}

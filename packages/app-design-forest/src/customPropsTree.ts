@@ -13,7 +13,8 @@ export type CustomPropsTreeOptions = {
       | "array_static_asset"
       | "internal_link"
       | "component_selector"
-      | "map";
+      | "map"
+      | "external_link";
   };
 };
 
