@@ -47,34 +47,6 @@ createWebSocketServer(server);
 app.use((req, res, next) => {
   console.log("request received", req.originalUrl);
   if (req.method === "GET" && serverInfo.pages[req.originalUrl]) {
-    const useStorePath = path.resolve(
-      __dirname,
-      "..",
-      "app-node",
-      "static",
-      "js",
-      "serverSide.bundle.js"
-    );
-    delete require.cache[useStorePath];
-    const pageState =
-      require(useStorePath)["getAppText"]["default"]["getState"]()[
-        serverInfo.pages[req.originalUrl].name
-      ];
-    console.log("server Side use store module\n", pageState);
-    forwardGetPageRequest({
-      pageRoute: req.originalUrl,
-      pageState: pageState,
-      controllerHostname,
-      controllerPort,
-      req,
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("Forward failed", err);
-      });
-
     if (!isDevelopment) {
       const finalTextFromCache = getPageFromCache(req.originalUrl);
       if (finalTextFromCache) {
@@ -159,6 +131,37 @@ app.post("/event-handler", express.json(), (req, res) => {
   });
   forward_req.write(payload);
   forward_req.end();
+});
+
+app.post("/handle-page-request", express.json(), (req, res) => {
+  const pageRoute = req.body["pageRoute"];
+  const useStorePath = path.resolve(
+    __dirname,
+    "..",
+    "app-node",
+    "static",
+    "js",
+    "serverSide.bundle.js"
+  );
+  delete require.cache[useStorePath];
+  const pageState =
+    require(useStorePath)["getAppText"]["default"]["getState"]()[
+      serverInfo.pages[pageRoute].name
+    ];
+  forwardGetPageRequest({
+    pageRoute: pageRoute,
+    pageState: pageState,
+    controllerHostname,
+    controllerPort,
+    req,
+  })
+    .then((val: any) => {
+      res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+    })
+    .catch((err) => {
+      console.log("Forward failed", err);
+      res.status(err).send();
+    });
 });
 
 app.use(

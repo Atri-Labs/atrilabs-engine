@@ -1,8 +1,9 @@
 import { useLayoutEffect, useEffect } from "react";
-import useStore, { setEffectivePropsForPage } from "../hooks/useStore";
+import useStore, { setEffectivePropsForPage, updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { subscribeInternalNavigation } from "../utils/navigate";
+import {fetchPageProps} from "../utils/fetchPageProps"
 // IMPORT CURSOR
 
 export default function Example() {
@@ -13,6 +14,13 @@ export default function Example() {
     });
     return unsub;
   }, [navigate]);
+
+  const location = useLocation();
+  useLayoutEffect(()=>{
+    fetchPageProps(location.pathname).then((res)=>{
+      updateStoreStateFromController(res.pageName, res.pageState)
+    })
+  }, [])
 
   useLayoutEffect(()=>{
     setEffectivePropsForPage(/* PAGE NAME 1 CURSOR */)
