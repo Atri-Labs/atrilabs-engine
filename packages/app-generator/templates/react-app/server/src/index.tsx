@@ -14,6 +14,7 @@ import path from "path";
 import http from "http";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { watch } from "chokidar";
+import { forwardGetPageRequest } from "./forwarder";
 
 // constants needed externally
 const serverInfo = getServerInfo(__dirname);
@@ -46,6 +47,31 @@ createWebSocketServer(server);
 app.use((req, res, next) => {
   console.log("request received", req.originalUrl);
   if (req.method === "GET" && serverInfo.pages[req.originalUrl]) {
+    const useStorePath = path.resolve(
+      __dirname,
+      "..",
+      "app-node",
+      "static",
+      "js",
+      "serverSide.bundle.js"
+    );
+    delete require.cache[useStorePath];
+    const useStoreMod =
+      require(useStorePath)["getAppText"]["default"]["getState"]();
+    forwardGetPageRequest({
+      pageRoute: req.originalUrl,
+      pageState: useStoreMod,
+      controllerHostname,
+      controllerPort,
+      req,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("Forward failed", err);
+      });
+
     if (!isDevelopment) {
       const finalTextFromCache = getPageFromCache(req.originalUrl);
       if (finalTextFromCache) {
@@ -62,20 +88,9 @@ app.use((req, res, next) => {
       "js",
       "app.bundle.js"
     );
-    const useStorePath = path.resolve(
-      __dirname,
-      "..",
-      "app-node",
-      "static",
-      "js",
-      "serverSide.bundle.js"
-    );
     delete require.cache[getAppTextPath];
     const getAppText = require(getAppTextPath)["getAppText"]["getAppText"];
     const appHtmlContent = getIndexHtmlContent(appDistHtml);
-    delete require.cache[useStorePath];
-    const useStoreMod =
-      require(useStorePath)["getAppText"]["default"]["getState"]();
     console.log("server Side use store module\n", useStoreMod);
     const finalText = getAppText(req.originalUrl, appHtmlContent);
     res.send(finalText);
