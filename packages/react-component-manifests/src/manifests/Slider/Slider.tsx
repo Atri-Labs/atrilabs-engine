@@ -46,8 +46,8 @@ export const Slider = forwardRef<
     setStartPosition((prev) => {
       return { ...prev, x: pageX, y: pageY };
     });
-    document.addEventListener("mousemove", (e) => handleMouseMove(e));
-    document.addEventListener("mouseup", (e) => handleThumbMouseUp(e));
+    document.addEventListener("mousemove", (e) => handleMouseMove(e), true);
+    document.addEventListener("mouseup", (e) => handleThumbMouseUp(e), true);
   };
 
   const handleThumbMouseUp = (e: MouseEvent) => {
@@ -55,18 +55,23 @@ export const Slider = forwardRef<
     setFinishPosition((prev) => {
       return { ...prev, x: pageX, y: pageY };
     });
-    document.removeEventListener("mousemove", handleMouseMove);
+    setFinalvalue();
+    document.removeEventListener("mousemove", handleMouseMove, true);
+  };
+
+  const setFinalvalue = () => {
+    let difference = props.custom.value + (finishPosition.x - startPosition.x);
   };
 
   useEffect(() => {
     const updateThumbPosition = (diff: number) => {
       let offset = props.custom.width / 100;
       let moveValue = diff / offset;
-      if (moveValue > 100) {
-        moveValue = 100;
+      if (moveValue + props.custom.value > 100) {
+        moveValue = 100 - props.custom.value;
       }
-      if (moveValue < 0) {
-        moveValue = 0;
+      if (moveValue + props.custom.value < 0) {
+        moveValue = 0 - props.custom.value;
       }
       setThumbPosition(`${moveValue}%`);
       return moveValue;
@@ -77,7 +82,8 @@ export const Slider = forwardRef<
         (diff / props.custom.width) *
         (props.custom.endValue - props.custom.startValue);
       moveValue = Math.floor(moveValue);
-      if (moveValue + props.custom.startValue > props.custom.endValue) {
+      moveValue = moveValue + props.custom.value;
+      if (moveValue > props.custom.endValue) {
         moveValue = props.custom.endValue;
       }
       if (moveValue < props.custom.startValue) {
@@ -95,6 +101,7 @@ export const Slider = forwardRef<
     props.custom.endValue,
     props.custom.startValue,
     props.custom.width,
+    props.custom.value,
   ]);
 
   return (
