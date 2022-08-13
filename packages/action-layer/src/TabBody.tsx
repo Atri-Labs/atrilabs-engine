@@ -73,7 +73,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     });
     // external navigation
     options.push({
-      action: { navigate: { type: "external", url: "" } },
+      action: { navigate: { type: "external", url: "", target: "_blank" } },
       value: options.length + 1,
     });
     // send event data
@@ -232,7 +232,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                       </div>
                     </div>
                     {handler["navigate"]?.type === "external" ? (
-                      <div>
+                      <div style={{ display: "flex" }}>
                         <input
                           value={handler.navigate["url"] || ""}
                           onChange={(e) => {
@@ -240,10 +240,26 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                               navigate: {
                                 type: "external",
                                 url: e.target.value,
+                                target: handler.navigate["target"],
                               },
                             });
                           }}
                         />
+                        <select
+                          value={handler.navigate["target"]}
+                          onChange={(e) => {
+                            onExternalNavigationChange(callbackName, index, {
+                              navigate: {
+                                type: "external",
+                                url: handler.navigate["url"],
+                                target: e.target.value as "_blank" | "_self",
+                              },
+                            });
+                          }}
+                        >
+                          <option value={"_blank"}>blank</option>
+                          <option value={"_self"}>self</option>
+                        </select>
                       </div>
                     ) : null}
                   </div>
