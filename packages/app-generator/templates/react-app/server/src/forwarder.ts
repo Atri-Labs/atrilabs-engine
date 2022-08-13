@@ -8,7 +8,7 @@ export function forwardGetPageRequest(params: {
   controllerPort: number;
   req: Request;
 }) {
-  return new Promise((res, rej) => {
+  return new Promise<{ pageState: any; headers: any }>((res, rej) => {
     const { pageState, pageRoute, controllerHostname, controllerPort, req } =
       params;
     const payload = JSON.stringify({

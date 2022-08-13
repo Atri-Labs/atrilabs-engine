@@ -104,6 +104,7 @@ app.post("/event-handler", express.json(), (req, res) => {
       path: "/event",
       method: "POST",
       headers: {
+        ...req.headers,
         "Content-Type": "application/json",
         "Content-Length": payload.length,
       },
@@ -116,6 +117,9 @@ app.post("/event-handler", express.json(), (req, res) => {
       });
       forward_res.on("end", () => {
         try {
+          Object.keys(forward_res.headers).forEach((key) => {
+            res.setHeader(key, forward_res.headers[key]!);
+          });
           const newPageState = JSON.parse(data);
           res.status(200).send({ pageState: newPageState });
         } catch (err) {
@@ -155,7 +159,10 @@ app.post("/handle-page-request", express.json(), (req, res) => {
     controllerPort,
     req,
   })
-    .then((val: any) => {
+    .then((val: { pageState: any; headers: any }) => {
+      Object.keys(val.headers).forEach((key) => {
+        res.setHeader(key, val.headers[key]);
+      });
       res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
     })
     .catch((err) => {
