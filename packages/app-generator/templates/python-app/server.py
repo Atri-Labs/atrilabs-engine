@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sys
-from fastapi import FastAPI, Request, Form, UploadFile
+from fastapi import FastAPI, Request, Form, UploadFile, Response
 import importlib
 import click
 import json
@@ -50,7 +50,7 @@ def compute_initial_state(route: RouteDetails, incoming_state):
     init_state(atri_obj)
     return atri_obj
 
-def compute_page_request(route: RouteDetails, incoming_state):
+def compute_page_request(route: RouteDetails, incoming_state, req: Request, res: Response):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
@@ -58,10 +58,10 @@ def compute_page_request(route: RouteDetails, incoming_state):
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_page_request = getattr(main_mod, "handle_page_request")
-    handle_page_request(atri_obj)
+    handle_page_request(atri_obj, req, res)
     return atri_obj
 
-def compute_new_state(route: RouteDetails, incoming_state, event):
+def compute_new_state(route: RouteDetails, incoming_state, event, req: Request, res: Response):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
@@ -70,7 +70,7 @@ def compute_new_state(route: RouteDetails, incoming_state, event):
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
-    handle_event(atri_obj)
+    handle_event(atri_obj, req, res)
     delattr(atri_obj, "event_data")
     return atri_obj
 
@@ -128,15 +128,15 @@ def serve(obj, port, host, prod):
         return compute_initial_state(route, incoming_state)
 
     @app.post("/handle-page-request")
-    async def handle_page_request(req: Request):
+    async def handle_page_request(req: Request, res: Response):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_page_request(routeDetails, state)
+        return compute_page_request(routeDetails, state, req, res)
 
     @app.post("/event")
-    async def handle_event(req: Request):
+    async def handle_event(req: Request, res: Response):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
@@ -145,7 +145,7 @@ def serve(obj, port, host, prod):
         alias = req_dict["alias"]
         event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_new_state(routeDetails, state, event)
+        return compute_new_state(routeDetails, state, event, req, res)
 
     @app.post("/event-in-form-handler")
     async def handle_event_with_form(
