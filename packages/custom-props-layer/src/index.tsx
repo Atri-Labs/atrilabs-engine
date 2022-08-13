@@ -9,6 +9,7 @@ import {
   useUploadAssetManager,
 } from "@atrilabs/shared-layer-lib";
 import { useColorPicker } from "./hooks/useColorPicker";
+import { gray700 } from "@atrilabs/design-system";
 
 export default function () {
   const { showTab, id, treeOptions } = useShowTab();
@@ -57,12 +58,23 @@ export default function () {
       ) : null}
       {showAssetPanel ? (
         <Container name="Drop" onClose={onCrossClicked}>
-          <UploadContainer
-            modes={modes}
-            onCrossClicked={onCrossClicked}
-            onUploadSuccess={onUploadSuccess}
-            onSelect={onSelect}
-          />
+          <div
+            style={{
+              width: "15rem",
+              height: `100%`,
+              backgroundColor: gray700,
+              boxSizing: "border-box",
+              userSelect: "none",
+              overflow: "auto",
+            }}
+          >
+            <UploadContainer
+              modes={modes}
+              onCrossClicked={onCrossClicked}
+              onUploadSuccess={onUploadSuccess}
+              onSelect={onSelect}
+            />
+          </div>
         </Container>
       ) : null}
     </>

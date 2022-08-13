@@ -19,10 +19,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   dropContainerItem: {
     width: "15rem",
-    minHeight: `100%`,
+    height: `100%`,
     backgroundColor: gray700,
     boxSizing: "border-box",
     userSelect: "none",
+    overflow: "auto",
   },
   // ===========header======================
   dropContainerItemHeader: {
