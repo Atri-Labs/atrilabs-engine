@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, useCallback, useEffect } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -22,11 +22,17 @@ export const ToggleHelper: React.FC<ToggleComponentTypes> = ({
   offColor,
   handleToggle,
 }) => {
+  useEffect(() => {
+    console.log(handleToggle);
+  }, []);
+
   return (
     <div className="toggle-holder">
       <input
         checked={isOn}
-        onChange={handleToggle}
+        onChange={(e) => {
+          console.log(e);
+        }}
         className="toggle-switch-checkbox"
         id="toggle-switch-new"
         type="checkbox"
@@ -52,7 +58,7 @@ export const Toggle = forwardRef<
     onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       console.log("changed");
       props.onChange(e.target.checked);
@@ -65,7 +71,7 @@ export const Toggle = forwardRef<
         isOn={props.custom.active}
         onColor={props.custom.activeColor}
         offColor={props.custom.inactiveColor}
-        handleToggle={onChange}
+        handleToggle={handleChange}
       />
     </div>
   );

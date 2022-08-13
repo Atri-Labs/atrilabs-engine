@@ -1,6 +1,10 @@
-.parent {
+.step-parent {
   display: flex;
-  flex: 1;
+  justify-content: center;
+}
+.step-wrpter {
+  width: fit-content;
+  display: flex;
   justify-content: center;
 }
 .step-wrapper {
@@ -58,12 +62,14 @@
   height: 1px;
   width: 110%;
   margin-left: -25px;
+  margin-right: 5px;
 }
 .step-progress-notreached {
   height: 1px;
   width: 110%;
   background-color: #8f9598;
   margin-left: -25px;
+  margin-right: 5px;
 }
 .step-icon-done {
   display: inline-block;
