@@ -201,6 +201,9 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         }
         if (update.name) {
           eventManager.renamePage(id, update.name);
+          const splittedArr = eventManager.pages()[id]!.route.split("/");
+          splittedArr[splittedArr.length - 1] = update.name;
+          eventManager.changeRoute(id, splittedArr.join("/"));
         }
         callback(true);
       } catch (err) {
