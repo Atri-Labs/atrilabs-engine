@@ -56,11 +56,14 @@ app.use((req, res, next) => {
       "serverSide.bundle.js"
     );
     delete require.cache[useStorePath];
-    const useStoreMod =
-      require(useStorePath)["getAppText"]["default"]["getState"]();
+    const pageState =
+      require(useStorePath)["getAppText"]["default"]["getState"]()[
+        serverInfo.pages[req.originalUrl].name
+      ];
+    console.log("server Side use store module\n", pageState);
     forwardGetPageRequest({
       pageRoute: req.originalUrl,
-      pageState: useStoreMod,
+      pageState: pageState,
       controllerHostname,
       controllerPort,
       req,
@@ -91,7 +94,6 @@ app.use((req, res, next) => {
     delete require.cache[getAppTextPath];
     const getAppText = require(getAppTextPath)["getAppText"]["getAppText"];
     const appHtmlContent = getIndexHtmlContent(appDistHtml);
-    console.log("server Side use store module\n", useStoreMod);
     const finalText = getAppText(req.originalUrl, appHtmlContent);
     res.send(finalText);
     storePageInCache(req.originalUrl, finalText);

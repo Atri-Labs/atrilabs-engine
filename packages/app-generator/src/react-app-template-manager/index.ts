@@ -775,7 +775,7 @@ export function createReactAppTemplateManager(
     );
     serverInfoTemplate["pages"] = {};
     pageImports.forEach((pageImport) => {
-      serverInfoTemplate["pages"][pageImport.route] = {};
+      serverInfoTemplate["pages"][pageImport.route] = { name: pageImport.name };
     });
     const dest = path.resolve(
       paths.reactAppRootDest,

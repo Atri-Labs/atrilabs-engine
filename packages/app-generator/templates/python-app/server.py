@@ -50,6 +50,17 @@ def compute_initial_state(route: RouteDetails, incoming_state):
     init_state(atri_obj)
     return atri_obj
 
+def compute_page_request(route: RouteDetails, incoming_state):
+    atri_py = route["atriPy"]
+    atri_mod = import_module(atri_py)
+    Atri = getattr(atri_mod, "Atri")
+    atri_obj = Atri(incoming_state)
+    main_py = route["mainPy"]
+    main_mod = import_module(main_py)
+    handle_page_request = getattr(main_mod, "handle_page_request")
+    handle_page_request(atri_obj)
+    return atri_obj
+
 def compute_new_state(route: RouteDetails, incoming_state, event):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
@@ -115,6 +126,14 @@ def serve(obj, port, host, prod):
         route = req_dict["route"]
         incoming_state = req_dict["state"]
         return compute_initial_state(route, incoming_state)
+
+    @app.post("/handle-page-request")
+    async def handle_page_request(req: Request):
+        req_dict = await req.json()
+        route = req_dict["route"]
+        state = req_dict["state"]
+        routeDetails = getRouteDetails(route, obj["dir"])
+        return compute_page_request(routeDetails, state)
 
     @app.post("/event")
     async def handle_event(req: Request):
