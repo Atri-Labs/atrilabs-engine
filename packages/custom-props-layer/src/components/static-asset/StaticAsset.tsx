@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
+import { PropertyContainer } from "../commons/PropertyContainer";
+import { Label } from "../commons/Label";
 
 export const StaticAsset: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
@@ -22,13 +24,13 @@ export const StaticAsset: React.FC<ComponentProps> = (props) => {
     });
   }, [props]);
   return (
-    <div>
-      <div style={{ color: "white" }}>{props.propName}</div>
+    <PropertyContainer>
+      <Label name={props.propName} />
       <AssetInputButton
         assetName={propValue}
         onClick={onClick}
         onClearClick={onClearClick}
       />
-    </div>
+    </PropertyContainer>
   );
 };

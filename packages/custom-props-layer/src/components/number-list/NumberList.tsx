@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { ReactComponent as AddIcon } from "../../assets/add.svg";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
+import { ArrayLabel } from "../commons/ArrayLabel";
+import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 
 export const NumberList: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
@@ -45,19 +46,9 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
     [props, propValue]
   );
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ color: "white" }}>{props.propName}</div>
-        <div onClick={insertValueCb}>
-          <AddIcon />
-        </div>
-      </div>
+    <ArrayPropertyContainer>
+      <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
+
       {Array.isArray(propValue)
         ? propValue.map((value, index) => {
             return (
@@ -84,6 +75,6 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
             );
           })
         : null}
-    </div>
+    </ArrayPropertyContainer>
   );
 };

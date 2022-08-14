@@ -41,7 +41,11 @@ export const RearrangeListWrapper: React.FC<RearrangeListWrapperProps> = (
             >
               {value}
               <div
-                style={{ display: "flex", alignItems: "center" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                }}
                 onClick={() => {
                   props.onMinusClick(index);
                 }}
