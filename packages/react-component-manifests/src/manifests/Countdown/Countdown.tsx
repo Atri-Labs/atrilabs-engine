@@ -58,7 +58,7 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   showSeconds,
 }) => {
   return (
-    <div className="show-counter">
+    <div className="show-counter" style={{ display: "inline-flex" }}>
       {showDays && (
         <div style={{ display: "flex" }}>
           <DateTimeDisplay value={days} type={"Days"} />
@@ -181,16 +181,14 @@ export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
   const dateTimeAfterGivenTime = Number(now) + days + hours + minutes + seconds;
 
   return (
-    <div>
-      <CountdownTimer
-        isFrozen={isFrozen}
-        targetDate={dateTimeAfterGivenTime}
-        showDays={showDays}
-        showHours={showHours}
-        showMinutes={showMinutes}
-        showSeconds={showSeconds}
-      />
-    </div>
+    <CountdownTimer
+      isFrozen={isFrozen}
+      targetDate={dateTimeAfterGivenTime}
+      showDays={showDays}
+      showHours={showHours}
+      showMinutes={showMinutes}
+      showSeconds={showSeconds}
+    />
   );
 };
 
@@ -212,7 +210,7 @@ export const Countdown = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
       <CountdownAsset
         isFrozen={props.custom.frozen}
         noOfDays={props.custom.days}
