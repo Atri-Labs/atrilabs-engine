@@ -9,6 +9,7 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import Chevron from "./Chevron";
 import "./Accordion.css";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export type AccordionComponentTypes = {
   title: string;
@@ -163,10 +164,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Accordion" } },
+  panel: { comp: CommonIcon, props: { name: "Accordion", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Accordion", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Accordion",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

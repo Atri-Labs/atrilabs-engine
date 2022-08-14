@@ -7,6 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Input = forwardRef<
   HTMLInputElement,
@@ -99,10 +100,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Input" } },
+  panel: { comp: CommonIcon, props: { name: "Input", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Input", containerStyle: { padding: "1rem" } },
+    props: { name: "Input", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };
