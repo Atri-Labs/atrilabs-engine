@@ -101,5 +101,9 @@ module.exports = {
       modulePath: "./src/manifests/Dropdown/Dropdown.tsx",
       exportedVarName: "Dropdown",
     },
+    Table: {
+      modulePath: "./src/manifests/Table/Table.tsx",
+      exportedVarName: "DataTable",
+    },
   },
 };

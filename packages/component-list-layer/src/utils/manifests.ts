@@ -25,6 +25,7 @@ import HistogramChartManifests from "@atrilabs/react-component-manifests/src/man
 import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
+import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -97,6 +98,7 @@ const defaultImports = [
   CandleStickManifests,
   CheckboxManifests,
   DropdownManifests,
+  TableManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
