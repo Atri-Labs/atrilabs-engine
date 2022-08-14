@@ -22,7 +22,10 @@ export const Slider = forwardRef<
     onChange: (value: string) => void;
   }
 >((props, ref) => {
-  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+  const [startPosition, setStartPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [finishPosition, setFinishPosition] = useState({ x: 0, y: 0 });
   const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
   const [thumbPosition, setThumbPosition] = useState("0%");
@@ -73,7 +76,7 @@ export const Slider = forwardRef<
       if (moveValue + props.custom.value < 0) {
         moveValue = 0 - props.custom.value;
       }
-      setThumbPosition(`${moveValue}%`);
+      setThumbPosition(`${moveValue + props.custom.value}%`);
       return moveValue;
     };
 
