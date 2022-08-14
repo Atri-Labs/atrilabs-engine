@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/design-system",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,8 +29,8 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/layer-types": "^0.0.36",
-    "@atrilabs/scripts": "^0.0.36",
+    "@atrilabs/layer-types": "^0.0.37",
+    "@atrilabs/scripts": "^0.0.37",
     "typescript": "4.6.3"
   }
 }
