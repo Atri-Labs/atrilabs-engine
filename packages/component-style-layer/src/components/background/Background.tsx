@@ -9,8 +9,8 @@ import {
 import { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { AssetInputButton } from "../commons/ButtonInputCombo";
 import { BorderInput } from "../commons/BorderInput";
+import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
