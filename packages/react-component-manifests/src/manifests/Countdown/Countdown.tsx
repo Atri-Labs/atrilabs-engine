@@ -9,6 +9,7 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Countdown.css";
 import { useCountdown } from "./useCountdown";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export type DateTimeDisplayComponentTypes = {
   value: number;
@@ -58,7 +59,7 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   showSeconds,
 }) => {
   return (
-    <div className="show-counter">
+    <div className="show-counter" style={{ display: "inline-flex" }}>
       {showDays && (
         <div style={{ display: "flex" }}>
           <DateTimeDisplay value={days} type={"Days"} />
@@ -181,16 +182,14 @@ export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
   const dateTimeAfterGivenTime = Number(now) + days + hours + minutes + seconds;
 
   return (
-    <div>
-      <CountdownTimer
-        isFrozen={isFrozen}
-        targetDate={dateTimeAfterGivenTime}
-        showDays={showDays}
-        showHours={showHours}
-        showMinutes={showMinutes}
-        showSeconds={showSeconds}
-      />
-    </div>
+    <CountdownTimer
+      isFrozen={isFrozen}
+      targetDate={dateTimeAfterGivenTime}
+      showDays={showDays}
+      showHours={showHours}
+      showMinutes={showMinutes}
+      showSeconds={showSeconds}
+    />
   );
 };
 
@@ -212,7 +211,7 @@ export const Countdown = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
       <CountdownAsset
         isFrozen={props.custom.frozen}
         noOfDays={props.custom.days}
@@ -312,10 +311,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Countdown" } },
+  panel: { comp: CommonIcon, props: { name: "Countdown", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Countdown", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Countdown",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

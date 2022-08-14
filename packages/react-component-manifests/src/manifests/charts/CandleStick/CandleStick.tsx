@@ -19,6 +19,8 @@ import { useCandleStickPlot } from "./useCandleStick";
 import { DotBar, HorizonBar } from "./components";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const CandleStick = forwardRef<
   HTMLDivElement,
@@ -52,6 +54,23 @@ export const CandleStick = forwardRef<
 >((props, ref) => {
   const candleStickData = useCandleStickPlot(props.custom.data);
 
+  const whisker = {
+    ...props.custom.options?.whisker,
+    stroke: props.custom.options?.whisker?.stroke || getColorAt(0),
+    fill: props.custom.options?.whisker?.fill || getColorAt(0),
+  };
+
+  const box = {
+    ...props.custom.options?.box,
+    fill: props.custom.options?.box?.fill || getColorAt(9),
+  };
+
+  const dot = {
+    ...props.custom.options?.dot,
+    stroke: props.custom.options?.dot?.stroke || getColorAt(3),
+    fill: props.custom.options?.dot?.fill || getColorAt(3),
+  };
+
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <ComposedChart
@@ -84,51 +103,56 @@ export const CandleStick = forwardRef<
         <Bar
           stackId={"a"}
           dataKey={"bar"}
-          shape={<HorizonBar {...props.custom.options?.whisker} />}
+          label={"min"}
+          shape={<HorizonBar {...whisker} />}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"bottomWhisker"}
-          shape={<DotBar {...props.custom.options?.whisker} />}
+          label={""}
+          shape={<DotBar {...whisker} />}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"bottomBox"}
-          fill={props.custom.options?.box?.fill}
+          fill={box.fill}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"bar"}
-          shape={<HorizonBar {...props.custom.options?.whisker} />}
+          label={"median"}
+          shape={<HorizonBar {...whisker} />}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"topBox"}
-          fill={props.custom.options?.box?.fill}
+          fill={box.fill}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"topWhisker"}
-          shape={<DotBar {...props.custom.options?.whisker} />}
+          label={""}
+          shape={<DotBar {...whisker} />}
           isAnimationActive={props.custom.options?.animate}
         />
         <Bar
           stackId={"a"}
           dataKey={"bar"}
-          shape={<HorizonBar {...props.custom.options?.whisker} />}
+          label={"max"}
+          shape={<HorizonBar {...whisker} />}
           isAnimationActive={props.custom.options?.animate}
         />
         {/* <ZAxis type="number" dataKey="size" range={[0, 250]} /> */}
 
         <Scatter
           dataKey="average"
-          fill={props.custom.options?.dot?.fill}
-          stroke={props.custom.options?.dot?.stroke}
+          fill={dot.fill}
+          stroke={dot.stroke}
           isAnimationActive={props.custom.options?.animate}
         />
       </ComposedChart>
@@ -223,16 +247,8 @@ const compManifest: ReactComponentManifestSchema = {
           data: [],
           options: {
             whisker: {
-              fill: "#0088FE",
-              stroke: "#0088FE",
               strokeWidth: "5",
               strokeDasharray: "5",
-            },
-            box: {
-              fill: "#00C49F",
-            },
-            dot: {
-              fill: "#FFBB28",
             },
           },
           toolTip: { show: true },
@@ -250,10 +266,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Candle Stick" } },
+  panel: { comp: CommonIcon, props: { name: "Candle Stick", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Candle Stick", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Candle Stick",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

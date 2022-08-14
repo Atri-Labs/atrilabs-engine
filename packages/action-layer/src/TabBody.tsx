@@ -1,5 +1,8 @@
 import { gray300 } from "@atrilabs/design-system";
-import { CallbackHandler } from "@atrilabs/react-component-manifest-schema/lib/types";
+import {
+  CallbackHandler,
+  NavigationCallbackHandler,
+} from "@atrilabs/react-component-manifest-schema/lib/types";
 import { useCallback, useMemo } from "react";
 import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { useFileUploadAliases } from "./hooks/useFileUploadAliases";
@@ -24,6 +27,9 @@ function callbackHandlerToText(handler: CallbackHandler["0"]) {
   }
   if ("navigate" in handler && handler["navigate"].type === "internal") {
     return `Navigate to ${handler.navigate.url}`;
+  }
+  if ("navigate" in handler && handler["navigate"].type === "external") {
+    return `Navigate to external url`;
   }
   if ("sendEventData" in handler) {
     return "Send event data";
@@ -65,6 +71,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       };
       options.push({ action, value: options.length + 1 });
     });
+    // external navigation
+    options.push({
+      action: { navigate: { type: "external", url: "", target: "_blank" } },
+      value: options.length + 1,
+    });
     // send event data
     options.push({
       action: { sendEventData: true },
@@ -91,6 +102,27 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       });
     },
     [options, props]
+  );
+
+  const onExternalNavigationChange = useCallback(
+    (
+      callbackName: string,
+      index: number,
+      action: { navigate: NavigationCallbackHandler }
+    ) => {
+      const previousActions = [
+        ...surelyReutrnArray(props.callbacks[callbackName]),
+      ];
+      previousActions.splice(index, 1, action);
+      props.patchCb({
+        property: {
+          callbacks: {
+            [callbackName]: previousActions,
+          },
+        },
+      });
+    },
+    [props]
   );
 
   const onInsertAction = useCallback(
@@ -157,33 +189,79 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               (handler, index) => {
                 const selectedActionText = callbackHandlerToText(handler);
                 return (
-                  <div key={index} style={{ display: "flex", gap: "1rem" }}>
-                    <select
-                      onChange={(e) => {
-                        onChangeAction(
-                          callbackName,
-                          index,
-                          parseInt(e.target.value)
-                        );
-                      }}
-                    >
-                      <option value={0}>{selectedActionText}</option>
-                      {options.map((option) => {
-                        return (
-                          <option key={option.value} value={option.value}>
-                            {callbackHandlerToText(option.action)}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div
-                      style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => {
-                        onRemoveAction(callbackName, index);
-                      }}
-                    >
-                      <MinusIcon />
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <select
+                        onChange={(e) => {
+                          onChangeAction(
+                            callbackName,
+                            index,
+                            parseInt(e.target.value)
+                          );
+                        }}
+                      >
+                        <option value={0}>{selectedActionText}</option>
+                        {options
+                          .filter(
+                            (option) =>
+                              callbackHandlerToText(option.action) !==
+                              selectedActionText
+                          )
+                          .map((option) => {
+                            return (
+                              <option key={option.value} value={option.value}>
+                                {callbackHandlerToText(option.action)}
+                              </option>
+                            );
+                          })}
+                      </select>
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        onClick={() => {
+                          onRemoveAction(callbackName, index);
+                        }}
+                      >
+                        <MinusIcon />
+                      </div>
                     </div>
+                    {handler["navigate"]?.type === "external" ? (
+                      <div style={{ display: "flex" }}>
+                        <input
+                          value={handler.navigate["url"] || ""}
+                          onChange={(e) => {
+                            onExternalNavigationChange(callbackName, index, {
+                              navigate: {
+                                type: "external",
+                                url: e.target.value,
+                                target: handler.navigate["target"],
+                              },
+                            });
+                          }}
+                        />
+                        <select
+                          value={handler.navigate["target"]}
+                          onChange={(e) => {
+                            onExternalNavigationChange(callbackName, index, {
+                              navigate: {
+                                type: "external",
+                                url: handler.navigate["url"],
+                                target: e.target.value as "_blank" | "_self",
+                              },
+                            });
+                          }}
+                        >
+                          <option value={"_blank"}>blank</option>
+                          <option value={"_self"}>self</option>
+                        </select>
+                      </div>
+                    ) : null}
                   </div>
                 );
               }

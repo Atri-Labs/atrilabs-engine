@@ -8,6 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Carousel.css";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export type CarouselItemTypes = {
   children: string;
@@ -185,10 +186,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Carousel" } },
+  panel: { comp: CommonIcon, props: { name: "Carousel", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Carousel", containerStyle: { padding: "1rem" } },
+    props: { name: "Carousel", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

@@ -22,11 +22,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   // ============pageCont================
   pageCont: {
     width: "15rem",
-    minHeight: `100%`,
-    backgroundColor: gray700,
+    height: `100%`,
     // position is set to relative to display dialog box next to it
     position: "relative",
     boxSizing: "border-box",
+  },
+  pageContMain: {
+    backgroundColor: gray700,
+    height: "100%",
+    boxSizing: "border-box",
+    overflow: "auto",
   },
   pageContHeader: {
     padding: `0.5rem 1rem`,
@@ -111,54 +116,57 @@ export const PageEditor: React.FC<PageEditorProps> = (props) => {
   }, [setSideDialog, closeSubContainer, props]);
   return (
     <div style={styles.pageCont}>
-      <header style={styles.pageContHeader}>
-        <h4 style={styles.pageContHeaderH4}>Pages</h4>
-        <div style={styles.icons}>
-          <span style={styles.iconsSpan} onClick={openCreateFolder}>
-            <Folder />
-          </span>
-          <span style={styles.iconsSpan} onClick={openCreatePage}>
-            <PageIcon />
-          </span>
-          <span style={styles.iconsSpan} onClick={closeContainer}>
-            <Cross />
-          </span>
+      <div style={styles.pageContMain}>
+        <header style={styles.pageContHeader}>
+          <h4 style={styles.pageContHeaderH4}>Pages</h4>
+          <div style={styles.icons}>
+            <span style={styles.iconsSpan} onClick={openCreateFolder}>
+              <Folder />
+            </span>
+            <span style={styles.iconsSpan} onClick={openCreatePage}>
+              <PageIcon />
+            </span>
+            <span style={styles.iconsSpan} onClick={closeContainer}>
+              <Cross />
+            </span>
+          </div>
+        </header>
+        <div style={styles.searchContainer}>
+          <div
+            style={{
+              border: `1px solid transparent`,
+            }}
+          >
+            <Maginfier />
+          </div>
+          <input
+            type="text"
+            className={formStyle["forminput"]}
+            style={styles.searchBox}
+            placeholder="Search Pages"
+          />
         </div>
-      </header>
-      <div style={styles.searchContainer}>
-        <div
+        <section
           style={{
-            border: `1px solid transparent`,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <Maginfier />
-        </div>
-        <input
-          type="text"
-          className={formStyle["forminput"]}
-          style={styles.searchBox}
-          placeholder="Search Pages"
-        />
+          {props.pageTableData.map((_data, index) => {
+            return (
+              <PageTable
+                setSideDialog={setSideDialog}
+                closeSubContainer={closeSubContainer}
+                data={props.pageTableData}
+                key={index}
+                index={index}
+                changePageCb={props.changePageCb}
+              />
+            );
+          })}
+        </section>
       </div>
-      <section
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {props.pageTableData.map((_data, index) => {
-          return (
-            <PageTable
-              setSideDialog={setSideDialog}
-              closeSubContainer={closeSubContainer}
-              data={props.pageTableData}
-              key={index}
-              index={index}
-              changePageCb={props.changePageCb}
-            />
-          );
-        })}
-      </section>
+
       {sideDialog ? <sideDialog.comp {...sideDialog.props} /> : null}
     </div>
   );

@@ -7,6 +7,7 @@ import { UploadContainer } from "@atrilabs/shared-layer-lib";
 import { useUploadAssetManager } from "./hooks/useUploadAssetManager";
 import { useShowColorPalette } from "./hooks/useShowColorPalette";
 import { ColorPickerAsset } from "./components/commons/ColorPickerAsset";
+import { gray700 } from "@atrilabs/design-system";
 
 /*
 This serves as the Data Manager component for this layer.
@@ -73,12 +74,23 @@ export default function () {
       ) : null}
       {showAssetPanel ? (
         <Container name="Drop" onClose={onCrossClicked}>
-          <UploadContainer
-            modes={modes}
-            onCrossClicked={onCrossClicked}
-            onUploadSuccess={onUploadSuccess}
-            onSelect={onSelect}
-          />
+          <div
+            style={{
+              width: "15rem",
+              height: `100%`,
+              backgroundColor: gray700,
+              boxSizing: "border-box",
+              userSelect: "none",
+              overflow: "auto",
+            }}
+          >
+            <UploadContainer
+              modes={modes}
+              onCrossClicked={onCrossClicked}
+              onUploadSuccess={onUploadSuccess}
+              onSelect={onSelect}
+            />
+          </div>
         </Container>
       ) : null}
     </>

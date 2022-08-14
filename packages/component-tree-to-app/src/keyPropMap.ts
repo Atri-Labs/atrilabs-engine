@@ -300,4 +300,31 @@ export const keyPropMap: any = {
       options: [],
     },
   },
+  Checkbox: {
+    styles: { ...FlexChild, ...PositionOptions, ...SpacingOptions },
+    custom: {
+      checked: false,
+    },
+  },
+  Dropdown: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      values: [],
+      selectedValue: "",
+      displayedValues: [],
+      disabled: false,
+    },
+  },
+  Table: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      rows: [],
+      cols: [],
+      checkboxSelection: false,
+      autoHeight: false,
+      numRows: 10,
+      rowHeight: 20,
+      selection: [],
+    },
+  },
 };

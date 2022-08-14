@@ -1,14 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { ReactComponent as AddIcon } from "../../assets/add.svg";
-import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
-import { gray300 } from "@atrilabs/design-system";
-import { RearrangeList } from "@atrilabs/shared-layer-lib";
-import { ReactComponent as ThreeDots } from "../../assets/more-vertical.svg";
+import { ArrayLabel } from "../commons/ArrayLabel";
+import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
+import { Checkbox } from "../commons/Checkbox";
+import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 
 export const BooleanList: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || [];
   }, [props]);
   const insertValueCb = useCallback(() => {
     props.patchCb({
@@ -64,57 +63,36 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
     [propValue, props]
   );
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ color: "white" }}>{props.propName}</div>
-        <div onClick={insertValueCb}>
-          <AddIcon />
-        </div>
-      </div>
+    <ArrayPropertyContainer>
+      <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
       {Array.isArray(propValue) ? (
-        <RearrangeList
+        <RearrangeListWrapper
           onReposition={onReposition}
-          iconItem={
-            <div style={{ width: "24px", height: "24px" }}>
-              <ThreeDots />
-            </div>
-          }
-          items={propValue.map((value, index) => {
-            return {
-              node: (
-                <div
+          onMinusClick={deleteValueCb}
+        >
+          {propValue.map((value, index) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  width: "calc(100% - 1.5rem)",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Checkbox
                   key={index}
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <div
-                    onClick={() => {
-                      editValueCb(index);
-                    }}
-                    style={{ flexGrow: 1, background: gray300 }}
-                  >
-                    {value.toString()}
-                  </div>
-                  <div
-                    style={{ display: "flex", alignItems: "center" }}
-                    onClick={() => {
-                      deleteValueCb(index);
-                    }}
-                  >
-                    <MinusIcon />
-                  </div>
-                </div>
-              ),
-              key: index.toString(),
-            };
+                  onChange={() => {
+                    editValueCb(index);
+                  }}
+                  value={value}
+                />
+              </div>
+            );
           })}
-        />
+        </RearrangeListWrapper>
       ) : null}
-    </div>
+    </ArrayPropertyContainer>
   );
 };

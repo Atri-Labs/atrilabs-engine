@@ -10,6 +10,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import { ReactComponent as Icon } from "./icon.svg";
 
 const fileIoProp: IoProp = {
   type: "files",
@@ -156,10 +157,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Upload" } },
+  panel: { comp: CommonIcon, props: { name: "Upload", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Upload", containerStyle: { padding: "1rem" } },
+    props: { name: "Upload", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

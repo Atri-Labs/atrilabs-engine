@@ -1,10 +1,11 @@
 import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
-import { navigateInternally } from "./navigate";
+import { navigateExternally, navigateInternally } from "./navigate";
 
 export type NavigationCallbackHandler = {
   type: "internal" | "external";
   url: string;
+  target?: "_blank" | "_self";
 };
 
 export type CallbackDef = {
@@ -38,7 +39,7 @@ function sendEventDataFn(
 ) {
   console.log("sendEventData:", eventData);
   const pageState = useStore.getState()[pageName];
-  fetch("/event-handler", {
+  return fetch("/event-handler", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -116,7 +117,7 @@ function sendEventInFormDataFn(
       formdata.append(`files`, file);
     }
   });
-  fetch("/event-in-form-handler", {
+  return fetch("/event-in-form-handler", {
     method: "POST",
     body: formdata,
   })
@@ -171,6 +172,14 @@ function updateAppIoStore(
   }
 }
 
+function handleNavigation(handle: CallbackDef["handlers"]["0"]) {
+  if ("navigate" in handle && handle.navigate.type === "internal") {
+    navigateInternally(handle.navigate.url);
+  } else if ("navigate" in handle && handle.navigate.type === "external") {
+    navigateExternally(handle.navigate.url, handle.navigate.target);
+  }
+}
+
 export function callbackFactory(
   alias: string,
   pageName: string,
@@ -199,9 +208,12 @@ export function callbackFactory(
      * to navigate can be either of sendEventData or sendFiles.
      */
     const jobs: {
+      // only one send event data
       sendEventData?: CallbackDef["handlers"]["0"];
+      // many sendfiles
       sendFiles?: CallbackDef["handlers"];
-      navigate?: string;
+      // only one navigation
+      navigate?: CallbackDef["handlers"]["0"];
     } = {};
 
     handlers.forEach((handler) => {
@@ -215,8 +227,8 @@ export function callbackFactory(
           jobs["sendFiles"] = [handler];
         }
       }
-      if ("navigate" in handler && handler.navigate.type === "internal") {
-        jobs["navigate"] = handler.navigate.url;
+      if ("navigate" in handler) {
+        jobs["navigate"] = handler;
       }
     });
 
@@ -235,12 +247,15 @@ export function callbackFactory(
         callbackName,
         eventData,
         filesMetadata
-      );
+      ).then(() => {
+        if (jobs["navigate"]) handleNavigation(jobs["navigate"]);
+      });
     } else if (jobs["sendEventData"]) {
-      sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData);
-    }
-    if (jobs["navigate"]) {
-      navigateInternally(jobs["navigate"]);
+      sendEventDataFn(alias, pageName, pageRoute, callbackName, eventData).then(
+        () => {
+          if (jobs["navigate"]) handleNavigation(jobs["navigate"]);
+        }
+      );
     }
   };
 

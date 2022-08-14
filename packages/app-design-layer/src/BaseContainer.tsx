@@ -50,9 +50,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   // children of body
-  dropContainer: {
-    overflow: "auto",
-  },
+  dropContainer: {},
   canvasContainer: {
     position: "relative",
     flexGrow: 1,

@@ -16,6 +16,9 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { getColorAt } from "../utils/colors";
+import Color from "color";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const LineChart = forwardRef<
   HTMLDivElement,
@@ -101,14 +104,19 @@ export const LineChart = forwardRef<
         {props.custom.yAxis?.show ? <YAxis /> : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
-        {sortedKeys.map((key) => {
+        {sortedKeys.map((key, index) => {
+          const fillColor =
+            props.custom.options?.[key]?.fill || getColorAt(index);
+          const strokeColor =
+            props.custom.options?.[key]?.stroke ||
+            Color(fillColor).darken(0.3).hex();
           return (
             <Line
               key={key}
               dataKey={key}
               type={props.custom.options?.[key]?.type}
-              stroke={props.custom.options?.[key]?.stroke}
-              fill={props.custom.options?.[key]?.fill}
+              stroke={strokeColor}
+              fill={fillColor}
               isAnimationActive={props.custom.options?.[key]?.animate}
             />
           );
@@ -232,10 +240,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Line" } },
+  panel: { comp: CommonIcon, props: { name: "Line", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Line", containerStyle: { padding: "1rem" } },
+    props: { name: "Line", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

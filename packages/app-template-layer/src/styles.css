@@ -1,0 +1,8 @@
+.bin-icon-container > .bin-icon {
+  display: none;
+}
+
+.bin-icon-container:hover > .bin-icon {
+  display: flex;
+  align-items: center;
+}

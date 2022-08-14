@@ -1,16 +1,19 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { Checkbox } from "../commons/Checkbox";
+import { Label } from "../commons/Label";
+import { PropertyContainer } from "../commons/PropertyContainer";
 
 export const Boolean: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
     return props.customProps[props.propName] || false;
   }, [props]);
   const callPatchCb = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (value: boolean) => {
       props.patchCb({
         property: {
           custom: {
-            [props.propName]: e.target.checked,
+            [props.propName]: value,
           },
         },
       });
@@ -18,9 +21,9 @@ export const Boolean: React.FC<ComponentProps> = (props) => {
     [props]
   );
   return (
-    <div>
-      <div style={{ color: "white" }}>{props.propName}</div>
-      <input onChange={callPatchCb} type="checkbox" checked={propValue} />
-    </div>
+    <PropertyContainer>
+      <Label name={props.propName} />
+      <Checkbox onChange={callPatchCb} value={propValue} />
+    </PropertyContainer>
   );
 };

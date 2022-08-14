@@ -8,6 +8,8 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { PieChart as PieChartRechart, Pie, Tooltip, Legend } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const PieChart = forwardRef<
   HTMLDivElement,
@@ -72,12 +74,14 @@ export const PieChart = forwardRef<
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
         {reshapedData.map((data, index) => {
+          const fillColor =
+            props.custom.options?.[index]?.fill || getColorAt(index);
           return (
             <Pie
               key={index}
               data={data}
               dataKey={valueKey}
-              fill={props.custom.options?.[index]?.fill}
+              fill={fillColor}
               isAnimationActive={props.custom.options?.[index]?.animate}
               cx={props.custom?.options?.[index]?.cx}
               cy={props.custom?.options?.[index]?.cy}
@@ -114,7 +118,6 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
         cy: "50%",
         outerRadius: "40%",
         showLabel: true,
-        fill: "#0088FE",
         animate: false,
       },
       {
@@ -122,7 +125,6 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
         cy: "50%",
         innerRadius: "65%",
         showLabel: true,
-        fill: "#00C49F",
         animate: false,
       },
     ];
@@ -185,10 +187,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Pie" } },
+  panel: { comp: CommonIcon, props: { name: "Pie", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Pie", containerStyle: { padding: "1rem" } },
+    props: { name: "Pie", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

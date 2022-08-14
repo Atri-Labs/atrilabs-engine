@@ -93,5 +93,17 @@ module.exports = {
       modulePath: "./src/manifests/charts/CandleStick/CandleStick.tsx",
       exportedVarName: "CandleStick",
     },
+    Checkbox: {
+      modulePath: "./src/manifests/Checkbox/Checkbox.tsx",
+      exportedVarName: "Checkbox",
+    },
+    Dropdown: {
+      modulePath: "./src/manifests/Dropdown/Dropdown.tsx",
+      exportedVarName: "Dropdown",
+    },
+    Table: {
+      modulePath: "./src/manifests/Table/Table.tsx",
+      exportedVarName: "DataTable",
+    },
   },
 };

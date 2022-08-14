@@ -71,8 +71,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
-      {props.treeOptions && props.treeOptions.spacingOptions ? (
-        <SpacingProperty
+      {props.treeOptions && props.treeOptions.sizeOptions ? (
+        <Size
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
@@ -80,8 +80,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
-      {props.treeOptions && props.treeOptions.sizeOptions ? (
-        <Size
+      {props.treeOptions && props.treeOptions.spacingOptions ? (
+        <SpacingProperty
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}

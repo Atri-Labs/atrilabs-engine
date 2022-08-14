@@ -1,5 +1,5 @@
 import { Menu, Container } from "@atrilabs/core";
-import { gray800 } from "@atrilabs/design-system";
+import { gray700, gray800 } from "@atrilabs/design-system";
 import { useCallback, useState } from "react";
 import {
   UploadContainer,
@@ -48,7 +48,18 @@ export default function () {
       </Menu>
       {showAssetPanel ? (
         <Container name="Drop" onClose={onCrossClicked}>
-          <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
+          <div
+            style={{
+              width: "15rem",
+              height: `100%`,
+              backgroundColor: gray700,
+              boxSizing: "border-box",
+              userSelect: "none",
+              overflow: "auto",
+            }}
+          >
+            <UploadContainer modes={modes} onCrossClicked={onCrossClicked} />
+          </div>
         </Container>
       ) : null}
     </>

@@ -17,6 +17,9 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { getColorAt } from "../utils/colors";
+import Color from "color";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const HistogramChart = forwardRef<
   HTMLDivElement,
@@ -52,6 +55,24 @@ export const HistogramChart = forwardRef<
   const yAxisKey = useMemo(() => {
     return props.custom.yAxis?.key || "y";
   }, [props.custom]);
+
+  const bar = useMemo(() => {
+    const fillColor = props.custom.options?.bar?.fill || getColorAt(1);
+    return {
+      ...props.custom.options?.bar,
+      fill: fillColor,
+      stroke: props.custom.options?.bar?.stroke || fillColor,
+    };
+  }, [props.custom]);
+
+  const line = useMemo(() => {
+    const strokeColor =
+      props.custom.options?.line?.stroke || Color(bar.fill).darken(0.4).hex();
+    return {
+      ...props.custom.options?.line,
+      stroke: strokeColor,
+    };
+  }, [props.custom, bar]);
 
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
@@ -89,16 +110,16 @@ export const HistogramChart = forwardRef<
 
         <Bar
           dataKey={yAxisKey}
-          stroke={props.custom.options?.bar?.stroke}
-          fill={props.custom.options?.bar?.fill}
-          isAnimationActive={props.custom.options?.bar?.animate}
+          stroke={bar.stroke}
+          fill={bar.fill}
+          isAnimationActive={bar.animate}
         />
         <Line
           type={props.custom.options?.line?.type}
           dataKey={yAxisKey}
-          stroke={props.custom.options?.line?.stroke}
-          isAnimationActive={props.custom.options?.line?.animate}
-          strokeWidth={props.custom.options?.line?.strokeWidth}
+          stroke={line.stroke}
+          isAnimationActive={line.animate}
+          strokeWidth={line.strokeWidth}
         />
       </ComposedChart>
     </div>
@@ -231,10 +252,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Histogram" } },
+  panel: { comp: CommonIcon, props: { name: "Histogram", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Histogram", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Histogram",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

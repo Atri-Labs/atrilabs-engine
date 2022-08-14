@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { ReactComponent as AddIcon } from "../../assets/add.svg";
-import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
+import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
+import { TextInput } from "../commons/TextInput";
+import { ArrayLabel } from "../commons/ArrayLabel";
+import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 
 export const ListField: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || [];
   }, [props]);
   const insertValueCb = useCallback(() => {
     props.patchCb({
@@ -30,6 +32,21 @@ export const ListField: React.FC<ComponentProps> = (props) => {
     },
     [props, propValue]
   );
+  const onReposition = useCallback(
+    (deleteAt: number, insertAt: number) => {
+      const updatedValue = [...propValue];
+      const deletedItem = updatedValue.splice(deleteAt, 1)[0];
+      updatedValue.splice(insertAt, 0, deletedItem);
+      props.patchCb({
+        property: {
+          custom: {
+            [props.propName]: updatedValue,
+          },
+        },
+      });
+    },
+    [propValue, props]
+  );
   const deleteValueCb = useCallback(
     (index: number) => {
       const updatedValue = [...propValue];
@@ -45,44 +62,36 @@ export const ListField: React.FC<ComponentProps> = (props) => {
     [props, propValue]
   );
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ color: "white" }}>{props.propName}</div>
-        <div onClick={insertValueCb}>
-          <AddIcon />
-        </div>
-      </div>
-      {Array.isArray(propValue)
-        ? propValue.map((value, index) => {
+    <ArrayPropertyContainer>
+      <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
+
+      {Array.isArray(propValue) ? (
+        <RearrangeListWrapper
+          onReposition={onReposition}
+          onMinusClick={deleteValueCb}
+        >
+          {propValue.map((value, index) => {
             return (
               <div
                 key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}
+                style={{
+                  width: "calc(100% - 1.5rem)",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                <input
+                <TextInput
                   value={value}
                   onChange={(e) => {
                     editValueCb(index, e.target.value);
                   }}
                 />
-                <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  onClick={() => {
-                    deleteValueCb(index);
-                  }}
-                >
-                  <MinusIcon />
-                </div>
               </div>
             );
-          })
-        : null}
-    </div>
+          })}
+        </RearrangeListWrapper>
+      ) : null}
+    </ArrayPropertyContainer>
   );
 };

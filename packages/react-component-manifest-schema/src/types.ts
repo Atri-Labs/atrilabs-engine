@@ -51,6 +51,7 @@ export type NavigationCallbackHandler = {
    */
   type: "internal" | "external";
   url: string;
+  target?: "_blank" | "_self";
 };
 
 /**

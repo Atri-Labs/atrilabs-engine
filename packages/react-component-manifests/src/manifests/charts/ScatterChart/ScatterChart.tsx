@@ -18,6 +18,8 @@ import {
 import type { SymbolType } from "recharts/types/util/types";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const ScatterChart = forwardRef<
   HTMLDivElement,
@@ -122,13 +124,17 @@ export const ScatterChart = forwardRef<
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
         {reshapedData.map((data, index) => {
+          const fillColor =
+            props.custom.options?.[index]?.fill || getColorAt(index);
+          const strokeColor =
+            props.custom.options?.[index]?.stroke || fillColor;
           return (
             <Scatter
               key={index}
               data={data}
               type={props.custom.options?.[index]?.type}
-              stroke={props.custom.options?.[index]?.stroke}
-              fill={props.custom.options?.[index]?.fill}
+              stroke={strokeColor}
+              fill={fillColor}
               isAnimationActive={props.custom.options?.[index]?.animate}
               name={props.custom.options?.[index]?.name}
               shape={props.custom.options?.[index]?.shape}
@@ -227,10 +233,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Scatter" } },
+  panel: { comp: CommonIcon, props: { name: "Scatter", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Scatter", containerStyle: { padding: "1rem" } },
+    props: { name: "Scatter", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

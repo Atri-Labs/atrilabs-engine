@@ -3,7 +3,7 @@ import { ComponentProps } from "../../types";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || "";
   }, [props]);
   const callPatchCb: React.ChangeEventHandler<HTMLTextAreaElement> =
     useCallback(
