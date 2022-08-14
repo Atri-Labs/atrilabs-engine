@@ -1,5 +1,8 @@
+import { gray900 } from "@atrilabs/design-system";
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { Label } from "../commons/Label";
+import { PropertyContainer } from "../commons/PropertyContainer";
 
 export const InternalLink: React.FC<ComponentProps> = (props) => {
   const propValue: string = useMemo(() => {
@@ -19,10 +22,19 @@ export const InternalLink: React.FC<ComponentProps> = (props) => {
   );
 
   return (
-    <div>
-      <div style={{ color: "white" }}>{props.propName}</div>
-      <select value={propValue} onChange={callPatchCb}>
-        <option value={propValue}>{propValue}</option>
+    <PropertyContainer>
+      <Label name={props.propName} />
+      <select
+        value={propValue}
+        onChange={callPatchCb}
+        style={{
+          height: "25px",
+          backgroundColor: gray900,
+          border: "none",
+          outline: "none",
+          color: "white",
+        }}
+      >
         {props.routes.map((value) => {
           return (
             <option value={value} key={value}>
@@ -31,6 +43,6 @@ export const InternalLink: React.FC<ComponentProps> = (props) => {
           );
         })}
       </select>
-    </div>
+    </PropertyContainer>
   );
 };
