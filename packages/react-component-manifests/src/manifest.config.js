@@ -97,5 +97,9 @@ module.exports = {
       modulePath: "./src/manifests/Checkbox/Checkbox.tsx",
       exportedVarName: "Checkbox",
     },
+    Dropdown: {
+      modulePath: "./src/manifests/Dropdown/Dropdown.tsx",
+      exportedVarName: "Dropdown",
+    },
   },
 };

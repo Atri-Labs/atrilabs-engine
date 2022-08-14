@@ -84,4 +84,10 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "checked"] }],
     },
   },
+  Dropdown: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "selectedValue"] }],
+    },
+  },
 };

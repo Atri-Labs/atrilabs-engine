@@ -306,4 +306,13 @@ export const keyPropMap: any = {
       checked: false,
     },
   },
+  Dropdown: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      values: [],
+      selectedValue: "",
+      displayedValues: [],
+      disabled: false,
+    },
+  },
 };
