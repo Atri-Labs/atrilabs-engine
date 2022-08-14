@@ -18,110 +18,43 @@ export const Slider = forwardRef<
       value: number;
       startValue: number;
       endValue: number;
-      width: number;
     };
-    onChange: (value: string) => void;
+    onChange: (value: number) => void;
   }
 >((props, ref) => {
-  const [startPosition, setStartPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const [finishPosition, setFinishPosition] = useState({ x: 0, y: 0 });
-  const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
-  const [thumbPosition, setThumbPosition] = useState("0%");
-  const [value, setValue] = useState(0);
-
-  const onChange = useCallback(() => {
-    props.onChange(String(value));
-  }, [props, value]);
-
-  const getPosition = (e: any) => {
-    const obj = e;
-    return { pageX: obj.pageX, pageY: obj.pageY };
-  };
-  const handleMouseMove = (e: MouseEvent) => {
-    const { pageX, pageY } = getPosition(e);
-    setCurrentPosition({ ...currentPosition, x: pageX, y: pageY });
-  };
-
-  const handleThumbMouseDown = (e: React.MouseEvent) => {
-    const { pageX, pageY } = getPosition(e);
-    setStartPosition((prev) => {
-      return { ...prev, x: pageX, y: pageY };
-    });
-    document.addEventListener("mousemove", (e) => handleMouseMove(e), true);
-    document.addEventListener("mouseup", (e) => handleThumbMouseUp(e), true);
-  };
-
-  const handleThumbMouseUp = (e: MouseEvent) => {
-    const { pageX, pageY } = getPosition(e);
-    setFinishPosition((prev) => {
-      return { ...prev, x: pageX, y: pageY };
-    });
-    setFinalvalue();
-    document.removeEventListener("mousemove", handleMouseMove, true);
-  };
-
-  const setFinalvalue = () => {
-    let difference = props.custom.value + (finishPosition.x - startPosition.x);
-  };
-
-  useEffect(() => {
-    const updateThumbPosition = (diff: number) => {
-      let offset = props.custom.width / 100;
-      let moveValue = diff / offset;
-      if (moveValue + props.custom.value > 100) {
-        moveValue = 100 - props.custom.value;
-      }
-      if (moveValue + props.custom.value < 0) {
-        moveValue = 0 - props.custom.value;
-      }
-      setThumbPosition(`${moveValue + props.custom.value}%`);
-      return moveValue;
-    };
-
-    const calculateValue = (diff: number) => {
-      let moveValue =
-        (diff / props.custom.width) *
-        (props.custom.endValue - props.custom.startValue);
-      moveValue = Math.floor(moveValue);
-      moveValue = moveValue + props.custom.value;
-      if (moveValue > props.custom.endValue) {
-        moveValue = props.custom.endValue;
-      }
-      if (moveValue < props.custom.startValue) {
-        moveValue = props.custom.startValue;
-      }
-      setValue(moveValue);
-    };
-    let currDiff = currentPosition.x - startPosition.x;
-    updateThumbPosition(currDiff);
-    calculateValue(currDiff);
-  }, [
-    currentPosition,
-    startPosition.x,
-    finishPosition.x,
-    props.custom.endValue,
-    props.custom.startValue,
-    props.custom.width,
-    props.custom.value,
-  ]);
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      const startPostion = { x: e.pageX, y: e.pageY };
+      const onMouseMove = (e: MouseEvent) => {
+        if (startPostion) {
+          const delta = e.pageX - startPostion.x;
+          props.onChange(props.custom.value + delta);
+        }
+      };
+      const onMouseUp = () => {
+        // unsubscribe
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      };
+      // subscribe
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    },
+    [props]
+  );
 
   return (
-    <div ref={ref} style={props.styles} onChange={onChange}>
+    <div ref={ref} style={props.styles} className="slider-parent">
+      <div className="slider-rail"></div>
       <div
-        className="slider-parent"
-        style={{ width: `${props.custom.width}px` }}
-      >
-        <div className="slider-rail"></div>
-        <div className="slider-progress" style={{ width: thumbPosition }}></div>
-        <div
-          className="slider-thumb"
-          style={{ left: thumbPosition }}
-          onMouseDown={(e) => handleThumbMouseDown(e)}
-        ></div>
-      </div>
+        className="slider-progress"
+        style={{ width: props.custom.value + "px" }}
+      ></div>
+      <div
+        className="slider-thumb"
+        style={{ left: props.custom.value + "px" }}
+        onMouseDown={onMouseDown}
+      ></div>
     </div>
   );
 });
@@ -142,7 +75,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
     startValue: "number",
     endValue: "number",
     value: "number",
-    width: "number",
   },
 };
 
