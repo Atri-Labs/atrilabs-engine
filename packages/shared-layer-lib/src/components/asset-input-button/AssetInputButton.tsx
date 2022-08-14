@@ -1,6 +1,7 @@
 import { gray300, gray900, smallText } from "@atrilabs/design-system";
 import { useMemo } from "react";
 import { ReactComponent as Clear } from "../../assets/minus.svg";
+import { ReactComponent as FileUploadIcon } from "../../assets/file-upload.svg";
 export type ButtonInputComboProps = {
   assetName: string;
   onClick: () => void;
@@ -28,7 +29,7 @@ export const AssetInputButton: React.FC<ButtonInputComboProps> = (props) => {
           backgroundColor: gray900,
           height: "1.5rem",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "start",
           alignItems: "center",
           flexGrow: 1,
           borderRadius: "4px",
@@ -38,6 +39,7 @@ export const AssetInputButton: React.FC<ButtonInputComboProps> = (props) => {
         }}
         onClick={props.onClick}
       >
+        <FileUploadIcon />
         <span style={{ ...smallText, color: "white" }}>
           {assetName.split(/(\\+)|(\/+)/).at(-1)}
         </span>
