@@ -5,6 +5,7 @@ import {
   gray800,
   gray900,
   h4Heading,
+  h5Heading,
 } from "@atrilabs/design-system";
 import {
   CallbackHandler,
@@ -191,7 +192,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 padding: "0.5rem",
               }}
             >
-              <div style={{ ...h4Heading, fontSize: "11px", color: gray200 }}>
+              <div style={{ ...h5Heading, fontSize: "13px", color: gray200 }}>
                 {callbackName}
               </div>
               <div
@@ -234,7 +235,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                         <div
                           style={{
                             ...h4Heading,
-                            fontSize: "11px",
+                            fontSize: "13px",
                             color: gray200,
                             backgroundColor: gray700,
                             display: "flex",
@@ -298,7 +299,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                           <div
                             style={{
                               ...h4Heading,
-                              fontSize: "11px",
+                              fontSize: "13px",
                               color: gray200,
                               backgroundColor: gray700,
                               display: "flex",
