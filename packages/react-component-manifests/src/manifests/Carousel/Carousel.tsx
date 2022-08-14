@@ -17,7 +17,7 @@ export type CarouselItemTypes = {
 };
 
 export type CarouseWrapperTypes = {
-  children: any; //CARE
+  children: any;
   startTile: number;
 };
 
@@ -124,7 +124,7 @@ export const Carousel = forwardRef<
             key={i}
             backgroundImage={props.custom.imageItems[i]}
           >
-            {item}
+            {item ? item : "Sample Text"}
           </CarouselItem>
         ))}
       </CarouselWrapper>

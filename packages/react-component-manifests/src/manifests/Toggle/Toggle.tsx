@@ -53,9 +53,8 @@ export const Toggle = forwardRef<
     onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
-      console.log("changed");
       props.onChange(e.target.checked);
     },
     [props]
@@ -66,7 +65,7 @@ export const Toggle = forwardRef<
         isOn={props.custom.active}
         onColor={props.custom.activeColor}
         offColor={props.custom.inactiveColor}
-        handleToggle={onChange}
+        handleToggle={handleChange}
       />
     </div>
   );

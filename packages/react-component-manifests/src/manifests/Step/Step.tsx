@@ -26,7 +26,12 @@ export const Step = forwardRef<
   );
 
   return (
-    <div ref={ref} style={props.styles} onClick={onClick} className="parent">
+    <div
+      ref={ref}
+      style={props.styles}
+      onClick={onClick}
+      className="step-parent"
+    >
       {props.custom.title.map((step, i) => (
         <div
           className="step-wrapper"
@@ -103,6 +108,111 @@ export const Step = forwardRef<
   );
 });
 
+export const DevStep = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: { color: string; current: number; title: []; description: [] };
+    onClick: (event: { pageX: number; pageY: number }) => void;
+  }
+>((props, ref) => {
+  const onClick = useCallback(
+    (e: React.MouseEvent) => {
+      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+    },
+    [props]
+  );
+
+  const modifiedTitleArray =
+    props.custom.title.length === 0 ? ["Title 1"] : props.custom.title;
+  const modifiedDescriptionArray =
+    props.custom.description.length === 0
+      ? ["Description"]
+      : props.custom.description;
+
+  return (
+    <div
+      ref={ref}
+      style={props.styles}
+      onClick={onClick}
+      className="step-parent"
+    >
+      {modifiedTitleArray.map((step, i) => (
+        <div
+          className="step-wrapper"
+          key={i}
+          style={{ width: `${100 / modifiedTitleArray.length}%` }}
+        >
+          {props.custom.current > i + 1 ? (
+            <div className="icon-holder">
+              <span className="step-icon-done">
+                <div
+                  style={{
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-circle"
+                ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-stem"
+                ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-kick "
+                ></div>
+              </span>
+            </div>
+          ) : props.custom.current === i + 1 ? (
+            <div className="icon-holder">
+              <div
+                className="step-icon"
+                style={{ backgroundColor: `${props.custom.color}` }}
+              >
+                {i + 1}
+              </div>
+            </div>
+          ) : (
+            <div className="icon-holder">
+              <div className="step-icon-notreached">{i + 1}</div>
+            </div>
+          )}
+          {i <= props.custom.current ? (
+            <div className="step-details">
+              <h5>{step}</h5>
+              <p>{modifiedDescriptionArray[i]}</p>
+            </div>
+          ) : (
+            <div className="step-details-notreached">
+              <h5>{step}</h5>
+              <p>{modifiedDescriptionArray[i]}</p>
+            </div>
+          )}
+
+          {i + 1 < modifiedTitleArray.length && i + 1 < props.custom.current ? (
+            <div className="progress-holder">
+              <div
+                className="step-progress"
+                style={{ backgroundColor: `${props.custom.color}` }}
+              ></div>
+            </div>
+          ) : i + 1 < modifiedTitleArray.length &&
+            i + 1 >= props.custom.current ? (
+            <div className="progress-holder">
+              <div className="step-progress-notreached"></div>
+            </div>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+});
+
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
@@ -129,6 +239,7 @@ const compManifest: ReactComponentManifestSchema = {
     comp: Step,
   },
   dev: {
+    comp: DevStep,
     decorators: [],
     attachProps: {
       styles: {

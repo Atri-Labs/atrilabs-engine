@@ -14,48 +14,55 @@ export const Slider = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { value: number; startValue: number; endValue: number };
-    onChange: (value: string) => void;
+    custom: {
+      value: number;
+      maxValue: number;
+      minValue: number;
+    };
+    onChange: (value: number) => void;
   }
 >((props, ref) => {
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      props.onChange(e.target.value);
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      const startPostion = { x: e.pageX, y: e.pageY };
+      const onMouseMove = (e: MouseEvent) => {
+        if (startPostion) {
+          const delta = e.pageX - startPostion.x;
+          const offset = (props.custom.maxValue - props.custom.minValue) / 400;
+          let change = delta * offset;
+          if (change + props.custom.value < 0) {
+            change = -props.custom.value;
+          }
+          if (change + props.custom.value > props.custom.maxValue) {
+            change = props.custom.maxValue - props.custom.value;
+          }
+          props.onChange(props.custom.value + change);
+        }
+      };
+      const onMouseUp = () => {
+        // unsubscribe
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      };
+      // subscribe
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
     },
     [props]
   );
-  const [width, setWidth] = useState("0px");
-  function changeProgress(event: React.ChangeEvent<HTMLInputElement>) {
-    setWidth(`${Number(event.target.value) * 4}px`);
-  }
-  useEffect(() => {
-    console.log(width);
-  }, [width]);
-  return (
-    <div ref={ref} style={props.styles} onChange={onChange}>
-      <div className="input-holder">
-        <input
-          className="input-slider"
-          style={{ width: `200px` }}
-          value={props.custom.value}
-          type="range"
-          min={props.custom.startValue}
-          max={props.custom.endValue}
-          onChange={(e) => changeProgress(e)}
-        ></input>
 
-        <div
-          style={{
-            backgroundColor: "#91d5ff",
-            height: "6px",
-            borderRadius: "8px",
-            width: `${width}`,
-            marginTop: "-11px",
-            zIndex: "2",
-            position: "relative",
-          }}
-        ></div>
-      </div>
+  return (
+    <div ref={ref} style={props.styles} className="slider-parent">
+      <div className="slider-rail"></div>
+      <div
+        className="slider-progress"
+        style={{ width: props.custom.value + "%" }}
+      ></div>
+      <div
+        className="slider-thumb"
+        style={{ left: props.custom.value + "%" }}
+        onMouseDown={onMouseDown}
+      ></div>
     </div>
   );
 });
@@ -73,8 +80,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    startValue: "number",
-    endValue: "number",
+    minValue: "number",
+    maxValue: "number",
     value: "number",
   },
 };
@@ -89,13 +96,19 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          width: "400px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          minValue: 0,
+          maxValue: 100,
+          value: 50,
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
