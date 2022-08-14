@@ -19,6 +19,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
 import Color from "color";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const HistogramChart = forwardRef<
   HTMLDivElement,
@@ -251,10 +252,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Histogram" } },
+  panel: { comp: CommonIcon, props: { name: "Histogram", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Histogram", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Histogram",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

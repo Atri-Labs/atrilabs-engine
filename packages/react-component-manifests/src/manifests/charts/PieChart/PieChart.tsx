@@ -9,6 +9,7 @@ import { PieChart as PieChartRechart, Pie, Tooltip, Legend } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const PieChart = forwardRef<
   HTMLDivElement,
@@ -186,10 +187,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Pie" } },
+  panel: { comp: CommonIcon, props: { name: "Pie", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Pie", containerStyle: { padding: "1rem" } },
+    props: { name: "Pie", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

@@ -20,6 +20,7 @@ import { DotBar, HorizonBar } from "./components";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const CandleStick = forwardRef<
   HTMLDivElement,
@@ -265,10 +266,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Candle Stick" } },
+  panel: { comp: CommonIcon, props: { name: "Candle Stick", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Candle Stick", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Candle Stick",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

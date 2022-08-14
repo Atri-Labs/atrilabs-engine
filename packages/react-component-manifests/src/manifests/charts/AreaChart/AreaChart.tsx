@@ -18,6 +18,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
 import Color from "color";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const AreaChart = forwardRef<
   HTMLDivElement,
@@ -240,10 +241,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Area" } },
+  panel: { comp: CommonIcon, props: { name: "Area", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Area", containerStyle: { padding: "1rem" } },
+    props: { name: "Area", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

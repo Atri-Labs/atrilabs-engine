@@ -18,6 +18,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import Color from "color";
 import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const BarChart = forwardRef<
   HTMLDivElement,
@@ -246,10 +247,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Bar" } },
+  panel: { comp: CommonIcon, props: { name: "Bar", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Bar", containerStyle: { padding: "1rem" } },
+    props: { name: "Bar", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

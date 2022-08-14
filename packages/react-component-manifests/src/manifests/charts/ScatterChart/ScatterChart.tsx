@@ -19,6 +19,7 @@ import type { SymbolType } from "recharts/types/util/types";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const ScatterChart = forwardRef<
   HTMLDivElement,
@@ -232,10 +233,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Scatter" } },
+  panel: { comp: CommonIcon, props: { name: "Scatter", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Scatter", containerStyle: { padding: "1rem" } },
+    props: { name: "Scatter", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

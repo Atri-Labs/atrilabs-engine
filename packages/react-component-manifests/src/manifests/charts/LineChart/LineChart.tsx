@@ -18,6 +18,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
 import Color from "color";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const LineChart = forwardRef<
   HTMLDivElement,
@@ -239,10 +240,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Line" } },
+  panel: { comp: CommonIcon, props: { name: "Line", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Line", containerStyle: { padding: "1rem" } },
+    props: { name: "Line", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };
