@@ -78,4 +78,10 @@ export const keyCallbackMap: {
   HistogramChart: {},
   PieChart: {},
   ScatterChart: {},
+  Checkbox: {
+    onChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "checked"] }],
+    },
+  },
 };

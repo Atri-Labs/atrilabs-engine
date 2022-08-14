@@ -300,4 +300,10 @@ export const keyPropMap: any = {
       options: [],
     },
   },
+  Checkbox: {
+    styles: { ...FlexChild, ...PositionOptions, ...SpacingOptions },
+    custom: {
+      checked: false,
+    },
+  },
 };
