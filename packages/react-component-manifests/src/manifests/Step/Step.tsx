@@ -136,81 +136,78 @@ export const DevStep = forwardRef<
       onClick={onClick}
       className="step-parent"
     >
-      <div className="step-wrpter">
-        {modifiedTitleArray.map((step, i) => (
-          <div
-            className="step-wrapper"
-            key={i}
-            style={{ width: `${100 / modifiedTitleArray.length}%` }}
-          >
-            {props.custom.current > i + 1 ? (
-              <div className="icon-holder">
-                <span className="step-icon-done">
-                  <div
-                    style={{
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                      borderColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-circle"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-stem"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-kick "
-                  ></div>
-                </span>
-              </div>
-            ) : props.custom.current === i + 1 ? (
-              <div className="icon-holder">
+      {modifiedTitleArray.map((step, i) => (
+        <div
+          className="step-wrapper"
+          key={i}
+          style={{ width: `${100 / modifiedTitleArray.length}%` }}
+        >
+          {props.custom.current > i + 1 ? (
+            <div className="icon-holder">
+              <span className="step-icon-done">
                 <div
-                  className="step-icon"
-                  style={{ backgroundColor: `${props.custom.color}` }}
-                >
-                  {i + 1}
-                </div>
-              </div>
-            ) : (
-              <div className="icon-holder">
-                <div className="step-icon-notreached">{i + 1}</div>
-              </div>
-            )}
-            {i <= props.custom.current ? (
-              <div className="step-details">
-                <h5>{step}</h5>
-                <p>{modifiedDescriptionArray[i]}</p>
-              </div>
-            ) : (
-              <div className="step-details-notreached">
-                <h5>{step}</h5>
-                <p>{modifiedDescriptionArray[i]}</p>
-              </div>
-            )}
-
-            {i + 1 < modifiedTitleArray.length &&
-            i + 1 < props.custom.current ? (
-              <div className="progress-holder">
-                <div
-                  className="step-progress"
-                  style={{ backgroundColor: `${props.custom.color}` }}
+                  style={{
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    borderColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-circle"
                 ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-stem"
+                ></div>
+                <div
+                  style={{
+                    backgroundColor: `${props.custom.color}`,
+                  }}
+                  className="step-icon-done-kick "
+                ></div>
+              </span>
+            </div>
+          ) : props.custom.current === i + 1 ? (
+            <div className="icon-holder">
+              <div
+                className="step-icon"
+                style={{ backgroundColor: `${props.custom.color}` }}
+              >
+                {i + 1}
               </div>
-            ) : i + 1 < modifiedTitleArray.length &&
-              i + 1 >= props.custom.current ? (
-              <div className="progress-holder">
-                <div className="step-progress-notreached"></div>
-              </div>
-            ) : null}
-          </div>
-        ))}
-      </div>
+            </div>
+          ) : (
+            <div className="icon-holder">
+              <div className="step-icon-notreached">{i + 1}</div>
+            </div>
+          )}
+          {i <= props.custom.current ? (
+            <div className="step-details">
+              <h5>{step}</h5>
+              <p>{modifiedDescriptionArray[i]}</p>
+            </div>
+          ) : (
+            <div className="step-details-notreached">
+              <h5>{step}</h5>
+              <p>{modifiedDescriptionArray[i]}</p>
+            </div>
+          )}
+
+          {i + 1 < modifiedTitleArray.length && i + 1 < props.custom.current ? (
+            <div className="progress-holder">
+              <div
+                className="step-progress"
+                style={{ backgroundColor: `${props.custom.color}` }}
+              ></div>
+            </div>
+          ) : i + 1 < modifiedTitleArray.length &&
+            i + 1 >= props.custom.current ? (
+            <div className="progress-holder">
+              <div className="step-progress-notreached"></div>
+            </div>
+          ) : null}
+        </div>
+      ))}
     </div>
   );
 });
