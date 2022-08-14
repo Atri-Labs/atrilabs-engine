@@ -16,6 +16,8 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import Color from "color";
+import { getColorAt } from "../utils/colors";
 
 export const BarChart = forwardRef<
   HTMLDivElement,
@@ -106,15 +108,20 @@ export const BarChart = forwardRef<
         {props.custom.yAxis?.show ? <YAxis /> : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
-        {sortedKeys.map((key) => {
+        {sortedKeys.map((key, index) => {
+          const fillColor =
+            props.custom.options?.[key]?.fill || getColorAt(index);
+          const strokeColor =
+            props.custom.options?.[key]?.stroke ||
+            Color(fillColor).darken(0.3).hex();
           return (
             <Bar
               key={key}
               dataKey={key}
               stackId={props.custom.stacked ? "1" : undefined}
               type={props.custom.options?.[key]?.type}
-              stroke={props.custom.options?.[key]?.stroke}
-              fill={props.custom.options?.[key]?.fill}
+              stroke={strokeColor}
+              fill={fillColor}
               isAnimationActive={props.custom.options?.[key]?.animate}
             />
           );
