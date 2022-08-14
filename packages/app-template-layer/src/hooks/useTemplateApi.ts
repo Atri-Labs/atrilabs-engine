@@ -47,5 +47,16 @@ export const useTemplateApi = () => {
     [templatesData]
   );
 
-  return { templatesData, callCreateTeamplateApi };
+  const callDeleteTemplateApi = useCallback(
+    (name: string) => {
+      if (templatesData) {
+        api.deleteTemplate(templatesData.user.dir, name, () => {
+          fetchTemplatesData();
+        });
+      }
+    },
+    [templatesData]
+  );
+
+  return { templatesData, callCreateTeamplateApi, callDeleteTemplateApi };
 };

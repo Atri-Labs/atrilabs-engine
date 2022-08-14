@@ -18,6 +18,10 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { useTemplateApi } from "./hooks/useTemplateApi";
 import { startDrag } from "@atrilabs/canvas-runtime";
 import { DragTemplateComp } from "./components/DragTemplateComp";
+import { ReactComponent as Trash } from "./assets/trash.svg";
+import "./styles.css";
+import { ConfirmDelete } from "./components/ConfirmDelete";
+import { formatTemplateName } from "./utils";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -80,7 +84,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export default function () {
-  const { templatesData, callCreateTeamplateApi } = useTemplateApi();
+  const { templatesData, callCreateTeamplateApi, callDeleteTemplateApi } =
+    useTemplateApi();
 
   const [showDropPanel, setShowDropContianer] = useState<boolean>(false);
   const openDropContainer = useCallback(() => {
@@ -119,6 +124,18 @@ export default function () {
     setShowCreateTemplatePopup(false);
   }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
 
+  const [showDeleteDialog, setShowDeleteDialog] = useState<{
+    templateName: string;
+  } | null>(null);
+  const onDeleteConfirm = useCallback(() => {
+    if (showDeleteDialog?.templateName)
+      callDeleteTemplateApi(showDeleteDialog.templateName);
+    setShowDeleteDialog(null);
+  }, [showDeleteDialog, callDeleteTemplateApi]);
+  const onDeleteCancel = useCallback(() => {
+    setShowDeleteDialog(null);
+  }, []);
+
   return (
     <>
       <Menu name="PageMenu" order={1}>
@@ -153,7 +170,7 @@ export default function () {
                   User Templates
                 </div>
                 {templatesData?.user.names.map((name) => {
-                  const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  const formatName = formatTemplateName(name);
                   const onMouseDownCb = () => {
                     startDrag(
                       { comp: DragTemplateComp, props: { text: formatName } },
@@ -169,16 +186,32 @@ export default function () {
                   };
                   return (
                     <div
+                      className="bin-icon-container"
                       key={name}
                       style={{
-                        padding: "0.5rem",
                         borderBottom: `1px solid ${gray900}`,
                         ...h4Heading,
                         color: gray300,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "0 0.5rem",
                       }}
-                      onMouseDown={onMouseDownCb}
                     >
-                      {formatName}
+                      <div
+                        onMouseDown={onMouseDownCb}
+                        style={{ flexGrow: 1, padding: "0.5rem 0" }}
+                      >
+                        {formatName}
+                      </div>
+                      <div
+                        className="bin-icon"
+                        onClick={() => {
+                          setShowDeleteDialog({ templateName: name });
+                        }}
+                      >
+                        <Trash />
+                      </div>
                     </div>
                   );
                 })}
@@ -195,7 +228,7 @@ export default function () {
                   Default Templates
                 </div>
                 {templatesData?.default.names.map((name) => {
-                  const formatName = name.split(/(\/|\\|\\\\)/).slice(-1)[0];
+                  const formatName = formatTemplateName(name);
                   const onMouseDownCb = () => {
                     startDrag(
                       { comp: DragTemplateComp, props: { text: formatName } },
@@ -221,6 +254,9 @@ export default function () {
                       onMouseDown={onMouseDownCb}
                     >
                       {formatName}
+                      <div>
+                        <Trash />
+                      </div>
                     </div>
                   );
                 })}
@@ -282,6 +318,17 @@ export default function () {
             ) : null}
           </div>
         </Menu>
+      ) : null}
+
+      {showDeleteDialog ? (
+        <Container name="OverlayContainer" onClose={onDeleteCancel}>
+          <ConfirmDelete
+            templateName={showDeleteDialog.templateName}
+            onCancel={onDeleteCancel}
+            onDelete={onDeleteConfirm}
+            onCross={onDeleteCancel}
+          />
+        </Container>
       ) : null}
     </>
   );
