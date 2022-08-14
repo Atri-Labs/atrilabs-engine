@@ -16,8 +16,8 @@ export const Slider = forwardRef<
     styles: React.CSSProperties;
     custom: {
       value: number;
-      startValue: number;
-      endValue: number;
+      maxValue: number;
+      minValue: number;
     };
     onChange: (value: number) => void;
   }
@@ -28,7 +28,15 @@ export const Slider = forwardRef<
       const onMouseMove = (e: MouseEvent) => {
         if (startPostion) {
           const delta = e.pageX - startPostion.x;
-          props.onChange(props.custom.value + delta);
+          const offset = (props.custom.maxValue - props.custom.minValue) / 400;
+          let change = delta * offset;
+          if (change + props.custom.value < 0) {
+            change = -props.custom.value;
+          }
+          if (change + props.custom.value > props.custom.maxValue) {
+            change = props.custom.maxValue - props.custom.value;
+          }
+          props.onChange(props.custom.value + change);
         }
       };
       const onMouseUp = () => {
@@ -72,8 +80,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    startValue: "number",
-    endValue: "number",
+    minValue: "number",
+    maxValue: "number",
     value: "number",
   },
 };
@@ -88,17 +96,18 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          width: "400px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          startValue: 0,
-          endValue: 100,
+          minValue: 0,
+          maxValue: 100,
           value: 50,
-          width: 400,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
