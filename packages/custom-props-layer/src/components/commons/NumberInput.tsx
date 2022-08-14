@@ -1,13 +1,14 @@
 import { gray900 } from "@atrilabs/design-system";
 
-export type TextInputProps = {
+export type NumberInputProps = {
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-export const TextInput: React.FC<TextInputProps> = (props) => {
+export const NumberInput: React.FC<NumberInputProps> = (props) => {
   return (
     <input
+      type={"number"}
       value={props.value}
       onChange={props.onChange}
       style={{
