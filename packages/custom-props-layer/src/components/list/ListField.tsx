@@ -5,7 +5,7 @@ import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
 export const ListField: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || [];
   }, [props]);
   const insertValueCb = useCallback(() => {
     props.patchCb({

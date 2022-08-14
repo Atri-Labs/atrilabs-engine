@@ -2,7 +2,7 @@ import { ComponentProps } from "../../types";
 import { useMemo, useCallback } from "react";
 export const Text: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || "";
   }, [props]);
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -8,7 +8,7 @@ import { ReactComponent as ThreeDots } from "../../assets/more-vertical.svg";
 
 export const BooleanList: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    return props.customProps[props.propName];
+    return props.customProps[props.propName] || [];
   }, [props]);
   const insertValueCb = useCallback(() => {
     props.patchCb({
