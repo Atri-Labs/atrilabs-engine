@@ -56,11 +56,11 @@ export const Slider = forwardRef<
       <div className="slider-rail"></div>
       <div
         className="slider-progress"
-        style={{ width: props.custom.value + "px" }}
+        style={{ width: props.custom.value + "%" }}
       ></div>
       <div
         className="slider-thumb"
-        style={{ left: props.custom.value + "px" }}
+        style={{ left: props.custom.value + "%" }}
         onMouseDown={onMouseDown}
       ></div>
     </div>
