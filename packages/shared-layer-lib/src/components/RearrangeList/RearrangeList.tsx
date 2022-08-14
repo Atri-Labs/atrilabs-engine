@@ -73,7 +73,7 @@ export const RearrangeList: React.FC<RearrangeListProps> = (props) => {
             >
               {props.iconItem}
             </div>
-            <div>{item.node}</div>
+            {item.node}
           </div>
         );
       })}
