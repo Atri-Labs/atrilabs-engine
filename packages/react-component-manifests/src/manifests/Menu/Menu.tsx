@@ -12,6 +12,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { ReactComponent as MenuIcon } from "./menu.svg";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Menu = forwardRef<
   HTMLDivElement,
@@ -135,10 +136,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Menu" } },
+  panel: { comp: CommonIcon, props: { name: "Menu", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Menu", containerStyle: { padding: "1rem" } },
+    props: { name: "Menu", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

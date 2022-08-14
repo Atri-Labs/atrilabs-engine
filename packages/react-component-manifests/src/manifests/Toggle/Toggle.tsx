@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -8,6 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Toggle.css";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export type ToggleComponentTypes = {
   isOn: boolean;
@@ -128,10 +129,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Toggle" } },
+  panel: { comp: CommonIcon, props: { name: "Toggle", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Toggle", containerStyle: { padding: "1rem" } },
+    props: { name: "Toggle", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

@@ -7,6 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const TextBox = forwardRef<
   HTMLDivElement,
@@ -79,10 +80,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "TextBox" } },
+  panel: { comp: CommonIcon, props: { name: "TextBox", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "TextBox", containerStyle: { padding: "1rem" } },
+    props: { name: "TextBox", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

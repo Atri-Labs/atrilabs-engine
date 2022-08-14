@@ -8,6 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { Link as RouterLink } from "react-router-dom";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Link = forwardRef<
   HTMLDivElement,
@@ -106,10 +107,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Link" } },
+  panel: { comp: CommonIcon, props: { name: "Link", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Link", containerStyle: { padding: "1rem" } },
+    props: { name: "Link", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

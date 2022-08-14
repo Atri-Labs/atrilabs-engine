@@ -9,6 +9,7 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Countdown.css";
 import { useCountdown } from "./useCountdown";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export type DateTimeDisplayComponentTypes = {
   value: number;
@@ -310,10 +311,14 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Countdown" } },
+  panel: { comp: CommonIcon, props: { name: "Countdown", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Countdown", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Countdown",
+      containerStyle: { padding: "1rem" },
+      svg: Icon,
+    },
   },
   renderSchema: compManifest,
 };

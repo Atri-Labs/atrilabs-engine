@@ -8,6 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Slider.css";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Slider = forwardRef<
   HTMLDivElement,
@@ -108,10 +109,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Slider" } },
+  panel: { comp: CommonIcon, props: { name: "Slider", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Slider", containerStyle: { padding: "1rem" } },
+    props: { name: "Slider", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

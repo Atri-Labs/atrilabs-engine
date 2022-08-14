@@ -15,6 +15,7 @@ import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { gray500 } from "@atrilabs/design-system";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const DevFlex = forwardRef<
   HTMLDivElement,
@@ -107,10 +108,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Flex" } },
+  panel: { comp: CommonIcon, props: { name: "Flex", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Flex", containerStyle: { padding: "1rem" } },
+    props: { name: "Flex", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };
