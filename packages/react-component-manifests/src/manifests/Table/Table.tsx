@@ -8,7 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
 
 export const DataTable = forwardRef<
   HTMLDivElement,
@@ -17,20 +17,37 @@ export const DataTable = forwardRef<
     custom: {
       rows: { [field: string]: string | number | null }[];
       cols: GridColDef[];
+      checkboxSelection?: boolean;
+      rowHeight?: number;
+      numRows?: number;
+      autoHeight?: boolean;
+      selection?: GridRowId[];
     };
+    onSelectionChange?: (selection: GridRowId[]) => void;
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={props.styles}>
+    <div
+      ref={ref}
+      style={{
+        ...props.styles,
+        height: props.custom.autoHeight
+          ? undefined
+          : props.styles.height || "400px",
+      }}
+    >
       <DataGrid
+        autoHeight={props.custom.autoHeight}
+        rowHeight={props.custom.rowHeight || 20}
         rows={props.custom.rows}
         columns={props.custom.cols}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-        onSelectionModelChange={(model, details) => {
-          console.log("selected cell", model, details);
+        pageSize={props.custom.numRows || 10}
+        rowsPerPageOptions={[props.custom.numRows || 10]}
+        checkboxSelection={props.custom.checkboxSelection}
+        onSelectionModelChange={(model, _details) => {
+          props.onSelectionChange?.(model);
         }}
+        selectionModel={props.custom.selection || []}
       />
     </div>
   );
@@ -48,21 +65,30 @@ export const DevDataTable: typeof DataTable = forwardRef((props, ref) => {
       { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
       { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
       { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+      { id: 10, lastName: "Snow", firstName: "Jon", age: 35 },
+      { id: 11, lastName: "Lannister", firstName: "Cersei", age: 42 },
+      { id: 12, lastName: "Lannister", firstName: "Jaime", age: 45 },
+      { id: 13, lastName: "Stark", firstName: "Arya", age: 16 },
+      { id: 14, lastName: "Targaryen", firstName: "Daenerys", age: null },
+      { id: 15, lastName: "Melisandre", firstName: null, age: 150 },
+      { id: 16, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+      { id: 17, lastName: "Frances", firstName: "Rossini", age: 36 },
+      { id: 18, lastName: "Roxie", firstName: "Harvey", age: 65 },
     ];
   }, []);
-  props.custom.rows = rows;
-  props.custom.cols = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "firstName", headerName: "First name", width: 130 },
-    { field: "lastName", headerName: "Last name", width: 130 },
+  const cols = [
+    { field: "id", headerName: "ID" },
+    { field: "firstName", headerName: "First name" },
+    { field: "lastName", headerName: "Last name" },
     {
       field: "age",
       headerName: "Age",
       type: "number",
-      width: 90,
     },
   ];
-  return <DataTable {...props} ref={ref} />;
+  return (
+    <DataTable {...props} ref={ref} custom={{ ...props.custom, rows, cols }} />
+  );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -80,6 +106,11 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     rows: "array",
     cols: "array",
+    checkboxSelection: "boolean",
+    autoHeight: "boolean",
+    numRows: "number",
+    rowHeight: "number",
+    selection: "array",
   },
 };
 
@@ -94,9 +125,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          height: "400px",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -110,7 +139,11 @@ const compManifest: ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: false },
       },
     },
-    attachCallbacks: {},
+    attachCallbacks: {
+      onSelectionChange: [
+        { type: "controlled", selector: ["custom", "selection"] },
+      ],
+    },
     defaultCallbackHandlers: {},
   },
 };

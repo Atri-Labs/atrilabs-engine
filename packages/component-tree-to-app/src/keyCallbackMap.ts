@@ -90,4 +90,10 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "selectedValue"] }],
     },
   },
+  Table: {
+    onSelectionChange: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "selection"] }],
+    },
+  },
 };

@@ -315,4 +315,16 @@ export const keyPropMap: any = {
       disabled: false,
     },
   },
+  Table: {
+    styles: { ...FlexChildStyle },
+    custom: {
+      rows: [],
+      cols: [],
+      checkboxSelection: false,
+      autoHeight: false,
+      numRows: 10,
+      rowHeight: 20,
+      selection: [],
+    },
+  },
 };
