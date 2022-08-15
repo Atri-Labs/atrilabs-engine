@@ -86,7 +86,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           value: "",
-          placeHolder: "Placeholder Text",
+          placeholder: "Placeholder Text",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

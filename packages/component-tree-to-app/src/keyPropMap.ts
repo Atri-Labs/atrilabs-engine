@@ -128,7 +128,7 @@ export const keyPropMap: any = {
   },
   Input: {
     styles: { ...FlexChildStyle },
-    custom: { value: "" },
+    custom: { value: "", placeholder: "" },
   },
   Image: {
     styles: { ...FlexChildStyle },
