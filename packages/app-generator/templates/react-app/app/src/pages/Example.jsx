@@ -10,7 +10,7 @@ export default function Example() {
   const navigate = useNavigate();
   useEffect(() => {
     const unsub = subscribeInternalNavigation((url) => {
-      navigate(url, { replace: true });
+      navigate(url);
     });
     return unsub;
   }, [navigate]);
