@@ -25,7 +25,12 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "value"] }],
     },
   },
-  Image: {},
+  Image: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
   Upload: {
     onChange: {
       handlers: [],
