@@ -115,7 +115,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             style={{ width: "55px", marginRight: "10px" }}
           >
             <BorderInput
-              styleItem="color"
+              styleItem="backgroundColor"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
