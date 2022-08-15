@@ -256,6 +256,8 @@ export function callbackFactory(
           if (jobs["navigate"]) handleNavigation(jobs["navigate"]);
         }
       );
+    } else if (jobs["navigate"]) {
+      handleNavigation(jobs["navigate"]);
     }
   };
 
