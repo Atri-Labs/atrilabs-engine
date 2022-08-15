@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-design-forest",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -28,6 +28,6 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/forest": "^0.0.41"
+    "@atrilabs/forest": "^0.0.42"
   }
 }
