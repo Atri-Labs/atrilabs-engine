@@ -11,7 +11,7 @@ import {
   CallbackHandler,
   NavigationCallbackHandler,
 } from "@atrilabs/react-component-manifest-schema/lib/types";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { useFileUploadAliases } from "./hooks/useFileUploadAliases";
 import { usePageRoutes } from "./hooks/usePageRoutes";
@@ -168,6 +168,10 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     [props]
   );
 
+  useEffect(() => {
+    console.log(surelyReutrnArray);
+  }, []);
+
   return (
     <div
       style={{
@@ -192,7 +196,14 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 padding: "0.5rem",
               }}
             >
-              <div style={{ ...h5Heading, fontSize: "13px", color: gray200 }}>
+              <div
+                style={{
+                  ...h5Heading,
+                  fontSize: "13px",
+                  color: gray200,
+                  userSelect: "none",
+                }}
+              >
                 {callbackName}
               </div>
               <div
@@ -212,155 +223,184 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 flexDirection: "column",
               }}
             >
-              {surelyReutrnArray(props.callbacks[callbackName]).map(
-                (handler, index) => {
-                  const selectedActionText = callbackHandlerToText(handler);
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                        flexDirection: "column",
-                        borderBottomWidth: "1px",
-                        borderBottomStyle: "solid",
-                        borderBottomColor: "#1F2937",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: gray300,
-                        padding: "0.5rem",
-                      }}
-                    >
-                      <div style={{ display: "flex", gap: "1rem" }}>
+              {props.callbacks[callbackName].length === 0 ? (
+                <div
+                  style={{
+                    ...h5Heading,
+                    fontSize: "13px",
+                    color: gray200,
+                    paddingTop: "2.5rem",
+                    userSelect: "none",
+                  }}
+                >
+                  No actions applied
+                </div>
+              ) : (
+                <div>
+                  {surelyReutrnArray(props.callbacks[callbackName]).map(
+                    (handler, index) => {
+                      const selectedActionText = callbackHandlerToText(handler);
+                      return (
                         <div
-                          style={{
-                            ...h4Heading,
-                            fontSize: "13px",
-                            color: gray200,
-                            backgroundColor: gray700,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: "0.5rem",
-                            userSelect: "none",
-                          }}
-                        >
-                          Action
-                        </div>
-                        <select
-                          style={{
-                            width: "130px",
-                            height: "25px",
-                            color: gray200,
-                            borderRadius: "2px",
-                            backgroundColor: gray800,
-                            border: "none",
-                            outline: "none",
-                          }}
-                          onChange={(e) => {
-                            onChangeAction(
-                              callbackName,
-                              index,
-                              parseInt(e.target.value)
-                            );
-                          }}
-                        >
-                          <option value={0}>{selectedActionText}</option>
-                          {options
-                            .filter(
-                              (option) =>
-                                callbackHandlerToText(option.action) !==
-                                selectedActionText
-                            )
-                            .map((option) => {
-                              return (
-                                <option key={option.value} value={option.value}>
-                                  {callbackHandlerToText(option.action)}
-                                </option>
-                              );
-                            })}
-                        </select>
-                        <div
-                          style={{ display: "flex", alignItems: "center" }}
-                          onClick={() => {
-                            onRemoveAction(callbackName, index);
-                          }}
-                        >
-                          <MinusIcon />
-                        </div>
-                      </div>
-                      {handler["navigate"]?.type === "external" ? (
-                        <div
+                          key={index}
                           style={{
                             display: "flex",
                             gap: "1rem",
+                            flexDirection: "column",
+                            borderBottomWidth: "1px",
+                            borderBottomStyle: "solid",
+                            borderBottomColor: "#1F2937",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: gray300,
+                            padding: "0.5rem",
                           }}
                         >
-                          <div
-                            style={{
-                              ...h4Heading,
-                              fontSize: "13px",
-                              color: gray200,
-                              backgroundColor: gray700,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              padding: "0.5rem",
-                              userSelect: "none",
-                            }}
-                          >
-                            Link
+                          <div style={{ display: "flex", gap: "1rem" }}>
+                            <div
+                              style={{
+                                ...h4Heading,
+                                fontSize: "13px",
+                                color: gray200,
+                                backgroundColor: gray700,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: "0.5rem",
+                                userSelect: "none",
+                              }}
+                            >
+                              Action
+                            </div>
+                            <select
+                              style={{
+                                width: "130px",
+                                height: "25px",
+                                color: gray200,
+                                borderRadius: "2px",
+                                backgroundColor: gray800,
+                                border: "none",
+                                outline: "none",
+                              }}
+                              onChange={(e) => {
+                                onChangeAction(
+                                  callbackName,
+                                  index,
+                                  parseInt(e.target.value)
+                                );
+                              }}
+                            >
+                              <option value={0}>{selectedActionText}</option>
+                              {options
+                                .filter(
+                                  (option) =>
+                                    callbackHandlerToText(option.action) !==
+                                    selectedActionText
+                                )
+                                .map((option) => {
+                                  return (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {callbackHandlerToText(option.action)}
+                                    </option>
+                                  );
+                                })}
+                            </select>
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                              onClick={() => {
+                                onRemoveAction(callbackName, index);
+                              }}
+                            >
+                              <MinusIcon />
+                            </div>
                           </div>
-                          <input
-                            style={{
-                              width: "90px",
-                              height: "25px",
-                              color: gray200,
-                              borderRadius: "2px",
-                              backgroundColor: gray800,
-                              border: "none",
-                              outline: "none",
-                            }}
-                            value={handler.navigate["url"] || ""}
-                            onChange={(e) => {
-                              onExternalNavigationChange(callbackName, index, {
-                                navigate: {
-                                  type: "external",
-                                  url: e.target.value,
-                                  target: handler.navigate["target"],
-                                },
-                              });
-                            }}
-                          />
-                          <select
-                            style={{
-                              width: "54px",
-                              height: "27px",
-                              color: gray200,
-                              borderRadius: "2px",
-                              backgroundColor: gray800,
-                              border: "none",
-                              outline: "none",
-                            }}
-                            value={handler.navigate["target"]}
-                            onChange={(e) => {
-                              onExternalNavigationChange(callbackName, index, {
-                                navigate: {
-                                  type: "external",
-                                  url: handler.navigate["url"],
-                                  target: e.target.value as "_blank" | "_self",
-                                },
-                              });
-                            }}
-                          >
-                            <option value={"_blank"}>blank</option>
-                            <option value={"_self"}>self</option>
-                          </select>
+                          {handler["navigate"]?.type === "external" ? (
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1rem",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  ...h4Heading,
+                                  fontSize: "13px",
+                                  color: gray200,
+                                  backgroundColor: gray700,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  padding: "0.5rem",
+                                  userSelect: "none",
+                                }}
+                              >
+                                Link
+                              </div>
+                              <input
+                                style={{
+                                  width: "90px",
+                                  height: "25px",
+                                  color: gray200,
+                                  borderRadius: "2px",
+                                  backgroundColor: gray800,
+                                  border: "none",
+                                  outline: "none",
+                                }}
+                                value={handler.navigate["url"] || ""}
+                                onChange={(e) => {
+                                  onExternalNavigationChange(
+                                    callbackName,
+                                    index,
+                                    {
+                                      navigate: {
+                                        type: "external",
+                                        url: e.target.value,
+                                        target: handler.navigate["target"],
+                                      },
+                                    }
+                                  );
+                                }}
+                              />
+                              <select
+                                style={{
+                                  width: "54px",
+                                  height: "27px",
+                                  color: gray200,
+                                  borderRadius: "2px",
+                                  backgroundColor: gray800,
+                                  border: "none",
+                                  outline: "none",
+                                }}
+                                value={handler.navigate["target"]}
+                                onChange={(e) => {
+                                  onExternalNavigationChange(
+                                    callbackName,
+                                    index,
+                                    {
+                                      navigate: {
+                                        type: "external",
+                                        url: handler.navigate["url"],
+                                        target: e.target.value as
+                                          | "_blank"
+                                          | "_self",
+                                      },
+                                    }
+                                  );
+                                }}
+                              >
+                                <option value={"_blank"}>blank</option>
+                                <option value={"_self"}>self</option>
+                              </select>
+                            </div>
+                          ) : null}
                         </div>
-                      ) : null}
-                    </div>
-                  );
-                }
+                      );
+                    }
+                  )}
+                </div>
               )}
             </div>
           </div>
