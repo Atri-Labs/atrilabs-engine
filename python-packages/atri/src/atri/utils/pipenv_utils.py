@@ -10,7 +10,7 @@ def pipenv_where():
         )
     child_process.wait()
     if child_process.returncode == 0:
-        out = child_process.stdout.read().decode()[:-1]
+        out = child_process.stdout.read().decode().strip()
         printd("Pipenv project root -", out)
         return out
     else:
