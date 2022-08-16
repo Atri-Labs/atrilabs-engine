@@ -182,10 +182,13 @@ export const useCreateTemplate = () => {
           id: currNode.id,
           type: `CREATE$$${ComponentTreeId}`,
           meta: currNode.meta,
+          // we are going to override
           state: currNode.state,
         };
         // change parent of event if it's the top component of template
         if (event.id === selectedId) {
+          // JSONify to prevent overriding the original node
+          event.state = JSON.parse(JSON.stringify(event.state));
           event.state.parent.id = "templateRoot";
           event.state.parent.index = 0;
         }

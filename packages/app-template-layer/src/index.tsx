@@ -254,9 +254,6 @@ export default function () {
                       onMouseDown={onMouseDownCb}
                     >
                       {formatName}
-                      <div>
-                        <Trash />
-                      </div>
                     </div>
                   );
                 })}
