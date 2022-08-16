@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-generator",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -31,9 +31,9 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.43",
-    "@atrilabs/forest": "^0.0.43",
-    "@atrilabs/scripts": "^0.0.43",
+    "@atrilabs/core": "^0.0.44",
+    "@atrilabs/forest": "^0.0.44",
+    "@atrilabs/scripts": "^0.0.44",
     "lodash": "^4.17.21",
     "typescript": "^4.7.3"
   }
