@@ -35,7 +35,7 @@ export const DeployCompletedInfo = () => {
 export const MayTakeTimeInfo = () => {
   return (
     <div>
-      If you are publish your app for the first time, it may take several
+      If you are publishing your app for the first time, it may take several
       minutes to complete build.
     </div>
   );
