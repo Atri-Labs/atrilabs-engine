@@ -88,7 +88,7 @@ def merge_files_with_atri_obj(atri: Any, filesMetadata: List[dict], files: Union
                 curr_obj = getattr(curr_obj, curr_sel)
         curr_start = curr_start + count
 
-def compute_new_state_with_files(route: RouteDetails, incoming_state, event, filesMetadata: List[dict], files: Union[List[UploadFile], None]):
+def compute_new_state_with_files(route: RouteDetails, incoming_state, event, filesMetadata: List[dict], files: Union[List[UploadFile], None], req: Request, res: Response):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
@@ -99,7 +99,7 @@ def compute_new_state_with_files(route: RouteDetails, incoming_state, event, fil
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_event = getattr(main_mod, "handle_event")
-    handle_event(atri_obj)
+    handle_event(atri_obj, req, res)
     delattr(atri_obj, "event_data")
     return atri_obj
 
@@ -149,18 +149,20 @@ def serve(obj, port, host, prod):
 
     @app.post("/event-in-form-handler")
     async def handle_event_with_form(
+        req: Request,
+        res: Response,
         files: Union[List[UploadFile], None] = None,
         alias: str = Form(),
         pageRoute: str = Form(),
         callbackName: str = Form(),
         eventData: str = Form(),
         pageState: str = Form(),
-        filesMetadata: str = Form()
+        filesMetadata: str = Form(),
         ):
         filesMetadataArr = json.loads(filesMetadata)
         event = {"event_data": json.loads(eventData), "callback_name": callbackName, "alias": alias}
         routeDetails = getRouteDetails(pageRoute, obj["dir"])
-        return compute_new_state_with_files(routeDetails, json.loads(pageState), event, filesMetadataArr, files)
+        return compute_new_state_with_files(routeDetails, json.loads(pageState), event, filesMetadataArr, files, req, res)
 
     uvicorn.run(app, host=host, port=int(port))
 
