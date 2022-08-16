@@ -69,7 +69,6 @@ function sendEventInFormDataFn(
   // information required to access file from useIoStore
   filesMetadata: { alias: string; selector: string[] }[]
 ) {
-  console.log("sendEventInFormData:", eventData);
   const pageState = useStore.getState()[pageName];
   const formdata = new FormData();
   formdata.set("alias", alias);
@@ -123,9 +122,8 @@ function sendEventInFormDataFn(
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log("got res", res);
-      if (res && res["pageState"]) {
-        updateStoreStateFromController(pageName, res["pageState"]);
+      if (res) {
+        updateStoreStateFromController(pageName, res);
       }
     });
 }
