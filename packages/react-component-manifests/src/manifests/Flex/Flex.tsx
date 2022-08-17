@@ -28,11 +28,11 @@ export const DevFlex = forwardRef<
       <div
         ref={ref}
         style={{
-          ...props.styles,
           minHeight: "100px",
-          minWidth: "100%",
+          minWidth: "100px",
           border: `2px dashed ${gray500}`,
           boxSizing: "border-box",
+          ...props.styles,
         }}
       ></div>
     );
