@@ -135,7 +135,7 @@ export const keyPropMap: any = {
     custom: { alt: "No preview available", src: "" },
   },
   Upload: {
-    styles: { ...FlexChildStyle },
+    styles: { ...FlexStyle },
     custom: {
       multiple: false,
       showFilename: true,
