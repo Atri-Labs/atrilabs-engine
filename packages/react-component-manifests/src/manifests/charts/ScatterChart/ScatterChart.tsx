@@ -184,7 +184,9 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: false,
   sizeOptions: true,
   borderOptions: false,
-  backgroundOptions: false,
+  outlineOptions: true,
+  backgroundOptions: true,
+  miscellaneousOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {

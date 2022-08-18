@@ -6,7 +6,9 @@ export type CSSTreeOptions = {
   spacingOptions: boolean;
   sizeOptions: boolean;
   borderOptions: boolean;
+  outlineOptions: boolean;
   backgroundOptions: boolean;
+  miscellaneousOptions: boolean;
 };
 
 export default function () {

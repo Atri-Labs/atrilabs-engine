@@ -42,7 +42,9 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
+  outlineOptions: true,
   backgroundOptions: true,
+  miscellaneousOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
