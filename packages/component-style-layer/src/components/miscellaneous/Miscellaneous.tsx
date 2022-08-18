@@ -30,7 +30,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "baseline",
   },
 };
-const cursorValues = ["default", "progress", "pointer", "crosshair"];
+const cursorValues = [
+  "default",
+  "progress",
+  "pointer",
+  "crosshair",
+  "auto",
+  "help",
+  "move",
+  "not-allowed",
+  "zoom-in",
+  "zoom-out",
+];
 
 export const Miscellaneous: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
@@ -60,6 +71,12 @@ export const Miscellaneous: React.FC<CssProprtyComponentType> = (props) => {
           <RA />
           <CA />
           <JA />
+          <LA />
+          <RA />
+          <CA />
+          <JA />
+          <LA />
+          <RA />
         </PropertyRender>
       </div>
     </div>
