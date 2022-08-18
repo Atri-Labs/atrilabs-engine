@@ -9,7 +9,7 @@ import {
 import { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { BorderInput } from "../commons/BorderInput";
+import { Input } from "../commons/Input";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -114,11 +114,12 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             }}
             style={{ width: "55px", marginRight: "10px" }}
           >
-            <BorderInput
+            <Input
               styleItem="backgroundColor"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
+              parseToInt={false}
             />
           </div>
         </div>

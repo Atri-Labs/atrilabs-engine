@@ -14,8 +14,8 @@ import { ReactComponent as JA } from "../../assets/typo/justify-align.svg";
 import { ReactComponent as MH } from "../../assets/typo/more-horizontal.svg";
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
-import { SizeInput } from "../commons/SizeInput";
-import { BorderInput } from "../commons/BorderInput";
+import { InputWithPreprocessor } from "../commons/InputWithPreprocessor";
+import { Input } from "../commons/Input";
 import fonts from "../commons/fonts.json";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
@@ -230,15 +230,16 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
             }}
             style={{ width: "55px", marginRight: "10px" }}
           >
-            <BorderInput
+            <Input
               styleItem="color"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
+              parseToInt={false}
             />
           </div>
           <div style={{ width: "45px", marginRight: "10px" }}>
-            <SizeInput
+            <InputWithPreprocessor
               styleItem="opacity"
               styles={props.styles}
               patchCb={props.patchCb}

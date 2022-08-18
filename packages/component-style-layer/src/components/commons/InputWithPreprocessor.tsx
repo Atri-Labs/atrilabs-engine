@@ -40,7 +40,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const SizeInput: React.FC<SizeInputProps> = (props) => {
+export const InputWithPreprocessor: React.FC<SizeInputProps> = (props) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties

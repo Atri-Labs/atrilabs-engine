@@ -2,11 +2,12 @@ import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React from "react";
 import { CssProprtyComponentType } from "../../types";
 
-export type BorderInputProps = {
+export type InputProps = {
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   defaultValue: string;
+  parseToInt: boolean;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -23,12 +24,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const BorderInput: React.FC<BorderInputProps> = (props) => {
+export const Input: React.FC<InputProps> = (props) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    if (props.styleItem !== "borderColor" && props.styleItem !== "color") {
+    if (props.parseToInt) {
       props.patchCb({
         property: {
           styles: {
@@ -50,9 +51,11 @@ export const BorderInput: React.FC<BorderInputProps> = (props) => {
     <div>
       <input
         type="text"
-        value={props.styles[props.styleItem] || props.defaultValue}
+        value={props.styles[props.styleItem] || ""}
+        placeholder={props.defaultValue}
         onChange={(e) => handleChange(e, props.styleItem)}
         style={styles.inputBox}
+        pattern={props.parseToInt ? "[0-9]+" : undefined}
       />
     </div>
   );

@@ -21,7 +21,7 @@ import { ReactComponent as CL } from "../../assets/position/clear/left-icon.svg"
 import { ReactComponent as CR } from "../../assets/position/clear/right-icon.svg";
 import { ReactComponent as CN } from "../../assets/position/clear/none-icon.svg";
 import { ReactComponent as CB } from "../../assets/position/clear/both-icon.svg";
-import { BorderInput } from "../commons/BorderInput";
+import { Input } from "../commons/Input";
 import PositionTrapezoid from "./PositionTrapezoid";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 
@@ -414,11 +414,12 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.zindex}>
             <div style={styles.optionName}>z-index</div>
             <div style={{ width: "55px", marginRight: "10px" }}>
-              <BorderInput
+              <Input
                 styleItem="zIndex"
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
+                parseToInt={true}
               />
             </div>
           </div>
