@@ -223,7 +223,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 flexDirection: "column",
               }}
             >
-              {props.callbacks[callbackName].length === 0 ? (
+              {surelyReutrnArray(props.callbacks[callbackName]).length === 0 ? (
                 <div
                   style={{
                     ...h5Heading,
