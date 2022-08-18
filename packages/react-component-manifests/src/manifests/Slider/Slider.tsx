@@ -144,9 +144,17 @@ export const Slider = forwardRef<
     const thumbRadius = thumbRef.current?.getBoundingClientRect().width || 0;
     const scale =
       valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
-    console.log(thumbRadius, scale);
+    console.log(
+      thumbRadius,
+      scale,
+      valueRange,
+      trackRef.current?.getBoundingClientRect().width || 1
+    );
     // stop initial back display of image
-    if (value - minValue <= thumbRadius * scale) return `0px`;
+    if (value - minValue <= thumbRadius * scale) {
+      console.log("setting 0px", minValue, value);
+      return `0px`;
+    }
     return `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`;
   }, [value, minValue, valueRange, radius]);
 
@@ -156,11 +164,11 @@ export const Slider = forwardRef<
       const scale =
         valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
       const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
-      const finalValue = (e.pageX - lowerLimit) * scale;
+      const finalValue = minValue + (e.pageX - lowerLimit) * scale;
       console.log(finalValue);
       props.onChange(finalValue);
     },
-    [valueRange, props]
+    [valueRange, props, minValue]
   );
 
   return (
