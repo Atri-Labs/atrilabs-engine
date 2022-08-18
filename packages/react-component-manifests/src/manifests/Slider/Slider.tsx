@@ -32,6 +32,7 @@ export const Slider = forwardRef<
   }
 >((props, ref) => {
   const trackRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
 
   const maxValue = useMemo(() => {
     if (props.custom.maxValue === undefined) {
@@ -104,28 +105,62 @@ export const Slider = forwardRef<
       if (trackRef.current) {
         const scale =
           valueRange / trackRef.current.getBoundingClientRect().width;
+        const upperLimit =
+          trackRef.current.getBoundingClientRect().left +
+          trackRef.current.getBoundingClientRect().width;
+        const lowerLimit = trackRef.current.getBoundingClientRect().left;
         const initialValue = value;
         const startPostion = { x: e.pageX, y: e.pageY };
         const onMouseMove = (e: MouseEvent) => {
           if (startPostion) {
-            const delta = e.pageX - startPostion.x;
-            const finalValue = initialValue + delta * scale;
-            if (finalValue <= maxValue && finalValue >= minValue) {
-              props.onChange(finalValue);
+            if (e.pageX >= upperLimit) {
+              props.onChange(maxValue);
+            } else if (e.pageX <= lowerLimit) {
+              props.onChange(minValue);
+            } else {
+              const delta = e.pageX - startPostion.x;
+              const finalValue = initialValue + delta * scale;
+              if (finalValue <= maxValue && finalValue >= minValue) {
+                props.onChange(finalValue);
+              }
             }
           }
         };
         const onMouseUp = () => {
+          console.log("mouseup called");
           // unsubscribe
-          document.removeEventListener("mousemove", onMouseMove);
-          document.removeEventListener("mouseup", onMouseUp);
+          window.removeEventListener("mousemove", onMouseMove);
+          window.removeEventListener("mouseup", onMouseUp);
         };
         // subscribe
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
       }
     },
     [value, props, maxValue, minValue, valueRange]
+  );
+
+  const thumbPosition = useMemo(() => {
+    const thumbRadius = thumbRef.current?.getBoundingClientRect().width || 0;
+    const scale =
+      valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
+    console.log(thumbRadius, scale);
+    // stop initial back display of image
+    if (value - minValue <= thumbRadius * scale) return `0px`;
+    return `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`;
+  }, [value, minValue, valueRange, radius]);
+
+  const onTrackClicked = useCallback(
+    (e: React.MouseEvent) => {
+      console.log("onTack");
+      const scale =
+        valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
+      const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
+      const finalValue = (e.pageX - lowerLimit) * scale;
+      console.log(finalValue);
+      props.onChange(finalValue);
+    },
+    [valueRange, props]
   );
 
   return (
@@ -151,6 +186,7 @@ export const Slider = forwardRef<
           left: radius,
         }}
         ref={trackRef}
+        onClick={onTrackClicked}
       ></div>
       {/** selected track */}
       <div
@@ -161,19 +197,17 @@ export const Slider = forwardRef<
           top: "50%",
           transform: "translate(0px, -50%)",
           // center of thumb should match the starting point of track
-          width: `calc(${
-            ((value - minValue) / valueRange) * 100
-          }% - 2 * ${radius})`,
+          width: thumbPosition,
           left: radius,
         }}
+        onClick={onTrackClicked}
       ></div>
       {/** thumb */}
       <div
+        ref={thumbRef}
         style={{
           position: "absolute",
-          left: `calc(${
-            ((value - minValue) / valueRange) * 100
-          }% - 2 * ${radius})`,
+          left: thumbPosition,
           height: `calc(2 * ${radius})`,
           width: `calc(2 * ${radius})`,
           backgroundColor: thumbColor,

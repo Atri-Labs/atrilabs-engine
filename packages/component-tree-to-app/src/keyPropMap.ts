@@ -175,7 +175,7 @@ export const keyPropMap: any = {
   },
   Slider: {
     styles: { ...FlexChildStyle },
-    custom: { startValue: 0, endValue: 100, value: 50 },
+    custom: { minValue: 0, maxValue: 100, value: 50 },
   },
   Step: {
     styles: { ...FlexChildStyle },

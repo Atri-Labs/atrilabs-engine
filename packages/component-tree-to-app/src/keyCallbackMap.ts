@@ -61,6 +61,10 @@ export const keyCallbackMap: {
       handlers: [],
       actions: [{ type: "controlled", selector: ["custom", "value"] }],
     },
+    onFinish: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
   },
   Step: {},
   TextBox: {},
