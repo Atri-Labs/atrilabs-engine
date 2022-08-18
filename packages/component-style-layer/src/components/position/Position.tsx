@@ -227,7 +227,7 @@ const dragMachine = createMachine({
     },
   },
 });
-const positionValues = ["static", "relative", "absolute", "fixed"];
+const positionValues = ["static", "relative", "absolute", "fixed", "sticky"];
 const floatValues = ["none", "left", "right"];
 const clearValues = ["none", "left", "right", "both"];
 
@@ -373,6 +373,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             <PR />
             <PA />
             <PF />
+            <p style={{ fontSize: " 7px", color: gray200 }}>STICKY</p>
           </PropertyRender>
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
