@@ -24,10 +24,9 @@ export const Radio = forwardRef<
     [props]
   );
   return (
-    <div style={{ display: "inline-block" }} ref={ref}>
+    <div style={props.styles} ref={ref}>
       <input
         type="radio"
-        style={props.styles}
         onChange={onChangeCb}
         name={props.custom.name}
         value={props.custom.label}
@@ -39,7 +38,7 @@ export const Radio = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -69,6 +68,8 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {
           cursor: "pointer",
+          display: "inline-flex",
+          columnGap: "10px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },

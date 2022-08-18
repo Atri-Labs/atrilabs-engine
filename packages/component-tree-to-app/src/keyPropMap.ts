@@ -170,7 +170,7 @@ export const keyPropMap: any = {
     custom: { text: "Link", url: "/" },
   },
   Radio: {
-    styles: { ...FlexChildStyle },
+    styles: { ...FlexStyle },
     custom: { name: "", label: "Radio", checked: false },
   },
   Slider: {
