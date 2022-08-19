@@ -43,7 +43,8 @@ export const useDropzoneOverlay = () => {
       rightLineHoverId.current &&
       bottomLineHoverId.current &&
       leftLineHoverId.current &&
-      currentRenderedContext.current
+      currentRenderedContext.current &&
+      currentRenderedContext.current.currentDropzone!.id! !== "body"
     ) {
       // top line
       addOrModifyHintOverlays({

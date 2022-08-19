@@ -43,7 +43,9 @@ export const useSelectOverlay = () => {
       rightLineHoverId.current &&
       bottomLineHoverId.current &&
       leftLineHoverId.current &&
-      currentRenderedContext.current
+      currentRenderedContext.current &&
+      currentRenderedContext.current.select?.id &&
+      currentRenderedContext.current.select.id !== "body"
     ) {
       // top line
       addOrModifyHintOverlays({

@@ -42,7 +42,8 @@ export const useSubscribeNewDrag = () => {
       rightLineHoverId.current &&
       bottomLineHoverId.current &&
       leftLineHoverId.current &&
-      prevCaughtBy.current
+      prevCaughtBy.current &&
+      prevCaughtBy.current !== "body"
     ) {
       // top line
       addOrModifyHintOverlays({
