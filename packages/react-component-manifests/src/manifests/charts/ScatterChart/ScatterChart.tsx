@@ -78,7 +78,7 @@ export const ScatterChart = forwardRef<
   }, [props.custom]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <ScatterChartRechart
         width={
           typeof props.styles.width === "string"

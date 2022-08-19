@@ -14,8 +14,8 @@ function renderRoute(App: React.FC, route: string): string {
 export function getAppText(url: string, appHtmlContent: string) {
   const appText = renderRoute(App, url);
   const finalText = appHtmlContent.replace(
-    '<div id="root"></div>',
-    `<div id="root">${appText}</div>`
+    '<div id="root" style="height: 100vh"></div>',
+    `<div id="root" style="height: 100vh">${appText}</div>`
   );
   return finalText;
 }

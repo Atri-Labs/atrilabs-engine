@@ -43,7 +43,9 @@ export const useSelectOverlay = () => {
       rightLineHoverId.current &&
       bottomLineHoverId.current &&
       leftLineHoverId.current &&
-      currentRenderedContext.current
+      currentRenderedContext.current &&
+      currentRenderedContext.current.select?.id &&
+      currentRenderedContext.current.select.id !== "body"
     ) {
       // top line
       addOrModifyHintOverlays({
@@ -132,5 +134,13 @@ export const useSelectOverlay = () => {
     });
     return unsub;
   }, [clearOverlay]);
+  useEffect(() => {
+    const unsub = subscribeCanvasActivity("scroll", (context, event) => {
+      if (currentRenderedContext.current) {
+        renderFn();
+      }
+    });
+    return unsub;
+  }, [renderFn]);
   useSubscribeComponentRendered(renderFn);
 };

@@ -42,6 +42,7 @@ type DELETE_COMPONENT_EVENT = "DELETE_COMPONENT_EVENT";
 type BLUR_EVENT = "BLUR_EVENT";
 type MANUAL_SELECT = "MANUAL_SELECT";
 type MANUAL_HOVER = "MANUAL_HOVER";
+type SCROLLED = "SCROLLED";
 
 type OverEvent = {
   type: OVER;
@@ -130,6 +131,10 @@ type ManualHoverEvent = {
   id: string;
 };
 
+type ScrollEvent = {
+  type: SCROLLED;
+};
+
 type CanvasActivityEvent =
   | OverEvent
   | DownEvent
@@ -147,7 +152,8 @@ type CanvasActivityEvent =
   | DeleteComponentEvent
   | BlurEvent
   | ManualSelectEvent
-  | ManualHoverEvent;
+  | ManualHoverEvent
+  | ScrollEvent;
 
 // context
 export type CanvasActivityContext = {
@@ -443,6 +449,15 @@ const onManualSelect = assign<CanvasActivityContext, ManualSelectEvent>({
   },
 });
 
+const onComponentScroll = (
+  context: CanvasActivityContext,
+  event: ScrollEvent
+) => {
+  scrollCbs.forEach((cb) => {
+    cb(context, event);
+  });
+};
+
 const canvasActivityMachine = createMachine<
   CanvasActivityContext,
   CanvasActivityEvent
@@ -462,6 +477,7 @@ const canvasActivityMachine = createMachine<
         },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
         MANUAL_HOVER: { target: hover, actions: [onManualHoverStart] },
+        SCROLLED: { actions: [onComponentScroll] },
       },
       entry: assign({}),
     },
@@ -476,6 +492,10 @@ const canvasActivityMachine = createMachine<
           target: hover,
           cond: overAnother,
           actions: [onManualHoverStart],
+        },
+        SCROLLED: {
+          target: idle,
+          actions: [onComponentScroll],
         },
       },
       entry: (context, event) => {
@@ -512,6 +532,7 @@ const canvasActivityMachine = createMachine<
           cond: deletedSelectedComponent,
         },
         MANUAL_SELECT: { target: select, actions: [onManualSelect] },
+        SCROLLED: { actions: [onComponentScroll] },
       },
       type: "parallel",
       states: {
@@ -587,6 +608,7 @@ const canvasActivityMachine = createMachine<
                   },
                 ],
                 OUT_OF_CANVAS: { target: selectIdle, cond: notManualHover },
+                SCROLLED: { target: selectIdle, actions: [onComponentScroll] },
               },
               entry: (context, event) => {
                 hoverWhileSelectedCbs.forEach((cb) => cb(context, event));
@@ -749,6 +771,7 @@ const dragEndCbs: Callback[] = [];
 const dragCancelCbs: Callback[] = [];
 const focusedCbs: Callback[] = [];
 const blurCbs: Callback[] = [];
+const scrollCbs: Callback[] = [];
 
 function createUnsubFunc(arr: Callback[], cb: Callback) {
   return () => {
@@ -775,7 +798,8 @@ function subscribe(
     | "dropzoneMove"
     | "focus"
     | "blur"
-    | "keyup",
+    | "keyup"
+    | "scroll",
   cb: Callback
 ) {
   switch (event) {
@@ -822,6 +846,9 @@ function subscribe(
       return createUnsubFunc(blurCbs, cb);
     case "keyup":
       return subscribeKeyup(cb);
+    case "scroll":
+      scrollCbs.push(cb);
+      return createUnsubFunc(scrollCbs, cb);
     default:
       console.error(
         `Unknown event received by ${canvasActivityMachine.id} - ${event}`
@@ -894,6 +921,11 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
           event,
         });
       };
+      const onscroll = () => {
+        service.send({
+          type: "SCROLLED",
+        });
+      };
       // focus to receive keyboard input (like delete key)
       comp.tabIndex = 0;
       const blur = (event: FocusEvent) => {
@@ -903,12 +935,14 @@ const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
       comp.addEventListener("mousemove", mouseover);
       comp.addEventListener("mouseup", mouseup);
       comp.addEventListener("blur", blur);
+      comp.addEventListener("scroll", onscroll);
       return () => {
         if (comp) {
           comp.removeEventListener("mousedown", mousedown);
           comp.removeEventListener("mousemove", mouseover);
           comp.removeEventListener("mouseup", mouseup);
           comp.removeEventListener("blur", blur);
+          comp.removeEventListener("scroll", onscroll);
         }
       };
     } else {

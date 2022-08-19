@@ -22,7 +22,12 @@ export const useDraggedOverlay = () => {
   // An overlay is rendered whenever the canvas activity happens
   // or when the component has been re-rendered due to change in it's props
   const renderFn = useCallback(() => {
-    if (boxOverlayId.current && currentRenderedContext.current) {
+    if (
+      boxOverlayId.current &&
+      currentRenderedContext.current &&
+      currentRenderedContext.current.dragged?.id &&
+      currentRenderedContext.current.dragged.id !== "body"
+    ) {
       // top line
       addOrModifyHintOverlays({
         [boxOverlayId.current]: {

@@ -40,7 +40,7 @@ const cssTreeOptions: CSSTreeOptions = {
   positionOptions: true,
   typographyOptions: false,
   spacingOptions: true,
-  sizeOptions: false,
+  sizeOptions: true,
   borderOptions: false,
   outlineOptions: true,
   backgroundOptions: true,

@@ -81,7 +81,7 @@ export const LineChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <LineChartRechart
         width={
           typeof props.styles.width === "string"
