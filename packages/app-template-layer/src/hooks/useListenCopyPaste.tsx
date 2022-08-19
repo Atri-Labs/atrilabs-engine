@@ -10,7 +10,6 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
   const metaKeyDown = useRef<boolean>(false);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("keydown", (context, event) => {
-      console.log("keydown rec");
       if (
         window.navigator &&
         window.navigator.userAgent &&
@@ -27,12 +26,6 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
           }
         }
 
-        console.log(
-          "kedown",
-          metaKeyDown.current,
-          context.select?.id,
-          keyEvent
-        );
         if (metaKeyDown.current && context.select?.id) {
           if (keyEvent.key.toLowerCase() === "c") {
             props.onCopyKeyPressed(context.select.id);
@@ -51,7 +44,7 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
   }, [props]);
 
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("keyup", (context, event) => {
+    const unsub = subscribeCanvasActivity("keyup", (_context, event) => {
       if (
         window.navigator &&
         window.navigator.userAgent &&
