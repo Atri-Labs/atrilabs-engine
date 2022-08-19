@@ -134,5 +134,13 @@ export const useSelectOverlay = () => {
     });
     return unsub;
   }, [clearOverlay]);
+  useEffect(() => {
+    const unsub = subscribeCanvasActivity("scroll", (context, event) => {
+      if (currentRenderedContext.current) {
+        renderFn();
+      }
+    });
+    return unsub;
+  }, [renderFn]);
   useSubscribeComponentRendered(renderFn);
 };
