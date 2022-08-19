@@ -8,7 +8,7 @@ export const useClipboard = () => {
       console.log("Copy/Paste needs navigator && navigator.clipboard");
     }
   }, []);
-  const getFromClipboard = useCallback((text: string) => {
+  const getFromClipboard = useCallback(() => {
     if (navigator && navigator.clipboard) {
       return navigator.clipboard.readText();
     } else {

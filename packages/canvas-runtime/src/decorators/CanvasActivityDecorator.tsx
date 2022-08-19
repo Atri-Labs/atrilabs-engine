@@ -757,6 +757,7 @@ type Callback = (
     | CanvasActivityEvent
     | { type: "dropzoneMove"; loc: Location }
     | { type: "keyup"; event: KeyboardEvent }
+    | { type: "keydown"; event: KeyboardEvent }
 ) => void;
 const hoverCbs: Callback[] = [];
 const hoverEndCbs: Callback[] = [];
@@ -799,6 +800,7 @@ function subscribe(
     | "focus"
     | "blur"
     | "keyup"
+    | "keydown"
     | "scroll",
   cb: Callback
 ) {
@@ -846,6 +848,8 @@ function subscribe(
       return createUnsubFunc(blurCbs, cb);
     case "keyup":
       return subscribeKeyup(cb);
+    case "keydown":
+      return subscribeKeydown(cb);
     case "scroll":
       scrollCbs.push(cb);
       return createUnsubFunc(scrollCbs, cb);
@@ -1058,12 +1062,25 @@ const keyUpCbs: ((
   context: CanvasActivityContext,
   event: { type: "keyup"; event: KeyboardEvent }
 ) => void)[] = [];
+const keyDownCbs: ((
+  context: CanvasActivityContext,
+  event: { type: "keydown"; event: KeyboardEvent }
+) => void)[] = [];
 const keyupListener = (event: KeyboardEvent) => {
   keyUpCbs.forEach((cb) => cb(service.state.context, { type: "keyup", event }));
+};
+const keydownListener = (event: KeyboardEvent) => {
+  keyDownCbs.forEach((cb) =>
+    cb(service.state.context, { type: "keydown", event })
+  );
 };
 subscribe("focus", (context) => {
   // on page change, contex.select.id might not exist in canvasComponentStore
   if (context.select?.id && canvasComponentStore[context.select.id]) {
+    canvasComponentStore[context.select.id].ref.current?.addEventListener(
+      "keydown",
+      keydownListener
+    );
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keyup",
       keyupListener
@@ -1073,6 +1090,10 @@ subscribe("focus", (context) => {
 subscribe("blur", (context) => {
   // on page change, contex.select.id might not exist in canvasComponentStore
   if (context.select?.id && canvasComponentStore[context.select.id]) {
+    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
+      "keydown",
+      keydownListener
+    );
     canvasComponentStore[context.select.id].ref.current?.removeEventListener(
       "keyup",
       keyupListener
@@ -1090,6 +1111,20 @@ function subscribeKeyup(
     const index = keyUpCbs.findIndex((curr) => curr === cb);
     if (index >= 0) {
       keyUpCbs.splice(index, 1);
+    }
+  };
+}
+function subscribeKeydown(
+  cb: (
+    context: CanvasActivityContext,
+    event: { type: "keydown"; event: KeyboardEvent }
+  ) => void
+) {
+  keyDownCbs.push(cb);
+  return () => {
+    const index = keyDownCbs.findIndex((curr) => curr === cb);
+    if (index >= 0) {
+      keyDownCbs.splice(index, 1);
     }
   };
 }
@@ -1124,6 +1159,7 @@ export {
   sendDeleteComponent,
   getCurrentMachineContext,
   subscribeKeyup,
+  subscribeKeydown,
   raiseSelectEvent,
   raiseHoverEvent,
 };

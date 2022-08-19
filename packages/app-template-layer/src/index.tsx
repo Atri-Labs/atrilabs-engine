@@ -22,6 +22,7 @@ import { ReactComponent as Trash } from "./assets/trash.svg";
 import "./styles.css";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { formatTemplateName } from "./utils";
+import { useTemplateCopyPaste } from "./hooks/useTemplateCopyPaste";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -135,6 +136,8 @@ export default function () {
   const onDeleteCancel = useCallback(() => {
     setShowDeleteDialog(null);
   }, []);
+
+  useTemplateCopyPaste();
 
   return (
     <>
