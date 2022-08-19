@@ -105,6 +105,9 @@ export const useCreateTemplate = () => {
 
       // convert prop nodes to events first
       allCapturedNodes.forEach((currNodeId) => {
+        if (currNodeId === "body") {
+          return;
+        }
         const propNodes = getComponentPropsNodes(currNodeId);
         propNodes.forEach(({ propNode, propTreeId, link }) => {
           // create CreateEvent and LinkEvent
@@ -150,6 +153,9 @@ export const useCreateTemplate = () => {
       // convert defaultCallbackHandlers to events
       if (options.copyDefaulCallbacks) {
         allCapturedNodes.forEach((currNodeId) => {
+          if (currNodeId === "body") {
+            return;
+          }
           const manifest = getComponentManifest(currNodeId)!;
           const component = manifest.component as ReactComponentManifestSchema;
           const defaultCallbacks = component.dev.defaultCallbackHandlers;
@@ -176,6 +182,9 @@ export const useCreateTemplate = () => {
 
       // convert component nodes to events at last
       allCapturedNodes.forEach((currNodeId) => {
+        if (currNodeId === "body") {
+          return;
+        }
         const currNode = getComponentNode(currNodeId);
         // convert component node to events
         const event: CreateEvent = {

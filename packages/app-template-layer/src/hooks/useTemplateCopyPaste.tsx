@@ -61,7 +61,6 @@ export const useTemplateCopyPaste = () => {
               const loc: Location = { pageX: rightWM, pageY: bottomWM };
 
               // get parent id
-              console.log("sele", selectedId);
               let parentId: string;
               if (selectedId === "body") {
                 parentId = "body";
@@ -91,6 +90,12 @@ export const useTemplateCopyPaste = () => {
 
               // get index
               const index = computeChildIndex(parentId, loc, compTree) || 0;
+
+              // TODO: handle body paste
+              if (copiedId === "body") {
+                console.log("Cannot paste body.");
+                return;
+              }
 
               const forestPkgId =
                 BrowserForestManager.currentForest.forestPkgId;
