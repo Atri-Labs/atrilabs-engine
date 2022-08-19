@@ -15,11 +15,20 @@ export const Input = forwardRef<
     styles: React.CSSProperties;
     custom: { value: string; placeholder: string };
     onChange: (value: string) => void;
+    ononPressEnter: () => void;
   }
 >((props, ref) => {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       props.onChange(e.target.value);
+    },
+    [props]
+  );
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        props.ononPressEnter();
+      }
     },
     [props]
   );
@@ -30,6 +39,7 @@ export const Input = forwardRef<
       onChange={onChange}
       placeholder={props.custom.placeholder}
       value={props.custom.value}
+      onKeyDown={onKeyDown}
     />
   );
 });
@@ -94,6 +104,7 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onPressEnter: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},
   },
