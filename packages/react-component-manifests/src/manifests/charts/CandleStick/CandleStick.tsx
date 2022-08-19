@@ -72,7 +72,7 @@ export const CandleStick = forwardRef<
   };
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <ComposedChart
         width={
           typeof props.styles.width === "string"

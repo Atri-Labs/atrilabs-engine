@@ -81,7 +81,7 @@ export const AreaChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <AreaChartRechart
         width={
           typeof props.styles.width === "string"

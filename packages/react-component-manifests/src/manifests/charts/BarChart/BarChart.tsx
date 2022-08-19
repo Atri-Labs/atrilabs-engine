@@ -85,7 +85,7 @@ export const BarChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <BarChartRechart
         width={
           typeof props.styles.width === "string"

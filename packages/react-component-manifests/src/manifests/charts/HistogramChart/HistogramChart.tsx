@@ -75,7 +75,7 @@ export const HistogramChart = forwardRef<
   }, [props.custom, bar]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <ComposedChart
         width={
           typeof props.styles.width === "string"
