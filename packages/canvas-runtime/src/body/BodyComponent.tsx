@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
-    minHeight: "100%",
+    height: "100%",
     minWidth: "100%",
     boxSizing: "border-box",
     position: "relative",
