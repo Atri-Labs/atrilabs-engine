@@ -2,13 +2,13 @@ import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import { useEffect } from "react";
 
 type ListenCopyPasteProps = {
-  onCopyKeyPressed: () => void;
-  onPasteKeyPressed: () => void;
+  onCopyKeyPressed: (selectedId: string) => void;
+  onPasteKeyPressed: (selectedId: string) => void;
 };
 
 export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
   useEffect(() => {
-    subscribeCanvasActivity("keyup", (_context, event) => {
+    subscribeCanvasActivity("keyup", (context, event) => {
       if (
         window.navigator &&
         window.navigator.userAgent &&
@@ -16,18 +16,18 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
       ) {
         const keyEvent = event.event;
         if (window.navigator.userAgent.indexOf("Mac")) {
-          if (keyEvent.metaKey && keyEvent.key === "C") {
-            props.onCopyKeyPressed();
+          if (keyEvent.metaKey && keyEvent.key === "C" && context.select?.id) {
+            props.onCopyKeyPressed(context.select.id);
           }
-          if (keyEvent.metaKey && keyEvent.key === "V") {
-            props.onPasteKeyPressed();
+          if (keyEvent.metaKey && keyEvent.key === "V" && context.select?.id) {
+            props.onPasteKeyPressed(context.select.id);
           }
         } else {
-          if (keyEvent.ctrlKey && keyEvent.key === "C") {
-            props.onCopyKeyPressed();
+          if (keyEvent.ctrlKey && keyEvent.key === "C" && context.select?.id) {
+            props.onCopyKeyPressed(context.select.id);
           }
-          if (keyEvent.ctrlKey && keyEvent.key === "V") {
-            props.onPasteKeyPressed();
+          if (keyEvent.ctrlKey && keyEvent.key === "V" && context.select?.id) {
+            props.onPasteKeyPressed(context.select.id);
           }
         }
       } else {
