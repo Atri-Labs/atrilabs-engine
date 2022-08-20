@@ -23,6 +23,7 @@ import "./styles.css";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { formatTemplateName } from "./utils";
 import { useTemplateCopyPaste } from "./hooks/useTemplateCopyPaste";
+import { useShowTemplate } from "./hooks/useShowTemplate";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -138,6 +139,13 @@ export default function () {
   }, []);
 
   useTemplateCopyPaste();
+
+  const formattedData = useShowTemplate(
+    templatesData ? templatesData["user"].dir : "",
+    templatesData ? templatesData["user"].names : []
+  );
+
+  console.log(formattedData);
 
   return (
     <>
