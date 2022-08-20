@@ -21,22 +21,17 @@ export const DevFlex = forwardRef<
   HTMLDivElement,
   { styles: React.CSSProperties; children: React.ReactNode[] }
 >((props, ref) => {
-  if (props.children.length > 0) {
-    return <Flex ref={ref} {...props} />;
-  } else {
-    return (
-      <div
-        ref={ref}
-        style={{
+  const overrideStyleProps: React.CSSProperties =
+    props.children.length === 0
+      ? {
           minHeight: "100px",
           minWidth: "100px",
           border: `2px dashed ${gray500}`,
           boxSizing: "border-box",
           ...props.styles,
-        }}
-      ></div>
-    );
-  }
+        }
+      : { ...props.styles };
+  return <Flex ref={ref} {...props} styles={overrideStyleProps} />;
 });
 
 export const Flex = forwardRef<
