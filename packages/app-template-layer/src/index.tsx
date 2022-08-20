@@ -18,12 +18,12 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { useTemplateApi } from "./hooks/useTemplateApi";
 import { startDrag } from "@atrilabs/canvas-runtime";
 import { DragTemplateComp } from "./components/DragTemplateComp";
-import { ReactComponent as Trash } from "./assets/trash.svg";
 import "./styles.css";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { formatTemplateName } from "./utils";
 import { useTemplateCopyPaste } from "./hooks/useTemplateCopyPaste";
 import { useShowTemplate } from "./hooks/useShowTemplate";
+import { TemplateRenderer } from "./components/TemplateRenderer";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -140,12 +140,12 @@ export default function () {
 
   useTemplateCopyPaste();
 
-  const formattedData = useShowTemplate(
+  const { formattedDataArr } = useShowTemplate(
     templatesData ? templatesData["user"].dir : "",
     templatesData ? templatesData["user"].names : []
   );
 
-  console.log(formattedData);
+  console.log(formattedDataArr);
 
   return (
     <>
@@ -180,52 +180,36 @@ export default function () {
                 >
                   User Templates
                 </div>
-                {templatesData?.user.names.map((name) => {
-                  const formatName = formatTemplateName(name);
-                  const onMouseDownCb = () => {
-                    startDrag(
-                      { comp: DragTemplateComp, props: { text: formatName } },
-                      {
-                        type: "template",
-                        data: {
-                          dir: templatesData.default.dir,
-                          name: name,
-                          newTemplateRootId: getId(),
-                        },
-                      }
-                    );
-                  };
-                  return (
-                    <div
-                      className="bin-icon-container"
-                      key={name}
-                      style={{
-                        borderBottom: `1px solid ${gray900}`,
-                        ...h4Heading,
-                        color: gray300,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "0 0.5rem",
-                      }}
-                    >
+                {templatesData &&
+                  templatesData["user"].dir &&
+                  formattedDataArr.map(({ name, components }) => {
+                    const formatName = formatTemplateName(name);
+                    const onMouseDownCb = () => {
+                      startDrag(
+                        { comp: DragTemplateComp, props: { text: formatName } },
+                        {
+                          type: "template",
+                          data: {
+                            dir: templatesData["user"].dir,
+                            name: name,
+                            newTemplateRootId: getId(),
+                          },
+                        }
+                      );
+                    };
+                    return (
                       <div
-                        onMouseDown={onMouseDownCb}
-                        style={{ flexGrow: 1, padding: "0.5rem 0" }}
-                      >
-                        {formatName}
-                      </div>
-                      <div
-                        className="bin-icon"
-                        onClick={() => {
-                          setShowDeleteDialog({ templateName: name });
+                        key={name}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
                         }}
+                        onMouseDown={onMouseDownCb}
                       >
-                        <Trash />
+                        <TemplateRenderer templateComponents={components} />
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
               <div>
                 <div
