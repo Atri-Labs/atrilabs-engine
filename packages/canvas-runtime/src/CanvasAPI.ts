@@ -277,4 +277,7 @@ export {
   removeHintOverlays,
 } from "./hooks/useHintOverlays";
 
-export { subscribeNewDropRendered } from "./decorators/UnlockCanvasActivityMachineDecorator";
+export {
+  subscribeNewDropRendered,
+  subscribeComponentRender,
+} from "./decorators/UnlockCanvasActivityMachineDecorator";

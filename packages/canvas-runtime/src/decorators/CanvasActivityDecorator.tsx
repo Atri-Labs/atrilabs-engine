@@ -445,6 +445,14 @@ const selectOnUnlockDataDrop = assign<CanvasActivityContext, UnlockEvent>({
 
 const onManualSelect = assign<CanvasActivityContext, ManualSelectEvent>({
   select: (_context, event) => {
+    if (
+      canvasComponentStore[event.id] &&
+      canvasComponentStore[event.id].ref &&
+      canvasComponentStore[event.id].ref.current
+    ) {
+      canvasComponentStore[event.id].ref.current!.tabIndex = 0;
+      canvasComponentStore[event.id].ref.current!.focus();
+    }
     return { id: event.id };
   },
 });

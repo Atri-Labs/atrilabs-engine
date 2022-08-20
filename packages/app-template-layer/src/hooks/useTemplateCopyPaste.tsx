@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useClipboard } from "./useClipboard";
 import { useCreateTemplate } from "./useCreateTemplate";
 import { useListenCopyPaste } from "./useListenCopyPaste";
@@ -13,6 +13,9 @@ import {
   getComponentRef,
   getCSSBoxCoords,
   Location,
+  raiseSelectEvent,
+  subscribeCanvasActivity,
+  subscribeComponentRender,
 } from "@atrilabs/canvas-runtime";
 import { BrowserForestManager, getId, useTree } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
@@ -21,6 +24,12 @@ export const useTemplateCopyPaste = () => {
   const createTemplate = useCreateTemplate();
   const { putInClipboard, getFromClipboard } = useClipboard();
   const compTree = useTree(ComponentTreeId);
+  /**
+   * We keep last pasted root component id because it helps us
+   * to differentiate with the potential target location to
+   * paste the next one.
+   */
+  const lastPastedTemplateRootId = useRef<string | null>(null);
 
   const onCopy = useCallback(
     (selectedId: string) => {
@@ -66,10 +75,11 @@ export const useTemplateCopyPaste = () => {
                 parentId = "body";
               } else if (selectedId === copiedId) {
                 // get immidiate parent
-                console.log("parentId because equal", selectedId);
                 parentId = getComponentParent(copiedId).id;
+              } else if (selectedId === lastPastedTemplateRootId.current) {
+                parentId = getComponentParent(selectedId).id;
               } else {
-                // get parent i.e. selectedId if it accepts child or it's parent
+                // selectedId is chosen as parent if it accepts child else it's parent
                 const key = compTree.nodes[selectedId].meta["key"];
                 const compManifest = getReactComponentManifest(key);
                 if (compManifest) {
@@ -102,6 +112,27 @@ export const useTemplateCopyPaste = () => {
               const forestId = BrowserForestManager.currentForest.forestId;
               // post template events
               const newTemplateRootId = getId();
+              lastPastedTemplateRootId.current = newTemplateRootId;
+
+              const renderUnsub = subscribeComponentRender(
+                newTemplateRootId,
+                () => {
+                  renderUnsub();
+                  // manually select the newly pasted component
+                  if (lastPastedTemplateRootId.current) {
+                    raiseSelectEvent(lastPastedTemplateRootId.current);
+                    // set last pasted to null, once a component has been selected by user
+                    const unsubSelectListener = subscribeCanvasActivity(
+                      "select",
+                      () => {
+                        lastPastedTemplateRootId.current = null;
+                        return unsubSelectListener;
+                      }
+                    );
+                  }
+                }
+              );
+
               postTemplateEvents({
                 events,
                 newTemplateRootId,

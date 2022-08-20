@@ -10,12 +10,14 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
   const metaKeyDown = useRef<boolean>(false);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("keydown", (context, event) => {
-      if (
-        window.navigator &&
-        window.navigator.userAgent &&
-        event.type === "keydown"
-      ) {
-        const keyEvent = event.event;
+      console.log("keydown fired");
+      if (event.type !== "keydown") {
+        return;
+      }
+      const keyEvent = event.event;
+      keyEvent.preventDefault();
+
+      if (window.navigator && window.navigator.userAgent) {
         if (window.navigator.userAgent.indexOf("Mac")) {
           if (keyEvent.metaKey) {
             metaKeyDown.current = true;
@@ -45,12 +47,14 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
 
   useEffect(() => {
     const unsub = subscribeCanvasActivity("keyup", (_context, event) => {
-      if (
-        window.navigator &&
-        window.navigator.userAgent &&
-        event.type === "keyup"
-      ) {
-        const keyEvent = event.event;
+      console.log("keyup called");
+      if (event.type !== "keyup") {
+        return;
+      }
+      const keyEvent = event.event;
+      keyEvent.preventDefault();
+
+      if (window.navigator && window.navigator.userAgent) {
         // set metaKey to false if keyup on meta key
         if (window.navigator.userAgent.indexOf("Mac")) {
           if (keyEvent.metaKey) {
