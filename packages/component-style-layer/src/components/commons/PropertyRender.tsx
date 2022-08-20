@@ -79,7 +79,7 @@ function PropertyRender(props: {
     },
     [props]
   );
-  
+
   return (
     <div style={styles.option} key={props.styleItem}>
       <div style={styles.optionName}>{props.styleText}</div>

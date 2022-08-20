@@ -12,7 +12,6 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 import { Input } from "../commons/Input";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
-import { ReactComponent as OFA } from "../../assets/size/Auto.svg";
 import { ReactComponent as OFH } from "../../assets/size/overflow-hidden.svg";
 import { ReactComponent as OFS } from "../../assets/size/overflow-scroll.svg";
 import { ReactComponent as OFV } from "../../assets/size/overflow-visible.svg";
@@ -68,7 +67,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: "25px",
   },
 };
-const backgroundSizeValues = ["custom", "cover", "contain"];
+const backgroundSizeValues = ["auto", "contain", "cover"];
 const backgroundRepeatValues = [
   "repeat",
   "repeat-x",
@@ -88,6 +87,7 @@ const backgroundClipValues = [
 
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+
   const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
   }, [props]);
@@ -98,6 +98,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   }, [props]);
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -156,7 +157,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           patchCb={props.patchCb}
           styles={props.styles}
         >
-          <OFV />
+          <p style={{ fontSize: " 9px", color: gray200 }}>Custom</p>
           <OFS />
           <OFH />
         </PropertyRender>
