@@ -125,7 +125,19 @@ export const useTemplateCopyPaste = () => {
                     const unsubSelectListener = subscribeCanvasActivity(
                       "select",
                       () => {
-                        lastPastedTemplateRootId.current = null;
+                        /**
+                         * On multi-paste i.e. one copy and multiple paste event
+                         * without any select event in between by user, when we paste for the 2nd
+                         * time, the lastPastedTemplateRootId will be set to null even though
+                         * it should remain set to new pasted root id, hence, to prevent this from
+                         * happening we only allow the last select listener to set lastPastedTemplateRootId
+                         * to null
+                         */
+                        if (
+                          lastPastedTemplateRootId.current === newTemplateRootId
+                        ) {
+                          lastPastedTemplateRootId.current = null;
+                        }
                         return unsubSelectListener;
                       }
                     );
