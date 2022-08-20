@@ -35,10 +35,14 @@ export function postTemplateEvents(params: {
         const createEvent = event as CreateEvent;
         // get alias if key field exists in meta
         if (createEvent.meta["key"]) {
-          api.getNewAlias(forestPkgId, createEvent.meta["key"], (alias) => {
-            idAliasMap[createEvent.id] = alias;
-            resolve();
-          });
+          api.getNewAlias(
+            forestPkgId,
+            createEvent.state.alias || createEvent.meta["key"],
+            (alias) => {
+              idAliasMap[createEvent.id] = alias;
+              resolve();
+            }
+          );
         } else {
           // resolve immidiately if no key field exists
           resolve();
