@@ -99,12 +99,12 @@ const backgroundRepeatValues = [
   "round",
   "no-repeat",
 ];
-const backgroundAttachmentValues = ["fixed", "scroll", "local"];
-const backgroundOriginValues = ["content-box", "padding-box", "border-box"];
+const backgroundAttachmentValues = ["scroll", "fixed", "local"];
+const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
 const backgroundClipValues = [
   "content-box",
-  "padding-box",
   "border-box",
+  "padding-box",
   "text",
 ];
 export type Color = {
@@ -268,7 +268,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             />
           </div>
         </div>
-        <PropertyRender
+        {/* <PropertyRender
           styleItem="backgroundSize"
           styleText="Size"
           styleArray={backgroundSizeValues}
@@ -278,7 +278,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           <p style={{ fontSize: " 9px", color: gray200 }}>Custom</p>
           <OFS />
           <OFH />
-        </PropertyRender>
+        </PropertyRender> */}
         <PropertyRender
           styleItem="backgroundRepeat"
           styleText="Repeat"
