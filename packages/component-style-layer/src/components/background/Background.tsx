@@ -12,9 +12,21 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 import { Input } from "../commons/Input";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
-import { ReactComponent as OFH } from "../../assets/size/overflow-hidden.svg";
-import { ReactComponent as OFS } from "../../assets/size/overflow-scroll.svg";
-import { ReactComponent as OFV } from "../../assets/size/overflow-visible.svg";
+import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
+import { ReactComponent as BRR } from "../../assets/background/repeat-icon.svg";
+import { ReactComponent as BRX } from "../../assets/background/repeat-x-icon.svg";
+import { ReactComponent as BRY } from "../../assets/background/repeat-y-icon.svg";
+import { ReactComponent as BRO } from "../../assets/background/round-icon.svg";
+import { ReactComponent as BRS } from "../../assets/background/space-icon.svg";
+import { ReactComponent as BAX } from "../../assets/background/fixed-icon.svg";
+import { ReactComponent as BAY } from "../../assets/background/local-icon.svg";
+import { ReactComponent as BAO } from "../../assets/background/scroll-icon.svg";
+import { ReactComponent as BOX } from "../../assets/background/padding-box.svg";
+import { ReactComponent as BOY } from "../../assets/background/content-box.svg";
+import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
+import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
+import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
+import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
 import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -286,12 +298,12 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           patchCb={props.patchCb}
           styles={props.styles}
         >
-          <OFV />
-          <OFS />
-          <OFH />
-          <OFV />
-          <OFS />
-          <OFH />
+          <BRR />
+          <BRX />
+          <BRY />
+          <BRO />
+          <BRS />
+          <BRN />
         </PropertyRender>
         <PropertyRender
           styleItem="backgroundAttachment"
@@ -300,9 +312,9 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           patchCb={props.patchCb}
           styles={props.styles}
         >
-          <OFV />
-          <OFS />
-          <OFH />
+          <BAO />
+          <BAX />
+          <BAY />
         </PropertyRender>
         <PropertyRender
           styleItem="backgroundOrigin"
@@ -311,9 +323,9 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           patchCb={props.patchCb}
           styles={props.styles}
         >
-          <OFV />
-          <OFS />
-          <OFH />
+          <BOX />
+          <BOY />
+          <BOO />
         </PropertyRender>
         <PropertyRender
           styleItem="backgroundClip"
@@ -322,10 +334,10 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           patchCb={props.patchCb}
           styles={props.styles}
         >
-          <OFV />
-          <OFS />
-          <OFH />
-          <OFS />
+          <BCY />
+          <BCX />
+          <BCO />
+          <BCO />
         </PropertyRender>
 
         {/**Background Color */}
