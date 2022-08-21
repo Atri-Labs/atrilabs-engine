@@ -3,39 +3,60 @@ import fs from "fs";
 import path from "path";
 import { getFiles } from "../utils";
 
-export function getTemplateFilepath(dir: string, name: string) {
-  return path.resolve(dir, `${name}.json`);
+export function getTemplateFilepath(
+  dir: string,
+  relativeDir: string,
+  templateName: string
+) {
+  return path.resolve(dir, relativeDir, templateName);
 }
 
-export function createTemplate(dir: string, name: string, events: AnyEvent[]) {
-  const dest = getTemplateFilepath(dir, name);
+export function createTemplate(
+  dir: string,
+  relativeDir: string,
+  templateName: string,
+  events: AnyEvent[]
+) {
+  const dest = getTemplateFilepath(dir, relativeDir, templateName);
   fs.writeFileSync(dest, JSON.stringify(events, null, 2));
 }
 
 export function overwriteTemplate(
   dir: string,
-  name: string,
+  relativeDir: string,
+  templateName: string,
   events: AnyEvent[]
 ) {
-  createTemplate(dir, name, events);
+  createTemplate(dir, relativeDir, templateName, events);
 }
 
 export function getTemplateList(dir: string) {
   const filenames = getFiles(path.resolve(dir));
   return filenames.map((filename) => {
-    return filename.replace(/(\.json)/g, "");
+    const templateDirname = path.dirname(filename);
+    const relativeDir = path.relative(dir, templateDirname);
+    const templateName = path.basename(filename);
+    return { relativeDir, templateName };
   });
 }
 
-export function deleteTemplate(dir: string, name: string) {
-  const templatePath = getTemplateFilepath(dir, name);
+export function deleteTemplate(
+  dir: string,
+  relativeDir: string,
+  templateName: string
+) {
+  const templatePath = getTemplateFilepath(dir, relativeDir, templateName);
   if (fs.existsSync(templatePath)) {
     fs.rmSync(templatePath);
   }
 }
 
-export function getTemplateEvents(dir: string, name: string) {
-  const templatePath = getTemplateFilepath(dir, name);
+export function getTemplateEvents(
+  dir: string,
+  relativeDir: string,
+  templateName: string
+) {
+  const templatePath = getTemplateFilepath(dir, relativeDir, templateName);
   if (fs.existsSync(templatePath)) {
     return JSON.parse(fs.readFileSync(templatePath).toString()) as AnyEvent[];
   }

@@ -1,25 +1,16 @@
-import { api } from "@atrilabs/core";
+import { api, TemplateDetail } from "@atrilabs/core";
 import { AnyEvent } from "@atrilabs/forest";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useTemplateApi = () => {
-  const [templatesData, setTemplatesData] = useState<{
-    user: { dir: string; names: string[] };
-    default: { dir: string; names: string[] };
-  } | null>(null);
+  const [templateDetails, setTemplateDetails] = useState<
+    TemplateDetail[] | null
+  >(null);
 
   const fetchTemplatesData = () => {
-    api.getTemplateInfo((info) => {
-      const userDir = info.userDirs[0];
-      const defaultDir = info.defaultDirs[0];
-      api.getTemplateList(userDir, (userNames) => {
-        api.getTemplateList(defaultDir, (defaultNames) => {
-          setTemplatesData({
-            user: { dir: info.userDirs[0], names: userNames },
-            default: { dir: info.defaultDirs[0], names: defaultNames },
-          });
-        });
-      });
+    api.getTemplateList((templateDetails) => {
+      console.log(templateDetails);
+      setTemplateDetails(templateDetails);
     });
   };
 
@@ -28,11 +19,11 @@ export const useTemplateApi = () => {
   }, []);
 
   const callCreateTeamplateApi = useCallback(
-    (events: AnyEvent[], templateName: string) => {
-      if (templatesData) {
+    (events: AnyEvent[], templateDetail: TemplateDetail) => {
+      if (templateDetails) {
         api.createTemplate(
-          templatesData.user.dir,
-          templateName,
+          templateDetail.relativeDir,
+          templateDetail.templateName,
           events,
           (success) => {
             if (!success) {
@@ -44,19 +35,43 @@ export const useTemplateApi = () => {
         );
       }
     },
-    [templatesData]
+    [templateDetails]
   );
 
   const callDeleteTemplateApi = useCallback(
-    (name: string) => {
-      if (templatesData) {
-        api.deleteTemplate(templatesData.user.dir, name, () => {
-          fetchTemplatesData();
-        });
+    (templateDetail: TemplateDetail) => {
+      if (templateDetails) {
+        api.deleteTemplate(
+          templateDetail.relativeDir,
+          templateDetail.templateName,
+          () => {
+            fetchTemplatesData();
+          }
+        );
       }
     },
-    [templatesData]
+    [templateDetails]
   );
 
-  return { templatesData, callCreateTeamplateApi, callDeleteTemplateApi };
+  const relativeDirs = useMemo(() => {
+    const relativeDirs: { [relativeDir: string]: boolean } = {};
+    if (templateDetails) {
+      templateDetails.forEach((detail) => {
+        relativeDirs[detail.relativeDir] = true;
+      });
+    }
+    return relativeDirs;
+  }, [templateDetails]);
+
+  const sortedRelativeDirs = useMemo(() => {
+    return Object.keys(relativeDirs).sort();
+  }, [relativeDirs]);
+
+  return {
+    templateDetails,
+    callCreateTeamplateApi,
+    callDeleteTemplateApi,
+    relativeDirs,
+    sortedRelativeDirs,
+  };
 };

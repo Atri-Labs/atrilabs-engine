@@ -1,4 +1,4 @@
-import { api } from "@atrilabs/core";
+import { api, TemplateDetail } from "@atrilabs/core";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
@@ -11,9 +11,9 @@ import {
   TemplateComponents,
 } from "../types";
 
-function getComponentsFromTemplate(dir: string, name: string) {
+function getComponentsFromTemplate(relativeDir: string, name: string) {
   return new Promise<TemplateComponents>((res) => {
-    api.getTemplateEvents(dir, name, (events) => {
+    api.getTemplateEvents(relativeDir, name, (events) => {
       const templateComps: PartialTemplateComponents = {};
       const propMap: { [propNodeId: string]: any } = {};
       const links: { [propNodeId: string]: string } = {};
@@ -94,62 +94,71 @@ function getComponentsFromTemplate(dir: string, name: string) {
 }
 
 function recursive(
-  dir: string,
+  relativeDir: string,
   names: string[],
   currentFetchedIndex: number,
   cb: (templateComps: TemplateComponents, fetchIndex: number) => void
 ) {
   if (currentFetchedIndex < names.length) {
-    getComponentsFromTemplate(dir, names[currentFetchedIndex]).then(
+    getComponentsFromTemplate(relativeDir, names[currentFetchedIndex]).then(
       (templateComps) => {
         cb(templateComps, currentFetchedIndex);
         currentFetchedIndex++;
-        recursive(dir, names, currentFetchedIndex, cb);
+        recursive(relativeDir, names, currentFetchedIndex, cb);
       }
     );
   }
 }
 
-export const useShowTemplate = (dir: string, names: string[]) => {
-  const [formattedData, setFormattedData] = useState<FormattedTemplateData>({});
+export const useShowTemplate = (
+  selectedDir: string,
+  templateDetails: TemplateDetail[]
+) => {
+  const [formattedData, setFormattedData] = useState<FormattedTemplateData>([]);
 
   // do not fetch already fetched names
   const fetchedNames = useRef<{ [name: string]: boolean }>({});
 
+  // if selectedDir changes, we remove all previous data
   useEffect(() => {
-    // conver names to map
+    setFormattedData([]);
+    fetchedNames.current = {};
+  }, [selectedDir]);
+
+  const filteredTemplateDetails = useMemo(() => {
+    return [...templateDetails].filter(
+      (detail) => detail.relativeDir === selectedDir
+    );
+  }, [templateDetails, selectedDir]);
+
+  useEffect(() => {
+    // convert names to map
     const namesMap: { [name: string]: boolean } = {};
-    names.forEach((name) => {
-      namesMap[name] = true;
+    filteredTemplateDetails.forEach(({ templateName }) => {
+      namesMap[templateName] = true;
     });
 
     // new templates to add
     const newNames: string[] = [];
-    names.forEach((name) => {
-      if (!(name in fetchedNames.current)) {
-        newNames.push(name);
+    filteredTemplateDetails.forEach(({ templateName }) => {
+      if (!(templateName in fetchedNames.current)) {
+        newNames.push(templateName);
       }
     });
 
     // add new templates
     let currentFetchedIndex = 0;
     recursive(
-      dir,
+      selectedDir,
       newNames,
       currentFetchedIndex,
       (templateComps, fetchIndex) => {
         setFormattedData((formattedData) => {
-          const newFormattedData = { ...formattedData };
-          if (formattedData[dir]) {
-            newFormattedData[dir].push({
-              name: names[fetchIndex],
-              components: templateComps,
-            });
-          } else {
-            newFormattedData[dir] = [
-              { name: names[fetchIndex], components: templateComps },
-            ];
-          }
+          const newFormattedData = [...formattedData];
+          newFormattedData.push({
+            name: newNames[fetchIndex],
+            components: templateComps,
+          });
           return newFormattedData;
         });
       }
@@ -159,23 +168,18 @@ export const useShowTemplate = (dir: string, names: string[]) => {
     Object.keys(fetchedNames.current).forEach((name) => {
       if (!(name in namesMap)) {
         setFormattedData((formattedData) => {
-          const newFormattedData = { ...formattedData };
-          delete newFormattedData[name];
-          return { ...newFormattedData };
+          const newFormattedData = [...formattedData];
+          const index = newFormattedData.findIndex(
+            (curr) => curr.name === name
+          );
+          if (index >= 0) {
+            newFormattedData.splice(index, 1);
+          }
+          return newFormattedData;
         });
-        delete fetchedNames.current[name];
       }
     });
-  }, [dir, names]);
+  }, [selectedDir, filteredTemplateDetails]);
 
-  const formattedDataArr = useMemo(() => {
-    if (formattedData[dir] === undefined) {
-      return [];
-    }
-    return formattedData[dir].sort((a, b) => {
-      return a.name < b.name ? -1 : 0;
-    });
-  }, [formattedData, dir]);
-
-  return { formattedData, formattedDataArr };
+  return { formattedData };
 };

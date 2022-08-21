@@ -71,7 +71,6 @@ export interface ClientToServerEvents {
   getAssetsInfo: BrowserClient["getAssetsInfo"];
 
   // template related events
-  getTemplateInfo: BrowserClient["getTemplateInfo"];
   getTemplateList: BrowserClient["getTemplateList"];
   createTemplate: BrowserClient["createTemplate"];
   overwriteTemplate: BrowserClient["overwriteTemplate"];

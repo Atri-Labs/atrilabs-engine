@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { Container, getId, Menu } from "@atrilabs/core";
+import { Container, getId, Menu, TemplateDetail } from "@atrilabs/core";
 import {
   amber300,
   gray300,
@@ -86,8 +86,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export default function () {
-  const { templatesData, callCreateTeamplateApi, callDeleteTemplateApi } =
-    useTemplateApi();
+  const {
+    templateDetails,
+    callCreateTeamplateApi,
+    callDeleteTemplateApi,
+    relativeDirs,
+    sortedRelativeDirs,
+  } = useTemplateApi();
 
   const [showDropPanel, setShowDropContianer] = useState<boolean>(false);
   const openDropContainer = useCallback(() => {
@@ -102,36 +107,38 @@ export default function () {
   const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
     useState<boolean>(false);
   const createTempalateInputRef = useRef<HTMLInputElement>(null);
+  const createTemplateSelect = useRef<HTMLSelectElement>(null);
   const onCreateTemplateClickCb = useCallback(() => {
-    console.log("onCreateTemplateClickCb");
     setShowCreateTemplatePopup(true);
   }, []);
   const onCreateTemplatePopupCrossClickCb = useCallback(() => {
-    console.log("onCreateTemplatePopupCrossClickCb");
     setShowCreateTemplatePopup(false);
   }, []);
   const onCreateClickCb = useCallback(() => {
-    if (selected && templatesData && createTempalateInputRef.current) {
+    if (
+      selected &&
+      templateDetails &&
+      createTempalateInputRef.current &&
+      createTemplateSelect.current
+    ) {
       const templateEvents = createTemplate(selected, {
         copyCallbacks: true,
         copyDefaulCallbacks: false,
       });
       if (templateEvents.length > 0) {
-        callCreateTeamplateApi(
-          templateEvents,
-          createTempalateInputRef.current.value
-        );
+        callCreateTeamplateApi(templateEvents, {
+          relativeDir: createTemplateSelect.current.value,
+          templateName: createTempalateInputRef.current.value,
+        });
       }
     }
     setShowCreateTemplatePopup(false);
-  }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
+  }, [createTemplate, selected, templateDetails, callCreateTeamplateApi]);
 
-  const [showDeleteDialog, setShowDeleteDialog] = useState<{
-    templateName: string;
-  } | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    useState<TemplateDetail | null>(null);
   const onDeleteConfirm = useCallback(() => {
-    if (showDeleteDialog?.templateName)
-      callDeleteTemplateApi(showDeleteDialog.templateName);
+    if (showDeleteDialog) callDeleteTemplateApi(showDeleteDialog);
     setShowDeleteDialog(null);
   }, [showDeleteDialog, callDeleteTemplateApi]);
   const onDeleteCancel = useCallback(() => {
@@ -140,12 +147,10 @@ export default function () {
 
   useTemplateCopyPaste();
 
-  const { formattedDataArr } = useShowTemplate(
-    templatesData ? templatesData["user"].dir : "",
-    templatesData ? templatesData["user"].names : []
-  );
+  const selectedDir =
+    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : "";
 
-  console.log(formattedDataArr);
+  const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
 
   return (
     <>
@@ -178,51 +183,9 @@ export default function () {
                     color: gray300,
                   }}
                 >
-                  User Templates
+                  {selectedDir}
                 </div>
-                {templatesData &&
-                  templatesData["user"].dir &&
-                  formattedDataArr.map(({ name, components }) => {
-                    const formatName = formatTemplateName(name);
-                    const onMouseDownCb = () => {
-                      startDrag(
-                        { comp: DragTemplateComp, props: { text: formatName } },
-                        {
-                          type: "template",
-                          data: {
-                            dir: templatesData["user"].dir,
-                            name: name,
-                            newTemplateRootId: getId(),
-                          },
-                        }
-                      );
-                    };
-                    return (
-                      <div
-                        key={name}
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                        }}
-                        onMouseDown={onMouseDownCb}
-                      >
-                        <TemplateRenderer templateComponents={components} />
-                      </div>
-                    );
-                  })}
-              </div>
-              <div>
-                <div
-                  style={{
-                    padding: "0.5rem",
-                    backgroundColor: gray900,
-                    ...h4Heading,
-                    color: gray300,
-                  }}
-                >
-                  Default Templates
-                </div>
-                {templatesData?.default.names.map((name) => {
+                {formattedData.map(({ name, components }) => {
                   const formatName = formatTemplateName(name);
                   const onMouseDownCb = () => {
                     startDrag(
@@ -230,7 +193,7 @@ export default function () {
                       {
                         type: "template",
                         data: {
-                          dir: templatesData.default.dir,
+                          dir: selectedDir,
                           name: name,
                           newTemplateRootId: getId(),
                         },
@@ -241,14 +204,12 @@ export default function () {
                     <div
                       key={name}
                       style={{
-                        padding: "0.5rem",
-                        borderBottom: `1px solid ${gray900}`,
-                        ...h4Heading,
-                        color: gray300,
+                        display: "flex",
+                        flexDirection: "column",
                       }}
                       onMouseDown={onMouseDownCb}
                     >
-                      {formatName}
+                      <TemplateRenderer templateComponents={components} />
                     </div>
                   );
                 })}
@@ -288,6 +249,12 @@ export default function () {
                     <Cross />
                   </span>
                 </div>
+                <label htmlFor="templateCategory">Template Category</label>
+                <select ref={createTemplateSelect}>
+                  {Object.keys(relativeDirs).map((relativeDir) => {
+                    return <option value={relativeDir}>{relativeDir}</option>;
+                  })}
+                </select>
                 <label htmlFor="templateName">Template Name</label>
                 <input ref={createTempalateInputRef} id="templateName" />
                 <button

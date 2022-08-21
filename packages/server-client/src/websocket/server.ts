@@ -335,31 +335,49 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       callback(assetConf);
     });
 
-    socket.on("getTemplateInfo", (callback) => {
-      const info = {
-        defaultDirs: toolConfig.templateManager.defaultDirs || [],
-        userDirs: toolConfig.templateManager.dirs || [],
-      };
-      callback(info);
+    socket.on("getTemplateList", (callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        callback(getTemplateList(dir));
+      } else {
+        callback([]);
+      }
     });
-    socket.on("getTemplateList", (dir, callback) => {
-      callback(getTemplateList(dir));
+    socket.on(
+      "createTemplate",
+      (relativeDir, templateName, events, callback) => {
+        if (toolConfig.templateManager.dirs?.[0]) {
+          const dir = toolConfig.templateManager.dirs[0];
+          createTemplate(dir, relativeDir, templateName, events);
+          callback(true);
+        } else callback(false);
+      }
+    );
+    socket.on(
+      "overwriteTemplate",
+      (relativeDir, templateName, events, callback) => {
+        if (toolConfig.templateManager.dirs?.[0]) {
+          const dir = toolConfig.templateManager.dirs[0];
+          overwriteTemplate(dir, relativeDir, templateName, events);
+          callback(true);
+        } else callback(false);
+      }
+    );
+    socket.on("deleteTemplate", (relativeDir, templateName, callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        deleteTemplate(dir, relativeDir, templateName);
+        callback(true);
+      } else callback(false);
     });
-    socket.on("createTemplate", (dir, name, events, callback) => {
-      createTemplate(dir, name, events);
-      callback(true);
-    });
-    socket.on("overwriteTemplate", (dir, name, events, callback) => {
-      overwriteTemplate(dir, name, events);
-      callback(true);
-    });
-    socket.on("deleteTemplate", (dir, name, callback) => {
-      deleteTemplate(dir, name);
-      callback(true);
-    });
-    socket.on("getTemplateEvents", (dir, name, callback) => {
-      const events = getTemplateEvents(dir, name);
-      callback(events || []);
+    socket.on("getTemplateEvents", (relativeDir, templateName, callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        const events = getTemplateEvents(dir, relativeDir, templateName);
+        callback(events || []);
+      } else {
+        callback([]);
+      }
     });
   });
 
