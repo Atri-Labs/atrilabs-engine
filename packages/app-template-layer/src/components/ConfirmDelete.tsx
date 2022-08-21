@@ -10,7 +10,7 @@ import {
 } from "@atrilabs/design-system";
 import { Cross } from "../assets/Cross";
 import { ReactComponent as AlertIcon } from "../assets/alert-triangle.svg";
-import { formatTemplateName } from "../utils";
+import { formatTemplatename } from "../utils";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -77,7 +77,7 @@ export const ConfirmDelete: React.FC<ConfirmDeleteProps> = React.memo(
               <div style={{ paddingBottom: "1rem" }}>
                 {" "}
                 Are you sure you want to delete this template?
-                <p>{formatTemplateName(props.templateName)}</p>
+                <p>{formatTemplatename(props.templateName)}</p>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <CancelButton text={"Cancel"} onClick={props.onCancel} />

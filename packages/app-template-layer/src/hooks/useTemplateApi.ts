@@ -9,7 +9,6 @@ export const useTemplateApi = () => {
 
   const fetchTemplatesData = () => {
     api.getTemplateList((templateDetails) => {
-      console.log(templateDetails);
       setTemplateDetails(templateDetails);
     });
   };

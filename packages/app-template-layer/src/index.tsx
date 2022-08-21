@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Container, getId, Menu, TemplateDetail } from "@atrilabs/core";
 import {
   amber300,
@@ -20,10 +20,10 @@ import { startDrag } from "@atrilabs/canvas-runtime";
 import { DragTemplateComp } from "./components/DragTemplateComp";
 import "./styles.css";
 import { ConfirmDelete } from "./components/ConfirmDelete";
-import { formatTemplateName } from "./utils";
 import { useTemplateCopyPaste } from "./hooks/useTemplateCopyPaste";
 import { useShowTemplate } from "./hooks/useShowTemplate";
 import { TemplateRenderer } from "./components/TemplateRenderer";
+import { RelativeDirectorySelector } from "./components/RelativeDirectorySelector";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -147,10 +147,18 @@ export default function () {
 
   useTemplateCopyPaste();
 
-  const selectedDir =
-    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : "";
+  const [selectedDir, setSelectedDir] = useState<string>(
+    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : ""
+  );
+  useEffect(() => {
+    setSelectedDir(sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : "");
+  }, [sortedRelativeDirs]);
 
   const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
+
+  const onRelativeDirSelect = useCallback((dir: string) => {
+    setSelectedDir(dir);
+  }, []);
 
   return (
     <>
@@ -174,22 +182,30 @@ export default function () {
               </div>
             </header>
             <div>
-              <div>
+              <div
+                style={{
+                  rowGap: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <div
                   style={{
-                    padding: "0.5rem",
                     backgroundColor: gray900,
                     ...h4Heading,
                     color: gray300,
                   }}
                 >
-                  {selectedDir}
+                  <RelativeDirectorySelector
+                    seletecdDir={selectedDir}
+                    relativeDirs={sortedRelativeDirs}
+                    onRelativeDirSelect={onRelativeDirSelect}
+                  />
                 </div>
                 {formattedData.map(({ name, components }) => {
-                  const formatName = formatTemplateName(name);
                   const onMouseDownCb = () => {
                     startDrag(
-                      { comp: DragTemplateComp, props: { text: formatName } },
+                      { comp: DragTemplateComp, props: { text: name } },
                       {
                         type: "template",
                         data: {
@@ -207,9 +223,21 @@ export default function () {
                         display: "flex",
                         flexDirection: "column",
                       }}
-                      onMouseDown={onMouseDownCb}
                     >
-                      <TemplateRenderer templateComponents={components} />
+                      <TemplateRenderer
+                        templateName={name}
+                        templateComponents={components}
+                        styles={
+                          selectedDir.match("basic") ? { height: "" } : {}
+                        }
+                        onDeleteClicked={() => {
+                          setShowDeleteDialog({
+                            templateName: name,
+                            relativeDir: selectedDir,
+                          });
+                        }}
+                        onMouseDown={onMouseDownCb}
+                      />
                     </div>
                   );
                 })}
@@ -251,8 +279,17 @@ export default function () {
                 </div>
                 <label htmlFor="templateCategory">Template Category</label>
                 <select ref={createTemplateSelect}>
-                  {Object.keys(relativeDirs).map((relativeDir) => {
-                    return <option value={relativeDir}>{relativeDir}</option>;
+                  {Object.keys({
+                    ...relativeDirs,
+                    basics: true,
+                    layout: true,
+                    data: true,
+                  }).map((relativeDir) => {
+                    return (
+                      <option value={relativeDir} key={relativeDir}>
+                        {relativeDir}
+                      </option>
+                    );
                   })}
                 </select>
                 <label htmlFor="templateName">Template Name</label>

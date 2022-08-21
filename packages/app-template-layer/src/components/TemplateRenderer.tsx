@@ -1,5 +1,8 @@
-import { useMemo } from "react";
+import { gray400, gray800, smallText } from "@atrilabs/design-system";
+import React, { useMemo } from "react";
 import { TemplateComponents } from "../types";
+import { formatTemplatename } from "../utils";
+import { ReactComponent as Trash } from "../assets/trash.svg";
 
 function getNode(templateComponents: TemplateComponents, parentId: string) {
   const nodes: React.ReactNode[] = [];
@@ -14,15 +17,24 @@ function getNode(templateComponents: TemplateComponents, parentId: string) {
       const children = acceptsChildren
         ? getNode(templateComponents, id)
         : undefined;
-      console.log(children);
       nodes.push(<FC {...props} key={id} children={children} />);
     });
   return nodes;
 }
 
 export const TemplateRenderer: React.FC<{
+  templateName: string;
   templateComponents: TemplateComponents;
-}> = ({ templateComponents }) => {
+  styles?: React.CSSProperties;
+  onDeleteClicked: (templateName: string) => void;
+  onMouseDown: () => void;
+}> = ({
+  templateComponents,
+  styles,
+  templateName,
+  onDeleteClicked,
+  onMouseDown,
+}) => {
   const nodes = useMemo(() => {
     if (templateComponents["templateRoot"] === undefined) {
       return null;
@@ -32,12 +44,44 @@ export const TemplateRenderer: React.FC<{
   return (
     <div
       style={{
-        width: "12rem",
-        height: "8rem",
-        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "left",
+        rowGap: "10px",
+        paddingBottom: "10px",
+        paddingLeft: "1rem",
+        paddingRight: "1rem",
+        borderBottom: `1px solid ${gray800}`,
       }}
     >
-      {nodes}
+      <div
+        style={{
+          width: "13rem",
+          height: "8rem",
+          ...styles,
+        }}
+        onMouseDown={onMouseDown}
+      >
+        {nodes}
+      </div>
+      <div
+        style={{
+          ...smallText,
+          color: gray400,
+          fontSize: "12px",
+          justifyContent: "space-between",
+          display: "flex",
+        }}
+      >
+        <div>{formatTemplatename(templateName)}</div>
+        <div
+          onClick={() => {
+            onDeleteClicked(templateName);
+          }}
+        >
+          <Trash />
+        </div>
+      </div>
     </div>
   );
 };
