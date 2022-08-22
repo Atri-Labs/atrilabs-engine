@@ -188,6 +188,23 @@ const getTemplateEvents: BrowserClient["getTemplateEvents"] = (
   socket.emit("getTemplateEvents", relativeDir, name, cb);
 };
 
+const importResource: BrowserClient["importResource"] = (
+  importStatement,
+  cb
+) => {
+  socket.emit("importResource", importStatement, cb);
+};
+
+const getResources: BrowserClient["getResources"] = (cb) => {
+  socket.emit("getResources", cb);
+};
+
+const subscribeResourceUpdates: BrowserClient["subscribeResourceUpdates"] = (
+  cb
+) => {
+  socket.on("newResource", cb);
+};
+
 const client: BrowserClient = {
   getMeta,
   getPages,
@@ -210,6 +227,9 @@ const client: BrowserClient = {
   overwriteTemplate,
   deleteTemplate,
   getTemplateEvents,
+  importResource,
+  getResources,
+  subscribeResourceUpdates,
 };
 
 export default client;

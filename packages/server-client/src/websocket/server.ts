@@ -379,6 +379,16 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         callback([]);
       }
     });
+
+    socket.on("importResource", (resource, cb) => {
+      // parse resource.str
+      // if successful:
+      // write in localdb
+      // emit newResource
+    });
+    socket.on("getResources", (cb) => {
+      // read all resources from localdb
+    });
   });
 
   app.use(assetUrlPrefix, express.static(assetsDir));

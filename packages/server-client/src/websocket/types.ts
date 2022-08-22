@@ -1,4 +1,4 @@
-import { BrowserClient } from "@atrilabs/core";
+import { BrowserClient, ImportedResource } from "@atrilabs/core";
 import { AnyEvent, Folder, Page } from "@atrilabs/forest";
 import { PagesDbSchema } from "@atrilabs/forest/lib/implementations/lowdb/types";
 
@@ -10,6 +10,8 @@ export interface ServerToClientEvents {
     // the socket id from which this event originated
     socketId: string
   ) => void;
+
+  newResource: (resource: ImportedResource) => void;
 }
 
 export interface ClientToServerEvents {
@@ -76,6 +78,10 @@ export interface ClientToServerEvents {
   overwriteTemplate: BrowserClient["overwriteTemplate"];
   deleteTemplate: BrowserClient["deleteTemplate"];
   getTemplateEvents: BrowserClient["getTemplateEvents"];
+
+  // resource management api
+  importResource: BrowserClient["importResource"];
+  getResources: BrowserClient["getResources"];
 }
 
 export interface InterServerEvents {}
