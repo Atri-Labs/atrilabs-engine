@@ -110,8 +110,16 @@ function recursive(
   }
 }
 
+/**
+ * This hook doesn't create the nodes that have already been created when
+ * the templateDetails change. In other words, it takes a diff between already
+ * rendered template names and newly created templates. It also takes a diff between
+ * already rendered template and recenlty deleted template. To achieve this, it maintains
+ * a fetchedNames ref as list of currently fetched nodes. It assumes templateDetails have
+ * no duplicate entry.
+ */
 export const useShowTemplate = (
-  selectedDir: string,
+  selectedDir: string | null,
   templateDetails: TemplateDetail[]
 ) => {
   const [formattedData, setFormattedData] = useState<FormattedTemplateData>([]);
@@ -138,6 +146,27 @@ export const useShowTemplate = (
       namesMap[templateName] = true;
     });
 
+    // remove templates
+    setFormattedData((formattedData) => {
+      const newFormattedData = [...formattedData];
+      Object.keys(fetchedNames.current).forEach((name) => {
+        if (!(name in namesMap)) {
+          const index = newFormattedData.findIndex(
+            (curr) => curr.name === name
+          );
+          if (index >= 0) {
+            newFormattedData.splice(index, 1);
+            // update fetched name list
+            delete fetchedNames.current[name];
+          }
+        }
+      });
+      return newFormattedData;
+    });
+  }, [filteredTemplateDetails]);
+
+  useEffect(() => {
+    if (selectedDir === null) return;
     // new templates to add
     const newNames: string[] = [];
     filteredTemplateDetails.forEach(({ templateName }) => {
@@ -153,6 +182,9 @@ export const useShowTemplate = (
       newNames,
       currentFetchedIndex,
       (templateComps, fetchIndex) => {
+        // update fetched name list
+        fetchedNames.current[newNames[fetchIndex]] = true;
+
         setFormattedData((formattedData) => {
           const newFormattedData = [...formattedData];
           newFormattedData.push({
@@ -163,22 +195,6 @@ export const useShowTemplate = (
         });
       }
     );
-
-    // templates to remove
-    Object.keys(fetchedNames.current).forEach((name) => {
-      if (!(name in namesMap)) {
-        setFormattedData((formattedData) => {
-          const newFormattedData = [...formattedData];
-          const index = newFormattedData.findIndex(
-            (curr) => curr.name === name
-          );
-          if (index >= 0) {
-            newFormattedData.splice(index, 1);
-          }
-          return newFormattedData;
-        });
-      }
-    });
   }, [selectedDir, filteredTemplateDetails]);
 
   return { formattedData };

@@ -147,12 +147,18 @@ export default function () {
 
   useTemplateCopyPaste();
 
-  const [selectedDir, setSelectedDir] = useState<string>(
-    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : ""
+  const [selectedDir, setSelectedDir] = useState<string | null>(
+    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : null
   );
   useEffect(() => {
-    setSelectedDir(sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : "");
-  }, [sortedRelativeDirs]);
+    if (
+      selectedDir === null &&
+      sortedRelativeDirs.length > 0 &&
+      sortedRelativeDirs[0] !== undefined
+    ) {
+      setSelectedDir(sortedRelativeDirs[0]);
+    }
+  }, [sortedRelativeDirs, selectedDir]);
 
   const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
 
@@ -189,58 +195,62 @@ export default function () {
                   flexDirection: "column",
                 }}
               >
-                <div
-                  style={{
-                    backgroundColor: gray900,
-                    ...h4Heading,
-                    color: gray300,
-                  }}
-                >
-                  <RelativeDirectorySelector
-                    seletecdDir={selectedDir}
-                    relativeDirs={sortedRelativeDirs}
-                    onRelativeDirSelect={onRelativeDirSelect}
-                  />
-                </div>
-                {formattedData.map(({ name, components }) => {
-                  const onMouseDownCb = () => {
-                    startDrag(
-                      { comp: DragTemplateComp, props: { text: name } },
-                      {
-                        type: "template",
-                        data: {
-                          dir: selectedDir,
-                          name: name,
-                          newTemplateRootId: getId(),
-                        },
-                      }
-                    );
-                  };
-                  return (
+                {selectedDir ? (
+                  <>
                     <div
-                      key={name}
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
+                        backgroundColor: gray900,
+                        ...h4Heading,
+                        color: gray300,
                       }}
                     >
-                      <TemplateRenderer
-                        templateName={name}
-                        templateComponents={components}
-                        styles={
-                          selectedDir.match("basic") ? { height: "" } : {}
-                        }
-                        onDeleteClicked={() => {
-                          setShowDeleteDialog({
-                            templateName: name,
-                            relativeDir: selectedDir,
-                          });
-                        }}
-                        onMouseDown={onMouseDownCb}
+                      <RelativeDirectorySelector
+                        seletecdDir={selectedDir}
+                        relativeDirs={sortedRelativeDirs}
+                        onRelativeDirSelect={onRelativeDirSelect}
                       />
                     </div>
-                  );
-                })}
+                    {formattedData.map(({ name, components }) => {
+                      const onMouseDownCb = () => {
+                        startDrag(
+                          { comp: DragTemplateComp, props: { text: name } },
+                          {
+                            type: "template",
+                            data: {
+                              dir: selectedDir,
+                              name: name,
+                              newTemplateRootId: getId(),
+                            },
+                          }
+                        );
+                      };
+                      return (
+                        <div
+                          key={name}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <TemplateRenderer
+                            templateName={name}
+                            templateComponents={components}
+                            styles={
+                              selectedDir.match("basic") ? { height: "" } : {}
+                            }
+                            onDeleteClicked={() => {
+                              setShowDeleteDialog({
+                                templateName: name,
+                                relativeDir: selectedDir,
+                              });
+                            }}
+                            onMouseDown={onMouseDownCb}
+                          />
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

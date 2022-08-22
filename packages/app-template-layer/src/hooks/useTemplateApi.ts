@@ -7,15 +7,15 @@ export const useTemplateApi = () => {
     TemplateDetail[] | null
   >(null);
 
-  const fetchTemplatesData = () => {
+  const fetchTemplatesData = useCallback(() => {
     api.getTemplateList((templateDetails) => {
       setTemplateDetails(templateDetails);
     });
-  };
+  }, []);
 
   useEffect(() => {
     fetchTemplatesData();
-  }, []);
+  }, [fetchTemplatesData]);
 
   const callCreateTeamplateApi = useCallback(
     (events: AnyEvent[], templateDetail: TemplateDetail) => {
@@ -34,7 +34,7 @@ export const useTemplateApi = () => {
         );
       }
     },
-    [templateDetails]
+    [templateDetails, fetchTemplatesData]
   );
 
   const callDeleteTemplateApi = useCallback(
@@ -49,7 +49,7 @@ export const useTemplateApi = () => {
         );
       }
     },
-    [templateDetails]
+    [templateDetails, fetchTemplatesData]
   );
 
   const relativeDirs = useMemo(() => {
