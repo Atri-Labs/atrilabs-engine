@@ -27,7 +27,7 @@ export const TemplateRenderer: React.FC<{
   templateComponents: TemplateComponents;
   styles?: React.CSSProperties;
   onDeleteClicked: (templateName: string) => void;
-  onMouseDown: () => void;
+  onMouseDown: (e: React.MouseEvent) => void;
 }> = ({
   templateComponents,
   styles,

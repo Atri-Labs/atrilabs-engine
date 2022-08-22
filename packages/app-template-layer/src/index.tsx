@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Container, getId, Menu, TemplateDetail } from "@atrilabs/core";
 import {
   amber300,
@@ -211,7 +211,11 @@ export default function () {
                       />
                     </div>
                     {formattedData.map(({ name, components }) => {
-                      const onMouseDownCb = () => {
+                      const onMouseDownCb = (e: React.MouseEvent) => {
+                        // CARE
+                        e.preventDefault();
+                        e.stopPropagation();
+
                         startDrag(
                           { comp: DragTemplateComp, props: { text: name } },
                           {
