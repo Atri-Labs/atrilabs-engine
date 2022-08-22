@@ -406,6 +406,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
                 JSON.stringify(importedResources, null, 2)
               );
               cb(true);
+              io.sockets.emit("newResource", importedResource);
             } else {
               console.log(
                 `The ${resourceFile} is expected to have array of resources. Please check the file.`
@@ -422,8 +423,17 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
           cb(false);
         });
     });
-    socket.on("getResources", (_cb) => {
-      // read all resources from localdb
+    socket.on("getResources", (cb) => {
+      if (fs.existsSync(resourceFile)) {
+        try {
+          const resources = JSON.parse(
+            fs.readFileSync(resourceFile).toString()
+          );
+          if (Array.isArray(resources)) {
+            cb(resources);
+          }
+        } catch {}
+      }
     });
   });
 

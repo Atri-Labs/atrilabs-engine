@@ -99,7 +99,7 @@ function fetchExternalCSS(url: string) {
     const parsedUrl = new URL(url);
     let request: http.ClientRequest;
     if (parsedUrl.protocol.startsWith("https")) {
-      request = https.request(url);
+      request = https.request(parsedUrl);
     } else {
       request = http.request(url);
     }

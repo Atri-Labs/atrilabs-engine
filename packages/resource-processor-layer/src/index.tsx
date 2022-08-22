@@ -15,6 +15,7 @@ import {
 import { ReactComponent as DownloadCloud } from "./assets/download-cloud.svg";
 import { useState, useCallback, useRef } from "react";
 import { Cross } from "./assets/Cross";
+import { useFetchResources } from "./hooks/useFetchResources";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -70,6 +71,9 @@ export default function () {
       });
     }
   }, []);
+
+  // fetch resources
+  const { resources } = useFetchResources();
 
   return (
     <>
@@ -138,6 +142,10 @@ export default function () {
                     outline: "none",
                     boxSizing: "border-box",
                     padding: "0.5rem",
+                    background: gray900,
+                    ...smallText,
+                    color: "white",
+                    fontSize: "12px",
                   }}
                   rows={5}
                   ref={importResourceTextareaRef}
@@ -169,31 +177,28 @@ export default function () {
                   rowGap: "10px",
                 }}
               >
-                <div
-                  style={{
-                    background: gray500,
-                    ...smallText,
-                    fontSize: "12px",
-                    padding: "0.5rem",
-                    borderRadius: "4px",
-                    color: gray200,
-                  }}
-                >
-                  <code>@import url("abc.css");</code>
-                </div>
-
-                <div
-                  style={{
-                    background: gray500,
-                    ...smallText,
-                    fontSize: "12px",
-                    padding: "0.5rem",
-                    borderRadius: "4px",
-                    color: gray200,
-                  }}
-                >
-                  <code>@import url("abc.css");</code>
-                </div>
+                {resources && Array.isArray(resources)
+                  ? resources.map((resource, index) => {
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            background: gray500,
+                            ...smallText,
+                            fontSize: "12px",
+                            padding: "0.5rem",
+                            borderRadius: "4px",
+                            color: gray200,
+                            userSelect: "all",
+                          }}
+                        >
+                          <code style={{ overflowWrap: "anywhere" }}>
+                            {resource.str}
+                          </code>
+                        </div>
+                      );
+                    })
+                  : null}
               </div>
             </div>
           </div>
