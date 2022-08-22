@@ -23,6 +23,7 @@ const forestsConfig = {
 const compileAppOutputDir = process.cwd();
 const defaultTemplateDir = "./templates";
 const userTemplateDir = "atri_templates";
+const resourceDir = "./localdb/resources";
 
 const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
   ? parseInt(process.env["EVENT_SERVER_PORT"])
@@ -184,5 +185,8 @@ module.exports = {
   templateManager: {
     defaultDirs: [defaultTemplateDir],
     dirs: [userTemplateDir],
+  },
+  resources: {
+    path: resourceDir,
   },
 };

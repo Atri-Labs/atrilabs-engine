@@ -137,6 +137,9 @@ export type ToolConfig = {
     // directories that have templates created by user
     dirs?: string[];
   };
+  resources: {
+    path: string;
+  };
 };
 
 // type for manifest.schema.config.js
@@ -184,11 +187,13 @@ export type TemplateDetail = { relativeDir: string; templateName: string };
 
 export type ImportedResource = {
   str: string;
+  method: "link" | "css";
   imports: {
-    fonts: {
-      method: "link" | "css";
+    fonts?: {
       fontFamily: string;
-    };
+      fontWeight: string;
+      fontStyle: string;
+    }[];
   };
 };
 

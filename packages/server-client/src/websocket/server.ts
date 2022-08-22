@@ -1,4 +1,4 @@
-import { ToolConfig } from "@atrilabs/core";
+import { ImportedResource, ToolConfig } from "@atrilabs/core";
 import { Server } from "socket.io";
 import { createForestMgr } from "./create-forest-mgr";
 import {
@@ -22,6 +22,7 @@ import {
   getTemplateList,
   overwriteTemplate,
 } from "./template-handler";
+import { fetchCSSResource } from "./resource-handler";
 const app = express();
 const server = http.createServer(app);
 
@@ -38,6 +39,16 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     InterServerEvents,
     SocketData
   >(server, { cors: { origin: "*" } });
+
+  // resources management
+  const resourseDirectory = path.resolve(toolConfig.resources.path);
+  const resourceFile = path.resolve(resourseDirectory, "resources.json");
+  if (!fs.existsSync(resourseDirectory)) {
+    fs.mkdirSync(resourseDirectory, { recursive: true });
+  }
+  if (!fs.existsSync(resourceFile)) {
+    fs.writeFileSync(resourceFile, "[]");
+  }
 
   // create one directory and event manager for each of forest
   const getEventManager = createForestMgr(toolConfig).getEventManager;
@@ -381,10 +392,35 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     });
 
     socket.on("importResource", (resource, cb) => {
-      // parse resource.str
-      // if successful:
-      // write in localdb
-      // emit newResource
+      fetchCSSResource(resource.str)
+        .then((importedResource) => {
+          console.log(importedResource);
+          try {
+            const fileContent =
+              fs.readFileSync(resourceFile).toString() || "[]";
+            const importedResources: ImportedResource[] =
+              JSON.parse(fileContent);
+            if (Array.isArray(importedResources)) {
+              importedResources.push(importedResource);
+              fs.writeFileSync(
+                resourceFile,
+                JSON.stringify(importedResources, null, 2)
+              );
+              cb(true);
+            } else {
+              console.log(
+                `The ${resourceFile} is expected to have array of resources. Please check the file.`
+              );
+              cb(false);
+            }
+          } catch (err) {
+            console.log(err);
+            cb(false);
+          }
+        })
+        .catch(() => {
+          cb(false);
+        });
     });
     socket.on("getResources", (cb) => {
       // read all resources from localdb
