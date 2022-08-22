@@ -10,7 +10,6 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
   const metaKeyDown = useRef<boolean>(false);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("keydown", (context, event) => {
-      console.log("keydown fired");
       if (event.type !== "keydown") {
         return;
       }
@@ -47,7 +46,6 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
 
   useEffect(() => {
     const unsub = subscribeCanvasActivity("keyup", (_context, event) => {
-      console.log("keyup called");
       if (event.type !== "keyup") {
         return;
       }
