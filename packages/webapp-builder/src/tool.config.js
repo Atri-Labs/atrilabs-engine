@@ -71,6 +71,7 @@ module.exports = {
     { pkg: "@atrilabs/asset-manager-layer" },
     { pkg: "@atrilabs/app-template-layer" },
     { pkg: "@atrilabs/action-layer" },
+    { pkg: "@atrilabs/resource-processor-layer" },
   ],
   output: "lib",
   services: {
