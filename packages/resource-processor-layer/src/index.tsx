@@ -1,4 +1,4 @@
-import { Container, Menu } from "@atrilabs/core";
+import { api, Container, Menu } from "@atrilabs/core";
 import {
   amber300,
   gray200,
@@ -13,7 +13,7 @@ import {
   smallText,
 } from "@atrilabs/design-system";
 import { ReactComponent as DownloadCloud } from "./assets/download-cloud.svg";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Cross } from "./assets/Cross";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -58,6 +58,17 @@ export default function () {
   }, []);
   const closeContainer = useCallback(() => {
     setShowDropContianer(false);
+  }, []);
+
+  // import new resources
+  const importResourceTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const onImportBtnClick = useCallback(() => {
+    if (importResourceTextareaRef.current) {
+      const importSrc = importResourceTextareaRef.current.value;
+      api.importResource({ str: importSrc }, (success) => {
+        console.log("success", success);
+      });
+    }
   }, []);
 
   return (
@@ -129,8 +140,11 @@ export default function () {
                     padding: "0.5rem",
                   }}
                   rows={5}
+                  ref={importResourceTextareaRef}
                 />
-                <button style={styles.importBtn}>Import</button>
+                <button style={styles.importBtn} onClick={onImportBtnClick}>
+                  Import
+                </button>
               </div>
             </div>
 

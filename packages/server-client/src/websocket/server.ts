@@ -394,7 +394,6 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     socket.on("importResource", (resource, cb) => {
       fetchCSSResource(resource.str)
         .then((importedResource) => {
-          console.log(importedResource);
           try {
             const fileContent =
               fs.readFileSync(resourceFile).toString() || "[]";
@@ -419,10 +418,11 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
           }
         })
         .catch(() => {
+          console.log("Some error occured while fetching CSS resource.");
           cb(false);
         });
     });
-    socket.on("getResources", (cb) => {
+    socket.on("getResources", (_cb) => {
       // read all resources from localdb
     });
   });

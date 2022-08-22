@@ -191,7 +191,7 @@ export type ImportedResource = {
   imports: {
     fonts?: {
       fontFamily: string;
-      fontWeight: string;
+      fontWeight: string | number;
       fontStyle: string;
     }[];
   };
