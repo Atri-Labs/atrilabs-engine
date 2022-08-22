@@ -62,7 +62,7 @@ export default function () {
 
   return (
     <>
-      <Menu name="PageMenu" order={2}>
+      <Menu name="PageMenu" order={3}>
         <div style={styles.iconContainer}>
           <IconMenu onClick={openDropContainer} active={false}>
             <DownloadCloud />
