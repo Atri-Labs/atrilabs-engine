@@ -146,7 +146,11 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
   const getOpacityValue = (hex: Color["hex"]) => {
     let convertedRgbValue = hex2rgb(hex);
     if (convertedRgbValue.a) {
-      return String(convertedRgbValue.a * 100);
+      Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
+        ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
+        : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
+
+      return String(convertedRgbValue.a);
     } else {
       return "100";
     }
@@ -166,10 +170,16 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          outlineColor: handleOpacityChange(
-            String(Number(e.target.value) / 100),
-            String(props.styles.outlineColor)
-          ),
+          outlineColor:
+            e.target.value !== ""
+              ? handleOpacityChange(
+                  String(Number(e.target.value) / 100),
+                  String(props.styles.backgroundColor)
+                )
+              : handleOpacityChange(
+                  String(e.target.value),
+                  String(props.styles.backgroundColor)
+                ),
         },
       },
     });
@@ -186,12 +196,12 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
   const handleOpacityChange = useCallback(
     (opacityValue: string, hex: Color["hex"]) => {
       let convertedRgbValue = hex2rgb(hex);
-      if (opacityHelper(opacityValue) > 0) {
-        convertedRgbValue.a = opacityHelper(opacityValue);
+      if (opacityHelper(opacityValue) >= 1) {
+        convertedRgbValue.a = 1;
       } else if (opacityHelper(opacityValue) < 0) {
         convertedRgbValue.a = 0;
       } else {
-        convertedRgbValue.a = 1;
+        convertedRgbValue.a = opacityHelper(opacityValue);
       }
       return rgb2hex(convertedRgbValue);
     },
