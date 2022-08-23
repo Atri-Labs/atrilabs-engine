@@ -5,7 +5,7 @@ import {
   gray100,
   gray800,
 } from "@atrilabs/design-system";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as LA } from "../../assets/typo/left-align.svg";
 import { ReactComponent as RA } from "../../assets/typo/right-align.svg";
@@ -16,8 +16,8 @@ import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { InputWithPreprocessor } from "../commons/InputWithPreprocessor";
 import { Input } from "../commons/Input";
-import fonts from "../commons/fonts.json";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
+import { useGetFontImports } from "../../hooks/useGetFontImports";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -69,15 +69,48 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+function isStringANumber(str: string) {
+  return str.match(/^[0-9]+$/g) ? true : false;
+}
+
 const textAlignValues = ["left", "right", "center", "justify"];
-// CSS Values for different CSS property (The default value must be at position 0)
-// CSS values for flex-direction CSS property (The default value row is at position 0)
+
+const weightNameMap: { [weight: string | number]: string } = {
+  100: "Thin",
+  200: "Extra Light",
+  300: "Light",
+  400: "Regular",
+  500: "Medium",
+  600: "Semi Bold",
+  700: "Bold",
+  800: "Extra Bold",
+  900: "Black",
+};
 
 // This serves as a Semi-Smart component, i.e. it uses useMemo but not useState or useRef.
 export const Typography: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+  const { formattedFontInfo, fontFamilies } = useGetFontImports();
 
-  const handleFontChange = useCallback(
+  const fontWeights = useMemo(() => {
+    return props.styles.fontFamily &&
+      props.styles.fontFamily in formattedFontInfo
+      ? Array.from(
+          new Set(formattedFontInfo[props.styles.fontFamily].fontWeights)
+        )
+      : [];
+  }, [formattedFontInfo, props.styles]);
+
+  const fontStyles = useMemo(() => {
+    return props.styles.fontFamily &&
+      props.styles.fontFamily in formattedFontInfo
+      ? Array.from(
+          new Set(formattedFontInfo[props.styles.fontFamily].fontStyles)
+        )
+      : [];
+  }, [formattedFontInfo, props.styles]);
+
+  const handleFontWeightChange = useCallback(
     (
       e:
         | React.ChangeEvent<HTMLInputElement>
@@ -87,7 +120,25 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
       props.patchCb({
         property: {
           styles: {
-            [fontItem]: parseInt(e.target.value),
+            [fontItem]: isStringANumber(e.target.value)
+              ? parseInt(e.target.value)
+              : e.target.value,
+          },
+        },
+      });
+    },
+    [props]
+  );
+
+  const handleFontStyleChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLSelectElement>,
+      fontItem: keyof React.CSSProperties
+    ) => {
+      props.patchCb({
+        property: {
+          styles: {
+            [fontItem]: e.target.value,
           },
         },
       });
@@ -97,9 +148,6 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
 
   const handleFontFamChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const styleEle = document.createElement("style");
-      styleEle.innerHTML = `@import url("https://fonts.googleapis.com/css?family=${e.target.value}&display=swap");`;
-      document.body.appendChild(styleEle);
       props.patchCb({
         property: {
           styles: {
@@ -155,11 +203,16 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               name="fontFamily"
               style={{ ...styles.inputBox, width: "145px" }}
               onChange={(e) => handleFontFamChange(e)}
-              value={props.styles.fontFamily || fonts[0].fontFamily}
+              value={props.styles.fontFamily || ""}
             >
-              {fonts.map((i) => (
-                <option key={i.id} style={styles.select} value={i.value}>
-                  {i.fontFamily}
+              <option value={""}>{""}</option>
+              {fontFamilies.map((family, index) => (
+                <option
+                  key={family + index}
+                  style={styles.select}
+                  value={family}
+                >
+                  {family}
                 </option>
               ))}
             </select>
@@ -169,37 +222,20 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>Weight</div>
           <select
             name="font"
-            onChange={(e) => handleFontChange(e, "fontWeight")}
+            onChange={(e) => handleFontWeightChange(e, "fontWeight")}
             style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
-            value={props.styles.fontWeight || 400}
+            value={props.styles.fontWeight || ""}
           >
-            <option style={styles.select} value={400}>
-              Normal
-            </option>
-            <option style={styles.select} value={100}>
-              Thin
-            </option>
-            <option style={styles.select} value={200}>
-              ExtraLight
-            </option>
-            <option style={styles.select} value={300}>
-              Light
-            </option>
-            <option style={styles.select} value={500}>
-              Medium
-            </option>
-            <option style={styles.select} value={600}>
-              SemiBold
-            </option>
-            <option style={styles.select} value={700}>
-              Bold
-            </option>
-            <option style={styles.select} value={800}>
-              ExtraBold
-            </option>
-            <option style={styles.select} value={900}>
-              Black
-            </option>
+            <option value={""}>{""}</option>
+            {fontWeights.map((fontWeight, index) => {
+              return (
+                <option style={styles.select} value={fontWeight} key={index}>
+                  {weightNameMap[fontWeight]
+                    ? weightNameMap[fontWeight]
+                    : fontWeight}
+                </option>
+              );
+            })}
           </select>
           <div style={styles.inputBoxWithUnits}>
             <SizeInputWithUnits
@@ -209,6 +245,24 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue=""
             />
           </div>
+        </div>
+        <div style={styles.option}>
+          <div style={styles.optionName}>Style</div>
+          <select
+            name="font"
+            onChange={(e) => handleFontStyleChange(e, "fontWeight")}
+            style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
+            value={props.styles.fontStyle || ""}
+          >
+            <option value={""}>{""}</option>
+            {fontStyles.map((fontStyle, index) => {
+              return (
+                <option style={styles.select} value={fontStyle} key={index}>
+                  {fontStyle}
+                </option>
+              );
+            })}
+          </select>
         </div>
         <PropertyRender
           styleItem="textAlign"
