@@ -29,6 +29,7 @@
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/canvas-runtime": "^0.0.45",
     "@atrilabs/core": "^0.0.45",
     "@atrilabs/design-system": "^0.0.45",
     "@atrilabs/layer-types": "^0.0.45",

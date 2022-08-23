@@ -5,6 +5,7 @@ import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
+import { useSubscribeStylesheetUpdates } from "./hooks/useSubscribeStylesheet";
 import stylesModule from "./styles.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -29,6 +30,7 @@ export const Canvas: React.FC = React.memo(() => {
   const dragzoneRef = getRef("Dragzone");
   const overlay = useDragDrop(dragzoneRef);
   const hintOverlays = useHintOverlays(dimension);
+  const { stylesheets } = useSubscribeStylesheetUpdates();
   return (
     <>
       <div
@@ -42,6 +44,8 @@ export const Canvas: React.FC = React.memo(() => {
           userSelect: "none",
         }}
       >
+        {stylesheets}
+
         {breakpoint ? (
           <div
             // this div is used to limit the max-width

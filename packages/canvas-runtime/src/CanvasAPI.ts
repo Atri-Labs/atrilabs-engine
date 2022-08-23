@@ -262,6 +262,8 @@ export function getComponentParent(compId: string) {
   return { ...canvasComponentStore[compId].parent };
 }
 
+export { addStylesheet } from "./resources/stylesheet";
+
 export {
   subscribe as subscribeCanvasActivity,
   getCurrentState,
