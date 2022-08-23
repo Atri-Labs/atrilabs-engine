@@ -15,9 +15,13 @@ import {
   PythonStubGeneratorFunction,
   PythonStubGeneratorOptions,
   PythonStubGeneratorOutput,
+  ResourceGeneratorFunction,
+  ResourceGeneratorOptions,
 } from "../types";
 import { createReactAppTemplateManager } from "../react-app-template-manager";
 import {
+  atriAppIndexHtmlTemplateFilepath,
+  getAtriAppIndexHtmlDestFilepath,
   getComponentFromManifest,
   getForestDef,
   getManifest,
@@ -80,6 +84,8 @@ export default async function generateApp(
       reactAppPackageJSONDest: getReactPackageJSONDestPath(options.outputDir),
       reactAppNodeTemplatePath: reactAppNodeTemplatePath,
       reactAppNodeDestPath: getReactAppNodeDestPath(options.outputDir),
+      reactAppIndexHtmlTemplate: atriAppIndexHtmlTemplateFilepath,
+      reactAppIndexHtmlDest: getAtriAppIndexHtmlDestFilepath(options.outputDir),
     },
     options.rootComponentId,
     toolConfig.assetManager
@@ -194,6 +200,33 @@ export default async function generateApp(
     reactTemplateManager.addCallbacks(pages[pageId], callbackGeneratorOutput);
   });
 
+  const resourceGeneratorFunctions: {
+    fn: ResourceGeneratorFunction;
+    options: any;
+  }[] = [];
+  for (let i = 0; i < options.callbacks.length; i++) {
+    const resourceGeneratorModulePath = options.resources[i]!.modulePath;
+    const mod = await import(resourceGeneratorModulePath);
+    const defaultFn = mod["default"];
+    if (typeof defaultFn === "function") {
+      resourceGeneratorFunctions.push({
+        fn: defaultFn,
+        options: options.components[i]!.options,
+      });
+    }
+  }
+  resourceGeneratorFunctions.forEach(({ fn, options }) => {
+    try {
+      const currentOutput = fn({
+        resourcesConfig: toolConfig.resources,
+        custom: options,
+      });
+      reactTemplateManager.addResources(currentOutput);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
   // copy template to the output directory
   reactTemplateManager.copyTemplate();
   // create pages
@@ -240,6 +273,8 @@ export default async function generateApp(
   reactTemplateManager.patchDependencies(deps);
   reactTemplateManager.patchDevDependencies(devDeps);
 
+  // first flush index.html
+  reactTemplateManager.flushIndexHtml();
   // fill pages in app
   reactTemplateManager.flushAppJSX();
   // fill each page

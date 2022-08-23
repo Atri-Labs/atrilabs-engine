@@ -153,6 +153,13 @@ module.exports = {
             options: {},
           },
         ],
+        resources: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/resourceGenerator.js",
+            options: {},
+          },
+        ],
       },
     },
   ],

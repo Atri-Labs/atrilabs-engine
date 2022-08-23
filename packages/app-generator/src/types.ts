@@ -1,3 +1,4 @@
+import { ImportedResource, ToolConfig } from "@atrilabs/core";
 import { Forest, ForestDef } from "@atrilabs/forest";
 
 export type AppGeneratorOptions = {
@@ -23,6 +24,8 @@ export type AppGeneratorOptions = {
   props: { modulePath: string; options: any }[];
   // generates callbacks for a page/forest. options will be passes as custom.
   callbacks: { modulePath: string; options: any }[];
+  // adds resources to index.html
+  resources: { modulePath: string; options: any }[];
 };
 
 export type ComponentGetter = (meta: { pkg: string; key: string }) =>
@@ -167,3 +170,14 @@ export type AppInfo = {
 export type PageState = {
   [alias: string]: any;
 };
+
+export type ResourceGeneratorOptions = {
+  resourcesConfig: ToolConfig["resources"];
+  custom: any;
+};
+
+export type ResourceGeneraterOutput = ImportedResource[];
+
+export type ResourceGeneratorFunction = (
+  options: ResourceGeneratorOptions
+) => ResourceGeneraterOutput;
