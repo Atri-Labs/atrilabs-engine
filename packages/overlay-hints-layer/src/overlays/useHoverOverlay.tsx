@@ -43,7 +43,9 @@ export const useHoverOverlay = () => {
       rightLineHoverId.current &&
       bottomLineHoverId.current &&
       leftLineHoverId.current &&
-      currentRenderedContext.current
+      currentRenderedContext.current &&
+      currentRenderedContext.current.hover?.id &&
+      currentRenderedContext.current.hover.id !== "body"
     ) {
       // top line
       addOrModifyHintOverlays({

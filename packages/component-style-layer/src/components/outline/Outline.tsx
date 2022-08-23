@@ -8,7 +8,6 @@ import {
 } from "@atrilabs/design-system";
 import React, { useState, useCallback } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
-import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
@@ -143,7 +142,7 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
   return `#${hex}`;
 };
 
-export const Border: React.FC<CssProprtyComponentType> = (props) => {
+export const Outline: React.FC<CssProprtyComponentType> = (props) => {
   const getOpacityValue = (hex: Color["hex"]) => {
     let convertedRgbValue = hex2rgb(hex);
     if (convertedRgbValue.a) {
@@ -156,10 +155,11 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       return "100";
     }
   };
-
   const [showProperties, setShowProperties] = useState(true);
   const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles.borderColor ? getOpacityValue(props.styles.borderColor) : "100"
+    props.styles.outlineColor
+      ? getOpacityValue(props.styles.outlineColor)
+      : "100"
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +170,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          borderColor:
+          outlineColor:
             e.target.value !== ""
               ? handleOpacityChange(
                   String(Number(e.target.value) / 100),
@@ -207,8 +207,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     },
     []
   );
-
-  const handleBorderChange = (
+  const handleOutlineChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>,
@@ -234,54 +233,71 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               : { transform: "rotate(0deg)" }
           }
         />
-        <div style={styles.header}>Border</div>
+        <div style={styles.header}>Outline</div>
       </div>
       <div style={showProperties ? { display: "block" } : { display: "none" }}>
         <div style={styles.gridContainer}>
-          <div style={styles.optionName}>
-            <BR />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="borderRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
           <div style={styles.optionName}>
             <BW />
           </div>
           <div>
             <SizeInputWithUnits
-              styleItem="borderWidth"
+              styleItem="outlineWidth"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="1"
+            />
+          </div>
+          <div style={styles.optionName}>
+            <p style={{ fontSize: " 7px", color: gray200 }}>Offset</p>
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="outlineOffset"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
             />
           </div>
-
           <div style={styles.optionName}>
             <BS />
           </div>
           <div>
             <select
-              name="borderStyle"
-              onChange={(e) => handleBorderChange(e, "borderStyle")}
+              name="outlineStyle"
+              onChange={(e) => handleOutlineChange(e, "outlineStyle")}
               style={styles.inputBox}
-              value={props.styles.borderStyle || "none"}
+              value={props.styles.outlineStyle || "none"}
             >
-              <option style={styles.select} value="none">
-                none
-              </option>
-              <option style={styles.select} value="solid">
-                solid
+              <option style={styles.select} value="dotted">
+                dotted
               </option>
               <option style={styles.select} value="dashed">
                 dashed
               </option>
-              <option style={styles.select} value="dotted">
-                dotted
+              <option style={styles.select} value="solid">
+                solid
+              </option>
+              <option style={styles.select} value="double">
+                double
+              </option>
+              <option style={styles.select} value="groove">
+                groove
+              </option>
+              <option style={styles.select} value="ridge">
+                ridge
+              </option>
+              <option style={styles.select} value="inset">
+                inset
+              </option>
+              <option style={styles.select} value="outset">
+                outset
+              </option>
+              <option style={styles.select} value="none">
+                none
+              </option>
+              <option style={styles.select} value="hidden">
+                hidden
               </option>
             </select>
           </div>
@@ -292,11 +308,11 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <div
             onClick={() => {
-              props.openPalette("borderColor", "Border Color");
+              props.openPalette("outlineColor", "Outline Color");
             }}
           >
             <Input
-              styleItem="borderColor"
+              styleItem="outlineColor"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""

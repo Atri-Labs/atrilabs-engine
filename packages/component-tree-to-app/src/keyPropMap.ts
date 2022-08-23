@@ -7,7 +7,7 @@
  */
 // default CSS values for Layout
 const Layout: React.CSSProperties = {
-  display: "flex",
+  display: "",
   flexDirection: "row",
   alignItems: "stretch",
   justifyContent: "flex-start",
@@ -22,22 +22,22 @@ const Layout: React.CSSProperties = {
 
 // default CSS values for Flex Child
 const FlexChild: React.CSSProperties = {
-  alignSelf: "auto",
-  flexGrow: "0",
-  flexShrink: "1",
-  order: "0",
+  alignSelf: "",
+  flexGrow: "",
+  flexShrink: "",
+  order: "",
 };
 
 // default CSS values for padding and margin
 const SpacingOptions: React.CSSProperties = {
-  marginTop: "0",
-  marginBottom: "0",
-  marginRight: "0",
-  marginLeft: "0",
-  paddingTop: "0",
-  paddingBottom: "0",
-  paddingRight: "0",
-  paddingLeft: "0",
+  marginTop: "",
+  marginBottom: "",
+  marginRight: "",
+  marginLeft: "",
+  paddingTop: "",
+  paddingBottom: "",
+  paddingRight: "",
+  paddingLeft: "",
 };
 
 // default CSS values for width & height
@@ -46,12 +46,13 @@ const SizeOptions: React.CSSProperties = {
   // but, we are setting empty string
   width: "",
   height: "",
-  minWidth: "0",
-  minHeight: "0",
+  minWidth: "",
+  minHeight: "",
   // NOTE: The default value is none,
   // but, we are setting empty string
   maxWidth: "",
   maxHeight: "",
+  overflow: "",
 };
 
 // default CSS values for typography
@@ -64,14 +65,14 @@ const TypographyOptions: React.CSSProperties = {
   textAlign: "left",
   // NOTE: default value for color is not specified
   color: "",
-  opacity: "1",
+  opacity: "",
 };
 
 const BorderOptions: React.CSSProperties = {
-  borderRadius: "0",
+  borderRadius: "",
   // NOTE: default value is medium
   borderWidth: "",
-  borderStyle: "none",
+  borderStyle: "",
   // NOTE: default value is current color of the element
   borderColor: "",
 };
@@ -171,7 +172,7 @@ export const keyPropMap: any = {
   },
   Radio: {
     styles: { ...FlexStyle },
-    custom: { name: "", label: "Radio", checked: false },
+    custom: { name: "", label: "Radio", checked: false, radius: "" },
   },
   Slider: {
     styles: { ...FlexChildStyle },
@@ -301,7 +302,7 @@ export const keyPropMap: any = {
     },
   },
   Checkbox: {
-    styles: { ...FlexChild, ...PositionOptions, ...SpacingOptions },
+    styles: { ...FlexChildStyle },
     custom: {
       checked: false,
     },

@@ -78,7 +78,7 @@ export const ScatterChart = forwardRef<
   }, [props.custom]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
       <ScatterChartRechart
         width={
           typeof props.styles.width === "string"
@@ -184,7 +184,9 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: false,
   sizeOptions: true,
   borderOptions: false,
-  backgroundOptions: false,
+  outlineOptions: true,
+  backgroundOptions: true,
+  miscellaneousOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {

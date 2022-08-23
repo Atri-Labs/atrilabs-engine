@@ -11,6 +11,23 @@ import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { Input } from "../commons/Input";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
+import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
+import { ReactComponent as BRR } from "../../assets/background/repeat-icon.svg";
+import { ReactComponent as BRX } from "../../assets/background/repeat-x-icon.svg";
+import { ReactComponent as BRY } from "../../assets/background/repeat-y-icon.svg";
+import { ReactComponent as BRO } from "../../assets/background/round-icon.svg";
+import { ReactComponent as BRS } from "../../assets/background/space-icon.svg";
+import { ReactComponent as BAX } from "../../assets/background/fixed-icon.svg";
+import { ReactComponent as BAY } from "../../assets/background/local-icon.svg";
+import { ReactComponent as BAO } from "../../assets/background/scroll-icon.svg";
+import { ReactComponent as BOX } from "../../assets/background/padding-box.svg";
+import { ReactComponent as BOY } from "../../assets/background/content-box.svg";
+import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
+import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
+import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
+import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
+import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -56,16 +73,161 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray400,
     display: "grid",
-    gridTemplateColumns: "15px 60px 15px 60px",
-    rowGap: "20px",
-    textAlign: "center",
+    gridTemplateColumns: "60px 60px 60px",
+    textAlign: "left",
     columnGap: "15px",
     marginBottom: "25px",
   },
+  inputContainer: {
+    display: "flex",
+  },
+  inputContainerBox: {
+    ...smallText,
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: gray800,
+    width: "30px",
+    border: "none",
+    borderRadius: "2px 0 0 2px",
+    lineHeight: "20px",
+  },
+  inputSpan: {
+    ...smallText,
+    color: gray400,
+    backgroundColor: gray800,
+    borderRadius: "0 2px 2px 0",
+    display: "flex",
+    alignItems: "center",
+    paddingRight: "4px",
+  },
+};
+const backgroundSizeValues = ["auto", "contain", "cover"];
+const backgroundRepeatValues = [
+  "repeat",
+  "repeat-x",
+  "repeat-y",
+  "space",
+  "round",
+  "no-repeat",
+];
+const backgroundAttachmentValues = ["scroll", "fixed", "local"];
+const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
+const backgroundClipValues = [
+  "content-box",
+  "border-box",
+  "padding-box",
+  "text",
+];
+export type Color = {
+  hex: string;
+  rgb: ColorRGB;
+  hsv: ColorHSV;
+};
+
+export type ColorRGB = {
+  r: number;
+  g: number;
+  b: number;
+  a?: number;
+};
+
+export type ColorHSV = {
+  h: number;
+  s: number;
+  v: number;
+  a?: number;
+};
+
+export const hex2rgb = (hex: Color["hex"]) => {
+  hex = hex.slice(1);
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  let a = parseInt(hex.slice(6, 8), 16) || undefined;
+  if (a) {
+    a = a / 255;
+  }
+  return { r, g, b, a };
+};
+
+export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
+  const hex = [r, g, b, a]
+    .map((v, i) =>
+      v !== undefined
+        ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
+        : ""
+    )
+    .join("");
+  return `#${hex}`;
 };
 
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
+  const getOpacityValue = (hex: Color["hex"]) => {
+    let convertedRgbValue = hex2rgb(hex);
+    if (convertedRgbValue.a) {
+      Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
+        ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
+        : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
+
+      return String(convertedRgbValue.a);
+    } else {
+      return "100";
+    }
+  };
   const [showProperties, setShowProperties] = useState(true);
+  const [opacityValue, setOpacityValue] = useState<string>(
+    props.styles.backgroundColor
+      ? getOpacityValue(props.styles.backgroundColor)
+      : "100"
+  );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    parseInt(e.target.value) > 100
+      ? setOpacityValue("100")
+      : setOpacityValue(e.target.value);
+
+    props.patchCb({
+      property: {
+        styles: {
+          backgroundColor:
+            e.target.value !== ""
+              ? handleOpacityChange(
+                  String(Number(e.target.value) / 100),
+                  String(props.styles.backgroundColor)
+                )
+              : handleOpacityChange(
+                  String(e.target.value),
+                  String(props.styles.backgroundColor)
+                ),
+        },
+      },
+    });
+  };
+
+  const opacityHelper = (opacityValue: string) => {
+    let opacityHelperValue;
+    opacityValue === ""
+      ? (opacityHelperValue = 100)
+      : (opacityHelperValue = Number(opacityValue));
+    return opacityHelperValue;
+  };
+
+  const handleOpacityChange = useCallback(
+    (opacityValue: string, hex: Color["hex"]) => {
+      let convertedRgbValue = hex2rgb(hex);
+      if (opacityHelper(opacityValue) >= 1) {
+        convertedRgbValue.a = 1;
+      } else if (opacityHelper(opacityValue) < 0) {
+        convertedRgbValue.a = 0;
+      } else {
+        convertedRgbValue.a = opacityHelper(opacityValue);
+      }
+      return rgb2hex(convertedRgbValue);
+    },
+    []
+  );
+
   const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
   }, [props]);
@@ -76,6 +238,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   }, [props]);
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -92,7 +255,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       <div
         style={
           showProperties
-            ? { display: "flex", rowGap: "20px", flexDirection: "column" }
+            ? { display: "flex", rowGap: "10px", flexDirection: "column" }
             : { display: "none" }
         }
       >
@@ -105,6 +268,88 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             onClearClick={onBackgroundImageClearClickCb}
           />
         </div>
+        <div style={styles.gridContainer}>
+          <div>&nbsp;</div>
+          <div>Top</div>
+          <div>Right</div>
+          <div style={styles.optionName}>Position</div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="backgroundPositionY"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+            />
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="backgroundPositionX"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue=""
+            />
+          </div>
+        </div>
+        {/* <PropertyRender
+          styleItem="backgroundSize"
+          styleText="Size"
+          styleArray={backgroundSizeValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <p style={{ fontSize: " 9px", color: gray200 }}>Custom</p>
+          <OFS />
+          <OFH />
+        </PropertyRender> */}
+        <PropertyRender
+          styleItem="backgroundRepeat"
+          styleText="Repeat"
+          styleArray={backgroundRepeatValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <BRR />
+          <BRX />
+          <BRY />
+          <BRO />
+          <BRS />
+          <BRN />
+        </PropertyRender>
+        <PropertyRender
+          styleItem="backgroundAttachment"
+          styleText="Attach"
+          styleArray={backgroundAttachmentValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <BAO />
+          <BAX />
+          <BAY />
+        </PropertyRender>
+        <PropertyRender
+          styleItem="backgroundOrigin"
+          styleText="Origin"
+          styleArray={backgroundOriginValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <BOX />
+          <BOY />
+          <BOO />
+        </PropertyRender>
+        <PropertyRender
+          styleItem="backgroundClip"
+          styleText="Cip"
+          styleArray={backgroundClipValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <BCY />
+          <BCX />
+          <BCO />
+          <BCO />
+        </PropertyRender>
+
         {/**Background Color */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <span style={styles.optionName}>Color</span>
@@ -121,6 +366,18 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue=""
               parseToInt={false}
             />
+          </div>
+          <div style={{ width: "45px", marginRight: "10px" }}>
+            <div style={styles.inputContainer}>
+              <input
+                type="text"
+                value={opacityValue}
+                onChange={handleChange}
+                style={styles.inputContainerBox}
+                placeholder="100"
+              />
+              <div style={styles.inputSpan}>%</div>
+            </div>
           </div>
         </div>
       </div>

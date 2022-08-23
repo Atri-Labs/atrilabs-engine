@@ -11,6 +11,8 @@ import Position from "./components/position/Position";
 import { Background } from "./components/background/Background";
 import { CssProprtyComponentType } from "./types";
 import { Breakpoint } from "@atrilabs/canvas-runtime";
+import { Miscellaneous } from "./components/miscellaneous/Miscellaneous";
+import { Outline } from "./components/outline/Outline";
 
 export type TabBodyProps = {
   alias: string;
@@ -98,6 +100,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
+      {props.treeOptions && props.treeOptions.outlineOptions ? (
+        <Outline
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
       {props.treeOptions && props.treeOptions.typographyOptions ? (
         <Typography
           styles={props.styles}
@@ -118,6 +129,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       ) : null}
       {props.treeOptions && props.treeOptions.positionOptions ? (
         <Position
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.miscellaneousOptions ? (
+        <Miscellaneous
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}

@@ -229,7 +229,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                     ...h5Heading,
                     fontSize: "13px",
                     color: gray200,
-                    paddingTop: "2.5rem",
+                    padding: "1rem",
                     userSelect: "none",
                   }}
                 >
@@ -256,7 +256,13 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                             padding: "0.5rem",
                           }}
                         >
-                          <div style={{ display: "flex", gap: "1rem" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "1rem",
+                              alignItems: "center",
+                            }}
+                          >
                             <div
                               style={{
                                 ...h4Heading,

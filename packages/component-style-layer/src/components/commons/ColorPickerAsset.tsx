@@ -13,12 +13,43 @@ export type ColorPickerProps = {
   title: string;
 };
 
+export type Color = {
+  hex: string;
+  rgb: ColorRGB;
+  hsv: ColorHSV;
+};
+
+type ColorRGB = {
+  r: number;
+  g: number;
+  b: number;
+  a: number | undefined;
+};
+
+type ColorHSV = {
+  h: number;
+  s: number;
+  v: number;
+  a: number | undefined;
+};
+
 export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
   //Internal state is being used to record the last color dragged to in the palette.
   const [color, setColor] = useColor(
     "hex",
     (props.styles[props.styleItem] as string | undefined) || ""
   );
+  function rgb2hex({ r, g, b, a }: Color["rgb"]): Color["hex"] {
+    const hex = [r, g, b, a]
+      .map((v, i) =>
+        v !== undefined
+          ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
+          : ""
+      )
+      .join("");
+
+    return `#${hex}`;
+  }
 
   useEffect(() => {
     setColor(

@@ -52,6 +52,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 const overflowValues = ["visible", "scroll", "hidden", "auto"];
+const boxSizingValues = ["content-box", "border-box", "initial", "inherit"];
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
@@ -132,6 +133,18 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
           styleItem="overflow"
           styleText="Overflow"
           styleArray={overflowValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <OFV />
+          <OFS />
+          <OFH />
+          <OFA />
+        </PropertyRender>
+        <PropertyRender
+          styleItem="boxSizing"
+          styleText="Box-Sizing"
+          styleArray={boxSizingValues}
           patchCb={props.patchCb}
           styles={props.styles}
         >

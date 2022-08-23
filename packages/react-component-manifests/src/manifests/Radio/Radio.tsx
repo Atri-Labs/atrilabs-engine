@@ -13,7 +13,7 @@ export const Radio = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { name: string; label: string; checked: boolean };
+    custom: { name: string; label: string; checked: boolean; radius?: string };
     onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
@@ -31,8 +31,13 @@ export const Radio = forwardRef<
         name={props.custom.name}
         value={props.custom.label}
         checked={props.custom.checked}
+        style={{
+          ...props.styles,
+          height: props.custom.radius || props.styles.height,
+          width: props.custom.radius || props.styles.width,
+        }}
       />
-      <label>{props.custom.label}</label>
+      {props.custom.label ? <label>{props.custom.label}</label> : null}
     </div>
   );
 });
@@ -45,7 +50,9 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
+  outlineOptions: true,
   backgroundOptions: true,
+  miscellaneousOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {

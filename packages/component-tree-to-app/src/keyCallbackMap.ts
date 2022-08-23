@@ -24,6 +24,10 @@ export const keyCallbackMap: {
       handlers: [],
       actions: [{ type: "controlled", selector: ["custom", "value"] }],
     },
+    onPressEnter: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
   },
   Image: {
     onClick: {
