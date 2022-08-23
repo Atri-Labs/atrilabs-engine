@@ -233,21 +233,7 @@ export const keyPropMap: any = {
       data: [],
       cartesianGrid: { show: false, strokeDasharray: "" },
       animate: false,
-      options: {
-        whisker: {
-          fill: "",
-          stroke: "",
-          strokeWidth: "",
-          strokeDasharray: "",
-        },
-        box: {
-          fill: "",
-        },
-        dot: {
-          fill: "",
-          stroke: "",
-        },
-      },
+      options: {},
       toolTip: { show: false },
       legend: { show: false },
       xAxis: { show: false },
@@ -261,9 +247,10 @@ export const keyPropMap: any = {
       data: [],
       xAxis: { show: false, key: "" },
       yAxis: { show: false, key: "" },
-      options: { line: { type: "", strokeWidth: 0 } },
+      options: {},
       toolTip: { show: false },
       legend: { show: false },
+      keys: { value: "" },
     },
   },
   LineChart: {
