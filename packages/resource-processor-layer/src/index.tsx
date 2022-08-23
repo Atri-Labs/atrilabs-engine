@@ -67,7 +67,9 @@ export default function () {
     if (importResourceTextareaRef.current) {
       const importSrc = importResourceTextareaRef.current.value;
       api.importResource({ str: importSrc }, (success) => {
-        console.log("success", success);
+        if (success && importResourceTextareaRef.current) {
+          importResourceTextareaRef.current.value = "";
+        }
       });
     }
   }, []);
