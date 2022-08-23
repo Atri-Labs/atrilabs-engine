@@ -2,7 +2,9 @@ import {
   gray100,
   gray200,
   gray400,
+  gray500,
   gray800,
+  agastyaLine,
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
@@ -101,7 +103,48 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     paddingRight: "4px",
   },
+  typesContainer: {
+    display: "grid",
+    height: "100%",
+  },
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    paddingRight: "0.4rem",
+    paddingLeft: "0.4rem",
+    cursor: "pointer",
+  },
 };
+export type backgroundTypeOptions = {
+  image: boolean;
+  position: boolean;
+  repeat: boolean;
+  attach: boolean;
+  origin: boolean;
+  clip: boolean;
+  color: boolean;
+};
+export const solidBackgroundOptions: backgroundTypeOptions = {
+  image: false,
+  position: true,
+  repeat: false,
+  attach: true,
+  origin: true,
+  clip: true,
+  color: true,
+};
+export const imageBackgroundOptions: backgroundTypeOptions = {
+  image: true,
+  position: true,
+  repeat: true,
+  attach: true,
+  origin: true,
+  clip: true,
+  color: false,
+};
+const backgroundTypes = [solidBackgroundOptions, imageBackgroundOptions];
 const backgroundSizeValues = ["auto", "contain", "cover"];
 const backgroundRepeatValues = [
   "repeat",
@@ -119,6 +162,7 @@ const backgroundClipValues = [
   "padding-box",
   "text",
 ];
+
 export type Color = {
   hex: string;
   rgb: ColorRGB;
@@ -239,6 +283,8 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     });
   }, [props]);
 
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -260,14 +306,71 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         }
       >
         {/**Background Image */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={styles.optionName}>Image</span>
-          <AssetInputButton
-            onClick={onBackgroundImgeClickCb}
-            assetName={props.styles.backgroundImage || "Select Image"}
-            onClearClick={onBackgroundImageClearClickCb}
-          />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
+          <span style={styles.optionName}>Type</span>
+          <div
+            style={{
+              ...styles.typesContainer,
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <div
+              style={
+                selectedTypeIndex === 0
+                  ? {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedTypeIndex(0);
+              }}
+            >
+              <BOX />
+            </div>
+            <div
+              style={
+                selectedTypeIndex === 1
+                  ? {
+                      ...styles.iconContainer,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedTypeIndex(1);
+              }}
+            >
+              <BOY />
+            </div>
+          </div>
         </div>
+        {backgroundTypes[selectedTypeIndex].image && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={styles.optionName}>Image</span>
+            <AssetInputButton
+              onClick={onBackgroundImgeClickCb}
+              assetName={props.styles.backgroundImage || "Select Image"}
+              onClearClick={onBackgroundImageClearClickCb}
+            />
+          </div>
+        )}
+
         <div style={styles.gridContainer}>
           <div>&nbsp;</div>
           <div>Top</div>

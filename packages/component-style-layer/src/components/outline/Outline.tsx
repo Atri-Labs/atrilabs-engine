@@ -256,7 +256,7 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               styleItem="outlineOffset"
               styles={props.styles}
               patchCb={props.patchCb}
-              defaultValue=""
+              defaultValue="0"
             />
           </div>
           <div style={styles.optionName}>
