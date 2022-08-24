@@ -145,7 +145,6 @@ export const imageBackgroundOptions: backgroundTypeOptions = {
   color: false,
 };
 const backgroundTypes = [solidBackgroundOptions, imageBackgroundOptions];
-const backgroundSizeValues = ["auto", "contain", "cover"];
 const backgroundRepeatValues = [
   "repeat",
   "repeat-x",
@@ -157,8 +156,8 @@ const backgroundRepeatValues = [
 const backgroundAttachmentValues = ["scroll", "fixed", "local"];
 const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
 const backgroundClipValues = [
-  "content-box",
   "border-box",
+  "content-box",
   "padding-box",
   "text",
 ];
@@ -305,7 +304,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             : { display: "none" }
         }
       >
-        {/**Background Image */}
+        {/**Background Type */}
         <div
           style={{
             display: "flex",
