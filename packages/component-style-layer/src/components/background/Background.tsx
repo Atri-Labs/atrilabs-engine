@@ -8,7 +8,7 @@ import {
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { Input } from "../commons/Input";
@@ -269,6 +269,12 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     []
   );
 
+  const opacityDisabledHandler = (bgColor: string) => {
+    let bgFlag;
+    bgColor === "undefined" ? (bgFlag = true) : (bgFlag = false);
+    return bgFlag;
+  };
+
   const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
   }, [props]);
@@ -279,8 +285,15 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   }, [props]);
-
+  useEffect(() => {
+    setIsOpacityDisabled(
+      opacityDisabledHandler(String(props.styles.backgroundColor))
+    );
+  }, [props]);
   const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
+  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
+    opacityDisabledHandler(String(props.styles.backgroundColor))
+  );
 
   return (
     <div style={styles.container}>
@@ -390,6 +403,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 <input
                   type="text"
                   value={opacityValue}
+                  disabled={isOpacityDisabled}
                   onChange={handleChange}
                   style={styles.inputContainerBox}
                   placeholder="100"
