@@ -2,7 +2,9 @@ import {
   gray100,
   gray200,
   gray400,
+  gray500,
   gray800,
+  agastyaLine,
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
@@ -101,8 +103,48 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     paddingRight: "4px",
   },
+  typesContainer: {
+    display: "grid",
+    height: "100%",
+  },
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    paddingRight: "0.4rem",
+    paddingLeft: "0.4rem",
+    cursor: "pointer",
+  },
 };
-const backgroundSizeValues = ["auto", "contain", "cover"];
+export type backgroundTypeOptions = {
+  image: boolean;
+  position: boolean;
+  repeat: boolean;
+  attach: boolean;
+  origin: boolean;
+  clip: boolean;
+  color: boolean;
+};
+export const solidBackgroundOptions: backgroundTypeOptions = {
+  image: false,
+  position: true,
+  repeat: false,
+  attach: true,
+  origin: true,
+  clip: true,
+  color: true,
+};
+export const imageBackgroundOptions: backgroundTypeOptions = {
+  image: true,
+  position: true,
+  repeat: true,
+  attach: true,
+  origin: true,
+  clip: true,
+  color: false,
+};
+const backgroundTypes = [solidBackgroundOptions, imageBackgroundOptions];
 const backgroundRepeatValues = [
   "repeat",
   "repeat-x",
@@ -114,11 +156,12 @@ const backgroundRepeatValues = [
 const backgroundAttachmentValues = ["scroll", "fixed", "local"];
 const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
 const backgroundClipValues = [
-  "content-box",
   "border-box",
+  "content-box",
   "padding-box",
   "text",
 ];
+
 export type Color = {
   hex: string;
   rgb: ColorRGB;
@@ -239,6 +282,8 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     });
   }, [props]);
 
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -259,127 +304,189 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             : { display: "none" }
         }
       >
-        {/**Background Image */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={styles.optionName}>Image</span>
-          <AssetInputButton
-            onClick={onBackgroundImgeClickCb}
-            assetName={props.styles.backgroundImage || "Select Image"}
-            onClearClick={onBackgroundImageClearClickCb}
-          />
-        </div>
-        <div style={styles.gridContainer}>
-          <div>&nbsp;</div>
-          <div>Top</div>
-          <div>Right</div>
-          <div style={styles.optionName}>Position</div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="backgroundPositionY"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="backgroundPositionX"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-        </div>
-        {/* <PropertyRender
-          styleItem="backgroundSize"
-          styleText="Size"
-          styleArray={backgroundSizeValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
+        {/**Background Type */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
         >
-          <p style={{ fontSize: " 9px", color: gray200 }}>Custom</p>
-          <OFS />
-          <OFH />
-        </PropertyRender> */}
-        <PropertyRender
-          styleItem="backgroundRepeat"
-          styleText="Repeat"
-          styleArray={backgroundRepeatValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <BRR />
-          <BRX />
-          <BRY />
-          <BRO />
-          <BRS />
-          <BRN />
-        </PropertyRender>
-        <PropertyRender
-          styleItem="backgroundAttachment"
-          styleText="Attach"
-          styleArray={backgroundAttachmentValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <BAO />
-          <BAX />
-          <BAY />
-        </PropertyRender>
-        <PropertyRender
-          styleItem="backgroundOrigin"
-          styleText="Origin"
-          styleArray={backgroundOriginValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <BOX />
-          <BOY />
-          <BOO />
-        </PropertyRender>
-        <PropertyRender
-          styleItem="backgroundClip"
-          styleText="Cip"
-          styleArray={backgroundClipValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <BCY />
-          <BCX />
-          <BCO />
-          <BCO />
-        </PropertyRender>
-
-        {/**Background Color */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={styles.optionName}>Color</span>
+          <span style={styles.optionName}>Type</span>
           <div
-            onClick={() => {
-              props.openPalette("backgroundColor", "Background Color");
+            style={{
+              ...styles.typesContainer,
+              gridTemplateColumns: "1fr 1fr",
             }}
-            style={{ width: "55px", marginRight: "10px" }}
           >
-            <Input
-              styleItem="backgroundColor"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-              parseToInt={false}
-            />
-          </div>
-          <div style={{ width: "45px", marginRight: "10px" }}>
-            <div style={styles.inputContainer}>
-              <input
-                type="text"
-                value={opacityValue}
-                onChange={handleChange}
-                style={styles.inputContainerBox}
-                placeholder="100"
-              />
-              <div style={styles.inputSpan}>%</div>
+            <div
+              style={
+                selectedTypeIndex === 0
+                  ? {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedTypeIndex(0);
+              }}
+            >
+              <BOX />
+            </div>
+            <div
+              style={
+                selectedTypeIndex === 1
+                  ? {
+                      ...styles.iconContainer,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedTypeIndex(1);
+              }}
+            >
+              <BOY />
             </div>
           </div>
         </div>
+        {/**Background Image */}
+        {backgroundTypes[selectedTypeIndex].image && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={styles.optionName}>Image</span>
+            <AssetInputButton
+              onClick={onBackgroundImgeClickCb}
+              assetName={props.styles.backgroundImage || "Select Image"}
+              onClearClick={onBackgroundImageClearClickCb}
+            />
+          </div>
+        )}
+        {/**Background Color */}
+        {backgroundTypes[selectedTypeIndex].color && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={styles.optionName}>Color</span>
+            <div
+              onClick={() => {
+                props.openPalette("backgroundColor", "Background Color");
+              }}
+              style={{ width: "55px", marginRight: "10px" }}
+            >
+              <Input
+                styleItem="backgroundColor"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+                parseToInt={false}
+              />
+            </div>
+            <div style={{ width: "45px", marginRight: "10px" }}>
+              <div style={styles.inputContainer}>
+                <input
+                  type="text"
+                  value={opacityValue}
+                  onChange={handleChange}
+                  style={styles.inputContainerBox}
+                  placeholder="100"
+                />
+                <div style={styles.inputSpan}>%</div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/**Background Position */}
+        {backgroundTypes[selectedTypeIndex].position && (
+          <div style={styles.gridContainer}>
+            <div>&nbsp;</div>
+            <div>Top</div>
+            <div>Right</div>
+            <div style={styles.optionName}>Position</div>
+            <div>
+              <SizeInputWithUnits
+                styleItem="backgroundPositionY"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <SizeInputWithUnits
+                styleItem="backgroundPositionX"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+          </div>
+        )}
+        {/**Background Repeat */}
+        {backgroundTypes[selectedTypeIndex].repeat && (
+          <PropertyRender
+            styleItem="backgroundRepeat"
+            styleText="Repeat"
+            styleArray={backgroundRepeatValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <BRR />
+            <BRX />
+            <BRY />
+            <BRO />
+            <BRS />
+            <BRN />
+          </PropertyRender>
+        )}
+        {/**Background Attach */}
+        {backgroundTypes[selectedTypeIndex].attach && (
+          <PropertyRender
+            styleItem="backgroundAttachment"
+            styleText="Attach"
+            styleArray={backgroundAttachmentValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <BAO />
+            <BAX />
+            <BAY />
+          </PropertyRender>
+        )}
+        {/**Background Origin */}
+        {backgroundTypes[selectedTypeIndex].origin && (
+          <PropertyRender
+            styleItem="backgroundOrigin"
+            styleText="Origin"
+            styleArray={backgroundOriginValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <BOX />
+            <BOY />
+            <BOO />
+          </PropertyRender>
+        )}
+        {/**Background Clip */}
+        {backgroundTypes[selectedTypeIndex].clip && (
+          <PropertyRender
+            styleItem="backgroundClip"
+            styleText="Cip"
+            styleArray={backgroundClipValues}
+            patchCb={props.patchCb}
+            styles={props.styles}
+          >
+            <BCY />
+            <BCX />
+            <BCO />
+            <BCO />
+          </PropertyRender>
+        )}
       </div>
     </div>
   );
