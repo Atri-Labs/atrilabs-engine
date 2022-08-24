@@ -11,7 +11,7 @@ import {
 import { useCallback, useState, useEffect } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { Input } from "../commons/Input";
+import { ColorInput } from "../commons/ColorInput";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
@@ -202,21 +202,21 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
     .join("");
   return `#${hex}`;
 };
+export const getOpacityValue = (hex: Color["hex"]) => {
+  let convertedRgbValue = hex2rgb(hex);
+  if (convertedRgbValue.a) {
+    Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
+      ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
+      : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
 
+    return String(convertedRgbValue.a);
+  } else {
+    return "100";
+  }
+};
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
-  const getOpacityValue = (hex: Color["hex"]) => {
-    let convertedRgbValue = hex2rgb(hex);
-    if (convertedRgbValue.a) {
-      Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
-        ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
-        : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
+  const [showProperties, setShowProperties] = useState<boolean>(true);
 
-      return String(convertedRgbValue.a);
-    } else {
-      return "100";
-    }
-  };
-  const [showProperties, setShowProperties] = useState(true);
   const [opacityValue, setOpacityValue] = useState<string>(
     props.styles.backgroundColor
       ? getOpacityValue(props.styles.backgroundColor)
@@ -390,12 +390,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               }}
               style={{ width: "55px", marginRight: "10px" }}
             >
-              <Input
+              <ColorInput
                 styleItem="backgroundColor"
                 styles={props.styles}
                 patchCb={props.patchCb}
                 defaultValue=""
-                parseToInt={false}
+                getOpacityValue={getOpacityValue}
+                setOpacityValue={setOpacityValue}
               />
             </div>
             <div style={{ width: "45px", marginRight: "10px" }}>
