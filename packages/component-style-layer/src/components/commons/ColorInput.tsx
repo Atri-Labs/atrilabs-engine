@@ -60,6 +60,7 @@ export const ColorInput: React.FC<InputProps> = (props) => {
 
   useEffect(() => {
     const propertyColorValue = String(props.styles[props.styleItem]);
+
     if (propertyColorValue === "undefined") {
       setColorValue("");
     } else if (propertyColorValue.length === 5) {
