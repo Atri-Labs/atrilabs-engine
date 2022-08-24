@@ -75,10 +75,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray400,
     display: "grid",
-    gridTemplateColumns: "60px 60px 60px",
+    gridTemplateColumns: "4rem auto auto",
     textAlign: "left",
-    columnGap: "15px",
-    marginBottom: "25px",
   },
   inputContainer: {
     display: "flex",
@@ -156,9 +154,9 @@ const backgroundRepeatValues = [
 const backgroundAttachmentValues = ["scroll", "fixed", "local"];
 const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
 const backgroundClipValues = [
-  "border-box",
   "content-box",
   "padding-box",
+  "border-box",
   "text",
 ];
 
@@ -300,7 +298,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       <div
         style={
           showProperties
-            ? { display: "flex", rowGap: "10px", flexDirection: "column" }
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
             : { display: "none" }
         }
       >
@@ -309,7 +307,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           style={{
             display: "flex",
             alignItems: "center",
-            marginBottom: "10px",
           }}
         >
           <span style={styles.optionName}>Type</span>
@@ -480,11 +477,12 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             styleArray={backgroundClipValues}
             patchCb={props.patchCb}
             styles={props.styles}
+            defaultCSSIndex={2}
           >
             <BCY />
             <BCX />
             <BCO />
-            <BCO />
+            <div style={{ ...smallText, color: "white" }}>Text</div>
           </PropertyRender>
         )}
       </div>

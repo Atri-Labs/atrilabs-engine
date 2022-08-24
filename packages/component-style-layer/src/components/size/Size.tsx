@@ -48,7 +48,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     gridTemplateRows: "15px 40px",
     textAlign: "center",
     columnGap: "16px",
-    marginBottom: "20px",
   },
 };
 const overflowValues = ["visible", "scroll", "hidden", "auto"];
@@ -70,7 +69,13 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Size</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
         <div style={styles.gridContainer}>
           <div>&nbsp;</div>
           <div>&nbsp;</div>

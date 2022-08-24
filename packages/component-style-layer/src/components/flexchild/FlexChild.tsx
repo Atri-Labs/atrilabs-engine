@@ -51,7 +51,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     gridTemplateColumns: "3rem 30px 30px 30px",
     columnGap: "20px",
     rowGap: "3px",
-    marginBottom: "25px",
     textAlign: "center",
   },
 };
@@ -84,7 +83,13 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Flex Child</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
         <PropertyRender
           styleItem="alignSelf"
           styleText="Align"

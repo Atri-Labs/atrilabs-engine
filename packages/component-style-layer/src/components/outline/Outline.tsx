@@ -50,7 +50,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     width: "1.5rem",
     color: "white",
-    lineHeight: "25px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   select: {
     textAlign: "left",
@@ -60,20 +62,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray400,
     display: "grid",
     gridTemplateColumns: "15px 60px 15px 60px",
-    rowGap: "20px",
+    rowGap: "1rem",
     textAlign: "center",
-    columnGap: "15px",
-    marginBottom: "25px",
+    columnGap: "1rem",
   },
   gridInputContainer: {
     ...smallText,
     color: gray400,
     display: "grid",
     gridTemplateColumns: "15px 60px 40px",
-    rowGap: "20px",
+    rowGap: "1rem",
     textAlign: "center",
-    columnGap: "15px",
-    marginBottom: "25px",
+    columnGap: "1rem",
   },
   inputContainer: {
     display: "flex",
@@ -235,7 +235,13 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Outline</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
         <div style={styles.gridContainer}>
           <div style={styles.optionName}>
             <BW />
@@ -249,7 +255,7 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
             />
           </div>
           <div style={styles.optionName}>
-            <p style={{ fontSize: " 7px", color: gray200 }}>Offset</p>
+            <div style={{ ...smallText, color: gray200 }}>Offset</div>
           </div>
           <div>
             <SizeInputWithUnits

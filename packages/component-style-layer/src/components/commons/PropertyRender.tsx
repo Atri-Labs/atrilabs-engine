@@ -22,7 +22,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   option: {
     display: "flex",
     height: "25px",
-    marginBottom: "15px",
   },
   optionName: {
     ...smallText,
@@ -43,6 +42,7 @@ function PropertyRender(props: {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   children: React.ReactNode[];
+  defaultCSSIndex?: number;
 }) {
   const styleIndex = useMemo(() => {
     // It might happen that props.styleArray is undefined
@@ -51,7 +51,7 @@ function PropertyRender(props: {
     // like this Layout component, will set the default CSS property.
     if (props.styles[props.styleItem] === undefined) {
       // return the default CSS value index
-      return 0;
+      return props.defaultCSSIndex || 0;
     } else {
       const index = props.styleArray.findIndex(
         (val) => val === props.styles[props.styleItem]
@@ -65,7 +65,7 @@ function PropertyRender(props: {
         return 0;
       }
     }
-  }, [props.styleArray, props.styleItem, props.styles]);
+  }, [props.styleArray, props.styleItem, props.styles, props.defaultCSSIndex]);
 
   const setStyleItemSelectedIndexCb = useCallback(
     (index: number) => {

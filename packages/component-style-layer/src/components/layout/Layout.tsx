@@ -59,7 +59,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   option: {
     display: "flex",
     height: "25px",
-    marginBottom: "25px",
     marginTop: "30px",
   },
   optionName: {
@@ -76,7 +75,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "25px",
     rowGap: "3px",
-    marginBottom: "25px",
   },
 };
 
@@ -128,7 +126,11 @@ export const Layout: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.header}>Layout</div>
         </div>
         <div
-          style={showProperties ? { display: "block" } : { display: "none" }}
+          style={
+            showProperties
+              ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+              : { display: "none" }
+          }
         >
           <PropertyRender
             styleItem="flexDirection"
