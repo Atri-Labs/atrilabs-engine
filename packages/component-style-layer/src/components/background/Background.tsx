@@ -151,8 +151,8 @@ const backgroundRepeatValues = [
   "round",
   "no-repeat",
 ];
-const backgroundAttachmentValues = ["scroll", "fixed", "local"];
-const backgroundOriginValues = ["padding-box", "content-box", "border-box"];
+const backgroundAttachmentValues = ["local", "fixed", "scroll"];
+const backgroundOriginValues = ["content-box", "padding-box", "border-box"];
 const backgroundClipValues = [
   "content-box",
   "padding-box",
@@ -463,10 +463,11 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             styleArray={backgroundAttachmentValues}
             patchCb={props.patchCb}
             styles={props.styles}
+            defaultCSSIndex={2}
           >
-            <BAO />
-            <BAX />
             <BAY />
+            <BAX />
+            <BAO />
           </PropertyRender>
         )}
         {/**Background Origin */}
@@ -477,6 +478,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             styleArray={backgroundOriginValues}
             patchCb={props.patchCb}
             styles={props.styles}
+            defaultCSSIndex={1}
           >
             <BOX />
             <BOY />
