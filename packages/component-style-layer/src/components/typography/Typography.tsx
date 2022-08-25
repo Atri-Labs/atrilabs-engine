@@ -59,7 +59,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   option: {
     display: "flex",
     height: "25px",
-    marginBottom: "15px",
     alignItems: "center",
   },
   optionName: {
@@ -195,7 +194,13 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Typography</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
         <div style={styles.option}>
           <div style={styles.optionName}>Font</div>
           <div>

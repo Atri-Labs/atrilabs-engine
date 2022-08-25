@@ -48,10 +48,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     gridTemplateRows: "15px 40px",
     textAlign: "center",
     columnGap: "16px",
-    marginBottom: "20px",
   },
 };
 const overflowValues = ["visible", "scroll", "hidden", "auto"];
+const boxSizingValues = ["content-box", "border-box", "initial", "inherit"];
 
 export const Size: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
@@ -69,7 +69,13 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
         />
         <div style={styles.header}>Size</div>
       </div>
-      <div style={showProperties ? { display: "block" } : { display: "none" }}>
+      <div
+        style={
+          showProperties
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            : { display: "none" }
+        }
+      >
         <div style={styles.gridContainer}>
           <div>&nbsp;</div>
           <div>&nbsp;</div>
@@ -132,6 +138,18 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
           styleItem="overflow"
           styleText="Overflow"
           styleArray={overflowValues}
+          patchCb={props.patchCb}
+          styles={props.styles}
+        >
+          <OFV />
+          <OFS />
+          <OFH />
+          <OFA />
+        </PropertyRender>
+        <PropertyRender
+          styleItem="boxSizing"
+          styleText="Box-Sizing"
+          styleArray={boxSizingValues}
           patchCb={props.patchCb}
           styles={props.styles}
         >

@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useState, useEffect } from "react";
+import React, { forwardRef, useCallback, useMemo, useRef } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -10,57 +10,219 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Slider.css";
 import { ReactComponent as Icon } from "./icon.svg";
 
+function isStringANumber(value: string) {
+  return value.match(/^[0-9]+$/) === null ? false : true;
+}
+
 export const Slider = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      value: number;
-      maxValue: number;
-      minValue: number;
+      value?: number;
+      maxValue?: number;
+      minValue?: number;
+      thickness?: string;
+      radius?: string;
+      trackColor?: string;
+      thumbColor?: string;
+      selectColor?: string;
     };
     onChange: (value: number) => void;
   }
 >((props, ref) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
+
+  const maxValue = useMemo(() => {
+    if (props.custom.maxValue === undefined) {
+      return 100;
+    }
+    return props.custom.maxValue;
+  }, [props.custom]);
+
+  const minValue = useMemo(() => {
+    if (props.custom.minValue === undefined) {
+      return 0;
+    }
+    return props.custom.minValue;
+  }, [props.custom]);
+
+  const valueRange = useMemo(() => {
+    return maxValue - minValue;
+  }, [minValue, maxValue]);
+
+  const value = useMemo(() => {
+    if (props.custom.value === undefined) {
+      return 50;
+    }
+    return props.custom.value;
+  }, [props.custom]);
+
+  const trackColor = useMemo(() => {
+    if (props.custom.trackColor === undefined) {
+      return "#CCC";
+    }
+    return props.custom.trackColor;
+  }, [props.custom]);
+
+  const thumbColor = useMemo(() => {
+    if (props.custom.thumbColor === undefined) {
+      return "#91d5ff";
+    }
+    return props.custom.thumbColor;
+  }, [props.custom]);
+
+  const selectColor = useMemo(() => {
+    if (props.custom.selectColor === undefined) {
+      return "#91d5ff";
+    }
+    return props.custom.selectColor;
+  }, [props.custom]);
+
+  const thickness = useMemo(() => {
+    if (props.custom.thickness === undefined) {
+      return "4px";
+    }
+    if (isStringANumber(props.custom.thickness)) {
+      return `${parseFloat(props.custom.thickness)}px`;
+    }
+    return props.custom.thickness;
+  }, [props.custom]);
+
+  const radius = useMemo(() => {
+    if (props.custom.radius === undefined) {
+      return "8px";
+    }
+    if (isStringANumber(props.custom.radius)) {
+      return `${parseFloat(props.custom.radius)}px`;
+    }
+    return props.custom.radius;
+  }, [props.custom]);
+
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      const startPostion = { x: e.pageX, y: e.pageY };
-      const onMouseMove = (e: MouseEvent) => {
-        if (startPostion) {
-          const delta = e.pageX - startPostion.x;
-          const offset = (props.custom.maxValue - props.custom.minValue) / 400;
-          let change = delta * offset;
-          if (change + props.custom.value < 0) {
-            change = -props.custom.value;
+      if (trackRef.current) {
+        const scale =
+          valueRange / trackRef.current.getBoundingClientRect().width;
+        const upperLimit =
+          trackRef.current.getBoundingClientRect().left +
+          trackRef.current.getBoundingClientRect().width;
+        const lowerLimit = trackRef.current.getBoundingClientRect().left;
+        const initialValue = value;
+        const startPostion = { x: e.pageX, y: e.pageY };
+        const onMouseMove = (e: MouseEvent) => {
+          if (startPostion) {
+            if (e.pageX >= upperLimit) {
+              props.onChange(maxValue);
+            } else if (e.pageX <= lowerLimit) {
+              props.onChange(minValue);
+            } else {
+              const delta = e.pageX - startPostion.x;
+              const finalValue = initialValue + delta * scale;
+              if (finalValue <= maxValue && finalValue >= minValue) {
+                props.onChange(finalValue);
+              }
+            }
           }
-          if (change + props.custom.value > props.custom.maxValue) {
-            change = props.custom.maxValue - props.custom.value;
-          }
-          props.onChange(props.custom.value + change);
-        }
-      };
-      const onMouseUp = () => {
-        // unsubscribe
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-      };
-      // subscribe
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
+        };
+        const onMouseUp = () => {
+          console.log("mouseup called");
+          // unsubscribe
+          window.removeEventListener("mousemove", onMouseMove);
+          window.removeEventListener("mouseup", onMouseUp);
+        };
+        // subscribe
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+      }
     },
-    [props]
+    [value, props, maxValue, minValue, valueRange]
+  );
+
+  const thumbPosition = useMemo(() => {
+    const thumbRadius = thumbRef.current?.getBoundingClientRect().width || 0;
+    const scale =
+      valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
+    console.log(
+      thumbRadius,
+      scale,
+      valueRange,
+      trackRef.current?.getBoundingClientRect().width || 1
+    );
+    // stop initial back display of image
+    if (value - minValue <= thumbRadius * scale) {
+      console.log("setting 0px", minValue, value);
+      return `0px`;
+    }
+    return `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`;
+  }, [value, minValue, valueRange, radius]);
+
+  const onTrackClicked = useCallback(
+    (e: React.MouseEvent) => {
+      console.log("onTack");
+      const scale =
+        valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
+      const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
+      const finalValue = minValue + (e.pageX - lowerLimit) * scale;
+      console.log(finalValue);
+      props.onChange(finalValue);
+    },
+    [valueRange, props, minValue]
   );
 
   return (
-    <div ref={ref} style={props.styles} className="slider-parent">
-      <div className="slider-rail"></div>
+    <div
+      ref={ref}
+      style={{
+        ...props.styles,
+        position: "relative",
+        display: "inline-block",
+        height: `calc(2 * ${radius})`,
+      }}
+    >
+      {/** track */}
       <div
-        className="slider-progress"
-        style={{ width: props.custom.value + "%" }}
+        style={{
+          height: thickness,
+          backgroundColor: trackColor,
+          position: "relative",
+          top: "50%",
+          transform: "translate(0px, -50%)",
+          // center of thumb should match the starting point of track
+          width: `calc(100% - 2 * ${radius})`,
+          left: radius,
+        }}
+        ref={trackRef}
+        onClick={onTrackClicked}
       ></div>
+      {/** selected track */}
       <div
-        className="slider-thumb"
-        style={{ left: props.custom.value + "%" }}
+        style={{
+          height: thickness,
+          backgroundColor: selectColor,
+          position: "absolute",
+          top: "50%",
+          transform: "translate(0px, -50%)",
+          // center of thumb should match the starting point of track
+          width: thumbPosition,
+          left: radius,
+        }}
+        onClick={onTrackClicked}
+      ></div>
+      {/** thumb */}
+      <div
+        ref={thumbRef}
+        style={{
+          position: "absolute",
+          left: thumbPosition,
+          height: `calc(2 * ${radius})`,
+          width: `calc(2 * ${radius})`,
+          backgroundColor: thumbColor,
+          top: "50%",
+          transform: `translate(0px, -50%)`,
+          borderRadius: "50%",
+        }}
         onMouseDown={onMouseDown}
       ></div>
     </div>
@@ -75,7 +237,9 @@ const cssTreeOptions: CSSTreeOptions = {
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
+  outlineOptions: true,
   backgroundOptions: true,
+  miscellaneousOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
