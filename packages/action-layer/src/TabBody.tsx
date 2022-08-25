@@ -192,8 +192,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 alignItems: "center",
                 color: gray300,
                 backgroundColor: gray900,
-                height: "40px",
-                padding: "0.5rem",
+                padding: "1rem",
               }}
             >
               <div

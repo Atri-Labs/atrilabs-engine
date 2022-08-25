@@ -23,6 +23,7 @@ const forestsConfig = {
 const compileAppOutputDir = process.cwd();
 const defaultTemplateDir = "./templates";
 const userTemplateDir = "atri_templates";
+const resourceDir = "./localdb/resources";
 
 const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
   ? parseInt(process.env["EVENT_SERVER_PORT"])
@@ -71,6 +72,7 @@ module.exports = {
     { pkg: "@atrilabs/asset-manager-layer" },
     { pkg: "@atrilabs/app-template-layer" },
     { pkg: "@atrilabs/action-layer" },
+    { pkg: "@atrilabs/resource-processor-layer" },
   ],
   output: "lib",
   services: {
@@ -151,6 +153,13 @@ module.exports = {
             options: {},
           },
         ],
+        resources: [
+          {
+            modulePath:
+              "@atrilabs/component-tree-to-app/lib/resourceGenerator.js",
+            options: {},
+          },
+        ],
       },
     },
   ],
@@ -183,5 +192,8 @@ module.exports = {
   templateManager: {
     defaultDirs: [defaultTemplateDir],
     dirs: [userTemplateDir],
+  },
+  resources: {
+    path: resourceDir,
   },
 };

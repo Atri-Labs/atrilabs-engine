@@ -13,6 +13,7 @@ import {
   CallbackGeneratorOutput,
   ComponentGeneratorOutput,
   PropsGeneratorOutput,
+  ResourceGeneraterOutput,
 } from "../types";
 import { ToolConfig } from "@atrilabs/core";
 
@@ -29,6 +30,8 @@ export function createReactAppTemplateManager(
     reactAppPackageJSONDest: string;
     reactAppNodeTemplatePath: string;
     reactAppNodeDestPath: string;
+    reactAppIndexHtmlTemplate: string;
+    reactAppIndexHtmlDest: string;
   },
   rootComponentId: string,
   assetManager: ToolConfig["assetManager"]
@@ -870,6 +873,44 @@ export function createReactAppTemplateManager(
     });
   }
 
+  const resources: ResourceGeneraterOutput = [];
+
+  function addResources(output: ResourceGeneraterOutput) {
+    resources.push(...output);
+  }
+
+  function flushIndexHtml() {
+    const styleTags: string[] = [];
+
+    for (let i = 0; i < resources.length; i++) {
+      const resource = resources[i];
+      if (resource.method === "css") {
+        const styleTag = `<style>${resource.str}</style>`;
+        styleTags.push(styleTag);
+      }
+    }
+
+    const styleTagStrs = styleTags.join("\n\t\t");
+    const indexHtmlContent = fs
+      .readFileSync(paths.reactAppIndexHtmlTemplate)
+      .toString();
+    const resourceCursorMatch = indexHtmlContent.match(
+      /<!-- RESOURCE CURSOR -->/
+    );
+    if (resourceCursorMatch) {
+      const newText = replaceText(indexHtmlContent, [
+        {
+          index: resourceCursorMatch.index!,
+          length: resourceCursorMatch[0].length,
+          replaceWith: styleTagStrs,
+        },
+      ]);
+      fs.writeFileSync(paths.reactAppIndexHtmlDest, newText);
+    } else {
+      console.log("Resource Cursor not found in index.html");
+    }
+  }
+
   return {
     copyTemplate,
     createPage,
@@ -889,5 +930,7 @@ export function createReactAppTemplateManager(
     addCallbacks,
     flushPageCbs,
     flushIoStore,
+    addResources,
+    flushIndexHtml,
   };
 }

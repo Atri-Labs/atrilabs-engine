@@ -137,6 +137,9 @@ export type ToolConfig = {
     // directories that have templates created by user
     dirs?: string[];
   };
+  resources: {
+    path: string;
+  };
 };
 
 // type for manifest.schema.config.js
@@ -179,13 +182,20 @@ export type EventSubscriber = (
   event: AnyEvent
 ) => void;
 
-export interface TemplateInfo {
-  userDirs: string[];
-  defaultDirs: string[];
-}
-
 // array of filenames without extension
-export type TemplateNames = string[];
+export type TemplateDetail = { relativeDir: string; templateName: string };
+
+export type ImportedResource = {
+  str: string;
+  method: "link" | "css";
+  imports: {
+    fonts?: {
+      fontFamily: string;
+      fontWeight: string | number;
+      fontStyle: string;
+    }[];
+  };
+};
 
 export type BrowserClient = {
   getMeta(forestPkgId: string, onData: (meta: any) => void): void;
@@ -258,11 +268,8 @@ export type BrowserClient = {
       [name: string]: { url: string; mime: string };
     }) => void
   ) => void;
-  getTemplateInfo: (callback: (info: TemplateInfo) => void) => void;
-  getTemplateList: (
-    dir: string,
-    callback: (names: TemplateNames) => void
-  ) => void;
+  /** template management api */
+  getTemplateList: (callback: (details: TemplateDetail[]) => void) => void;
   createTemplate: (
     dir: string,
     name: string,
@@ -284,6 +291,15 @@ export type BrowserClient = {
     dir: string,
     name: string,
     callback: (events: AnyEvent[]) => void
+  ) => void;
+  /** resource management api */
+  importResource: (
+    importStatement: { str: string },
+    callback: (success: boolean) => void
+  ) => void;
+  getResources: (callback: (resources: ImportedResource[]) => void) => void;
+  subscribeResourceUpdates: (
+    callback: (resource: ImportedResource) => void
   ) => void;
 };
 

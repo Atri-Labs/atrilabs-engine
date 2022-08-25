@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from "react";
-import { Container, getId, Menu } from "@atrilabs/core";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Container, getId, Menu, TemplateDetail } from "@atrilabs/core";
 import {
   amber300,
   gray300,
@@ -18,10 +18,12 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { useTemplateApi } from "./hooks/useTemplateApi";
 import { startDrag } from "@atrilabs/canvas-runtime";
 import { DragTemplateComp } from "./components/DragTemplateComp";
-import { ReactComponent as Trash } from "./assets/trash.svg";
 import "./styles.css";
 import { ConfirmDelete } from "./components/ConfirmDelete";
-import { formatTemplateName } from "./utils";
+import { useTemplateCopyPaste } from "./hooks/useTemplateCopyPaste";
+import { useShowTemplate } from "./hooks/useShowTemplate";
+import { TemplateRenderer } from "./components/TemplateRenderer";
+import { RelativeDirectorySelector } from "./components/RelativeDirectorySelector";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -84,8 +86,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 export default function () {
-  const { templatesData, callCreateTeamplateApi, callDeleteTemplateApi } =
-    useTemplateApi();
+  const {
+    templateDetails,
+    callCreateTeamplateApi,
+    callDeleteTemplateApi,
+    relativeDirs,
+    sortedRelativeDirs,
+  } = useTemplateApi();
 
   const [showDropPanel, setShowDropContianer] = useState<boolean>(false);
   const openDropContainer = useCallback(() => {
@@ -100,40 +107,63 @@ export default function () {
   const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
     useState<boolean>(false);
   const createTempalateInputRef = useRef<HTMLInputElement>(null);
+  const createTemplateSelect = useRef<HTMLSelectElement>(null);
   const onCreateTemplateClickCb = useCallback(() => {
-    console.log("onCreateTemplateClickCb");
     setShowCreateTemplatePopup(true);
   }, []);
   const onCreateTemplatePopupCrossClickCb = useCallback(() => {
-    console.log("onCreateTemplatePopupCrossClickCb");
     setShowCreateTemplatePopup(false);
   }, []);
   const onCreateClickCb = useCallback(() => {
-    if (selected && templatesData && createTempalateInputRef.current) {
+    if (
+      selected &&
+      templateDetails &&
+      createTempalateInputRef.current &&
+      createTemplateSelect.current
+    ) {
       const templateEvents = createTemplate(selected, {
         copyCallbacks: true,
         copyDefaulCallbacks: false,
       });
       if (templateEvents.length > 0) {
-        callCreateTeamplateApi(
-          templateEvents,
-          createTempalateInputRef.current.value
-        );
+        callCreateTeamplateApi(templateEvents, {
+          relativeDir: createTemplateSelect.current.value,
+          templateName: createTempalateInputRef.current.value,
+        });
       }
     }
     setShowCreateTemplatePopup(false);
-  }, [createTemplate, selected, templatesData, callCreateTeamplateApi]);
+  }, [createTemplate, selected, templateDetails, callCreateTeamplateApi]);
 
-  const [showDeleteDialog, setShowDeleteDialog] = useState<{
-    templateName: string;
-  } | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    useState<TemplateDetail | null>(null);
   const onDeleteConfirm = useCallback(() => {
-    if (showDeleteDialog?.templateName)
-      callDeleteTemplateApi(showDeleteDialog.templateName);
+    if (showDeleteDialog) callDeleteTemplateApi(showDeleteDialog);
     setShowDeleteDialog(null);
   }, [showDeleteDialog, callDeleteTemplateApi]);
   const onDeleteCancel = useCallback(() => {
     setShowDeleteDialog(null);
+  }, []);
+
+  useTemplateCopyPaste();
+
+  const [selectedDir, setSelectedDir] = useState<string | null>(
+    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : null
+  );
+  useEffect(() => {
+    if (
+      selectedDir === null &&
+      sortedRelativeDirs.length > 0 &&
+      sortedRelativeDirs[0] !== undefined
+    ) {
+      setSelectedDir(sortedRelativeDirs[0]);
+    }
+  }, [sortedRelativeDirs, selectedDir]);
+
+  const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
+
+  const onRelativeDirSelect = useCallback((dir: string) => {
+    setSelectedDir(dir);
   }, []);
 
   return (
@@ -158,105 +188,73 @@ export default function () {
               </div>
             </header>
             <div>
-              <div>
-                <div
-                  style={{
-                    padding: "0.5rem",
-                    backgroundColor: gray900,
-                    ...h4Heading,
-                    color: gray300,
-                  }}
-                >
-                  User Templates
-                </div>
-                {templatesData?.user.names.map((name) => {
-                  const formatName = formatTemplateName(name);
-                  const onMouseDownCb = () => {
-                    startDrag(
-                      { comp: DragTemplateComp, props: { text: formatName } },
-                      {
-                        type: "template",
-                        data: {
-                          dir: templatesData.default.dir,
-                          name: name,
-                          newTemplateRootId: getId(),
-                        },
-                      }
-                    );
-                  };
-                  return (
+              <div
+                style={{
+                  rowGap: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                {selectedDir ? (
+                  <>
                     <div
-                      className="bin-icon-container"
-                      key={name}
                       style={{
-                        borderBottom: `1px solid ${gray900}`,
-                        ...h4Heading,
-                        color: gray300,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "0 0.5rem",
-                      }}
-                    >
-                      <div
-                        onMouseDown={onMouseDownCb}
-                        style={{ flexGrow: 1, padding: "0.5rem 0" }}
-                      >
-                        {formatName}
-                      </div>
-                      <div
-                        className="bin-icon"
-                        onClick={() => {
-                          setShowDeleteDialog({ templateName: name });
-                        }}
-                      >
-                        <Trash />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div>
-                <div
-                  style={{
-                    padding: "0.5rem",
-                    backgroundColor: gray900,
-                    ...h4Heading,
-                    color: gray300,
-                  }}
-                >
-                  Default Templates
-                </div>
-                {templatesData?.default.names.map((name) => {
-                  const formatName = formatTemplateName(name);
-                  const onMouseDownCb = () => {
-                    startDrag(
-                      { comp: DragTemplateComp, props: { text: formatName } },
-                      {
-                        type: "template",
-                        data: {
-                          dir: templatesData.default.dir,
-                          name: name,
-                          newTemplateRootId: getId(),
-                        },
-                      }
-                    );
-                  };
-                  return (
-                    <div
-                      key={name}
-                      style={{
-                        padding: "0.5rem",
-                        borderBottom: `1px solid ${gray900}`,
+                        backgroundColor: gray900,
                         ...h4Heading,
                         color: gray300,
                       }}
-                      onMouseDown={onMouseDownCb}
                     >
-                      {formatName}
+                      <RelativeDirectorySelector
+                        seletecdDir={selectedDir}
+                        relativeDirs={sortedRelativeDirs}
+                        onRelativeDirSelect={onRelativeDirSelect}
+                      />
                     </div>
-                  );
-                })}
+                    {formattedData.map(({ name, components }) => {
+                      const onMouseDownCb = (e: React.MouseEvent) => {
+                        // CARE
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        startDrag(
+                          { comp: DragTemplateComp, props: { text: name } },
+                          {
+                            type: "template",
+                            data: {
+                              dir: selectedDir,
+                              name: name,
+                              newTemplateRootId: getId(),
+                            },
+                          }
+                        );
+                      };
+                      return (
+                        <div
+                          key={name}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <TemplateRenderer
+                            templateName={name}
+                            templateComponents={components}
+                            styles={
+                              selectedDir.match("basic") ? { height: "" } : {}
+                            }
+                            onDeleteClicked={() => {
+                              setShowDeleteDialog({
+                                templateName: name,
+                                relativeDir: selectedDir,
+                              });
+                            }}
+                            onMouseDown={onMouseDownCb}
+                          />
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : null}
               </div>
             </div>
           </div>
@@ -293,6 +291,21 @@ export default function () {
                     <Cross />
                   </span>
                 </div>
+                <label htmlFor="templateCategory">Template Category</label>
+                <select ref={createTemplateSelect}>
+                  {Object.keys({
+                    ...relativeDirs,
+                    basics: true,
+                    layout: true,
+                    data: true,
+                  }).map((relativeDir) => {
+                    return (
+                      <option value={relativeDir} key={relativeDir}>
+                        {relativeDir}
+                      </option>
+                    );
+                  })}
+                </select>
                 <label htmlFor="templateName">Template Name</label>
                 <input ref={createTempalateInputRef} id="templateName" />
                 <button

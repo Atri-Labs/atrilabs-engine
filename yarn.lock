@@ -4255,6 +4255,11 @@
   resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.12.tgz#6b2c510a7ad7039e98e7b8d3d6598f4359e5c080"
   integrity sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==
 
+"@types/css-tree@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@types/css-tree/-/css-tree-1.0.7.tgz#4483b824a7923d9a7819408a33144014b0c5124c"
+  integrity sha512-Pz+DfVODpQTAV6PwPBK6kzyy7+f6EyPbr1+mYkc1YolJfl2NAJ4wbg0TC/AJPBsqn9jWfyiO19A/sgpvFLfqnw==
+
 "@types/eslint-scope@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@types/eslint-scope/-/eslint-scope-3.7.3.tgz#125b88504b61e3c8bc6f870882003253005c3224"
@@ -6242,6 +6247,14 @@ css-tree@^1.1.2, css-tree@^1.1.3:
   dependencies:
     mdn-data "2.0.14"
     source-map "^0.6.1"
+
+css-tree@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-2.2.1.tgz#36115d382d60afd271e377f9c5f67d02bd48c032"
+  integrity sha512-OA0mILzGc1kCOCSJerOeqDxDQ4HOh+G8NbOJFOTgOCzpw7fCBubk0fEyxp8AgOL/jvLgYA/uV0cMbe43ElF1JA==
+  dependencies:
+    mdn-data "2.0.28"
+    source-map-js "^1.0.1"
 
 css-unit-converter@^1.1.1:
   version "1.1.2"
@@ -9532,6 +9545,11 @@ mdn-data@2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
   integrity sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==
+
+mdn-data@2.0.28:
+  version "2.0.28"
+  resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.28.tgz#5ec48e7bef120654539069e1ae4ddc81ca490eba"
+  integrity sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g==
 
 media-typer@0.3.0:
   version "0.3.0"

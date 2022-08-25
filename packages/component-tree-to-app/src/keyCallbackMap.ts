@@ -18,7 +18,12 @@ export const keyCallbackMap: {
       actions: [{ type: "do_nothing" }],
     },
   },
-  Flex: {},
+  Flex: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
   Input: {
     onChange: {
       handlers: [],

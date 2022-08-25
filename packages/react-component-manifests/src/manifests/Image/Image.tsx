@@ -14,15 +14,33 @@ export const Image = forwardRef<
   {
     styles: React.CSSProperties;
     custom: { alt: string; src: string };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    onClick: (event: {
+      eventX: number;
+      eventY: number;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }) => void;
   }
 >((props, ref) => {
   const onClick = useCallback(
     (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+      const { x, y, width, height } = (
+        e.nativeEvent.target as HTMLElement
+      ).getBoundingClientRect();
+      props.onClick({
+        eventX: e.pageX,
+        eventY: e.pageY,
+        x,
+        y,
+        width,
+        height,
+      });
     },
     [props]
   );
+
   return (
     <img
       ref={ref}

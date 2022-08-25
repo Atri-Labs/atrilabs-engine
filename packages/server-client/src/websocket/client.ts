@@ -150,42 +150,59 @@ const getAssetsInfo: BrowserClient["getAssetsInfo"] = (cb) => {
   });
 };
 
-const getTemplateInfo: BrowserClient["getTemplateInfo"] = (cb) => {
-  socket.emit("getTemplateInfo", cb);
-};
-
-const getTemplateList: BrowserClient["getTemplateList"] = (dir, cb) => {
-  socket.emit("getTemplateList", dir, cb);
+const getTemplateList: BrowserClient["getTemplateList"] = (cb) => {
+  socket.emit("getTemplateList", cb);
 };
 
 const createTemplate: BrowserClient["createTemplate"] = (
-  dir,
+  relativeDir,
   name,
   events,
   cb
 ) => {
-  socket.emit("createTemplate", dir, name, events, cb);
+  socket.emit("createTemplate", relativeDir, name, events, cb);
 };
 
 const overwriteTemplate: BrowserClient["overwriteTemplate"] = (
-  dir,
+  relativeDir,
   name,
   events,
   cb
 ) => {
-  socket.emit("overwriteTemplate", dir, name, events, cb);
+  socket.emit("overwriteTemplate", relativeDir, name, events, cb);
 };
 
-const deleteTemplate: BrowserClient["deleteTemplate"] = (dir, name, cb) => {
-  socket.emit("deleteTemplate", dir, name, cb);
-};
-
-const getTemplateEvents: BrowserClient["getTemplateEvents"] = (
-  dir,
+const deleteTemplate: BrowserClient["deleteTemplate"] = (
+  relativeDir,
   name,
   cb
 ) => {
-  socket.emit("getTemplateEvents", dir, name, cb);
+  socket.emit("deleteTemplate", relativeDir, name, cb);
+};
+
+const getTemplateEvents: BrowserClient["getTemplateEvents"] = (
+  relativeDir,
+  name,
+  cb
+) => {
+  socket.emit("getTemplateEvents", relativeDir, name, cb);
+};
+
+const importResource: BrowserClient["importResource"] = (
+  importStatement,
+  cb
+) => {
+  socket.emit("importResource", importStatement, cb);
+};
+
+const getResources: BrowserClient["getResources"] = (cb) => {
+  socket.emit("getResources", cb);
+};
+
+const subscribeResourceUpdates: BrowserClient["subscribeResourceUpdates"] = (
+  cb
+) => {
+  socket.on("newResource", cb);
 };
 
 const client: BrowserClient = {
@@ -205,12 +222,14 @@ const client: BrowserClient = {
   getNewAlias,
   uploadAssets,
   getAssetsInfo,
-  getTemplateInfo,
   getTemplateList,
   createTemplate,
   overwriteTemplate,
   deleteTemplate,
   getTemplateEvents,
+  importResource,
+  getResources,
+  subscribeResourceUpdates,
 };
 
 export default client;

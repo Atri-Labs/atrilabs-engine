@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
@@ -17,37 +17,56 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { gray500 } from "@atrilabs/design-system";
 import { ReactComponent as Icon } from "./icon.svg";
 
-export const DevFlex = forwardRef<
+export const Flex = forwardRef<
   HTMLDivElement,
-  { styles: React.CSSProperties; children: React.ReactNode[] }
+  {
+    styles: React.CSSProperties;
+    children: React.ReactNode[];
+    onClick: (event: {
+      eventX: number;
+      eventY: number;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }) => void;
+  }
 >((props, ref) => {
-  if (props.children.length > 0) {
-    return <Flex ref={ref} {...props} />;
-  } else {
-    return (
-      <div
-        ref={ref}
-        style={{
+  const onClickCb = useCallback(
+    (e: React.MouseEvent) => {
+      const { x, y, width, height } = (
+        e.nativeEvent.target as HTMLElement
+      ).getBoundingClientRect();
+      props.onClick({
+        eventX: e.pageX,
+        eventY: e.pageY,
+        x,
+        y,
+        width,
+        height,
+      });
+    },
+    [props]
+  );
+  return (
+    <div ref={ref} style={props.styles} onClick={onClickCb}>
+      {props.children}
+    </div>
+  );
+});
+
+export const DevFlex: typeof Flex = forwardRef((props, ref) => {
+  const overrideStyleProps: React.CSSProperties =
+    props.children.length === 0
+      ? {
           minHeight: "100px",
           minWidth: "100px",
           border: `2px dashed ${gray500}`,
           boxSizing: "border-box",
           ...props.styles,
-        }}
-      ></div>
-    );
-  }
-});
-
-export const Flex = forwardRef<
-  HTMLDivElement,
-  { styles: React.CSSProperties; children: React.ReactNode[] }
->((props, ref) => {
-  return (
-    <div ref={ref} style={props.styles}>
-      {props.children}
-    </div>
-  );
+        }
+      : { ...props.styles };
+  return <Flex ref={ref} {...props} styles={overrideStyleProps} />;
 });
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
@@ -103,7 +122,9 @@ const compManifest: ReactComponentManifestSchema = {
         canvasOptions: { groupByBreakpoint: true },
       },
     },
-    attachCallbacks: {},
+    attachCallbacks: {
+      onClick: [{ type: "do_nothing" }],
+    },
     acceptsChild,
     defaultCallbackHandlers: {},
   },

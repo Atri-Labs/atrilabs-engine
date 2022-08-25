@@ -207,3 +207,13 @@ export function getPackageVersion(pkg: string): string | null {
   }
   return null;
 }
+
+export const atriAppIndexHtmlTemplateFilepath = path.resolve(
+  reactAppTemplatePath,
+  "public",
+  "index.html"
+);
+
+export function getAtriAppIndexHtmlDestFilepath(outputDir: string) {
+  return path.resolve(outputDir, "app", "public", "index.html");
+}

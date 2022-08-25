@@ -38,8 +38,14 @@ export const HistogramChart = forwardRef<
           animate?: boolean;
           type?: string;
           strokeWidth?: number;
+          hide?: boolean;
         };
-        bar?: { fill?: string; stroke?: string; animate?: boolean };
+        bar?: {
+          fill?: string;
+          stroke?: string;
+          animate?: boolean;
+          hide?: boolean;
+        };
       };
       toolTip?: { show?: boolean };
       legend?: { show?: boolean };
@@ -62,6 +68,7 @@ export const HistogramChart = forwardRef<
       ...props.custom.options?.bar,
       fill: fillColor,
       stroke: props.custom.options?.bar?.stroke || fillColor,
+      hide: props.custom.options?.bar?.hide || false,
     };
   }, [props.custom]);
 
@@ -71,6 +78,7 @@ export const HistogramChart = forwardRef<
     return {
       ...props.custom.options?.line,
       stroke: strokeColor,
+      hide: props.custom.options?.bar?.hide || false,
     };
   }, [props.custom, bar]);
 
@@ -108,19 +116,23 @@ export const HistogramChart = forwardRef<
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? <Legend /> : null}
 
-        <Bar
-          dataKey={yAxisKey}
-          stroke={bar.stroke}
-          fill={bar.fill}
-          isAnimationActive={bar.animate}
-        />
-        <Line
-          type={props.custom.options?.line?.type}
-          dataKey={yAxisKey}
-          stroke={line.stroke}
-          isAnimationActive={line.animate}
-          strokeWidth={line.strokeWidth}
-        />
+        {bar.hide ? null : (
+          <Bar
+            dataKey={yAxisKey}
+            stroke={bar.stroke}
+            fill={bar.fill}
+            isAnimationActive={bar.animate}
+          />
+        )}
+        {line.hide ? null : (
+          <Line
+            type={props.custom.options?.line?.type}
+            dataKey={yAxisKey}
+            stroke={line.stroke}
+            isAnimationActive={line.animate}
+            strokeWidth={line.strokeWidth}
+          />
+        )}
       </ComposedChart>
     </div>
   );

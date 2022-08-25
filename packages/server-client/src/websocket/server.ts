@@ -1,4 +1,4 @@
-import { ToolConfig } from "@atrilabs/core";
+import { ImportedResource, ToolConfig } from "@atrilabs/core";
 import { Server } from "socket.io";
 import { createForestMgr } from "./create-forest-mgr";
 import {
@@ -22,6 +22,7 @@ import {
   getTemplateList,
   overwriteTemplate,
 } from "./template-handler";
+import { fetchCSSResource } from "./resource-handler";
 const app = express();
 const server = http.createServer(app);
 
@@ -38,6 +39,16 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     InterServerEvents,
     SocketData
   >(server, { cors: { origin: "*" } });
+
+  // resources management
+  const resourseDirectory = path.resolve(toolConfig.resources.path);
+  const resourceFile = path.resolve(resourseDirectory, "resources.json");
+  if (!fs.existsSync(resourseDirectory)) {
+    fs.mkdirSync(resourseDirectory, { recursive: true });
+  }
+  if (!fs.existsSync(resourceFile)) {
+    fs.writeFileSync(resourceFile, "[]");
+  }
 
   // create one directory and event manager for each of forest
   const getEventManager = createForestMgr(toolConfig).getEventManager;
@@ -335,31 +346,94 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
       callback(assetConf);
     });
 
-    socket.on("getTemplateInfo", (callback) => {
-      const info = {
-        defaultDirs: toolConfig.templateManager.defaultDirs || [],
-        userDirs: toolConfig.templateManager.dirs || [],
-      };
-      callback(info);
+    socket.on("getTemplateList", (callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        callback(getTemplateList(dir));
+      } else {
+        callback([]);
+      }
     });
-    socket.on("getTemplateList", (dir, callback) => {
-      callback(getTemplateList(dir));
+    socket.on(
+      "createTemplate",
+      (relativeDir, templateName, events, callback) => {
+        if (toolConfig.templateManager.dirs?.[0]) {
+          const dir = toolConfig.templateManager.dirs[0];
+          createTemplate(dir, relativeDir, templateName, events);
+          callback(true);
+        } else callback(false);
+      }
+    );
+    socket.on(
+      "overwriteTemplate",
+      (relativeDir, templateName, events, callback) => {
+        if (toolConfig.templateManager.dirs?.[0]) {
+          const dir = toolConfig.templateManager.dirs[0];
+          overwriteTemplate(dir, relativeDir, templateName, events);
+          callback(true);
+        } else callback(false);
+      }
+    );
+    socket.on("deleteTemplate", (relativeDir, templateName, callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        deleteTemplate(dir, relativeDir, templateName);
+        callback(true);
+      } else callback(false);
     });
-    socket.on("createTemplate", (dir, name, events, callback) => {
-      createTemplate(dir, name, events);
-      callback(true);
+    socket.on("getTemplateEvents", (relativeDir, templateName, callback) => {
+      if (toolConfig.templateManager.dirs?.[0]) {
+        const dir = toolConfig.templateManager.dirs[0];
+        const events = getTemplateEvents(dir, relativeDir, templateName);
+        callback(events || []);
+      } else {
+        callback([]);
+      }
     });
-    socket.on("overwriteTemplate", (dir, name, events, callback) => {
-      overwriteTemplate(dir, name, events);
-      callback(true);
+
+    socket.on("importResource", (resource, cb) => {
+      fetchCSSResource(resource.str)
+        .then((importedResource) => {
+          try {
+            const fileContent =
+              fs.readFileSync(resourceFile).toString() || "[]";
+            const importedResources: ImportedResource[] =
+              JSON.parse(fileContent);
+            if (Array.isArray(importedResources)) {
+              importedResources.push(importedResource);
+              fs.writeFileSync(
+                resourceFile,
+                JSON.stringify(importedResources, null, 2)
+              );
+              cb(true);
+              io.sockets.emit("newResource", importedResource);
+            } else {
+              console.log(
+                `The ${resourceFile} is expected to have array of resources. Please check the file.`
+              );
+              cb(false);
+            }
+          } catch (err) {
+            console.log(err);
+            cb(false);
+          }
+        })
+        .catch(() => {
+          console.log("Some error occured while fetching CSS resource.");
+          cb(false);
+        });
     });
-    socket.on("deleteTemplate", (dir, name, callback) => {
-      deleteTemplate(dir, name);
-      callback(true);
-    });
-    socket.on("getTemplateEvents", (dir, name, callback) => {
-      const events = getTemplateEvents(dir, name);
-      callback(events || []);
+    socket.on("getResources", (cb) => {
+      if (fs.existsSync(resourceFile)) {
+        try {
+          const resources = JSON.parse(
+            fs.readFileSync(resourceFile).toString()
+          );
+          if (Array.isArray(resources)) {
+            cb(resources);
+          }
+        } catch {}
+      }
     });
   });
 

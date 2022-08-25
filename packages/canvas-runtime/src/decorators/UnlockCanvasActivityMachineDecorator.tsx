@@ -7,6 +7,22 @@ import {
   unlockMachine,
 } from "./CanvasActivityDecorator";
 
+const alertsForComps: { compId: string; cb: () => void }[] = [];
+export function subscribeComponentRender(compId: string, cb: () => void) {
+  alertsForComps.push({ compId, cb });
+  return () => {
+    // CAUTION
+    // user might have set two listeners with same cb & compId
+    // this will always remove the first one on unsub
+    const index = alertsForComps.findIndex(
+      (curr) => curr.cb === cb && curr.compId === compId
+    );
+    if (index >= 0) {
+      alertsForComps.splice(index, 1);
+    }
+  };
+}
+
 const newCompRendererdSubscribers: ((compId: string) => void)[] = [];
 
 export function subscribeNewDropRendered(cb: (compId: string) => void) {
@@ -39,6 +55,17 @@ export const UnlockCanvasActivityMachineDecorator: React.FC<DecoratorProps> = (
         cb(props.compId);
       });
     }
+
+    const successfulAlerts = [...alertsForComps].filter(
+      (curr) => curr.compId === props.compId
+    );
+    successfulAlerts.forEach((curr) => {
+      try {
+        curr.cb();
+      } catch {
+        // do nothing on a cb error
+      }
+    });
   }, [props.compId]);
   // Set properties/attributes that hinder drag-drop on canvas
   // so that they don't interfer. For ex: user-select, draggable
