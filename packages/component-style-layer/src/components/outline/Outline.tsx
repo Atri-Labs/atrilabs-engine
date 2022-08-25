@@ -273,7 +273,7 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               name="outlineStyle"
               onChange={(e) => handleOutlineChange(e, "outlineStyle")}
               style={styles.inputBox}
-              value={props.styles.outlineStyle || "none"}
+              value={props.styles.outlineStyle || ""}
             >
               <option style={styles.select} value="dotted">
                 dotted

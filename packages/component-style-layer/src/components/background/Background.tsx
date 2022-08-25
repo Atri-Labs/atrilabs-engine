@@ -182,6 +182,16 @@ export type ColorHSV = {
 
 export const hex2rgb = (hex: Color["hex"]) => {
   hex = hex.slice(1);
+
+  if (hex.length === 3 || hex.length === 4) {
+    hex = hex
+      .split("")
+      .map(function (hex) {
+        return hex + hex;
+      })
+      .join("");
+  }
+
   const r = parseInt(hex.slice(0, 2), 16);
   const g = parseInt(hex.slice(2, 4), 16);
   const b = parseInt(hex.slice(4, 6), 16);
@@ -397,6 +407,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 defaultValue=""
                 getOpacityValue={getOpacityValue}
                 setOpacityValue={setOpacityValue}
+                rgb2hex={rgb2hex}
               />
             </div>
             <div style={{ width: "45px", marginRight: "10px" }}>
