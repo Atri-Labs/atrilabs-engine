@@ -117,11 +117,14 @@ app.post("/event-handler", express.json({ limit: "50mb" }), (req, res) => {
       });
       forward_res.on("end", () => {
         try {
+          // copy headers
           Object.keys(forward_res.headers).forEach((key) => {
             res.setHeader(key, forward_res.headers[key]!);
           });
           const newPageState = JSON.parse(data);
-          res.status(200).send({ pageState: newPageState });
+          // copy status code
+          const statusCode = forward_res.statusCode || 200;
+          res.status(statusCode).send({ pageState: newPageState });
         } catch (err) {
           console.log("Unexpected Forward Response\n", err);
           res.status(501).send();
@@ -162,11 +165,15 @@ app.post(
       controllerPort,
       req,
     })
-      .then((val: { pageState: any; headers: any }) => {
+      .then((val) => {
+        // copy headers
         Object.keys(val.headers).forEach((key) => {
           res.setHeader(key, val.headers[key]);
         });
-        res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+        // copy status code
+        res
+          .status(val.statusCode)
+          .send({ ...val, pageName: serverInfo.pages[pageRoute].name });
       })
       .catch((err) => {
         console.log("Forward failed", err);
