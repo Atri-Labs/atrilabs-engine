@@ -1,11 +1,17 @@
 import create from "zustand";
 
 const useStore = create((set) => {
-  return {};
+  return {
+    setPage: (pageName, newState) =>
+      set((state) => {
+        const pageState = state[pageName];
+        return { [pageName]: { ...pageState, ...newState } };
+      }),
+  };
 });
 
 export function updateStoreStateFromController(pageName, newState) {
-  useStore.setState({ [pageName]: newState });
+  useStore.getState().setPage(pageName, newState);
 }
 
 const desktopModeProps = {
@@ -72,7 +78,7 @@ function getEffectivePropsForPage(pageName) {
 
 export function setEffectivePropsForPage(pageName) {
   const effectiveProps = getEffectivePropsForPage(pageName);
-  useStore.setState({ [pageName]: effectiveProps });
+  useStore.getState().setPage(pageName, effectiveProps);
 }
 
 useStore.setState(desktopModeProps);
