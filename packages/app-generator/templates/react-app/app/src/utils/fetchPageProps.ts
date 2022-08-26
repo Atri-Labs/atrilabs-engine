@@ -1,5 +1,5 @@
-export function fetchPageProps(pageRoute: string) {
-  const payload = JSON.stringify({ pageRoute });
+export function fetchPageProps(pageRoute: string, query: string) {
+  const payload = JSON.stringify({ pageRoute, query });
   const options: RequestInit = {
     method: "POST",
     body: payload,

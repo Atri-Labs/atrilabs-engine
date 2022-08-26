@@ -4,17 +4,25 @@ import { Request } from "express";
 export function forwardGetPageRequest(params: {
   pageState: any;
   pageRoute: string;
+  query: string;
   controllerHostname: string;
   controllerPort: number;
   req: Request;
 }) {
   return new Promise<{ pageState: any; headers: any; statusCode: number }>(
     (res, rej) => {
-      const { pageState, pageRoute, controllerHostname, controllerPort, req } =
-        params;
+      const {
+        pageState,
+        pageRoute,
+        controllerHostname,
+        controllerPort,
+        req,
+        query,
+      } = params;
       const payload = JSON.stringify({
         route: pageRoute,
         state: pageState,
+        query,
       });
       const forward_req = http.request(
         {

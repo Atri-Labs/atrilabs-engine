@@ -45,10 +45,10 @@ const server = http.createServer(app);
 createWebSocketServer(server);
 
 app.use((req, res, next) => {
-  console.log("request received", req.originalUrl);
-  if (req.method === "GET" && serverInfo.pages[req.originalUrl]) {
+  console.log("request received", req.originalUrl, req.path);
+  if (req.method === "GET" && serverInfo.pages[req.path]) {
     if (!isDevelopment) {
-      const finalTextFromCache = getPageFromCache(req.originalUrl);
+      const finalTextFromCache = getPageFromCache(req.path);
       if (finalTextFromCache) {
         res.send(finalTextFromCache);
         return;
@@ -66,9 +66,9 @@ app.use((req, res, next) => {
     delete require.cache[getAppTextPath];
     const getAppText = require(getAppTextPath)["getAppText"]["getAppText"];
     const appHtmlContent = getIndexHtmlContent(appDistHtml);
-    const finalText = getAppText(req.originalUrl, appHtmlContent);
+    const finalText = getAppText(req.path, appHtmlContent);
     res.send(finalText);
-    storePageInCache(req.originalUrl, finalText);
+    storePageInCache(req.path, finalText);
   } else {
     next();
   }
@@ -145,6 +145,7 @@ app.post(
   express.json({ limit: "50mb" }),
   (req, res) => {
     const pageRoute = req.body["pageRoute"];
+    const query = req.body["query"];
     const useStorePath = path.resolve(
       __dirname,
       "..",
@@ -160,6 +161,7 @@ app.post(
       ];
     forwardGetPageRequest({
       pageRoute: pageRoute,
+      query,
       pageState: pageState,
       controllerHostname,
       controllerPort,

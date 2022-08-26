@@ -50,7 +50,7 @@ def compute_initial_state(route: RouteDetails, incoming_state):
     init_state(atri_obj)
     return atri_obj
 
-def compute_page_request(route: RouteDetails, incoming_state, req: Request, res: Response):
+def compute_page_request(route: RouteDetails, incoming_state, req: Request, res: Response, query: str):
     atri_py = route["atriPy"]
     atri_mod = import_module(atri_py)
     Atri = getattr(atri_mod, "Atri")
@@ -58,7 +58,7 @@ def compute_page_request(route: RouteDetails, incoming_state, req: Request, res:
     main_py = route["mainPy"]
     main_mod = import_module(main_py)
     handle_page_request = getattr(main_mod, "handle_page_request")
-    handle_page_request(atri_obj, req, res)
+    handle_page_request(atri_obj, req, res, query)
     return atri_obj
 
 def compute_new_state(route: RouteDetails, incoming_state, event, req: Request, res: Response):
@@ -132,8 +132,9 @@ def serve(obj, port, host, prod):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
+        query = req_dict["query"]
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_page_request(routeDetails, state, req, res)
+        return compute_page_request(routeDetails, state, req, res, query)
 
     @app.post("/event")
     async def handle_event(req: Request, res: Response):
