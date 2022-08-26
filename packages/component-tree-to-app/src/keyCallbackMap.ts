@@ -34,6 +34,12 @@ export const keyCallbackMap: {
       actions: [{ type: "do_nothing" }],
     },
   },
+  TextBox: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
   Image: {
     onClick: {
       handlers: [],
@@ -76,7 +82,6 @@ export const keyCallbackMap: {
     },
   },
   Step: {},
-  TextBox: {},
   Toggle: {
     onChange: {
       handlers: [],
