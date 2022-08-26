@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/overlay-hints-layer",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,12 +29,12 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime": "^0.0.46",
-    "@atrilabs/core": "^0.0.46",
-    "@atrilabs/design-system": "^0.0.46",
-    "@atrilabs/layer-types": "^0.0.46",
-    "@atrilabs/scripts": "^0.0.46",
-    "eslint-plugin-atrilabs": "^0.0.46",
+    "@atrilabs/canvas-runtime": "^0.0.47",
+    "@atrilabs/core": "^0.0.47",
+    "@atrilabs/design-system": "^0.0.47",
+    "@atrilabs/layer-types": "^0.0.47",
+    "@atrilabs/scripts": "^0.0.47",
+    "eslint-plugin-atrilabs": "^0.0.47",
     "typescript": "4.6.3"
   },
   "devDependencies": {
