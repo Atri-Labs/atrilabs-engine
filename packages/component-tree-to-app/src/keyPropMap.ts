@@ -98,6 +98,14 @@ const PositionOptions: React.CSSProperties = {
   zIndex: "",
 };
 
+const MiscOptions: React.CSSProperties = {
+  outlineStyle: "",
+  outlineColor: "",
+  outlineOffset: "",
+  outlineWidth: "",
+  cursor: "",
+};
+
 export const FlexStyle: React.CSSProperties = {
   ...Layout,
   ...FlexChild,
@@ -107,6 +115,7 @@ export const FlexStyle: React.CSSProperties = {
   ...BorderOptions,
   ...BackgroundOptions,
   ...PositionOptions,
+  ...MiscOptions,
 };
 
 export const FlexChildStyle: React.CSSProperties = {
@@ -117,6 +126,7 @@ export const FlexChildStyle: React.CSSProperties = {
   ...BorderOptions,
   ...BackgroundOptions,
   ...PositionOptions,
+  ...MiscOptions,
 };
 
 export const keyPropMap: any = {
@@ -129,7 +139,7 @@ export const keyPropMap: any = {
   },
   Input: {
     styles: { ...FlexChildStyle },
-    custom: { value: "", placeholder: "" },
+    custom: { value: "", placeholder: "", isPasswordField: false },
   },
   Image: {
     styles: { ...FlexChildStyle },
