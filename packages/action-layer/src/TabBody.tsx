@@ -314,7 +314,13 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                                 })}
                             </select>
                             <div
-                              style={{ display: "flex", alignItems: "center" }}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                height: "2rem",
+                                width: "1rem",
+                                justifyContent: "center",
+                              }}
                               onClick={() => {
                                 onRemoveAction(callbackName, index);
                               }}
