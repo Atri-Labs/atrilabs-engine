@@ -74,7 +74,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.post("/event-handler", express.json(), (req, res) => {
+app.post("/event-handler", express.json({ limit: "50mb" }), (req, res) => {
   const pageRoute = req.body["pageRoute"];
   const pageState = req.body["pageState"];
   const alias = req.body["alias"];
@@ -137,39 +137,43 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.end();
 });
 
-app.post("/handle-page-request", express.json(), (req, res) => {
-  const pageRoute = req.body["pageRoute"];
-  const useStorePath = path.resolve(
-    __dirname,
-    "..",
-    "app-node",
-    "static",
-    "js",
-    "serverSide.bundle.js"
-  );
-  delete require.cache[useStorePath];
-  const pageState =
-    require(useStorePath)["getAppText"]["default"]["getState"]()[
-      serverInfo.pages[pageRoute].name
-    ];
-  forwardGetPageRequest({
-    pageRoute: pageRoute,
-    pageState: pageState,
-    controllerHostname,
-    controllerPort,
-    req,
-  })
-    .then((val: { pageState: any; headers: any }) => {
-      Object.keys(val.headers).forEach((key) => {
-        res.setHeader(key, val.headers[key]);
-      });
-      res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+app.post(
+  "/handle-page-request",
+  express.json({ limit: "50mb" }),
+  (req, res) => {
+    const pageRoute = req.body["pageRoute"];
+    const useStorePath = path.resolve(
+      __dirname,
+      "..",
+      "app-node",
+      "static",
+      "js",
+      "serverSide.bundle.js"
+    );
+    delete require.cache[useStorePath];
+    const pageState =
+      require(useStorePath)["getAppText"]["default"]["getState"]()[
+        serverInfo.pages[pageRoute].name
+      ];
+    forwardGetPageRequest({
+      pageRoute: pageRoute,
+      pageState: pageState,
+      controllerHostname,
+      controllerPort,
+      req,
     })
-    .catch((err) => {
-      console.log("Forward failed", err);
-      res.status(err).send();
-    });
-});
+      .then((val: { pageState: any; headers: any }) => {
+        Object.keys(val.headers).forEach((key) => {
+          res.setHeader(key, val.headers[key]);
+        });
+        res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+      })
+      .catch((err) => {
+        console.log("Forward failed", err);
+        res.status(err).send();
+      });
+  }
+);
 
 app.use(
   "/event-in-form-handler",
