@@ -66,6 +66,7 @@ const TypographyOptions: React.CSSProperties = {
   // NOTE: default value for color is not specified
   color: "",
   opacity: "",
+  fontStyle: "",
 };
 
 const BorderOptions: React.CSSProperties = {
@@ -80,6 +81,12 @@ const BorderOptions: React.CSSProperties = {
 const BackgroundOptions: React.CSSProperties = {
   backgroundImage: "",
   backgroundColor: "",
+  backgroundClip: "",
+  backgroundOrigin: "",
+  backgroundAttachment: "",
+  backgroundPositionX: "",
+  backgroundPositionY: "",
+  backgroundRepeat: "",
 };
 
 const PositionOptions: React.CSSProperties = {
@@ -104,6 +111,7 @@ const MiscOptions: React.CSSProperties = {
   outlineOffset: "",
   outlineWidth: "",
   cursor: "",
+  boxSizing: "content-box",
 };
 
 export const FlexStyle: React.CSSProperties = {
