@@ -44,7 +44,7 @@ function getEffectiveBreakpointWidths(pageName, windowWidth) {
       return parseInt(curr) >= windowWidth;
     })
     .sort((a, b) => {
-      return parseInt(a) - parseInt(b);
+      return parseInt(b) - parseInt(a);
     });
 }
 

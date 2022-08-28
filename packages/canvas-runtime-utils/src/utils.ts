@@ -22,7 +22,7 @@ export function getEffectiveBreakpointWidths(
     }
   );
   return effectiveBreapointWidths.sort((a, b) => {
-    return parseInt(a) - parseInt(b);
+    return parseInt(b) - parseInt(a);
   });
 }
 
