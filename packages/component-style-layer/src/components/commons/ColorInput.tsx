@@ -13,6 +13,12 @@ export type InputProps = {
   setOpacityValue: (input: string) => void;
   rgb2hex: (input: ColorRGB) => string;
 };
+export type rgbaObjectProps = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
 
 const styles: { [key: string]: React.CSSProperties } = {
   inputBox: {
@@ -31,8 +37,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 const toRGBAObject = (rgbaStr: string) => {
   let colorArr = rgbaStr
     .slice(rgbaStr.indexOf("(") + 1, rgbaStr.indexOf(")"))
-    .split(", ");
-  let rgbaObj = {
+    .split(",");
+  let rgbaObj: rgbaObjectProps = {
     r: parseInt(colorArr[0]),
     g: parseInt(colorArr[1]),
     b: parseInt(colorArr[2]),
@@ -61,19 +67,31 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     styleItem: keyof React.CSSProperties
   ) => {
     let recievedColor = e.target.value;
-    if (recievedColor.length === 4) {
-      recievedColor = convertToSixDigitHex(recievedColor);
-      onValidInput(recievedColor, styleItem);
-    } else if (recievedColor.length === 7) {
-      onValidInput(recievedColor, styleItem);
+    if (recievedColor === "") {
+      onValidInput("#ffffff", styleItem);
+      props.setOpacityValue(getOpacityValue("#ffffffff"));
     }
-    if (recievedColor.length === 5) {
-      recievedColor = convertToSixDigitHex(recievedColor);
-      onValidInput(recievedColor, styleItem);
-      props.setOpacityValue(getOpacityValue(recievedColor));
-    } else if (recievedColor.length === 9) {
-      onValidInput(recievedColor, styleItem);
-      props.setOpacityValue(getOpacityValue(recievedColor));
+    if ("inputType" in e.nativeEvent) {
+      if (
+        recievedColor.length === 4 &&
+        (e.nativeEvent as InputEvent).inputType !== "deleteContentBackward"
+      ) {
+        recievedColor = convertToSixDigitHex(recievedColor);
+        onValidInput(recievedColor, styleItem);
+      } else if (recievedColor.length === 7) {
+        onValidInput(recievedColor, styleItem);
+      }
+      if (
+        recievedColor.length === 5 &&
+        (e.nativeEvent as InputEvent).inputType !== "deleteContentBackward"
+      ) {
+        recievedColor = convertToSixDigitHex(recievedColor);
+        onValidInput(recievedColor, styleItem);
+        props.setOpacityValue(getOpacityValue(recievedColor));
+      } else if (recievedColor.length === 9) {
+        onValidInput(recievedColor, styleItem);
+        props.setOpacityValue(getOpacityValue(recievedColor));
+      }
     }
   };
   const rgbaColorInputValidator = (
@@ -83,12 +101,13 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     onValidInput(recievedColor, styleItem);
     props.setOpacityValue(getOpacityValue(recievedColor));
   };
-  const colorValueTrim = (colorVal: string) => {
+  const colorValueTrim = (typeOfInput: string, colorVal: string) => {
     let trimmedColorVal;
     colorVal === "undefined"
       ? (trimmedColorVal = "")
       : (trimmedColorVal = colorVal);
-    if (colorVal.length === 5) {
+
+    if (colorVal.length === 5 && typeOfInput !== "deleteContentBackward") {
       colorVal = convertToSixDigitHex(colorVal);
       trimmedColorVal = colorVal.substring(0, 7);
     } else if (colorVal.length >= 9) {
@@ -97,12 +116,14 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     return trimmedColorVal;
   };
   const [colorValue, setColorValue] = useState<string>(
-    colorValueTrim(String(props.styles[props.styleItem]))
+    colorValueTrim("insertText", String(props.styles[props.styleItem]))
   );
 
   useEffect(() => {
     const propertyColorValue = String(props.styles[props.styleItem]);
     if (propertyColorValue === "undefined") {
+      setColorValue("");
+    } else if (propertyColorValue === "#ffffff") {
       setColorValue("");
     } else if (propertyColorValue.length === 5) {
       setColorValue(propertyColorValue.substring(0, 4));
@@ -133,22 +154,42 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
+    if (e.target.value === "") {
+      hexColorInputValidator(e, styleItem);
+    }
+
     if (e.target.value.substring(0, 1) === "#") {
-      console.log("hex detected");
-      setColorValue(colorValueTrim(e.target.value));
+      if ("inputType" in e.nativeEvent) {
+        setColorValue(
+          colorValueTrim(
+            (e.nativeEvent as InputEvent).inputType,
+            e.target.value
+          )
+        );
+      }
+
       hexColorInputValidator(e, styleItem);
     } else if (
-      e.target.value.substring(0, 3).toLowerCase() === "rgb" ||
-      e.target.value.substring(0, 4).toLowerCase() === "rgba"
+      (e.target.value.substring(0, 3).toLowerCase() === "rgb" &&
+        e.target.value[e.target.value.length - 1] === ")") ||
+      (e.target.value.substring(0, 4).toLowerCase() === "rgba" &&
+        e.target.value[e.target.value.length - 1] === ")")
     ) {
       setColorValue(
-        colorValueTrim(props.rgb2hex(toRGBAObject(e.target.value)))
+        colorValueTrim(
+          (e.nativeEvent as InputEvent).inputType,
+          props.rgb2hex(toRGBAObject(e.target.value))
+        )
       );
       rgbaColorInputValidator(
         props.rgb2hex(toRGBAObject(e.target.value)),
         styleItem
       );
     } else {
+      // if ("inputType" in e.nativeEvent) {
+      //   console.log((e.nativeEvent as InputEvent).inputType);
+      // }
+
       setColorValue(e.target.value);
     }
   };
