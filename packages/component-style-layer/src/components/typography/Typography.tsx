@@ -23,24 +23,29 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
+  },
+  drop: {
+    display: "flex",
+    alignItems: "baseline",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
   inputBox: {
     ...smallText,
-    outline: "none",
     color: gray100,
     backgroundColor: gray800,
+    outline: "none",
     height: "28px",
     border: "none",
     borderRadius: "2px",
@@ -52,10 +57,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   select: {
     textAlign: "left",
   },
-  drop: {
-    display: "flex",
-    alignItems: "baseline",
-  },
+
   option: {
     display: "flex",
     height: "25px",
@@ -225,30 +227,32 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         </div>
         <div style={styles.option}>
           <div style={styles.optionName}>Weight</div>
-          <select
-            name="font"
-            onChange={(e) => handleFontWeightChange(e, "fontWeight")}
-            style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
-            value={props.styles.fontWeight || ""}
-          >
-            <option value={""}>{""}</option>
-            {fontWeights.map((fontWeight, index) => {
-              return (
-                <option style={styles.select} value={fontWeight} key={index}>
-                  {weightNameMap[fontWeight]
-                    ? weightNameMap[fontWeight]
-                    : fontWeight}
-                </option>
-              );
-            })}
-          </select>
-          <div style={styles.inputBoxWithUnits}>
-            <SizeInputWithUnits
-              styleItem="fontSize"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
+          <div style={{ display: "flex", columnGap: "20px" }}>
+            <select
+              name="font"
+              onChange={(e) => handleFontWeightChange(e, "fontWeight")}
+              style={{ ...styles.inputBox, width: "65px" }}
+              value={props.styles.fontWeight || ""}
+            >
+              <option value={""}>{""}</option>
+              {fontWeights.map((fontWeight, index) => {
+                return (
+                  <option style={styles.select} value={fontWeight} key={index}>
+                    {weightNameMap[fontWeight]
+                      ? weightNameMap[fontWeight]
+                      : fontWeight}
+                  </option>
+                );
+              })}
+            </select>
+            <div style={styles.inputBoxWithUnits}>
+              <SizeInputWithUnits
+                styleItem="fontSize"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
           </div>
         </div>
         <div style={styles.option}>
@@ -256,7 +260,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <select
             name="font"
             onChange={(e) => handleFontStyleChange(e, "fontWeight")}
-            style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
+            style={{ ...styles.inputBox, width: "65px" }}
             value={props.styles.fontStyle || ""}
           >
             <option value={""}>{""}</option>
@@ -283,32 +287,40 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         </PropertyRender>
         <div style={styles.option}>
           <div style={styles.optionName}>Color</div>
-          <div
-            onClick={() => {
-              props.openPalette("color", "Color");
-            }}
-            style={{ width: "55px", marginRight: "10px" }}
-          >
-            <Input
-              styleItem="color"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-              parseToInt={false}
-            />
-          </div>
-          <div style={{ width: "45px", marginRight: "10px" }}>
-            <InputWithPreprocessor
-              styleItem="opacity"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="100"
-              placeHolderText="%"
-              preProcessor={opacityPreProcessor}
-            />
-          </div>
-          <div>
-            <MH />
+          <div style={{ display: "flex", columnGap: "10px" }}>
+            <div
+              onClick={() => {
+                props.openPalette("color", "Color");
+              }}
+              style={{ width: "55px" }}
+            >
+              <Input
+                styleItem="color"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+                parseToInt={false}
+              />
+            </div>
+            <div style={{ width: "45px" }}>
+              <InputWithPreprocessor
+                styleItem="opacity"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="100"
+                placeHolderText="%"
+                preProcessor={opacityPreProcessor}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MH />
+            </div>
           </div>
         </div>
       </div>
