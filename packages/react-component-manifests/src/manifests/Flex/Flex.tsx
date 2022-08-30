@@ -59,9 +59,12 @@ export const DevFlex: typeof Flex = forwardRef((props, ref) => {
   const overrideStyleProps: React.CSSProperties =
     props.children.length === 0
       ? {
-          minHeight: "100px",
-          minWidth: "100px",
-          border: `2px dashed ${gray500}`,
+          // do not provide minHeight minWidth if user has provided height width
+          minHeight: props.styles.height ? "" : "100px",
+          minWidth: props.styles.width ? "" : "100px",
+          borderWidth: `2px`,
+          borderStyle: `dashed`,
+          borderColor: `${gray500}`,
           boxSizing: "border-box",
           ...props.styles,
         }
