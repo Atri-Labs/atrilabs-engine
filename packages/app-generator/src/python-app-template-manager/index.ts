@@ -6,9 +6,9 @@ import { getFiles } from "@atrilabs/scripts";
 const setEventDef =
   `\tdef set_event(self, event):\n` +
   `\t\tself.event_data = event["event_data"]\n` +
-  `\t\talias = event["alias"]\n` +
+  `\t\tself.event_alias = event["alias"]\n` +
   `\t\tcallback_name = event["callback_name"]\n` +
-  `\t\tcomp = getattr(self, alias)\n` +
+  `\t\tcomp = getattr(self, self.event_alias)\n` +
   `\t\tsetattr(comp, callback_name, True)`;
 
 const UploadFileType = "Optional[List[UploadFile]]";
@@ -219,6 +219,7 @@ export function createPythonAppTemplateManager(
       .join("\n");
     const AtriClassInitBody =
       `\t\tself.event_data = None\n` +
+      `\t\tself.event_alias = None\n` +
       `\t\tglobal default_state\n` +
       (Object.keys(varClassMap)
         .map((varName) => {
