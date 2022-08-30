@@ -7,6 +7,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     minWidth: "100%",
     boxSizing: "border-box",
     position: "relative",
+    overflow: "auto",
     /**
      * Setting paddingTop and paddingBottom prevents the problem
      * of parent element getting shifted if first child's top-margin
