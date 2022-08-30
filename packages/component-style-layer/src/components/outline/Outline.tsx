@@ -6,13 +6,13 @@ import {
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { Input } from "../commons/Input";
+import { ColorInput } from "../commons/ColorInput";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -222,6 +222,21 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
     });
   };
 
+  const opacityDisabledHandler = (ocColor: string) => {
+    let ocFlag;
+    ocColor === "undefined" ? (ocFlag = true) : (ocFlag = false);
+    return ocFlag;
+  };
+  useEffect(() => {
+    setIsOpacityDisabled(
+      opacityDisabledHandler(String(props.styles.outlineColor))
+    );
+  }, [props]);
+
+  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
+    opacityDisabledHandler(String(props.styles.outlineColor))
+  );
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -317,12 +332,14 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               props.openPalette("outlineColor", "Outline Color");
             }}
           >
-            <Input
+            <ColorInput
               styleItem="outlineColor"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              parseToInt={false}
+              getOpacityValue={getOpacityValue}
+              setOpacityValue={setOpacityValue}
+              rgb2hex={rgb2hex}
             />
           </div>
           <div style={{ width: "45px", marginRight: "10px" }}>
@@ -330,6 +347,7 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               <input
                 type="text"
                 value={opacityValue}
+                disabled={isOpacityDisabled}
                 onChange={handleChange}
                 style={styles.inputContainerBox}
                 placeholder="100"
