@@ -45,10 +45,10 @@ const server = http.createServer(app);
 createWebSocketServer(server);
 
 app.use((req, res, next) => {
-  console.log("request received", req.originalUrl);
-  if (req.method === "GET" && serverInfo.pages[req.originalUrl]) {
+  console.log("request received", req.originalUrl, req.path);
+  if (req.method === "GET" && serverInfo.pages[req.path]) {
     if (!isDevelopment) {
-      const finalTextFromCache = getPageFromCache(req.originalUrl);
+      const finalTextFromCache = getPageFromCache(req.path);
       if (finalTextFromCache) {
         res.send(finalTextFromCache);
         return;
@@ -66,15 +66,15 @@ app.use((req, res, next) => {
     delete require.cache[getAppTextPath];
     const getAppText = require(getAppTextPath)["getAppText"]["getAppText"];
     const appHtmlContent = getIndexHtmlContent(appDistHtml);
-    const finalText = getAppText(req.originalUrl, appHtmlContent);
+    const finalText = getAppText(req.path, appHtmlContent);
     res.send(finalText);
-    storePageInCache(req.originalUrl, finalText);
+    storePageInCache(req.path, finalText);
   } else {
     next();
   }
 });
 
-app.post("/event-handler", express.json(), (req, res) => {
+app.post("/event-handler", express.json({ limit: "50mb" }), (req, res) => {
   const pageRoute = req.body["pageRoute"];
   const pageState = req.body["pageState"];
   const alias = req.body["alias"];
@@ -117,11 +117,14 @@ app.post("/event-handler", express.json(), (req, res) => {
       });
       forward_res.on("end", () => {
         try {
+          // copy headers
           Object.keys(forward_res.headers).forEach((key) => {
             res.setHeader(key, forward_res.headers[key]!);
           });
           const newPageState = JSON.parse(data);
-          res.status(200).send({ pageState: newPageState });
+          // copy status code
+          const statusCode = forward_res.statusCode || 200;
+          res.status(statusCode).send({ pageState: newPageState });
         } catch (err) {
           console.log("Unexpected Forward Response\n", err);
           res.status(501).send();
@@ -137,39 +140,49 @@ app.post("/event-handler", express.json(), (req, res) => {
   forward_req.end();
 });
 
-app.post("/handle-page-request", express.json(), (req, res) => {
-  const pageRoute = req.body["pageRoute"];
-  const useStorePath = path.resolve(
-    __dirname,
-    "..",
-    "app-node",
-    "static",
-    "js",
-    "serverSide.bundle.js"
-  );
-  delete require.cache[useStorePath];
-  const pageState =
-    require(useStorePath)["getAppText"]["default"]["getState"]()[
-      serverInfo.pages[pageRoute].name
-    ];
-  forwardGetPageRequest({
-    pageRoute: pageRoute,
-    pageState: pageState,
-    controllerHostname,
-    controllerPort,
-    req,
-  })
-    .then((val: { pageState: any; headers: any }) => {
-      Object.keys(val.headers).forEach((key) => {
-        res.setHeader(key, val.headers[key]);
-      });
-      res.send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+app.post(
+  "/handle-page-request",
+  express.json({ limit: "50mb" }),
+  (req, res) => {
+    const pageRoute = req.body["pageRoute"];
+    const query = req.body["query"];
+    const useStorePath = path.resolve(
+      __dirname,
+      "..",
+      "app-node",
+      "static",
+      "js",
+      "serverSide.bundle.js"
+    );
+    delete require.cache[useStorePath];
+    const pageState =
+      require(useStorePath)["getAppText"]["default"]["getState"]()[
+        serverInfo.pages[pageRoute].name
+      ];
+    forwardGetPageRequest({
+      pageRoute: pageRoute,
+      query,
+      pageState: pageState,
+      controllerHostname,
+      controllerPort,
+      req,
     })
-    .catch((err) => {
-      console.log("Forward failed", err);
-      res.status(err).send();
-    });
-});
+      .then((val) => {
+        // copy headers
+        Object.keys(val.headers).forEach((key) => {
+          res.setHeader(key, val.headers[key]);
+        });
+        // copy status code
+        res
+          .status(val.statusCode)
+          .send({ ...val, pageName: serverInfo.pages[pageRoute].name });
+      })
+      .catch((err) => {
+        console.log("Forward failed", err);
+        res.status(err).send();
+      });
+  }
+);
 
 app.use(
   "/event-in-form-handler",

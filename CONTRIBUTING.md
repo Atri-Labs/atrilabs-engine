@@ -2,7 +2,7 @@
 
 ## Pull Requests
 
-A pull request should remain focused in scope and avoid containing unrelated commits. You will need `npm >= 6.14.12 ` and `node >= v14.16.1`.
+A pull request should remain focused in scope and avoid containing unrelated commits. You will need `npm >= 8.11.0 `, `node >= v16.16.0` and `yarn >= 1.22.18`.
 
 **Ask before submitting a pull request** by creating an issue. The feature/refactored code etc. might not be aligned with current goals of the project.
 
@@ -18,12 +18,30 @@ Adhereing to the following process is the best way to get your work included in 
    # Navigate to the newly cloned directory
    cd atrilabs-engine
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/cruxcode/atrilabs-engine.git
+   git remote add upstream https://github.com/Atri-Labs/atrilabs-engine.git
    ```
 
-2. From the root directory of the forked repo, run `npm install`
+2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplied once we migrate from `lerna` to `turborepo` in future.
+```
+# install node_modules
+yarn install
 
-Once all the node modules are installed, run `npm start` or `npm build` to validate that everything worked correctly.
+# build some pre-requisite package
+cd packages/forest && yarn run build
+cd packages/core && yarn run build
+cd packages/scripts && yarn run build
+cd packages/design-system && yarn run build
+
+# delete the node_modules folder in project root directory
+cd <project_root>
+rm -rf node_modules
+
+# bootstrap the project
+lerna bootstrap
+
+# build all packages
+lerna run build
+```
 
 3. If you cloned a while ago, get the latest changes from upstream:
 

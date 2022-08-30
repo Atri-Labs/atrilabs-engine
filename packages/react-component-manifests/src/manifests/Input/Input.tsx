@@ -13,7 +13,7 @@ export const Input = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { value: string; placeholder: string };
+    custom: { value: string; placeholder: string; isPasswordField?: boolean };
     onChange: (value: string) => void;
     ononPressEnter: () => void;
   }
@@ -40,6 +40,7 @@ export const Input = forwardRef<
       placeholder={props.custom.placeholder}
       value={props.custom.value}
       onKeyDown={onKeyDown}
+      type={props.custom.isPasswordField ? "password" : undefined}
     />
   );
 });
@@ -61,6 +62,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     value: "text",
     placeholder: "text",
+    isPasswordField: "boolean",
   },
 };
 

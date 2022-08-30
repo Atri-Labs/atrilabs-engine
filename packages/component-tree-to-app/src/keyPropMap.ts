@@ -66,6 +66,7 @@ const TypographyOptions: React.CSSProperties = {
   // NOTE: default value for color is not specified
   color: "",
   opacity: "",
+  fontStyle: "",
 };
 
 const BorderOptions: React.CSSProperties = {
@@ -80,6 +81,12 @@ const BorderOptions: React.CSSProperties = {
 const BackgroundOptions: React.CSSProperties = {
   backgroundImage: "",
   backgroundColor: "",
+  backgroundClip: "",
+  backgroundOrigin: "",
+  backgroundAttachment: "",
+  backgroundPositionX: "",
+  backgroundPositionY: "",
+  backgroundRepeat: "",
 };
 
 const PositionOptions: React.CSSProperties = {
@@ -98,6 +105,15 @@ const PositionOptions: React.CSSProperties = {
   zIndex: "",
 };
 
+const MiscOptions: React.CSSProperties = {
+  outlineStyle: "",
+  outlineColor: "",
+  outlineOffset: "",
+  outlineWidth: "",
+  cursor: "",
+  boxSizing: "content-box",
+};
+
 export const FlexStyle: React.CSSProperties = {
   ...Layout,
   ...FlexChild,
@@ -107,6 +123,7 @@ export const FlexStyle: React.CSSProperties = {
   ...BorderOptions,
   ...BackgroundOptions,
   ...PositionOptions,
+  ...MiscOptions,
 };
 
 export const FlexChildStyle: React.CSSProperties = {
@@ -117,6 +134,7 @@ export const FlexChildStyle: React.CSSProperties = {
   ...BorderOptions,
   ...BackgroundOptions,
   ...PositionOptions,
+  ...MiscOptions,
 };
 
 export const keyPropMap: any = {
@@ -129,7 +147,7 @@ export const keyPropMap: any = {
   },
   Input: {
     styles: { ...FlexChildStyle },
-    custom: { value: "", placeholder: "" },
+    custom: { value: "", placeholder: "", isPasswordField: false },
   },
   Image: {
     styles: { ...FlexChildStyle },

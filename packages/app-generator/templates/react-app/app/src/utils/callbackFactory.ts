@@ -1,6 +1,7 @@
 import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
 import { navigateExternally, navigateInternally } from "./navigate";
+import { handleRedirection } from "./handleRedirection";
 
 export type NavigationCallbackHandler = {
   type: "internal" | "external";
@@ -52,6 +53,7 @@ function sendEventDataFn(
       pageState,
     }),
   })
+    .then((res) => handleRedirection(res))
     .then((res) => res.json())
     .then((res) => {
       console.log("got res", res);
@@ -120,6 +122,7 @@ function sendEventInFormDataFn(
     method: "POST",
     body: formdata,
   })
+    .then((res) => handleRedirection(res))
     .then((res) => res.json())
     .then((res) => {
       if (res) {
