@@ -22,9 +22,9 @@ const useStore = create((set) => {
   return {
     setPage: (pageName, newState) =>
       set((state) => {
-        const pageState = state[pageName];
+        const pageState = JSON.parse(JSON.stringify(state[pageName]));
         mergeState(pageState, newState);
-        return { [pageName]: JSON.parse(JSON.stringify(pageState)) };
+        return { [pageName]: pageState };
       }),
   };
 });
