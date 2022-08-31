@@ -14,19 +14,33 @@ else:
 in_prod = False
 
 def record_changes(at, root):
-    if hasattr(at, "_getter_access_tracker"):
-        accessed_props = getattr(at, "_getter_access_tracker")
-
-        for k in list(accessed_props.keys()):
-            root[k] = {}
-            record_changes(getattr(at, k), root[k])
-
+    has_set_in_path = False
+    set_keys = {}
     if hasattr(at, "_setter_access_tracker"):
         # check if _setter_access_tracker has any keys
         set_fields = getattr(at, "_setter_access_tracker")
 
         for k in list(set_fields.keys()):
             root[k] = getattr(at, k)
+            set_keys[k] = True
+
+        if len(set_fields.keys()) > 0:
+            has_set_in_path = True
+
+    if hasattr(at, "_getter_access_tracker"):
+        accessed_props = getattr(at, "_getter_access_tracker")
+
+        get_keys = [k for k in list(accessed_props.keys()) if k not in set_keys]
+
+        for k in get_keys:
+            root[k] = {}
+            has_aleast_a_set_property = record_changes(getattr(at, k), root[k])
+            if has_aleast_a_set_property == True:
+                has_set_in_path = True
+            else:
+                root.pop(k)
+        
+    return has_set_in_path
 
 class AtriEncoder(json.JSONEncoder):
     def default(self, obj):
