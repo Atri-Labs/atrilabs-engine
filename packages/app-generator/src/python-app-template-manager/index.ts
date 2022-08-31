@@ -196,17 +196,25 @@ export function createPythonAppTemplateManager(
           .map((attr) => {
             // decide rhs
             let rhs = `get_defined_value(state, def_state, "${attr.name}")`;
+            if (attr.isIoPropInstance) {
+              rhs = `${attr.type}()`;
+            }
+            if (classTask.isIoPropClass) {
+              rhs = `None`;
+            }
             return `\t\tself.${attr.name}: ${attr.type} = ${rhs}`;
           })
           .join("\n");
         const initBody =
           attrs.length === 0 && callbackNames.length === 0
             ? "\t\tpass"
-            : `\t\tself._setter_access_tracker = {}\n` +
+            : !classTask.isIoPropClass
+            ? `\t\tself._setter_access_tracker = {}\n` +
               `\t\tself._def_state = def_state\n` +
               `${callbackStatements}\n${attrStatements}\n` +
               `\t\tself._setter_access_tracker = {}\n` +
-              `\t\tself._getter_access_tracker = {}\n`;
+              `\t\tself._getter_access_tracker = {}\n`
+            : `${callbackStatements}\n${attrStatements}\n`;
         // decide init definition
         const initDef = classTask.isIoPropClass
           ? `__init__(self)`
@@ -222,34 +230,35 @@ export function createPythonAppTemplateManager(
               rhs = `None`;
             } else if (typePrefix === "__") {
               if (attr.isIoPropInstance) {
-                rhs = `__${attr.type}()`;
+                rhs = `${attr.type}()`;
               } else {
                 rhs = `${attr.type}(get_defined_value(state, self._def_state, "${attr.name}"), self._def_state["${attr.name}"])`;
               }
             }
-            return (
-              `\t@property\n` +
-              `\tdef ${attr.name}(self):\n` +
-              `\t\tself._getter_access_tracker["${attr.name}"] = {}\n` +
-              `\t\treturn self._${attr.name}\n` +
-              `\t@${attr.name}.setter\n` +
-              `\tdef ${attr.name}(self, state):\n` +
-              `\t\tself._setter_access_tracker["${attr.name}"] = {}\n` +
-              // TODO: wrap around class name
-              `\t\tself._${attr.name} = ${rhs}`
-            );
+            return classTask.isIoPropClass || attr.isIoPropInstance
+              ? ""
+              : `\t@property\n` +
+                  `\tdef ${attr.name}(self):\n` +
+                  `\t\tself._getter_access_tracker["${attr.name}"] = {}\n` +
+                  `\t\treturn self._${attr.name}\n` +
+                  `\t@${attr.name}.setter\n` +
+                  `\tdef ${attr.name}(self, state):\n` +
+                  `\t\tself._setter_access_tracker["${attr.name}"] = {}\n` +
+                  `\t\tself._${attr.name} = ${rhs}`;
           })
           .join("\n");
         // def __to_json_fields(self)
-        const toJSONFieldsDef =
-          `\tdef _to_json_fields(self):\n` +
-          `\t\treturn {\n` +
-          attrs
-            .map((attr) => {
-              return `\t\t\t"${attr.name}": self._${attr.name},`;
-            })
-            .join("\n") +
-          `\n\t\t\t}\n`;
+        const toJSONFieldsDef = classTask.isIoPropClass
+          ? ""
+          : `\tdef _to_json_fields(self):\n` +
+            `\t\treturn {\n` +
+            attrs
+              .map((attr) => {
+                if (attr.isIoPropInstance) return "";
+                return `\t\t\t"${attr.name}": self._${attr.name},`;
+              })
+              .join("\n") +
+            `\n\t\t\t}\n`;
         return (
           `class ${className}:\n` +
           `\tdef ${initDef}:\n${initBody}\n` +
