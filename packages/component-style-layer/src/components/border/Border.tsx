@@ -20,16 +20,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -39,7 +40,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray100,
     backgroundColor: gray800,
     width: "57px",
-    height: "25px",
+    height: "26px",
     border: "none",
     borderRadius: "2px",
   },
@@ -51,7 +52,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     width: "1.5rem",
     color: "white",
-    lineHeight: "25px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   select: {
     textAlign: "left",
@@ -81,12 +84,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     outline: "none",
     color: gray100,
-    padding: "3px",
     backgroundColor: gray800,
     width: "30px",
     border: "none",
+    height: "24px",
     borderRadius: "2px 0 0 2px",
-    lineHeight: "20px",
   },
   inputSpan: {
     ...smallText,
@@ -283,7 +285,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BS />
           </div>
-          <div>
+          <div style={{ marginLeft: "-2px" }}>
             <select
               name="borderStyle"
               onChange={(e) => handleBorderChange(e, "borderStyle")}
@@ -314,6 +316,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             onClick={() => {
               props.openPalette("borderColor", "Border Color");
             }}
+            style={{ marginLeft: "-2px" }}
           >
             <ColorInput
               styleItem="borderColor"

@@ -25,12 +25,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     outline: "none",
     color: gray100,
-    padding: "3px",
     backgroundColor: gray800,
-    width: "50px",
+    width: "54px",
     border: "none",
     borderRadius: "2px",
-    lineHeight: "20px",
+    height: "24px",
   },
 };
 
@@ -68,8 +67,8 @@ export const ColorInput: React.FC<InputProps> = (props) => {
   ) => {
     let recievedColor = e.target.value;
     if (recievedColor === "") {
-      onValidInput("#ffffff", styleItem);
-      props.setOpacityValue(getOpacityValue("#ffffffff"));
+      onValidInput("", styleItem);
+      // props.setOpacityValue(getOpacityValue("#000000ff"));
     }
     if ("inputType" in e.nativeEvent) {
       if (
@@ -78,8 +77,10 @@ export const ColorInput: React.FC<InputProps> = (props) => {
       ) {
         recievedColor = convertToSixDigitHex(recievedColor);
         onValidInput(recievedColor, styleItem);
+        props.setOpacityValue(getOpacityValue(`${recievedColor} + ff`));
       } else if (recievedColor.length === 7) {
         onValidInput(recievedColor, styleItem);
+        props.setOpacityValue(getOpacityValue(`${recievedColor} + ff`));
       }
       if (
         recievedColor.length === 5 &&
@@ -186,10 +187,6 @@ export const ColorInput: React.FC<InputProps> = (props) => {
         styleItem
       );
     } else {
-      // if ("inputType" in e.nativeEvent) {
-      //   console.log((e.nativeEvent as InputEvent).inputType);
-      // }
-
       setColorValue(e.target.value);
     }
   };

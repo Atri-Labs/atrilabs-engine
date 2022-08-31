@@ -15,6 +15,8 @@ import { ColorInput } from "../commons/ColorInput";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
+import { ReactComponent as II } from "../../assets/background/Image.svg";
+import { ReactComponent as SI } from "../../assets/background/Solid.svg";
 import { ReactComponent as BRR } from "../../assets/background/repeat-icon.svg";
 import { ReactComponent as BRX } from "../../assets/background/repeat-x-icon.svg";
 import { ReactComponent as BRY } from "../../assets/background/repeat-y-icon.svg";
@@ -35,16 +37,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -357,7 +360,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedTypeIndex(0);
               }}
             >
-              <BOX />
+              <SI />
             </div>
             <div
               style={
@@ -375,7 +378,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedTypeIndex(1);
               }}
             >
-              <BOY />
+              <II />
             </div>
           </div>
         </div>
@@ -501,7 +504,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         {backgroundTypes[selectedTypeIndex].clip && (
           <PropertyRender
             styleItem="backgroundClip"
-            styleText="Cip"
+            styleText="Clip"
             styleArray={backgroundClipValues}
             patchCb={props.patchCb}
             styles={props.styles}

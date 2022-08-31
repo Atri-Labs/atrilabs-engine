@@ -91,6 +91,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
+      {props.treeOptions && props.treeOptions.positionOptions ? (
+        <Position
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
       {props.treeOptions && props.treeOptions.flexChildOptions ? (
         <FlexChild
           styles={props.styles}
@@ -100,7 +109,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
-
+      {props.treeOptions && props.treeOptions.backgroundOptions ? (
+        <Background
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
       {props.treeOptions && props.treeOptions.borderOptions ? (
         <Border
           styles={props.styles}
@@ -120,24 +137,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         />
       ) : null}
 
-      {props.treeOptions && props.treeOptions.backgroundOptions ? (
-        <Background
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
-      {props.treeOptions && props.treeOptions.positionOptions ? (
-        <Position
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
       {props.treeOptions && props.treeOptions.miscellaneousOptions ? (
         <Miscellaneous
           styles={props.styles}
