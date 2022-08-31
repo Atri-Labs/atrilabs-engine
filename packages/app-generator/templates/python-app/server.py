@@ -10,9 +10,27 @@ if sys.version_info >= (3, 8):
     from typing import TypedDict
 else:
     from typing_extensions import TypedDict
-from jsonpickle import encode
 
 in_prod = False
+
+def record_changes(at, root):
+    accessed_props = getattr(at, "_getter_access_tracker")
+
+    for k in list(accessed_props.keys()):
+        root[k] = {}
+        record_changes(getattr(at, k), root[k])
+
+    # check if _setter_access_tracker has any keys
+    set_fields = getattr(at, "_setter_access_tracker")
+
+    for k in list(set_fields.keys()):
+        root[k] = getattr(at, k)
+
+class AtriEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, "_to_json_fields"):
+            return getattr(obj, "_to_json_fields")()
+        return super(AtriEncoder, self).default(obj)
 
 def import_module(mod_name: str):
     # always import un-imported module
@@ -48,7 +66,9 @@ def compute_initial_state(route: RouteDetails, incoming_state):
     main_mod = import_module(main_py)
     init_state = getattr(main_mod, "init_state")
     init_state(atri_obj)
-    return atri_obj
+    recorder = {}
+    record_changes(atri_obj, recorder)
+    return recorder
 
 def compute_page_request(route: RouteDetails, incoming_state, req: Request, res: Response, query: str):
     atri_py = route["atriPy"]
@@ -59,7 +79,9 @@ def compute_page_request(route: RouteDetails, incoming_state, req: Request, res:
     main_mod = import_module(main_py)
     handle_page_request = getattr(main_mod, "handle_page_request")
     handle_page_request(atri_obj, req, res, query)
-    return atri_obj
+    recorder = {}
+    record_changes(atri_obj, recorder)
+    return recorder
 
 def compute_new_state(route: RouteDetails, incoming_state, event, req: Request, res: Response):
     atri_py = route["atriPy"]
@@ -72,7 +94,9 @@ def compute_new_state(route: RouteDetails, incoming_state, event, req: Request, 
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj, req, res)
     delattr(atri_obj, "event_data")
-    return atri_obj
+    recorder = {}
+    record_changes(atri_obj, recorder)
+    return recorder
 
 def merge_files_with_atri_obj(atri: Any, filesMetadata: List[dict], files: Union[List[UploadFile], None]):
     curr_start = 0
@@ -101,7 +125,9 @@ def compute_new_state_with_files(route: RouteDetails, incoming_state, event, fil
     handle_event = getattr(main_mod, "handle_event")
     handle_event(atri_obj, req, res)
     delattr(atri_obj, "event_data")
-    return atri_obj
+    recorder = {}
+    record_changes(atri_obj, recorder)
+    return recorder
 
 @click.group()
 @click.option("--dir", default="routes", help="relative path for directory containing controller for each route")
@@ -134,7 +160,8 @@ def serve(obj, port, host, prod):
         state = req_dict["state"]
         query = req_dict["query"]
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_page_request(routeDetails, state, req, res, query)
+        delta = compute_page_request(routeDetails, state, req, res, query)
+        return Response(json.dumps(delta, cls=AtriEncoder), media_type="application/json")
 
     @app.post("/event")
     async def handle_event(req: Request, res: Response):
@@ -146,7 +173,8 @@ def serve(obj, port, host, prod):
         alias = req_dict["alias"]
         event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
         routeDetails = getRouteDetails(route, obj["dir"])
-        return compute_new_state(routeDetails, state, event, req, res)
+        delta = compute_new_state(routeDetails, state, event, req, res)
+        return Response(json.dumps(delta, cls=AtriEncoder), media_type="application/json")
 
     @app.post("/event-in-form-handler")
     async def handle_event_with_form(
@@ -163,7 +191,8 @@ def serve(obj, port, host, prod):
         filesMetadataArr = json.loads(filesMetadata)
         event = {"event_data": json.loads(eventData), "callback_name": callbackName, "alias": alias}
         routeDetails = getRouteDetails(pageRoute, obj["dir"])
-        return compute_new_state_with_files(routeDetails, json.loads(pageState), event, filesMetadataArr, files, req, res)
+        delta = compute_new_state_with_files(routeDetails, json.loads(pageState), event, filesMetadataArr, files, req, res)
+        return Response(json.dumps(delta, cls=AtriEncoder), media_type="application/json")
 
     uvicorn.run(app, host=host, port=int(port))
 
@@ -175,7 +204,7 @@ def compute(obj, route, state):
     incoming_state = json.loads(state)
     routeDetails = getRouteDetails(route, obj["dir"])
     updated_state = compute_initial_state(routeDetails, incoming_state)
-    print(encode({"statusCode": 200, "state": updated_state}, unpicklable=False))
+    print(json.dumps({"statusCode": 200, "state": updated_state}, cls=AtriEncoder))
 
 if __name__ == '__main__':
     main()
