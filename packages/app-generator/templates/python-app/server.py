@@ -21,7 +21,7 @@ def record_changes(at, root):
             root[k] = {}
             record_changes(getattr(at, k), root[k])
 
-    if hasattr(at,"_setter_access_tracker" ):
+    if hasattr(at, "_setter_access_tracker"):
         # check if _setter_access_tracker has any keys
         set_fields = getattr(at, "_setter_access_tracker")
 
