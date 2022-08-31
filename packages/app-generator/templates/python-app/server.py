@@ -14,17 +14,19 @@ else:
 in_prod = False
 
 def record_changes(at, root):
-    accessed_props = getattr(at, "_getter_access_tracker")
+    if hasattr(at, "_getter_access_tracker"):
+        accessed_props = getattr(at, "_getter_access_tracker")
 
-    for k in list(accessed_props.keys()):
-        root[k] = {}
-        record_changes(getattr(at, k), root[k])
+        for k in list(accessed_props.keys()):
+            root[k] = {}
+            record_changes(getattr(at, k), root[k])
 
-    # check if _setter_access_tracker has any keys
-    set_fields = getattr(at, "_setter_access_tracker")
+    if hasattr(at,"_setter_access_tracker" ):
+        # check if _setter_access_tracker has any keys
+        set_fields = getattr(at, "_setter_access_tracker")
 
-    for k in list(set_fields.keys()):
-        root[k] = getattr(at, k)
+        for k in list(set_fields.keys()):
+            root[k] = getattr(at, k)
 
 class AtriEncoder(json.JSONEncoder):
     def default(self, obj):
