@@ -232,7 +232,7 @@ export function createPythonAppTemplateManager(
               if (attr.isIoPropInstance) {
                 rhs = `${attr.type}()`;
               } else {
-                rhs = `${attr.type}(get_defined_value(state, self._def_state, "${attr.name}"), self._def_state["${attr.name}"])`;
+                rhs = `${attr.type}(state, self._def_state["${attr.name}"])`;
               }
             }
             return classTask.isIoPropClass || attr.isIoPropInstance
