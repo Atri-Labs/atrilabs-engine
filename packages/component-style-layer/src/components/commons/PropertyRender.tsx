@@ -1,5 +1,5 @@
 import { gray200, h5Heading, smallText } from "@atrilabs/design-system";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { IconsContainer } from "./IconsContainer";
 import { CssProprtyComponentType } from "../../types";
 
@@ -88,6 +88,7 @@ function PropertyRender(props: {
           selectedIndex={styleIndex}
           setSelectedIndexCb={setStyleItemSelectedIndexCb}
           children={props.children}
+          styleArray={props.styleArray}
         />
       </div>
     </div>

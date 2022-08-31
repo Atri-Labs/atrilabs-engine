@@ -513,7 +513,9 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             <BCY />
             <BCX />
             <BCO />
-            <div style={{ ...smallText, color: "white" }}>Text</div>
+            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+              Text
+            </div>
           </PropertyRender>
         )}
       </div>
