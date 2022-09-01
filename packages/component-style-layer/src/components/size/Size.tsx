@@ -14,6 +14,8 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
+import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
+import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -183,10 +185,14 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
               patchCb={props.patchCb}
               styles={props.styles}
             >
-              <OFV />
-              <OFS />
-              <OFH />
-              <OFA />
+              <BCY />
+              <BCO />
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Initial
+              </div>
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Inherit
+              </div>
             </PropertyRender>
           </div>
         </div>

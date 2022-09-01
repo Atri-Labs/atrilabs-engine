@@ -375,9 +375,9 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             <PR />
             <PA />
             <PF />
-            <p style={{ fontSize: " 9px", color: gray200, cursor: "pointer" }}>
+            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
               Sticky
-            </p>
+            </div>
           </PropertyRender>
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
