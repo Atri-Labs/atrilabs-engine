@@ -28,7 +28,8 @@ export const Slider = forwardRef<
       thumbColor?: string;
       selectColor?: string;
     };
-    onChange: (value: number) => void;
+    onChange?: (value: number) => void;
+    onFinish?: (value: number) => void;
   }
 >((props, ref) => {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -114,23 +115,25 @@ export const Slider = forwardRef<
         const onMouseMove = (e: MouseEvent) => {
           if (startPostion) {
             if (e.pageX >= upperLimit) {
-              props.onChange(maxValue);
+              props.onChange?.(maxValue);
             } else if (e.pageX <= lowerLimit) {
-              props.onChange(minValue);
+              props.onChange?.(minValue);
             } else {
               const delta = e.pageX - startPostion.x;
               const finalValue = initialValue + delta * scale;
               if (finalValue <= maxValue && finalValue >= minValue) {
-                props.onChange(finalValue);
+                props.onChange?.(finalValue);
               }
             }
           }
         };
         const onMouseUp = () => {
-          console.log("mouseup called");
           // unsubscribe
           window.removeEventListener("mousemove", onMouseMove);
           window.removeEventListener("mouseup", onMouseUp);
+          const delta = e.pageX - startPostion.x;
+          const finalValue = initialValue + delta * scale;
+          props.onFinish?.(finalValue);
         };
         // subscribe
         window.addEventListener("mousemove", onMouseMove);
@@ -165,8 +168,8 @@ export const Slider = forwardRef<
         valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
       const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
       const finalValue = minValue + (e.pageX - lowerLimit) * scale;
-      console.log(finalValue);
-      props.onChange(finalValue);
+      props.onChange?.(finalValue);
+      props.onFinish?.(finalValue);
     },
     [valueRange, props, minValue]
   );

@@ -6,6 +6,14 @@ import { fork } from "child_process";
 import { createReactAppTemplateManager } from "../../react-app-template-manager";
 import { getReactAppTemplateManager } from "../../getReactTemplateManager";
 import { getPageStateAsCompIdMap } from "../../getPageState";
+import { mergeWith } from "lodash";
+
+function mergeStateCustomizer(obj: any, src: any) {
+  // replace array instead of default merge
+  if (Array.isArray(obj)) {
+    return src;
+  }
+}
 
 function installDependenciesWithNpm(reactAppRootDest: string) {
   return new Promise<void>((res) => {
@@ -89,9 +97,16 @@ function updateAppStoreWithControllerProps(
       const newProps: PropsGeneratorOutput = {};
       compIds.forEach((compId) => {
         const comp = componentGeneratorOutput[compId];
+        const oldProps =
+          options.appInfo.pages[pageId].propsGeneratorOutput[compId].props;
+        mergeWith(
+          oldProps,
+          controllerPropsForPage[comp.alias],
+          mergeStateCustomizer
+        );
         newProps[compId] = {
           ...options.appInfo.pages[pageId].propsGeneratorOutput[compId],
-          props: controllerPropsForPage[comp.alias],
+          props: oldProps,
         };
       });
       reactTemplateManager.addProps(pages[pageId], newProps);

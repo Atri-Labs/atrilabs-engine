@@ -20,7 +20,7 @@ export default function Example() {
     fetchPageProps(location.pathname, location.search).then((res)=>{
       updateStoreStateFromController(res.pageName, res.pageState)
     })
-  }, [])
+  }, [location])
 
   useLayoutEffect(()=>{
     setEffectivePropsForPage(/* PAGE NAME 1 CURSOR */)
