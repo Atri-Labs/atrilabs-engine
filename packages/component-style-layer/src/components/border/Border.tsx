@@ -11,6 +11,8 @@ import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg"
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { ColorInput } from "../commons/ColorInput";
@@ -72,7 +74,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray400,
     display: "grid",
-    gridTemplateColumns: "15px 60px 40px",
+    gridTemplateColumns: "15px 60px 40px 40px",
     rowGap: "1rem",
     textAlign: "center",
     columnGap: "1rem",
@@ -174,11 +176,11 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             e.target.value !== ""
               ? handleOpacityChange(
                   String(Number(e.target.value) / 100),
-                  String(props.styles.backgroundColor)
+                  String(props.styles.borderColor)
                 )
               : handleOpacityChange(
                   String(e.target.value),
-                  String(props.styles.backgroundColor)
+                  String(props.styles.borderColor)
                 ),
         },
       },
@@ -237,6 +239,24 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
     opacityDisabledHandler(String(props.styles.borderColor))
   );
+
+  const [isTransparent, setIsTransparent] = useState<boolean>(
+    props.styles.borderColor === "transparent" ? true : false
+  );
+
+  useEffect(() => {
+    setIsTransparent(props.styles.borderColor === "transparent" ? true : false);
+  }, [props]);
+
+  const toggleTransparencyChange = () => {
+    props.patchCb({
+      property: {
+        styles: {
+          borderColor: isTransparent ? "" : "transparent",
+        },
+      },
+    });
+  };
 
   return (
     <div style={styles.container}>
@@ -340,6 +360,18 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               />
               <div style={styles.inputSpan}>%</div>
             </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              userSelect: "none",
+            }}
+            onClick={toggleTransparencyChange}
+          >
+            {isTransparent ? <ET /> : <ENT />}
           </div>
         </div>
       </div>

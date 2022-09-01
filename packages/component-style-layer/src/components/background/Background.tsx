@@ -31,6 +31,8 @@ import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
 import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
 import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
 import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import PropertyRender from "../commons/PropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -308,6 +310,26 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     opacityDisabledHandler(String(props.styles.backgroundColor))
   );
 
+  const [isTransparent, setIsTransparent] = useState<boolean>(
+    props.styles.backgroundColor === "transparent" ? true : false
+  );
+
+  useEffect(() => {
+    setIsTransparent(
+      props.styles.backgroundColor === "transparent" ? true : false
+    );
+  }, [props]);
+
+  const toggleTransparencyChange = () => {
+    props.patchCb({
+      property: {
+        styles: {
+          backgroundColor: isTransparent ? "" : "transparent",
+        },
+      },
+    });
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -425,6 +447,18 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 />
                 <div style={styles.inputSpan}>%</div>
               </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+              onClick={toggleTransparencyChange}
+            >
+              {isTransparent ? <ET /> : <ENT />}
             </div>
           </div>
         )}
