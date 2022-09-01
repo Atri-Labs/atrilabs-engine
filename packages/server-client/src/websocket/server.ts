@@ -38,7 +38,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     ServerToClientEvents,
     InterServerEvents,
     SocketData
-  >(server, { cors: { origin: "*" } });
+  >(server, { cors: { origin: "*" }, maxHttpBufferSize: 1e8 });
 
   // resources management
   const resourseDirectory = path.resolve(toolConfig.resources.path);

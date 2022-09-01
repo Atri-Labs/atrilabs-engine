@@ -98,7 +98,7 @@ const justifyContentValues = [
   "space-between",
   "space-around",
 ];
-const wrapValues = ["no-wrap", "wrap", "reverse-wrap"];
+const wrapValues = ["nowrap", "wrap", "wrap-reverse"];
 const alignContentValues = [
   "stretch",
   "flex-start",

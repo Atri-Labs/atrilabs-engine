@@ -6,12 +6,26 @@ import { getFiles } from "@atrilabs/scripts";
 const setEventDef =
   `\tdef set_event(self, event):\n` +
   `\t\tself.event_data = event["event_data"]\n` +
-  `\t\talias = event["alias"]\n` +
+  `\t\tself.event_alias = event["alias"]\n` +
   `\t\tcallback_name = event["callback_name"]\n` +
-  `\t\tcomp = getattr(self, alias)\n` +
+  `\t\tcomp = getattr(self, self.event_alias)\n` +
   `\t\tsetattr(comp, callback_name, True)`;
 
 const UploadFileType = "Optional[List[UploadFile]]";
+
+// if type is not str | int | bool | UploadFileType then it's a class
+function getTypePrefix(attrType: string) {
+  const typePrefix =
+    attrType === "str" ||
+    attrType === "int" ||
+    attrType === "bool" ||
+    attrType === UploadFileType ||
+    attrType === "List[Any]" ||
+    attrType === "dict"
+      ? ""
+      : "__";
+  return typePrefix;
+}
 
 export function createPythonAppTemplateManager(
   paths: { controllers: string; pythonAppTemplate: string },
@@ -175,59 +189,130 @@ export function createPythonAppTemplateManager(
         const { className, attrs, callbackNames } = classTask;
         const callbackStatements = callbackNames
           .map((callbackName) => {
-            return `\t\t\tself.${callbackName} = False`;
+            return `\t\tself.${callbackName} = False`;
           })
           .join("\n");
         const attrStatements = attrs
           .map((attr) => {
-            // if type is not str | int | bool | UploadFileType then it's a class
-            // decide type prefix
-            const typePrefix =
-              attr.type === "str" ||
-              attr.type === "int" ||
-              attr.type === "bool" ||
-              attr.type === UploadFileType ||
-              attr.type === "List[Any]" ||
-              attr.type === "dict"
-                ? ""
-                : "Atri.__";
             // decide rhs
             let rhs = `get_defined_value(state, def_state, "${attr.name}")`;
-            if (attr.type === UploadFileType) {
-              rhs = `None`;
-            } else if (typePrefix === "Atri.__") {
-              // python adds _Atri for all inner classes
-              if (attr.isIoPropInstance) {
-                rhs = `Atri._Atri__${attr.type}()`;
-              } else {
-                rhs = `Atri._Atri__${attr.type}(${rhs}, def_state["${attr.name}"])`;
-              }
+            if (attr.isIoPropInstance) {
+              rhs = `${attr.type}()`;
             }
-            return `\t\t\tself.${attr.name}: ${typePrefix}${attr.type} = ${rhs}`;
+            if (classTask.isIoPropClass) {
+              rhs = `None`;
+            }
+            return `\t\tself.${attr.name}: ${attr.type} = ${rhs}`;
           })
           .join("\n");
         const initBody =
           attrs.length === 0 && callbackNames.length === 0
-            ? "\t\t\tpass"
-            : `${callbackStatements}\n${attrStatements}`;
+            ? "\t\tpass"
+            : !classTask.isIoPropClass
+            ? `\t\tself._setter_access_tracker = {}\n` +
+              `\t\tself._def_state = def_state\n` +
+              `${callbackStatements}\n${attrStatements}\n` +
+              `\t\tself._setter_access_tracker = {}\n` +
+              `\t\tself._getter_access_tracker = {}\n`
+            : `${callbackStatements}\n${attrStatements}\n`;
         // decide init definition
         const initDef = classTask.isIoPropClass
           ? `__init__(self)`
           : `__init__(self, state, def_state)`;
-        return `\tclass __${className}:\n\t\tdef ${initDef}:\n${initBody}`;
+
+        // @property statement for component & it's child classes
+        const propertyStatements = attrs
+          .map((attr) => {
+            const typePrefix = getTypePrefix(attr.type);
+            // decide rhs
+            let rhs = `state`;
+            if (attr.type === UploadFileType) {
+              rhs = `None`;
+            } else if (typePrefix === "__") {
+              if (attr.isIoPropInstance) {
+                rhs = `${attr.type}()`;
+              } else {
+                rhs = `${attr.type}(state, self._def_state["${attr.name}"])`;
+              }
+            }
+            return classTask.isIoPropClass || attr.isIoPropInstance
+              ? ""
+              : `\t@property\n` +
+                  `\tdef ${attr.name}(self):\n` +
+                  `\t\tself._getter_access_tracker["${attr.name}"] = {}\n` +
+                  `\t\treturn self._${attr.name}\n` +
+                  `\t@${attr.name}.setter\n` +
+                  `\tdef ${attr.name}(self, state):\n` +
+                  `\t\tself._setter_access_tracker["${attr.name}"] = {}\n` +
+                  `\t\tself._${attr.name} = ${rhs}`;
+          })
+          .join("\n");
+        // def __to_json_fields(self)
+        const toJSONFieldsDef = classTask.isIoPropClass
+          ? ""
+          : `\tdef _to_json_fields(self):\n` +
+            `\t\treturn {\n` +
+            attrs
+              .map((attr) => {
+                if (attr.isIoPropInstance) return "";
+                return `\t\t\t"${attr.name}": self._${attr.name},`;
+              })
+              .join("\n") +
+            `\n\t\t\t}\n`;
+        return (
+          `class ${className}:\n` +
+          `\tdef ${initDef}:\n${initBody}\n` +
+          `${propertyStatements}\n${toJSONFieldsDef}\n`
+        );
       })
       .join("\n");
+
+    // create Atri class
+    // def __init__(self):
     const AtriClassInitBody =
       `\t\tself.event_data = None\n` +
+      `\t\tself.event_alias = None\n` +
       `\t\tglobal default_state\n` +
-      (Object.keys(varClassMap)
+      `\t\tself._setter_access_tracker = {}\n` +
+      Object.keys(varClassMap)
         .map((varName) => {
-          const className = varClassMap[varName];
-          return `\t\tself.${varName} = self.__${className}(state["${varName}"], default_state["${varName}"])`;
+          return `\t\tself.${varName} = state["${varName}"]`;
         })
-        .join("\n") || "\t\tpass");
+        .join("\n") +
+      "\n" +
+      `\t\tself._setter_access_tracker = {}\n` +
+      `\t\tself._getter_access_tracker = {}\n`;
     const AtriClassInitDef = `\tdef __init__(self, state: Any):\n${AtriClassInitBody}`;
-    const AtriClassDef = `class Atri:\n${AtriClassInitDef}\n${setEventDef}\n${classStatements}`;
+    // @property for each component
+    const propertyGetterSetters = Object.keys(varClassMap)
+      .map((varName) => {
+        const className = varClassMap[varName];
+        return (
+          `\t@property\n` +
+          `\tdef ${varName}(self):\n` +
+          `\t\tself._getter_access_tracker["${varName}"] = {}\n` +
+          `\t\treturn self._${varName}\n` +
+          `\t@${varName}.setter\n` +
+          `\tdef ${varName}(self, new_state):\n` +
+          `\t\tself._setter_access_tracker["${varName}"] = {}\n` +
+          `\t\tglobal default_state\n` +
+          `\t\tself._${varName} = ${className}(new_state, default_state["${varName}"])\n`
+        );
+      })
+      .join("\n");
+    // def __to_json_fields(self)
+    const toJSONFieldsDef =
+      `\tdef _to_json_fields(self):\n` +
+      `\t\treturn {\n` +
+      Object.keys(varClassMap)
+        .map((varName) => {
+          return `\t\t\t"${varName}": self._${varName},`;
+        })
+        .join("\n") +
+      `\n\t\t\t}\n`;
+    const AtriClassDef =
+      `class Atri:\n` +
+      `${AtriClassInitDef}\n${setEventDef}\n${propertyGetterSetters}\n${toJSONFieldsDef}\n`;
     const newText =
       importStatements +
       "\n" +
@@ -235,7 +320,9 @@ export function createPythonAppTemplateManager(
       "\n" +
       getDefinedValueDefStatement +
       "\n" +
-      AtriClassDef;
+      AtriClassDef +
+      "\n" +
+      classStatements;
     if (!fs.existsSync(path.dirname(outputRoutePath))) {
       fs.mkdirSync(path.dirname(outputRoutePath), { recursive: true });
     }
