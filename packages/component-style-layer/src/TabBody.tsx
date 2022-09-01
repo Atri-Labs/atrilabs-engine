@@ -55,44 +55,8 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
-      {props.treeOptions && props.treeOptions.typographyOptions ? (
-        <Typography
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
-      {props.treeOptions && props.treeOptions.spacingOptions ? (
-        <SpacingProperty
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
-      {props.treeOptions && props.treeOptions.sizeOptions ? (
-        <Size
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout
-          styles={props.styles}
-          patchCb={props.patchCb}
-          openAssetManager={props.openAssetManager}
-          openPalette={props.openPalette}
-          compId={props.compId}
-        />
-      ) : null}
-      {props.treeOptions && props.treeOptions.positionOptions ? (
-        <Position
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
@@ -109,8 +73,17 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
-      {props.treeOptions && props.treeOptions.backgroundOptions ? (
-        <Background
+      {props.treeOptions && props.treeOptions.sizeOptions ? (
+        <Size
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.spacingOptions ? (
+        <SpacingProperty
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
@@ -136,7 +109,33 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           compId={props.compId}
         />
       ) : null}
-
+      {props.treeOptions && props.treeOptions.typographyOptions ? (
+        <Typography
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.backgroundOptions ? (
+        <Background
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.positionOptions ? (
+        <Position
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
       {props.treeOptions && props.treeOptions.miscellaneousOptions ? (
         <Miscellaneous
           styles={props.styles}
