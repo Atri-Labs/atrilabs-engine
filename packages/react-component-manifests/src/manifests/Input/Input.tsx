@@ -15,7 +15,7 @@ export const Input = forwardRef<
     styles: React.CSSProperties;
     custom: { value: string; placeholder: string; isPasswordField?: boolean };
     onChange: (value: string) => void;
-    ononPressEnter: () => void;
+    onPressEnter: () => void;
   }
 >((props, ref) => {
   const onChange = useCallback(
@@ -27,7 +27,7 @@ export const Input = forwardRef<
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {
-        props.ononPressEnter();
+        props.onPressEnter();
       }
     },
     [props]
