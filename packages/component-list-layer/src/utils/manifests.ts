@@ -26,6 +26,7 @@ import CandleStickManifests from "@atrilabs/react-component-manifests/src/manife
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
+import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -99,6 +100,7 @@ const defaultImports = [
   CheckboxManifests,
   DropdownManifests,
   TableManifests,
+  DivManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);

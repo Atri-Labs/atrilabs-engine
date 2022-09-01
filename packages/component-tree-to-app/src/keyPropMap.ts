@@ -5,6 +5,9 @@
  * Provide the unset value, not the default value.
  *
  */
+const Display: React.CSSProperties = {
+  display: "",
+};
 // default CSS values for Layout
 const Layout: React.CSSProperties = {
   display: "",
@@ -138,6 +141,7 @@ export const FlexChildStyle: React.CSSProperties = {
 };
 
 export const keyPropMap: any = {
+  Div: { ...Display, ...FlexChildStyle },
   Flex: {
     styles: { ...FlexStyle },
   },
