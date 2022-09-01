@@ -13,6 +13,7 @@ import { CssProprtyComponentType } from "./types";
 import { Breakpoint } from "@atrilabs/canvas-runtime";
 import { Miscellaneous } from "./components/miscellaneous/Miscellaneous";
 import { Outline } from "./components/outline/Outline";
+import { Css2Display } from "./components/css2display/Css2Display";
 
 export type TabBodyProps = {
   alias: string;
@@ -55,6 +56,15 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         onChange={props.setAliasCb}
         value={props.alias}
       />
+      {props.treeOptions && props.treeOptions.css2DisplayOptions ? (
+        <Css2Display
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          compId={props.compId}
+        />
+      ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
         <Layout
           styles={props.styles}
