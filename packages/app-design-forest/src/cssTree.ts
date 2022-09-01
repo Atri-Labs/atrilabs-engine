@@ -9,6 +9,12 @@ export type CSSTreeOptions = {
   outlineOptions: boolean;
   backgroundOptions: boolean;
   miscellaneousOptions: boolean;
+  // display values like flex, inline-flex, none
+  flexDisplayOptions?: boolean;
+  // display values like grid, inline-grid, none
+  gridDisplayOptions?: boolean;
+  // display values like inline, inline-block, content etc.
+  css2DisplayOptions?: boolean;
 };
 
 export default function () {

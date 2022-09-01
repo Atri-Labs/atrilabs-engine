@@ -13,6 +13,10 @@ module.exports = {
       modulePath: "./src/manifests/Flex/Flex.tsx",
       exportedVarName: "Flex",
     },
+    Div: {
+      modulePath: "./src/manifests/Div/Div.tsx",
+      exportedVarName: "Div",
+    },
     Input: {
       modulePath: "./src/manifests/Input/Input.tsx",
       exportedVarName: "Input",

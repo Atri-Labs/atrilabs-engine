@@ -91,7 +91,7 @@ export const Miscellaneous: React.FC<CssProprtyComponentType> = (props) => {
               name="cursor"
               onChange={(e) => handleCursorChange(e, "cursor")}
               style={styles.inputBox}
-              value={props.styles.cursor || "none"}
+              value={props.styles.cursor || "auto"}
             >
               <option style={styles.select} value="default">
                 default
