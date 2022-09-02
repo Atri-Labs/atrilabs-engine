@@ -8,10 +8,9 @@ import {
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { ColorInput } from "../commons/ColorInput";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
@@ -31,11 +30,9 @@ import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
 import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
 import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
 import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
-import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
-import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import PropertyRender from "../commons/PropertyRender";
 import MultiplePropertyRender from "../commons/MultiplePropertyRender";
-import ColorComponent from "../commons/ColorComponent";
+import { ColorComponent } from "../commons/ColorComponent";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -336,6 +333,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         {/**Background Color */}
         {backgroundTypes[selectedTypeIndex].color && (
           <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={styles.optionName}>Color</span>
             <ColorComponent
               name="Background Color"
               styleItem="backgroundColor"

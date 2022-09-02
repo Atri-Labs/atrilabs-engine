@@ -102,6 +102,9 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
+  // if (convertedRgbValue.a === undefined) {
+  //   return "0";
+  // }
   if (convertedRgbValue.a) {
     Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
       ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
@@ -113,7 +116,7 @@ export const getOpacityValue = (hex: Color["hex"]) => {
   }
 };
 
-const ColorComponent: React.FC<ColorComponentProps> = (props) => {
+export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   const handleOpacityInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
@@ -160,8 +163,20 @@ const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     opacityValue === ""
       ? (opacityHelperValue = 100)
       : (opacityHelperValue = Number(opacityValue));
-    console.log(opacityHelperValue);
     return opacityHelperValue;
+  };
+
+  const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]:
+            props.styles[props.styleItem] === "transparent"
+              ? ""
+              : "transparent",
+        },
+      },
+    });
   };
 
   const opacityDisabledHandler = (Color: string) => {
@@ -180,19 +195,6 @@ const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     opacityDisabledHandler(String(props.styles[props.styleItem]))
   );
 
-  const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            props.styles[props.styleItem] === "transparent"
-              ? ""
-              : "transparent",
-        },
-      },
-    });
-  };
-
   useEffect(() => {
     setOpacityValue(
       props.styles[props.styleItem]
@@ -209,7 +211,6 @@ const ColorComponent: React.FC<ColorComponentProps> = (props) => {
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <span style={styles.optionName}>Color</span>
       <div
         onClick={() => {
           props.openPalette(props.styleItem, props.name);
@@ -254,5 +255,3 @@ const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     </div>
   );
 };
-
-export default ColorComponent;
