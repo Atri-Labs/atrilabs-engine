@@ -102,10 +102,10 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
-  // if (convertedRgbValue.a === undefined) {
-  //   return "0";
-  // }
-  if (convertedRgbValue.a) {
+  console.log(convertedRgbValue.a);
+  if (convertedRgbValue.a === undefined) {
+    return "";
+  } else if (convertedRgbValue.a) {
     Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
       ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
       : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
@@ -124,8 +124,6 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     parseInt(e.target.value) > 100
       ? setOpacityValue("100")
       : setOpacityValue(e.target.value);
-
-    console.log(e.target.value);
 
     props.patchCb({
       property: {
@@ -147,7 +145,9 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   const handleOpacityChange = useCallback(
     (opacityValue: string, hex: Color["hex"]) => {
       let convertedRgbValue = hex2rgb(hex);
-      if (opacityHelper(opacityValue) >= 1) {
+      if (opacityValue === "") {
+        convertedRgbValue.a = 0;
+      } else if (opacityHelper(opacityValue) >= 1) {
         convertedRgbValue.a = 1;
       } else if (opacityHelper(opacityValue) < 0) {
         convertedRgbValue.a = 0;
@@ -196,6 +196,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   );
 
   useEffect(() => {
+    console.log(props.styles[props.styleItem]);
     setOpacityValue(
       props.styles[props.styleItem]
         ? getOpacityValue(String(props.styles[props.styleItem]))
