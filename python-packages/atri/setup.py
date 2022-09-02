@@ -54,7 +54,7 @@ LONG_DESCRIPTION = (
 
 pipfile = Project().parsed_pipfile
 packages = pipfile["packages"].copy()
-requirements = convert_deps_to_pip(packages, r=False)
+requirements = convert_deps_to_pip(packages)
 
 setuptools.setup(
     name=NAME,
