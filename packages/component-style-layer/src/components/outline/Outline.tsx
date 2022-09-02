@@ -163,6 +163,13 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
       ? getOpacityValue(props.styles.outlineColor)
       : "100"
   );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.backgroundColor
+        ? getOpacityValue(props.styles.backgroundColor)
+        : "100"
+    );
+  }, [props]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100

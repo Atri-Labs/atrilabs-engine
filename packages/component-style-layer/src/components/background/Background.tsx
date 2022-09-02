@@ -34,6 +34,7 @@ import { ReactComponent as BCO } from "../../assets/background/border-box-icon.s
 import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
 import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import PropertyRender from "../commons/PropertyRender";
+import MultiplePropertyRender from "../commons/MultiplePropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -237,6 +238,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       ? getOpacityValue(props.styles.backgroundColor)
       : "100"
   );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.backgroundColor
+        ? getOpacityValue(props.styles.backgroundColor)
+        : "100"
+    );
+  }, [props]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100
@@ -536,8 +544,8 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         )}
         {/**Background Clip */}
         {backgroundTypes[selectedTypeIndex].clip && (
-          <PropertyRender
-            styleItem="backgroundClip"
+          <MultiplePropertyRender
+            styleItems={["backgroundClip", "WebkitBackgroundClip"]}
             styleText="Clip"
             styleArray={backgroundClipValues}
             patchCb={props.patchCb}
@@ -550,7 +558,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
               Text
             </div>
-          </PropertyRender>
+          </MultiplePropertyRender>
         )}
       </div>
     </div>

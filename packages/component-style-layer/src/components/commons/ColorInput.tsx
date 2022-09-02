@@ -1,5 +1,5 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { getOpacityValue } from "../background/Background";
 import { ColorRGB } from "../background/Background";
@@ -102,23 +102,32 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     onValidInput(recievedColor, styleItem);
     props.setOpacityValue(getOpacityValue(recievedColor));
   };
-  const colorValueTrim = (typeOfInput: string, colorVal: string) => {
-    let trimmedColorVal;
-    colorVal === "undefined"
-      ? (trimmedColorVal = "")
-      : (trimmedColorVal = colorVal);
+  const colorValueTrim = useCallback(
+    (typeOfInput: string, colorVal: string) => {
+      let trimmedColorVal;
+      colorVal === "undefined"
+        ? (trimmedColorVal = "")
+        : (trimmedColorVal = colorVal);
 
-    if (colorVal.length === 5 && typeOfInput !== "deleteContentBackward") {
-      colorVal = convertToSixDigitHex(colorVal);
-      trimmedColorVal = colorVal.substring(0, 7);
-    } else if (colorVal.length >= 9) {
-      trimmedColorVal = colorVal.substring(0, 7);
-    }
-    return trimmedColorVal;
-  };
+      if (colorVal.length === 5 && typeOfInput !== "deleteContentBackward") {
+        colorVal = convertToSixDigitHex(colorVal);
+        trimmedColorVal = colorVal.substring(0, 7);
+      } else if (colorVal.length >= 9) {
+        trimmedColorVal = colorVal.substring(0, 7);
+      }
+      return trimmedColorVal;
+    },
+    []
+  );
+
   const [colorValue, setColorValue] = useState<string>(
     colorValueTrim("insertText", String(props.styles[props.styleItem]))
   );
+  useEffect(() => {
+    setColorValue(
+      colorValueTrim("insertText", String(props.styles[props.styleItem]))
+    );
+  }, [props, colorValueTrim]);
 
   useEffect(() => {
     const propertyColorValue = String(props.styles[props.styleItem]);

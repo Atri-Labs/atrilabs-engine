@@ -163,6 +163,13 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [opacityValue, setOpacityValue] = useState<string>(
     props.styles.borderColor ? getOpacityValue(props.styles.borderColor) : "100"
   );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.backgroundColor
+        ? getOpacityValue(props.styles.backgroundColor)
+        : "100"
+    );
+  }, [props]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100
