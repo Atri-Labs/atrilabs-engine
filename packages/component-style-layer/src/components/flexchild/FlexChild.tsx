@@ -1,6 +1,7 @@
 import {
   gray200,
   gray400,
+  gray800,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
@@ -21,16 +22,17 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },

@@ -4,6 +4,7 @@ import {
   gray200,
   gray100,
   gray400,
+  gray800,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
@@ -31,24 +32,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   zindex: {
     display: "flex",
-    marginBottom: "15px",
-    justifyContent: "end",
+    justifyContent: "center",
   },
-  mainContainer: {
-    position: "relative",
-    marginTop: "-15px",
-  },
+
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -78,6 +77,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     columnGap: "25px",
     rowGap: "3px",
     marginBottom: "25px",
+  },
+  mainContainer: {
+    position: "relative",
+  },
+  positionTrapezoid: {
+    position: "relative",
+    display: "flex",
   },
   positionTopPlaceHolder: {
     ...smallText,
@@ -134,10 +140,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "18px",
     border: "none",
     lineHeight: "10px",
-  },
-  positionTrapezoid: {
-    position: "relative",
-    display: "flex",
   },
 };
 //ACTIONS
@@ -373,7 +375,9 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             <PR />
             <PA />
             <PF />
-            <p style={{ fontSize: " 7px", color: gray200 }}>STICKY</p>
+            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+              Sticky
+            </div>
           </PropertyRender>
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
@@ -412,41 +416,45 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               />
             </div>
           </div>
-          <div style={styles.zindex}>
-            <div style={styles.optionName}>z-index</div>
-            <div style={{ width: "55px", marginRight: "10px" }}>
-              <Input
-                styleItem="zIndex"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                parseToInt={true}
-              />
+          <div
+            style={{ display: "flex", flexDirection: "column", rowGap: "1rem" }}
+          >
+            <div style={styles.zindex}>
+              <div style={styles.optionName}>z-index</div>
+              <div style={{ width: "55px" }}>
+                <Input
+                  styleItem="zIndex"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                  parseToInt={true}
+                />
+              </div>
             </div>
+            <PropertyRender
+              styleItem="float"
+              styleText="Float"
+              styleArray={floatValues}
+              patchCb={props.patchCb}
+              styles={props.styles}
+            >
+              <FN />
+              <FL />
+              <FR />
+            </PropertyRender>
+            <PropertyRender
+              styleItem="clear"
+              styleText="Clear"
+              styleArray={clearValues}
+              patchCb={props.patchCb}
+              styles={props.styles}
+            >
+              <CN />
+              <CL />
+              <CR />
+              <CB />
+            </PropertyRender>
           </div>
-          <PropertyRender
-            styleItem="float"
-            styleText="Float"
-            styleArray={floatValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-          >
-            <FN />
-            <FL />
-            <FR />
-          </PropertyRender>
-          <PropertyRender
-            styleItem="clear"
-            styleText="Clear"
-            styleArray={clearValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-          >
-            <CN />
-            <CL />
-            <CR />
-            <CB />
-          </PropertyRender>
         </div>
       </div>
     </>

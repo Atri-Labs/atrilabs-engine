@@ -184,7 +184,7 @@ def serve(obj, port, host, prod):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
-        event_data = req_dict["eventData"]
+        event_data = req_dict["eventData"] if "eventData" in req_dict else None
         callback_name = req_dict["callbackName"]
         alias = req_dict["alias"]
         event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}

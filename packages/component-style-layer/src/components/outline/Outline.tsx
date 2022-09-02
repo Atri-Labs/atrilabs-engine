@@ -6,29 +6,32 @@ import {
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { Input } from "../commons/Input";
+import { ColorInput } from "../commons/ColorInput";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -38,7 +41,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: gray100,
     backgroundColor: gray800,
     width: "57px",
-    height: "25px",
+    height: "26px",
     border: "none",
     borderRadius: "2px",
   },
@@ -70,7 +73,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray400,
     display: "grid",
-    gridTemplateColumns: "15px 60px 40px",
+    gridTemplateColumns: "15px 60px 40px 40px",
     rowGap: "1rem",
     textAlign: "center",
     columnGap: "1rem",
@@ -82,12 +85,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     outline: "none",
     color: gray100,
-    padding: "3px",
     backgroundColor: gray800,
     width: "30px",
     border: "none",
+    height: "24px",
     borderRadius: "2px 0 0 2px",
-    lineHeight: "20px",
   },
   inputSpan: {
     ...smallText,
@@ -161,6 +163,13 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
       ? getOpacityValue(props.styles.outlineColor)
       : "100"
   );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.backgroundColor
+        ? getOpacityValue(props.styles.backgroundColor)
+        : "100"
+    );
+  }, [props]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100
@@ -174,11 +183,11 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
             e.target.value !== ""
               ? handleOpacityChange(
                   String(Number(e.target.value) / 100),
-                  String(props.styles.backgroundColor)
+                  String(props.styles.outlineColor)
                 )
               : handleOpacityChange(
                   String(e.target.value),
-                  String(props.styles.backgroundColor)
+                  String(props.styles.outlineColor)
                 ),
         },
       },
@@ -217,6 +226,41 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
       property: {
         styles: {
           [styleItem]: e.target.value,
+        },
+      },
+    });
+  };
+
+  const opacityDisabledHandler = (ocColor: string) => {
+    let ocFlag;
+    ocColor === "undefined" ? (ocFlag = true) : (ocFlag = false);
+    return ocFlag;
+  };
+  useEffect(() => {
+    setIsOpacityDisabled(
+      opacityDisabledHandler(String(props.styles.outlineColor))
+    );
+  }, [props]);
+
+  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
+    opacityDisabledHandler(String(props.styles.outlineColor))
+  );
+
+  const [isTransparent, setIsTransparent] = useState<boolean>(
+    props.styles.outlineColor === "transparent" ? true : false
+  );
+
+  useEffect(() => {
+    setIsTransparent(
+      props.styles.outlineColor === "transparent" ? true : false
+    );
+  }, [props]);
+
+  const toggleTransparencyChange = () => {
+    props.patchCb({
+      property: {
+        styles: {
+          outlineColor: isTransparent ? "" : "transparent",
         },
       },
     });
@@ -268,7 +312,7 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BS />
           </div>
-          <div>
+          <div style={{ marginLeft: "-2px" }}>
             <select
               name="outlineStyle"
               onChange={(e) => handleOutlineChange(e, "outlineStyle")}
@@ -318,12 +362,14 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               props.openPalette("outlineColor", "Outline Color");
             }}
           >
-            <Input
+            <ColorInput
               styleItem="outlineColor"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              parseToInt={false}
+              getOpacityValue={getOpacityValue}
+              setOpacityValue={setOpacityValue}
+              rgb2hex={rgb2hex}
             />
           </div>
           <div style={{ width: "45px", marginRight: "10px" }}>
@@ -331,12 +377,25 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
               <input
                 type="text"
                 value={opacityValue}
+                disabled={isOpacityDisabled}
                 onChange={handleChange}
                 style={styles.inputContainerBox}
                 placeholder="100"
               />
               <div style={styles.inputSpan}>%</div>
             </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              userSelect: "none",
+            }}
+            onClick={toggleTransparencyChange}
+          >
+            {isTransparent ? <ET /> : <ENT />}
           </div>
         </div>
       </div>

@@ -1,10 +1,12 @@
 import { agastyaLine, gray500, gray800 } from "@atrilabs/design-system";
 import React from "react";
+import "./IconsContainer.css";
 
 export type IconsContainerProps = {
   children: React.ReactNode[];
   selectedIndex: number;
   setSelectedIndexCb: (index: number) => void;
+  styleArray: (string | number)[];
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -53,6 +55,8 @@ export const IconsContainer: React.FC<IconsContainerProps> = (props) => {
             onClick={() => {
               props.setSelectedIndexCb(index);
             }}
+            data-tooltip={props.styleArray[index]}
+            className="icon-container"
           >
             {child}
           </div>

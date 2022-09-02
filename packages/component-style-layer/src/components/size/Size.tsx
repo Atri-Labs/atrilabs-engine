@@ -1,6 +1,7 @@
 import {
   gray200,
   gray400,
+  gray800,
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
@@ -13,21 +14,24 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
+import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
+import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "15px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -35,19 +39,38 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     alignItems: "baseline",
   },
-  optionName: {
+  parentGridContainer: {
     ...smallText,
-    color: "#FFFFFF",
-    lineHeight: "25px",
+    color: gray400,
+    display: "grid",
+    gridTemplateRows: "15px 72px",
+    textAlign: "center",
+    rowGap: "0rem",
+  },
+  titleGridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "10px 50px 50px 50px",
+    textAlign: "center",
+    columnGap: "13px",
   },
   gridContainer: {
     ...smallText,
     color: gray400,
     display: "grid",
     gridTemplateColumns: "10px 50px 50px 50px",
-    gridTemplateRows: "15px 40px",
+    gridTemplateRows: "28px 28px",
     textAlign: "center",
-    columnGap: "16px",
+    columnGap: "13px",
+    rowGap: "1rem",
+  },
+  optionName: {
+    ...smallText,
+    color: gray200,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 };
 const overflowValues = ["visible", "scroll", "hidden", "auto"];
@@ -76,88 +99,103 @@ export const Size: React.FC<CssProprtyComponentType> = (props) => {
             : { display: "none" }
         }
       >
-        <div style={styles.gridContainer}>
-          <div>&nbsp;</div>
-          <div>&nbsp;</div>
-          <div>Min</div>
-          <div>Max</div>
-          <div style={styles.optionName}>W</div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="width"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="minWidth"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="maxWidth"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
+        <div
+          style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
+        >
+          <div style={styles.parentGridContainer}>
+            <div style={styles.titleGridContainer}>
+              <div>&nbsp;</div>
+              <div>&nbsp;</div>
+              <div>Min</div>
+              <div>Max</div>
+            </div>
 
-          <div style={styles.optionName}>H</div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="height"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
+            <div style={styles.gridContainer}>
+              <div style={styles.optionName}>W</div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="width"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="minWidth"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="maxWidth"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div style={styles.optionName}>H</div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="height"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="minHeight"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="maxHeight"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="minHeight"
-              styles={props.styles}
+          <div
+            style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
+          >
+            <PropertyRender
+              styleItem="overflow"
+              styleText="Overflow"
+              styleArray={overflowValues}
               patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="maxHeight"
               styles={props.styles}
+            >
+              <OFV />
+              <OFS />
+              <OFH />
+              <OFA />
+            </PropertyRender>
+            <PropertyRender
+              styleItem="boxSizing"
+              styleText="Box-Sizing"
+              styleArray={boxSizingValues}
               patchCb={props.patchCb}
-              defaultValue=""
-            />
+              styles={props.styles}
+            >
+              <BCY />
+              <BCO />
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Initial
+              </div>
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Inherit
+              </div>
+            </PropertyRender>
           </div>
         </div>
-
-        <PropertyRender
-          styleItem="overflow"
-          styleText="Overflow"
-          styleArray={overflowValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <OFV />
-          <OFS />
-          <OFH />
-          <OFA />
-        </PropertyRender>
-        <PropertyRender
-          styleItem="boxSizing"
-          styleText="Box-Sizing"
-          styleArray={boxSizingValues}
-          patchCb={props.patchCb}
-          styles={props.styles}
-        >
-          <OFV />
-          <OFS />
-          <OFH />
-          <OFA />
-        </PropertyRender>
       </div>
     </div>
   );

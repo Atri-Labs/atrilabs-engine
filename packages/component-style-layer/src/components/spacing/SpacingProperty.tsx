@@ -19,30 +19,32 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: `1px solid ${gray800}`,
-  },
-  header: {
-    ...h5Heading,
-    color: gray200,
-    display: "flex",
-    height: "25px",
-    paddingBottom: "0.5rem",
     paddingLeft: "0.5rem",
-    marginTop: "10px",
-    userSelect: "none",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   drop: {
     display: "flex",
     alignItems: "baseline",
   },
+  header: {
+    ...h5Heading,
+    color: gray200,
+    display: "flex",
+    paddingLeft: "0.5rem",
+    userSelect: "none",
+  },
   mainContainer: {
-    marginTop: "1rem",
     position: "relative",
   },
   marginPaddingBoxContainer: {
     position: "relative",
-    marginLeft: "0.75rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   //Placeholders For Margin
   marginTopPlaceHolder: {
@@ -63,7 +65,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     position: "absolute",
     left: "89px",
-    bottom: "5px",
+    bottom: "0px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -120,7 +122,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     position: "absolute",
     left: "89px",
-    bottom: "26px",
+    bottom: "23px",
     userSelect: "none",
     outline: "none",
     color: gray100,
@@ -287,7 +289,6 @@ const resetAction = assign({
     return 0;
   },
 });
-
 const dragMachine = createMachine({
   id: "dragMachine",
   context: {
@@ -524,7 +525,6 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   };
-
   const handleChangePaddingTop = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {

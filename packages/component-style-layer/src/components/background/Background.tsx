@@ -15,6 +15,8 @@ import { ColorInput } from "../commons/ColorInput";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
+import { ReactComponent as II } from "../../assets/background/Image.svg";
+import { ReactComponent as SI } from "../../assets/background/Solid.svg";
 import { ReactComponent as BRR } from "../../assets/background/repeat-icon.svg";
 import { ReactComponent as BRX } from "../../assets/background/repeat-x-icon.svg";
 import { ReactComponent as BRY } from "../../assets/background/repeat-y-icon.svg";
@@ -29,22 +31,26 @@ import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
 import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
 import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
 import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import PropertyRender from "../commons/PropertyRender";
+import MultiplePropertyRender from "../commons/MultiplePropertyRender";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
@@ -182,6 +188,16 @@ export type ColorHSV = {
 
 export const hex2rgb = (hex: Color["hex"]) => {
   hex = hex.slice(1);
+
+  if (hex.length === 3 || hex.length === 4) {
+    hex = hex
+      .split("")
+      .map(function (hex) {
+        return hex + hex;
+      })
+      .join("");
+  }
+
   const r = parseInt(hex.slice(0, 2), 16);
   const g = parseInt(hex.slice(2, 4), 16);
   const b = parseInt(hex.slice(4, 6), 16);
@@ -222,6 +238,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       ? getOpacityValue(props.styles.backgroundColor)
       : "100"
   );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.backgroundColor
+        ? getOpacityValue(props.styles.backgroundColor)
+        : "100"
+    );
+  }, [props]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100
@@ -295,6 +318,26 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     opacityDisabledHandler(String(props.styles.backgroundColor))
   );
 
+  const [isTransparent, setIsTransparent] = useState<boolean>(
+    props.styles.backgroundColor === "transparent" ? true : false
+  );
+
+  useEffect(() => {
+    setIsTransparent(
+      props.styles.backgroundColor === "transparent" ? true : false
+    );
+  }, [props]);
+
+  const toggleTransparencyChange = () => {
+    props.patchCb({
+      property: {
+        styles: {
+          backgroundColor: isTransparent ? "" : "transparent",
+        },
+      },
+    });
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -347,7 +390,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedTypeIndex(0);
               }}
             >
-              <BOX />
+              <SI />
             </div>
             <div
               style={
@@ -365,7 +408,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedTypeIndex(1);
               }}
             >
-              <BOY />
+              <II />
             </div>
           </div>
         </div>
@@ -397,6 +440,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 defaultValue=""
                 getOpacityValue={getOpacityValue}
                 setOpacityValue={setOpacityValue}
+                rgb2hex={rgb2hex}
               />
             </div>
             <div style={{ width: "45px", marginRight: "10px" }}>
@@ -411,6 +455,18 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 />
                 <div style={styles.inputSpan}>%</div>
               </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+              onClick={toggleTransparencyChange}
+            >
+              {isTransparent ? <ET /> : <ENT />}
             </div>
           </div>
         )}
@@ -488,9 +544,9 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         )}
         {/**Background Clip */}
         {backgroundTypes[selectedTypeIndex].clip && (
-          <PropertyRender
-            styleItem="backgroundClip"
-            styleText="Cip"
+          <MultiplePropertyRender
+            styleItems={["backgroundClip", "WebkitBackgroundClip"]}
+            styleText="Clip"
             styleArray={backgroundClipValues}
             patchCb={props.patchCb}
             styles={props.styles}
@@ -499,8 +555,10 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             <BCY />
             <BCX />
             <BCO />
-            <div style={{ ...smallText, color: "white" }}>Text</div>
-          </PropertyRender>
+            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+              Text
+            </div>
+          </MultiplePropertyRender>
         )}
       </div>
     </div>

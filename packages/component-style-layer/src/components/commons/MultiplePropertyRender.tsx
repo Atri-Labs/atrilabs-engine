@@ -1,5 +1,5 @@
 import { gray200, h5Heading, smallText } from "@atrilabs/design-system";
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useCallback } from "react";
 import { IconsContainer } from "./IconsContainer";
 import { CssProprtyComponentType } from "../../types";
 
@@ -35,9 +35,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-function PropertyRender(props: {
+function MultiplePropertyRender(props: {
   styleText: string;
-  styleItem: keyof React.CSSProperties;
+  styleItems: (keyof React.CSSProperties)[];
   styleArray: (string | number)[];
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
@@ -49,12 +49,13 @@ function PropertyRender(props: {
     // because user has not set any style array yet. This is true
     // for any other CSS property as well. In those cases, the property component,
     // like this Layout component, will set the default CSS property.
-    if (props.styles[props.styleItem] === undefined) {
+    const styleItem = props.styleItems[0];
+    if (props.styles[styleItem] === undefined) {
       // return the default CSS value index
       return props.defaultCSSIndex || 0;
     } else {
       const index = props.styleArray.findIndex(
-        (val) => val === props.styles[props.styleItem]
+        (val) => val === props.styles[styleItem]
       );
       if (index >= 0) {
         return index;
@@ -65,15 +66,19 @@ function PropertyRender(props: {
         return 0;
       }
     }
-  }, [props.styleArray, props.styleItem, props.styles, props.defaultCSSIndex]);
+  }, [props.styleArray, props.styleItems, props.styles, props.defaultCSSIndex]);
 
   const setStyleItemSelectedIndexCb = useCallback(
     (index: number) => {
       // Calling patchCb informs the browser forest manager(editor's state manager)
       // to update the state and inform all subscribers about the state update.
+      const styles: { [key: string]: string | number } = {};
+      props.styleItems.forEach((styleItem) => {
+        styles[styleItem] = props.styleArray[index];
+      });
       props.patchCb({
         property: {
-          styles: { [props.styleItem]: props.styleArray[index] },
+          styles,
         },
       });
     },
@@ -81,7 +86,7 @@ function PropertyRender(props: {
   );
 
   return (
-    <div style={styles.option} key={props.styleItem}>
+    <div style={styles.option} key={props.styleItems[0]}>
       <div style={styles.optionName}>{props.styleText}</div>
       <div style={styles.optionsIcons}>
         <IconsContainer
@@ -95,4 +100,4 @@ function PropertyRender(props: {
   );
 }
 
-export default PropertyRender;
+export default MultiplePropertyRender;

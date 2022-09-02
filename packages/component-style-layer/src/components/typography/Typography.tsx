@@ -4,46 +4,69 @@ import {
   h5Heading,
   gray100,
   gray800,
+  gray400,
 } from "@atrilabs/design-system";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as LA } from "../../assets/typo/left-align.svg";
 import { ReactComponent as RA } from "../../assets/typo/right-align.svg";
 import { ReactComponent as CA } from "../../assets/typo/center-align.svg";
 import { ReactComponent as JA } from "../../assets/typo/justify-align.svg";
-import { ReactComponent as MH } from "../../assets/typo/more-horizontal.svg";
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
-import { InputWithPreprocessor } from "../commons/InputWithPreprocessor";
-import { Input } from "../commons/Input";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { useGetFontImports } from "../../hooks/useGetFontImports";
+import { ColorInput } from "../commons/ColorInput";
+import {
+  Color,
+  getOpacityValue,
+  hex2rgb,
+  rgb2hex,
+} from "../background/Background";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: "flex",
     flexDirection: "column",
-    padding: "0.5rem",
-    borderBottom: "1px solid #111827",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+    paddingTop: "1.2rem",
+    paddingBottom: "1.8rem",
+    borderBottom: `1px solid ${gray800}`,
+    rowGap: "1.2rem",
+  },
+  drop: {
+    display: "flex",
+    alignItems: "baseline",
   },
   header: {
     ...h5Heading,
     color: gray200,
     display: "flex",
-    marginTop: "10px",
-    paddingBottom: "0.5rem",
-    height: "25px",
     paddingLeft: "0.5rem",
     userSelect: "none",
   },
   inputBox: {
     ...smallText,
-    outline: "none",
     color: gray100,
     backgroundColor: gray800,
+    outline: "none",
     height: "28px",
     border: "none",
     borderRadius: "2px",
+  },
+  inputContainerBox: {
+    ...smallText,
+    outline: "none",
+    color: gray100,
+    padding: "3px",
+    backgroundColor: gray800,
+    width: "30px",
+    border: "none",
+    borderRadius: "2px 0 0 2px",
+    lineHeight: "20px",
   },
   inputBoxWithUnits: {
     ...smallText,
@@ -52,10 +75,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   select: {
     textAlign: "left",
   },
-  drop: {
-    display: "flex",
-    alignItems: "baseline",
-  },
+
   option: {
     display: "flex",
     height: "25px",
@@ -65,6 +85,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: "white",
     width: "4rem",
+  },
+  inputContainer: {
+    display: "flex",
+  },
+  inputSpan: {
+    ...smallText,
+    color: gray400,
+    backgroundColor: gray800,
+    borderRadius: "0 2px 2px 0",
+    display: "flex",
+    alignItems: "center",
+    paddingRight: "4px",
   },
 };
 
@@ -158,28 +190,83 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
     [props]
   );
 
-  const opacityPreProcessor = useCallback(
-    (value: string | number | undefined, mode: "read" | "write") => {
-      if (value === "" || (typeof value === "string" && !value.trim().length)) {
-        return "";
-      } else if (typeof value === "undefined") {
-        return "";
-      } else if (mode === "read") {
-        if (typeof value === "number") {
-          return value * 100;
-        } else {
-          return parseFloat(value) * 100;
-        }
+  const [opacityValue, setOpacityValue] = useState<string>(
+    props.styles.color ? getOpacityValue(props.styles.color) : "100"
+  );
+  useEffect(() => {
+    setOpacityValue(
+      props.styles.color ? getOpacityValue(props.styles.color) : "100"
+    );
+  }, [props]);
+  const opacityDisabledHandler = (bgColor: string) => {
+    let bgFlag;
+    bgColor === "undefined" ? (bgFlag = true) : (bgFlag = false);
+    return bgFlag;
+  };
+  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
+    opacityDisabledHandler(String(props.styles.color))
+  );
+  useEffect(() => {
+    setIsOpacityDisabled(opacityDisabledHandler(String(props.styles.color)));
+  }, [props]);
+  const opacityHelper = (opacityValue: string) => {
+    let opacityHelperValue;
+    opacityValue === ""
+      ? (opacityHelperValue = 100)
+      : (opacityHelperValue = Number(opacityValue));
+    return opacityHelperValue;
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    parseInt(e.target.value) > 100
+      ? setOpacityValue("100")
+      : setOpacityValue(e.target.value);
+
+    props.patchCb({
+      property: {
+        styles: {
+          color:
+            e.target.value !== ""
+              ? handleOpacityChange(
+                  String(Number(e.target.value) / 100),
+                  String(props.styles.color)
+                )
+              : handleOpacityChange(
+                  String(e.target.value),
+                  String(props.styles.color)
+                ),
+        },
+      },
+    });
+  };
+  const handleOpacityChange = useCallback(
+    (opacityValue: string, hex: Color["hex"]) => {
+      let convertedRgbValue = hex2rgb(hex);
+      if (opacityHelper(opacityValue) >= 1) {
+        convertedRgbValue.a = 1;
+      } else if (opacityHelper(opacityValue) < 0) {
+        convertedRgbValue.a = 0;
       } else {
-        if (typeof value === "number") {
-          return value / 100;
-        } else {
-          return parseFloat(value) / 100;
-        }
+        convertedRgbValue.a = opacityHelper(opacityValue);
       }
+      return rgb2hex(convertedRgbValue);
     },
     []
   );
+  const [isTransparent, setIsTransparent] = useState<boolean>(
+    props.styles.color === "transparent" ? true : false
+  );
+  useEffect(() => {
+    setIsTransparent(props.styles.color === "transparent" ? true : false);
+  }, [props]);
+  const toggleTransparencyChange = () => {
+    props.patchCb({
+      property: {
+        styles: {
+          color: isTransparent ? "" : "transparent",
+        },
+      },
+    });
+  };
 
   return (
     <div style={styles.container}>
@@ -225,30 +312,32 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
         </div>
         <div style={styles.option}>
           <div style={styles.optionName}>Weight</div>
-          <select
-            name="font"
-            onChange={(e) => handleFontWeightChange(e, "fontWeight")}
-            style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
-            value={props.styles.fontWeight || ""}
-          >
-            <option value={""}>{""}</option>
-            {fontWeights.map((fontWeight, index) => {
-              return (
-                <option style={styles.select} value={fontWeight} key={index}>
-                  {weightNameMap[fontWeight]
-                    ? weightNameMap[fontWeight]
-                    : fontWeight}
-                </option>
-              );
-            })}
-          </select>
-          <div style={styles.inputBoxWithUnits}>
-            <SizeInputWithUnits
-              styleItem="fontSize"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
+          <div style={{ display: "flex", columnGap: "20px" }}>
+            <select
+              name="font"
+              onChange={(e) => handleFontWeightChange(e, "fontWeight")}
+              style={{ ...styles.inputBox, width: "65px" }}
+              value={props.styles.fontWeight || ""}
+            >
+              <option value={""}>{""}</option>
+              {fontWeights.map((fontWeight, index) => {
+                return (
+                  <option style={styles.select} value={fontWeight} key={index}>
+                    {weightNameMap[fontWeight]
+                      ? weightNameMap[fontWeight]
+                      : fontWeight}
+                  </option>
+                );
+              })}
+            </select>
+            <div style={styles.inputBoxWithUnits}>
+              <SizeInputWithUnits
+                styleItem="fontSize"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
           </div>
         </div>
         <div style={styles.option}>
@@ -256,7 +345,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <select
             name="font"
             onChange={(e) => handleFontStyleChange(e, "fontWeight")}
-            style={{ ...styles.inputBox, width: "65px", marginRight: "20px" }}
+            style={{ ...styles.inputBox, width: "65px" }}
             value={props.styles.fontStyle || ""}
           >
             <option value={""}>{""}</option>
@@ -281,7 +370,7 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           <CA />
           <JA />
         </PropertyRender>
-        <div style={styles.option}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <div style={styles.optionName}>Color</div>
           <div
             onClick={() => {
@@ -289,26 +378,40 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
             }}
             style={{ width: "55px", marginRight: "10px" }}
           >
-            <Input
+            <ColorInput
               styleItem="color"
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
-              parseToInt={false}
+              getOpacityValue={getOpacityValue}
+              setOpacityValue={getOpacityValue}
+              rgb2hex={rgb2hex}
             />
           </div>
           <div style={{ width: "45px", marginRight: "10px" }}>
-            <InputWithPreprocessor
-              styleItem="opacity"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="100"
-              placeHolderText="%"
-              preProcessor={opacityPreProcessor}
-            />
+            <div style={styles.inputContainer}>
+              <input
+                type="text"
+                value={opacityValue}
+                disabled={isOpacityDisabled}
+                onChange={handleChange}
+                style={styles.inputContainerBox}
+                placeholder="100"
+              />
+              <div style={styles.inputSpan}>%</div>
+            </div>
           </div>
-          <div>
-            <MH />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              userSelect: "none",
+            }}
+            onClick={toggleTransparencyChange}
+          >
+            {isTransparent ? <ET /> : <ENT />}
           </div>
         </div>
       </div>

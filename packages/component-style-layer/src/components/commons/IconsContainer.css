@@ -1,0 +1,18 @@
+.icon-container {
+  position: relative;
+}
+.icon-container:hover::after {
+  content: attr(data-tooltip);
+  font-family: "Inter", sans-serif;
+  position: absolute;
+  top: 1.7rem;
+  left: -0.5rem;
+  border: 1px #1f2937 solid;
+  color: #e5e7eb;
+  padding: 2px;
+  font-size: 11px;
+  background-color: #111827;
+  z-index: 1;
+  text-transform: capitalize;
+  pointer-events: none;
+}
