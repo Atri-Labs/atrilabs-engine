@@ -141,7 +141,7 @@ export const FlexChildStyle: React.CSSProperties = {
 };
 
 export const keyPropMap: any = {
-  Div: { ...Display, ...FlexChildStyle },
+  Div: { styles: { ...Display, ...FlexChildStyle } },
   Flex: {
     styles: { ...FlexStyle },
   },
