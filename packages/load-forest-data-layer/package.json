@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/load-forest-data-layer",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,11 +29,11 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.48",
-    "@atrilabs/design-system": "^0.0.48",
-    "@atrilabs/layer-types": "^0.0.48",
-    "@atrilabs/scripts": "^0.0.48",
-    "eslint-plugin-atrilabs": "^0.0.48",
+    "@atrilabs/core": "^0.0.49",
+    "@atrilabs/design-system": "^0.0.49",
+    "@atrilabs/layer-types": "^0.0.49",
+    "@atrilabs/scripts": "^0.0.49",
+    "eslint-plugin-atrilabs": "^0.0.49",
     "typescript": "4.6.3"
   },
   "devDependencies": {
