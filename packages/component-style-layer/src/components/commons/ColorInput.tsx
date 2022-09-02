@@ -1,8 +1,8 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React, { useState, useEffect, useCallback } from "react";
 import { CssProprtyComponentType } from "../../types";
-import { getOpacityValue } from "../background/Background";
-import { ColorRGB } from "../background/Background";
+import { getOpacityValue } from "./ColorComponent";
+import { ColorRGB } from "./ColorComponent";
 
 export type InputProps = {
   styleItem: keyof React.CSSProperties;
@@ -68,7 +68,6 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     let recievedColor = e.target.value;
     if (recievedColor === "") {
       onValidInput("", styleItem);
-      // props.setOpacityValue(getOpacityValue("#000000ff"));
     }
     if ("inputType" in e.nativeEvent) {
       if (
@@ -135,8 +134,6 @@ export const ColorInput: React.FC<InputProps> = (props) => {
       propertyColorValue === "undefined" ||
       propertyColorValue === "transparent"
     ) {
-      setColorValue("");
-    } else if (propertyColorValue === "#ffffff") {
       setColorValue("");
     } else if (propertyColorValue.length === 5) {
       setColorValue(propertyColorValue.substring(0, 4));
