@@ -4,7 +4,11 @@ import create from "zustand";
 // and mew properties will added or existing properties will be changed
 // but the type of value of the property must not change
 function mergeState(baseState, newState) {
-  if (typeof newState === "object" && !Array.isArray(newState)) {
+  if (
+    typeof newState === "object" &&
+    !Array.isArray(newState) &&
+    newState !== null
+  ) {
     const keys = Object.keys(newState);
     keys.forEach((key) => {
       // create a new key in base if not exists
