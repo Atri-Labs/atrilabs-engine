@@ -117,6 +117,19 @@ export const getOpacityValue = (hex: Color["hex"]) => {
 };
 
 export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
+  const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]:
+            props.styles[props.styleItem] === "transparent"
+              ? ""
+              : "transparent",
+        },
+      },
+    });
+  };
+
   const handleOpacityInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
@@ -164,19 +177,6 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
       ? (opacityHelperValue = 100)
       : (opacityHelperValue = Number(opacityValue));
     return opacityHelperValue;
-  };
-
-  const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            props.styles[props.styleItem] === "transparent"
-              ? ""
-              : "transparent",
-        },
-      },
-    });
   };
 
   const opacityDisabledHandler = (Color: string) => {
