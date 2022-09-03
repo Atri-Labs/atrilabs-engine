@@ -6,6 +6,7 @@ import zipfile
 from pathlib import Path
 import os
 import sys
+from ..stats import collect_download_exe
 
 def get_remote_filename():
     if platform.system() == "Linux":
@@ -111,6 +112,7 @@ def clean_after_download():
 def load_exe_if_not_exists():
     create_atri_dir_if_not_exist()
     if not exe_exists():
+        collect_download_exe()
         clean_before_download()
         print("Downloading atri engine...")
         download_zip()

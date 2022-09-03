@@ -24,6 +24,7 @@ from typing import List, Union
 from .utils.handle_error import error_to_message
 from . import app_config_file
 from .commands.create_dockerfile import create_dockerfile_with_pipenv
+from .stats import collect_atri_start, collect_create_dockerfile
 
 find_and_set_app_directory()
 
@@ -172,6 +173,10 @@ def connect_local(u_port, no_debug):
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
 def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
     load_exe_if_not_exists()
+
+    virt_type = get_virtualenv_type()
+    collect_atri_start(virt_type)
+
     globals["in_debug_mode"] = debug
     app_dir = str(Path.cwd())
     async def check_req_wrapper():
@@ -218,6 +223,7 @@ def create():
 @click.option('--file', default="Dockerfile", show_default=True, help='Name of the output Dockerfile')
 def create_dockerfile(file):
     virt_type = get_virtualenv_type()
+    collect_create_dockerfile(virt_type)
     if virt_type == "pipenv":
         create_dockerfile_with_pipenv(file)
     elif virt_type == "conda":
