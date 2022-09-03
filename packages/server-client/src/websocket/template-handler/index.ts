@@ -18,6 +18,10 @@ export function createTemplate(
   events: AnyEvent[]
 ) {
   const dest = getTemplateFilepath(dir, relativeDir, templateName);
+  const destDirectory = path.resolve(dir, relativeDir);
+  if (!fs.existsSync(destDirectory)) {
+    fs.mkdirSync(destDirectory, { recursive: true });
+  }
   fs.writeFileSync(dest, JSON.stringify(events, null, 2));
 }
 
