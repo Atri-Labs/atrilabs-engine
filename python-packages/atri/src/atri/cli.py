@@ -25,6 +25,7 @@ from .utils.handle_error import error_to_message
 from . import app_config_file
 from .commands.create_dockerfile import create_dockerfile_with_pipenv
 from .stats import collect_atri_start, collect_create_dockerfile
+from .utils.manage_session import manage_session
 
 find_and_set_app_directory()
 
@@ -194,8 +195,11 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
             connect_local_task = asyncio.create_task(
                 connect_local_wrapper()
             )
+            manage_session_task = asyncio.create_task(
+                manage_session(virt_type)
+            )
             try:
-                await asyncio.wait([open_exe_task, connect_local_task])
+                await asyncio.wait([open_exe_task, connect_local_task, manage_session_task])
             except CancelledError:
                 # socket.io AsyncClient throws CancelledError
                 # closing stderr to prevent showing error

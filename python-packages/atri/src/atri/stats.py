@@ -2,6 +2,7 @@ import pymongo
 import datetime
 import uuid, re
 from multiprocessing import Process
+from pymongo.collection import Collection
 
 mac_addr = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
 
@@ -72,3 +73,16 @@ def _collect_download_exe():
 def collect_download_exe():
     p = Process(target=_collect_download_exe)
     p.start()
+
+def collect_session_duration(stats_collection: Collection, session_id: str, start: datetime.datetime, end: datetime.datetime, virt_type: str):
+    try:
+        if stats_collection != None:
+            stats_collection.insert_one(create_stat({
+                "activity": "session_duration",
+                "session_id": session_id,
+                "start": start,
+                "end": end,
+                "virt_type": virt_type
+                }))
+    except:
+        pass
