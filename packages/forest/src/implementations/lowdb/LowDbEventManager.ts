@@ -350,7 +350,7 @@ export default function createLowDbEventManager(
   function fetchEvents(pageId: Page["id"]): AnyEvent[] {
     // open pages db if not already open
     const eventsDb = getEventsDb(dbDir, pageId, options.mode);
-    return eventsDb.getState();
+    return JSON.parse(JSON.stringify(eventsDb.getState()));
   }
 
   function writeBackCompressedEvents(pageId: Page["id"], events: AnyEvent[]) {
