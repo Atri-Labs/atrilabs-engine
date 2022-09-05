@@ -9,7 +9,8 @@
   "bin": {
     "atri-react-app-build-app": "lib/tasks/build-app.js",
     "atri-react-app-build-server": "lib/tasks/build-server.js",
-    "atri-react-app-dev-server": "lib/tasks/start-dev-server.js"
+    "atri-react-app-dev-server": "lib/tasks/start-dev-server.js",
+    "atri-react-app-build-ssg": "lib/tasks/build-pages.js"
   },
   "directories": {
     "lib": "lib",
@@ -47,6 +48,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-react-app": "^7.0.1",
     "file-loader": "^6.2.0",
+    "fs-extra": "^10.1.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.1",
     "postcss": "^8.4.14",
