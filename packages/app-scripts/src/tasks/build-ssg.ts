@@ -9,6 +9,10 @@ const appServerInfo: ServerInfo = JSON.parse(
 
 const outputDir = path.join("dist", "ssg");
 
+import "./build-app";
+
+import "./build-server";
+
 // copy app/static directory
 copyPublicDirectory(appServerInfo, outputDir);
 

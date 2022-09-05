@@ -10,7 +10,7 @@
     "atri-react-app-build-app": "lib/tasks/build-app.js",
     "atri-react-app-build-server": "lib/tasks/build-server.js",
     "atri-react-app-dev-server": "lib/tasks/start-dev-server.js",
-    "atri-react-app-build-ssg": "lib/tasks/build-pages.js"
+    "atri-react-app-build-ssg": "lib/tasks/build-ssg.js"
   },
   "directories": {
     "lib": "lib",
