@@ -36,3 +36,11 @@ export function buildPages(
     fs.writeFileSync(path.join(dir, "index.html"), finalText);
   });
 }
+
+export function copyAssets(serverInfo: ServerInfo, destDir: string) {
+  const assetRoutes = Object.keys(serverInfo.publicUrlAssetMap);
+  assetRoutes.forEach((assetRoute) => {
+    const srcDir = serverInfo.publicUrlAssetMap[assetRoute]!;
+    fse.copySync(srcDir, path.join(destDir, assetRoute));
+  });
+}

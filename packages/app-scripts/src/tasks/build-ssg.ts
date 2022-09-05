@@ -1,4 +1,8 @@
-import { buildPages, copyPublicDirectory } from "../shared/generatePage";
+import {
+  buildPages,
+  copyAssets,
+  copyPublicDirectory,
+} from "../shared/generatePage";
 import fs from "fs";
 import path from "path";
 import { ServerInfo } from "../shared/types";
@@ -23,3 +27,5 @@ buildPages(appServerInfo, {
   },
   outputDir,
 });
+
+copyAssets(appServerInfo, outputDir);

@@ -1,6 +1,9 @@
 export type ServerInfo = {
   pages: { [route: string]: { name: string } };
   publicDir: string;
+  publicUrlAssetMap: {
+    [route: string]: string;
+  };
 };
 
 export type GeneratePageOptions = {
