@@ -4,6 +4,12 @@ export type ServerInfo = {
   publicUrlAssetMap: {
     [route: string]: string;
   };
+  organizationName?: string;
+  projectName?: string;
+  deploymentBranch?: string;
+  githubHost?: string;
+  githubPort?: string;
+  static?: string;
 };
 
 export type GeneratePageOptions = {

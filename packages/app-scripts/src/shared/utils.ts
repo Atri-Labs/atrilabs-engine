@@ -134,3 +134,5 @@ export const buildInfoFile = path.resolve(buildInfoFilename);
 export const serverInfoFilename = "atri-server-info.json";
 
 export const serverInfoFile = path.resolve(serverInfoFilename);
+
+export const ssgOuputPath = path.join("dist", "ssg");

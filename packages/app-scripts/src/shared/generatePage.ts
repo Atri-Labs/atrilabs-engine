@@ -16,10 +16,22 @@ export function generatePage(pageRoute: string, options: GeneratePageOptions) {
 }
 
 export function copyPublicDirectory(serverInfo: ServerInfo, destDir: string) {
-  if (fs.existsSync(destDir)) {
+  if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
   }
   fse.copySync(serverInfo.publicDir, destDir);
+}
+
+export function copyStaticDirectoryIfExists(
+  serverInfo: ServerInfo,
+  destDir: string
+) {
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+  if (serverInfo.static !== undefined && !fs.existsSync(serverInfo.static)) {
+    fse.copySync(serverInfo.static, destDir);
+  }
 }
 
 export function buildPages(

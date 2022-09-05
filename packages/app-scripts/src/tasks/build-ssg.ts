@@ -11,11 +11,12 @@ const appServerInfo: ServerInfo = JSON.parse(
   fs.readFileSync("atri-server-info.json").toString()
 );
 
-const outputDir = path.join("dist", "ssg");
+const outputDir = ssgOuputPath;
 
 import "./build-app";
 
 import "./build-server";
+import { ssgOuputPath } from "../shared/utils";
 
 // copy app/static directory
 copyPublicDirectory(appServerInfo, outputDir);
