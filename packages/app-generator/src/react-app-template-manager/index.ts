@@ -796,7 +796,17 @@ export function createReactAppTemplateManager(
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }
-    fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
+    // merge it with previously generated atri-server-info.json file if it exists
+    let finalServerInfo: any = { ...serverInfoTemplate };
+    if (fs.existsSync(dest)) {
+      const oldServerInfo = JSON.parse(fs.readFileSync(dest).toString());
+      finalServerInfo = {
+        ...oldServerInfo,
+        pages: serverInfoTemplate["pages"],
+        publicUrlAssetMap: serverInfoTemplate["publicUrlAssetMap"],
+      };
+    }
+    fs.writeFileSync(dest, JSON.stringify(finalServerInfo, null, 2));
   }
 
   // flush atri-server-info.json
