@@ -64,7 +64,7 @@ export default function () {
               callRunTaskApi();
             }}
           >
-            Publish
+            {"Build & Run"}
           </span>
           {showPopup ? (
             <div
@@ -99,7 +99,7 @@ export default function () {
                     color: status.generate ? blue600 : gray500,
                   },
                   { name: "Build", color: status.build ? blue600 : gray500 },
-                  { name: "Deploy", color: status.deploy ? blue600 : gray500 },
+                  { name: "Run", color: status.deploy ? blue600 : gray500 },
                 ]}
               />
               {status.generate && status.build === false ? (
