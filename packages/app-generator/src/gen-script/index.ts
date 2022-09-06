@@ -286,6 +286,7 @@ export default async function generateApp(
   reactTemplateManager.flushPatchedPackageJSON();
   reactTemplateManager.flushAtriServerInfo();
   reactTemplateManager.flushPageCbs();
+  reactTemplateManager.flushAtriAppInfo();
 
   const pythonGeneratorFunctions: {
     fn: PythonStubGeneratorFunction;

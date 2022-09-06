@@ -1,3 +1,5 @@
+import { pageRequestEndpoint } from "./endpoints";
+
 export function fetchPageProps(pageRoute: string, query: string) {
   const payload = JSON.stringify({ pageRoute, query });
   const options: RequestInit = {
@@ -8,5 +10,5 @@ export function fetchPageProps(pageRoute: string, query: string) {
       "Content-Length": payload.length.toString(),
     },
   };
-  return fetch("/handle-page-request", options).then((res) => res.json());
+  return fetch(pageRequestEndpoint, options).then((res) => res.json());
 }

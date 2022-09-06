@@ -2,6 +2,7 @@ import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
 import { navigateExternally, navigateInternally } from "./navigate";
 import { handleRedirection } from "./handleRedirection";
+import { eventHandlerEndpoint, formEventHandlerEndpoint } from "./endpoints";
 
 export type NavigationCallbackHandler = {
   type: "internal" | "external";
@@ -38,9 +39,8 @@ function sendEventDataFn(
   // data passed in the callback
   eventData: any
 ) {
-  console.log("sendEventData:", eventData);
   const pageState = useStore.getState()[pageName];
-  return fetch("/event-handler", {
+  return fetch(eventHandlerEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -56,7 +56,6 @@ function sendEventDataFn(
     .then((res) => handleRedirection(res))
     .then((res) => res.json())
     .then((res) => {
-      console.log("got res", res);
       if (res && res["pageState"])
         updateStoreStateFromController(pageName, res["pageState"]);
     });
@@ -118,7 +117,7 @@ function sendEventInFormDataFn(
       formdata.append(`files`, file);
     }
   });
-  return fetch("/event-in-form-handler", {
+  return fetch(formEventHandlerEndpoint, {
     method: "POST",
     body: formdata,
   })

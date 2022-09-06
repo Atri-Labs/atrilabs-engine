@@ -1,6 +1,7 @@
 import {
   atriAppBuildInfoFilename,
   atriAppBuildInfoTemplateFilepath,
+  atriAppInfoFilename,
   atriAppServerInfoFilename,
   atriAppServerInfoTemplateFilepath,
   getFiles,
@@ -797,6 +798,18 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
   }
 
+  // flush atri-server-info.json
+  function flushAtriAppInfo() {
+    const appInfoTemplate = fs
+      .readFileSync(atriAppServerInfoTemplateFilepath)
+      .toString();
+    const dest = path.resolve(paths.reactAppRootDest, atriAppInfoFilename);
+    if (!fs.existsSync(paths.reactAppRootDest)) {
+      fs.mkdirSync(paths.reactAppRootDest);
+    }
+    fs.writeFileSync(dest, appInfoTemplate);
+  }
+
   function addCallbacks(
     page: { name: string },
     callbacks: CallbackGeneratorOutput
@@ -932,5 +945,6 @@ export function createReactAppTemplateManager(
     flushIoStore,
     addResources,
     flushIndexHtml,
+    flushAtriAppInfo,
   };
 }
