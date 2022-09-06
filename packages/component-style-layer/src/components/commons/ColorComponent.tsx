@@ -102,7 +102,6 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
-  console.log(convertedRgbValue.a);
   if (convertedRgbValue.a === undefined) {
     return "";
   } else if (convertedRgbValue.a) {
@@ -196,7 +195,6 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   );
 
   useEffect(() => {
-    console.log(props.styles[props.styleItem]);
     setOpacityValue(
       props.styles[props.styleItem]
         ? getOpacityValue(String(props.styles[props.styleItem]))

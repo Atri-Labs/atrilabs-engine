@@ -5,8 +5,9 @@ import {
   gray800,
   smallText,
   h5Heading,
+  gray500,
 } from "@atrilabs/design-system";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
@@ -68,6 +69,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "1rem",
   },
+  borderGrid: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "50px 50px 50px",
+    rowGap: "1rem",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: "1rem",
+  },
+  borderOption: {
+    ...smallText,
+    color: gray200,
+    backgroundColor: gray500,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: "4px",
+    paddingBottom: "4px",
+    cursor: "pointer",
+  },
   gridInputContainer: {
     ...smallText,
     color: gray400,
@@ -91,6 +114,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       | React.ChangeEvent<HTMLSelectElement>,
     styleItem: keyof React.CSSProperties
   ) => {
+    console.log(styleItem);
     props.patchCb({
       property: {
         styles: {
@@ -98,6 +122,27 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
         },
       },
     });
+  };
+
+  const [borderWidth, setBorderWidth] =
+    useState<keyof React.CSSProperties>("borderWidth");
+  const [borderStyle, setBorderStyle] =
+    useState<keyof React.CSSProperties>("borderStyle");
+  const [borderColor, setBorderColor] =
+    useState<keyof React.CSSProperties>("borderColor");
+  const [activeBorderType, setActiveBorderType] = useState<string>("");
+
+  useEffect(() => {
+    console.log(borderWidth);
+    console.log(borderStyle);
+    console.log(borderColor);
+  }, [borderWidth, borderStyle, borderColor]);
+
+  const setBorderType = (value: string) => {
+    setActiveBorderType(value);
+    setBorderWidth(`border${value}Width` as keyof React.CSSProperties);
+    setBorderStyle(`border${value}Style` as keyof React.CSSProperties);
+    setBorderColor(`border${value}Color` as keyof React.CSSProperties);
   };
 
   return (
@@ -132,12 +177,82 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue="0"
             />
           </div>
+        </div>
+
+        <div style={styles.borderGrid}>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Top");
+            }}
+            style={
+              activeBorderType === "Top"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            T
+          </span>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Left");
+            }}
+            style={
+              activeBorderType === "Left"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            L
+          </span>
+          <span
+            onClick={(e) => {
+              setBorderType("");
+            }}
+            style={
+              activeBorderType === ""
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            A
+          </span>
+          <span
+            onClick={(e) => {
+              setBorderType("Right");
+            }}
+            style={
+              activeBorderType === "Right"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            R
+          </span>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Bottom");
+            }}
+            style={
+              activeBorderType === "Bottom"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            B
+          </span>
+          <span>&nbsp;</span>
+        </div>
+
+        <div style={styles.gridContainer}>
           <div style={styles.optionName}>
             <BW />
           </div>
           <div>
             <SizeInputWithUnits
-              styleItem="borderWidth"
+              styleItem={borderWidth}
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
@@ -149,10 +264,10 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <div style={{ marginLeft: "-2px" }}>
             <select
-              name="borderStyle"
-              onChange={(e) => handleBorderChange(e, "borderStyle")}
+              name="Border Style"
+              onChange={(e) => handleBorderChange(e, borderStyle)}
               style={styles.inputBox}
-              value={props.styles.borderStyle || ""}
+              value={props.styles[borderStyle] || ""}
             >
               <option style={styles.select} value={""}></option>
               <option style={styles.select} value="none">
@@ -176,36 +291,11 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <ColorComponent
             name="Border Color"
-            styleItem="borderColor"
+            styleItem={borderColor}
             styles={props.styles}
             patchCb={props.patchCb}
             openPalette={props.openPalette}
           />
-          {/* <div style={{ width: "45px", marginRight: "10px" }}>
-            <div style={styles.inputContainer}>
-              <input
-                type="text"
-                value={opacityValue}
-                disabled={isOpacityDisabled}
-                onChange={handleChange}
-                style={styles.inputContainerBox}
-                placeholder="100"
-              />
-              <div style={styles.inputSpan}>%</div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-            onClick={toggleTransparencyChange}
-          >
-            {isTransparent ? <ET /> : <ENT />}
-          </div> */}
         </div>
       </div>
     </div>

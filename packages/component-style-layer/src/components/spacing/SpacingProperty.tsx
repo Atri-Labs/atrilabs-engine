@@ -50,7 +50,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "95px",
     top: "1px",
     userSelect: "none",
     outline: "none",
@@ -64,7 +64,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "95px",
     bottom: "0px",
     userSelect: "none",
     outline: "none",
@@ -78,7 +78,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "172px",
+    left: "182px",
     top: "41px",
     userSelect: "none",
     outline: "none",
@@ -92,7 +92,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   marginLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "5px",
+    left: "15px",
     top: "41px",
     userSelect: "none",
     outline: "none",
@@ -107,7 +107,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "95px",
     top: "22px",
     userSelect: "none",
     outline: "none",
@@ -121,7 +121,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "95px",
     bottom: "23px",
     userSelect: "none",
     outline: "none",
@@ -135,7 +135,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "136.5px",
+    left: "145px",
     top: "41px",
     userSelect: "none",
     outline: "none",
@@ -149,7 +149,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   paddingLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "40.5px",
+    left: "50px",
     top: "41px",
     userSelect: "none",
     outline: "none",
@@ -165,7 +165,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray50,
     position: "absolute",
-    left: "4px",
+    left: "10px",
     top: "-7px",
     userSelect: "none",
     pointerEvents: "none",
@@ -174,7 +174,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     ...smallText,
     color: gray50,
     position: "absolute",
-    left: "40px",
+    left: "46px",
     top: "13px",
     userSelect: "none",
     pointerEvents: "none",
