@@ -6,17 +6,17 @@ import {
 import fs from "fs";
 import path from "path";
 import { ServerInfo } from "../shared/types";
+import { ssgOutputPath } from "../shared/utils";
 
 const appServerInfo: ServerInfo = JSON.parse(
   fs.readFileSync("atri-server-info.json").toString()
 );
 
-const outputDir = ssgOuputPath;
-
 import "./build-app";
 
 import "./build-server";
-import { ssgOuputPath } from "../shared/utils";
+
+const outputDir = ssgOutputPath;
 
 // copy app/static directory
 copyPublicDirectory(appServerInfo, outputDir);

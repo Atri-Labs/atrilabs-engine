@@ -5,7 +5,7 @@ import logger from "@docusaurus/logger";
 import shell from "shelljs";
 import { hasSSHProtocol, buildSshUrl, buildHttpsUrl } from "@docusaurus/utils";
 import { ServerInfo } from "../shared/types";
-import { ssgOuputPath } from "../shared/utils";
+import { ssgOutputPath } from "../shared/utils";
 
 function obfuscateGitPass(str: string) {
   const gitPass = process.env["GIT_PASS"];
@@ -219,7 +219,7 @@ const appServerInfo: ServerInfo = JSON.parse(
 
 deploy(
   {
-    ssgOutput: ssgOuputPath,
+    ssgOutput: ssgOutputPath,
     serverInfo: path.resolve("atri-server-info.json"),
   },
   appServerInfo
