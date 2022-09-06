@@ -201,7 +201,7 @@ export const atriAppInfoFilename = "atri-app-info.json";
 
 export const atriAppInfoTemplateFilepath = path.resolve(
   reactAppRootTemplate,
-  atriAppServerInfoFilename
+  atriAppInfoFilename
 );
 
 export function getPackageVersion(pkg: string): string | null {

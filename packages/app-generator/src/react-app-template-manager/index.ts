@@ -2,6 +2,7 @@ import {
   atriAppBuildInfoFilename,
   atriAppBuildInfoTemplateFilepath,
   atriAppInfoFilename,
+  atriAppInfoTemplateFilepath,
   atriAppServerInfoFilename,
   atriAppServerInfoTemplateFilepath,
   getFiles,
@@ -800,13 +801,17 @@ export function createReactAppTemplateManager(
 
   // flush atri-server-info.json
   function flushAtriAppInfo() {
-    const appInfoTemplate = fs
-      .readFileSync(atriAppServerInfoTemplateFilepath)
-      .toString();
     const dest = path.resolve(paths.reactAppRootDest, atriAppInfoFilename);
+    // do nothing if already exists
+    if (fs.existsSync(dest)) {
+      return;
+    }
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }
+    const appInfoTemplate = fs
+      .readFileSync(atriAppInfoTemplateFilepath)
+      .toString();
     fs.writeFileSync(dest, appInfoTemplate);
   }
 
