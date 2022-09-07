@@ -7,7 +7,7 @@ import {
   h5Heading,
   gray500,
 } from "@atrilabs/design-system";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
@@ -124,25 +124,53 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     });
   };
 
-  const [borderWidth, setBorderWidth] =
-    useState<keyof React.CSSProperties>("borderWidth");
-  const [borderStyle, setBorderStyle] =
-    useState<keyof React.CSSProperties>("borderStyle");
-  const [borderColor, setBorderColor] =
-    useState<keyof React.CSSProperties>("borderColor");
   const [activeBorderType, setActiveBorderType] = useState<string>("");
-
-  useEffect(() => {
-    console.log(borderWidth);
-    console.log(borderStyle);
-    console.log(borderColor);
-  }, [borderWidth, borderStyle, borderColor]);
 
   const setBorderType = (value: string) => {
     setActiveBorderType(value);
-    setBorderWidth(`border${value}Width` as keyof React.CSSProperties);
-    setBorderStyle(`border${value}Style` as keyof React.CSSProperties);
-    setBorderColor(`border${value}Color` as keyof React.CSSProperties);
+    setBorderTypeWidth();
+    setBorderTypeStyle();
+    setBorderTypeColor();
+  };
+
+  const setBorderTypeWidth = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopWidth";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftWidth";
+    } else if (activeBorderType === "Right") {
+      return "borderRightWidth";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomWidth";
+    } else {
+      return "borderWidth";
+    }
+  };
+  const setBorderTypeStyle = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopStyle";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftStyle";
+    } else if (activeBorderType === "Right") {
+      return "borderRightStyle";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomStyle";
+    } else {
+      return "borderStyle";
+    }
+  };
+  const setBorderTypeColor = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopColor";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftColor";
+    } else if (activeBorderType === "Right") {
+      return "borderRightColor";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomColor";
+    } else {
+      return "borderColor";
+    }
   };
 
   return (
@@ -252,7 +280,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <div>
             <SizeInputWithUnits
-              styleItem={borderWidth}
+              styleItem={setBorderTypeWidth()}
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
@@ -265,9 +293,9 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={{ marginLeft: "-2px" }}>
             <select
               name="Border Style"
-              onChange={(e) => handleBorderChange(e, borderStyle)}
+              onChange={(e) => handleBorderChange(e, setBorderTypeStyle())}
               style={styles.inputBox}
-              value={props.styles[borderStyle] || ""}
+              value={props.styles[setBorderTypeStyle()] || ""}
             >
               <option style={styles.select} value={""}></option>
               <option style={styles.select} value="none">
@@ -291,7 +319,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <ColorComponent
             name="Border Color"
-            styleItem={borderColor}
+            styleItem={setBorderTypeColor()}
             styles={props.styles}
             patchCb={props.patchCb}
             openPalette={props.openPalette}
