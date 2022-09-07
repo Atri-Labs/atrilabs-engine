@@ -323,3 +323,45 @@ export type Cache = {
     freeze?: boolean;
   };
 };
+
+export type ServerInfo = {
+  port: number;
+  pythonPort: number;
+  publicDir: string;
+  pages: { [key: string]: any };
+  // assets like images might be delivered from some other targets
+  publicUrlAssetMap: {
+    [url: string]: string;
+  };
+  // host can be host.internal.docker:4005 etc. If host is provided,
+  // pythonPort will be ignored.
+  controllerHost?: string;
+  // needed for deploy using PaaS like github pages
+  organizationName?: string;
+  // needed for deploy using PaaS like github pages
+  projectName?: string;
+  // needed for deploy using PaaS like github pages
+  deploymentBranch?: string;
+  // needed for deploy using PaaS like github pages
+  githubHost?: string;
+  // needed for deploy using PaaS like github pages
+  githubPort?: string;
+};
+
+export type AppInfo = {
+  // all calls to backend/controllers will have this prefix
+  prefixUrl: string;
+};
+
+export type BuildInfo = {
+  appSrc: string;
+  appEntry: string;
+  appHtml: string;
+  appOutput: string;
+  serverSrc: string;
+  serverEntry: string;
+  serverSideEntry: string;
+  serverOutput: string;
+  manifestDirs: string[];
+  assetUrlPrefix: string;
+};
