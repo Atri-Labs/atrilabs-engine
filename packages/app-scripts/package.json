@@ -36,6 +36,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/core": "^0.0.53",
     "@atrilabs/scripts": "^0.0.53",
     "@babel/core": "^7.18.5",
     "@babel/plugin-syntax-flow": "^7.17.12",

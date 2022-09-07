@@ -21,6 +21,7 @@ import {
 import { createReactAppTemplateManager } from "../react-app-template-manager";
 import {
   atriAppIndexHtmlTemplateFilepath,
+  getAllInfos,
   getAtriAppIndexHtmlDestFilepath,
   getComponentFromManifest,
   getForestDef,
@@ -71,6 +72,9 @@ export default async function generateApp(
     });
   });
 
+  // infos
+  const infos = getAllInfos(options.outputDir);
+
   const reactTemplateManager = createReactAppTemplateManager(
     {
       reactAppTemplate: reactAppTemplatePath,
@@ -109,13 +113,14 @@ export default async function generateApp(
   pageIds.forEach((pageId) => {
     const forest = pageForestMap[pageId];
     let componentGeneratorOutput: ComponentGeneratorOutput = {};
-    componentGeneratorFunctions.forEach(({ fn, options }) => {
+    componentGeneratorFunctions.forEach(({ fn, options: customOptions }) => {
       try {
         const currentOutput = fn({
           forestDef,
           forest,
           getComponentFromManifest,
-          custom: options,
+          custom: customOptions,
+          infos,
         });
         componentGeneratorOutput = {
           ...componentGeneratorOutput,
@@ -152,6 +157,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
+          infos,
         });
         propsGeneratorOutput = {
           ...propsGeneratorOutput,
@@ -188,6 +194,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
+          infos,
         });
         callbackGeneratorOutput = {
           ...callbackGeneratorOutput,
@@ -328,6 +335,7 @@ export default async function generateApp(
           forest,
           getManifest,
           custom: options,
+          infos,
         });
         pythonGeneratorOutput["vars"] = {
           ...pythonGeneratorOutput["vars"],

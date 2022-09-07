@@ -5,7 +5,7 @@ import {
 } from "../shared/generatePage";
 import fs from "fs";
 import path from "path";
-import { ServerInfo } from "../shared/types";
+import type { ServerInfo } from "@atrilabs/core";
 import { ssgOutputPath } from "../shared/utils";
 
 const appServerInfo: ServerInfo = JSON.parse(

@@ -346,6 +346,8 @@ export type ServerInfo = {
   githubHost?: string;
   // needed for deploy using PaaS like github pages
   githubPort?: string;
+  // needed for deploy using PaaS like github pages
+  static?: string;
 };
 
 export type AppInfo = {

@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
-import { ServerInfo } from "./types";
 import { WebSocketServer, WebSocket } from "ws";
 import { Server } from "http";
+import type { ServerInfo } from "@atrilabs/core";
 
 // create local cache directory if not already created
 const localCache = path.resolve(__dirname, ".cache");

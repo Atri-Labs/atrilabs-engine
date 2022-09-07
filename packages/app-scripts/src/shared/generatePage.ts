@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { GeneratePageOptions, ServerInfo, SSGOptions } from "./types";
+import { GeneratePageOptions, SSGOptions } from "./types";
+import type { ServerInfo } from "@atrilabs/core";
 import fse from "fs-extra";
 
 export function generatePage(pageRoute: string, options: GeneratePageOptions) {

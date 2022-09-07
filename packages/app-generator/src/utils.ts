@@ -3,6 +3,7 @@ import fs from "fs";
 import { ToolConfig } from "@atrilabs/core";
 import { ForestDef, TreeDef } from "@atrilabs/forest";
 import { generateModuleId } from "@atrilabs/scripts";
+import { Infos } from "./types";
 
 export function getFiles(dir: string): string[] {
   const files: string[] = [];
@@ -223,4 +224,32 @@ export const atriAppIndexHtmlTemplateFilepath = path.resolve(
 
 export function getAtriAppIndexHtmlDestFilepath(outputDir: string) {
   return path.resolve(outputDir, "app", "public", "index.html");
+}
+
+export function getAllInfos(outputDir: string): Infos {
+  let serverInfo = JSON.parse(
+    fs.readFileSync(atriAppServerInfoTemplateFilepath).toString()
+  );
+  let buildInfo = JSON.parse(
+    fs.readFileSync(atriAppBuildInfoTemplateFilepath).toString()
+  );
+  let appInfo = JSON.parse(
+    fs.readFileSync(atriAppInfoTemplateFilepath).toString()
+  );
+
+  const destServerInfoPath = path.resolve(outputDir, atriAppServerInfoFilename);
+  if (fs.existsSync(destServerInfoPath)) {
+    serverInfo = JSON.parse(fs.readFileSync(destServerInfoPath).toString());
+  }
+
+  const destBuildInfoPath = path.resolve(outputDir, atriAppBuildInfoFilename);
+  if (fs.existsSync(destBuildInfoPath)) {
+    buildInfo = JSON.parse(fs.readFileSync(destBuildInfoPath).toString());
+  }
+
+  const destAppInfoPath = path.resolve(outputDir, atriAppInfoFilename);
+  if (fs.existsSync(destAppInfoPath)) {
+    buildInfo = JSON.parse(fs.readFileSync(destAppInfoPath).toString());
+  }
+  return { app: appInfo, server: serverInfo, build: buildInfo };
 }

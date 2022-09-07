@@ -10,12 +10,12 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@atrilabs/app-scripts@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@atrilabs/app-scripts/-/app-scripts-0.0.35.tgz#08e0468cef021ec4e366f32254ce53cf696a28bc"
-  integrity sha512-k1CWxULVx+2vMCkCHJSUmAN8PLP0o5wUNMZBtBfhxQvRhIEaRv4Rb87WTby+vABqsu5HkxjYin6/kAW20ZiRLA==
+"@atrilabs/app-scripts@^0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@atrilabs/app-scripts/-/app-scripts-0.0.53.tgz#555982656cc2a42a237870fceb18cf634c70a335"
+  integrity sha512-J27C6elbYHPh3zm1gx6DTSnutHXo/T6DJZAxFzreH55pgzyb0w24H5AkkrkXiPcq5uJioQPtgbjkPH5e6o/sgQ==
   dependencies:
-    "@atrilabs/scripts" "^0.0.35"
+    "@atrilabs/scripts" "^0.0.53"
     "@babel/core" "^7.18.5"
     "@babel/plugin-syntax-flow" "^7.17.12"
     "@babel/plugin-transform-react-jsx" "^7.17.12"
@@ -48,31 +48,33 @@
     webpack-cli "^4.10.0"
     webpack-node-externals "^3.0.0"
 
-"@atrilabs/core@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@atrilabs/core/-/core-0.0.35.tgz#2da64065daa06f3fe6893fc7901fa549eb1e4a64"
-  integrity sha512-+K4engVu2BlYVqEx0JW2nAFH6SPY0wi7EevWZii1npqXgnp0sDBW2YcZzR4tHiUt6ioNuHsX5IU4apeEEMOEFQ==
+"@atrilabs/core@^0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@atrilabs/core/-/core-0.0.53.tgz#fa0977719127206c86d8b7b21700e6c553583da8"
+  integrity sha512-eEsSC2SOuASOlyLMYugFE8XZAc5a8Jgih2YjHp2FpbbtNKnI1DrdNaOAaeu2QJQWOVIFkAqP4cOQRfSjYUKqhQ==
   dependencies:
-    "@atrilabs/forest" "^0.0.35"
+    "@atrilabs/forest" "^0.0.53"
     uuid "^8.3.2"
 
-"@atrilabs/forest@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@atrilabs/forest/-/forest-0.0.35.tgz#641368ab3b02331201d856daee6e24659f51bad0"
-  integrity sha512-3pvJRV7hXW+CYgOtwyCFcyXqQ7Wrj3/KKFcRlvDoSPsvJ2FHlzKy1BBnqq5d/OKoYyNCa/0iu5/8u822PoHGzA==
+"@atrilabs/forest@^0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@atrilabs/forest/-/forest-0.0.53.tgz#a42f29348dc9a25220d82fe0b4749d9ae0cb63f8"
+  integrity sha512-VGSx24XAB0A2s/hqsQYjvo8kXORQD48eygZ6Dl1XX1DCC2CB/s6qYZIxbue524q8QWb+MOwxTr41BNAs2Yq79A==
   dependencies:
     lodash "4.17.21"
     lowdb "1.0.0"
     typescript "4.6.3"
 
-"@atrilabs/scripts@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@atrilabs/scripts/-/scripts-0.0.35.tgz#a611bb8c69f72623ec0e7138316a7e4a832b18ae"
-  integrity sha512-BrEPgGtCkJORXwhZMj48ieEVq2InPeiuMIklImS2ne0VLrG8dFyqP/G9kw1ib6No88bxgPoryRYuGvhbPGsi5Q==
+"@atrilabs/scripts@^0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@atrilabs/scripts/-/scripts-0.0.53.tgz#0d277ccf707f8fbd4b873bab40b3d0815de0099a"
+  integrity sha512-MBHrkQQzQ0KT7Vj1BDGrfZEN227GNvyBjWbphHgzK3x1g2Fo1ui0ohKvTdz9jEVRdTSil6lkqWOSHZaNt1LnIg==
   dependencies:
-    "@atrilabs/core" "^0.0.35"
+    "@atrilabs/core" "^0.0.53"
     "@babel/core" "^7.17.9"
     "@babel/preset-env" "^7.16.11"
+    "@babel/preset-react" "^7.18.6"
+    "@babel/preset-typescript" "^7.18.6"
     "@pmmmwh/react-refresh-webpack-plugin" "^0.5.5"
     "@svgr/webpack" "^6.2.1"
     babel-loader "^8.2.4"
@@ -2174,7 +2176,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/preset-react@^7.14.5":
+"@babel/preset-react@^7.14.5", "@babel/preset-react@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/preset-react/-/preset-react-7.18.6.tgz#979f76d6277048dc19094c217b507f3ad517dd2d"
   integrity sha512-zXr6atUmyYdiWRVLOZahakYmOBHtWc2WGCkP8PYTgZi0iJXDY2CN180TdrIW4OGOAdLc7TifzDIvtx6izaRIzg==
@@ -2198,7 +2200,7 @@
     "@babel/plugin-transform-react-jsx-development" "^7.16.7"
     "@babel/plugin-transform-react-pure-annotations" "^7.16.7"
 
-"@babel/preset-typescript@^7.15.0":
+"@babel/preset-typescript@^7.15.0", "@babel/preset-typescript@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/preset-typescript/-/preset-typescript-7.18.6.tgz#ce64be3e63eddc44240c6358daefac17b3186399"
   integrity sha512-s9ik86kXBAnD760aybBucdpnLsAt0jK1xqJn2juOn9lkOvSHV60os5hxoVJsPzMQxvnUJFAlkont2DvvaYEBtQ==

@@ -4,7 +4,7 @@ import os from "os";
 import logger from "@docusaurus/logger";
 import shell from "shelljs";
 import { hasSSHProtocol, buildSshUrl, buildHttpsUrl } from "@docusaurus/utils";
-import { ServerInfo } from "../shared/types";
+import type { ServerInfo } from "@atrilabs/core";
 import { ssgOutputPath } from "../shared/utils";
 
 function obfuscateGitPass(str: string) {
