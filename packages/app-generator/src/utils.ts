@@ -246,6 +246,9 @@ export function getAllInfos(outputDir: string): Infos {
   if (fs.existsSync(destBuildInfoPath)) {
     buildInfo = JSON.parse(fs.readFileSync(destBuildInfoPath).toString());
   }
+  buildInfo.assetUrlPrefix = process.env["ASSET_URL_PREFIX"]
+    ? process.env["ASSET_URL_PREFIX"]
+    : buildInfo.assetUrlPrefix;
 
   const destAppInfoPath = path.resolve(outputDir, atriAppInfoFilename);
   if (fs.existsSync(destAppInfoPath)) {

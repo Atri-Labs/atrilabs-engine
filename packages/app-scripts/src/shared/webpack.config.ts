@@ -16,6 +16,7 @@ export type CreateWebpackConfigOptions = {
   mode: Configuration["mode"];
   publicUrlOrPath: string;
   shouldUseSourceMap: boolean;
+  assetUrlPrefix: string;
 };
 
 export default function createWebpackConfig(
@@ -109,6 +110,7 @@ export default function createWebpackConfig(
           {
             inject: true,
             template: options.paths.appHtml,
+            publicPath: options.assetUrlPrefix || "auto",
           },
           isEnvProduction
             ? {

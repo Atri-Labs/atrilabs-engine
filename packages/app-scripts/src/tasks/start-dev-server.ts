@@ -87,6 +87,8 @@ try {
       mode,
       addWatchOptions: true,
       wsClientEntry: path.resolve(__dirname, "..", "shared", "wsclient"),
+      assetUrlPrefix:
+        process.env["ASSET_URL_PREFIX"] || buildInfo.assetUrlPrefix,
     });
     const serverEntry: string = buildInfo["serverEntry"];
     const serverSideEntry: string = buildInfo["serverSideEntry"];

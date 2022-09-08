@@ -35,11 +35,19 @@ export type BuildAppOptions = {
   includes: string[];
   addWatchOptions: boolean;
   wsClientEntry?: string;
+  assetUrlPrefix: string;
 };
 
 export function buildApp(options: BuildAppOptions) {
-  const { mode, appEntry, appHtml, appOutput, includes, wsClientEntry } =
-    options;
+  const {
+    mode,
+    appEntry,
+    appHtml,
+    appOutput,
+    includes,
+    wsClientEntry,
+    assetUrlPrefix,
+  } = options;
 
   process.env["NODE_ENV"] = mode;
   process.env["BABEL_ENV"] = mode;
@@ -49,6 +57,7 @@ export function buildApp(options: BuildAppOptions) {
     mode,
     publicUrlOrPath: "/",
     shouldUseSourceMap: false,
+    assetUrlPrefix,
   });
 
   if (options.addWatchOptions) {
