@@ -762,11 +762,15 @@ export function createReactAppTemplateManager(
 
   // flush atri-build-info.json
   function flushAtriBuildInfo(manifestDirs: ToolConfig["manifestDirs"]) {
+    const dest = path.resolve(paths.reactAppRootDest, atriAppBuildInfoFilename);
+    if (fs.existsSync(dest)) {
+      return;
+    }
+
     const buildInfoTemplate = JSON.parse(
       fs.readFileSync(atriAppBuildInfoTemplateFilepath).toString()
     );
     buildInfoTemplate["manifestDirs"] = manifestDirs;
-    const dest = path.resolve(paths.reactAppRootDest, atriAppBuildInfoFilename);
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }
