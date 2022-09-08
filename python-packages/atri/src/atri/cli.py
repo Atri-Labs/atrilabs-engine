@@ -8,6 +8,8 @@ from .commands.open_editor import run as exe_open_editor
 from .commands.connect_local import start_ipc_connection
 from .commands.open_exe import open_exe_wrapper
 from .commands.load_exe import load_exe_if_not_exists
+from .commands.build_ssg_cmd import build_ssg_cmd
+from .commands.deploy_ssg_gh_pages import deploy_ssg_gh_pages
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
 if sys.version_info >= (3, 8):
@@ -245,6 +247,24 @@ def req(no_debug):
     if not ok:
         print("If you want to report this issue,",
         "please use our discussion forum https://discuss.atrilabs.com")
+
+@main.group("build")
+def build():
+    pass
+
+@build.command("ssg")
+def build_ssg():
+    asyncio.run(build_ssg_cmd())
+
+@main.group("deploy")
+def deploy():
+    pass
+
+@deploy.command("ssg")
+@click.option('--gh-pages', is_flag = True, default=False, show_default=True, help='deploy ssg pages to github')
+def deploy_ssg(gh_pages):
+    if gh_pages:
+        asyncio.run(deploy_ssg_gh_pages())
 
 if __name__ == '__main__':
     main()

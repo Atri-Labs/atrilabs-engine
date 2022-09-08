@@ -78,6 +78,7 @@
     "yarn": "^1.22.19"
   },
   "devDependencies": {
+    "@atrilabs/app-scripts": "^0.0.54",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",

@@ -9,7 +9,7 @@ from ..utils.wait_till_file_server_ready import wait_till_file_server_ready
 
 async def open_exe(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir) -> Process:
     abs_app_dir = os.path.abspath(app_dir)
-    child_proc = await run_shell_cmd(str(get_unzipped_host_path()), os.getcwd(), not globals["in_debug_mode"])
+    child_proc = await run_shell_cmd(" ".join(str(get_unzipped_host_path()), "start"), os.getcwd(), not globals["in_debug_mode"])
     return child_proc
 
 async def open_exe_wrapper(e_port, w_port, m_port, p_port, d_port, u_port, c_port, app_dir):
