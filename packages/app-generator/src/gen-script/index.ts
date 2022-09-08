@@ -120,7 +120,7 @@ export default async function generateApp(
           forest,
           getComponentFromManifest,
           custom: customOptions,
-          infos,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         componentGeneratorOutput = {
           ...componentGeneratorOutput,
@@ -157,7 +157,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
-          infos,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         propsGeneratorOutput = {
           ...propsGeneratorOutput,
@@ -194,7 +194,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
-          infos,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         callbackGeneratorOutput = {
           ...callbackGeneratorOutput,
@@ -335,7 +335,7 @@ export default async function generateApp(
           forest,
           getManifest,
           custom: options,
-          infos,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         pythonGeneratorOutput["vars"] = {
           ...pythonGeneratorOutput["vars"],
