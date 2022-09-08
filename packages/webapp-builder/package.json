@@ -82,6 +82,7 @@
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
+    "@types/yargs": "^17.0.12",
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
     "pkg": "^5.8.0",
