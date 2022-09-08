@@ -249,7 +249,7 @@ export function getAllInfos(outputDir: string): Infos {
 
   const destAppInfoPath = path.resolve(outputDir, atriAppInfoFilename);
   if (fs.existsSync(destAppInfoPath)) {
-    buildInfo = JSON.parse(fs.readFileSync(destAppInfoPath).toString());
+    appInfo = JSON.parse(fs.readFileSync(destAppInfoPath).toString());
   }
   return { app: appInfo, server: serverInfo, build: buildInfo };
 }
