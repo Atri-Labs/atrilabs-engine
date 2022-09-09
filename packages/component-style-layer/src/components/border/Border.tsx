@@ -6,6 +6,7 @@ import {
   smallText,
   h5Heading,
   gray500,
+  agastyaLine,
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
@@ -69,6 +70,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "1rem",
   },
+  brgridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
   borderGrid: {
     ...smallText,
     color: gray400,
@@ -100,11 +110,52 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "1rem",
   },
+  borderTypeGridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 15px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
   inputContainer: {
     display: "flex",
   },
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    paddingTop: "2px",
+    paddingBottom: "2px",
+    paddingLeft: "8px",
+    paddingRight: "8px",
+    cursor: "pointer",
+    color: gray200,
+  },
+  typesContainer: {
+    display: "grid",
+    height: "100%",
+  },
 };
 
+export type borderRadiusTypeOptions = {
+  all: boolean;
+  separate: boolean;
+};
+export const singleBorderRadiusOptions: borderRadiusTypeOptions = {
+  all: true,
+  separate: false,
+};
+export const separateBorderRadiusOptions: borderRadiusTypeOptions = {
+  all: false,
+  separate: true,
+};
+const borderRadiusTypes = [
+  singleBorderRadiusOptions,
+  separateBorderRadiusOptions,
+];
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
 
@@ -173,6 +224,8 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     }
   };
 
+  const [selectedBorderRadiusTypeIndex, setSelectedBorderRadiusTypeIndex] =
+    useState<number>(0);
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -193,11 +246,62 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             : { display: "none" }
         }
       >
-        <div style={styles.gridContainer}>
-          <div style={styles.optionName}>
+        <div style={styles.brgridContainer}>
+          <span style={styles.optionName}>
             <BR />
+          </span>
+          <div
+            style={{
+              ...styles.typesContainer,
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <div
+              style={
+                selectedBorderRadiusTypeIndex === 0
+                  ? {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedBorderRadiusTypeIndex(0);
+              }}
+            >
+              Single
+            </div>
+            <div
+              style={
+                selectedBorderRadiusTypeIndex === 1
+                  ? {
+                      ...styles.iconContainer,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedBorderRadiusTypeIndex(1);
+              }}
+            >
+              Separate
+            </div>
           </div>
-          <div>
+        </div>
+
+        {borderRadiusTypes[selectedBorderRadiusTypeIndex].all && (
+          <div style={styles.borderTypeGridContainer}>
+            <div style={styles.optionName}>
+              <span>&nbsp;</span>
+            </div>
             <SizeInputWithUnits
               styleItem="borderRadius"
               styles={props.styles}
@@ -205,7 +309,47 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue="0"
             />
           </div>
-        </div>
+        )}
+        {borderRadiusTypes[selectedBorderRadiusTypeIndex].separate && (
+          <div style={styles.borderTypeGridContainer}>
+            <div style={styles.optionName}>
+              <span>TL</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderTopLeftRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>TR</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderTopRightRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>BL</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderBottomLeftRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>BR</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderBottomRightRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+        )}
 
         <div style={styles.borderGrid}>
           <span>&nbsp;</span>

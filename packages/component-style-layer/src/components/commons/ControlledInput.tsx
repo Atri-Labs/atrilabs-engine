@@ -48,7 +48,8 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
   }, [ref, cursor, value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.selectionStart) {
+    console.log(typeof e.target.selectionStart);
+    if (e.target.selectionStart || e.target.selectionStart === 0) {
       setCursor(e.target.selectionStart);
     }
     onChange && onChange(e, styleItem);

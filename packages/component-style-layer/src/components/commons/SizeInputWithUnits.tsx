@@ -67,7 +67,6 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    console.log(e.target.selectionStart);
     props.patchCb({
       property: {
         styles: {
