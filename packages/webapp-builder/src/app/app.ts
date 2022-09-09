@@ -2,9 +2,12 @@ import path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import {
+  buildReactApp,
   buildSSG,
   deployGithubPages,
+  generateApp,
   startBootstrapServices,
+  writeAppInfo,
 } from "./commands";
 
 console.log("App is running...");
@@ -47,6 +50,40 @@ yargs(hideBin(process.argv))
     () => {},
     () => {
       startBootstrapServices();
+    }
+  )
+  .command(
+    "gen",
+    "generate app",
+    () => {},
+    () => {
+      generateApp();
+    }
+  )
+  .command(
+    "writeinfo [out]",
+    "write info to a file",
+    (yargs) => {
+      return yargs.positional("out", {
+        type: "string",
+        description: "full path of file",
+        demandOption: true,
+      });
+    },
+    (argv) => {
+      writeAppInfo(argv.out);
+    }
+  )
+  .command(
+    "build-react [app-info] [controller-props]",
+    "build react app with props from controller",
+    (yargs) => {
+      return yargs
+        .positional("appinfo", { demandOption: true, type: "string" })
+        .positional("props", { demandOption: true, type: "string" });
+    },
+    (argv) => {
+      buildReactApp(JSON.parse(argv.appinfo), JSON.parse(argv.props));
     }
   )
   .parse();
