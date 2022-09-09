@@ -1,4 +1,4 @@
-import { ToolConfig } from "@atrilabs/core";
+import { AppInfo, ToolConfig } from "@atrilabs/core";
 import { ChildProcess, fork } from "child_process";
 import { io, Socket } from "socket.io-client";
 import {
@@ -90,7 +90,7 @@ async function generateApp(_toolConfig: ToolConfig) {
   });
 }
 
-function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
+export function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
   const pageState = pageStates[pageId];
   const aliases = Object.keys(pageState);
   const formattedState: { [alias: string]: any } = {};
@@ -98,6 +98,54 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
     formattedState[alias] = pageState[alias]["props"];
   });
   return formattedState;
+}
+
+export async function invokeGetAppInfo(toolConfig: ToolConfig) {
+  const target = toolConfig.targets[0]!;
+  return import(target.tasksHandler.modulePath).then(async (mod) => {
+    if (
+      !mod.scripts &&
+      typeof mod.scripts.buildReactApp !== "function" &&
+      mod.getAppInfo !== "function"
+    ) {
+      throw Error(
+        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+      );
+    }
+    // call getAppInfo
+    const appInfo = await mod.getAppInfo(toolConfig, target.options);
+    const pages = appInfo.pages;
+    const pageIds = Object.keys(pages);
+    const pageStates = mod.getPageStateAsAliasMap(appInfo);
+    return { appInfo, pageIds, pageStates };
+  });
+}
+
+export async function invokeBuildReactApp(
+  toolConfig: ToolConfig,
+  appInfo: AppInfo,
+  controllerProps: {
+    [pageId: string]: { [alias: string]: any } | undefined;
+  }
+) {
+  const target = toolConfig.targets[0]!;
+  return import(target.tasksHandler.modulePath).then(async (mod) => {
+    if (
+      !mod.scripts &&
+      typeof mod.scripts.buildReactApp !== "function" &&
+      mod.getAppInfo !== "function"
+    ) {
+      throw Error(
+        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+      );
+    }
+    // call buildReactApp
+    return mod.scripts.buildReactApp(toolConfig, {
+      ...target.options,
+      appInfo,
+      controllerProps,
+    });
+  });
 }
 
 function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
