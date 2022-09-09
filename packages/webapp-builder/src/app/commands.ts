@@ -1,5 +1,15 @@
 import path from "path";
 import { fork } from "child_process";
+import {
+  invokeGenerateApp,
+  invokeGetAppInfo,
+  invokeBuildReactApp,
+} from "@atrilabs/server-client/lib/publish-app/server-utils";
+import {
+  getToolPkgInfo,
+  importToolConfig,
+} from "@atrilabs/scripts/build/shared/utils";
+import fs from "fs";
 
 export function buildSSG() {
   try {
@@ -100,4 +110,24 @@ export function startBootstrapServices() {
   } catch (err) {
     console.log("[Error in running app]\n", err);
   }
+}
+
+export function generateApp() {
+  invokeGenerateApp();
+}
+
+export function writeAppInfo(outputPath: string) {
+  const { configFile } = getToolPkgInfo();
+  importToolConfig(configFile).then((toolConfig) => {
+    invokeGetAppInfo(toolConfig).then((output) => {
+      fs.writeFileSync(outputPath, JSON.stringify(output));
+    });
+  });
+}
+
+export function buildReactApp(appInfo: any, controllerProps: any) {
+  const { configFile } = getToolPkgInfo();
+  importToolConfig(configFile).then((toolConfig) => {
+    invokeBuildReactApp(toolConfig, appInfo, controllerProps);
+  });
 }
