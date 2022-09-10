@@ -274,7 +274,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedBorderRadiusTypeIndex(0);
               }}
             >
-              Single
+              Uniform
             </div>
             <div
               style={
@@ -292,7 +292,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
                 setSelectedBorderRadiusTypeIndex(1);
               }}
             >
-              Separate
+              Non-Uniform
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ export type ControlledInputProps = {
   styleItem: keyof React.CSSProperties;
   disabled: string;
   placeholder: string;
-  pattern: string;
+  pattern: string | undefined;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
