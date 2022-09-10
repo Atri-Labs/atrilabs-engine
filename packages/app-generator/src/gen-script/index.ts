@@ -92,7 +92,8 @@ export default async function generateApp(
       reactAppIndexHtmlDest: getAtriAppIndexHtmlDestFilepath(options.outputDir),
     },
     options.rootComponentId,
-    toolConfig.assetManager
+    toolConfig.assetManager,
+    infos
   );
 
   const componentGeneratorFunctions: {

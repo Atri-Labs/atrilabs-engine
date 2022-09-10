@@ -2,6 +2,7 @@ import { ToolConfig } from "@atrilabs/core";
 import { createReactAppTemplateManager } from "./react-app-template-manager";
 import {
   atriAppIndexHtmlTemplateFilepath,
+  getAllInfos,
   getAtriAppIndexHtmlDestFilepath,
   getReactAppDestPath,
   getReactAppNodeDestPath,
@@ -23,6 +24,7 @@ export function getReactAppTemplateManager(options: {
 }) {
   const reactAppDestPath = getReactAppDestPath(options.outputDir);
   const reactAppServerDestPath = getReactAppServerDestPath(options.outputDir);
+  const infos = getAllInfos(options.outputDir);
   const reactTemplateManager = createReactAppTemplateManager(
     {
       reactAppTemplate: reactAppTemplatePath,
@@ -40,7 +42,8 @@ export function getReactAppTemplateManager(options: {
       reactAppIndexHtmlDest: getAtriAppIndexHtmlDestFilepath(options.outputDir),
     },
     options.rootComponentId,
-    options.assetManager
+    options.assetManager,
+    infos
   );
   return reactTemplateManager;
 }

@@ -14,6 +14,7 @@ import { camelCase } from "lodash";
 import {
   CallbackGeneratorOutput,
   ComponentGeneratorOutput,
+  Infos,
   PropsGeneratorOutput,
   ResourceGeneraterOutput,
 } from "../types";
@@ -36,7 +37,8 @@ export function createReactAppTemplateManager(
     reactAppIndexHtmlDest: string;
   },
   rootComponentId: string,
-  assetManager: ToolConfig["assetManager"]
+  assetManager: ToolConfig["assetManager"],
+  infos: Infos
 ) {
   const pagesTemplateDirectory = path.resolve(
     paths.reactAppTemplate,
@@ -295,9 +297,10 @@ export function createReactAppTemplateManager(
     const routeCursorMatch = appJSXTemplateText.match(
       /\{\/\*\sROUTE\sCURSOR.*\n/
     );
-    if (!importCursorMatch || !routeCursorMatch) {
+    const assetUrlCursorMatch = appJSXTemplateText.match(/ASSET_URL_PREFIX/);
+    if (!importCursorMatch || !routeCursorMatch || !assetUrlCursorMatch) {
       console.log(
-        `Failed to find import cursor or route cursor in template App.jsx file. Please report this error to Atri Labs.`
+        `Failed to find import, route or asset cursor in template App.jsx file. Please report this error to Atri Labs.`
       );
       return;
     }
@@ -311,6 +314,11 @@ export function createReactAppTemplateManager(
         index: routeCursorMatch.index!,
         length: routeCursorMatch[0].length,
         replaceWith: routeStatements + "\n",
+      },
+      {
+        index: assetUrlCursorMatch.index!,
+        length: assetUrlCursorMatch[0].length,
+        replaceWith: infos.build.assetUrlPrefix,
       },
     ]);
     fs.writeFileSync(appJSXDestPath, newText);

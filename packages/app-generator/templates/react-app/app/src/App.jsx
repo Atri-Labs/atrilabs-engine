@@ -4,7 +4,7 @@ import "./styles.css";
 
 export default function App() {
   return (
-    <Routes>
+    <Routes basename={"ASSET_URL_PREFIX"}>
       {/* ROUTE CURSOR */}
     </Routes>
   );
