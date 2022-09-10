@@ -75,15 +75,17 @@ yargs(hideBin(process.argv))
     }
   )
   .command(
-    "build-react [app-info] [controller-props]",
+    "build-react [app-info] [props]",
     "build react app with props from controller",
     (yargs) => {
       return yargs
-        .positional("appinfo", { demandOption: true, type: "string" })
+        .positional("app-info", { demandOption: true, type: "string" })
         .positional("props", { demandOption: true, type: "string" });
     },
     (argv) => {
-      buildReactApp(JSON.parse(argv.appinfo), JSON.parse(argv.props));
+      const appInfo = JSON.parse(argv.appInfo);
+      const props = JSON.parse(argv.props);
+      buildReactApp(appInfo.appInfo, props);
     }
   )
   .parse();
