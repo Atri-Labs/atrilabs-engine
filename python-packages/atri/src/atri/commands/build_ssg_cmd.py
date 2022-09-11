@@ -1,3 +1,4 @@
+from typing import Any, Dict, List
 from .load_exe import get_exe
 from ..utils.run_shell_cmd import run_shell_cmd
 from ..utils.globals import globals
@@ -6,6 +7,27 @@ import tempfile
 import json
 import traceback
 import shlex
+import sys
+from ..utils.call_compute import call_compute
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
+
+class PageInfo(TypedDict):
+    name: str
+    route: str
+    componentGeneratorOutput: Any
+    propsGeneratorOutput: Any
+
+class AppInfo(TypedDict):
+    pages: Dict[str, PageInfo]
+
+class AppInfoExtras(TypedDict):
+    appInfo: AppInfo
+    pageIds: List[str]
+    pageStates: Dict[str, Any]
 
 async def run_gen_cmd():
     generate_proc = await run_shell_cmd(
@@ -25,18 +47,30 @@ async def write_info_cmd(app_info_filename: str):
     await writeinfo_proc.wait()
     return writeinfo_proc
 
+async def call_compute_using_app_info(app_info: AppInfoExtras):
+    page_ids = app_info["pageIds"]
+    pages = app_info["appInfo"]["pages"]
+    page_states = app_info["pageStates"]
+    props_map: Dict[str, str] = {}
+    for i, id in enumerate(page_ids):
+        route = pages[id]["route"]
+        page_state = json.dumps(page_states[id])
+        props = (await call_compute(str(Path.cwd()), route, page_state)).decode("utf-8")
+        props_map[id] = props
+    return props_map
+
 async def build_react_cmd(app_info_filename: str):
     with open(app_info_filename) as f:
         app_info = json.load(f)
         dumped_app_info = json.dumps(app_info)
         # TODO: add data by invoking controllers' init_state
-        dumped_props = json.dumps({})
+        props_map = json.dumps(await call_compute_using_app_info(app_info))
         build_react_proc = await run_shell_cmd(
             " ".join([
                 str(get_exe()),
                 "build-react",
                 shlex.quote(dumped_app_info),
-                shlex.quote(dumped_props)
+                shlex.quote(props_map)
             ]),
             str(Path.cwd()),
             not globals["in_debug_mode"]

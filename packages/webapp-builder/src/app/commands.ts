@@ -4,6 +4,7 @@ import {
   invokeGenerateApp,
   invokeGetAppInfo,
   invokeBuildReactApp,
+  convertPropsIntoPythonFormat,
 } from "@atrilabs/server-client/lib/publish-app/server-utils";
 import {
   getToolPkgInfo,
@@ -120,6 +121,13 @@ export function writeAppInfo(outputPath: string) {
   const { configFile } = getToolPkgInfo();
   importToolConfig(configFile).then((toolConfig) => {
     invokeGetAppInfo(toolConfig).then((output) => {
+      output.pageIds.forEach((pageId) => {
+        // overwrite page state into python format
+        output.pageStates[pageId] = convertPropsIntoPythonFormat(
+          output.pageStates,
+          pageId
+        );
+      });
       fs.writeFileSync(outputPath, JSON.stringify(output));
     });
   });

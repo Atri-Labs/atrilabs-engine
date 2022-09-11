@@ -1,4 +1,4 @@
-import { AppInfo, ToolConfig } from "@atrilabs/core";
+import { ToolConfig } from "@atrilabs/core";
 import { ChildProcess, fork } from "child_process";
 import { io, Socket } from "socket.io-client";
 import {
@@ -129,7 +129,7 @@ export async function invokeGetAppInfo(toolConfig: ToolConfig) {
 
 export async function invokeBuildReactApp(
   toolConfig: ToolConfig,
-  appInfo: AppInfo,
+  appInfo: any,
   controllerProps: {
     [pageId: string]: { [alias: string]: any } | undefined;
   }
