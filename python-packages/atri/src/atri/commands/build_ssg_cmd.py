@@ -1,13 +1,15 @@
-from .load_exe import get_unzipped_host_path
+from .load_exe import get_exe
 from ..utils.run_shell_cmd import run_shell_cmd
 from ..utils.globals import globals
 from pathlib import Path
 import tempfile
 import json
+import traceback
+import pipes
 
 async def run_gen_cmd():
     generate_proc = await run_shell_cmd(
-        " ".join([str(get_unzipped_host_path()), "gen"]),
+        " ".join([str(get_exe()), "gen"]),
         str(Path.cwd()),
         not globals["in_debug_mode"]
     )
@@ -16,7 +18,7 @@ async def run_gen_cmd():
 
 async def write_info_cmd(app_info_filename: str):
     writeinfo_proc = await run_shell_cmd(
-        " ".join([str(get_unzipped_host_path()), "writeinfo", ""]),
+        " ".join([str(get_exe()), "writeinfo", app_info_filename]),
         str(Path.cwd()),
         not globals["in_debug_mode"]
     )
@@ -24,20 +26,23 @@ async def write_info_cmd(app_info_filename: str):
     return writeinfo_proc
 
 async def build_react_cmd(app_info_filename: str):
-    app_info = json.load(app_info_filename)
-    build_react_proc = await run_shell_cmd(
-        " ".join([
-            str(get_unzipped_host_path()),
-            "writeinfo",
-            json.dumps(app_info["appInfo"]),
-            # TODO: add data by invoking controllers' init_state
-            json.dumps({})
-        ]),
-        str(Path.cwd()),
-        not globals["in_debug_mode"]
-    )
-    await build_react_proc.wait()
-    return build_react_proc
+    with open(app_info_filename) as f:
+        app_info = json.load(f)
+        dumped_app_info = json.dumps(app_info)
+        # TODO: add data by invoking controllers' init_state
+        dumped_props = json.dumps({})
+        build_react_proc = await run_shell_cmd(
+            " ".join([
+                str(get_exe()),
+                "build-react",
+                pipes.quote(dumped_app_info),
+                pipes.quote(dumped_props)
+            ]),
+            str(Path.cwd()),
+            not globals["in_debug_mode"]
+        )
+        await build_react_proc.wait()
+        return build_react_proc
 
 async def build_ssg_cmd():
     generate_proc = await run_gen_cmd()
@@ -51,13 +56,15 @@ async def build_ssg_cmd():
                 build_react_proc = await build_react_cmd(app_info_filename)
                 if build_react_proc.returncode == 0:
                     print("Init state added to app")
+                else:
+                    print("build react code", build_react_proc.returncode)
         except:
-            Path.unlink(Path(app_info_filename))
+            print(traceback.print_exc())
 
         Path.unlink(Path(app_info_filename))
 
     child_proc = await run_shell_cmd(
-        " ".join([str(get_unzipped_host_path()), "build", "ssg"]),
+        " ".join([str(get_exe()), "build", "ssg"]),
         str(Path.cwd() / "atri_app"),
         not globals["in_debug_mode"]
         )
