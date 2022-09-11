@@ -254,8 +254,10 @@ def build():
 
 @build.command("ssg")
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
-def build_ssg(debug):
+@click.option('--exe', default=None, help='command to execute to start the NodeJS processes')
+def build_ssg(debug, exe):
     globals["in_debug_mode"] = debug
+    globals["exe"] = exe
     asyncio.run(build_ssg_cmd_wrapper())
 
 @main.group("deploy")

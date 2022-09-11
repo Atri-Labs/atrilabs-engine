@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import sys
 from ..stats import collect_download_exe
+from ..utils.globals import globals
 
 def get_remote_filename():
     if platform.system() == "Linux":
@@ -120,3 +121,7 @@ def load_exe_if_not_exists():
         unzip_downloaded_file()
         clean_after_download()
     
+def get_exe():
+    if globals["exe"] != None:
+        return globals["exe"]
+    return get_unzipped_host_path()
