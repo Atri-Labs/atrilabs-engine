@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import json
 import traceback
-import pipes
+import shlex
 
 async def run_gen_cmd():
     generate_proc = await run_shell_cmd(
@@ -35,8 +35,8 @@ async def build_react_cmd(app_info_filename: str):
             " ".join([
                 str(get_exe()),
                 "build-react",
-                pipes.quote(dumped_app_info),
-                pipes.quote(dumped_props)
+                shlex.quote(dumped_app_info),
+                shlex.quote(dumped_props)
             ]),
             str(Path.cwd()),
             not globals["in_debug_mode"]
