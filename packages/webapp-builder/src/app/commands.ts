@@ -133,9 +133,21 @@ export function writeAppInfo(outputPath: string) {
   });
 }
 
-export function buildReactApp(appInfo: any, controllerProps: any) {
+export function buildReactApp(
+  appInfo: any,
+  controllerProps: {
+    [pageId: string]: { statusCode: number; state: { [alias: string]: any } };
+  }
+) {
   const { configFile } = getToolPkgInfo();
   importToolConfig(configFile).then((toolConfig) => {
-    invokeBuildReactApp(toolConfig, appInfo, controllerProps);
+    const formattedControllerProps: {
+      [pageId: string]: { [alias: string]: any };
+    } = {};
+    const pageIds = Object.keys(controllerProps);
+    pageIds.forEach((pageId) => {
+      formattedControllerProps[pageId] = controllerProps[pageId].state;
+    });
+    invokeBuildReactApp(toolConfig, appInfo, formattedControllerProps);
   });
 }

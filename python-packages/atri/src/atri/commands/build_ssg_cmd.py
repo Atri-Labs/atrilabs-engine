@@ -56,7 +56,7 @@ async def call_compute_using_app_info(app_info: AppInfoExtras):
         route = pages[id]["route"]
         page_state = json.dumps(page_states[id])
         props = (await call_compute(str(Path.cwd()), route, page_state)).decode("utf-8")
-        props_map[id] = props
+        props_map[id] = json.loads(props)
     return props_map
 
 async def build_react_cmd(app_info_filename: str):
