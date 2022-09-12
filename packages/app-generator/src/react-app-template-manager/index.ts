@@ -48,6 +48,12 @@ export function createReactAppTemplateManager(
   const pagesDestDirectory = path.resolve(paths.reactAppDest, "src", "pages");
   const examplePageFile = path.resolve(pagesTemplateDirectory, "Example.jsx");
   const examplePageFileText = fs.readFileSync(examplePageFile).toString();
+  const indexJSXTemplatePath = path.resolve(
+    paths.reactAppTemplate,
+    "src",
+    "index.jsx"
+  );
+  const indexJSXDestPath = path.resolve(paths.reactAppDest, "src", "index.jsx");
   const appJSXTemplatePath = path.resolve(
     paths.reactAppTemplate,
     "src",
@@ -273,6 +279,27 @@ export function createReactAppTemplateManager(
     return newPieces.join("");
   }
 
+  function flushIndexJSX() {
+    const indexJSXTemplateText = fs
+      .readFileSync(indexJSXTemplatePath)
+      .toString();
+    const assetUrlCursorMatch = indexJSXTemplateText.match(/ASSET_URL_PREFIX/);
+    if (!assetUrlCursorMatch) {
+      console.log(
+        `Failed to find asset_url cursor in template index.jsx file. Please report this error to Atri Labs.`
+      );
+      return;
+    }
+    const newText = replaceText(indexJSXTemplateText, [
+      {
+        index: assetUrlCursorMatch.index!,
+        length: assetUrlCursorMatch[0].length,
+        replaceWith: infos.build.assetUrlPrefix,
+      },
+    ]);
+    fs.writeFileSync(indexJSXDestPath, newText);
+  }
+
   function flushAppJSX() {
     const appJSXTemplateText = fs.readFileSync(appJSXTemplatePath).toString();
     // add import statements
@@ -297,10 +324,9 @@ export function createReactAppTemplateManager(
     const routeCursorMatch = appJSXTemplateText.match(
       /\{\/\*\sROUTE\sCURSOR.*\n/
     );
-    const assetUrlCursorMatch = appJSXTemplateText.match(/ASSET_URL_PREFIX/);
-    if (!importCursorMatch || !routeCursorMatch || !assetUrlCursorMatch) {
+    if (!importCursorMatch || !routeCursorMatch) {
       console.log(
-        `Failed to find import, route or asset cursor in template App.jsx file. Please report this error to Atri Labs.`
+        `Failed to find import or route cursor in template App.jsx file. Please report this error to Atri Labs.`
       );
       return;
     }
@@ -314,11 +340,6 @@ export function createReactAppTemplateManager(
         index: routeCursorMatch.index!,
         length: routeCursorMatch[0].length,
         replaceWith: routeStatements + "\n",
-      },
-      {
-        index: assetUrlCursorMatch.index!,
-        length: assetUrlCursorMatch[0].length,
-        replaceWith: infos.build.assetUrlPrefix,
       },
     ]);
     fs.writeFileSync(appJSXDestPath, newText);
@@ -973,5 +994,6 @@ export function createReactAppTemplateManager(
     addResources,
     flushIndexHtml,
     flushAtriAppInfo,
+    flushIndexJSX,
   };
 }

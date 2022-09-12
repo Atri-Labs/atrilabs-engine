@@ -283,6 +283,8 @@ export default async function generateApp(
 
   // first flush index.html
   reactTemplateManager.flushIndexHtml();
+  // replace with asset url prexfix if any
+  reactTemplateManager.flushIndexJSX();
   // fill pages in app
   reactTemplateManager.flushAppJSX();
   // fill each page
