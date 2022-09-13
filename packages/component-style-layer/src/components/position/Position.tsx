@@ -84,11 +84,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionTrapezoid: {
     position: "relative",
     display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   positionTopPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "98px",
     top: "22px",
     userSelect: "none",
     outline: "none",
@@ -102,7 +104,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionBottomPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "89px",
+    left: "98px",
     bottom: "22.5px",
     userSelect: "none",
     outline: "none",
@@ -116,7 +118,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionRightPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "136.5px",
+    left: "144px",
     top: "41px",
     userSelect: "none",
     outline: "none",
@@ -130,7 +132,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   positionLeftPlaceHolder: {
     ...smallText,
     position: "absolute",
-    left: "42.5px",
+    left: "50px",
     top: "41px",
     userSelect: "none",
     outline: "none",

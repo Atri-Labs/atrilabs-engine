@@ -12,6 +12,7 @@ import { Cross } from "./assets/Cross";
 import { useManifestRegistry } from "./hooks/useManifestRegistry";
 import "./utils/manifests";
 import { CategoryList } from "./components/CategoryList";
+import "./index.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -76,7 +77,7 @@ export default function () {
       </Menu>
       {showInsertPanel ? (
         <Container name="Drop" onClose={closeContainer}>
-          <div style={styles.dropContainerItem}>
+          <div className="tb-scroll" style={styles.dropContainerItem}>
             <header style={styles.dropContainerItemHeader}>
               <h4 style={styles.dropContainerItemHeaderH4}>Insert Component</h4>
               <div style={styles.icons}>

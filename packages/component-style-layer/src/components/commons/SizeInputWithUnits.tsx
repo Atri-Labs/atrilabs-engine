@@ -1,6 +1,7 @@
-import { gray100, gray400, gray800, smallText } from "@atrilabs/design-system";
+import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React, { useCallback, useMemo } from "react";
 import { CssProprtyComponentType } from "../../types";
+import ControlledInput from "./ControlledInput";
 import "./SizeInputWithUnits.css";
 
 export type SizeInputWithUnitsProps = {
@@ -102,7 +103,7 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
 
   return (
     <div style={styles.container}>
-      <input
+      {/* <input
         type="text"
         value={
           props.styles[props.styleItem] !== "auto"
@@ -113,6 +114,19 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
         style={styles.inputBox}
         placeholder={props.defaultValue}
         disabled={unit === "auto" ? true : false}
+        pattern="^[0-9]+$"
+      /> */}
+      <ControlledInput
+        type="text"
+        value={
+          props.styles[props.styleItem] !== "auto"
+            ? getNumericValue(String(props.styles[props.styleItem]))
+            : props.styles[props.styleItem]
+        }
+        onChange={handleChange}
+        styleItem={props.styleItem}
+        disabled={unit}
+        placeholder={props.defaultValue}
         pattern="^[0-9]+$"
       />
 

@@ -1,6 +1,7 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React from "react";
 import { CssProprtyComponentType } from "../../types";
+import ControlledInput from "./ControlledInput";
 
 export type FlexChildInputProps = {
   styleItem: keyof React.CSSProperties;
@@ -38,7 +39,7 @@ export const FlexChildInput: React.FC<FlexChildInputProps> = (props) => {
   };
   return (
     <div>
-      <input
+      {/* <input
         type="text"
         value={props.styles[props.styleItem] || ""}
         onChange={(e) => handleChange(e, props.styleItem)}
@@ -48,6 +49,19 @@ export const FlexChildInput: React.FC<FlexChildInputProps> = (props) => {
             ? props.defaultValue.toString()
             : props.defaultValue
         }
+      /> */}
+      <ControlledInput
+        type="text"
+        value={props.styles[props.styleItem] || ""}
+        onChange={handleChange}
+        styleItem={props.styleItem}
+        disabled={""}
+        placeholder={
+          typeof props.defaultValue === "number"
+            ? props.defaultValue.toString()
+            : props.defaultValue
+        }
+        pattern="^[0-9]+$"
       />
     </div>
   );

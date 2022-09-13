@@ -6,15 +6,13 @@ import {
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
-import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
-import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { ColorInput } from "../commons/ColorInput";
+import { ColorComponent } from "../commons/ColorComponent";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -81,141 +79,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   inputContainer: {
     display: "flex",
   },
-  inputContainerBox: {
-    ...smallText,
-    outline: "none",
-    color: gray100,
-    backgroundColor: gray800,
-    width: "30px",
-    border: "none",
-    height: "24px",
-    borderRadius: "2px 0 0 2px",
-  },
-  inputSpan: {
-    ...smallText,
-    color: gray400,
-    backgroundColor: gray800,
-    borderRadius: "0 2px 2px 0",
-    display: "flex",
-    alignItems: "center",
-    paddingRight: "4px",
-  },
-};
-export type Color = {
-  hex: string;
-  rgb: ColorRGB;
-  hsv: ColorHSV;
-};
-
-export type ColorRGB = {
-  r: number;
-  g: number;
-  b: number;
-  a?: number;
-};
-
-export type ColorHSV = {
-  h: number;
-  s: number;
-  v: number;
-  a?: number;
-};
-
-export const hex2rgb = (hex: Color["hex"]) => {
-  hex = hex.slice(1);
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  let a = parseInt(hex.slice(6, 8), 16) || undefined;
-  if (a) {
-    a = a / 255;
-  }
-  return { r, g, b, a };
-};
-
-export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
-  const hex = [r, g, b, a]
-    .map((v, i) =>
-      v !== undefined
-        ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
-        : ""
-    )
-    .join("");
-  return `#${hex}`;
 };
 
 export const Outline: React.FC<CssProprtyComponentType> = (props) => {
-  const getOpacityValue = (hex: Color["hex"]) => {
-    let convertedRgbValue = hex2rgb(hex);
-    if (convertedRgbValue.a) {
-      Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
-        ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
-        : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
-
-      return String(convertedRgbValue.a);
-    } else {
-      return "100";
-    }
-  };
   const [showProperties, setShowProperties] = useState(true);
-  const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles.outlineColor
-      ? getOpacityValue(props.styles.outlineColor)
-      : "100"
-  );
-  useEffect(() => {
-    setOpacityValue(
-      props.styles.backgroundColor
-        ? getOpacityValue(props.styles.backgroundColor)
-        : "100"
-    );
-  }, [props]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    parseInt(e.target.value) > 100
-      ? setOpacityValue("100")
-      : setOpacityValue(e.target.value);
-
-    props.patchCb({
-      property: {
-        styles: {
-          outlineColor:
-            e.target.value !== ""
-              ? handleOpacityChange(
-                  String(Number(e.target.value) / 100),
-                  String(props.styles.outlineColor)
-                )
-              : handleOpacityChange(
-                  String(e.target.value),
-                  String(props.styles.outlineColor)
-                ),
-        },
-      },
-    });
-  };
-
-  const opacityHelper = (opacityValue: string) => {
-    let opacityHelperValue;
-    opacityValue === ""
-      ? (opacityHelperValue = 100)
-      : (opacityHelperValue = Number(opacityValue));
-    return opacityHelperValue;
-  };
-
-  const handleOpacityChange = useCallback(
-    (opacityValue: string, hex: Color["hex"]) => {
-      let convertedRgbValue = hex2rgb(hex);
-      if (opacityHelper(opacityValue) >= 1) {
-        convertedRgbValue.a = 1;
-      } else if (opacityHelper(opacityValue) < 0) {
-        convertedRgbValue.a = 0;
-      } else {
-        convertedRgbValue.a = opacityHelper(opacityValue);
-      }
-      return rgb2hex(convertedRgbValue);
-    },
-    []
-  );
   const handleOutlineChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -226,41 +94,6 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
       property: {
         styles: {
           [styleItem]: e.target.value,
-        },
-      },
-    });
-  };
-
-  const opacityDisabledHandler = (ocColor: string) => {
-    let ocFlag;
-    ocColor === "undefined" ? (ocFlag = true) : (ocFlag = false);
-    return ocFlag;
-  };
-  useEffect(() => {
-    setIsOpacityDisabled(
-      opacityDisabledHandler(String(props.styles.outlineColor))
-    );
-  }, [props]);
-
-  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(String(props.styles.outlineColor))
-  );
-
-  const [isTransparent, setIsTransparent] = useState<boolean>(
-    props.styles.outlineColor === "transparent" ? true : false
-  );
-
-  useEffect(() => {
-    setIsTransparent(
-      props.styles.outlineColor === "transparent" ? true : false
-    );
-  }, [props]);
-
-  const toggleTransparencyChange = () => {
-    props.patchCb({
-      property: {
-        styles: {
-          outlineColor: isTransparent ? "" : "transparent",
         },
       },
     });
@@ -357,46 +190,13 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BC />
           </div>
-          <div
-            onClick={() => {
-              props.openPalette("outlineColor", "Outline Color");
-            }}
-          >
-            <ColorInput
-              styleItem="outlineColor"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-              getOpacityValue={getOpacityValue}
-              setOpacityValue={setOpacityValue}
-              rgb2hex={rgb2hex}
-            />
-          </div>
-          <div style={{ width: "45px", marginRight: "10px" }}>
-            <div style={styles.inputContainer}>
-              <input
-                type="text"
-                value={opacityValue}
-                disabled={isOpacityDisabled}
-                onChange={handleChange}
-                style={styles.inputContainerBox}
-                placeholder="100"
-              />
-              <div style={styles.inputSpan}>%</div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-            onClick={toggleTransparencyChange}
-          >
-            {isTransparent ? <ET /> : <ENT />}
-          </div>
+          <ColorComponent
+            name="Outline Color"
+            styleItem="outlineColor"
+            styles={props.styles}
+            patchCb={props.patchCb}
+            openPalette={props.openPalette}
+          />
         </div>
       </div>
     </div>

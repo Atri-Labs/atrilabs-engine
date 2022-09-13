@@ -1,0 +1,15 @@
+.tb-scroll {
+  overflow: auto;
+}
+.tb-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tb-scroll::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.tb-scroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #6b7280;
+}

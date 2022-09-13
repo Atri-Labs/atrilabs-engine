@@ -14,6 +14,7 @@ import { Breakpoint } from "@atrilabs/canvas-runtime";
 import { Miscellaneous } from "./components/miscellaneous/Miscellaneous";
 import { Outline } from "./components/outline/Outline";
 import { Css2Display } from "./components/css2display/Css2Display";
+import "./TabBody.css";
 
 export type TabBodyProps = {
   alias: string;
@@ -34,6 +35,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     overflow: "auto",
+    userSelect: "none",
   },
 
   // alias container
@@ -50,7 +52,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 // such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="tb-scroll">
       <input
         style={styles.aliasContainer}
         onChange={props.setAliasCb}

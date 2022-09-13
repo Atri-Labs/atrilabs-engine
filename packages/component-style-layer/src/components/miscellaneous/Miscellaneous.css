@@ -1,7 +1,7 @@
 .scroll {
   width: 200px;
   height: 400px;
-  overflow: scroll;
+  overflow: auto;
 }
 .scroll::-webkit-scrollbar {
   width: 6px;

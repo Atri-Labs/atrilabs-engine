@@ -8,10 +8,9 @@ import {
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
-import { ColorInput } from "../commons/ColorInput";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 import { ReactComponent as BRN } from "../../assets/background/none-icon.svg";
@@ -31,10 +30,9 @@ import { ReactComponent as BOO } from "../../assets/background/border-box.svg";
 import { ReactComponent as BCX } from "../../assets/background/padding-box-icon.svg";
 import { ReactComponent as BCY } from "../../assets/background/content-box-icon.svg";
 import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
-import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
-import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import PropertyRender from "../commons/PropertyRender";
 import MultiplePropertyRender from "../commons/MultiplePropertyRender";
+import { ColorComponent } from "../commons/ColorComponent";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -165,138 +163,8 @@ const backgroundClipValues = [
   "border-box",
   "text",
 ];
-
-export type Color = {
-  hex: string;
-  rgb: ColorRGB;
-  hsv: ColorHSV;
-};
-
-export type ColorRGB = {
-  r: number;
-  g: number;
-  b: number;
-  a?: number;
-};
-
-export type ColorHSV = {
-  h: number;
-  s: number;
-  v: number;
-  a?: number;
-};
-
-export const hex2rgb = (hex: Color["hex"]) => {
-  hex = hex.slice(1);
-
-  if (hex.length === 3 || hex.length === 4) {
-    hex = hex
-      .split("")
-      .map(function (hex) {
-        return hex + hex;
-      })
-      .join("");
-  }
-
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  let a = parseInt(hex.slice(6, 8), 16) || undefined;
-  if (a) {
-    a = a / 255;
-  }
-  return { r, g, b, a };
-};
-
-export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
-  const hex = [r, g, b, a]
-    .map((v, i) =>
-      v !== undefined
-        ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
-        : ""
-    )
-    .join("");
-  return `#${hex}`;
-};
-export const getOpacityValue = (hex: Color["hex"]) => {
-  let convertedRgbValue = hex2rgb(hex);
-  if (convertedRgbValue.a) {
-    Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
-      ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
-      : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
-
-    return String(convertedRgbValue.a);
-  } else {
-    return "100";
-  }
-};
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState<boolean>(true);
-
-  const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles.backgroundColor
-      ? getOpacityValue(props.styles.backgroundColor)
-      : "100"
-  );
-  useEffect(() => {
-    setOpacityValue(
-      props.styles.backgroundColor
-        ? getOpacityValue(props.styles.backgroundColor)
-        : "100"
-    );
-  }, [props]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    parseInt(e.target.value) > 100
-      ? setOpacityValue("100")
-      : setOpacityValue(e.target.value);
-
-    props.patchCb({
-      property: {
-        styles: {
-          backgroundColor:
-            e.target.value !== ""
-              ? handleOpacityChange(
-                  String(Number(e.target.value) / 100),
-                  String(props.styles.backgroundColor)
-                )
-              : handleOpacityChange(
-                  String(e.target.value),
-                  String(props.styles.backgroundColor)
-                ),
-        },
-      },
-    });
-  };
-
-  const opacityHelper = (opacityValue: string) => {
-    let opacityHelperValue;
-    opacityValue === ""
-      ? (opacityHelperValue = 100)
-      : (opacityHelperValue = Number(opacityValue));
-    return opacityHelperValue;
-  };
-
-  const handleOpacityChange = useCallback(
-    (opacityValue: string, hex: Color["hex"]) => {
-      let convertedRgbValue = hex2rgb(hex);
-      if (opacityHelper(opacityValue) >= 1) {
-        convertedRgbValue.a = 1;
-      } else if (opacityHelper(opacityValue) < 0) {
-        convertedRgbValue.a = 0;
-      } else {
-        convertedRgbValue.a = opacityHelper(opacityValue);
-      }
-      return rgb2hex(convertedRgbValue);
-    },
-    []
-  );
-
-  const opacityDisabledHandler = (bgColor: string) => {
-    let bgFlag;
-    bgColor === "undefined" ? (bgFlag = true) : (bgFlag = false);
-    return bgFlag;
-  };
 
   const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
@@ -308,35 +176,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   }, [props]);
-  useEffect(() => {
-    setIsOpacityDisabled(
-      opacityDisabledHandler(String(props.styles.backgroundColor))
-    );
-  }, [props]);
   const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
-  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(String(props.styles.backgroundColor))
-  );
-
-  const [isTransparent, setIsTransparent] = useState<boolean>(
-    props.styles.backgroundColor === "transparent" ? true : false
-  );
-
-  useEffect(() => {
-    setIsTransparent(
-      props.styles.backgroundColor === "transparent" ? true : false
-    );
-  }, [props]);
-
-  const toggleTransparencyChange = () => {
-    props.patchCb({
-      property: {
-        styles: {
-          backgroundColor: isTransparent ? "" : "transparent",
-        },
-      },
-    });
-  };
 
   return (
     <div style={styles.container}>
@@ -427,47 +267,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         {backgroundTypes[selectedTypeIndex].color && (
           <div style={{ display: "flex", alignItems: "center" }}>
             <span style={styles.optionName}>Color</span>
-            <div
-              onClick={() => {
-                props.openPalette("backgroundColor", "Background Color");
-              }}
-              style={{ width: "55px", marginRight: "10px" }}
-            >
-              <ColorInput
-                styleItem="backgroundColor"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-                getOpacityValue={getOpacityValue}
-                setOpacityValue={setOpacityValue}
-                rgb2hex={rgb2hex}
-              />
-            </div>
-            <div style={{ width: "45px", marginRight: "10px" }}>
-              <div style={styles.inputContainer}>
-                <input
-                  type="text"
-                  value={opacityValue}
-                  disabled={isOpacityDisabled}
-                  onChange={handleChange}
-                  style={styles.inputContainerBox}
-                  placeholder="100"
-                />
-                <div style={styles.inputSpan}>%</div>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-              onClick={toggleTransparencyChange}
-            >
-              {isTransparent ? <ET /> : <ENT />}
-            </div>
+            <ColorComponent
+              name="Background Color"
+              styleItem="backgroundColor"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              openPalette={props.openPalette}
+            />
           </div>
         )}
         {/**Background Position */}

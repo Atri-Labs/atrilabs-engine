@@ -5,17 +5,17 @@ import {
   gray800,
   smallText,
   h5Heading,
+  gray500,
+  agastyaLine,
 } from "@atrilabs/design-system";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
-import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
-import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { ColorInput } from "../commons/ColorInput";
+import { ColorComponent } from "../commons/ColorComponent";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -70,6 +70,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "1rem",
   },
+  brgridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
+  borderGrid: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "50px 50px 50px",
+    rowGap: "1rem",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: "1rem",
+  },
+  borderOption: {
+    ...smallText,
+    color: gray200,
+    backgroundColor: gray500,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: "4px",
+    paddingBottom: "4px",
+    cursor: "pointer",
+  },
   gridInputContainer: {
     ...smallText,
     color: gray400,
@@ -79,143 +110,54 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     columnGap: "1rem",
   },
+  borderTypeGridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 15px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
   inputContainer: {
     display: "flex",
   },
-  inputContainerBox: {
-    ...smallText,
-    outline: "none",
-    color: gray100,
-    backgroundColor: gray800,
-    width: "30px",
-    border: "none",
-    height: "24px",
-    borderRadius: "2px 0 0 2px",
-  },
-  inputSpan: {
-    ...smallText,
-    color: gray400,
-    backgroundColor: gray800,
-    borderRadius: "0 2px 2px 0",
+  iconContainer: {
     display: "flex",
+    justifyContent: "center",
     alignItems: "center",
-    paddingRight: "4px",
+    height: "100%",
+    paddingTop: "2px",
+    paddingBottom: "2px",
+    paddingLeft: "8px",
+    paddingRight: "8px",
+    cursor: "pointer",
+    color: gray200,
+  },
+  typesContainer: {
+    display: "grid",
+    height: "100%",
   },
 };
-export type Color = {
-  hex: string;
-  rgb: ColorRGB;
-  hsv: ColorHSV;
-};
 
-export type ColorRGB = {
-  r: number;
-  g: number;
-  b: number;
-  a?: number;
+export type borderRadiusTypeOptions = {
+  all: boolean;
+  separate: boolean;
 };
-
-export type ColorHSV = {
-  h: number;
-  s: number;
-  v: number;
-  a?: number;
+export const singleBorderRadiusOptions: borderRadiusTypeOptions = {
+  all: true,
+  separate: false,
 };
-
-export const hex2rgb = (hex: Color["hex"]) => {
-  hex = hex.slice(1);
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  let a = parseInt(hex.slice(6, 8), 16) || undefined;
-  if (a) {
-    a = a / 255;
-  }
-  return { r, g, b, a };
+export const separateBorderRadiusOptions: borderRadiusTypeOptions = {
+  all: false,
+  separate: true,
 };
-
-export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
-  const hex = [r, g, b, a]
-    .map((v, i) =>
-      v !== undefined
-        ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
-        : ""
-    )
-    .join("");
-  return `#${hex}`;
-};
-
+const borderRadiusTypes = [
+  singleBorderRadiusOptions,
+  separateBorderRadiusOptions,
+];
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
-  const getOpacityValue = (hex: Color["hex"]) => {
-    let convertedRgbValue = hex2rgb(hex);
-    if (convertedRgbValue.a) {
-      Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
-        ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
-        : (convertedRgbValue.a = Math.floor(convertedRgbValue.a * 100));
-
-      return String(convertedRgbValue.a);
-    } else {
-      return "100";
-    }
-  };
-
   const [showProperties, setShowProperties] = useState(true);
-  const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles.borderColor ? getOpacityValue(props.styles.borderColor) : "100"
-  );
-  useEffect(() => {
-    setOpacityValue(
-      props.styles.backgroundColor
-        ? getOpacityValue(props.styles.backgroundColor)
-        : "100"
-    );
-  }, [props]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    parseInt(e.target.value) > 100
-      ? setOpacityValue("100")
-      : setOpacityValue(e.target.value);
-
-    props.patchCb({
-      property: {
-        styles: {
-          borderColor:
-            e.target.value !== ""
-              ? handleOpacityChange(
-                  String(Number(e.target.value) / 100),
-                  String(props.styles.borderColor)
-                )
-              : handleOpacityChange(
-                  String(e.target.value),
-                  String(props.styles.borderColor)
-                ),
-        },
-      },
-    });
-  };
-
-  const opacityHelper = (opacityValue: string) => {
-    let opacityHelperValue;
-    opacityValue === ""
-      ? (opacityHelperValue = 100)
-      : (opacityHelperValue = Number(opacityValue));
-    return opacityHelperValue;
-  };
-
-  const handleOpacityChange = useCallback(
-    (opacityValue: string, hex: Color["hex"]) => {
-      let convertedRgbValue = hex2rgb(hex);
-      if (opacityHelper(opacityValue) >= 1) {
-        convertedRgbValue.a = 1;
-      } else if (opacityHelper(opacityValue) < 0) {
-        convertedRgbValue.a = 0;
-      } else {
-        convertedRgbValue.a = opacityHelper(opacityValue);
-      }
-      return rgb2hex(convertedRgbValue);
-    },
-    []
-  );
 
   const handleBorderChange = (
     e:
@@ -223,6 +165,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       | React.ChangeEvent<HTMLSelectElement>,
     styleItem: keyof React.CSSProperties
   ) => {
+    console.log(styleItem);
     props.patchCb({
       property: {
         styles: {
@@ -232,39 +175,57 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     });
   };
 
-  const opacityDisabledHandler = (bcColor: string) => {
-    let bcFlag;
-    bcColor === "undefined" ? (bcFlag = true) : (bcFlag = false);
-    return bcFlag;
-  };
-  useEffect(() => {
-    setIsOpacityDisabled(
-      opacityDisabledHandler(String(props.styles.borderColor))
-    );
-  }, [props]);
+  const [activeBorderType, setActiveBorderType] = useState<string>("");
 
-  const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(String(props.styles.borderColor))
-  );
-
-  const [isTransparent, setIsTransparent] = useState<boolean>(
-    props.styles.borderColor === "transparent" ? true : false
-  );
-
-  useEffect(() => {
-    setIsTransparent(props.styles.borderColor === "transparent" ? true : false);
-  }, [props]);
-
-  const toggleTransparencyChange = () => {
-    props.patchCb({
-      property: {
-        styles: {
-          borderColor: isTransparent ? "" : "transparent",
-        },
-      },
-    });
+  const setBorderType = (value: string) => {
+    setActiveBorderType(value);
+    setBorderTypeWidth();
+    setBorderTypeStyle();
+    setBorderTypeColor();
   };
 
+  const setBorderTypeWidth = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopWidth";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftWidth";
+    } else if (activeBorderType === "Right") {
+      return "borderRightWidth";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomWidth";
+    } else {
+      return "borderWidth";
+    }
+  };
+  const setBorderTypeStyle = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopStyle";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftStyle";
+    } else if (activeBorderType === "Right") {
+      return "borderRightStyle";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomStyle";
+    } else {
+      return "borderStyle";
+    }
+  };
+  const setBorderTypeColor = (): keyof React.CSSProperties => {
+    if (activeBorderType === "Top") {
+      return "borderTopColor";
+    } else if (activeBorderType === "Left") {
+      return "borderLeftColor";
+    } else if (activeBorderType === "Right") {
+      return "borderRightColor";
+    } else if (activeBorderType === "Bottom") {
+      return "borderBottomColor";
+    } else {
+      return "borderColor";
+    }
+  };
+
+  const [selectedBorderRadiusTypeIndex, setSelectedBorderRadiusTypeIndex] =
+    useState<number>(0);
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -285,11 +246,62 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             : { display: "none" }
         }
       >
-        <div style={styles.gridContainer}>
-          <div style={styles.optionName}>
+        <div style={styles.brgridContainer}>
+          <span style={styles.optionName}>
             <BR />
+          </span>
+          <div
+            style={{
+              ...styles.typesContainer,
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <div
+              style={
+                selectedBorderRadiusTypeIndex === 0
+                  ? {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      borderRight: `1px solid ${agastyaLine}`,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedBorderRadiusTypeIndex(0);
+              }}
+            >
+              Uniform
+            </div>
+            <div
+              style={
+                selectedBorderRadiusTypeIndex === 1
+                  ? {
+                      ...styles.iconContainer,
+                      background: gray800,
+                    }
+                  : {
+                      ...styles.iconContainer,
+                      background: gray500,
+                    }
+              }
+              onClick={() => {
+                setSelectedBorderRadiusTypeIndex(1);
+              }}
+            >
+              Non-Uniform
+            </div>
           </div>
-          <div>
+        </div>
+
+        {borderRadiusTypes[selectedBorderRadiusTypeIndex].all && (
+          <div style={styles.borderTypeGridContainer}>
+            <div style={styles.optionName}>
+              <span>&nbsp;</span>
+            </div>
             <SizeInputWithUnits
               styleItem="borderRadius"
               styles={props.styles}
@@ -297,12 +309,122 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue="0"
             />
           </div>
+        )}
+        {borderRadiusTypes[selectedBorderRadiusTypeIndex].separate && (
+          <div style={styles.borderTypeGridContainer}>
+            <div style={styles.optionName}>
+              <span>TL</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderTopLeftRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>TR</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderTopRightRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>BL</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderBottomLeftRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+            <div style={styles.optionName}>
+              <span>BR</span>
+            </div>
+            <SizeInputWithUnits
+              styleItem="borderBottomRightRadius"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+        )}
+
+        <div style={styles.borderGrid}>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Top");
+            }}
+            style={
+              activeBorderType === "Top"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            T
+          </span>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Left");
+            }}
+            style={
+              activeBorderType === "Left"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            L
+          </span>
+          <span
+            onClick={(e) => {
+              setBorderType("");
+            }}
+            style={
+              activeBorderType === ""
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            A
+          </span>
+          <span
+            onClick={(e) => {
+              setBorderType("Right");
+            }}
+            style={
+              activeBorderType === "Right"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            R
+          </span>
+          <span>&nbsp;</span>
+          <span
+            onClick={(e) => {
+              setBorderType("Bottom");
+            }}
+            style={
+              activeBorderType === "Bottom"
+                ? { ...styles.borderOption, backgroundColor: gray800 }
+                : { ...styles.borderOption }
+            }
+          >
+            B
+          </span>
+          <span>&nbsp;</span>
+        </div>
+
+        <div style={styles.gridContainer}>
           <div style={styles.optionName}>
             <BW />
           </div>
           <div>
             <SizeInputWithUnits
-              styleItem="borderWidth"
+              styleItem={setBorderTypeWidth()}
               styles={props.styles}
               patchCb={props.patchCb}
               defaultValue=""
@@ -314,10 +436,10 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           <div style={{ marginLeft: "-2px" }}>
             <select
-              name="borderStyle"
-              onChange={(e) => handleBorderChange(e, "borderStyle")}
+              name="Border Style"
+              onChange={(e) => handleBorderChange(e, setBorderTypeStyle())}
               style={styles.inputBox}
-              value={props.styles.borderStyle || ""}
+              value={props.styles[setBorderTypeStyle()] || ""}
             >
               <option style={styles.select} value={""}></option>
               <option style={styles.select} value="none">
@@ -339,47 +461,13 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.optionName}>
             <BC />
           </div>
-          <div
-            onClick={() => {
-              props.openPalette("borderColor", "Border Color");
-            }}
-            style={{ marginLeft: "-2px" }}
-          >
-            <ColorInput
-              styleItem="borderColor"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-              getOpacityValue={getOpacityValue}
-              setOpacityValue={setOpacityValue}
-              rgb2hex={rgb2hex}
-            />
-          </div>
-          <div style={{ width: "45px", marginRight: "10px" }}>
-            <div style={styles.inputContainer}>
-              <input
-                type="text"
-                value={opacityValue}
-                disabled={isOpacityDisabled}
-                onChange={handleChange}
-                style={styles.inputContainerBox}
-                placeholder="100"
-              />
-              <div style={styles.inputSpan}>%</div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-            onClick={toggleTransparencyChange}
-          >
-            {isTransparent ? <ET /> : <ENT />}
-          </div>
+          <ColorComponent
+            name="Border Color"
+            styleItem={setBorderTypeColor()}
+            styles={props.styles}
+            patchCb={props.patchCb}
+            openPalette={props.openPalette}
+          />
         </div>
       </div>
     </div>
