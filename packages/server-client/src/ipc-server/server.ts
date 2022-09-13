@@ -24,7 +24,11 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
     ServerToClientEvents,
     InterServerEvents,
     SocketData
-  >(server, { cors: { origin: "*" } });
+  >(server, {
+    cors: { origin: "*" },
+    pingTimeout: 60000,
+    maxHttpBufferSize: 1e8,
+  });
 
   const clients: { [key in ClientName]?: ClientSocket } = {};
 
@@ -72,8 +76,9 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
         });
       }
     });
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason) => {
       clients[clientName] = undefined;
+      console.log("Socket disconnected with reason\n", reason);
     });
   });
 
