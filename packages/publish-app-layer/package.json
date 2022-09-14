@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/publish-app-layer",
-  "version": "0.0.61",
+  "version": "0.0.62",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,11 +29,11 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.61",
-    "@atrilabs/design-system": "^0.0.61",
-    "@atrilabs/layer-types": "^0.0.61",
-    "@atrilabs/scripts": "^0.0.61",
-    "eslint-plugin-atrilabs": "^0.0.61",
+    "@atrilabs/core": "^0.0.62",
+    "@atrilabs/design-system": "^0.0.62",
+    "@atrilabs/layer-types": "^0.0.62",
+    "@atrilabs/scripts": "^0.0.62",
+    "eslint-plugin-atrilabs": "^0.0.62",
     "socket.io-client": "^4.5.1",
     "typescript": "4.6.3"
   },
