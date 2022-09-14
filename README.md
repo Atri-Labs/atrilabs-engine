@@ -1,5 +1,7 @@
 # Atri Framework
 
+[![Good first issues](https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue)](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+
 ![banner](readme-assets/github_new.png)
 
 Atri framework is a full-stack web development framework to build Progressive Web Apps.
