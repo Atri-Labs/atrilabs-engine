@@ -43,6 +43,9 @@ lerna bootstrap
 
 # build all packages
 lerna run build
+
+# run again (because of known issue with lerna)
+lerna run build
 ```
 
 4. Start the development server
