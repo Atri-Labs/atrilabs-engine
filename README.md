@@ -36,7 +36,7 @@ atri start
 
 You can follow our [video tutorial](https://www.youtube.com/watch?v=cNCUVF9o8oY) or our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
 
-[![Watch the video](https://img.youtube.com/vi/nTQUwghvy5Q/default.jpg)](https://youtu.be/nTQUwghvy5Q)
+[![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
 
 ## Resources
 📚 Read the [Docs](https://docs.atrilabs.com/)
