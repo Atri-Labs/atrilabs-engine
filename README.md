@@ -1,6 +1,7 @@
 # Atri Framework
 
 ![banner](readme-assets/github.png)
+![banner](readme-assets/github_new.png)
 
 Atri framework is a full-stack web development framework to build Progressive Web Apps.
 
