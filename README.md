@@ -10,14 +10,16 @@ Atri framework is a full-stack web development framework to build Progressive We
 
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
 
+
 ![teaser-image](readme-assets/teaser-image.png)
+
 
 ### Websites built using Atri framework
 
 - [Personal blog](https://atri-apps.github.io/personal_blog/)
 - [Data app](https://atri-apps.github.io/review_tabular_data/)
 
-Find more example websites and apps [here](https://github.com/orgs/Atri-Apps/repositories). 
+Find more example websites and apps at [Atri-Apps](https://github.com/orgs/Atri-Apps/repositories). 
 
 ## Getting Started
 
@@ -27,14 +29,12 @@ pipenv shell
 atri start
 ```
 
-Congratulations! Atri framework is now ready to use. 
 - The visual editor is available at http://localhost:4002. 
 - Once you click `Build and Run` in your visual editor, your website will start running at http://localhost:4005/. 
 - All the files for your website are being auto-generated in your local directory.
+- You can write the backend of your website at `controllers/routes/<page_name>/main.py`.
 
-You can follow our [video tutorial](https://www.youtube.com/watch?v=cNCUVF9o8oY) or follow our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
-
-![Video tutorial](https://www.youtube.com/watch?v=cNCUVF9o8oY)
+You can follow our [video tutorial](https://www.youtube.com/watch?v=cNCUVF9o8oY) or our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
 
 ## Resources
 📚 Read the [Docs](https://docs.atrilabs.com/)
