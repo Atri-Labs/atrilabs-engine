@@ -45,39 +45,57 @@ lerna bootstrap
 lerna run build
 ```
 
-3. If you cloned a while ago, get the latest changes from upstream:
+4. Start the development server
+
+   Run the following in a shell:
+
+```
+cd $PROJECT_ROOT/packages/webapp-builder
+yarn run server
+```
+
+Open another shell and run the following:
+
+```
+cd $PROJECT_ROOT/packages/webapp-builder
+yarn run start
+```
+
+This will launch the visual editor in `http://localhost:4000`.
+
+5. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
    git checkout main
    git pull upstream main
    ```
 
-4. Create a new topic branch (off the main project development branch) to contain your feature, change or fix:
+6. Create a new topic branch (off the main project development branch) to contain your feature, change or fix:
 
    ```bash
    git checkout -b <topic-branch-name>
    ```
 
-5. Commit your changes in logical chunks. Please adhere to these [git commit
+7. Commit your changes in logical chunks. Please adhere to these [git commit
    message guidelines](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
    or your code is unlikely be merged into the main project. Use Git's
    [interactive rebase](https://help.github.com/articles/about-git-rebase/)
    feature to tidy up your commits before making them public.
 
-6. Locally merge (or rebase) the upstream development branch into your topic branch:
+8. Locally merge (or rebase) the upstream development branch into your topic branch:
 
    ```bash
    git pull [--rebase] upstream main
    ```
 
-7. Push your topic branch up to your fork:
+9. Push your topic branch up to your fork:
 
    ```bash
    git push origin <topic-branch-name>
    ```
 
-8. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
-   with a clear title and description.
+10. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
+    with a clear title and description.
 
 <a name="release"></a>
 
