@@ -36,8 +36,7 @@ cd $PROJECT_ROOT/packages/core && yarn run build
 cd $PROJECT_ROOT/packages/scripts && yarn run build
 
 # delete the node_modules folder in project root directory
-cd $PROJECT_ROOT
-rm -rf node_modules
+rm -rf $PROJECT_ROOT/node_modules
 
 # bootstrap the project
 lerna bootstrap
