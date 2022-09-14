@@ -101,36 +101,66 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
   );
 };
 
-export const Carousel = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: { items: []; startTile: number; imageItems: [] };
-    onClick: (event: { pageX: number; pageY: number }) => void;
-  }
->((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
-  return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
-      <CarouselWrapper startTile={props.custom.startTile}>
-        {props.custom.items.map((item, i) => (
-          <CarouselItem
-            width="100%"
-            key={i}
-            backgroundImage={props.custom.imageItems[i]}
-          >
-            {item ? item : "Sample Text"}
-          </CarouselItem>
-        ))}
-      </CarouselWrapper>
-    </div>
-  );
-});
+
+type CarouseProps = {
+  // time in milliseconds
+  intervalTime?: number;
+  // position of text. The format of position will be top bottom.
+  // Ex. - 50% 50% for center. 0% 50%.
+  // Hint - You might find it helpful to position the text absolute
+  // and apply appropriate transformation.
+  textPosition?: string;
+  items: {
+    // CSS background image
+    backgroundImage?: string;
+    // CSS background color
+    backgroundColor?: string;
+    // CSS background repeat
+    backgroundRepeat?: string;
+    // text to display
+    text: string;
+    // same as textPosition. If supplied for an item, it will override
+    // the outer textPosition property.
+    textPosition?: string;
+  }[];
+ };
+
+
+
+// export const Carousel = forwardRef<
+//   HTMLDivElement,
+//   {
+//     styles: React.CSSProperties;
+//     custom: { items: []; startTile: number; imageItems: [] };
+//     onClick: (event: { pageX: number; pageY: number }) => void;
+//   }
+// >((props, ref) => {
+//   const onClick = useCallback(
+//     (e: React.MouseEvent) => {
+//       props.onClick({ pageX: e.pageX, pageY: e.pageY });
+//     },
+//     [props]
+//   );
+//   return (
+//     <div ref={ref} style={props.styles} onClick={onClick}>
+//       <CarouselWrapper startTile={props.custom.startTile}>
+//         {props.custom.items.map((item, i) => (
+//           <CarouselItem
+//             width="100%"
+//             key={i}
+//             backgroundImage={props.custom.imageItems[i]}
+//           >
+//             {item ? item : "Sample Text"}
+//           </CarouselItem>
+//         ))}
+//       </CarouselWrapper>
+//     </div>
+//   );
+// });
+
+export const Carousel: React.FC<CarouseProps> = (props) => {
+ return <div></div>;
+};
 
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
