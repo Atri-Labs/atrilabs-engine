@@ -46,11 +46,11 @@ const breakpointProps = {
 };
 
 function getViewportDimension() {
-  const width = Math.max(
+  const width = Math.min(
     document.documentElement.clientWidth || 0,
     window.innerWidth || 0
   );
-  const height = Math.max(
+  const height = Math.min(
     document.documentElement.clientHeight || 0,
     window.innerHeight || 0
   );
