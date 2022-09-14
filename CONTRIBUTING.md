@@ -22,18 +22,21 @@ Adhereing to the following process is the best way to get your work included in 
    ```
 
 2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplied once we migrate from `lerna` to `turborepo` in future.
+
 ```
 # install node_modules
 yarn install
 
+# store project root directory to make installation easy
+export PROJECT_ROOT=$(pwd)
+
 # build some pre-requisite package
-cd packages/forest && yarn run build
-cd packages/core && yarn run build
-cd packages/scripts && yarn run build
-cd packages/design-system && yarn run build
+cd $PROJECT_ROOT/packages/forest && yarn run build
+cd $PROJECT_ROOT/packages/core && yarn run build
+cd $PROJECT_ROOT/packages/scripts && yarn run build
 
 # delete the node_modules folder in project root directory
-cd <project_root>
+cd $PROJECT_ROOT
 rm -rf node_modules
 
 # bootstrap the project
