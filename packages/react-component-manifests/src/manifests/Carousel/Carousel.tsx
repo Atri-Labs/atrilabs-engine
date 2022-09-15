@@ -127,36 +127,6 @@ type CarouseProps = {
 
 
 
-// export const Carousel = forwardRef<
-//   HTMLDivElement,
-//   {
-//     styles: React.CSSProperties;
-//     custom: { items: []; startTile: number; imageItems: [] };
-//     onClick: (event: { pageX: number; pageY: number }) => void;
-//   }
-// >((props, ref) => {
-//   const onClick = useCallback(
-//     (e: React.MouseEvent) => {
-//       props.onClick({ pageX: e.pageX, pageY: e.pageY });
-//     },
-//     [props]
-//   );
-//   return (
-//     <div ref={ref} style={props.styles} onClick={onClick}>
-//       <CarouselWrapper startTile={props.custom.startTile}>
-//         {props.custom.items.map((item, i) => (
-//           <CarouselItem
-//             width="100%"
-//             key={i}
-//             backgroundImage={props.custom.imageItems[i]}
-//           >
-//             {item ? item : "Sample Text"}
-//           </CarouselItem>
-//         ))}
-//       </CarouselWrapper>
-//     </div>
-//   );
-// });
 
 export const Carousel: React.FC<CarouseProps> = (props) => {
  return <div></div>;
