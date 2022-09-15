@@ -9,6 +9,10 @@ module.exports = {
       modulePath: "./src/manifests/Button/Button.tsx",
       exportedVarName: "Button",
     },
+    Breadcrumb: {
+      modulePath: "./src/manifests/Breadcrumb/Breadcrumb.tsx",
+      exportedVarName: "Breadcrumb",
+    },
     Flex: {
       modulePath: "./src/manifests/Flex/Flex.tsx",
       exportedVarName: "Flex",
