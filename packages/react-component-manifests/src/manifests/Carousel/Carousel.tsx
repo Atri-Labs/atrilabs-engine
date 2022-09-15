@@ -127,7 +127,6 @@ type CarouseProps = {
 
 
 
-
 export const Carousel: React.FC<CarouseProps> = (props) => {
  return <div></div>;
 };
