@@ -2,6 +2,7 @@ import type { ManifestRegistry } from "@atrilabs/core";
 import { manifestRegistryController } from "@atrilabs/core";
 // default import all manifest files here
 import ButtonManifests from "@atrilabs/react-component-manifests/src/manifests/Button/Button";
+import BreadcrumbManifests from "@atrilabs/react-component-manifests/src/manifests/BreadCrumb/BreadCrumb";
 import AccordianManifests from "@atrilabs/react-component-manifests/src/manifests/Accordion/Accordion";
 import CarouselManifests from "@atrilabs/react-component-manifests/src/manifests/Carousel/Carousel";
 import CountdownManifests from "@atrilabs/react-component-manifests/src/manifests/Countdown/Countdown";
@@ -76,6 +77,7 @@ function registerComponents(
 // add default import to this array
 const defaultImports = [
   ButtonManifests,
+  BreadcrumbManifests,
   AccordianManifests,
   CarouselManifests,
   CountdownManifests,
