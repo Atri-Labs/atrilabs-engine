@@ -109,5 +109,9 @@ module.exports = {
       modulePath: "./src/manifests/Table/Table.tsx",
       exportedVarName: "DataTable",
     },
+    FunnelChart: {
+      modulePath: "./src/manifests/charts/FunnelChart/FunnelChart.tsx",
+      exportedVarName: "FunnelChart",
+    },
   },
 };
