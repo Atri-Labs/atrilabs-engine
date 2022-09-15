@@ -8,7 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
-
+import {Link as RouterLink} from "react-router-dom";
 type BreadCrumbProps = {
     divider: string;
     items: {
@@ -21,7 +21,13 @@ type BreadCrumbProps = {
   };
   
 export  const BreadCrumb: React.FC<BreadCrumbProps> = (props) => {
-    return <div></div>;
+    return (
+    <div className="bread-crumb-container">
+       {props.items.map((item,index)=>{
+        return(<RouterLink to={item.link}>{item.name}</RouterLink>)
+       })}
+    </div>
+    );
 };
 
 const cssTreeOptions: CSSTreeOptions = {

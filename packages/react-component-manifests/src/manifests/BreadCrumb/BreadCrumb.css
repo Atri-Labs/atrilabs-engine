@@ -1,0 +1,8 @@
+.bread-crumb-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.bread-crumb-container a{
+    margin: 0 2%;
+}
