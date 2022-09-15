@@ -9,7 +9,10 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
 import {Link as RouterLink} from "react-router-dom";
-type BreadCrumbProps = {
+
+export type BreadCrumbProps = {
+  styles: React.CSSProperties;
+  custom: {
     divider: string;
     items: {
       // this will be visible
@@ -17,13 +20,31 @@ type BreadCrumbProps = {
       // link
       link: string;
     }[];
-    onClick: (item: { name: string; link: string }) => {};
   };
+  onClick: (item: { name: string; link: string }) => {};
+};
   
-export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement>(
-  (props,ref) => {    
+export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement,{
+    styes:React.CSSProperties;
+    custom:{
+      divider: string;
+      items: {          
+          name: string;          
+          link: string;
+        }[];
+      };      
+    onClick: (item: { name: string; link: string }) => {};
+}>(
+  (props,ref) => {
+    console.log(props,"props")    
     return (
     <div ref={ref} className="bread-crumb-container">       
+    {props.custom.items.map((item,index)=>{
+      return (<div>{item?.name}</div>)
+    })}   
+    <div>
+      {props.custom.divider}
+      </div>      
     </div>);
   }
 );
@@ -47,7 +68,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    divider: "text",
+    items:"array"    
   },
 };
 
@@ -70,7 +92,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Home",
+          divider: ">",
+          items:[]
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
