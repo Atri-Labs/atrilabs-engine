@@ -20,15 +20,17 @@ type BreadCrumbProps = {
     onClick: (item: { name: string; link: string }) => {};
   };
   
-export  const BreadCrumb: React.FC<BreadCrumbProps> = (props) => {
+export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement>(
+  (props,ref) => {    
     return (
-    <div className="bread-crumb-container">
-       {props.items.map((item,index)=>{
-        return(<RouterLink to={item.link}>{item.name}</RouterLink>)
-       })}
-    </div>
-    );
-};
+    <div ref={ref} className="bread-crumb-container">       
+    </div>);
+  }
+);
+
+// {props.items.map((item,index)=>{
+//   return(<RouterLink  to={item.link}>{item.name}</RouterLink>)
+//  })}         
 
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
@@ -60,22 +62,7 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
+          color: "#000"          
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -83,7 +70,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          text: "Home",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
