@@ -1,40 +1,6 @@
-# Contribute to Atri framework
+<a name="pull-requests"></a>
 
-Thanks for your interest in contributing to the Atri framework. 🎉 
-
-This page will give you a quick overview of how to get involved.
-
-## Table of contents
-
-1. [Issues and bug reports](#issues-and-bug-reports)
-2. [Contributing to the code base](#contributing-to-the-code-base)
-
-## Issues and bug reports
-
-First, [do a quick search](https://github.com/Atri-Labs/atrilabs-engine/issues)
-to see if the issue has already been reported. If so, it's often better to just
-leave a comment on an existing issue, rather than creating a new one. Old issues
-also often include helpful tips and solutions to common problems. 
-
-If you're looking for help with your code, consider posting a question on the
-[GitHub Discussions board](https://github.com/Atri-Labs/atrilabs-engine/discussions).
-
-### How to submit an issue?
-
-When submitting an issue, please include the following:
-
-- descriptive title 
-- your **environment** (operating system, Python version, Atri version)
-- issue label (refer [labels](https://github.com/Atri-Labs/atrilabs-engine/labels) for an overview of how we tag our issues and pull requests.)
-- Video or GIF to further explain the issue (optional) 
-
-## Contributing to the code base
-
-Please review the [existing issues]((https://github.com/Atri-Labs/atrilabs-engine/issues)), pick the one that you are interested in working on and ask the admins to assign that issue to you. 
-
-If you are a newcomer, you can consider getting started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
-
-### How to create a Pull Request?
+## Pull Requests
 
 A pull request should remain focused in scope and avoid containing unrelated commits. You will need `npm >= 8.11.0 `, `node >= v16.16.0` and `yarn >= 1.22.18`.
 
@@ -75,9 +41,12 @@ Adhering to the following process is the best way to get your work included in t
    # bootstrap the project
    lerna bootstrap
 
-   # build all packages
-   lerna run build
-   ```
+# build all packages
+lerna run build
+
+# run again (because of known issue with lerna)
+lerna run build
+```
 
 3. Start the development server
 
