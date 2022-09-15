@@ -42,6 +42,14 @@ You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9
 
 [![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
 
+## How to contribute?
+
+Thanks for your interest in contributing to the Atri framework. 🎉 
+
+Please refer to our [contributing guidelines](CONTRIBUTING.md). You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable to newcomers. 
+
+Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md). 
+
 ## Resources
 📚 Read the [Docs](https://docs.atrilabs.com/)
 
