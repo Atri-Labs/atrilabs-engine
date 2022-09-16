@@ -46,6 +46,7 @@
     "jest": "^28.1.0"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@atrilabs/core": "^0.0.62",
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
@@ -62,7 +63,9 @@
     "file-loader": "^6.2.0",
     "find-package-json": "^1.2.0",
     "fs-extra": "^10.1.0",
+    "g": "^2.0.1",
     "html-webpack-plugin": "^5.5.0",
+    "lerna": "^5.5.1",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.0",
     "postcss-flexbugs-fixes": "^5.0.2",

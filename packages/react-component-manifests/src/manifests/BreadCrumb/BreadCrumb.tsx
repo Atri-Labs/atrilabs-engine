@@ -39,7 +39,7 @@ export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement,{
   (props,ref) => {
     console.log(props,"props")    
     return (
-    <div ref={ref} aria-label="Breadcrumb" class="breadcrumb">       
+    <div ref={ref} aria-label="Breadcrumb" className="breadcrumb">       
         <ul>
           {props.custom.items.map((item,index)=>{
             return (<li><a href="#">{item?.name?item?.name:"test"}</a></li>)

@@ -32,6 +32,7 @@ export const Input = forwardRef<
     },
     [props]
   );
+  console.log(props,"input ")
   return (
     <input
       ref={ref}
