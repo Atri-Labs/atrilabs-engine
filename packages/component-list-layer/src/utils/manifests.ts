@@ -21,6 +21,7 @@ import BarChartManifests from "@atrilabs/react-component-manifests/src/manifests
 import AreaChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/AreaChart/AreaChart";
 import ScatterChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/ScatterChart/ScatterChart";
 import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/PieChart/PieChart";
+import RadialBarManifests from "@atrilabs/react-component-manifests/src/manifests/charts/RadialBarChart/RadialBarChart";
 import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
 import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
@@ -95,6 +96,7 @@ const defaultImports = [
   AreaChartManifests,
   ScatterChartManifests,
   PieChartManifests,
+  RadialBarManifests,
   HistogramChartManifests,
   CandleStickManifests,
   CheckboxManifests,
