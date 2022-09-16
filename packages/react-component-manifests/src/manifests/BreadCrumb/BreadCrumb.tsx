@@ -49,9 +49,32 @@ export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement,{
   }
 );
 
-// {props.items.map((item,index)=>{
-//   return(<RouterLink  to={item.link}>{item.name}</RouterLink>)
-//  })}         
+export const DevBreadCrumb: typeof BreadCrumb = forwardRef((props, ref) => {         
+  const custom = React.useMemo(() => {
+    const items = [
+      {
+        name: "Home",
+        link: 'link',        
+      },
+      {
+        name: "Application Center",
+        link: 'link',
+      },
+      {
+        name: "Application List",
+        link: 'link',
+      },
+      {
+        name: "An Application",
+        link: 'link',
+      },      
+      
+    ];    
+    return { ...props.custom, items: items };
+  }, [props.custom]);
+
+  return <BreadCrumb {...props} ref={ref} custom={custom} />;
+});
 
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
@@ -76,7 +99,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "BreadCrumb", category: "Basics" },
   render: {
-    comp: BreadCrumb,
+    comp: DevBreadCrumb,
   },
   dev: {
     decorators: [],
