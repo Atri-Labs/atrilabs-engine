@@ -55,7 +55,7 @@ Adhering to the following process is the best way to get your work included in t
    git remote add upstream https://github.com/Atri-Labs/atrilabs-engine.git
    ```
 
-2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplied once we migrate from `lerna` to `turborepo` in future.
+2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon.
 
    ```
    # install node_modules
