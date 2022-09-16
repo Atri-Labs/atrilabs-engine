@@ -1,18 +1,11 @@
-.breadcrumb {
-    padding: 0 .5rem;
-}
-
-.breadcrumb ul {
+.bread-crumb-container{
     display: flex;
-    flex-wrap: wrap;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    justify-content: center;
+    align-items: center;
 }
-    
-.breadcrumb li:not(:last-child)::after {
-    display: inline-block;
-    margin: 0 .25rem;
-    content: "→";
+.bread-crumb-container a{
+    margin: 0 2%;
 }
-    
+.test{
+    color:#000
+}

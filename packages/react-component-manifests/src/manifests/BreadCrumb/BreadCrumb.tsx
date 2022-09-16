@@ -7,8 +7,8 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+
 import {Link as RouterLink} from "react-router-dom";
-import "./BreadCrumb.css";
 
 export type BreadCrumbProps = {
   styles: React.CSSProperties;
@@ -38,13 +38,13 @@ export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement,{
   (props,ref) => {
     console.log(props,"props")    
     return (
-      
-    <div ref={ref} aria-label="Breadcrumb" className="breadcrumb">       
-        <ul>
-              {props.custom.items.map((item,index)=>{
-                return (<li><a href="#">{item?.name?item?.name:"test"}</a></li>)
-              })}
-        </ul>          
+    <div ref={ref} className="bread-crumb-container">       
+    {props.custom.items.map((item,index)=>{
+      return (<div>{item?.name}</div>)
+    })}   
+    <div>
+      {props.custom.divider}
+      </div>      
     </div>);
   }
 );
