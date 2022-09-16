@@ -13,7 +13,7 @@ export const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { checked: boolean };
+    custom: { name: string; label: string;checked: boolean ; };
     onChange: (checked: boolean) => void;
   }
 >((props, ref) => {
@@ -24,13 +24,17 @@ export const Checkbox = forwardRef<
     [props]
   );
   return (
+    <div style={props.styles}  ref={ref}>
+    
     <input
-      ref={ref}
-      style={props.styles}
       onChange={onChange}
+      name={props.custom.name}
+      value={props.custom.label}
       type={"checkbox"}
       checked={props.custom.checked}
-    />
+      />
+    {props.custom.label ? <label >{props.custom.label}</label> : null}
+    </div>
   );
 });
 
@@ -49,6 +53,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    name: "text",
+    label: "text",
     checked: "boolean",
   },
 };
@@ -63,13 +69,19 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          cursor: "pointer",
+          display: "flex",
+          columnGap:"0.5rem",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          name: "",
+          label: "Checkbox",
           checked: false,
         },
         treeOptions: customTreeOptions,
@@ -87,7 +99,7 @@ const iconManifest = {
   panel: { comp: CommonIcon, props: { name: "Checkbox", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Checkbox", containerStyle: { padding: "1rem", svg: Icon } },
+    props: { name: "Checkbox", containerStyle: { padding: "1rem"}, svg: Icon  },
   },
   renderSchema: compManifest,
 };
