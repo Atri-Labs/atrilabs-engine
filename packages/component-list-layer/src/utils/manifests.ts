@@ -23,6 +23,7 @@ import ScatterChartManifests from "@atrilabs/react-component-manifests/src/manif
 import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/PieChart/PieChart";
 import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
 import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
+import FunnelChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/FunnelChart/FunnelChart";
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
@@ -101,6 +102,7 @@ const defaultImports = [
   DropdownManifests,
   TableManifests,
   DivManifests,
+  FunnelChartManifests
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
