@@ -41,12 +41,12 @@ Adhering to the following process is the best way to get your work included in t
    # bootstrap the project
    lerna bootstrap
 
-# build all packages
-lerna run build
+   # build all packages
+   lerna run build
 
-# run again (because of known issue with lerna)
-lerna run build
-```
+   # run again (because of known issue with lerna)
+   lerna run build
+   ```
 
 3. Start the development server
 
