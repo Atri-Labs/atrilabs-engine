@@ -1,6 +1,6 @@
 # Contribute to Atri framework
 
-Thanks for your interest in contributing to the Atri framework. 🎉 
+Thanks for your interest in contributing to the Atri framework. 🎉
 
 This page will give you a quick overview of how to get involved.
 
@@ -14,7 +14,7 @@ This page will give you a quick overview of how to get involved.
 First, [do a quick search](https://github.com/Atri-Labs/atrilabs-engine/issues)
 to see if the issue has already been reported. If so, it's often better to just
 leave a comment on an existing issue, rather than creating a new one. Old issues
-also often include helpful tips and solutions to common problems. 
+also often include helpful tips and solutions to common problems.
 
 If you're looking for help with your code, consider posting a question on the
 [GitHub Discussions board](https://github.com/Atri-Labs/atrilabs-engine/discussions).
@@ -23,14 +23,14 @@ If you're looking for help with your code, consider posting a question on the
 
 When submitting an issue, please include the following:
 
-- descriptive title 
+- descriptive title
 - your **environment** (operating system, Python version, Atri version)
 - issue label (refer [labels](https://github.com/Atri-Labs/atrilabs-engine/labels) for an overview of how we tag our issues and pull requests.)
-- Video or GIF to further explain the issue (optional) 
+- Video or GIF to further explain the issue (optional)
 
 ## Contributing to the code base
 
-Please review the [existing issues]((https://github.com/Atri-Labs/atrilabs-engine/issues)), pick the one that you are interested in working on and ask the admins to assign that issue to you. 
+Please review the [existing issues](<(https://github.com/Atri-Labs/atrilabs-engine/issues)>), pick the one that you are interested in working on and ask the admins to assign that issue to you.
 
 If you are a newcomer, you can consider getting started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
@@ -55,7 +55,7 @@ Adhering to the following process is the best way to get your work included in t
    git remote add upstream https://github.com/Atri-Labs/atrilabs-engine.git
    ```
 
-2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon.
+2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon. You might have to install lerna by running `npm i -g lerna` in a shell. Similary, you might have to install yarn by running `npm i -g yarn` in a shell.
 
    ```
    # install node_modules
@@ -132,7 +132,7 @@ Adhering to the following process is the best way to get your work included in t
    ```
 
 9. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
-    with a clear title and description.
+   with a clear title and description.
 
 ### Cutting a release
 
