@@ -18,6 +18,7 @@ import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 import MenuManifests from "@atrilabs/react-component-manifests/src/manifests/Menu/Menu";
 import LineChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/LineChart/LineChart";
 import BarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/BarChart/BarChart";
+import RadialBarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/RadialBarChart/RadialBarChart";
 import AreaChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/AreaChart/AreaChart";
 import ScatterChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/ScatterChart/ScatterChart";
 import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/PieChart/PieChart";
@@ -92,6 +93,7 @@ const defaultImports = [
   MenuManifests,
   LineChartManifests,
   BarChartManifests,
+  RadialBarChartManifests,
   AreaChartManifests,
   ScatterChartManifests,
   PieChartManifests,
