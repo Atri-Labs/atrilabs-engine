@@ -9,10 +9,24 @@
     margin: 0;
     padding: 0;
 }
-    
-.breadcrumb li:not(:last-child)::after {
-    display: inline-block;
-    margin: 0 .25rem;
-    content: ">";
+
+.breadcrumb ul li{
+    color: rgb(179, 179, 179);   
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
 }
-    
+
+.breadcrumb ul .crumb-seprator{
+    margin:0 8px;  
+}
+
+.breadcrumb ul .crumb-link a {
+    text-decoration: none;
+    color: inherit;    
+}
+
+.breadcrumb ul li:last-child {
+    color:#000;
+}

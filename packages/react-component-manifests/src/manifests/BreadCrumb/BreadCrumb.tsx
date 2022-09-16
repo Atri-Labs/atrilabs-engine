@@ -42,7 +42,11 @@ export const BreadCrumb: React.FC<BreadCrumbProps> =forwardRef<HTMLDivElement,{
     <div ref={ref} aria-label="Breadcrumb" className="breadcrumb">       
         <ul>
           {props.custom.items.map((item,index)=>{
-            return (<li><a href="#">{item?.name?item?.name:"test"}</a></li>)
+            return (
+            <>
+              {index!=0?<li  className="crumb-seprator">{props.custom.divider}</li>:""}
+              <li className="crumb-link"><a href={item?.link?item?.link:"/"}>{item?.name?item?.name:"test"}</a></li>
+            </>)
           })} 
         </ul>      
     </div>);
@@ -106,9 +110,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          color: "#000"          
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
