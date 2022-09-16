@@ -7,7 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { ReactComponent as Icon } from "./icon.svg";
+
 import {Link as RouterLink} from "react-router-dom";
 
 export type BreadCrumbProps = {
@@ -100,19 +100,20 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onPressEnter: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
+      
     },
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "BreadCrumb", svg: Icon } },
+  panel: { comp: CommonIcon, props: { name: "BreadCrumb" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "BreadCrumb", containerStyle: { padding: "1rem", svg: Icon } },
+    props: { name: "BreadCrumb", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
