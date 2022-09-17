@@ -24,39 +24,45 @@ export const RadialBarChart = forwardRef<
         custom: {                        
             data: {
                 [key: string]: number | string | number[];
-            }[];
-            // options for each bar
-            toolTip?: { show?: boolean };
-            legend?: { show?: boolean };            
+            }[];          
+            width:string;
+            height:string;
+            startAngle: number;
+            endAngle: number;
+            minAngle:number;
+            toolTip: boolean;
+            legend: boolean;            
         };
     }
 >((props, ref) => {
     
 
     
-    
+    console.log(props,"props")
 
     return (
         <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
             <RadialBarChartRechart
                 width={
-                    typeof props.styles.width === "string"
-                        ? parseInt(props.styles.width)
-                        : props.styles.width
+                    typeof props.custom.width === "string"
+                        ? parseInt(props.custom.width)
+                        : props.custom.width
                 }
                 height={
-                    typeof props.styles.height === "string"
-                        ? parseInt(props.styles.height)
-                        : props.styles.height
+                    typeof props.custom.height === "string"
+                        ? parseInt(props.custom.height)
+                        : props.custom.height
                 }
-                innerRadius={props.styles.innerRadius}
-                outerRadius={props.styles.outerRadius}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                innerRadius={"10%"}
+                outerRadius={"80%"}
+                margin={{ top: 5, right: 0, left: 100, bottom: 50 }}
                 data={props.custom.data}
+                startAngle={props.custom.startAngle} 
+                endAngle={props.custom.endAngle}
             >
-                <RadialBar minAngle={15} label={{ fill: '#666', position: 'insideStart' }} background clockWise={true} dataKey='uv' />
-                <Legend iconSize={10} width={120} height={140} layout='vertical' verticalAlign='middle' align="right" />
-                <Tooltip />
+                <RadialBar minAngle={props.custom.minAngle} label={{ fill: '#666', position: 'left' }} background clockWise={true} dataKey='uv' />
+                {props.custom.legend?<Legend  />:<></>}
+                {props.custom.toolTip?<Tooltip />:<></>}
             </RadialBarChartRechart>
         </div>
     );
@@ -130,10 +136,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
     dataTypes: {        
-        data: "array",  
+        data: "array",          
+        startAngle: "number",
+        endAngle: "number",
+        minAngle:"number",
         toolTip:"boolean", 
         legend:"boolean",           
-        stacked: "boolean",
+        
     },
 };
 
@@ -151,10 +160,6 @@ const compManifest: ReactComponentManifestSchema = {
                 initialValue: {
                     width: "400px",
                     height: "400px",
-                    innerRadius: "10%",
-                    outerRadius: "80%",
-                    startAngle: "180",
-                    endAngle: "0"
                 },
                 treeOptions: cssTreeOptions,
                 canvasOptions: { groupByBreakpoint: true },
@@ -162,9 +167,14 @@ const compManifest: ReactComponentManifestSchema = {
             custom: {
                 treeId: CustomTreeId,
                 initialValue: {
-                    data: [],                    
-                    toolTip: { show: true },
-                    legend: { show: true },
+                    data: [],  
+                    width: "350px",
+                    height: "350px",   
+                    minAngle:15,                   
+                    startAngle: 180,
+                    endAngle: 0,
+                    toolTip: true,
+                    legend:  true,
                 },
                 treeOptions: customTreeOptions,
                 canvasOptions: { groupByBreakpoint: false },
