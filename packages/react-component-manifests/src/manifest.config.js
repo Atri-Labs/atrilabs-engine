@@ -109,5 +109,9 @@ module.exports = {
       modulePath: "./src/manifests/Table/Table.tsx",
       exportedVarName: "DataTable",
     },
+    Alert: {
+      modulePath: "./src/manifests/Alert/Alert.tsx",
+      exportedVarName: "Alert",
+    },
   },
 };
