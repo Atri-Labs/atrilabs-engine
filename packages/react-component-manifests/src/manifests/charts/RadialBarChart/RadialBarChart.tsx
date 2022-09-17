@@ -55,13 +55,13 @@ export const RadialBarChart = forwardRef<
                 }
                 innerRadius={"10%"}
                 outerRadius={"80%"}
-                margin={{ top: 5, right: 0, left: 100, bottom: 50 }}
+                margin={{ top: 5, right: 0, left: 0, bottom: 80 }}
                 data={props.custom.data}
                 startAngle={props.custom.startAngle} 
                 endAngle={props.custom.endAngle}
             >
-                <RadialBar minAngle={props.custom.minAngle} label={{ fill: '#666', position: 'left' }} background clockWise={true} dataKey='uv' />
-                {props.custom.legend?<Legend  />:<></>}
+                <RadialBar minAngle={props.custom.minAngle} label={{ fill: '#666', position:'insideStart' }} background clockWise={true} dataKey='uv' />
+                {props.custom.legend?<Legend   width={120} height={140} layout='vertical' verticalAlign='middle' align="left"/>:<></>}
                 {props.custom.toolTip?<Tooltip />:<></>}
             </RadialBarChartRechart>
         </div>
@@ -168,8 +168,8 @@ const compManifest: ReactComponentManifestSchema = {
                 treeId: CustomTreeId,
                 initialValue: {
                     data: [],  
-                    width: "350px",
-                    height: "350px",   
+                    width: "400px",
+                    height: "400px",   
                     minAngle:15,                   
                     startAngle: 180,
                     endAngle: 0,
