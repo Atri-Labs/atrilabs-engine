@@ -54,11 +54,31 @@ export default function () {
       window.focus();
     }
   }, [status]);
+
+  const publishBtn = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      const key = e.key;
+
+      // detecting ctrl and cmd
+      const ctrl = e.ctrlKey ? e.ctrlKey : key === "Control" ? true : false;
+      //*****************************  // don't have a mac to test this line of code *******************************************//
+      const cmd = e.keyCode === 120 ? true : false;
+
+      // If key pressed is b and if ctrl/cmd is true.
+      if (key === "b" && (ctrl || cmd)) {
+        console.log("publish started");
+        publishBtn.current?.click();
+      }
+    });
+  });
+
   return (
     <>
       <Menu name="PublishMenu" order={1}>
         <div style={styles.outerDiv}>
           <span
+            ref={publishBtn}
             onClick={() => {
               setShowPopup(!showPopup);
               callRunTaskApi();
