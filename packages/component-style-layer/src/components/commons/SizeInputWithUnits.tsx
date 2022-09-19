@@ -67,14 +67,24 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            unit === "auto" ? "auto" : parseValueUnit(e.target.value, unit),
+    if (!e.target.value) {
+      props.patchCb({
+        property: {
+          styles: {
+            [styleItem]: "" + unit,
+          },
         },
-      },
-    });
+      });
+    } else {
+      props.patchCb({
+        property: {
+          styles: {
+            [styleItem]:
+              unit === "auto" ? "auto" : parseValueUnit(e.target.value, unit),
+          },
+        },
+      });
+    }
   };
 
   const handleUnitChange = (
@@ -103,19 +113,6 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
 
   return (
     <div style={styles.container}>
-      {/* <input
-        type="text"
-        value={
-          props.styles[props.styleItem] !== "auto"
-            ? getNumericValue(String(props.styles[props.styleItem]))
-            : props.styles[props.styleItem]
-        }
-        onChange={(e) => handleChange(e, props.styleItem)}
-        style={styles.inputBox}
-        placeholder={props.defaultValue}
-        disabled={unit === "auto" ? true : false}
-        pattern="^[0-9]+$"
-      /> */}
       <ControlledInput
         type="text"
         value={
