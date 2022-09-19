@@ -70,6 +70,7 @@ export const pythonStubGenerator: PythonStubGeneratorFunction = (
                     manifest.dev.attachProps[propName]!.initialValue;
                   stub.vars[alias] = {
                     type: "",
+                    key: "",
                     value: value,
                     gettable: true,
                     updateable: true,
@@ -83,6 +84,7 @@ export const pythonStubGenerator: PythonStubGeneratorFunction = (
                       const value = require(found.modulePath)["default"];
                       stub.vars[alias] = {
                         type: "",
+                        key: "",
                         value: value,
                         gettable: true,
                         updateable: true,
@@ -131,6 +133,7 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
             });
             stub.vars[alias] = {
               type: "",
+              key: key,
               value: keyPropMap[key],
               ioProps: keyIoPropMap[key],
               callbacks: callbackInfo,

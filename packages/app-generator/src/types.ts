@@ -107,6 +107,8 @@ export type PythonStubGeneratorOutput = {
       type: any;
       // initial value
       value: any;
+      // key can be class name
+      key: string;
       // ioProps
       ioProps?: {
         [propName: string]: {
