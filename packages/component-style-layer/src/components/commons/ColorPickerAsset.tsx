@@ -39,17 +39,6 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
     "hex",
     (props.styles[props.styleItem] as string | undefined) || ""
   );
-  function rgb2hex({ r, g, b, a }: Color["rgb"]): Color["hex"] {
-    const hex = [r, g, b, a]
-      .map((v, i) =>
-        v !== undefined
-          ? (i < 3 ? v : Math.round(v * 255)).toString(16).padStart(2, "0")
-          : ""
-      )
-      .join("");
-
-    return `#${hex}`;
-  }
 
   useEffect(() => {
     setColor(
@@ -72,6 +61,7 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
       },
     });
   };
+
   return (
     <div
       style={{
@@ -106,7 +96,7 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
         width={250}
         height={200}
         color={color}
-        onChange={setColor}
+        onChange={(e) => handleChange(e.hex, props.styleItem)}
         onChangeComplete={(e) => handleChange(e.hex, props.styleItem)}
         hideHSV
         dark
