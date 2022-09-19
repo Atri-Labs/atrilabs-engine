@@ -43,19 +43,27 @@ export function createPythonAppTemplateManager(
     variableMap[pageName] = { output };
   }
   function flushAtriPyFile(page: { name: string; route: string }) {
+    // to prevent duplicate entry in classTasks
+    const classNames: { [className: string]: boolean } = {};
+
     const classTasks: {
       className: string;
       callbackNames: string[];
       attrs: { name: string; type: string; isIoPropInstance: boolean }[];
       isIoPropClass: boolean;
     }[] = [];
+
     const varClassMap: { [varName: string]: string } = {};
+
     function addClassTask(
       className: string,
       value: any,
       callbackNames: string[],
       ioProps?: PythonStubGeneratorOutput["vars"]["0"]["ioProps"]
     ) {
+      if (className in classNames) {
+        return;
+      }
       const attrs: { name: string; type: string; isIoPropInstance: boolean }[] =
         [];
       const attrNames = Object.keys(value);
@@ -117,6 +125,9 @@ export function createPythonAppTemplateManager(
         attrNames.forEach((attrName) => {
           // add attribute to parent class
           const childClassName = `${className}${attrName}Class`;
+          if (childClassName in classNames) {
+            return;
+          }
           attrs.push({
             name: attrName,
             type: childClassName,
@@ -142,6 +153,7 @@ export function createPythonAppTemplateManager(
             callbackNames: [],
             isIoPropClass: true,
           });
+          classNames[childClassName] = true;
         });
       }
       classTasks.push({
@@ -150,7 +162,9 @@ export function createPythonAppTemplateManager(
         callbackNames,
         isIoPropClass: false,
       });
+      classNames[className] = true;
     }
+
     const { output } = variableMap[page.name];
     const outputRoutePath = path.resolve(
       paths.controllers,
@@ -161,7 +175,7 @@ export function createPythonAppTemplateManager(
     const variableNames = Object.keys(output.vars);
     variableNames.forEach((variableName) => {
       const variable = output.vars[variableName];
-      const className = `${variableName}Class`;
+      const className = `${variable.key}`;
       // TODO: pass variable.ioProp as well
       addClassTask(
         className,
@@ -313,6 +327,7 @@ export function createPythonAppTemplateManager(
     const AtriClassDef =
       `class Atri:\n` +
       `${AtriClassInitDef}\n${setEventDef}\n${propertyGetterSetters}\n${toJSONFieldsDef}\n`;
+
     const newText =
       importStatements +
       "\n" +
