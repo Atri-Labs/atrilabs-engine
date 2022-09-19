@@ -65,6 +65,7 @@
     "@atrilabs/react-component-manifests": "^0.0.63",
     "@atrilabs/scripts": "^0.0.63",
     "@atrilabs/server-client": "^0.0.63",
+    "@atrilabs/undo-redo-layer": "^0.0.63",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.0",
