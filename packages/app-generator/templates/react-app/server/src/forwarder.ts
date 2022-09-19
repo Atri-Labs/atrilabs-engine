@@ -34,6 +34,7 @@ export function forwardGetPageRequest(params: {
             ...req.headers,
             "Content-Type": "application/json",
             "Content-Length": payload.length,
+            "Transfer-Encoding": "chunked",
           },
         },
         (forward_res) => {

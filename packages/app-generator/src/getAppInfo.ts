@@ -11,7 +11,7 @@ import {
   PropsGeneratorOptions,
   PropsGeneratorOutput,
 } from "./types";
-import { getComponentFromManifest, getForestDef } from "./utils";
+import { getAllInfos, getComponentFromManifest, getForestDef } from "./utils";
 
 export async function getAppInfo(
   toolConfig: ToolConfig,
@@ -70,6 +70,8 @@ export async function getAppInfo(
       });
     }
   }
+  const infos = getAllInfos(options.outputDir);
+
   const result: AppInfo = { pages: {} };
   pageIds.forEach((pageId) => {
     // create props for state
@@ -83,6 +85,7 @@ export async function getAppInfo(
           forest,
           getComponentFromManifest,
           custom: options,
+          infos,
         });
         componentGeneratorOutput = {
           ...componentGeneratorOutput,
@@ -99,6 +102,7 @@ export async function getAppInfo(
           forestDef,
           forest,
           custom: options,
+          infos,
         });
         propsGeneratorOutput = {
           ...propsGeneratorOutput,

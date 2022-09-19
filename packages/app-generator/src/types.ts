@@ -1,5 +1,13 @@
-import { ImportedResource, ToolConfig } from "@atrilabs/core";
+import {
+  ImportedResource,
+  ToolConfig,
+  ServerInfo,
+  BuildInfo,
+  AppInfo as AppInfoFile,
+} from "@atrilabs/core";
 import { Forest, ForestDef } from "@atrilabs/forest";
+
+export type Infos = { app: AppInfoFile; server: ServerInfo; build: BuildInfo };
 
 export type AppGeneratorOptions = {
   // forest package that defines the schema for different trees
@@ -39,6 +47,8 @@ export type ComponentGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
   getComponentFromManifest: ComponentGetter;
+  // info files
+  infos: Infos;
   // custom options that are module specific
   custom: any;
 };
@@ -60,6 +70,8 @@ export type ComponentGeneratorFunction = (
 export type PropsGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
+  // info files
+  infos: Infos;
   custom: any;
 };
 
@@ -82,6 +94,8 @@ export type PythonStubGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
   getManifest: ManifestGetter;
+  // info files
+  infos: Infos;
   custom: any;
 };
 
@@ -126,6 +140,8 @@ export type AppBuildOptions = {
 export type CallbackGeneratorOptions = {
   forestDef: ForestDef;
   forest: Forest;
+  // info files
+  infos: Infos;
   custom: any;
 };
 

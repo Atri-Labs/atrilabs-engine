@@ -9,6 +9,7 @@ python-socketio = {extras = ["asyncio_client"], version = "*"}
 toml = "*"
 questionary = "*"
 requests = "*"
+pymongo = {extras = ["srv"], version = "*"}
 
 [dev-packages]
 setuptools = "*"

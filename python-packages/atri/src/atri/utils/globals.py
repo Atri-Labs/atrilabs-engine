@@ -1,1 +1,1 @@
-globals = {"in_debug_mode": False}
+globals = {"in_debug_mode": False, "exe": None}

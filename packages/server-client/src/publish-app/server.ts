@@ -14,6 +14,7 @@ import {
 import http from "http";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
+import { collectPublish } from "../utils/collect_stats";
 
 const server = http.createServer();
 
@@ -45,6 +46,9 @@ export default function startPublishServer(
     });
     socket.on("runTasks", (startTask, endTask, cb) => {
       console.log("[PUBLISH_SERVER]runTasks received");
+
+      collectPublish();
+
       const taskQueue = createTaskQueue(startTask, endTask);
       // check if task request is invalid
       if (taskQueue.length === 0) {

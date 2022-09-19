@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/resource-processor-layer",
-  "version": "0.0.51",
+  "version": "0.0.60",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
@@ -29,12 +29,12 @@
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime": "^0.0.51",
-    "@atrilabs/core": "^0.0.51",
-    "@atrilabs/design-system": "^0.0.51",
-    "@atrilabs/layer-types": "^0.0.51",
-    "@atrilabs/scripts": "^0.0.51",
-    "eslint-plugin-atrilabs": "^0.0.51",
+    "@atrilabs/canvas-runtime": "^0.0.60",
+    "@atrilabs/core": "^0.0.60",
+    "@atrilabs/design-system": "^0.0.60",
+    "@atrilabs/layer-types": "^0.0.60",
+    "@atrilabs/scripts": "^0.0.60",
+    "eslint-plugin-atrilabs": "^0.0.60",
     "typescript": "4.6.3"
   },
   "devDependencies": {

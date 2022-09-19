@@ -21,6 +21,7 @@ import {
 import { createReactAppTemplateManager } from "../react-app-template-manager";
 import {
   atriAppIndexHtmlTemplateFilepath,
+  getAllInfos,
   getAtriAppIndexHtmlDestFilepath,
   getComponentFromManifest,
   getForestDef,
@@ -71,6 +72,9 @@ export default async function generateApp(
     });
   });
 
+  // infos
+  const infos = getAllInfos(options.outputDir);
+
   const reactTemplateManager = createReactAppTemplateManager(
     {
       reactAppTemplate: reactAppTemplatePath,
@@ -88,7 +92,8 @@ export default async function generateApp(
       reactAppIndexHtmlDest: getAtriAppIndexHtmlDestFilepath(options.outputDir),
     },
     options.rootComponentId,
-    toolConfig.assetManager
+    toolConfig.assetManager,
+    infos
   );
 
   const componentGeneratorFunctions: {
@@ -109,13 +114,14 @@ export default async function generateApp(
   pageIds.forEach((pageId) => {
     const forest = pageForestMap[pageId];
     let componentGeneratorOutput: ComponentGeneratorOutput = {};
-    componentGeneratorFunctions.forEach(({ fn, options }) => {
+    componentGeneratorFunctions.forEach(({ fn, options: customOptions }) => {
       try {
         const currentOutput = fn({
           forestDef,
           forest,
           getComponentFromManifest,
-          custom: options,
+          custom: customOptions,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         componentGeneratorOutput = {
           ...componentGeneratorOutput,
@@ -152,6 +158,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         propsGeneratorOutput = {
           ...propsGeneratorOutput,
@@ -188,6 +195,7 @@ export default async function generateApp(
           forestDef,
           forest,
           custom: options,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         callbackGeneratorOutput = {
           ...callbackGeneratorOutput,
@@ -275,6 +283,8 @@ export default async function generateApp(
 
   // first flush index.html
   reactTemplateManager.flushIndexHtml();
+  // replace with asset url prexfix if any
+  reactTemplateManager.flushIndexJSX();
   // fill pages in app
   reactTemplateManager.flushAppJSX();
   // fill each page
@@ -286,6 +296,7 @@ export default async function generateApp(
   reactTemplateManager.flushPatchedPackageJSON();
   reactTemplateManager.flushAtriServerInfo();
   reactTemplateManager.flushPageCbs();
+  reactTemplateManager.flushAtriAppInfo();
 
   const pythonGeneratorFunctions: {
     fn: PythonStubGeneratorFunction;
@@ -327,6 +338,7 @@ export default async function generateApp(
           forest,
           getManifest,
           custom: options,
+          infos: JSON.parse(JSON.stringify(infos)),
         });
         pythonGeneratorOutput["vars"] = {
           ...pythonGeneratorOutput["vars"],

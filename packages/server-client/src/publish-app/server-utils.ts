@@ -64,8 +64,7 @@ type FnQueue = ((
   ipcSocket: IPCClientSocket
 ) => Promise<void>)[];
 
-async function generateApp(_toolConfig: ToolConfig) {
-  console.log("[publish_app_server] generate app called");
+export async function invokeGenerateApp() {
   return new Promise<void>((res, rej) => {
     // TODO: Should we run it by importing the generate module
     // like in buildApp function below?
@@ -90,7 +89,12 @@ async function generateApp(_toolConfig: ToolConfig) {
   });
 }
 
-function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
+async function generateApp(_toolConfig: ToolConfig) {
+  console.log("[publish_app_server] generate app called");
+  return invokeGenerateApp();
+}
+
+export function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
   const pageState = pageStates[pageId];
   const aliases = Object.keys(pageState);
   const formattedState: { [alias: string]: any } = {};
@@ -100,41 +104,72 @@ function convertPropsIntoPythonFormat(pageStates: any, pageId: string) {
   return formattedState;
 }
 
+export async function invokeGetAppInfo(toolConfig: ToolConfig) {
+  const target = toolConfig.targets[0]!;
+  // TODO: Should we fork a process from @atrilabs/scripts instead of importing
+  // like in the generateApp function above?
+  return import(target.tasksHandler.modulePath).then(async (mod) => {
+    if (
+      !mod.scripts &&
+      typeof mod.scripts.buildReactApp !== "function" &&
+      mod.getAppInfo !== "function"
+    ) {
+      throw Error(
+        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+      );
+    }
+    // call getAppInfo
+    const appInfo = await mod.getAppInfo(toolConfig, target.options);
+    const pages = appInfo.pages;
+    const pageIds = Object.keys(pages);
+    const pageStates = mod.getPageStateAsAliasMap(appInfo);
+    return { appInfo, pageIds, pageStates };
+  });
+}
+
+export async function invokeBuildReactApp(
+  toolConfig: ToolConfig,
+  appInfo: any,
+  controllerProps: {
+    [pageId: string]: { [alias: string]: any } | undefined;
+  }
+) {
+  const target = toolConfig.targets[0]!;
+  // TODO: Should we fork a process from @atrilabs/scripts instead of importing
+  // like in the generateApp function above?
+  return import(target.tasksHandler.modulePath).then(async (mod) => {
+    if (
+      !mod.scripts &&
+      typeof mod.scripts.buildReactApp !== "function" &&
+      mod.getAppInfo !== "function"
+    ) {
+      throw Error(
+        `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
+      );
+    }
+    // call buildReactApp
+    return mod.scripts.buildReactApp(toolConfig, {
+      ...target.options,
+      appInfo,
+      controllerProps,
+    });
+  });
+}
+
 function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
   console.log("[publish_app_server] emitting buildPython");
   return new Promise<void>((res, rej) => {
     socket.emit("buildPython", (success) => {
       if (success) {
         console.log("python build success");
-        const target = toolConfig.targets[0]!;
-        // TODO: Should we fork a process from @atrilabs/scripts instead of importing
-        // like in the generateApp function above?
-        import(target.tasksHandler.modulePath)
-          .then(async (mod) => {
-            if (
-              !mod.scripts &&
-              typeof mod.scripts.buildReactApp !== "function" &&
-              mod.getAppInfo !== "function"
-            ) {
-              throw Error(
-                `The target ${target.targetName} tasksHandler.modulePath doesn't export scripts or getAppInfo correctly.`
-              );
-            }
-            // call getAppInfo
-            const appInfo = await mod.getAppInfo(toolConfig, target.options);
-            const pages = appInfo.pages;
-            const pageIds = Object.keys(pages);
-            const pageStates = mod.getPageStateAsAliasMap(appInfo);
-            /**
-             * controllerProps[pageId] is defined only if we buildApp succeeds
-             * with statusCode 200, otherwise, controllerProps[pageId] is undefined.
-             */
+        invokeGetAppInfo(toolConfig)
+          .then(({ appInfo, pageIds, pageStates }) => {
             const controllerProps: {
               [pageId: string]: { [alias: string]: any } | undefined;
             } = {};
             const promises = pageIds.map((pageId) => {
               return new Promise<void>((resolve) => {
-                const route = pages[pageId].route;
+                const route = appInfo.pages[pageId].route;
                 const state = JSON.stringify(
                   convertPropsIntoPythonFormat(pageStates, pageId)
                 );
@@ -166,12 +201,7 @@ function buildApp(toolConfig: ToolConfig, socket: IPCClientSocket) {
             });
             Promise.all(promises).then(() => {
               // call buildApp
-              mod.scripts
-                .buildReactApp(toolConfig, {
-                  ...target.options,
-                  appInfo,
-                  controllerProps,
-                })
+              invokeBuildReactApp(toolConfig, appInfo, controllerProps)
                 .then(() => {
                   res();
                 })

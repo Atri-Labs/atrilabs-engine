@@ -107,6 +107,7 @@ app.post("/event-handler", express.json({ limit: "50mb" }), (req, res) => {
         ...req.headers,
         "Content-Type": "application/json",
         "Content-Length": payload.length,
+        "Transfer-Encoding": "chunked",
       },
     },
     (forward_res) => {

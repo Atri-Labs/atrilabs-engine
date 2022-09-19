@@ -174,7 +174,7 @@ def serve(obj, port, host, prod):
         req_dict = await req.json()
         route = req_dict["route"]
         state = req_dict["state"]
-        query = req_dict["query"]
+        query = req_dict["query"] if "query" in req_dict else ""
         routeDetails = getRouteDetails(route, obj["dir"])
         delta = compute_page_request(routeDetails, state, req, res, query)
         res.body = bytes(json.dumps(delta, cls=AtriEncoder), encoding="utf-8")

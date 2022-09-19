@@ -1,6 +1,8 @@
 import {
   atriAppBuildInfoFilename,
   atriAppBuildInfoTemplateFilepath,
+  atriAppInfoFilename,
+  atriAppInfoTemplateFilepath,
   atriAppServerInfoFilename,
   atriAppServerInfoTemplateFilepath,
   getFiles,
@@ -12,6 +14,7 @@ import { camelCase } from "lodash";
 import {
   CallbackGeneratorOutput,
   ComponentGeneratorOutput,
+  Infos,
   PropsGeneratorOutput,
   ResourceGeneraterOutput,
 } from "../types";
@@ -34,7 +37,8 @@ export function createReactAppTemplateManager(
     reactAppIndexHtmlDest: string;
   },
   rootComponentId: string,
-  assetManager: ToolConfig["assetManager"]
+  assetManager: ToolConfig["assetManager"],
+  infos: Infos
 ) {
   const pagesTemplateDirectory = path.resolve(
     paths.reactAppTemplate,
@@ -44,6 +48,12 @@ export function createReactAppTemplateManager(
   const pagesDestDirectory = path.resolve(paths.reactAppDest, "src", "pages");
   const examplePageFile = path.resolve(pagesTemplateDirectory, "Example.jsx");
   const examplePageFileText = fs.readFileSync(examplePageFile).toString();
+  const indexJSXTemplatePath = path.resolve(
+    paths.reactAppTemplate,
+    "src",
+    "index.jsx"
+  );
+  const indexJSXDestPath = path.resolve(paths.reactAppDest, "src", "index.jsx");
   const appJSXTemplatePath = path.resolve(
     paths.reactAppTemplate,
     "src",
@@ -269,6 +279,27 @@ export function createReactAppTemplateManager(
     return newPieces.join("");
   }
 
+  function flushIndexJSX() {
+    const indexJSXTemplateText = fs
+      .readFileSync(indexJSXTemplatePath)
+      .toString();
+    const assetUrlCursorMatch = indexJSXTemplateText.match(/ASSET_URL_PREFIX/);
+    if (!assetUrlCursorMatch) {
+      console.log(
+        `Failed to find asset_url cursor in template index.jsx file. Please report this error to Atri Labs.`
+      );
+      return;
+    }
+    const newText = replaceText(indexJSXTemplateText, [
+      {
+        index: assetUrlCursorMatch.index!,
+        length: assetUrlCursorMatch[0].length,
+        replaceWith: infos.build.assetUrlPrefix,
+      },
+    ]);
+    fs.writeFileSync(indexJSXDestPath, newText);
+  }
+
   function flushAppJSX() {
     const appJSXTemplateText = fs.readFileSync(appJSXTemplatePath).toString();
     // add import statements
@@ -295,7 +326,7 @@ export function createReactAppTemplateManager(
     );
     if (!importCursorMatch || !routeCursorMatch) {
       console.log(
-        `Failed to find import cursor or route cursor in template App.jsx file. Please report this error to Atri Labs.`
+        `Failed to find import or route cursor in template App.jsx file. Please report this error to Atri Labs.`
       );
       return;
     }
@@ -760,11 +791,15 @@ export function createReactAppTemplateManager(
 
   // flush atri-build-info.json
   function flushAtriBuildInfo(manifestDirs: ToolConfig["manifestDirs"]) {
+    const dest = path.resolve(paths.reactAppRootDest, atriAppBuildInfoFilename);
+    if (fs.existsSync(dest)) {
+      return;
+    }
+
     const buildInfoTemplate = JSON.parse(
       fs.readFileSync(atriAppBuildInfoTemplateFilepath).toString()
     );
     buildInfoTemplate["manifestDirs"] = manifestDirs;
-    const dest = path.resolve(paths.reactAppRootDest, atriAppBuildInfoFilename);
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }
@@ -794,7 +829,33 @@ export function createReactAppTemplateManager(
     if (!fs.existsSync(paths.reactAppRootDest)) {
       fs.mkdirSync(paths.reactAppRootDest);
     }
-    fs.writeFileSync(dest, JSON.stringify(serverInfoTemplate, null, 2));
+    // merge it with previously generated atri-server-info.json file if it exists
+    let finalServerInfo: any = { ...serverInfoTemplate };
+    if (fs.existsSync(dest)) {
+      const oldServerInfo = JSON.parse(fs.readFileSync(dest).toString());
+      finalServerInfo = {
+        ...oldServerInfo,
+        pages: serverInfoTemplate["pages"],
+        publicUrlAssetMap: serverInfoTemplate["publicUrlAssetMap"],
+      };
+    }
+    fs.writeFileSync(dest, JSON.stringify(finalServerInfo, null, 2));
+  }
+
+  // flush atri-server-info.json
+  function flushAtriAppInfo() {
+    const dest = path.resolve(paths.reactAppRootDest, atriAppInfoFilename);
+    // do nothing if already exists
+    if (fs.existsSync(dest)) {
+      return;
+    }
+    if (!fs.existsSync(paths.reactAppRootDest)) {
+      fs.mkdirSync(paths.reactAppRootDest);
+    }
+    const appInfoTemplate = fs
+      .readFileSync(atriAppInfoTemplateFilepath)
+      .toString();
+    fs.writeFileSync(dest, appInfoTemplate);
   }
 
   function addCallbacks(
@@ -932,5 +993,7 @@ export function createReactAppTemplateManager(
     flushIoStore,
     addResources,
     flushIndexHtml,
+    flushAtriAppInfo,
+    flushIndexJSX,
   };
 }

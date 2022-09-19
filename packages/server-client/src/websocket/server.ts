@@ -23,6 +23,11 @@ import {
   overwriteTemplate,
 } from "./template-handler";
 import { fetchCSSResource } from "./resource-handler";
+import {
+  collectCreatePage,
+  collectCreateTemplate,
+  collectImportResources,
+} from "../utils/collect_stats";
 const app = express();
 const server = http.createServer(app);
 
@@ -163,6 +168,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     });
     socket.on("createPage", (forestPkgId, page, callback) => {
       try {
+        collectCreatePage();
         if (getEventManager(forestPkgId)) {
           const meta = getMeta(forestPkgId);
           // folder should exist already
@@ -357,6 +363,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     socket.on(
       "createTemplate",
       (relativeDir, templateName, events, callback) => {
+        collectCreateTemplate();
         if (toolConfig.templateManager.dirs?.[0]) {
           const dir = toolConfig.templateManager.dirs[0];
           createTemplate(dir, relativeDir, templateName, events);
@@ -392,6 +399,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     });
 
     socket.on("importResource", (resource, cb) => {
+      collectImportResources(resource.str);
       fetchCSSResource(resource.str)
         .then((importedResource) => {
           try {

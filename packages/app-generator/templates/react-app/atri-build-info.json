@@ -7,5 +7,6 @@
   "serverEntry": "app-node/src/getAppText.tsx",
   "serverSideEntry": "app/src/hooks/useStore.js",
   "serverOutput": "dist/app-node",
-  "manifestDirs": []
+  "manifestDirs": [],
+  "assetUrlPrefix": ""
 }

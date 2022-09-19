@@ -51,6 +51,8 @@ try {
       includes: includes.map((inc) => path.resolve(inc)),
       mode,
       addWatchOptions: false,
+      assetUrlPrefix:
+        process.env["ASSET_URL_PREFIX"] || buildInfo.assetUrlPrefix,
     });
   } else {
     console.log(`Missing manifestDirs in ${buildInfoFilename}`);

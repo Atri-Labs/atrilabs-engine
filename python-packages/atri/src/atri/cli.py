@@ -8,6 +8,8 @@ from .commands.open_editor import run as exe_open_editor
 from .commands.connect_local import start_ipc_connection
 from .commands.open_exe import open_exe_wrapper
 from .commands.load_exe import load_exe_if_not_exists
+from .commands.build_ssg_cmd import build_ssg_cmd_wrapper
+from .commands.deploy_ssg_gh_pages import deploy_ssg_gh_pages_wrapper
 from .utils.globals import globals
 from .commands.check_requisite import check_requisite
 if sys.version_info >= (3, 8):
@@ -24,6 +26,8 @@ from typing import List, Union
 from .utils.handle_error import error_to_message
 from . import app_config_file
 from .commands.create_dockerfile import create_dockerfile_with_pipenv
+from .stats import collect_atri_start, collect_create_dockerfile
+from .utils.manage_session import manage_session
 
 find_and_set_app_directory()
 
@@ -172,6 +176,10 @@ def connect_local(u_port, no_debug):
 @click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
 def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
     load_exe_if_not_exists()
+
+    virt_type = get_virtualenv_type()
+    collect_atri_start(virt_type)
+
     globals["in_debug_mode"] = debug
     app_dir = str(Path.cwd())
     async def check_req_wrapper():
@@ -189,8 +197,11 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
             connect_local_task = asyncio.create_task(
                 connect_local_wrapper()
             )
+            manage_session_task = asyncio.create_task(
+                manage_session(virt_type)
+            )
             try:
-                await asyncio.wait([open_exe_task, connect_local_task])
+                await asyncio.wait([open_exe_task, connect_local_task, manage_session_task])
             except CancelledError:
                 # socket.io AsyncClient throws CancelledError
                 # closing stderr to prevent showing error
@@ -218,6 +229,7 @@ def create():
 @click.option('--file', default="Dockerfile", show_default=True, help='Name of the output Dockerfile')
 def create_dockerfile(file):
     virt_type = get_virtualenv_type()
+    collect_create_dockerfile(virt_type)
     if virt_type == "pipenv":
         create_dockerfile_with_pipenv(file)
     elif virt_type == "conda":
@@ -235,6 +247,30 @@ def req(no_debug):
     if not ok:
         print("If you want to report this issue,",
         "please use our discussion forum https://discuss.atrilabs.com")
+
+@main.group("build")
+def build():
+    pass
+
+@build.command("ssg")
+@click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+@click.option('--exe', default=None, help='command to execute to start the NodeJS processes')
+def build_ssg(debug, exe):
+    globals["in_debug_mode"] = debug
+    globals["exe"] = exe
+    asyncio.run(build_ssg_cmd_wrapper())
+
+@main.group("deploy")
+def deploy():
+    pass
+
+@deploy.command("ssg")
+@click.option('--gh-pages', is_flag = True, default=False, show_default=True, help='deploy ssg pages to github')
+@click.option('--debug', is_flag = True, default=False, show_default=True, help='run the command in debug mode')
+def deploy_ssg(gh_pages, debug):
+    globals["in_debug_mode"] = debug
+    if gh_pages:
+        asyncio.run(deploy_ssg_gh_pages_wrapper())
 
 if __name__ == '__main__':
     main()
