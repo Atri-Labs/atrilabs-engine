@@ -311,9 +311,21 @@ const onSelect = assign<CanvasActivityContext, UpEvent>({
 });
 
 const onDragStart = assign<CanvasActivityContext, OverEvent>({
-  dragged: (_context, event) => {
+  dragged: (context, event) => {
+    let draggedCompId = event.id;
+
+    if (window.navigator.userAgent.indexOf("Mac")) {
+      if (event.event.metaKey) {
+        draggedCompId = context.select?.id || draggedCompId;
+      }
+    } else {
+      if (event.event.ctrlKey) {
+        draggedCompId = context.select?.id || draggedCompId;
+      }
+    }
+
     return {
-      id: event.id,
+      id: draggedCompId,
     };
   },
 });
