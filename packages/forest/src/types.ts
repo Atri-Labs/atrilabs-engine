@@ -21,21 +21,23 @@ export type TreeLink = {
 export type Tree = {
   nodes: { [id: string]: TreeNode };
   links: { [refId: string]: TreeLink };
-  create: (event: Omit<CreateEvent, "type">) => void;
-  patch: (event: Omit<PatchEvent, "type">) => void;
-  del: (event: Omit<DeleteEvent, "type">) => void;
-  link: (event: Omit<LinkEvent, "type">) => void;
-  unlink: (event: Omit<UnlinkEvent, "type">) => void;
+  create: (event: Omit<CreateEvent, "type">, meta: EventMetaData) => void;
+  patch: (event: Omit<PatchEvent, "type">, meta: EventMetaData) => void;
+  del: (event: Omit<DeleteEvent, "type">, meta: EventMetaData) => void;
+  link: (event: Omit<LinkEvent, "type">, meta: EventMetaData) => void;
+  unlink: (event: Omit<UnlinkEvent, "type">, meta: EventMetaData) => void;
 };
+
+export type EventMetaData = { agent: "browser" | "server-sent" };
 
 export type Forest = {
   tree: (name: string) => Tree | undefined;
-  create: (event: CreateEvent) => void;
-  patch: (event: PatchEvent) => void;
-  del: (event: DeleteEvent) => void;
-  link: (event: LinkEvent) => void;
-  unlink: (event: UnlinkEvent) => void;
-  handleEvent: (event: AnyEvent) => void;
+  create: (event: CreateEvent, meta: EventMetaData) => void;
+  patch: (event: PatchEvent, meta: EventMetaData) => void;
+  del: (event: DeleteEvent, meta: EventMetaData) => void;
+  link: (event: LinkEvent, meta: EventMetaData) => void;
+  unlink: (event: UnlinkEvent, meta: EventMetaData) => void;
+  handleEvent: (event: AnyEvent, meta: EventMetaData) => void;
   subscribeForest: (cb: ForestUpdateSubscriber) => ForestUpdateUnsubscriber;
 };
 
@@ -198,6 +200,9 @@ export type ForestUpdate =
   | LinkUpdate
   | UnlinkUpdate;
 
-export type ForestUpdateSubscriber = (update: ForestUpdate) => void;
+export type ForestUpdateSubscriber = (
+  update: ForestUpdate,
+  options: { agent: "browser" | "server-sent" }
+) => void;
 
 export type ForestUpdateUnsubscriber = () => void;

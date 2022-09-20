@@ -28,7 +28,9 @@ export const useDeleteKey = () => {
             type: `DELETE$$${ComponentTreeId}`,
             id: selectedId,
           };
-          api.postNewEvent(forestPkgId, forestId, deleteEvent);
+          api.postNewEvent(forestPkgId, forestId, deleteEvent, {
+            agent: "browser",
+          });
         }
       }
     };

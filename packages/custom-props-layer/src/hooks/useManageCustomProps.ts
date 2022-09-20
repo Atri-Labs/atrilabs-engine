@@ -30,7 +30,9 @@ export const useManageCustomProps = (id: string | null) => {
             slice,
             id: customPropsNodeId.childId,
           };
-          api.postNewEvent(forestPkgId, forestId, patchEvent);
+          api.postNewEvent(forestPkgId, forestId, patchEvent, {
+            agent: "browser",
+          });
         }
       }
     },

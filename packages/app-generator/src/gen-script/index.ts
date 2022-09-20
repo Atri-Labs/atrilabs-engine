@@ -68,7 +68,7 @@ export default async function generateApp(
   pageIds.forEach((pageId) => {
     const events = eventManager.fetchEvents(pageId);
     events.forEach((event) => {
-      pageForestMap[pageId].handleEvent(event);
+      pageForestMap[pageId].handleEvent(event, { agent: "server-sent" });
     });
   });
 

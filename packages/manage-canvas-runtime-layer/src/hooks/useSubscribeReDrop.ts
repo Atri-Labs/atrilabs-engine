@@ -36,7 +36,9 @@ export const useSubscribeReDrop = () => {
             parent: { id: newParentId, index },
           },
         };
-        api.postNewEvent(forestPkgId, forestId, patchEvent);
+        api.postNewEvent(forestPkgId, forestId, patchEvent, {
+          agent: "browser",
+        });
       }
     });
     return unsub;

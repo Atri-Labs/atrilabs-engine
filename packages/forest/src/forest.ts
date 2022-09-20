@@ -12,6 +12,7 @@ import {
   Tree,
   Forest,
   ForestUpdateSubscriber,
+  EventMetaData,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -75,7 +76,7 @@ export function createForest(def: ForestDef): Forest {
     return reverseMap;
   }
 
-  function handleEvent(event: AnyEvent) {
+  function handleEvent(event: AnyEvent, meta: EventMetaData) {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
       const treeId = createEvent.type.slice("CREATE$$".length);
@@ -86,12 +87,15 @@ export function createForest(def: ForestDef): Forest {
           state: createEvent.state,
         };
         forestUpdateSubscribers.forEach((cb) => {
-          cb({
-            type: "wire",
-            id: createEvent.id,
-            parentId: createEvent.state.parent.id,
-            treeId,
-          });
+          cb(
+            {
+              type: "wire",
+              id: createEvent.id,
+              parentId: createEvent.state.parent.id,
+              treeId,
+            },
+            meta
+          );
         });
       }
     }
@@ -115,15 +119,18 @@ export function createForest(def: ForestDef): Forest {
                 mergeStateCustomizer
               );
               forestUpdateSubscribers.forEach((cb) => {
-                cb({
-                  type: "rewire",
-                  treeId,
-                  childId: patchEvent.id,
-                  newParentId: patchEvent.slice.parent.id,
-                  newIndex: patchEvent.slice.parent.index,
-                  oldIndex,
-                  oldParentId,
-                });
+                cb(
+                  {
+                    type: "rewire",
+                    treeId,
+                    childId: patchEvent.id,
+                    newParentId: patchEvent.slice.parent.id,
+                    newIndex: patchEvent.slice.parent.index,
+                    oldIndex,
+                    oldParentId,
+                  },
+                  meta
+                );
               });
             }
             return;
@@ -143,7 +150,7 @@ export function createForest(def: ForestDef): Forest {
           mergeStateCustomizer
         );
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "change", id: patchEvent.id, treeId });
+          cb({ type: "change", id: patchEvent.id, treeId }, meta);
         });
       }
     }
@@ -162,14 +169,14 @@ export function createForest(def: ForestDef): Forest {
           if (linkEvents[nodeId]) {
             linkEvents[nodeId]!.forEach((event) => {
               const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-              handleEvent(unlinkEvent);
+              handleEvent(unlinkEvent, meta);
             });
           }
         }
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
         delete treeMap[treeId]!.nodes[nodeId];
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "dewire", childId: nodeId, parentId, treeId });
+          cb({ type: "dewire", childId: nodeId, parentId, treeId }, meta);
         });
       });
     }
@@ -183,13 +190,16 @@ export function createForest(def: ForestDef): Forest {
         ? linkEvents[linkEvent.refId]?.push(linkEvent)
         : (linkEvents[linkEvent.refId] = [linkEvent]);
       forestUpdateSubscribers.forEach((cb) => {
-        cb({
-          type: "link",
-          refId: linkEvent.refId,
-          childId: linkEvent.childId,
-          treeId: treeId,
-          rootTreeId: rootDef.id,
-        });
+        cb(
+          {
+            type: "link",
+            refId: linkEvent.refId,
+            childId: linkEvent.childId,
+            treeId: treeId,
+            rootTreeId: rootDef.id,
+          },
+          meta
+        );
       });
     }
     if (event.type.startsWith("UNLINK")) {
@@ -197,42 +207,45 @@ export function createForest(def: ForestDef): Forest {
       const treeId = unlinkEvent.type.slice("UNLINK$$".length);
       delete treeMap[treeId]!.links[unlinkEvent.refId];
       forestUpdateSubscribers.forEach((cb) => {
-        cb({
-          type: "unlink",
-          refId: unlinkEvent.refId,
-          childId: unlinkEvent.childId,
-          treeId: treeId,
-          rootTreeId: rootDef.id,
-        });
+        cb(
+          {
+            type: "unlink",
+            refId: unlinkEvent.refId,
+            childId: unlinkEvent.childId,
+            treeId: treeId,
+            rootTreeId: rootDef.id,
+          },
+          meta
+        );
       });
     }
   }
 
   // create a node
-  function create(event: CreateEvent) {
+  function create(event: CreateEvent, meta: EventMetaData) {
     const type = event.type.slice("CREATE$$".length);
-    handleEvent(event);
+    handleEvent(event, meta);
     defaultFnMap[type]!.onCreate(event);
   }
 
   // patch a node
-  function patch(event: PatchEvent) {
-    handleEvent(event);
+  function patch(event: PatchEvent, meta: EventMetaData) {
+    handleEvent(event, meta);
   }
 
   // delete a node
-  function del(event: DeleteEvent) {
-    handleEvent(event);
+  function del(event: DeleteEvent, meta: EventMetaData) {
+    handleEvent(event, meta);
   }
 
   // link nodes between two trees
-  function link(event: LinkEvent) {
-    handleEvent(event);
+  function link(event: LinkEvent, meta: EventMetaData) {
+    handleEvent(event, meta);
   }
 
   // unlink nodes between two trees
-  function unlink(event: UnlinkEvent) {
-    handleEvent(event);
+  function unlink(event: UnlinkEvent, meta: EventMetaData) {
+    handleEvent(event, meta);
   }
 
   // subscibe forest

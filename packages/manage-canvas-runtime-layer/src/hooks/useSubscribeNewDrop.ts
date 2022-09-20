@@ -72,14 +72,18 @@ export const useSubscribeNewDrop = () => {
                   property: { [propKey]: initialValue },
                 },
               };
-              api.postNewEvent(forestPkgId, forestId, createEvent);
+              api.postNewEvent(forestPkgId, forestId, createEvent, {
+                agent: "browser",
+              });
 
               const linkEvent: LinkEvent = {
                 type: `LINK$$${treeId}`,
                 refId: compId,
                 childId: propCompId,
               };
-              api.postNewEvent(forestPkgId, forestId, linkEvent);
+              api.postNewEvent(forestPkgId, forestId, linkEvent, {
+                agent: "browser",
+              });
             }
           }
 
@@ -99,14 +103,18 @@ export const useSubscribeNewDrop = () => {
                 property: { callbacks: defaultCallbacks },
               },
             };
-            api.postNewEvent(forestPkgId, forestId, createEvent);
+            api.postNewEvent(forestPkgId, forestId, createEvent, {
+              agent: "browser",
+            });
 
             const linkEvent: LinkEvent = {
               type: `LINK$$${CallbackTreeId}`,
               refId: compId,
               childId: callbackCompId,
             };
-            api.postNewEvent(forestPkgId, forestId, linkEvent);
+            api.postNewEvent(forestPkgId, forestId, linkEvent, {
+              agent: "browser",
+            });
           }
 
           // 3. Create Component
@@ -120,7 +128,7 @@ export const useSubscribeNewDrop = () => {
             },
             state: { parent: { id: caughtBy, index: index } },
           };
-          api.postNewEvent(forestPkgId, forestId, event);
+          api.postNewEvent(forestPkgId, forestId, event, { agent: "browser" });
 
           // 3. Associate Alias
           api.getNewAlias(forestPkgId, key, (alias) => {
@@ -131,7 +139,9 @@ export const useSubscribeNewDrop = () => {
                 alias,
               },
             };
-            api.postNewEvent(forestPkgId, forestId, setAliasEvent);
+            api.postNewEvent(forestPkgId, forestId, setAliasEvent, {
+              agent: "browser",
+            });
           });
         }
       }
