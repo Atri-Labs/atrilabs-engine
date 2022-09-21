@@ -73,6 +73,7 @@ module.exports = {
     { pkg: "@atrilabs/app-template-layer" },
     { pkg: "@atrilabs/action-layer" },
     { pkg: "@atrilabs/resource-processor-layer" },
+    { pkg: "@atrilabs/component-navigator" },
   ],
   output: "lib",
   services: {
