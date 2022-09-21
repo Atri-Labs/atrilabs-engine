@@ -5,7 +5,7 @@ import {
   DeleteEvent,
   PatchEvent,
 } from "@atrilabs/forest";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 type UndoEvent = { undo: AnyEvent[]; redo: AnyEvent[] };
 
@@ -77,6 +77,16 @@ export const useStoreUndoRedoEvents = () => {
   }, []);
 
   // TODO: subscribe forest manager
+
+  useEffect(() => {
+    const { subscribeForest } = BrowserForestManager.currentForest;
+    const unsub = subscribeForest((update, { agent }) => {
+      if (agent === "browser") {
+      }
+    });
+    return unsub;
+  }, []);
+
   api.subscribeOwnEvents((forestPkgId, pageId, event) => {
     // TODO: check if record flag is true  otherwise ignore
     if (event.type.startsWith("CREATE")) {
