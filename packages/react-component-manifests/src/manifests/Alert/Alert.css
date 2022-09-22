@@ -1,0 +1,40 @@
+.alert{
+    
+    display: flex;
+    column-gap: 12px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    width: 50vw;
+}
+
+.alert__statusIcon{
+    padding: 7px 0;
+    height: 1.3em;
+    width: 1.3em;
+}
+
+.alert__statusIcon img{
+    width: 100%;
+}
+
+.alert-content{
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    padding: 8px 0;
+    min-width: 0;
+    width: fit-content;
+    overflow: auto;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    color: rgb(6,71,100);
+}
+
+.alert-title{
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    margin-bottom: 0.35em;
+    font-weight: 600;
+    margin-top: -2px;
+}
