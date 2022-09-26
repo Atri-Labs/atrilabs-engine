@@ -9,5 +9,11 @@ export type CssProprtyComponentType = {
     modes: UploadMode[],
     styleItem: keyof React.CSSProperties
   ) => void;
-  openPalette: (styleItem: keyof React.CSSProperties, name: string) => void;
+  openPalette: (
+    styleItem: keyof React.CSSProperties,
+    name: string,
+    actionFlag: boolean
+  ) => void;
+  colorValue: string;
+  setColorValue: (color: string) => void;
 };
