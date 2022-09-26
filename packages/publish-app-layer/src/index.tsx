@@ -45,6 +45,14 @@ export default function () {
   const onCrossClickCb = useCallback(() => {
     setShowPopup(false);
   }, []);
+
+  // keyboard shortcut for run and build
+  const handleKeyPress = useCallback((event: { repeat: any; ctrlKey: boolean; key: string; }) => {
+    if (!event.repeat && event.ctrlKey === true && event.key === "b")
+    setShowPopup(!showPopup);
+    callRunTaskApi();      
+  }, []);
+  
   // open http://localhost:4005
   const devWindow = useRef<Window | null>(null);
   useEffect(() => {
@@ -53,7 +61,11 @@ export default function () {
         devWindow.current = window.open("http://localhost:4005", "_blank");
       window.focus();
     }
-  }, [status]);
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [status,handleKeyPress]);
   return (
     <>
       <Menu name="PublishMenu" order={1}>
