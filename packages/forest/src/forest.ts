@@ -103,9 +103,11 @@ export function createForest(def: ForestDef): Forest {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice("PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
-        const oldState = JSON.parse(
-          JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
+        const stringified = JSON.stringify(
+          tree(treeId)!.nodes[patchEvent.id]!["state"]
         );
+        const newState = JSON.parse(stringified);
+        const oldState = JSON.parse(stringified);
         // patch parent
         if (patchEvent.slice && patchEvent.slice.parent) {
           if (patchEvent.slice.parent.id && patchEvent.slice.parent.index) {
@@ -115,7 +117,7 @@ export function createForest(def: ForestDef): Forest {
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
               tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-                oldState,
+                newState,
                 JSON.parse(JSON.stringify(patchEvent.slice)),
                 mergeStateCustomizer
               );
@@ -144,7 +146,7 @@ export function createForest(def: ForestDef): Forest {
         }
         // patch other fields
         tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-          oldState,
+          newState,
           JSON.parse(JSON.stringify(patchEvent.slice)),
           mergeStateCustomizer
         );
