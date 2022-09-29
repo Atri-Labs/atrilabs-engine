@@ -47,12 +47,26 @@ export default function () {
   }, []);
 
   // keyboard shortcut for run and build
-  const handleKeyPress = useCallback((event: { repeat: any; ctrlKey: boolean; key: string; }) => {
-    if (!event.repeat && event.ctrlKey === true && event.key === "b")
-    setShowPopup(!showPopup);
-    callRunTaskApi();      
-  }, []);
-  
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const { repeat, ctrlKey, key, metaKey } = event;
+      if (!repeat && ctrlKey === true && key === "b") {
+        setShowPopup(!showPopup);
+        callRunTaskApi();
+      }
+
+      if (window.navigator && window.navigator.userAgent) {
+        if (window.navigator.userAgent.indexOf("Mac")) {
+          if (!repeat && metaKey === true && key === "b") {
+            setShowPopup(!showPopup);
+            callRunTaskApi();
+          }
+        }
+      }
+    },
+    [callRunTaskApi, showPopup]
+  );
+
   // open http://localhost:4005
   const devWindow = useRef<Window | null>(null);
   useEffect(() => {
@@ -61,11 +75,11 @@ export default function () {
         devWindow.current = window.open("http://localhost:4005", "_blank");
       window.focus();
     }
-    document.addEventListener('keydown', handleKeyPress);
+    document.addEventListener("keydown", handleKeyPress);
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
+      document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [status,handleKeyPress]);
+  }, [status, handleKeyPress]);
   return (
     <>
       <Menu name="PublishMenu" order={1}>
