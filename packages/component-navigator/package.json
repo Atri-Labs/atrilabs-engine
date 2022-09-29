@@ -1,11 +1,11 @@
 {
-  "name": "@atrilabs/resource-processor-layer",
+  "name": "@atrilabs/component-navigator",
   "version": "0.0.64",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "lib/resource-processor-layer.js",
+  "main": "lib/component-navigator.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -29,15 +29,14 @@
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime": "^0.0.64",
     "@atrilabs/core": "^0.0.64",
     "@atrilabs/design-system": "^0.0.64",
-    "@atrilabs/layer-types": "^0.0.64",
     "@atrilabs/scripts": "^0.0.64",
     "eslint-plugin-atrilabs": "^0.0.64",
     "typescript": "4.6.3"
   },
   "devDependencies": {
+    "@atrilabs/layer-types": "^0.0.64",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
