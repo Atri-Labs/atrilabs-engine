@@ -4,14 +4,16 @@ import {
   CreateEvent,
   DeleteEvent,
   PatchEvent,
+  TreeNode,
 } from "@atrilabs/forest";
 import { useCallback, useEffect } from "react";
+import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 
-type UndoEvent = { undo: AnyEvent[]; redo: AnyEvent[] };
+type UndoRecord = { undo: AnyEvent[]; redo: AnyEvent[] };
 
 type Queue = {
   [forestPkgId: string]: {
-    [pageId: string]: { events: UndoEvent[] };
+    [pageId: string]: { events: UndoRecord[] };
   };
 };
 
@@ -21,7 +23,7 @@ const redoQueue: Queue = {};
 function addToUndoQueue(
   forestPkgId: string,
   pageId: string,
-  undoEvent: UndoEvent
+  undoEvent: UndoRecord
 ) {
   if (!(forestPkgId in undoQueue)) {
     undoQueue[forestPkgId] = {};
@@ -35,7 +37,7 @@ function addToUndoQueue(
 function addToRedoQueue(
   forestPkgId: string,
   pageId: string,
-  undoEvent: UndoEvent
+  undoEvent: UndoRecord
 ) {
   if (!(forestPkgId in redoQueue)) {
     redoQueue[forestPkgId] = {};
@@ -47,33 +49,51 @@ function addToRedoQueue(
 }
 
 export function popFromUndoQueue(forestPkgId: string, pageId: string) {
-  const poppedEvent = undoQueue[forestPkgId][pageId].events.pop();
-  if (poppedEvent) {
-    addToRedoQueue(forestPkgId, pageId, poppedEvent);
+  if (forestPkgId in undoQueue && pageId in undoQueue[forestPkgId]) {
+    const poppedEvent = undoQueue[forestPkgId][pageId].events.pop();
+    if (poppedEvent) {
+      addToRedoQueue(forestPkgId, pageId, poppedEvent);
+    }
+    return poppedEvent;
   }
-  return poppedEvent;
 }
 
 export function popFromRedoQueue(forestPkgId: string, pageId: string) {
-  const poppedEvent = redoQueue[forestPkgId][pageId].events.pop();
-  if (poppedEvent) {
-    addToUndoQueue(forestPkgId, pageId, poppedEvent);
+  if (forestPkgId in redoQueue && pageId in redoQueue[forestPkgId]) {
+    const poppedEvent = redoQueue[forestPkgId][pageId].events.pop();
+    if (poppedEvent) {
+      addToUndoQueue(forestPkgId, pageId, poppedEvent);
+    }
+    return poppedEvent;
   }
-  return poppedEvent;
 }
 
 export const useStoreUndoRedoEvents = () => {
   const undo = useCallback(() => {
     const { forestPkgId, forestId } = BrowserForestManager.currentForest;
-    const undoEvent = popFromUndoQueue(forestPkgId, forestId);
+    const undoRecord = popFromUndoQueue(forestPkgId, forestId);
     // TODO: call patchCb without record flag
-    console.log(undoEvent?.undo);
+    console.log(undoRecord?.undo);
+    if (undoRecord?.undo) {
+      undoRecord?.undo.forEach((event) => {
+        api.postNewEvent(forestPkgId, forestId, event, {
+          agent: "server-sent",
+        });
+      });
+    }
   }, []);
   const redo = useCallback(() => {
     const { forestPkgId, forestId } = BrowserForestManager.currentForest;
-    const undoEvent = popFromRedoQueue(forestPkgId, forestId);
+    const undoRecord = popFromRedoQueue(forestPkgId, forestId);
     // TODO: call patchCb without record flag
-    console.log(undoEvent?.redo);
+    console.log(undoRecord?.redo);
+    if (undoRecord?.redo) {
+      undoRecord?.redo.forEach((event) => {
+        api.postNewEvent(forestPkgId, forestId, event, {
+          agent: "server-sent",
+        });
+      });
+    }
   }, []);
 
   // TODO: subscribe forest manager
@@ -81,61 +101,74 @@ export const useStoreUndoRedoEvents = () => {
   useEffect(() => {
     const { subscribeForest } = BrowserForestManager.currentForest;
     const unsub = subscribeForest((update, { agent }) => {
-      if (agent === "browser") {
+      const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+      const componentTree =
+        BrowserForestManager.currentForest.tree(ComponentTreeId);
+
+      if (agent === "browser" && componentTree) {
+        if (update.type === "wire" && update.treeId === ComponentTreeId) {
+          const compNode = componentTree.nodes[update.id];
+          const { key, pkg } = compNode.meta;
+          if (key && pkg) {
+            const createEvent: CreateEvent = {
+              type: `CREATE$$${ComponentTreeId}`,
+              ...JSON.parse(JSON.stringify(compNode)),
+            };
+            const newDeleteCompEvent: DeleteEvent = {
+              type: `DELETE$$${ComponentTreeId}`,
+              id: compNode.id,
+            };
+            addToUndoQueue(forestPkgId, forestId, {
+              undo: [newDeleteCompEvent],
+              redo: [createEvent],
+            });
+          }
+        }
+        if (update.type === "dewire" && update.treeId === ComponentTreeId) {
+          const deletedNode = JSON.parse(
+            JSON.stringify(update.deletedNode)
+          ) as TreeNode;
+          const createEvent: CreateEvent = {
+            type: `CREATE$$${ComponentTreeId}`,
+            id: deletedNode.id,
+            meta: deletedNode.meta,
+            state: deletedNode.state,
+          };
+          const deleteEvent: DeleteEvent = {
+            type: `DELETE$$${ComponentTreeId}`,
+            id: deletedNode.id,
+          };
+          addToUndoQueue(forestPkgId, forestId, {
+            undo: [createEvent],
+            redo: [deleteEvent],
+          });
+        }
+        if (update.type === "change") {
+          const nodeId = update.id;
+          const treeId = update.treeId;
+          const node =
+            BrowserForestManager.currentForest.tree(treeId)!.nodes[nodeId];
+          const oldState = update.oldState;
+          const newState = JSON.parse(JSON.stringify(node.state));
+          const oldPatch: PatchEvent = {
+            type: `PATCH$$${treeId}`,
+            id: nodeId,
+            slice: oldState,
+          };
+          const newPatch: PatchEvent = {
+            type: `PATCH$$${treeId}`,
+            id: nodeId,
+            slice: newState,
+          };
+          addToUndoQueue(forestPkgId, forestId, {
+            undo: [oldPatch],
+            redo: [newPatch],
+          });
+        }
       }
     });
     return unsub;
   }, []);
-
-  api.subscribeOwnEvents((forestPkgId, pageId, event) => {
-    // TODO: check if record flag is true  otherwise ignore
-    if (event.type.startsWith("CREATE")) {
-      const createEvent = event as CreateEvent;
-      const pkgName = createEvent.type.split("$$")[1];
-      // new events
-      const newDeleteCompEvent: DeleteEvent = {
-        type: `DELETE$$${pkgName}`,
-        id: createEvent.id,
-      };
-      addToUndoQueue(forestPkgId, pageId, {
-        undo: [newDeleteCompEvent],
-        redo: [createEvent],
-      });
-    } else if (event.type.startsWith("DELETE")) {
-      const deleteEvent = event as CreateEvent;
-      const pkgName = deleteEvent.type.split("$$")[1];
-      // TODO:
-      // get meta and state from browserForestManager
-
-      // new events
-      const newCreateCompEvent: CreateEvent = {
-        type: `CREATE$$${pkgName}`,
-        id: deleteEvent.id,
-        meta: {},
-        state: { parent: { id: "", index: 0 } },
-      };
-      addToUndoQueue(forestPkgId, pageId, {
-        undo: [newCreateCompEvent],
-        redo: [deleteEvent],
-      });
-    } else if (event.type.startsWith("PATCH")) {
-      const patchEvent = event as PatchEvent;
-      const pkgName = patchEvent.type.split("$$")[1];
-      // TODO:
-      // need old state of the patched tree to put as slice
-
-      // new events
-      const newPatchCompEvent: PatchEvent = {
-        type: `PATCH$$${pkgName}`,
-        id: patchEvent.id,
-        slice: {},
-      };
-      addToUndoQueue(forestPkgId, pageId, {
-        undo: [newPatchCompEvent],
-        redo: [patchEvent],
-      });
-    }
-  });
 
   return { undo, redo };
 };

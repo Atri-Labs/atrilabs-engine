@@ -158,6 +158,7 @@ export type DewireUpdate = {
   childId: string;
   parentId: string;
   treeId: string;
+  deletedNode: TreeNode;
 };
 
 export type RewireUpdate = {
@@ -174,6 +175,7 @@ export type ChangeUpdate = {
   type: "change";
   id: string;
   treeId: string;
+  oldState: any;
 };
 
 export type LinkUpdate = {

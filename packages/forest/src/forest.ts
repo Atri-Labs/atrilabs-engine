@@ -142,15 +142,16 @@ export function createForest(def: ForestDef): Forest {
           }
         }
         // patch other fields
+        const oldState = JSON.parse(
+          JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
+        );
         tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-          JSON.parse(
-            JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
-          ),
+          oldState,
           JSON.parse(JSON.stringify(patchEvent.slice)),
           mergeStateCustomizer
         );
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "change", id: patchEvent.id, treeId }, meta);
+          cb({ type: "change", id: patchEvent.id, treeId, oldState }, meta);
         });
       }
     }
@@ -174,9 +175,13 @@ export function createForest(def: ForestDef): Forest {
           }
         }
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
+        const deletedNode = treeMap[treeId]!.nodes[nodeId]!;
         delete treeMap[treeId]!.nodes[nodeId];
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "dewire", childId: nodeId, parentId, treeId }, meta);
+          cb(
+            { type: "dewire", childId: nodeId, parentId, treeId, deletedNode },
+            meta
+          );
         });
       });
     }
