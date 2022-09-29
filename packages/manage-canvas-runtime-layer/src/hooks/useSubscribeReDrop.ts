@@ -36,8 +36,12 @@ export const useSubscribeReDrop = () => {
             parent: { id: newParentId, index },
           },
         };
-        api.postNewEvent(forestPkgId, forestId, patchEvent, {
-          agent: "browser",
+        api.postNewEvents(forestPkgId, forestId, {
+          events: [patchEvent],
+          meta: {
+            agent: "browser",
+          },
+          name: "REDROP",
         });
       }
     });

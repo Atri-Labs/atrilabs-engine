@@ -118,11 +118,12 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     unlink: (event: UnlinkEvent, meta: EventMetaData) => {
       return _currentForest.unlink(event, meta);
     },
-    handleEvent: (
-      event: AnyEvent,
-      options: { agent: "browser" | "server-sent" }
-    ) => {
-      return _currentForest.handleEvent(event, options);
+    handleEvents: (data: {
+      name: string;
+      events: AnyEvent[];
+      meta: { agent: "browser" | "server-sent" };
+    }) => {
+      return _currentForest.handleEvents(data);
     },
     on: (event, cb) => {
       if (event === "reset") {

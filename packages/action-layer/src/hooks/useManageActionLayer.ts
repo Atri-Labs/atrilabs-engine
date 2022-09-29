@@ -30,8 +30,10 @@ export const useManageActionLayer = (id: string | null) => {
             slice,
             id: callbackNodeLink.childId,
           };
-          api.postNewEvent(forestPkgId, forestId, patchEvent, {
-            agent: "browser",
+          api.postNewEvents(forestPkgId, forestId, {
+            events: [patchEvent],
+            meta: { agent: "browser" },
+            name: "ADD_ACTION",
           });
         }
       }

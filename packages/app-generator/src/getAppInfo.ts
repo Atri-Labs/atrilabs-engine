@@ -36,7 +36,11 @@ export async function getAppInfo(
   pageIds.forEach((pageId) => {
     const events = eventManager.fetchEvents(pageId);
     events.forEach((event) => {
-      pageForestMap[pageId].handleEvent(event, { agent: "server-sent" });
+      pageForestMap[pageId].handleEvents({
+        events: [event],
+        meta: { agent: "server-sent" },
+        name: "",
+      });
     });
   });
 

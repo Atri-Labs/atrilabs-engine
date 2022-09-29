@@ -84,7 +84,11 @@ export function postTemplateEvents(params: {
         linkEvent.childId = createOrReturnNew(linkEvent.childId);
         linkEvent.refId = createOrReturnNew(linkEvent.refId);
       }
-      api.postNewEvent(forestPkgId, forestId, event, { agent: "browser" });
+      api.postNewEvents(forestPkgId, forestId, {
+        events: [event],
+        meta: { agent: "browser" },
+        name: "TEMPALTE_EVENTS",
+      });
     });
   });
 }

@@ -37,7 +37,11 @@ export type Forest = {
   del: (event: DeleteEvent, meta: EventMetaData) => void;
   link: (event: LinkEvent, meta: EventMetaData) => void;
   unlink: (event: UnlinkEvent, meta: EventMetaData) => void;
-  handleEvent: (event: AnyEvent, meta: EventMetaData) => void;
+  handleEvents: (data: {
+    name: string;
+    events: AnyEvent[];
+    meta: EventMetaData;
+  }) => void;
   subscribeForest: (cb: ForestUpdateSubscriber) => ForestUpdateUnsubscriber;
 };
 
@@ -204,7 +208,7 @@ export type ForestUpdate =
 
 export type ForestUpdateSubscriber = (
   update: ForestUpdate,
-  options: { agent: "browser" | "server-sent" }
+  more: { name: string; meta: { agent: "browser" | "server-sent" } }
 ) => void;
 
 export type ForestUpdateUnsubscriber = () => void;

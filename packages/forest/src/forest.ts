@@ -76,7 +76,7 @@ export function createForest(def: ForestDef): Forest {
     return reverseMap;
   }
 
-  function handleEvent(event: AnyEvent, meta: EventMetaData) {
+  function handleEvent(name: string, event: AnyEvent, meta: EventMetaData) {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
       const treeId = createEvent.type.slice("CREATE$$".length);
@@ -94,7 +94,7 @@ export function createForest(def: ForestDef): Forest {
               parentId: createEvent.state.parent.id,
               treeId,
             },
-            meta
+            { name, meta }
           );
         });
       }
@@ -103,6 +103,9 @@ export function createForest(def: ForestDef): Forest {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice("PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
+        const oldState = JSON.parse(
+          JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
+        );
         // patch parent
         if (patchEvent.slice && patchEvent.slice.parent) {
           if (patchEvent.slice.parent.id && patchEvent.slice.parent.index) {
@@ -112,9 +115,7 @@ export function createForest(def: ForestDef): Forest {
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
               tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-                JSON.parse(
-                  JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
-                ),
+                oldState,
                 JSON.parse(JSON.stringify(patchEvent.slice)),
                 mergeStateCustomizer
               );
@@ -129,7 +130,7 @@ export function createForest(def: ForestDef): Forest {
                     oldIndex,
                     oldParentId,
                   },
-                  meta
+                  { name, meta }
                 );
               });
             }
@@ -142,16 +143,16 @@ export function createForest(def: ForestDef): Forest {
           }
         }
         // patch other fields
-        const oldState = JSON.parse(
-          JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
-        );
         tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
           oldState,
           JSON.parse(JSON.stringify(patchEvent.slice)),
           mergeStateCustomizer
         );
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "change", id: patchEvent.id, treeId, oldState }, meta);
+          cb(
+            { type: "change", id: patchEvent.id, treeId, oldState },
+            { name, meta }
+          );
         });
       }
     }
@@ -170,7 +171,7 @@ export function createForest(def: ForestDef): Forest {
           if (linkEvents[nodeId]) {
             linkEvents[nodeId]!.forEach((event) => {
               const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-              handleEvent(unlinkEvent, meta);
+              handleEvent(name, unlinkEvent, meta);
             });
           }
         }
@@ -180,7 +181,7 @@ export function createForest(def: ForestDef): Forest {
         forestUpdateSubscribers.forEach((cb) => {
           cb(
             { type: "dewire", childId: nodeId, parentId, treeId, deletedNode },
-            meta
+            { name, meta }
           );
         });
       });
@@ -203,7 +204,7 @@ export function createForest(def: ForestDef): Forest {
             treeId: treeId,
             rootTreeId: rootDef.id,
           },
-          meta
+          { name, meta }
         );
       });
     }
@@ -220,37 +221,48 @@ export function createForest(def: ForestDef): Forest {
             treeId: treeId,
             rootTreeId: rootDef.id,
           },
-          meta
+          { name, meta }
         );
       });
     }
   }
 
+  function handleEvents(data: {
+    name: string;
+    events: AnyEvent[];
+    meta: EventMetaData;
+  }) {
+    const { name, events, meta } = data;
+    events.forEach((event) => {
+      handleEvent(name, event, meta);
+    });
+  }
+
   // create a node
   function create(event: CreateEvent, meta: EventMetaData) {
     const type = event.type.slice("CREATE$$".length);
-    handleEvent(event, meta);
+    handleEvents({ name: "", events: [event], meta });
     defaultFnMap[type]!.onCreate(event);
   }
 
   // patch a node
   function patch(event: PatchEvent, meta: EventMetaData) {
-    handleEvent(event, meta);
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // delete a node
   function del(event: DeleteEvent, meta: EventMetaData) {
-    handleEvent(event, meta);
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // link nodes between two trees
   function link(event: LinkEvent, meta: EventMetaData) {
-    handleEvent(event, meta);
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // unlink nodes between two trees
   function unlink(event: UnlinkEvent, meta: EventMetaData) {
-    handleEvent(event, meta);
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // subscibe forest
@@ -271,7 +283,7 @@ export function createForest(def: ForestDef): Forest {
     del,
     link,
     unlink,
-    handleEvent,
+    handleEvents,
     subscribeForest,
   };
 

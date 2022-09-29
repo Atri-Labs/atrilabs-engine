@@ -68,6 +68,8 @@ export function popFromRedoQueue(forestPkgId: string, pageId: string) {
   }
 }
 
+const UNDO_REDO_NAME = "UNDO_REDO_EVENT";
+
 export const useStoreUndoRedoEvents = () => {
   const undo = useCallback(() => {
     const { forestPkgId, forestId } = BrowserForestManager.currentForest;
@@ -75,10 +77,12 @@ export const useStoreUndoRedoEvents = () => {
     // TODO: call patchCb without record flag
     console.log(undoRecord?.undo);
     if (undoRecord?.undo) {
-      undoRecord?.undo.forEach((event) => {
-        api.postNewEvent(forestPkgId, forestId, event, {
-          agent: "server-sent",
-        });
+      api.postNewEvents(forestPkgId, forestId, {
+        events: undoRecord?.undo,
+        meta: {
+          agent: "browser",
+        },
+        name: "UNDO_REDO_EVENT",
       });
     }
   }, []);
@@ -88,10 +92,12 @@ export const useStoreUndoRedoEvents = () => {
     // TODO: call patchCb without record flag
     console.log(undoRecord?.redo);
     if (undoRecord?.redo) {
-      undoRecord?.redo.forEach((event) => {
-        api.postNewEvent(forestPkgId, forestId, event, {
-          agent: "server-sent",
-        });
+      api.postNewEvents(forestPkgId, forestId, {
+        events: undoRecord?.redo,
+        meta: {
+          agent: "browser",
+        },
+        name: "UNDO_REDO_EVENT",
       });
     }
   }, []);
@@ -100,7 +106,12 @@ export const useStoreUndoRedoEvents = () => {
 
   useEffect(() => {
     const { subscribeForest } = BrowserForestManager.currentForest;
-    const unsub = subscribeForest((update, { agent }) => {
+    const unsub = subscribeForest((update, { meta: { agent }, name }) => {
+      // ignore events emitted due to undo/redo
+      if (name === UNDO_REDO_NAME) {
+        return;
+      }
+
       const { forestId, forestPkgId } = BrowserForestManager.currentForest;
       const componentTree =
         BrowserForestManager.currentForest.tree(ComponentTreeId);
@@ -143,13 +154,38 @@ export const useStoreUndoRedoEvents = () => {
             redo: [deleteEvent],
           });
         }
+        if (update.type === "rewire" && update.treeId === ComponentTreeId) {
+          const { childId, oldParentId, oldIndex, newIndex, newParentId } =
+            update;
+          const oldPatchEvent: PatchEvent = {
+            type: `PATCH$$${ComponentTreeId}`,
+            id: childId,
+            slice: {
+              parent: { id: oldParentId, index: oldIndex },
+            },
+          };
+          const newPatchEvent: PatchEvent = {
+            type: `PATCH$$${ComponentTreeId}`,
+            id: childId,
+            slice: {
+              parent: { id: newParentId, index: newIndex },
+            },
+          };
+          addToUndoQueue(forestPkgId, forestId, {
+            undo: [oldPatchEvent],
+            redo: [newPatchEvent],
+          });
+        }
         if (update.type === "change") {
           const nodeId = update.id;
           const treeId = update.treeId;
           const node =
             BrowserForestManager.currentForest.tree(treeId)!.nodes[nodeId];
-          const oldState = update.oldState;
+          const oldState = JSON.parse(JSON.stringify(update.oldState));
           const newState = JSON.parse(JSON.stringify(node.state));
+          // deleting parent from state to avoid error message in console
+          delete oldState["parent"];
+          delete newState["parent"];
           const oldPatch: PatchEvent = {
             type: `PATCH$$${treeId}`,
             id: nodeId,

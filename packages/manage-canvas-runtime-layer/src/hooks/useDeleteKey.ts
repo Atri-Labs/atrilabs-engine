@@ -28,8 +28,12 @@ export const useDeleteKey = () => {
             type: `DELETE$$${ComponentTreeId}`,
             id: selectedId,
           };
-          api.postNewEvent(forestPkgId, forestId, deleteEvent, {
-            agent: "browser",
+          api.postNewEvents(forestPkgId, forestId, {
+            events: [deleteEvent],
+            meta: {
+              agent: "browser",
+            },
+            name: "DELETE_COMPONENT",
           });
         }
       }
