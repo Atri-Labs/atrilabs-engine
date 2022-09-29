@@ -51,6 +51,7 @@
     "@atrilabs/canvas-runtime": "^0.0.64",
     "@atrilabs/component-icon-manifest-schema": "^0.0.64",
     "@atrilabs/component-list-layer": "^0.0.64",
+    "@atrilabs/component-navigator": "^0.0.64",
     "@atrilabs/component-style-layer": "^0.0.64",
     "@atrilabs/component-tree-to-app": "^0.0.64",
     "@atrilabs/custom-props-layer": "^0.0.64",
