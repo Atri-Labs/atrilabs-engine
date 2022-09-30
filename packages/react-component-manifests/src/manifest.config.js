@@ -21,6 +21,10 @@ module.exports = {
       modulePath: "./src/manifests/Input/Input.tsx",
       exportedVarName: "Input",
     },
+    Rating: {
+      modulePath: "./src/manifests/Rating/Rating.tsx",
+      exportedVarName: "Rating",
+    },
     Image: {
       modulePath: "./src/manifests/Image/Image.tsx",
       exportedVarName: "Image",
