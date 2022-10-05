@@ -16,6 +16,7 @@ import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { useFileUploadAliases } from "./hooks/useFileUploadAliases";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { ReactComponent as MinusIcon } from "./assets/minus.svg";
+import "./TabBody.css";
 export type TabBodyProps = {
   patchCb: (slice: any) => void;
   compId: string;
@@ -214,12 +215,14 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               </div>
             </div>
             <div
+              className="actions-tb-scroll"
               style={{
                 backgroundColor: gray700,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
                 flexDirection: "column",
+                width: "100%",
+                height: "calc(100vh - 90.4px)",
               }}
             >
               {surelyReutrnArray(props.callbacks[callbackName]).length === 0 ? (
@@ -252,7 +255,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                             alignItems: "center",
                             justifyContent: "center",
                             color: gray300,
-                            padding: "0.5rem",
+                            paddingTop: "0.5rem",
+                            paddingBottom: "0.5rem",
+                            width: "100%",
+                            paddingLeft: "0.1rem",
+                            paddingRight: "0.1rem",
                           }}
                         >
                           <div

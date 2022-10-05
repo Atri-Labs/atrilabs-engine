@@ -39,8 +39,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export type ColorComponentProps = {
+export type ColorComponentWithoutEffectProps = {
   name: string;
+  value: string;
+  setValue: (value: string) => void;
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
@@ -119,18 +121,13 @@ export const getOpacityValue = (hex: Color["hex"]) => {
   }
 };
 
-export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
+export const ColorComponentWithoutEffect: React.FC<
+  ColorComponentWithoutEffectProps
+> = (props) => {
   const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            props.styles[props.styleItem] === "transparent"
-              ? ""
-              : "transparent",
-        },
-      },
-    });
+    props.value === "transparent"
+      ? props.setValue("")
+      : props.setValue("transparent");
   };
 
   const handleOpacityInputChange = (
@@ -141,22 +138,16 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
       ? setOpacityValue("100")
       : setOpacityValue(e.target.value);
 
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            e.target.value !== ""
-              ? handleOpacityChange(
-                  String(Number(e.target.value) / 100),
-                  String(props.styles[props.styleItem])
-                )
-              : handleOpacityChange(
-                  String(e.target.value),
-                  String(props.styles[props.styleItem])
-                ),
-        },
-      },
-    });
+    e.target.value !== ""
+      ? props.setValue(
+          handleOpacityChange(
+            String(Number(e.target.value) / 100),
+            String(props.value)
+          )
+        )
+      : props.setValue(
+          handleOpacityChange(String(e.target.value), String(props.value))
+        );
   };
   const handleOpacityChange = useCallback(
     (opacityValue: string, hex: Color["hex"]) => {
@@ -174,6 +165,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     },
     []
   );
+
   const opacityHelper = (opacityValue: string) => {
     let opacityHelperValue;
     opacityValue === ""
@@ -189,36 +181,28 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   };
 
   const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles[props.styleItem]
-      ? getOpacityValue(String(props.styles[props.styleItem]))
-      : "100"
+    props.value ? getOpacityValue(props.value) : "100"
   );
 
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(String(props.styles[props.styleItem]))
+    opacityDisabledHandler(props.value)
   );
 
   useEffect(() => {
-    setOpacityValue(
-      props.styles[props.styleItem]
-        ? getOpacityValue(String(props.styles[props.styleItem]))
-        : "100"
-    );
+    setOpacityValue(props.value ? getOpacityValue(props.value) : "100");
   }, [props]);
 
   useEffect(() => {
-    setIsOpacityDisabled(
-      opacityDisabledHandler(String(props.styles[props.styleItem]))
-    );
+    setIsOpacityDisabled(opacityDisabledHandler(props.value));
   }, [props]);
 
-  const [colorVal, setColorVal] = useState<string>("");
+  // const [colorVal, setColorVal] = useState<string>("");
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
         onClick={() => {
-          props.openPalette(props.styleItem, props.name, true);
+          props.openPalette(props.styleItem, props.name, false);
         }}
         style={{ width: "55px", marginRight: "10px" }}
       >
@@ -230,9 +214,9 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
-          value={colorVal}
-          setValue={setColorVal}
-          applyFlag={true}
+          value={props.value}
+          setValue={props.setValue}
+          applyFlag={false}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>

@@ -12,6 +12,9 @@ export type InputProps = {
   getOpacityValue: (input: string) => string;
   setOpacityValue: (input: string) => void;
   rgb2hex: (input: ColorRGB) => string;
+  applyFlag: boolean;
+  value: string;
+  setValue: (value: string) => void;
 };
 export type rgbaObjectProps = {
   r: number;
@@ -120,46 +123,75 @@ export const ColorInput: React.FC<InputProps> = (props) => {
   );
 
   const [colorValue, setColorValue] = useState<string>(
-    colorValueTrim("insertText", String(props.styles[props.styleItem]))
+    props.applyFlag
+      ? colorValueTrim("insertText", String(props.styles[props.styleItem]))
+      : colorValueTrim("insertText", props.value)
   );
+
+  // useEffect(() => {
+  //   console.log(props.applyFlag, props.styleItem);
+  //   console.log(
+  //     props.applyFlag
+  //       ? colorValueTrim("insertText", String(props.styles[props.styleItem]))
+  //       : colorValueTrim("insertText", props.value)
+  //   );
+  // }, [
+  //   props.value,
+  //   props.applyFlag,
+  //   colorValueTrim,
+  //   props.styleItem,
+  //   props.styles,
+  // ]);
+
   useEffect(() => {
-    setColorValue(
-      colorValueTrim("insertText", String(props.styles[props.styleItem]))
-    );
+    if (props.applyFlag) {
+      setColorValue(
+        colorValueTrim("insertText", String(props.styles[props.styleItem]))
+      );
+    } else if (!props.applyFlag) {
+      setColorValue(colorValueTrim("insertText", props.value));
+    }
   }, [props, colorValueTrim]);
 
   useEffect(() => {
-    const propertyColorValue = String(props.styles[props.styleItem]);
-    if (
-      propertyColorValue === "undefined" ||
-      propertyColorValue === "transparent"
-    ) {
-      setColorValue("");
-    } else if (propertyColorValue.length === 5) {
-      setColorValue(propertyColorValue.substring(0, 4));
-    } else if (propertyColorValue.length === 9) {
-      setColorValue(propertyColorValue.substring(0, 7));
-    } else if (
-      propertyColorValue.length === 7 ||
-      propertyColorValue.length === 4
-    ) {
-      setColorValue(propertyColorValue);
+    if (props.applyFlag) {
+      const propertyColorValue = String(props.styles[props.styleItem]);
+      if (
+        propertyColorValue === "undefined" ||
+        propertyColorValue === "transparent"
+      ) {
+        setColorValue("");
+      } else if (propertyColorValue.length === 5) {
+        setColorValue(propertyColorValue.substring(0, 4));
+      } else if (propertyColorValue.length === 9) {
+        setColorValue(propertyColorValue.substring(0, 7));
+      } else if (
+        propertyColorValue.length === 7 ||
+        propertyColorValue.length === 4
+      ) {
+        setColorValue(propertyColorValue);
+      }
+    } else if (!props.applyFlag) {
+      setColorValue(colorValueTrim("insertText", props.value));
     }
-  }, [props]);
+  }, [props, colorValueTrim]);
 
   const onValidInput = (
     recievedColor: string,
     styleItem: keyof React.CSSProperties
   ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: recievedColor,
+    if (props.applyFlag) {
+      props.patchCb({
+        property: {
+          styles: {
+            [styleItem]: recievedColor,
+          },
         },
-      },
-    });
+      });
+    } else if (!props.applyFlag) {
+      props.setValue(recievedColor);
+    }
   };
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     styleItem: keyof React.CSSProperties
@@ -170,12 +202,22 @@ export const ColorInput: React.FC<InputProps> = (props) => {
 
     if (e.target.value.substring(0, 1) === "#") {
       if ("inputType" in e.nativeEvent) {
-        setColorValue(
-          colorValueTrim(
-            (e.nativeEvent as InputEvent).inputType,
-            e.target.value
-          )
-        );
+        if (props.applyFlag) {
+          setColorValue(
+            colorValueTrim(
+              (e.nativeEvent as InputEvent).inputType,
+              e.target.value
+            )
+          );
+        }
+        if (!props.applyFlag) {
+          props.setValue(
+            colorValueTrim(
+              (e.nativeEvent as InputEvent).inputType,
+              e.target.value
+            )
+          );
+        }
       }
 
       hexColorInputValidator(e, styleItem);
@@ -185,18 +227,34 @@ export const ColorInput: React.FC<InputProps> = (props) => {
       (e.target.value.substring(0, 4).toLowerCase() === "rgba" &&
         e.target.value[e.target.value.length - 1] === ")")
     ) {
-      setColorValue(
-        colorValueTrim(
-          (e.nativeEvent as InputEvent).inputType,
-          props.rgb2hex(toRGBAObject(e.target.value))
-        )
-      );
+      if (props.applyFlag) {
+        setColorValue(
+          colorValueTrim(
+            (e.nativeEvent as InputEvent).inputType,
+            props.rgb2hex(toRGBAObject(e.target.value))
+          )
+        );
+      }
+      if (!props.applyFlag) {
+        props.setValue(
+          colorValueTrim(
+            (e.nativeEvent as InputEvent).inputType,
+            props.rgb2hex(toRGBAObject(e.target.value))
+          )
+        );
+      }
+
       rgbaColorInputValidator(
         props.rgb2hex(toRGBAObject(e.target.value)),
         styleItem
       );
     } else {
-      setColorValue(e.target.value);
+      if (props.applyFlag) {
+        setColorValue(e.target.value);
+      }
+      if (!props.applyFlag) {
+        props.setValue(e.target.value);
+      }
     }
   };
 
