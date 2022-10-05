@@ -50,7 +50,7 @@ You can contribute in any or all of the following ways:
 
 - submitting a [bug report](https://github.com/Atri-Labs/atrilabs-engine/issues)
 - asking a question in [Discussions](https://github.com/Atri-Labs/atrilabs-engine/discussions)
-- sharing your Atri app with [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
+- creating an Atri app and sharing it with [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
 - contributing to the code base: You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable for newcomers. 
 
 Please refer to our [contributing guidelines](CONTRIBUTING.md) for details. 
