@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ColorPicker, useColor, toColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
@@ -11,6 +11,9 @@ export type ColorPickerProps = {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   title: string;
+  actionFlag: boolean;
+  colorVal: string;
+  colorValSetter: (color: string) => void;
 };
 
 export type Color = {
@@ -49,17 +52,25 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
     );
   }, [props.styleItem, props.styles, setColor]);
 
+  useEffect(() => {
+    setColor(toColor("hex", props.colorVal || ""));
+  }, [props.colorVal, setColor]);
+
   const handleChange = (
     color: string,
     styleItem: keyof React.CSSProperties
   ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: color,
+    if (props.actionFlag) {
+      props.patchCb({
+        property: {
+          styles: {
+            [styleItem]: color,
+          },
         },
-      },
-    });
+      });
+    } else if (!props.actionFlag) {
+      props.colorValSetter(color);
+    }
   };
 
   return (
