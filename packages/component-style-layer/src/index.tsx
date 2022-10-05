@@ -28,6 +28,9 @@ export default function () {
     showColorPalette,
     linkColorPaletteToStyleItem,
     title,
+    actionFlag,
+    colorVal,
+    colorValSetter,
     openPalette,
     closePalette,
   } = useShowColorPalette();
@@ -48,6 +51,8 @@ export default function () {
                 openPalette={openPalette}
                 compId={id}
                 breakpoint={breakpoint}
+                colorValue={colorVal}
+                setColorValue={colorValSetter}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div
@@ -63,6 +68,9 @@ export default function () {
                     styles={styles}
                     patchCb={patchCb}
                     title={title}
+                    actionFlag={actionFlag}
+                    colorVal={colorVal}
+                    colorValSetter={colorValSetter}
                   />
                 </div>
               ) : null}

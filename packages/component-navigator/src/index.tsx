@@ -9,6 +9,8 @@ import {
 import { useCallback, useState } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
+import { ComponentNavigator } from "./components/ComponentNavigator";
+import { ComponentNode } from "./types";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -53,6 +55,21 @@ export default function () {
   const closeContainer = useCallback(() => {
     setShowDropContianer(false);
   }, []);
+  const onChange = useCallback(
+    (change: { id: string; parentId: string; index: number }) => {},
+    []
+  );
+  const onHover = useCallback((id: string) => {}, []);
+  const onSelect = useCallback((id: string) => {}, []);
+  const onDragStart = useCallback((id: string) => {}, []);
+  const onDragEnd = useCallback((id: string) => {}, []);
+  const rootNode: ComponentNode = {
+    type: "acceptsChild",
+    id: "body",
+    name: "Body",
+    children: [],
+    open: true,
+  };
 
   return (
     <>
@@ -75,7 +92,14 @@ export default function () {
                 </span>
               </div>
             </header>
-            <div>{/* Component Navigator Component goes here */}</div>
+            <ComponentNavigator
+              onChange={onChange}
+              onHover={onHover}
+              onSelect={onSelect}
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
+              rootNode={rootNode}
+            />
           </div>
         </Container>
       ) : null}

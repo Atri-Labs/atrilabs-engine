@@ -1,10 +1,20 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useEffect } from "react";
 import { CssProprtyComponentType } from "../../types";
 import ControlledInput from "./ControlledInput";
 import "./SizeInputWithUnits.css";
-
-export type SizeInputWithUnitsProps = {
+export type boxShadowPropsType = {
+  inset: boolean;
+  xoffset: string;
+  yoffset: string;
+  blur: string;
+  spread: string;
+};
+export type SizeInputWithoutEffectProps = {
+  value: any;
+  index: number;
+  name: string;
+  setValue: (value: any) => void;
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
@@ -28,11 +38,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
+export const SizeInputWithoutEffect: React.FC<SizeInputWithoutEffectProps> = (
   props
 ) => {
-  const [unitValue, setUnitValue] = useState("px");
-
   const getDigitIndex = (value: string) => {
     let digitIndex;
     value = String(value);
@@ -45,6 +53,14 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
     return digitIndex;
   };
 
+  useEffect(() => {
+    console.log(
+      props.value[props.index][props.name],
+      props.name,
+      props.styleItem
+    );
+  }, []);
+
   const getNumericValue = (value: string) => {
     let digitIndex = getDigitIndex(value);
     return value.substring(0, digitIndex);
@@ -56,69 +72,33 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
   }, []);
 
   const unit = useMemo(() => {
-    return getUnitIndex(String(props.styles[props.styleItem])) === "auto"
+    return getUnitIndex(props.value[props.index][props.name]) === "auto"
       ? ""
-      : getUnitIndex(String(props.styles[props.styleItem] || unitValue));
-  }, [props.styles, props.styleItem, getUnitIndex, unitValue]);
-
-  const displayUnit = useMemo(() => {
-    return props.styles[props.styleItem] === ""
-      ? unitValue
-      : unit
-      ? unit
-      : null;
-  }, [props, unitValue, unit]);
+      : getUnitIndex(String(props.value[props.index][props.name] || "px"));
+  }, [props.name, props.index, props.value, getUnitIndex]);
 
   const parseValueUnit = (e: string, unit: string) => {
     return e ? e.concat(unit) : "";
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const arr = [...props.value];
     if (!e.target.value) {
-      props.patchCb({
-        property: {
-          styles: {
-            [styleItem]: "",
-          },
-        },
-      });
+      props.value[props.index][props.name] = "" + unit;
     } else {
-      props.patchCb({
-        property: {
-          styles: {
-            [styleItem]:
-              unit === "auto" ? "auto" : parseValueUnit(e.target.value, unit),
-          },
-        },
-      });
+      unit === "auto"
+        ? (arr[props.index][props.name] = "auto")
+        : (arr[props.index][props.name] = parseValueUnit(e.target.value, unit));
     }
+    props.setValue(arr);
   };
 
-  const handleUnitChange = (
-    unitValue: string,
-    styleItem: keyof React.CSSProperties
-  ) => {
-    setUnitValue(unitValue);
+  const handleUnitChange = (unitValue: string) => {
     if (unitValue === "auto") {
-      props.patchCb({
-        property: {
-          styles: {
-            [styleItem]: "auto",
-          },
-        },
-      });
+      props.value[props.index][props.name] = "auto";
     } else {
-      let val = getNumericValue(String(props.styles[props.styleItem]));
-      props.patchCb({
-        property: {
-          styles: {
-            [styleItem]: val.concat(unitValue),
-          },
-        },
-      });
+      let val = getNumericValue(props.value[props.index][props.name]);
+      props.value[props.index][props.name] = val.concat(unitValue);
     }
   };
 
@@ -127,75 +107,75 @@ export const SizeInputWithUnits: React.FC<SizeInputWithUnitsProps> = (
       <ControlledInput
         type="text"
         value={
-          props.styles[props.styleItem] !== "auto"
-            ? getNumericValue(String(props.styles[props.styleItem]))
-            : props.styles[props.styleItem]
+          props.value[props.index][props.name] !== "auto"
+            ? getNumericValue(props.value[props.index][props.name])
+            : props.value[props.index][props.name]
         }
         onChange={handleChange}
         styleItem={props.styleItem}
-        disabled={unitValue}
+        disabled={unit}
         placeholder={props.defaultValue}
         pattern="^[0-9]+$"
       />
 
       <div className="dropdown" style={{ position: "relative" }}>
-        <button className="dropbtn">{displayUnit}</button>
+        <button className="dropbtn">{unit ? unit : null}</button>
         <div
           className="dropdown-content"
           style={{ position: "absolute", left: "0" }}
         >
           <p
             onClick={() => {
-              handleUnitChange("px", props.styleItem);
+              handleUnitChange("px");
             }}
           >
             px
           </p>
           <p
             onClick={() => {
-              handleUnitChange("%", props.styleItem);
+              handleUnitChange("%");
             }}
           >
             %
           </p>
           <p
             onClick={() => {
-              handleUnitChange("em", props.styleItem);
+              handleUnitChange("em");
             }}
           >
             em
           </p>
           <p
             onClick={() => {
-              handleUnitChange("rem", props.styleItem);
+              handleUnitChange("rem");
             }}
           >
             rem
           </p>
           <p
             onClick={() => {
-              handleUnitChange("ch", props.styleItem);
+              handleUnitChange("ch");
             }}
           >
             ch
           </p>
           <p
             onClick={() => {
-              handleUnitChange("vw", props.styleItem);
+              handleUnitChange("vw");
             }}
           >
             vw
           </p>
           <p
             onClick={() => {
-              handleUnitChange("vh", props.styleItem);
+              handleUnitChange("vh");
             }}
           >
             vh
           </p>
           <p
             onClick={() => {
-              handleUnitChange("auto", props.styleItem);
+              handleUnitChange("auto");
             }}
           >
             auto

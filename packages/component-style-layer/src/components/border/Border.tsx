@@ -8,14 +8,17 @@ import {
   gray500,
   agastyaLine,
 } from "@atrilabs/design-system";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
+import { ReactComponent as Minus } from "../../assets/background/none-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { ColorComponent } from "../commons/ColorComponent";
+import { ColorComponentWithoutEffect } from "../commons/ColorComponentWithoutEffect";
+import { SizeInputWithoutEffect } from "../commons/SizeInputWithoutEffect";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -62,6 +65,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "left",
   },
   gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 15px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
+  bsGridContainer: {
     ...smallText,
     color: gray400,
     display: "grid",
@@ -144,6 +156,13 @@ export type borderRadiusTypeOptions = {
   all: boolean;
   separate: boolean;
 };
+export type boxShadowPropsType = {
+  inset: boolean;
+  xoffset: string;
+  yoffset: string;
+  blur: string;
+  spread: string;
+};
 export const singleBorderRadiusOptions: borderRadiusTypeOptions = {
   all: true,
   separate: false,
@@ -158,7 +177,7 @@ const borderRadiusTypes = [
 ];
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-
+  const patchCb = props.patchCb;
   const handleBorderChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -226,6 +245,111 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
 
   const [selectedBorderRadiusTypeIndex, setSelectedBorderRadiusTypeIndex] =
     useState<number>(0);
+
+  // Box Shadow
+  const [boxShadowProps, setBoxShadowProps] = useState([
+    {
+      inset: false,
+      xoffset: "0px",
+      yoffset: "00px",
+      blur: "0px",
+      spread: "0px",
+    },
+  ]);
+  const [boxShadow, setBoxShadow] = useState<string>("");
+
+  const handleInsetChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const arr = [...boxShadowProps];
+    arr[index].inset = e.target.checked;
+    setBoxShadowProps(arr);
+  };
+
+  const handleBoxShadowChange = useCallback(() => {
+    patchCb({
+      property: {
+        styles: {
+          boxShadow: boxShadow,
+        },
+      },
+    });
+  }, [patchCb, boxShadow]);
+
+  useEffect(() => {
+    console.log(
+      boxShadowProps[0].inset
+        ? "inset" +
+            " " +
+            boxShadowProps[0].xoffset +
+            " " +
+            boxShadowProps[0].yoffset +
+            " " +
+            boxShadowProps[0].blur +
+            " " +
+            boxShadowProps[0].spread +
+            " " +
+            props.colorValue
+        : boxShadowProps[0].xoffset +
+            " " +
+            boxShadowProps[0].yoffset +
+            " " +
+            boxShadowProps[0].blur +
+            " " +
+            boxShadowProps[0].spread +
+            " " +
+            props.colorValue
+    );
+
+    setBoxShadow(
+      boxShadowProps[0].inset
+        ? "inset" +
+            " " +
+            boxShadowProps[0].xoffset +
+            " " +
+            boxShadowProps[0].yoffset +
+            " " +
+            boxShadowProps[0].blur +
+            " " +
+            boxShadowProps[0].spread +
+            " " +
+            props.colorValue
+        : boxShadowProps[0].xoffset +
+            " " +
+            boxShadowProps[0].yoffset +
+            " " +
+            boxShadowProps[0].blur +
+            " " +
+            boxShadowProps[0].spread +
+            " " +
+            props.colorValue
+    );
+
+    handleBoxShadowChange();
+  }, [props.colorValue, boxShadowProps, handleBoxShadowChange]);
+
+  const handleBsIncrement = () => {
+    setBoxShadowProps((boxShadowProps) => [
+      ...boxShadowProps,
+      {
+        inset: false,
+        xoffset: "0px",
+        yoffset: "0px",
+        blur: "0px",
+        spread: "0px",
+      },
+    ]);
+  };
+
+  const handleBsDecrement = (index: number) => {
+    const arr = [...boxShadowProps];
+    if (arr.length > 1) {
+      arr.splice(index, 1);
+    }
+    setBoxShadowProps(arr);
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -242,232 +366,419 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       <div
         style={
           showProperties
-            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+            ? { display: "flex", rowGap: "2rem", flexDirection: "column" }
             : { display: "none" }
         }
       >
-        <div style={styles.brgridContainer}>
-          <span style={styles.optionName}>
-            <BR />
-          </span>
-          <div
-            style={{
-              ...styles.typesContainer,
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
+        <div
+          style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
+        >
+          <div style={styles.brgridContainer}>
+            <span style={styles.optionName}>
+              <BR />
+            </span>
             <div
-              style={
-                selectedBorderRadiusTypeIndex === 0
-                  ? {
-                      ...styles.iconContainer,
-                      borderRight: `1px solid ${agastyaLine}`,
-                      background: gray800,
-                    }
-                  : {
-                      ...styles.iconContainer,
-                      borderRight: `1px solid ${agastyaLine}`,
-                      background: gray500,
-                    }
-              }
-              onClick={() => {
-                setSelectedBorderRadiusTypeIndex(0);
+              style={{
+                ...styles.typesContainer,
+                gridTemplateColumns: "1fr 1fr",
               }}
             >
-              Uniform
+              <div
+                style={
+                  selectedBorderRadiusTypeIndex === 0
+                    ? {
+                        ...styles.iconContainer,
+                        borderRight: `1px solid ${agastyaLine}`,
+                        background: gray800,
+                      }
+                    : {
+                        ...styles.iconContainer,
+                        borderRight: `1px solid ${agastyaLine}`,
+                        background: gray500,
+                      }
+                }
+                onClick={() => {
+                  setSelectedBorderRadiusTypeIndex(0);
+                }}
+              >
+                Uniform
+              </div>
+              <div
+                style={
+                  selectedBorderRadiusTypeIndex === 1
+                    ? {
+                        ...styles.iconContainer,
+                        background: gray800,
+                      }
+                    : {
+                        ...styles.iconContainer,
+                        background: gray500,
+                      }
+                }
+                onClick={() => {
+                  setSelectedBorderRadiusTypeIndex(1);
+                }}
+              >
+                Non-Uniform
+              </div>
             </div>
-            <div
-              style={
-                selectedBorderRadiusTypeIndex === 1
-                  ? {
-                      ...styles.iconContainer,
-                      background: gray800,
-                    }
-                  : {
-                      ...styles.iconContainer,
-                      background: gray500,
-                    }
-              }
-              onClick={() => {
-                setSelectedBorderRadiusTypeIndex(1);
+          </div>
+
+          {borderRadiusTypes[selectedBorderRadiusTypeIndex].all && (
+            <div style={styles.borderTypeGridContainer}>
+              <div style={styles.optionName}>
+                <span>&nbsp;</span>
+              </div>
+              <SizeInputWithUnits
+                styleItem="borderRadius"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="0"
+              />
+            </div>
+          )}
+          {borderRadiusTypes[selectedBorderRadiusTypeIndex].separate && (
+            <div style={styles.borderTypeGridContainer}>
+              <div style={styles.optionName}>
+                <span>TL</span>
+              </div>
+              <SizeInputWithUnits
+                styleItem="borderTopLeftRadius"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="0"
+              />
+              <div style={styles.optionName}>
+                <span>TR</span>
+              </div>
+              <SizeInputWithUnits
+                styleItem="borderTopRightRadius"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="0"
+              />
+              <div style={styles.optionName}>
+                <span>BL</span>
+              </div>
+              <SizeInputWithUnits
+                styleItem="borderBottomLeftRadius"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="0"
+              />
+              <div style={styles.optionName}>
+                <span>BR</span>
+              </div>
+              <SizeInputWithUnits
+                styleItem="borderBottomRightRadius"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue="0"
+              />
+            </div>
+          )}
+
+          <div style={styles.borderGrid}>
+            <span>&nbsp;</span>
+            <span
+              onClick={(e) => {
+                setBorderType("Top");
               }}
+              style={
+                activeBorderType === "Top"
+                  ? { ...styles.borderOption, backgroundColor: gray800 }
+                  : { ...styles.borderOption }
+              }
             >
-              Non-Uniform
-            </div>
-          </div>
-        </div>
-
-        {borderRadiusTypes[selectedBorderRadiusTypeIndex].all && (
-          <div style={styles.borderTypeGridContainer}>
-            <div style={styles.optionName}>
-              <span>&nbsp;</span>
-            </div>
-            <SizeInputWithUnits
-              styleItem="borderRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-        )}
-        {borderRadiusTypes[selectedBorderRadiusTypeIndex].separate && (
-          <div style={styles.borderTypeGridContainer}>
-            <div style={styles.optionName}>
-              <span>TL</span>
-            </div>
-            <SizeInputWithUnits
-              styleItem="borderTopLeftRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-            <div style={styles.optionName}>
-              <span>TR</span>
-            </div>
-            <SizeInputWithUnits
-              styleItem="borderTopRightRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-            <div style={styles.optionName}>
-              <span>BL</span>
-            </div>
-            <SizeInputWithUnits
-              styleItem="borderBottomLeftRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-            <div style={styles.optionName}>
-              <span>BR</span>
-            </div>
-            <SizeInputWithUnits
-              styleItem="borderBottomRightRadius"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-        )}
-
-        <div style={styles.borderGrid}>
-          <span>&nbsp;</span>
-          <span
-            onClick={(e) => {
-              setBorderType("Top");
-            }}
-            style={
-              activeBorderType === "Top"
-                ? { ...styles.borderOption, backgroundColor: gray800 }
-                : { ...styles.borderOption }
-            }
-          >
-            T
-          </span>
-          <span>&nbsp;</span>
-          <span
-            onClick={(e) => {
-              setBorderType("Left");
-            }}
-            style={
-              activeBorderType === "Left"
-                ? { ...styles.borderOption, backgroundColor: gray800 }
-                : { ...styles.borderOption }
-            }
-          >
-            L
-          </span>
-          <span
-            onClick={(e) => {
-              setBorderType("");
-            }}
-            style={
-              activeBorderType === ""
-                ? { ...styles.borderOption, backgroundColor: gray800 }
-                : { ...styles.borderOption }
-            }
-          >
-            A
-          </span>
-          <span
-            onClick={(e) => {
-              setBorderType("Right");
-            }}
-            style={
-              activeBorderType === "Right"
-                ? { ...styles.borderOption, backgroundColor: gray800 }
-                : { ...styles.borderOption }
-            }
-          >
-            R
-          </span>
-          <span>&nbsp;</span>
-          <span
-            onClick={(e) => {
-              setBorderType("Bottom");
-            }}
-            style={
-              activeBorderType === "Bottom"
-                ? { ...styles.borderOption, backgroundColor: gray800 }
-                : { ...styles.borderOption }
-            }
-          >
-            B
-          </span>
-          <span>&nbsp;</span>
-        </div>
-
-        <div style={styles.gridContainer}>
-          <div style={styles.optionName}>
-            <BW />
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem={setBorderTypeWidth()}
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue=""
-            />
-          </div>
-
-          <div style={styles.optionName}>
-            <BS />
-          </div>
-          <div style={{ marginLeft: "-2px" }}>
-            <select
-              name="Border Style"
-              onChange={(e) => handleBorderChange(e, setBorderTypeStyle())}
-              style={styles.inputBox}
-              value={props.styles[setBorderTypeStyle()] || ""}
+              T
+            </span>
+            <span>&nbsp;</span>
+            <span
+              onClick={(e) => {
+                setBorderType("Left");
+              }}
+              style={
+                activeBorderType === "Left"
+                  ? { ...styles.borderOption, backgroundColor: gray800 }
+                  : { ...styles.borderOption }
+              }
             >
-              <option style={styles.select} value={""}></option>
-              <option style={styles.select} value="none">
-                none
-              </option>
-              <option style={styles.select} value="solid">
-                solid
-              </option>
-              <option style={styles.select} value="dashed">
-                dashed
-              </option>
-              <option style={styles.select} value="dotted">
-                dotted
-              </option>
-            </select>
+              L
+            </span>
+            <span
+              onClick={(e) => {
+                setBorderType("");
+              }}
+              style={
+                activeBorderType === ""
+                  ? { ...styles.borderOption, backgroundColor: gray800 }
+                  : { ...styles.borderOption }
+              }
+            >
+              A
+            </span>
+            <span
+              onClick={(e) => {
+                setBorderType("Right");
+              }}
+              style={
+                activeBorderType === "Right"
+                  ? { ...styles.borderOption, backgroundColor: gray800 }
+                  : { ...styles.borderOption }
+              }
+            >
+              R
+            </span>
+            <span>&nbsp;</span>
+            <span
+              onClick={(e) => {
+                setBorderType("Bottom");
+              }}
+              style={
+                activeBorderType === "Bottom"
+                  ? { ...styles.borderOption, backgroundColor: gray800 }
+                  : { ...styles.borderOption }
+              }
+            >
+              B
+            </span>
+            <span>&nbsp;</span>
+          </div>
+
+          <div style={styles.gridContainer}>
+            <div style={styles.optionName}>
+              <BW />
+            </div>
+            <div>
+              <SizeInputWithUnits
+                styleItem={setBorderTypeWidth()}
+                styles={props.styles}
+                patchCb={props.patchCb}
+                defaultValue=""
+              />
+            </div>
+
+            <div style={styles.optionName}>
+              <BS />
+            </div>
+            <div style={{ marginLeft: "-2px" }}>
+              <select
+                name="Border Style"
+                onChange={(e) => handleBorderChange(e, setBorderTypeStyle())}
+                style={styles.inputBox}
+                value={props.styles[setBorderTypeStyle()] || ""}
+              >
+                <option style={styles.select} value={""}></option>
+                <option style={styles.select} value="none">
+                  none
+                </option>
+                <option style={styles.select} value="solid">
+                  solid
+                </option>
+                <option style={styles.select} value="dashed">
+                  dashed
+                </option>
+                <option style={styles.select} value="dotted">
+                  dotted
+                </option>
+              </select>
+            </div>
+          </div>
+          <div style={styles.gridInputContainer}>
+            <div style={styles.optionName}>
+              <BC />
+            </div>
+            <ColorComponent
+              name="Border Color"
+              styleItem={setBorderTypeColor()}
+              styles={props.styles}
+              patchCb={props.patchCb}
+              openPalette={props.openPalette}
+            />
           </div>
         </div>
-        <div style={styles.gridInputContainer}>
-          <div style={styles.optionName}>
-            <BC />
+        <div
+          style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={styles.header}>Box Shadow</div>
+            <div style={styles.header} onClick={handleBsIncrement}>
+              +
+            </div>
           </div>
-          <ColorComponent
-            name="Border Color"
-            styleItem={setBorderTypeColor()}
-            styles={props.styles}
-            patchCb={props.patchCb}
-            openPalette={props.openPalette}
-          />
+          {boxShadowProps.map((bs, index) => {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  rowGap: "1rem",
+                  flexDirection: "column",
+                  paddingLeft: "0.5rem",
+                  paddingRight: "0.5rem",
+                }}
+              >
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div style={styles.bsGridContainer}>
+                    <div style={styles.optionName}>Inset</div>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => handleInsetChange(e, index)}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      color: gray200,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      userSelect: "none",
+                    }}
+                    onClick={(e) => handleBsDecrement(index)}
+                  >
+                    <Minus />
+                  </div>
+                </div>
+                <div style={styles.bsGridContainer}>
+                  <div style={styles.optionName}>X-Off</div>
+                  <div>
+                    <SizeInputWithoutEffect
+                      value={boxShadowProps}
+                      name="xoffset"
+                      index={index}
+                      setValue={setBoxShadowProps}
+                      styleItem="boxShadow"
+                      styles={props.styles}
+                      patchCb={props.patchCb}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div style={styles.optionName}>Y-Off</div>
+                  <div>
+                    <SizeInputWithoutEffect
+                      value={boxShadowProps}
+                      index={index}
+                      name="yoffset"
+                      setValue={setBoxShadowProps}
+                      styleItem="boxShadow"
+                      styles={props.styles}
+                      patchCb={props.patchCb}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div style={styles.optionName}>Blur</div>
+                  <div>
+                    <SizeInputWithoutEffect
+                      value={boxShadowProps}
+                      index={index}
+                      name="blur"
+                      setValue={setBoxShadowProps}
+                      styleItem="boxShadow"
+                      styles={props.styles}
+                      patchCb={props.patchCb}
+                      defaultValue=""
+                    />
+                  </div>
+                  <div style={styles.optionName}>Spread</div>
+                  <div>
+                    <SizeInputWithoutEffect
+                      value={boxShadowProps}
+                      index={index}
+                      name="spread"
+                      setValue={setBoxShadowProps}
+                      styleItem="boxShadow"
+                      styles={props.styles}
+                      patchCb={props.patchCb}
+                      defaultValue=""
+                    />
+                  </div>
+                </div>
+                <div style={styles.gridInputContainer}>
+                  <div style={styles.optionName}>
+                    <BC />
+                  </div>
+                  <ColorComponentWithoutEffect
+                    name="Color"
+                    value={props.colorValue}
+                    setValue={props.setColorValue}
+                    styleItem="boxShadow"
+                    styles={props.styles}
+                    patchCb={props.patchCb}
+                    openPalette={props.openPalette}
+                  />
+                </div>
+              </div>
+            );
+          })}
+          {/* <div
+            style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
+          >
+            <div style={styles.bsGridContainer}>
+              <div style={styles.optionName}>Inset</div>
+              <input type="checkbox" />
+            </div>
+            <div style={styles.bsGridContainer}>
+              <div style={styles.optionName}>X-Off</div>
+              <div>
+                <SizeInputWithoutEffect
+                  value={xOffset}
+                  setValue={setXOffset}
+                  styleItem="boxShadow"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div style={styles.optionName}>Y-Off</div>
+              <div>
+                <SizeInputWithoutEffect
+                  value={yOffset}
+                  setValue={setYOffset}
+                  styleItem="boxShadow"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div style={styles.optionName}>Blur</div>
+              <div>
+                <SizeInputWithoutEffect
+                  value={bsBlur}
+                  setValue={setBsBlur}
+                  styleItem="boxShadow"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div style={styles.optionName}>Spread</div>
+              <div>
+                <SizeInputWithoutEffect
+                  value={spread}
+                  setValue={setSpread}
+                  styleItem="boxShadow"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+            </div>
+            <div style={styles.gridInputContainer}>
+              <div style={styles.optionName}>
+                <BC />
+              </div>
+              <ColorComponentWithoutEffect
+                name="Color"
+                value={props.colorValue}
+                setValue={props.setColorValue}
+                styleItem="boxShadow"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                openPalette={props.openPalette}
+              />
+            </div>
+          </div> */}
         </div>
       </div>
     </div>
