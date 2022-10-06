@@ -44,11 +44,7 @@ export type ColorComponentProps = {
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
-  openPalette: (
-    styleItem: keyof React.CSSProperties,
-    name: string,
-    actionFlag: boolean
-  ) => void;
+  openPalette: (styleItem: keyof React.CSSProperties, name: string) => void;
 };
 
 export type Color = {
@@ -218,7 +214,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
         onClick={() => {
-          props.openPalette(props.styleItem, props.name, true);
+          props.openPalette(props.styleItem, props.name);
         }}
         style={{ width: "55px", marginRight: "10px" }}
       >
@@ -233,6 +229,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
           value={colorVal}
           setValue={setColorVal}
           applyFlag={true}
+          index={0}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>

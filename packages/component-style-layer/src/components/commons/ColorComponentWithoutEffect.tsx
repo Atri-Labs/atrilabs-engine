@@ -41,16 +41,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export type ColorComponentWithoutEffectProps = {
   name: string;
-  value: string;
-  setValue: (value: string) => void;
+  value: [string];
+  setValue: (value: string, index: number) => void;
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
-  openPalette: (
-    styleItem: keyof React.CSSProperties,
-    name: string,
-    actionFlag: boolean
-  ) => void;
+  openPaletteWithoutEffect: (name: string, index: number) => void;
+  index: number;
 };
 
 export type Color = {
@@ -125,9 +122,9 @@ export const ColorComponentWithoutEffect: React.FC<
   ColorComponentWithoutEffectProps
 > = (props) => {
   const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
-    props.value === "transparent"
-      ? props.setValue("")
-      : props.setValue("transparent");
+    props.value[props.index] === "transparent"
+      ? props.setValue("", props.index)
+      : props.setValue("transparent", props.index);
   };
 
   const handleOpacityInputChange = (
@@ -143,10 +140,12 @@ export const ColorComponentWithoutEffect: React.FC<
           handleOpacityChange(
             String(Number(e.target.value) / 100),
             String(props.value)
-          )
+          ),
+          props.index
         )
       : props.setValue(
-          handleOpacityChange(String(e.target.value), String(props.value))
+          handleOpacityChange(String(e.target.value), String(props.value)),
+          props.index
         );
   };
   const handleOpacityChange = useCallback(
@@ -181,19 +180,21 @@ export const ColorComponentWithoutEffect: React.FC<
   };
 
   const [opacityValue, setOpacityValue] = useState<string>(
-    props.value ? getOpacityValue(props.value) : "100"
+    props.value ? getOpacityValue(props.value[props.index]) : "100"
   );
 
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(props.value)
+    opacityDisabledHandler(props.value[props.index])
   );
 
   useEffect(() => {
-    setOpacityValue(props.value ? getOpacityValue(props.value) : "100");
+    setOpacityValue(
+      props.value ? getOpacityValue(props.value[props.index]) : "100"
+    );
   }, [props]);
 
   useEffect(() => {
-    setIsOpacityDisabled(opacityDisabledHandler(props.value));
+    setIsOpacityDisabled(opacityDisabledHandler(props.value[props.index]));
   }, [props]);
 
   // const [colorVal, setColorVal] = useState<string>("");
@@ -202,7 +203,7 @@ export const ColorComponentWithoutEffect: React.FC<
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
         onClick={() => {
-          props.openPalette(props.styleItem, props.name, false);
+          props.openPaletteWithoutEffect(props.styleItem, props.index);
         }}
         style={{ width: "55px", marginRight: "10px" }}
       >
@@ -214,9 +215,10 @@ export const ColorComponentWithoutEffect: React.FC<
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
-          value={props.value}
+          value={props.value[props.index]}
           setValue={props.setValue}
           applyFlag={false}
+          index={props.index}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>

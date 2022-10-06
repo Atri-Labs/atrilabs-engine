@@ -251,11 +251,24 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     {
       inset: false,
       xoffset: "0px",
-      yoffset: "00px",
+      yoffset: "0px",
       blur: "0px",
       spread: "0px",
+      color: "ffffff",
     },
   ]);
+  const createColorArray = () => {
+    let arr;
+    boxShadowProps.forEach((bsProp, index) => {
+      arr.push(bsProp.color);
+    });
+    if (arr) {
+      props.colorValueArraySetter(arr);
+    }
+
+    return arr;
+  };
+
   const [boxShadow, setBoxShadow] = useState<string>("");
 
   const handleInsetChange = (
@@ -277,57 +290,33 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     });
   }, [patchCb, boxShadow]);
 
-  useEffect(() => {
-    console.log(
-      boxShadowProps[0].inset
-        ? "inset" +
-            " " +
-            boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-        : boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-    );
+  // useEffect(() => {
+  //   setBoxShadow(
+  //     boxShadowProps[0].inset
+  //       ? "inset" +
+  //           " " +
+  //           boxShadowProps[0].xoffset +
+  //           " " +
+  //           boxShadowProps[0].yoffset +
+  //           " " +
+  //           boxShadowProps[0].blur +
+  //           " " +
+  //           boxShadowProps[0].spread +
+  //           " " +
+  //           props.colorValue
+  //       : boxShadowProps[0].xoffset +
+  //           " " +
+  //           boxShadowProps[0].yoffset +
+  //           " " +
+  //           boxShadowProps[0].blur +
+  //           " " +
+  //           boxShadowProps[0].spread +
+  //           " " +
+  //           props.colorValue
+  //   );
 
-    setBoxShadow(
-      boxShadowProps[0].inset
-        ? "inset" +
-            " " +
-            boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-        : boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-    );
-
-    handleBoxShadowChange();
-  }, [props.colorValue, boxShadowProps, handleBoxShadowChange]);
+  //   handleBoxShadowChange();
+  // }, [props.colorValue, boxShadowProps, handleBoxShadowChange]);
 
   const handleBsIncrement = () => {
     setBoxShadowProps((boxShadowProps) => [
@@ -338,8 +327,10 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
         yoffset: "0px",
         blur: "0px",
         spread: "0px",
+        color: "ffffff",
       },
     ]);
+    createColorArray();
   };
 
   const handleBsDecrement = (index: number) => {
@@ -348,6 +339,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       arr.splice(index, 1);
     }
     setBoxShadowProps(arr);
+    createColorArray();
   };
 
   return (
@@ -609,6 +601,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           {boxShadowProps.map((bs, index) => {
             return (
               <div
+                key={index}
                 style={{
                   display: "flex",
                   rowGap: "1rem",
@@ -705,80 +698,13 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
                     styleItem="boxShadow"
                     styles={props.styles}
                     patchCb={props.patchCb}
-                    openPalette={props.openPalette}
+                    openPaletteWithoutEffect={props.openPaletteWithoutEffect}
+                    index={index}
                   />
                 </div>
               </div>
             );
           })}
-          {/* <div
-            style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
-          >
-            <div style={styles.bsGridContainer}>
-              <div style={styles.optionName}>Inset</div>
-              <input type="checkbox" />
-            </div>
-            <div style={styles.bsGridContainer}>
-              <div style={styles.optionName}>X-Off</div>
-              <div>
-                <SizeInputWithoutEffect
-                  value={xOffset}
-                  setValue={setXOffset}
-                  styleItem="boxShadow"
-                  styles={props.styles}
-                  patchCb={props.patchCb}
-                  defaultValue=""
-                />
-              </div>
-              <div style={styles.optionName}>Y-Off</div>
-              <div>
-                <SizeInputWithoutEffect
-                  value={yOffset}
-                  setValue={setYOffset}
-                  styleItem="boxShadow"
-                  styles={props.styles}
-                  patchCb={props.patchCb}
-                  defaultValue=""
-                />
-              </div>
-              <div style={styles.optionName}>Blur</div>
-              <div>
-                <SizeInputWithoutEffect
-                  value={bsBlur}
-                  setValue={setBsBlur}
-                  styleItem="boxShadow"
-                  styles={props.styles}
-                  patchCb={props.patchCb}
-                  defaultValue=""
-                />
-              </div>
-              <div style={styles.optionName}>Spread</div>
-              <div>
-                <SizeInputWithoutEffect
-                  value={spread}
-                  setValue={setSpread}
-                  styleItem="boxShadow"
-                  styles={props.styles}
-                  patchCb={props.patchCb}
-                  defaultValue=""
-                />
-              </div>
-            </div>
-            <div style={styles.gridInputContainer}>
-              <div style={styles.optionName}>
-                <BC />
-              </div>
-              <ColorComponentWithoutEffect
-                name="Color"
-                value={props.colorValue}
-                setValue={props.setColorValue}
-                styleItem="boxShadow"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                openPalette={props.openPalette}
-              />
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
