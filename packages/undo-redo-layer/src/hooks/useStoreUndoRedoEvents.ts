@@ -176,7 +176,11 @@ export const useStoreUndoRedoEvents = () => {
             redo: [newPatchEvent],
           });
         }
-        if (update.type === "change") {
+        if (
+          update.type === "change" &&
+          name !== "NEW_DROP" &&
+          name !== "NEW_DROP_ALIAS"
+        ) {
           const nodeId = update.id;
           const treeId = update.treeId;
           const node =
