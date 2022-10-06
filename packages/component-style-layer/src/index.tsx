@@ -6,7 +6,9 @@ import { useManageCSS } from "./hooks/useManageCSS";
 import { UploadContainer } from "@atrilabs/shared-layer-lib";
 import { useUploadAssetManager } from "./hooks/useUploadAssetManager";
 import { useShowColorPalette } from "./hooks/useShowColorPalette";
+import { useShowColorPaletteWithoutEffect } from "./hooks/useShowColorPaletteWithoutEffect";
 import { ColorPickerAsset } from "./components/commons/ColorPickerAsset";
+import { ColorPickerAssetWithoutEffect } from "./components/commons/ColorPickerAssetWithoutEffect";
 import { gray700 } from "@atrilabs/design-system";
 
 /*
@@ -28,12 +30,19 @@ export default function () {
     showColorPalette,
     linkColorPaletteToStyleItem,
     title,
-    actionFlag,
-    colorVal,
-    colorValSetter,
     openPalette,
     closePalette,
   } = useShowColorPalette();
+  const {
+    showColorPaletteWithoutEffect,
+    titleWithoutEffect,
+    linkColorPaletteToIndex,
+    colorVal,
+    colorValSetter,
+    colorValueArraySetter,
+    openPaletteWithoutEffect,
+    closePaletteWithoutEffect,
+  } = useShowColorPaletteWithoutEffect();
   return (
     <>
       {showTab && id ? (
@@ -49,10 +58,12 @@ export default function () {
                 treeOptions={treeOptions}
                 openAssetManager={openAssetManager}
                 openPalette={openPalette}
+                openPaletteWithoutEffect={openPaletteWithoutEffect}
                 compId={id}
                 breakpoint={breakpoint}
-                colorValue={colorVal}
+                colorValue={colorVal as [string]}
                 setColorValue={colorValSetter}
+                colorValueArraySetter={colorValueArraySetter}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div
@@ -68,9 +79,25 @@ export default function () {
                     styles={styles}
                     patchCb={patchCb}
                     title={title}
-                    actionFlag={actionFlag}
-                    colorVal={colorVal}
+                  />
+                </div>
+              ) : null}
+              {showColorPaletteWithoutEffect ? (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "0.2rem",
+                    left: "-17rem",
+                  }}
+                >
+                  <ColorPickerAssetWithoutEffect
+                    closePalette={closePaletteWithoutEffect}
+                    styles={styles}
+                    patchCb={patchCb}
+                    title={titleWithoutEffect}
+                    colorValues={colorVal as [string]}
                     colorValSetter={colorValSetter}
+                    index={linkColorPaletteToIndex}
                   />
                 </div>
               ) : null}

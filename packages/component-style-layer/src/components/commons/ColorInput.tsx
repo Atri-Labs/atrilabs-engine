@@ -14,7 +14,8 @@ export type InputProps = {
   rgb2hex: (input: ColorRGB) => string;
   applyFlag: boolean;
   value: string;
-  setValue: (value: string) => void;
+  setValue: (value: string, index: number) => void;
+  index: number;
 };
 export type rgbaObjectProps = {
   r: number;
@@ -189,7 +190,7 @@ export const ColorInput: React.FC<InputProps> = (props) => {
         },
       });
     } else if (!props.applyFlag) {
-      props.setValue(recievedColor);
+      props.setValue(recievedColor, props.index);
     }
   };
   const handleChange = (
@@ -215,7 +216,8 @@ export const ColorInput: React.FC<InputProps> = (props) => {
             colorValueTrim(
               (e.nativeEvent as InputEvent).inputType,
               e.target.value
-            )
+            ),
+            props.index
           );
         }
       }
@@ -240,7 +242,8 @@ export const ColorInput: React.FC<InputProps> = (props) => {
           colorValueTrim(
             (e.nativeEvent as InputEvent).inputType,
             props.rgb2hex(toRGBAObject(e.target.value))
-          )
+          ),
+          props.index
         );
       }
 
@@ -253,7 +256,7 @@ export const ColorInput: React.FC<InputProps> = (props) => {
         setColorValue(e.target.value);
       }
       if (!props.applyFlag) {
-        props.setValue(e.target.value);
+        props.setValue(e.target.value, props.index);
       }
     }
   };

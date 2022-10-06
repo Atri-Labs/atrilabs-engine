@@ -24,10 +24,12 @@ export type TabBodyProps = {
   treeOptions: CSSTreeOptions;
   openAssetManager: CssProprtyComponentType["openAssetManager"];
   openPalette: CssProprtyComponentType["openPalette"];
+  openPaletteWithoutEffect: CssProprtyComponentType["openPaletteWithoutEffect"];
   compId: string;
   breakpoint: Breakpoint | null;
-  colorValue: string;
-  setColorValue: (color: string) => void;
+  colorValue: [string];
+  setColorValue: (color: string, index: number) => void;
+  colorValueArraySetter: (colorValues: [string]) => void;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -66,9 +68,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
@@ -77,9 +81,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.flexChildOptions ? (
@@ -88,9 +94,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.sizeOptions ? (
@@ -99,9 +107,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.spacingOptions ? (
@@ -110,9 +120,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.borderOptions ? (
@@ -121,9 +133,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.outlineOptions ? (
@@ -132,9 +146,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.typographyOptions ? (
@@ -143,9 +159,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.backgroundOptions ? (
@@ -154,9 +172,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.positionOptions ? (
@@ -165,9 +185,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.miscellaneousOptions ? (
@@ -176,9 +198,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
           colorValue={props.colorValue}
           setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
     </div>
