@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ColorPicker, useColor, toColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
