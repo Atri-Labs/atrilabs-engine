@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To-Do List</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>To Do List</h1>
+		<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+  		<div class="mdl-tabs__tab-bar">
+      <a href="#add-item" class="mdl-tabs__tab is-active">Add Item</a>
+      <a href="#todo" class="mdl-tabs__tab">To-Do Tasks</a>
+      <a href="#completed" class="mdl-tabs__tab">Completed</a>
+  </div>
+
+  <div class="mdl-tabs__panel is-active" id="add-item">
+  	<div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="new-task">
+  	</div>
+
+	<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+  <i class="material-icons">add</i>
+</button>
+  </div>
+  <div class="mdl-tabs__panel" id="todo">
+    <ul id="incomplete-tasks">
+    
+	</ul>
+  </div>
+  <div class="mdl-tabs__panel" id="completed">
+    <ul id="completed-tasks" class="mdl-list">
+    
+    </li>
+    </ul>
+  </div>
+</div>
+	</div>
+	<script src="js/script.js"></script>
+</body>	
+</html>
