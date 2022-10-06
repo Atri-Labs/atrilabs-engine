@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ColorPicker, useColor, toColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
@@ -6,11 +6,13 @@ import { Cross } from "../../icons/Cross";
 import { h5Heading } from "@atrilabs/design-system";
 
 export type ColorPickerProps = {
-  styleItem: keyof React.CSSProperties;
   closePalette: () => void;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   title: string;
+  colorValues: [string];
+  colorValSetter: (color: string, index: number) => void;
+  index: number;
 };
 
 export type Color = {
@@ -33,33 +35,21 @@ type ColorHSV = {
   a: number | undefined;
 };
 
-export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
+export const ColorPickerAssetWithoutEffect: React.FC<ColorPickerProps> = (
+  props
+) => {
   //Internal state is being used to record the last color dragged to in the palette.
   const [color, setColor] = useColor(
     "hex",
-    (props.styles[props.styleItem] as string | undefined) || ""
+    props.colorValues[props.index] || ""
   );
 
   useEffect(() => {
-    setColor(
-      toColor(
-        "hex",
-        (props.styles[props.styleItem] as string | undefined) || ""
-      )
-    );
-  }, [props.styleItem, props.styles, setColor]);
+    setColor(toColor("hex", props.colorValues[props.index] || ""));
+  }, [props.colorValues, props.index, props.styles, setColor]);
 
-  const handleChange = (
-    color: string,
-    styleItem: keyof React.CSSProperties
-  ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: color,
-        },
-      },
-    });
+  const handleChange = (color: string) => {
+    props.colorValSetter(color, props.index);
   };
 
   return (
@@ -96,8 +86,8 @@ export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
         width={250}
         height={200}
         color={color}
-        onChange={(e) => handleChange(e.hex, props.styleItem)}
-        onChangeComplete={(e) => handleChange(e.hex, props.styleItem)}
+        onChange={(e) => handleChange(e.hex)}
+        onChangeComplete={(e) => handleChange(e.hex)}
         hideHSV
         dark
       />

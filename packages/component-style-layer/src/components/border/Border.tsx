@@ -251,11 +251,24 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     {
       inset: false,
       xoffset: "0px",
-      yoffset: "00px",
+      yoffset: "0px",
       blur: "0px",
       spread: "0px",
+      color: "ffffff",
     },
   ]);
+  const createColorArray = () => {
+    let arr;
+    boxShadowProps.forEach((bsProp, index) => {
+      arr.push(bsProp.color);
+    });
+    if (arr) {
+      props.colorValueArraySetter(arr);
+    }
+
+    return arr;
+  };
+
   const [boxShadow, setBoxShadow] = useState<string>("");
 
   const handleInsetChange = (
@@ -278,30 +291,6 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
   }, [patchCb, boxShadow]);
 
   useEffect(() => {
-    console.log(
-      boxShadowProps[0].inset
-        ? "inset" +
-            " " +
-            boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-        : boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-    );
-
     setBoxShadow(
       boxShadowProps[0].inset
         ? "inset" +
@@ -338,8 +327,10 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
         yoffset: "0px",
         blur: "0px",
         spread: "0px",
+        color: "ffffff",
       },
     ]);
+    createColorArray();
   };
 
   const handleBsDecrement = (index: number) => {
@@ -348,6 +339,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       arr.splice(index, 1);
     }
     setBoxShadowProps(arr);
+    createColorArray();
   };
 
   return (
@@ -705,7 +697,8 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
                     styleItem="boxShadow"
                     styles={props.styles}
                     patchCb={props.patchCb}
-                    openPalette={props.openPalette}
+                    openPaletteWithoutEffect={props.openPaletteWithoutEffect}
+                    index={index}
                   />
                 </div>
               </div>
