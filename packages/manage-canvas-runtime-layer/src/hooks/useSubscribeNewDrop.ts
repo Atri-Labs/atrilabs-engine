@@ -123,6 +123,13 @@ export const useSubscribeNewDrop = () => {
           };
           events.push(event);
 
+          // Dispatch events
+          api.postNewEvents(forestPkgId, forestId, {
+            events,
+            name: "NEW_DROP",
+            meta: { agent: "browser" },
+          });
+
           // 3. Associate Alias
           api.getNewAlias(forestPkgId, key, (alias) => {
             const setAliasEvent: PatchEvent = {
@@ -132,14 +139,11 @@ export const useSubscribeNewDrop = () => {
                 alias,
               },
             };
-            events.push(setAliasEvent);
-          });
-
-          // Dispatch events
-          api.postNewEvents(forestPkgId, forestId, {
-            events,
-            name: "NEW_DROP",
-            meta: { agent: "browser" },
+            api.postNewEvents(forestPkgId, forestId, {
+              events: [setAliasEvent],
+              name: "NEW_DROP_ALIAS",
+              meta: { agent: "browser" },
+            });
           });
         }
       }
