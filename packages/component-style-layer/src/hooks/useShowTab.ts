@@ -23,7 +23,13 @@ export const useShowTab = () => {
             alias,
           },
         };
-        api.postNewEvent(forestPkgId, forestId, patchEvent);
+        api.postNewEvents(forestPkgId, forestId, {
+          events: [patchEvent],
+          meta: {
+            agent: "browser",
+          },
+          name: "SET_ALIAS",
+        });
       }
     },
     [id]

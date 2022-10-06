@@ -92,7 +92,13 @@ export const useManageCSS = (id: string | null) => {
               : slice,
             id: cssNodeId.childId,
           };
-          api.postNewEvent(forestPkgId, forestId, patchEvent);
+          api.postNewEvents(forestPkgId, forestId, {
+            events: [patchEvent],
+            meta: {
+              agent: "browser",
+            },
+            name: "CHANGE_CSS",
+          });
         }
       }
     },

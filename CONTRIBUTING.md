@@ -6,8 +6,14 @@ This page will give you a quick overview of how to get involved.
 
 ## Table of contents
 
-1. [Issues and bug reports](#issues-and-bug-reports)
-2. [Contributing to the code base](#contributing-to-the-code-base)
+- [Contribute to Atri framework](#contribute-to-atri-framework)
+  - [Table of contents](#table-of-contents)
+  - [Issues and bug reports](#issues-and-bug-reports)
+    - [How to submit an issue?](#how-to-submit-an-issue)
+  - [Creating an Atri app](#creating-an-atri-app)
+  - [Contributing to the code base](#contributing-to-the-code-base)
+    - [How to submit a Pull Request (PR)?](#how-to-submit-a-pull-request-pr)
+    - [Cutting a release](#cutting-a-release)
 
 ## Issues and bug reports
 
@@ -28,13 +34,37 @@ When submitting an issue, please include the following:
 - issue label (refer [labels](https://github.com/Atri-Labs/atrilabs-engine/labels) for an overview of how we tag our issues and pull requests.)
 - Video or GIF to further explain the issue (optional)
 
+## Creating an Atri app
+
+1. Installation
+
+Follow the [installation guide](https://docs.atrilabs.com/category/installation) to satisfy prerequisites and install Atri engine. 
+
+2. Create your first Atri app
+
+Follow the instructions [here](https://docs.atrilabs.com/getting-started/create-app) to create a simple app to get a quick introduction to the framework.
+
+3. Create your app
+
+Now you are set to create powerful multi-page, responsive apps. You can review the [apps](https://github.com/Atri-Apps) built by our team to get inspiration. 
+
+4. Deploy your app using Atri CLI or manually
+
+Once your app is ready, you can deploy it either using Atri CLI or manually. You can follow the instructions provided in our [Docs](https://docs.atrilabs.com/category/deploy-app). Deployment using GitHub pages is preferred since it won't incur any cost. 
+
+5. Submit Pull Request (PR)
+
+[Open a Pull Request](https://help.github.com/articles/using-pull-requests/) with a clear title, description, demo GIF, deployed link and GitHub link. 
+
+Congratulations! You have successfully created an Atri app. Your Pull Request will now be reviewed by the maintainers and once merged, your app will be added to the [made-with-atri folder](made-with-atri/README.md). 
+
 ## Contributing to the code base
 
 Please review the [existing issues](<(https://github.com/Atri-Labs/atrilabs-engine/issues)>), pick the one that you are interested in working on and ask the admins to assign that issue to you.
 
 If you are a newcomer, you can consider getting started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
-### Pull Requests
+### How to submit a Pull Request (PR)?
 
 A pull request should remain focused in scope and avoid containing unrelated commits. You will need `npm >= 8.11.0 `, `node >= v16.16.0` and `yarn >= 1.22.18`.
 
@@ -55,7 +85,7 @@ Adhering to the following process is the best way to get your work included in t
    git remote add upstream https://github.com/Atri-Labs/atrilabs-engine.git
    ```
 
-2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon. You might have to install lerna by running `npm i -g lerna` in a shell. Similary, you might have to install yarn by running `npm i -g yarn` in a shell.
+2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon. You might have to install lerna by running `npm i -g lerna` in a shell. Similarly, you might have to install yarn by running `npm i -g yarn` in a shell.
 
    ```
    # install node_modules
