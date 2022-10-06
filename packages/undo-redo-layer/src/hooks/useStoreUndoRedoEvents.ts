@@ -74,7 +74,6 @@ export const useStoreUndoRedoEvents = () => {
   const undo = useCallback(() => {
     const { forestPkgId, forestId } = BrowserForestManager.currentForest;
     const undoRecord = popFromUndoQueue(forestPkgId, forestId);
-    // TODO: call patchCb without record flag
     console.log(undoRecord?.undo);
     if (undoRecord?.undo) {
       api.postNewEvents(forestPkgId, forestId, {
@@ -89,7 +88,6 @@ export const useStoreUndoRedoEvents = () => {
   const redo = useCallback(() => {
     const { forestPkgId, forestId } = BrowserForestManager.currentForest;
     const undoRecord = popFromRedoQueue(forestPkgId, forestId);
-    // TODO: call patchCb without record flag
     console.log(undoRecord?.redo);
     if (undoRecord?.redo) {
       api.postNewEvents(forestPkgId, forestId, {
@@ -101,8 +99,6 @@ export const useStoreUndoRedoEvents = () => {
       });
     }
   }, []);
-
-  // TODO: subscribe forest manager
 
   useEffect(() => {
     const { subscribeForest } = BrowserForestManager.currentForest;
@@ -133,6 +129,22 @@ export const useStoreUndoRedoEvents = () => {
               undo: [newDeleteCompEvent],
               redo: [createEvent],
             });
+          }
+        }
+        if (
+          update.type === "wire" &&
+          name === "TEMPLATE_EVENTS" &&
+          update.treeId === ComponentTreeId
+        ) {
+          const outermostParentId = update.parentId;
+          // identify the component id of outermost component
+          const currentNodeId = update.id;
+          const currentParent =
+            BrowserForestManager.currentForest.tree(ComponentTreeId)?.nodes[
+              currentNodeId
+            ].state.parent.id;
+          if (currentParent === outermostParentId) {
+            // TODO: create and push undo record
           }
         }
         if (update.type === "dewire" && update.treeId === ComponentTreeId) {
