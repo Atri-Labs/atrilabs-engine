@@ -455,8 +455,9 @@ export function createReactAppTemplateManager(
       const isParent = reverseMap[compId] !== undefined;
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
+      const className = `className="p-${name} ${alias}"`;
       if (isParent) {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
+        const start = `<${localIdentifier} ${className} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -465,7 +466,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}/>\n`;
+        const start = `<${localIdentifier} ${className} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}/>\n`;
         return start;
       }
     }
