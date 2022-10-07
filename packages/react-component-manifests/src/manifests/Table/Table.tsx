@@ -24,10 +24,12 @@ export const DataTable = forwardRef<
       selection?: GridRowId[];
     };
     onSelectionChange?: (selection: GridRowId[]) => void;
+    className?: string;
   }
 >((props, ref) => {
   return (
     <div
+      className={props.className}
       ref={ref}
       style={{
         ...props.styles,

@@ -46,6 +46,7 @@ export type ShowCounterComponentTypes = {
   showHours: boolean;
   showMinutes: boolean;
   showSeconds: boolean;
+  className?: string;
 };
 
 export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
@@ -57,9 +58,13 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   showHours,
   showMinutes,
   showSeconds,
+  className,
 }) => {
   return (
-    <div className="show-counter" style={{ display: "inline-flex" }}>
+    <div
+      className={`show-counter ${className ? className : ""}`}
+      style={{ display: "inline-flex" }}
+    >
       {showDays && (
         <div style={{ display: "flex" }}>
           <DateTimeDisplay value={days} type={"Days"} />
@@ -121,6 +126,7 @@ export type CountdownTimerComponentTypes = {
   showHours: boolean;
   showMinutes: boolean;
   showSeconds: boolean;
+  className?: string;
 };
 
 export const CountdownTimer: React.FC<CountdownTimerComponentTypes> = ({
@@ -130,6 +136,7 @@ export const CountdownTimer: React.FC<CountdownTimerComponentTypes> = ({
   showHours,
   showMinutes,
   showSeconds,
+  className,
 }) => {
   const [days, hours, minutes, seconds] = useCountdown(targetDate, isFrozen);
 
@@ -138,6 +145,7 @@ export const CountdownTimer: React.FC<CountdownTimerComponentTypes> = ({
   } else {
     return (
       <ShowCounter
+        className={className}
         days={days}
         hours={hours}
         minutes={minutes}
@@ -161,6 +169,7 @@ export type CountdownAssetComponentTypes = {
   showHours: boolean;
   showMinutes: boolean;
   showSeconds: boolean;
+  className?: string;
 };
 
 export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
@@ -173,6 +182,7 @@ export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
   showHours,
   showMinutes,
   showSeconds,
+  className,
 }) => {
   const days = noOfDays * 24 * 60 * 60 * 1000;
   const hours = noOfHours * 60 * 60 * 1000;
@@ -183,6 +193,7 @@ export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
 
   return (
     <CountdownTimer
+      className={className}
       isFrozen={isFrozen}
       targetDate={dateTimeAfterGivenTime}
       showDays={showDays}
@@ -193,60 +204,49 @@ export const CountdownAsset: React.FC<CountdownAssetComponentTypes> = ({
   );
 };
 
-export const Countdown = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: {
-      days: number;
-      hours: number;
-      minutes: number;
-      seconds: number;
-      frozen: boolean;
-      showDays: boolean;
-      showHours: boolean;
-      showMinutes: boolean;
-      showSeconds: boolean;
-    };
-  }
->((props, ref) => {
-  return (
-    <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
-      <CountdownAsset
-        isFrozen={props.custom.frozen}
-        noOfDays={props.custom.days}
-        noOfHours={props.custom.hours}
-        noOfMinutes={props.custom.minutes}
-        noOfSeconds={props.custom.seconds}
-        showDays={props.custom.showDays}
-        showHours={props.custom.showHours}
-        showMinutes={props.custom.showMinutes}
-        showSeconds={props.custom.showSeconds}
-      />
-    </div>
-  );
-});
+export type CountdownProps = {
+  styles: React.CSSProperties;
+  custom: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    frozen: boolean;
+    showDays: boolean;
+    showHours: boolean;
+    showMinutes: boolean;
+    showSeconds: boolean;
+  };
+  className?: string;
+};
 
-export const DevCountdown = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: {
-      days: number;
-      hours: number;
-      minutes: number;
-      seconds: number;
-      frozen: boolean;
-      showDays: boolean;
-      showHours: boolean;
-      showMinutes: boolean;
-      showSeconds: boolean;
-    };
+export const Countdown = forwardRef<HTMLDivElement, CountdownProps>(
+  (props, ref) => {
+    return (
+      <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
+        <CountdownAsset
+          isFrozen={props.custom.frozen}
+          noOfDays={props.custom.days}
+          noOfHours={props.custom.hours}
+          noOfMinutes={props.custom.minutes}
+          noOfSeconds={props.custom.seconds}
+          showDays={props.custom.showDays}
+          showHours={props.custom.showHours}
+          showMinutes={props.custom.showMinutes}
+          showSeconds={props.custom.showSeconds}
+          className={props.className}
+        />
+      </div>
+    );
   }
->((props, ref) => {
-  props.custom.frozen = true;
-  return <Countdown ref={ref} {...props} />;
-});
+);
+
+export const DevCountdown = forwardRef<HTMLDivElement, CountdownProps>(
+  (props, ref) => {
+    props.custom.frozen = true;
+    return <Countdown ref={ref} {...props} />;
+  }
+);
 
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,

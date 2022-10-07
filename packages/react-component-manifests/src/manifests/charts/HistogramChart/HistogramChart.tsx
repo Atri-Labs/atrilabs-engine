@@ -52,6 +52,7 @@ export const HistogramChart = forwardRef<
       xAxis?: { show?: boolean; key?: string };
       yAxis?: { show?: boolean; key?: string };
     };
+    className?: string;
   }
 >((props, ref) => {
   const xAxisKey = useMemo(() => {
@@ -83,7 +84,11 @@ export const HistogramChart = forwardRef<
   }, [props.custom, bar]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <ComposedChart
         width={
           typeof props.styles.width === "string"

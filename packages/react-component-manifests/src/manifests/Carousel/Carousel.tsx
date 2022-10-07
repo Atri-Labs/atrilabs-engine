@@ -107,6 +107,7 @@ export const Carousel = forwardRef<
     styles: React.CSSProperties;
     custom: { items: []; startTile: number; imageItems: [] };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(
@@ -116,7 +117,12 @@ export const Carousel = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
+    <div
+      ref={ref}
+      style={props.styles}
+      onClick={onClick}
+      className={props.className}
+    >
       <CarouselWrapper startTile={props.custom.startTile}>
         {props.custom.items.map((item, i) => (
           <CarouselItem

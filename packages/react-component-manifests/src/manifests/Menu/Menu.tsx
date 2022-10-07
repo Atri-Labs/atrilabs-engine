@@ -29,6 +29,7 @@ export const Menu = forwardRef<
       alignRight?: boolean;
     };
     onClick: (open: boolean) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(() => {
@@ -36,7 +37,11 @@ export const Menu = forwardRef<
   }, [props]);
   const gap = typeof props.custom.gap === "number" ? props.custom.gap : 0;
   return (
-    <div ref={ref} style={{ ...props.styles, position: "relative" }}>
+    <div
+      ref={ref}
+      style={{ ...props.styles, position: "relative" }}
+      className={props.className}
+    >
       <div
         style={{
           height: `${props.custom.iconHeight}px`,

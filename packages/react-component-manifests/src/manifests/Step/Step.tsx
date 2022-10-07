@@ -16,6 +16,7 @@ export const Step = forwardRef<
     styles: React.CSSProperties;
     custom: { color: string; current: number; title: []; description: [] };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(
@@ -30,7 +31,7 @@ export const Step = forwardRef<
       ref={ref}
       style={props.styles}
       onClick={onClick}
-      className="step-parent"
+      className={`step-parent ${props.className}`}
     >
       {props.custom.title.map((step, i) => (
         <div

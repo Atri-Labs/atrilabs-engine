@@ -16,6 +16,7 @@ export type AccordionComponentTypes = {
   description: string;
   open: boolean;
   onTitleClick: () => void;
+  className?: string;
 };
 
 export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
@@ -23,11 +24,12 @@ export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   description,
   open,
   onTitleClick,
+  className,
 }) => {
   const content = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="accordion-section">
+    <div className={`${className ? className : ""} accordion-section`}>
       <button
         className={`accordion ${open ? "active" : ""}`}
         onClick={() => {
@@ -61,12 +63,14 @@ export const Accordion = forwardRef<
     styles: React.CSSProperties;
     custom: { title: string[]; description: string[]; open: boolean[] };
     onTitleClick: (open: boolean[]) => void;
+    className?: string;
   }
 >((props, ref) => {
   return (
     <div ref={ref} style={props.styles}>
       {props.custom.title.map((title, i) => (
         <AccordionComponent
+          className={props.className}
           key={i}
           title={title}
           description={props.custom.description[i]}
@@ -88,6 +92,7 @@ export const DevAccordian = forwardRef<
     styles: React.CSSProperties;
     custom: { title: string[]; description: string[]; open: boolean[] };
     onTitleClick: (open: boolean[]) => void;
+    className?: string;
   }
 >((props, ref) => {
   const modifiedTitleArray =

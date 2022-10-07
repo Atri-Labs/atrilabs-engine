@@ -15,6 +15,7 @@ export const Button = forwardRef<
     styles: React.CSSProperties;
     custom: { text: string };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(
@@ -24,7 +25,12 @@ export const Button = forwardRef<
     [props]
   );
   return (
-    <button ref={ref} style={props.styles} onClick={onClick}>
+    <button
+      ref={ref}
+      className={props.className}
+      style={props.styles}
+      onClick={onClick}
+    >
       {props.custom.text}
     </button>
   );

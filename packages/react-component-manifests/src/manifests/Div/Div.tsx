@@ -27,6 +27,7 @@ export const Div = forwardRef<
       width: number;
       height: number;
     }) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClickCb = useCallback(
@@ -46,7 +47,12 @@ export const Div = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} style={props.styles} onClick={onClickCb}>
+    <div
+      ref={ref}
+      style={props.styles}
+      onClick={onClickCb}
+      className={props.className}
+    >
       {props.children}
     </div>
   );
