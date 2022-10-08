@@ -587,8 +587,9 @@ export function createReactAppTemplateManager(
             return `use${alias}Cb`;
           })
           .join(", ") +
-        ` } from "../page-cbs/${name}";\n`;
-      const newImportText = `${compImports}\n${importCbs}`;
+        ` } from "../page-cbs/${name}";`;
+      const importPageCss = `import "../page-css/${name}.css"`;
+      const newImportText = `${compImports}\n${importCbs}\n${importPageCss}\n`;
       slices.push({
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,
