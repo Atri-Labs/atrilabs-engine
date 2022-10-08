@@ -113,7 +113,9 @@ function preprocessCustomTreeProps(
 
 function createCSSProps(cssTreeState: {
   property?: { [propName: string]: any };
-  breakpoints?: { [maxWidth: string]: { [propName: string]: any } };
+  breakpoints?: {
+    [maxWidth: string]: { [propName: string]: React.CSSProperties };
+  };
 }) {
   const cssProps: PropsGeneratorOutput["0"]["cssProps"] = {};
 
@@ -129,15 +131,16 @@ function createCSSProps(cssTreeState: {
   );
 
   allPropNames.forEach((propName) => {
+    const props =
+      cssTreeState.property && cssTreeState.property[propName]
+        ? cssTreeState.property[propName]
+        : {};
+    const breakpoints = cssTreeState.breakpoints
+      ? extractBreakpointProps(cssTreeState.breakpoints, propName)
+      : {};
     cssProps[propName] = {
-      props:
-        cssTreeState.property && cssTreeState.property[propName]
-          ? cssTreeState.property[propName]
-          : {},
-      breakpoints:
-        cssTreeState.breakpoints && cssTreeState.breakpoints[propName]
-          ? extractBreakpointProps(cssTreeState.breakpoints, propName)
-          : {},
+      props,
+      breakpoints,
     };
   });
 

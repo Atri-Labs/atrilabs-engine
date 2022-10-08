@@ -736,11 +736,53 @@ export function createReactAppTemplateManager(
       }
     });
     const cssStrs = await Promise.all(promises);
-    const pageCSSContent = cssStrs
-      .filter((cssStr) => {
-        return cssStr !== undefined;
+    // breakpoints
+    const breakpointData: {
+      [maxWidth: string]: { [cssSelector: string]: string };
+    } = {};
+    const breakpointPromises = componentIds.map(async (compId) => {
+      const alias = components[compId].alias;
+      const cssSelector = `.p-${pageName}.${alias}`;
+      const cssProps = pagePropsGeneartorOutput[compId].cssProps;
+      if (cssProps) {
+        const allCSSPropNames = Object.keys(cssProps);
+        for (let i = 0; i < allCSSPropNames.length; i++) {
+          const propName = allCSSPropNames[i];
+          if (cssProps[propName].breakpoints) {
+            const allWidths = Object.keys(cssProps[propName].breakpoints);
+            for (let j = 0; j < allWidths.length; j++) {
+              const width = allWidths[j];
+              if (breakpointData[width] === undefined) {
+                breakpointData[width] = {};
+              }
+              breakpointData[width][cssSelector] = await jssToCss(
+                cssProps[propName].breakpoints[width]!
+              );
+            }
+          }
+        }
+      }
+    });
+    await Promise.all(breakpointPromises);
+    const breakpointStrs = Object.keys(breakpointData)
+      .map((maxWidth) => {
+        const allSelectors = Object.keys(breakpointData[maxWidth]);
+        const allSelectorStrs = allSelectors
+          .map((selector) => {
+            return `\t${selector} {${breakpointData[maxWidth][selector]}\n}`;
+          })
+          .join("\n");
+        return `@media screen and (max-width: ${maxWidth}px) {${allSelectorStrs}\n}`;
       })
       .join("\n");
+    const pageCSSContent =
+      cssStrs
+        .filter((cssStr) => {
+          return cssStr !== undefined;
+        })
+        .join("\n") +
+      "\n" +
+      breakpointStrs;
     const destPath = path.resolve(pageCSSDestDirectory, `${pageName}.css`);
     if (!fs.existsSync(path.dirname(destPath))) {
       fs.mkdirSync(path.dirname(destPath), { recursive: true });
