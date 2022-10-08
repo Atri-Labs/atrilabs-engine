@@ -2,67 +2,8 @@ import type {
   ComponentGeneratorFunction,
   ComponentGeneratorOutput,
 } from "@atrilabs/app-generator";
-import { TreeNode } from "@atrilabs/forest";
 import generateModuleId from "@atrilabs/scripts/build/babel/generateModuleId";
-
-type ParentChildMap = { [parentId: string]: string[] };
-
-/**
- * Filter out parent ids from lookup map that has been deleted
- * @param currentParentId
- * @param lookupMap
- * @param reverseMap
- */
-function _createReverseMap(
-  currentParentId: string,
-  lookupMap: ParentChildMap,
-  reverseMap: ParentChildMap
-) {
-  const childIds = reverseMap[currentParentId]!;
-  childIds.forEach((childId) => {
-    if (lookupMap[childId] !== undefined) {
-      reverseMap[childId] = lookupMap[childId]!;
-      _createReverseMap(childId, lookupMap, reverseMap);
-    }
-  });
-}
-
-function createReverseMap(nodes: { [nodeId: string]: TreeNode }) {
-  const nodeIds = Object.keys(nodes);
-  // lookupMap helps to quickly find all the children of a parent
-  // lookupMap can contain components that are children of a deleted component
-  const lookupMap: ParentChildMap = { body: [] };
-  // reverseMap does not contain components that are children of a deleted component
-  const reverseMap: ParentChildMap = { body: [] };
-  nodeIds.forEach((nodeId) => {
-    const node = nodes[nodeId]!;
-    const parentId = node.state.parent.id;
-    // update lookup map
-    if (lookupMap[parentId] === undefined) {
-      lookupMap[parentId] = [nodeId];
-    } else {
-      lookupMap[parentId]!.push(nodeId);
-    }
-    // update reverse map with children of body only
-    if (parentId === "body") {
-      reverseMap["body"]!.push(node.id);
-    }
-  });
-  _createReverseMap("body", lookupMap, reverseMap);
-  return reverseMap;
-}
-
-function getAllNodeIdsFromReverseMap(reverseMap: ParentChildMap) {
-  const parentNodeIds = Object.keys(reverseMap);
-  const childNodeIds = parentNodeIds
-    .map((parentNodeId) => {
-      return reverseMap[parentNodeId]!;
-    })
-    .flat();
-  const nodeIds = new Set([...parentNodeIds, ...childNodeIds]);
-  nodeIds.delete("body");
-  return Array.from(nodeIds);
-}
+import { createReverseMap, getAllNodeIdsFromReverseMap } from "./utils";
 
 const componentTreeToComponentDef: ComponentGeneratorFunction = (options) => {
   const output: ComponentGeneratorOutput = {};
