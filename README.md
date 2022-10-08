@@ -1,12 +1,42 @@
 ![banner](readme-assets/github_new.png)
 
-[![Hacktoberfest](https://img.shields.io/github/hacktoberfest/2022/Atri-Labs/atrilabs-engine)](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest) [![Open issues](https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine?color=FEF08A)](https://github.com/Atri-Labs/atrilabs-engine/issues) [![Good first issues](https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue?color=FEF08A)](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) [![Create Atri App](https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/atri-app?color=FEF08A&label=create-atri-app%20issues)](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Aatri-app) [![Create component](https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/create-component?color=FEF08A)](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3Acreate-component) [![Discussions](https://img.shields.io/github/discussions/Atri-Labs/atrilabs-engine?color=FFE4E6)](https://github.com/Atri-Labs/atrilabs-engine/discussions) [![Downloads](https://pepy.tech/badge/atri)](https://pepy.tech/project/atri) [![Downloads](https://pepy.tech/badge/atri/month)](https://pepy.tech/project/atri) ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
+<div align="center">
 
-Atri framework is a full-stack web development framework to build Progressive Web Apps.
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest" target="_blank"><img src="https://img.shields.io/github/hacktoberfest/2022/Atri-Labs/atrilabs-engine" alt="Hacktoberfest"></a>
+  </br>
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine?color=FEF08A" alt="Open issues"></a>
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue?color=FEF08A" alt="Good first issues"></a>
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Aatri-app" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/atri-app?color=FEF08A&label=create-atri-app%20issues" alt="Create Atri App"></a>
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3Acreate-component" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/create-component?color=FEF08A" alt="Create component"></a>
+  </br>
+  <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions" target="_blank"><img src="https://img.shields.io/github/discussions/Atri-Labs/atrilabs-engine?color=FFE4E6" alt="Discussions"></a>
+  <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
+  <a href="https://pepy.tech/badge/atri/month" target="_blank"><img src="https://pepy.tech/badge/atri/month" alt="Downloads per month"></a>
+  </br>
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social">
+  <h3 align="center">
+    <a href="https://docs.atrilabs.com/">Docs</a>
+    <span> | </span>
+    <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w">Community Slack</a>
+    <span> | </span>
+    <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">YouTube channel</a>
+    <span> | </span>
+    <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions">Discussions</a>
+    <span> | </span>
+    <a href="https://github.com/mindsdb/mindsdb/projects">Contribute</a>
+  </h3>
+  
+</div>
+
+----------------------------------------
+
+Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&hashtags=webframework,fullstack,react,python)
 
 - Frontend development: Use our visual editor to increase your productivity. You can also add your custom React code
 - Backend development: Currently, we support Python for backend development. We are planning to add support for NodeJS soon. 
 - Deployment support: Our CLI provides rich support for easy deployment at your platform of choice such as GitHub Pages, AWS, etc. 
+
+If you like our project, please support us by giving us **a Star ⭐!**
 
 ## What can I build using this framework?
 
@@ -38,7 +68,11 @@ atri start
 
 You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9o8oY) or our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
 
-[![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
+<div align="center">
+
+  [![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
+
+</div>
 
 ## How to contribute?
 
@@ -66,4 +100,4 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 
 🎥 Watch along on [YouTube](https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw)
 
-⭐️ Star [this repository](https://github.com/Atri-Labs/atrilabs-engine) if you find it helpful! 😎
+⭐️ Star [this repository](https://github.com/Atri-Labs/atrilabs-engine) if you like this project!
