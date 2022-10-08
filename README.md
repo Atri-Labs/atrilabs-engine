@@ -101,3 +101,13 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 🎥 Watch along on [YouTube](https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw)
 
 ⭐️ Star [this repository](https://github.com/Atri-Labs/atrilabs-engine) if you like this project!
+
+## Current contributors
+
+<a href="https://github.com/Atri-Labs/atrilabs-engine/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Atri-Labs/atrilabs-engine" />
+</a>
+
+</br>
+
+Made with [contrib.rocks](https://contrib.rocks).
