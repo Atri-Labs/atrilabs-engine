@@ -19,6 +19,7 @@ import {
   ResourceGeneraterOutput,
 } from "../types";
 import { ToolConfig } from "@atrilabs/core";
+import { jssToCss } from "./jssToCss";
 
 export function createReactAppTemplateManager(
   paths: {
@@ -88,6 +89,11 @@ export function createReactAppTemplateManager(
     paths.reactAppDest,
     "src",
     "page-cbs"
+  );
+  const pageCSSDestDirectory = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "page-css"
   );
 
   // variables to manage writes in App.jsx
@@ -706,6 +712,49 @@ export function createReactAppTemplateManager(
     fs.writeFileSync(useStoreDestPath, newText);
   }
 
+  async function _flushPageCSS(pageImport: {
+    name: string;
+    route: string;
+    source: string;
+  }) {
+    const pageName = pageImport.name;
+    const pagePropsGeneartorOutput = propsMap[pageName];
+    const components = componentMap[pageName]!;
+    const componentIds = Object.keys(components);
+    const promises = componentIds.map(async (compId) => {
+      const alias = components[compId].alias;
+      const cssSelector = `.p-${pageName}.${alias}`;
+      const cssProps = pagePropsGeneartorOutput[compId].cssProps;
+      if (cssProps) {
+        const allCSSPropNames = Object.keys(cssProps);
+        let jsxStyle: React.CSSProperties = {};
+        allCSSPropNames.forEach((propName) => {
+          jsxStyle = { ...cssProps[propName].props, ...jsxStyle };
+        });
+        const cssStr = await jssToCss(jsxStyle);
+        return `${cssSelector} {\n${cssStr}\n}`;
+      }
+    });
+    const cssStrs = await Promise.all(promises);
+    const pageCSSContent = cssStrs
+      .filter((cssStr) => {
+        return cssStr !== undefined;
+      })
+      .join("\n");
+    const destPath = path.resolve(pageCSSDestDirectory, `${pageName}.css`);
+    if (!fs.existsSync(path.dirname(destPath))) {
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    }
+    fs.writeFileSync(destPath, pageCSSContent);
+  }
+
+  async function flushPageCSS() {
+    for (let i = 0; i < pageImports.length; i++) {
+      const pageImport = pageImports[i];
+      await _flushPageCSS(pageImport);
+    }
+  }
+
   // This function requires addComponents and addProps to already have been run
   function flushIoStore() {
     const pageNames = Object.keys(componentMap);
@@ -996,5 +1045,6 @@ export function createReactAppTemplateManager(
     flushIndexHtml,
     flushAtriAppInfo,
     flushIndexJSX,
+    flushPageCSS,
   };
 }
