@@ -210,6 +210,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "shashtag",
+      "name": "Shashwat Gupta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54642876?v=4",
+      "profile": "https://github.com/shashtag",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
