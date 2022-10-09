@@ -13,6 +13,7 @@ import {
   Forest,
   ForestUpdateSubscriber,
   EventMetaData,
+  TreeNode,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -164,9 +165,23 @@ export function createForest(def: ForestDef): Forest {
       // find all children and add them to be delete array
       const nodesToBeDeleted = [delEvent.id];
       const reverseMap = createReverseMap(treeMap[treeId]!.nodes);
-      if (reverseMap[delEvent.id]) {
-        nodesToBeDeleted.push(...reverseMap[delEvent.id]!);
+      let currentIndex = 0;
+      while (currentIndex < nodesToBeDeleted.length) {
+        const currentNodeId = nodesToBeDeleted[currentIndex]!;
+        if (reverseMap[currentNodeId]) {
+          nodesToBeDeleted.push(...reverseMap[currentNodeId]!);
+        }
+        currentIndex++;
       }
+
+      const topNode = treeMap[treeId]!.nodes[delEvent.id]!;
+      const copyOfNodesToBeDeleted: TreeNode[] = JSON.parse(
+        JSON.stringify(
+          nodesToBeDeleted.map((id) => {
+            return treeMap[treeId]!.nodes[id]!;
+          })
+        )
+      );
       nodesToBeDeleted.reverse().forEach((nodeId) => {
         // if event is from a root tree, call unlink on all child tree
         if (isRootTree(treeId)) {
@@ -182,7 +197,15 @@ export function createForest(def: ForestDef): Forest {
         delete treeMap[treeId]!.nodes[nodeId];
         forestUpdateSubscribers.forEach((cb) => {
           cb(
-            { type: "dewire", childId: nodeId, parentId, treeId, deletedNode },
+            {
+              type: "dewire",
+              childId: nodeId,
+              parentId,
+              treeId,
+              deletedNode,
+              topNode,
+              deletedNodes: copyOfNodesToBeDeleted,
+            },
             { name, meta }
           );
         });

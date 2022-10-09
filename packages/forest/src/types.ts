@@ -162,7 +162,12 @@ export type DewireUpdate = {
   childId: string;
   parentId: string;
   treeId: string;
+  // the node for which this dewire event is emitted
   deletedNode: TreeNode;
+  // the top most node that was deleted. The dewire event is emitted for
+  // it's child as well. Hence, to differentiate this field is also supplied.
+  topNode: TreeNode;
+  deletedNodes: TreeNode[];
 };
 
 export type RewireUpdate = {
