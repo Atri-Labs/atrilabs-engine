@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { gray300, gray800 } from "../../consts/colors";
 import { smallText } from "../../consts/typography";
 import styles from "../../stylesheets/form-field.module.css";
@@ -6,6 +6,7 @@ import styles from "../../stylesheets/form-field.module.css";
 export type InputProps = {
   onChange: (value: string) => void;
   value: string;
+  disabled?: boolean;
 };
 
 // Controlled Component
@@ -27,6 +28,7 @@ export const Input: React.FC<InputProps> = React.memo((props) => {
         if (props.onChange) props.onChange(e.target.value);
       }}
       value={props.value}
+      disabled={props.disabled}
     />
   );
 });
