@@ -273,6 +273,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "AKSHAYHEGDE3",
+      "name": "Akshay Hegde",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66352365?v=4",
+      "profile": "https://akshay-hegde.vercel.app/",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
