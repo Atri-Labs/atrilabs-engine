@@ -54,7 +54,7 @@ body:
       2. You can also refer to [this YouTube playlist](https://www.youtube.com/watch?v=p135tfBvdaE&list=PLTQwOMNg4n8CJf2mbF5pJ3A9cEjr1gdRf) for video tutorials on how to create a similar app. 
     render: markdown
   validations:
-    required: false
+    required: true
     
 - type: textarea
   attributes:
@@ -67,4 +67,4 @@ body:
       - Once your PR is merged, your app will be added to the [made-with-atri folder](https://github.com/Atri-Labs/atrilabs-engine/blob/main/made-with-atri/README.md)."
     render: markdown
   validations:
-    required: false
+    required: true
