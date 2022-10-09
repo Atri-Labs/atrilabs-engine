@@ -183,6 +183,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "kirtanchandak",
+      "name": "Kirtan Manoj Chandak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92196705?v=4",
+      "profile": "https://github.com/kirtanchandak",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
