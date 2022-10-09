@@ -1,4 +1,7 @@
 ![banner](readme-assets/github_new.png)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
 
@@ -119,6 +122,20 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://github.com/adityaxpique"><img src="https://avatars.githubusercontent.com/u/56078748?v=4?s=100" width="100px;" alt="Aditya Kumar Singh"/><br /><sub><b>Aditya Kumar Singh</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=adityaxpique" title="Code">💻</a> <a href="#maintenance-adityaxpique" title="Maintenance">🚧</a> <a href="#mentoring-adityaxpique" title="Mentoring">🧑‍🏫</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 
