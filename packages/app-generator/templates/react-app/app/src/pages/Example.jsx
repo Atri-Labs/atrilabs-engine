@@ -1,5 +1,5 @@
 import { useLayoutEffect, useEffect } from "react";
-import useStore, { setEffectivePropsForPage, updateStoreStateFromController } from "../hooks/useStore";
+import useStore, { updateStoreStateFromController } from "../hooks/useStore";
 import useIoStore from "../hooks/useIoStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import { subscribeInternalNavigation } from "../utils/navigate";
@@ -21,20 +21,6 @@ export default function Example() {
       updateStoreStateFromController(res.pageName, res.pageState)
     })
   }, [location])
-
-  useLayoutEffect(()=>{
-    setEffectivePropsForPage(/* PAGE NAME 1 CURSOR */)
-  }, [])
-
-  useEffect(()=>{
-    const onResize = ()=>{
-      setEffectivePropsForPage(/* PAGE NAME 2 CURSOR */)
-    };
-    window.addEventListener("resize", onResize);
-    return ()=>{
-      window.removeEventListener("resize", onResize);
-    }
-  }, [])
 
   // COMPONENT CURSOR
 
