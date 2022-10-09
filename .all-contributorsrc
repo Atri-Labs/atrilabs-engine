@@ -273,6 +273,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "niteshmodi",
+      "name": "Nitesh Kumar Modi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/89907820?v=4",
+      "profile": "https://github.com/niteshmodi",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
