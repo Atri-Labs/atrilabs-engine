@@ -1,6 +1,6 @@
 # Contribute to Atri framework
 
-Thanks for your interest in contributing to the Atri framework. 🎉
+Thanks for your interest in contributing to the Atri framework. ✨
 
 This page will give you a quick overview of how to get involved.
 
