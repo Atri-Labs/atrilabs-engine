@@ -95,13 +95,15 @@ Please refer to our [contributing guidelines](CONTRIBUTING.md) for details.
 
 Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md). 
 
+If you make any contribution to our project (code or no-code; check the [vast list of contribution types](https://allcontributors.org/docs/en/emoji-key)), you will be featured in the table below 👇
+
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-32-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+We are grateful to these wonderful people who contributed to Atri framework. 🙏 🤩 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -165,4 +167,4 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://allcontributors.org/) specification. Contributions of all kind are welcome!
+This project follows the [all-contributors](https://allcontributors.org/) specification. [Contributions of all types](https://allcontributors.org/docs/en/emoji-key) are welcome!
