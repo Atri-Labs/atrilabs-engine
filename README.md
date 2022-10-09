@@ -106,16 +106,6 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 
 ⭐️ Star [this repository](https://github.com/Atri-Labs/atrilabs-engine) if you like this project!
 
-## Current contributors
-
-<a href="https://github.com/Atri-Labs/atrilabs-engine/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Atri-Labs/atrilabs-engine" />
-</a>
-
-</br>
-
-Made with [contrib.rocks](https://contrib.rocks).
-
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
