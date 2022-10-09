@@ -31,6 +31,21 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "darshitac11",
+      "name": "Darshita Chaturvedi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102641692?v=4",
+      "profile": "https://www.linkedin.com/in/darshitac/",
+      "contributions": [
+        "code",
+        "infra",
+        "maintenance",
+        "mentoring",
+        "projectManagement",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
