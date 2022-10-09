@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-29-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -167,6 +167,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/aryans1319"><img src="https://avatars.githubusercontent.com/u/72180855?v=4?s=100" width="100px;" alt="Aryan Shaw"/><br /><sub><b>Aryan Shaw</b></sub></a><br /><a href="#userTesting-aryans1319" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://sanjayz.netlify.app/"><img src="https://avatars.githubusercontent.com/u/102804548?v=4?s=100" width="100px;" alt="Sanjay"/><br /><sub><b>Sanjay</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Asanjayk0508" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

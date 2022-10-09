@@ -282,6 +282,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "sanjayk0508",
+      "name": "Sanjay",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102804548?v=4",
+      "profile": "https://sanjayz.netlify.app/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
