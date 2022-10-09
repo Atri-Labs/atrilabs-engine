@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "Jitulteron7",
+      "name": "Jitul Teron",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58761652?v=4",
+      "profile": "https://github.com/Jitulteron7",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "atrilabs-engine",
+  "projectOwner": "Atri-Labs"
+}
