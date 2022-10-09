@@ -100,7 +100,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-41-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-42-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 🤩 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -162,6 +162,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://github.com/DivyanshSingh786"><img src="https://avatars.githubusercontent.com/u/93871896?v=4?s=100" width="100px;" alt="Divyansh Singh"/><br /><sub><b>Divyansh Singh</b></sub></a><br /><a href="#question-DivyanshSingh786" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/wereign"><img src="https://avatars.githubusercontent.com/u/101888489?v=4?s=100" width="100px;" alt="Virenn Jay"/><br /><sub><b>Virenn Jay</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Awereign" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/rohinirai010"><img src="https://avatars.githubusercontent.com/u/96288899?v=4?s=100" width="100px;" alt="ROHINI RAI"/><br /><sub><b>ROHINI RAI</b></sub></a><br /><a href="#userTesting-rohinirai010" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/zapkirin"><img src="https://avatars.githubusercontent.com/u/112710485?v=4?s=100" width="100px;" alt="zapkirin"/><br /><sub><b>zapkirin</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=zapkirin" title="Documentation">📖</a> <a href="#question-zapkirin" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
 </table>

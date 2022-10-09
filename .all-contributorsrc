@@ -395,6 +395,16 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "zapkirin",
+      "name": "zapkirin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/112710485?v=4",
+      "profile": "https://github.com/zapkirin",
+      "contributions": [
+        "doc",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
