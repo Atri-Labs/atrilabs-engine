@@ -147,6 +147,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "corners2wall",
+      "name": "Artem",
+      "avatar_url": "https://avatars.githubusercontent.com/u/110557519?v=4",
+      "profile": "https://github.com/corners2wall",
+      "contributions": [
+        "research"
+      ]
     }
   ],
   "contributorsPerLine": 7,
