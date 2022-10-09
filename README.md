@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-23-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -158,6 +158,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/shashtag"><img src="https://avatars.githubusercontent.com/u/54642876?v=4?s=100" width="100px;" alt="Shashwat Gupta"/><br /><sub><b>Shashwat Gupta</b></sub></a><br /><a href="#userTesting-shashtag" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://aman10.web.app/"><img src="https://avatars.githubusercontent.com/u/76661001?v=4?s=100" width="100px;" alt="Aman Kr. Poddar"/><br /><sub><b>Aman Kr. Poddar</b></sub></a><br /><a href="#userTesting-Am10aN16" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>
