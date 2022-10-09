@@ -19,7 +19,9 @@
     <span> | </span>
     <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w">Community Slack</a>
     <span> | </span>
-    <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">YouTube channel</a>
+    <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">YouTube</a>
+    <span> | </span>
+    <a href="https://www.linkedin.com/company/atri-labs">LinkedIn</a>
     <span> | </span>
     <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions">Discussions</a>
     <span> | </span>
@@ -92,19 +94,6 @@ You can contribute in any or all of the following ways:
 Please refer to our [contributing guidelines](CONTRIBUTING.md) for details. 
 
 Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md). 
-
-## Resources
-📚 Read the [Docs](https://docs.atrilabs.com/)
-
-🧭 Follow Atri Labs on [LinkedIn](https://www.linkedin.com/company/atri-labs)
-
-💬 Join our [Slack community](https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w)
-
-❓ Share any [bugs](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose) or ask any question in [Discussions](https://github.com/Atri-Labs/atrilabs-engine/discussions)
-
-🎥 Watch along on [YouTube](https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw)
-
-⭐️ Star [this repository](https://github.com/Atri-Labs/atrilabs-engine) if you like this project!
 
 ## Contributors 🎉
 
