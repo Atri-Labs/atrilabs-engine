@@ -100,7 +100,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-38-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 🤩 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -158,6 +158,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
     <tr>
       <td align="center"><a href="http://aashutosh-kr.github.io"><img src="https://avatars.githubusercontent.com/u/95764284?v=4?s=100" width="100px;" alt="Aashutosh Kumar"/><br /><sub><b>Aashutosh Kumar</b></sub></a><br /><a href="#question-Aashutosh-kr" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/prativh24"><img src="https://avatars.githubusercontent.com/u/71186265?v=4?s=100" width="100px;" alt="Prativh Gupta"/><br /><sub><b>Prativh Gupta</b></sub></a><br /><a href="#question-prativh24" title="Answering Questions">💬</a></td>
+      <td align="center"><a href="https://github.com/geetanjalikandpal21"><img src="https://avatars.githubusercontent.com/u/79351146?v=4?s=100" width="100px;" alt="Geetanjali Kandpal"/><br /><sub><b>Geetanjali Kandpal</b></sub></a><br /><a href="#question-geetanjalikandpal21" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
 </table>
