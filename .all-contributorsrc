@@ -16,6 +16,21 @@
         "maintenance",
         "mentoring"
       ]
+    },
+    {
+      "login": "cruxcode",
+      "name": "Shyam Swaroop",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30747788?v=4",
+      "profile": "https://github.com/cruxcode",
+      "contributions": [
+        "code",
+        "infra",
+        "projectManagement",
+        "maintenance",
+        "mentoring",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
