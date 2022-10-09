@@ -1,4 +1,17 @@
 contact_links:
-  - name: "Join Atri Community"
+
+  - name: "📚 Submit a Documentation Report"
+    url: https://github.com/Atri-Labs/framework-docs/issues
+    about: Did you spot a mistake in the docs, is anything unclear or do you have a suggestion?
+    
+  - name: "❓ Discussion forum"
+    url: https://github.com/Atri-Labs/atrilabs-engine/discussions
+    about: Ask questions about installation and Atri framework
+    
+  - name: "🎁 Share new feature ideas"
+    url: https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/new-feature-ideas
+    about: Share and discuss ideas for new features
+    
+  - name: "👋 Join Atri Community"
     url: https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w
     about: Join our community on Slack for other questions and general chat
