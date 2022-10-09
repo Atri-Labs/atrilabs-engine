@@ -131,7 +131,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/Jitulteron7"><img src="https://avatars.githubusercontent.com/u/58761652?v=4?s=100" width="100px;" alt="Jitul Teron"/><br /><sub><b>Jitul Teron</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Jitulteron7" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/Jitulteron7"><img src="https://avatars.githubusercontent.com/u/58761652?v=4?s=100" width="100px;" alt="Jitul Teron"/><br /><sub><b>Jitul Teron</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Jitulteron7" title="Code">💻</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Jitulteron7" title="Tests">⚠️</a></td>
     </tr>
   </tbody>
 </table>
