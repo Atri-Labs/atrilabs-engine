@@ -121,6 +121,8 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ## Contributors
 
+Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -156,3 +158,5 @@ Made with [contrib.rocks](https://contrib.rocks).
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://allcontributors.org/) specification. Contributions of all kind are welcome!
