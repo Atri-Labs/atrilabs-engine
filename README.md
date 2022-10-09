@@ -1,6 +1,6 @@
 ![banner](readme-assets/github_new.png)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -134,6 +134,9 @@ Made with [contrib.rocks](https://contrib.rocks).
       <td align="center"><a href="https://github.com/Supratim30"><img src="https://avatars.githubusercontent.com/u/49454292?v=4?s=100" width="100px;" alt="Supratim Majumder"/><br /><sub><b>Supratim Majumder</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Supratim30" title="Tests">⚠️</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Supratim30" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/MuminAhmadKhan"><img src="https://avatars.githubusercontent.com/u/63766734?v=4?s=100" width="100px;" alt="MuminAhmadKhan"/><br /><sub><b>MuminAhmadKhan</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=MuminAhmadKhan" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/Rishabh2012329"><img src="https://avatars.githubusercontent.com/u/57484495?v=4?s=100" width="100px;" alt="Rishabh Baid"/><br /><sub><b>Rishabh Baid</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Rishabh2012329" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/Shivam8452"><img src="https://avatars.githubusercontent.com/u/97235825?v=4?s=100" width="100px;" alt="Shivam8452"/><br /><sub><b>Shivam8452</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Shivam8452" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
