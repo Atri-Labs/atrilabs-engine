@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -154,6 +154,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
       <td align="center"><a href="https://github.com/JadhavSankalp7"><img src="https://avatars.githubusercontent.com/u/68782251?v=4?s=100" width="100px;" alt="JadhavSankalp7"/><br /><sub><b>JadhavSankalp7</b></sub></a><br /><a href="#userTesting-JadhavSankalp7" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/harikishantk"><img src="https://avatars.githubusercontent.com/u/58771359?v=4?s=100" width="100px;" alt="Harikishan TK"/><br /><sub><b>Harikishan TK</b></sub></a><br /><a href="#userTesting-harikishantk" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/Sayak-singha"><img src="https://avatars.githubusercontent.com/u/69098567?v=4?s=100" width="100px;" alt="Sayak Singha"/><br /><sub><b>Sayak Singha</b></sub></a><br /><a href="#userTesting-Sayak-singha" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/PansaraPriyanshi"><img src="https://avatars.githubusercontent.com/u/72371836?v=4?s=100" width="100px;" alt="PansaraPriyanshi"/><br /><sub><b>PansaraPriyanshi</b></sub></a><br /><a href="#userTesting-PansaraPriyanshi" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>
