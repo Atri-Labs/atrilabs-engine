@@ -1,6 +1,6 @@
 ![banner](readme-assets/github_new.png)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -133,6 +133,7 @@ Made with [contrib.rocks](https://contrib.rocks).
       <td align="center"><a href="https://github.com/jonathanalvares9009"><img src="https://avatars.githubusercontent.com/u/74007627?v=4?s=100" width="100px;" alt="Jonathan Elroy Alvares"/><br /><sub><b>Jonathan Elroy Alvares</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=jonathanalvares9009" title="Tests">⚠️</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=jonathanalvares9009" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/Supratim30"><img src="https://avatars.githubusercontent.com/u/49454292?v=4?s=100" width="100px;" alt="Supratim Majumder"/><br /><sub><b>Supratim Majumder</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Supratim30" title="Tests">⚠️</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Supratim30" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/MuminAhmadKhan"><img src="https://avatars.githubusercontent.com/u/63766734?v=4?s=100" width="100px;" alt="MuminAhmadKhan"/><br /><sub><b>MuminAhmadKhan</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=MuminAhmadKhan" title="Code">💻</a></td>
+      <td align="center"><a href="https://jakebolam.com"><img src="https://avatars.githubusercontent.com/u/3534236?v=4?s=100" width="100px;" alt="Jake Bolam"/><br /><sub><b>Jake Bolam</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=jakebolam" title="Tests">⚠️</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=jakebolam" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
