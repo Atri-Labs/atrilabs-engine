@@ -213,7 +213,7 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
             output[refId] = {
               props: {
                 ...output[refId]!["props"],
-                ...childNode.state["property"],
+                ...(treeId !== cssTreeId ? childNode.state["property"] : {}),
               },
               breakpointProps: {
                 ...output[refId]!["breakpointProps"],
@@ -237,7 +237,7 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
             };
           } else {
             output[refId] = {
-              props: childNode.state["property"],
+              props: treeId !== cssTreeId ? childNode.state["property"] : {},
               breakpointProps: childNode.state["breakpoints"]
                 ? transformBreakpointProps(childNode.state["breakpoints"])
                 : {},
