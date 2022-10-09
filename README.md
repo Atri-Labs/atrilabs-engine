@@ -100,7 +100,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 🤩 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -152,6 +152,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://www.linkedin.com/in/anurag-singh-a428a61ab/"><img src="https://avatars.githubusercontent.com/u/63997049?v=4?s=100" width="100px;" alt="Anurag Singh"/><br /><sub><b>Anurag Singh</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Aanuragc10" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/sanskarg348"><img src="https://avatars.githubusercontent.com/u/56079398?v=4?s=100" width="100px;" alt="sanskar gupta"/><br /><sub><b>sanskar gupta</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Asanskarg348" title="Bug reports">🐛</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=sanskarg348" title="Documentation">📖</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=sanskarg348" title="Code">💻</a> <a href="#example-sanskarg348" title="Examples">💡</a> <a href="#promotion-sanskarg348" title="Promotion">📣</a> <a href="#video-sanskarg348" title="Videos">📹</a></td>
       <td align="center"><a href="https://github.com/devsachin007"><img src="https://avatars.githubusercontent.com/u/79436926?v=4?s=100" width="100px;" alt="Sachin Sharma"/><br /><sub><b>Sachin Sharma</b></sub></a><br /><a href="#question-devsachin007" title="Answering Questions">💬</a></td>
+      <td align="center"><a href="https://github.com/Suryapp8"><img src="https://avatars.githubusercontent.com/u/113302256?v=4?s=100" width="100px;" alt="Surya Pandey"/><br /><sub><b>Surya Pandey</b></sub></a><br /><a href="#question-Suryapp8" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
 </table>
