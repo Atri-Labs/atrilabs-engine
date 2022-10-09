@@ -1,6 +1,6 @@
-name: 🐞 Bug report
+name: 🐞 Submit a Bug Report
 description: Create a bug report to help us improve Atri framework
-title: "[Bug]: "
+title: "🐞 "
 labels: ["bug"]
 assignees: 
 - 
@@ -8,7 +8,8 @@ body:
 - type: markdown
   attributes:
     value: |
-      Thanks for taking the time to fill out this bug report! We really appreciate your contribution. 🙏🏻
+      Thanks for taking the time to fill out this bug report! We really appreciate your contribution. 💖
+
 - type: checkboxes
   attributes:
     label: Is there an existing issue for this?
@@ -16,15 +17,24 @@ body:
     options:
     - label: I have searched the existing issues
       required: true
+
 - type: textarea
   attributes:
     label: Current Behavior
     description: A concise description of what you are experiencing.
-    placeholder: |
-      When I do <X>, <Y> happens and I see the error message attached below:
-      ```...```
+    placeholder: When I do <X>, <Y> happens.
   validations:
     required: true
+    
+- type: textarea
+  attributes:
+    label: Screenshots
+    description: If applicable, add screenshots to help explain your problem.
+    placeholder: |
+      Image or video recording
+  validations:
+    required: false
+    
 - type: textarea
   attributes:
     label: Expected Behavior
@@ -35,13 +45,27 @@ body:
 
 - type: textarea
   attributes:
+    label: System configuration
+    description: Please share your system configuration.
+    value: |
+      1. OS: [e.g. macOS Monterey 12.6]
+      2. Bits: [e.g. 64 bit]
+      3. Browser: [e.g. Google Chrome]
+      4. Atri framework version: [e.g. 0.0.64]
+      5. Virtual environment: [e.g. pipenv]
+    render: markdown
+  validations:
+    required: false
+    
+- type: textarea
+  attributes:
     label: Steps To Reproduce
     description: Steps to reproduce the behavior.
     placeholder: |
-      1. In this environment...
-      2. With this config...
-      3. Run '...'
-      4. See error...
+      1. Go to '...'
+      2. Click on '....'
+      3. Scroll down to '....'
+      4. See error
     render: markdown
   validations:
     required: false
