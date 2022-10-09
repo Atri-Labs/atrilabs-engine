@@ -76,11 +76,15 @@ You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9
 
 ## How to contribute?
 
-Thanks for your interest in contributing to the Atri framework. 🎉 
+Thanks for your interest in contributing to the Atri framework. 💖
 
 You can contribute in any or all of the following ways: 
 
-- submit a [bug report](https://github.com/Atri-Labs/atrilabs-engine/issues/new?assignees=&labels=&template=bug_report.md&title=), [feature request](https://github.com/Atri-Labs/atrilabs-engine/issues/new?assignees=&labels=&template=feature_request.md&title=) or another category of issue
+- submit a [bug report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose) 
+- propose an [Atri app](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- submit a [documentation report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- request a [new feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- suggest ways to [improve DX of an exisiting feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
 - ask a question in [Discussions](https://github.com/Atri-Labs/atrilabs-engine/discussions)
 - create an [Atri App](https://github.com/orgs/Atri-Apps/repositories) and share it with the [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
 - contribute to the code base: You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable for newcomers. 
