@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -152,6 +152,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
       <td align="center"><a href="https://github.com/RamAIbot"><img src="https://avatars.githubusercontent.com/u/54279782?v=4?s=100" width="100px;" alt="Ramachandran SS"/><br /><sub><b>Ramachandran SS</b></sub></a><br /><a href="#userTesting-RamAIbot" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/RohitKakade"><img src="https://avatars.githubusercontent.com/u/89378775?v=4?s=100" width="100px;" alt="RohitKakade"/><br /><sub><b>RohitKakade</b></sub></a><br /><a href="#userTesting-RohitKakade" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/JadhavSankalp7"><img src="https://avatars.githubusercontent.com/u/68782251?v=4?s=100" width="100px;" alt="JadhavSankalp7"/><br /><sub><b>JadhavSankalp7</b></sub></a><br /><a href="#userTesting-JadhavSankalp7" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/kirtanchandak"><img src="https://avatars.githubusercontent.com/u/92196705?v=4?s=100" width="100px;" alt="Kirtan Manoj Chandak"/><br /><sub><b>Kirtan Manoj Chandak</b></sub></a><br /><a href="#userTesting-kirtanchandak" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>
