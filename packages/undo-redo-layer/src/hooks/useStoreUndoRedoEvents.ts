@@ -147,22 +147,28 @@ export const useStoreUndoRedoEvents = () => {
             // TODO: create and push undo record
           }
         }
-        if (update.type === "dewire" && update.treeId === ComponentTreeId) {
-          const deletedNode = JSON.parse(
-            JSON.stringify(update.deletedNode)
-          ) as TreeNode;
-          const createEvent: CreateEvent = {
-            type: `CREATE$$${ComponentTreeId}`,
-            id: deletedNode.id,
-            meta: deletedNode.meta,
-            state: deletedNode.state,
-          };
+        if (
+          update.type === "dewire" &&
+          update.treeId === ComponentTreeId &&
+          update.topNode.id === update.deletedNode.id
+        ) {
+          const deletedNodes = update.deletedNodes;
+          const createEvents = deletedNodes.map((node) => {
+            const deletedNode = JSON.parse(JSON.stringify(node)) as TreeNode;
+            const createEvent: CreateEvent = {
+              type: `CREATE$$${ComponentTreeId}`,
+              id: deletedNode.id,
+              meta: deletedNode.meta,
+              state: deletedNode.state,
+            };
+            return createEvent;
+          });
           const deleteEvent: DeleteEvent = {
             type: `DELETE$$${ComponentTreeId}`,
-            id: deletedNode.id,
+            id: update.topNode.id,
           };
           addToUndoQueue(forestPkgId, forestId, {
-            undo: [createEvent],
+            undo: createEvents,
             redo: [deleteEvent],
           });
         }
