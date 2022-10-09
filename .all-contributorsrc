@@ -29,7 +29,10 @@
         "maintenance",
         "mentoring",
         "review",
-        "test"
+        "test",
+        "question",
+        "bug",
+        "ideas"
       ]
     }
   ],
