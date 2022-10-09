@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -145,6 +145,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
       <td align="center"><a href="https://github.com/harishfalco"><img src="https://avatars.githubusercontent.com/u/62054469?v=4?s=100" width="100px;" alt="harishfalco"/><br /><sub><b>harishfalco</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=harishfalco" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/Tej-git-212"><img src="https://avatars.githubusercontent.com/u/69730029?v=4?s=100" width="100px;" alt="Tejaswini AVSV"/><br /><sub><b>Tejaswini AVSV</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Tej-git-212" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/ayushi0809"><img src="https://avatars.githubusercontent.com/u/42436449?v=4?s=100" width="100px;" alt="ayushi0809"/><br /><sub><b>ayushi0809</b></sub></a><br /><a href="#userTesting-ayushi0809" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://github.com/Potato-29"><img src="https://avatars.githubusercontent.com/u/53327808?v=4?s=100" width="100px;" alt="Prayas Ahir"/><br /><sub><b>Prayas Ahir</b></sub></a><br /><a href="#userTesting-Potato-29" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>
