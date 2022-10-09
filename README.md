@@ -116,11 +116,7 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 
 Made with [contrib.rocks](https://contrib.rocks).
 
-## All contributors
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
