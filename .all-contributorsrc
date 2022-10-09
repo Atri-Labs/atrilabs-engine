@@ -300,6 +300,20 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "sanskarg348",
+      "name": "sanskar gupta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56079398?v=4",
+      "profile": "https://github.com/sanskarg348",
+      "contributions": [
+        "bug",
+        "doc",
+        "code",
+        "example",
+        "promotion",
+        "video"
+      ]
     }
   ],
   "contributorsPerLine": 7,
