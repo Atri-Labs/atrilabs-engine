@@ -1,6 +1,6 @@
 ![banner](readme-assets/github_new.png)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -140,6 +140,7 @@ Made with [contrib.rocks](https://contrib.rocks).
       <td align="center"><a href="https://lucidmach.vercel.app/"><img src="https://avatars.githubusercontent.com/u/39376102?v=4?s=100" width="100px;" alt="Nukala Suraj"/><br /><sub><b>Nukala Suraj</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=LucidMach" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/SurajPhulara"><img src="https://avatars.githubusercontent.com/u/73554410?v=4?s=100" width="100px;" alt="SURAJ PHULARA"/><br /><sub><b>SURAJ PHULARA</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=SurajPhulara" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/harishfalco"><img src="https://avatars.githubusercontent.com/u/62054469?v=4?s=100" width="100px;" alt="harishfalco"/><br /><sub><b>harishfalco</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=harishfalco" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/Tej-git-212"><img src="https://avatars.githubusercontent.com/u/69730029?v=4?s=100" width="100px;" alt="Tejaswini AVSV"/><br /><sub><b>Tejaswini AVSV</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Tej-git-212" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
