@@ -246,6 +246,15 @@
       "contributions": [
         "userTesting"
       ]
+    },
+    {
+      "login": "arjundubey-cr",
+      "name": "Arjun Dubey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40758425?v=4",
+      "profile": "https://github.com/arjundubey-cr",
+      "contributions": [
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
