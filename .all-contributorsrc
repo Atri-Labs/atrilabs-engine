@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "adityaxpique",
+      "name": "Aditya Kumar Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56078748?v=4",
+      "profile": "https://github.com/adityaxpique",
+      "contributions": [
+        "code",
+        "maintenance",
+        "mentoring"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "atrilabs-engine",
+  "projectOwner": "Atri-Labs"
+}
