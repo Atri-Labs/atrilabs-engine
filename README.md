@@ -14,6 +14,9 @@
   <a href="https://pepy.tech/badge/atri/month" target="_blank"><img src="https://pepy.tech/badge/atri/month" alt="Downloads per month"></a>
   </br>
   <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social">
+  <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+  [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+  <!-- ALL-CONTRIBUTORS-BADGE:END -->
   <h3 align="center">
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
@@ -115,3 +118,14 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 </br>
 
 Made with [contrib.rocks](https://contrib.rocks).
+
+## All contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
