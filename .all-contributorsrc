@@ -46,6 +46,16 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "jonathanalvares9009",
+      "name": "Jonathan Elroy Alvares",
+      "avatar_url": "https://avatars.githubusercontent.com/u/74007627?v=4",
+      "profile": "https://github.com/jonathanalvares9009",
+      "contributions": [
+        "test",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
