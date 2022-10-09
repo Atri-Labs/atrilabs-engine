@@ -1,7 +1,4 @@
 ![banner](readme-assets/github_new.png)
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
 
@@ -119,7 +116,11 @@ Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md
 
 Made with [contrib.rocks](https://contrib.rocks).
 
-## Contributors
+## Contributors 🎉
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
