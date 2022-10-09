@@ -314,6 +314,15 @@
         "promotion",
         "video"
       ]
+    },
+    {
+      "login": "devsachin007",
+      "name": "Sachin Sharma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79436926?v=4",
+      "profile": "https://github.com/devsachin007",
+      "contributions": [
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
