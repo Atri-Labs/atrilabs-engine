@@ -159,7 +159,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="http://aashutosh-kr.github.io"><img src="https://avatars.githubusercontent.com/u/95764284?v=4?s=100" width="100px;" alt="Aashutosh Kumar"/><br /><sub><b>Aashutosh Kumar</b></sub></a><br /><a href="#question-Aashutosh-kr" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/prativh24"><img src="https://avatars.githubusercontent.com/u/71186265?v=4?s=100" width="100px;" alt="Prativh Gupta"/><br /><sub><b>Prativh Gupta</b></sub></a><br /><a href="#question-prativh24" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/geetanjalikandpal21"><img src="https://avatars.githubusercontent.com/u/79351146?v=4?s=100" width="100px;" alt="Geetanjali Kandpal"/><br /><sub><b>Geetanjali Kandpal</b></sub></a><br /><a href="#question-geetanjalikandpal21" title="Answering Questions">💬</a></td>
-      <td align="center"><a href="https://github.com/DivyanshSingh786"><img src="https://avatars.githubusercontent.com/u/93871896?v=4?s=100" width="100px;" alt="Divyansh Singh"/><br /><sub><b>Divyansh Singh</b></sub></a><br /><a href="#question-DivyanshSingh786" title="Answering Questions">💬</a></td>
+      <td align="center"><a href="https://github.com/DivyanshSingh786"><img src="https://avatars.githubusercontent.com/u/93871896?v=4?s=100" width="100px;" alt="Divyansh Singh"/><br /><sub><b>Divyansh Singh</b></sub></a><br /><a href="#question-DivyanshSingh786" title="Answering Questions">💬</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3ADivyanshSingh786" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
