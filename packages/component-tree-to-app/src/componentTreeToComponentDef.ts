@@ -3,6 +3,7 @@ import type {
   ComponentGeneratorOutput,
 } from "@atrilabs/app-generator";
 import generateModuleId from "@atrilabs/scripts/build/babel/generateModuleId";
+import { createReverseMap, getAllNodeIdsFromReverseMap } from "./utils";
 
 const componentTreeToComponentDef: ComponentGeneratorFunction = (options) => {
   const output: ComponentGeneratorOutput = {};
@@ -14,7 +15,8 @@ const componentTreeToComponentDef: ComponentGeneratorFunction = (options) => {
     const componentTree = forest.tree(componentTreeId);
     if (componentTree) {
       const nodes = componentTree.nodes;
-      const nodeIds = Object.keys(nodes);
+      const reverseMap = createReverseMap(nodes);
+      const nodeIds = getAllNodeIdsFromReverseMap(reverseMap);
       for (let i = 0; i < nodeIds.length; i++) {
         const nodeId = nodeIds[i]!;
         const node = nodes[nodeId]!;

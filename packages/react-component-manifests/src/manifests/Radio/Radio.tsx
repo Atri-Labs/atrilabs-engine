@@ -15,6 +15,7 @@ export const Radio = forwardRef<
     styles: React.CSSProperties;
     custom: { name: string; label: string; checked: boolean; radius?: string };
     onChange: (checked: boolean) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onChangeCb: React.ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -24,7 +25,7 @@ export const Radio = forwardRef<
     [props]
   );
   return (
-    <div style={props.styles} ref={ref}>
+    <div style={props.styles} ref={ref} className={props.className}>
       <input
         type="radio"
         onChange={onChangeCb}

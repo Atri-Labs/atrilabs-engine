@@ -20,6 +20,7 @@ export const Dropdown = forwardRef<
       disabled?: boolean;
     };
     onChange: (selectedValue: string) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onChange = useCallback(
@@ -29,7 +30,11 @@ export const Dropdown = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block" }}
+      className={props.className}
+    >
       <select
         value={props.custom.selectedValue}
         onChange={onChange}

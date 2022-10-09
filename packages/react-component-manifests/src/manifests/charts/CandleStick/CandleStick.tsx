@@ -50,6 +50,7 @@ export const CandleStick = forwardRef<
       xAxis?: { show?: boolean };
       yAxis?: { show?: boolean };
     };
+    className?: string;
   }
 >((props, ref) => {
   const candleStickData = useCandleStickPlot(props.custom.data);
@@ -72,7 +73,11 @@ export const CandleStick = forwardRef<
   };
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <ComposedChart
         width={
           typeof props.styles.width === "string"

@@ -1,5 +1,5 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
-import React, { useCallback, useMemo, useEffect } from "react";
+import React, { useCallback, useMemo } from "react";
 import { CssProprtyComponentType } from "../../types";
 import ControlledInput from "./ControlledInput";
 import "./SizeInputWithUnits.css";
@@ -52,14 +52,6 @@ export const SizeInputWithoutEffect: React.FC<SizeInputWithoutEffectProps> = (
     }
     return digitIndex;
   };
-
-  useEffect(() => {
-    console.log(
-      props.value[props.index][props.name],
-      props.name,
-      props.styleItem
-    );
-  }, []);
 
   const getNumericValue = (value: string) => {
     let digitIndex = getDigitIndex(value);

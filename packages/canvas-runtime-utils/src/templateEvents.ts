@@ -87,7 +87,7 @@ export function postTemplateEvents(params: {
       api.postNewEvents(forestPkgId, forestId, {
         events: [event],
         meta: { agent: "browser" },
-        name: "TEMPALTE_EVENTS",
+        name: "TEMPLATE_EVENTS",
       });
     });
   });

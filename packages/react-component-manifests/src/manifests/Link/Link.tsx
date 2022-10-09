@@ -16,6 +16,7 @@ export const Link = forwardRef<
     styles: React.CSSProperties;
     custom: { text: string; url: string };
     onClick: () => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(() => {
@@ -23,6 +24,7 @@ export const Link = forwardRef<
   }, [props]);
   return (
     <div
+      className={props.className}
       ref={ref}
       style={{ display: "inline-block", ...props.styles }}
       onClick={onClick}

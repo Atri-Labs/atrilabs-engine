@@ -29,6 +29,7 @@ export const Upload = forwardRef<
     };
     onChange: (files: FileList) => void;
     io: { files: FileList };
+    className?: string;
   }
 >((props, ref) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,6 +53,7 @@ export const Upload = forwardRef<
         display: "inline-flex",
       }}
       onClick={onClickCb}
+      className={props.className}
     >
       <div>{props.custom.text}</div>
       {props.custom.showFilename ? (

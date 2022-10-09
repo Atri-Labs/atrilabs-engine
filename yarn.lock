@@ -9,116 +9,6 @@
   dependencies:
     "@jridgewell/trace-mapping" "^0.3.0"
 
-"@atrilabs/canvas-runtime-utils@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/canvas-runtime-utils/-/canvas-runtime-utils-0.0.63.tgz#2908aae507e23ef0157a9b8153e383e5027a14f0"
-  integrity sha512-/1vyeHs8aApyx79TVsCSYBCBnLki/TzQFFYeT24CUYpbCfVorEyoql+e37F98PxtyyJxzzlj0mJ9d723OvBuiQ==
-  dependencies:
-    "@atrilabs/canvas-runtime" "^0.0.63"
-    "@atrilabs/react-component-manifest-schema" "^0.0.63"
-    "@atrilabs/scripts" "^0.0.63"
-    typescript "^4.7.3"
-
-"@atrilabs/canvas-runtime@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/canvas-runtime/-/canvas-runtime-0.0.63.tgz#16daad0badffcb13b623da9c910d44f49668a0bc"
-  integrity sha512-8MqmFBE+mdyUOhST8QI5nz9K1thm31aAHLWaU9ZmZoyV1AIaMRCdpsPKrPpO9i7LeBtCqOvDZvGPFSR7RH4J1Q==
-  dependencies:
-    "@atrilabs/core" "^0.0.63"
-    "@atrilabs/design-system" "^0.0.63"
-    "@atrilabs/react-component-manifest-schema" "^0.0.63"
-    "@atrilabs/runtime-types" "^0.0.63"
-    "@xstate/react" "^3.0.0"
-    typescript "4.6.4"
-    xstate "^4.32.1"
-
-"@atrilabs/core@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/core/-/core-0.0.63.tgz#2153c19d964aac4fe68a373ac9e028c6c8e39773"
-  integrity sha512-0TQpgb/GqcvQvFuoMeOaSUaBBoGZKj6CwhGbSBqMZKPKrifYkVItns0bqi6K0W1w2pjGWwGwBGz7Q/Llb9oBjw==
-  dependencies:
-    "@atrilabs/forest" "^0.0.63"
-    uuid "^8.3.2"
-
-"@atrilabs/design-system@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/design-system/-/design-system-0.0.63.tgz#3ea05141c68f4842abe41a542d5a4515eb8dc33f"
-  integrity sha512-/eKjBEmlXMkFSoB3hQbQhwNOpI1XCHwFoKH1i4V0Pnd8sCDNMYMG/J8ND9xVQhUbk0HehN4g7FNe/M+9Gj8m2w==
-  dependencies:
-    "@atrilabs/layer-types" "^0.0.63"
-    "@atrilabs/scripts" "^0.0.63"
-    typescript "4.6.3"
-
-"@atrilabs/forest@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/forest/-/forest-0.0.63.tgz#5b968eb493401a647852e948a96847666302f24e"
-  integrity sha512-szZBZ+ibX2sI60A9we04opjrE5OyyMw1FO3lFXEEwZJoIAtiqRs2Io2M+YC0qiQp8FMzrMZdEajjxNw+S+o4mA==
-  dependencies:
-    lodash "4.17.21"
-    lowdb "1.0.0"
-    typescript "4.6.3"
-
-"@atrilabs/layer-types@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/layer-types/-/layer-types-0.0.63.tgz#073e2e76511fe4f50de0f205c8a8913ac63c886a"
-  integrity sha512-LICvMxkFKyI+0dczTBUn5JL/Mqa48H6tJPprfAArqqwUMpY51Qsi8nxZuLN7TTV/3iTibYcQ7R+bs7cBbE6lqw==
-  dependencies:
-    typescript "^4.6.3"
-
-"@atrilabs/react-component-manifest-schema@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/react-component-manifest-schema/-/react-component-manifest-schema-0.0.63.tgz#43976c613dd327e4842e15946f30b272056e1af9"
-  integrity sha512-AZ7gdLS6ZDMucw8+b1bwLGFHaNnNdL6DWsZY16NlQqZQ9W2A2XCMbUQ7qp9EjmDOTp3eUYr7K4CK2mSZD9PA5g==
-  dependencies:
-    "@atrilabs/core" "^0.0.63"
-    "@atrilabs/scripts" "^0.0.63"
-    "@types/joi" "^17.2.3"
-    joi "^17.6.0"
-    typescript "^4.6.4"
-
-"@atrilabs/runtime-types@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/runtime-types/-/runtime-types-0.0.63.tgz#7b607384409930f0caf5933f53e4094a6c6ba5e8"
-  integrity sha512-w/sEU054WHBSrwY4gRR9/eC5YTi/tmmX7MVNgTEALJFl6KvoLQNO5pnkPw0uaJ55ar580Uiu/nrKPKFnqUGvvQ==
-
-"@atrilabs/scripts@^0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@atrilabs/scripts/-/scripts-0.0.63.tgz#8af4b8f5aa7e050b0d23d26e85439a1949697aaa"
-  integrity sha512-RPZUpua8Fj9Z5ftoAA1tFP8eZyw3BE2mn2AzvJKOiziC6eBgGkzubS9EKo41aVwZ72OzjDam9spz2FFHd7uQ4A==
-  dependencies:
-    "@atrilabs/core" "^0.0.63"
-    "@babel/core" "^7.17.9"
-    "@babel/preset-env" "^7.16.11"
-    "@babel/preset-react" "^7.18.6"
-    "@babel/preset-typescript" "^7.18.6"
-    "@pmmmwh/react-refresh-webpack-plugin" "^0.5.5"
-    "@svgr/webpack" "^6.2.1"
-    babel-loader "^8.2.4"
-    babel-plugin-tester "^10.1.0"
-    chalk "4.1.2"
-    chokidar "^3.5.3"
-    command-exists "^1.2.9"
-    css-loader "^6.7.1"
-    file-loader "^6.2.0"
-    find-package-json "^1.2.0"
-    fs-extra "^10.1.0"
-    html-webpack-plugin "^5.5.0"
-    lodash "^4.17.21"
-    mini-css-extract-plugin "^2.6.0"
-    postcss-flexbugs-fixes "^5.0.2"
-    postcss-loader "^6.2.1"
-    postcss-normalize "^10.0.1"
-    postcss-preset-env "^7.5.0"
-    react-dev-utils "^12.0.1"
-    react-refresh "^0.13.0"
-    sass-loader "^12.6.0"
-    source-map-loader "^3.0.1"
-    style-loader "^3.3.1"
-    typescript "4.6.4"
-    webpack "^5.72.0"
-    webpack-dev-server "^4.8.1"
-    yargs "^17.5.1"
-
 "@babel/cli@^7.17.10":
   version "7.17.10"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.17.10.tgz#5ea0bf6298bb78f3b59c7c06954f9bd1c79d5943"
@@ -4605,6 +4495,13 @@
   resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-6.0.3.tgz#705bb349e789efa06f43f128cef51240753424cb"
   integrity sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==
 
+"@types/postcss-js@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/postcss-js/-/postcss-js-4.0.0.tgz#833d2d90ac9dd950fe2344defedcb152cb954156"
+  integrity sha512-ieu0u7T7jnUCFmXcf8JzoJ3/1U5NI3ZYpfX5zW2td0x/BqVQrpCQ6uOY9Ef/0WJuIjc9OCtdfYF/JE7MGax2TA==
+  dependencies:
+    postcss "^8.3.3"
+
 "@types/prettier@*", "@types/prettier@^2.1.5":
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.1.tgz#76e72d8a775eef7ce649c63c8acae1a0824bbaed"
@@ -5817,6 +5714,11 @@ camel-case@^4.1.2:
   dependencies:
     pascal-case "^3.1.2"
     tslib "^2.0.3"
+
+camelcase-css@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/camelcase-css/-/camelcase-css-2.0.1.tgz#ee978f6947914cc30c6b44741b6ed1df7f043fd5"
+  integrity sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==
 
 camelcase-keys@^6.2.2:
   version "6.2.2"
@@ -7215,11 +7117,6 @@ eslint-module-utils@^2.7.3:
   dependencies:
     debug "^3.2.7"
     find-up "^2.1.0"
-
-eslint-plugin-atrilabs@^0.0.63:
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-atrilabs/-/eslint-plugin-atrilabs-0.0.63.tgz#cd34e9c54beb3015aa6a4aa6cb146de73dc26792"
-  integrity sha512-1LdX91648OqDglA0GruK/evo/lfdot4JPu/vZwVHVnB07byxPKk6lZQKMSrjguFrqpE6SziT92EdtBh1AdfvpA==
 
 eslint-plugin-flowtype@^8.0.3:
   version "8.0.3"
@@ -11065,6 +10962,13 @@ postcss-initial@^4.0.1:
   resolved "https://registry.yarnpkg.com/postcss-initial/-/postcss-initial-4.0.1.tgz#529f735f72c5724a0fb30527df6fb7ac54d7de42"
   integrity sha512-0ueD7rPqX8Pn1xJIjay0AZeIuDoF+V+VvMt/uOnn+4ezUKhZM/NokDeP6DwMNyIoYByuN/94IQnt5FEkaN59xQ==
 
+postcss-js@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/postcss-js/-/postcss-js-4.0.0.tgz#31db79889531b80dc7bc9b0ad283e418dce0ac00"
+  integrity sha512-77QESFBwgX4irogGVPgQ5s07vLvFqWr228qZY+w6lW599cRlK/HmnlivnnVUxkjHnCu4J16PDMHcH+e+2HbvTQ==
+  dependencies:
+    camelcase-css "^2.0.1"
+
 postcss-lab-function@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/postcss-lab-function/-/postcss-lab-function-4.2.0.tgz#e054e662c6480202f5760887ec1ae0d153357123"
@@ -11329,6 +11233,15 @@ postcss-value-parser@^4.1.0, postcss-value-parser@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz#723c09920836ba6d3e5af019f92bc0971c02e514"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
+
+postcss@^8.3.3, postcss@^8.4.17:
+  version "8.4.17"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.17.tgz#f87863ec7cd353f81f7ab2dec5d67d861bbb1be5"
+  integrity sha512-UNxNOLQydcOFi41yHNMcKRZ39NeXlr8AxGuZJsdub8vIb12fHzcq37DTU/QtbI6WLxNg2gF9Z+8qtRwTj1UI1Q==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
 
 postcss@^8.4.14:
   version "8.4.14"

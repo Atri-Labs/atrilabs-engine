@@ -10,12 +10,29 @@ import { keySourcePropMap } from "./keySourcePropMap";
 
 function transformBreakpointProps(data: {
   [maxWidth: string]: { property: any };
-}) {
+}): { [maxWidth: string]: { [propName: string]: React.CSSProperties } } {
   const result: { [maxWidth: string]: any } = {};
   const maxWidths = Object.keys(data);
   maxWidths.forEach((maxWidth) => {
     if (data[maxWidth]!.property) {
       result[maxWidth] = data[maxWidth]!.property;
+    }
+  });
+  return result;
+}
+
+function extractBreakpointProps(
+  breakpoints: {
+    [maxWidth: string]: { [propName: string]: React.CSSProperties };
+  },
+  propName: string
+) {
+  const result: { [maxWidth: string]: React.CSSProperties } = {};
+  const widths = Object.keys(breakpoints);
+  widths.forEach((width) => {
+    const props = breakpoints[width]![propName];
+    if (props) {
+      result[width] = props;
     }
   });
   return result;
@@ -94,6 +111,42 @@ function preprocessCustomTreeProps(
   }
 }
 
+function createCSSProps(cssTreeState: {
+  property?: { [propName: string]: any };
+  breakpoints?: {
+    [maxWidth: string]: { [propName: string]: React.CSSProperties };
+  };
+}) {
+  const cssProps: PropsGeneratorOutput["0"]["cssProps"] = {};
+
+  const propsWithProperty = Object.keys(cssTreeState.property || {});
+  const breakpointWidths = Object.keys(cssTreeState.breakpoints || {});
+  const propsWithBreakpoints = breakpointWidths
+    .map((width) => {
+      return Object.keys(cssTreeState.breakpoints![width]!);
+    })
+    .flat();
+  const allPropNames = Array.from(
+    new Set([...propsWithProperty, ...propsWithBreakpoints])
+  );
+
+  allPropNames.forEach((propName) => {
+    const props =
+      cssTreeState.property && cssTreeState.property[propName]
+        ? cssTreeState.property[propName]
+        : {};
+    const breakpoints = cssTreeState.breakpoints
+      ? extractBreakpointProps(cssTreeState.breakpoints, propName)
+      : {};
+    cssProps[propName] = {
+      props,
+      breakpoints,
+    };
+  });
+
+  return cssProps;
+}
+
 // will exclude trees in options.custom.excludes
 const childTreeToProps: PropsGeneratorFunction = (options) => {
   const output: PropsGeneratorOutput = {};
@@ -160,7 +213,7 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
             output[refId] = {
               props: {
                 ...output[refId]!["props"],
-                ...childNode.state["property"],
+                ...(treeId !== cssTreeId ? childNode.state["property"] : {}),
               },
               breakpointProps: {
                 ...output[refId]!["breakpointProps"],
@@ -168,13 +221,37 @@ const childTreeToProps: PropsGeneratorFunction = (options) => {
                   ? transformBreakpointProps(childNode.state["breakpoints"])
                   : {}),
               },
+              cssProps: {
+                ...output[refId]!["cssProps"],
+                ...(treeId === cssTreeId
+                  ? createCSSProps({
+                      property: childNode.state["property"],
+                      breakpoints: childNode.state["breakpoints"]
+                        ? transformBreakpointProps(
+                            childNode.state["breakpoints"]
+                          )
+                        : undefined,
+                    })
+                  : {}),
+              },
             };
           } else {
             output[refId] = {
-              props: childNode.state["property"],
+              props: treeId !== cssTreeId ? childNode.state["property"] : {},
               breakpointProps: childNode.state["breakpoints"]
                 ? transformBreakpointProps(childNode.state["breakpoints"])
                 : {},
+              cssProps:
+                treeId === cssTreeId
+                  ? createCSSProps({
+                      property: childNode.state["property"],
+                      breakpoints: childNode.state["breakpoints"]
+                        ? transformBreakpointProps(
+                            childNode.state["breakpoints"]
+                          )
+                        : undefined,
+                    })
+                  : {},
             };
           }
         }

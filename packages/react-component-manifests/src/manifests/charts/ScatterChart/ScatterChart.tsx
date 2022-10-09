@@ -55,6 +55,7 @@ export const ScatterChart = forwardRef<
         range?: [number, number];
       };
     };
+    className?: string;
   }
 >((props, ref) => {
   const xAxisKey = useMemo(() => {
@@ -88,7 +89,11 @@ export const ScatterChart = forwardRef<
   }, [props.custom]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <ScatterChartRechart
         width={
           typeof props.styles.width === "string"
