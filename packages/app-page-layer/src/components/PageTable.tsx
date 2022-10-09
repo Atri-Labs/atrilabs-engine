@@ -73,7 +73,8 @@ export const PageTable: React.FC<PageTableProps> = React.memo((props) => {
       comp: UpdateFolder,
       props: {
         close: props.closeSubContainer,
-        data: props.data[props.index].folder,
+        data: props.data,
+        folderIndex: props.index,
       },
     });
   }, [props]);

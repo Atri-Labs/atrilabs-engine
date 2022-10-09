@@ -106,8 +106,11 @@ export const PageEditor: React.FC<PageEditorProps> = (props) => {
     props.loadData();
   }, [setSideDialog, props]);
   const openCreateFolder = useCallback(() => {
-    setSideDialog({ comp: CreateFolder, props: { close: closeSubContainer } });
-  }, [setSideDialog, closeSubContainer]);
+    setSideDialog({
+      comp: CreateFolder,
+      props: { close: closeSubContainer, data: props.pageTableData },
+    });
+  }, [setSideDialog, closeSubContainer, props]);
   const openCreatePage = useCallback(() => {
     setSideDialog({
       comp: CreatePage,

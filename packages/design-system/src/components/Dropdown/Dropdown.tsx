@@ -7,6 +7,7 @@ export type DropdownProps = {
   options: string[];
   onSelect: (option: string, index: number) => void;
   selectedIndex: number;
+  disabled?: boolean;
 };
 
 // Controlled Component
@@ -31,6 +32,7 @@ export const Dropdown: React.FC<DropdownProps> = React.memo((props) => {
           );
       }}
       value={props.options[props.selectedIndex]}
+      disabled={props.disabled}
     >
       {props.options.map((opt, index) => {
         return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   amber300,
   gray300,
@@ -14,6 +14,7 @@ import {
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { useSocketApi } from "../hooks/useCreateFolder";
+import { PageTableData } from "../types";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {
@@ -70,6 +71,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export type CreateFolderProps = {
   close: () => void;
+  data: PageTableData;
 };
 
 export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
@@ -81,14 +83,32 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
     },
     [setFoldername]
   );
+  const isDuplicateFoldername = useMemo(() => {
+    if (foldername) {
+      const allFoldernames = props.data.map((folder) => {
+        return folder.folder.name;
+      });
+      if (
+        allFoldernames.includes(foldername) ||
+        foldername === "root" ||
+        foldername === "/"
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }, [props.data, foldername]);
   const onCreateClick = useCallback(() => {
+    if (isDuplicateFoldername) {
+      return;
+    }
     createFolder(
       foldername,
       () => {},
       () => {}
     );
     props.close();
-  }, [createFolder, foldername, props]);
+  }, [createFolder, foldername, props, isDuplicateFoldername]);
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -114,6 +134,18 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
           </div>
           <div>{`/${foldername}`}</div>
         </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          padding: "1rem",
+          ...smallText,
+          color: gray300,
+        }}
+      >
+        {isDuplicateFoldername
+          ? `A folder with name "${foldername}" already exists`
+          : null}
       </div>
       <div
         style={{ display: "flex", justifyContent: "center", padding: "1rem" }}
