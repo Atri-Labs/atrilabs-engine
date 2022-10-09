@@ -119,7 +119,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-27-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -162,6 +162,7 @@ Thanks go to these wonderful people ([emoji key](https://allcontributors.org/doc
       <td align="center"><a href="https://github.com/Mahe9041"><img src="https://avatars.githubusercontent.com/u/84344925?v=4?s=100" width="100px;" alt="Mahe9041"/><br /><sub><b>Mahe9041</b></sub></a><br /><a href="#userTesting-Mahe9041" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/sahilsuman933"><img src="https://avatars.githubusercontent.com/u/34382211?v=4?s=100" width="100px;" alt="Sahil Suman"/><br /><sub><b>Sahil Suman</b></sub></a><br /><a href="#userTesting-sahilsuman933" title="User Testing">📓</a></td>
       <td align="center"><a href="https://github.com/vamsirevada"><img src="https://avatars.githubusercontent.com/u/38239734?v=4?s=100" width="100px;" alt="Vamsi Revada"/><br /><sub><b>Vamsi Revada</b></sub></a><br /><a href="#userTesting-vamsirevada" title="User Testing">📓</a></td>
+      <td align="center"><a href="https://www.linkedin.com/in/ayush-kumar-shukla/"><img src="https://avatars.githubusercontent.com/u/68881799?v=4?s=100" width="100px;" alt="Ayush Kumar Shukla"/><br /><sub><b>Ayush Kumar Shukla</b></sub></a><br /><a href="#userTesting-Ayush-k-Shukla" title="User Testing">📓</a></td>
     </tr>
   </tbody>
 </table>
