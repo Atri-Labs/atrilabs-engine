@@ -100,7 +100,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 🤩 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -154,6 +154,9 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://github.com/devsachin007"><img src="https://avatars.githubusercontent.com/u/79436926?v=4?s=100" width="100px;" alt="Sachin Sharma"/><br /><sub><b>Sachin Sharma</b></sub></a><br /><a href="#question-devsachin007" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/Suryapp8"><img src="https://avatars.githubusercontent.com/u/113302256?v=4?s=100" width="100px;" alt="Surya Pandey"/><br /><sub><b>Surya Pandey</b></sub></a><br /><a href="#question-Suryapp8" title="Answering Questions">💬</a></td>
       <td align="center"><a href="https://github.com/ipriyanshi1708"><img src="https://avatars.githubusercontent.com/u/92941945?v=4?s=100" width="100px;" alt="Priyanshi Agarwal"/><br /><sub><b>Priyanshi Agarwal</b></sub></a><br /><a href="#question-ipriyanshi1708" title="Answering Questions">💬</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="http://aashutosh-kr.github.io"><img src="https://avatars.githubusercontent.com/u/95764284?v=4?s=100" width="100px;" alt="Aashutosh Kumar"/><br /><sub><b>Aashutosh Kumar</b></sub></a><br /><a href="#question-Aashutosh-kr" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
 </table>
