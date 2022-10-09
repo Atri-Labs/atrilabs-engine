@@ -66,6 +66,15 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "MuminAhmadKhan",
+      "name": "MuminAhmadKhan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63766734?v=4",
+      "profile": "https://github.com/MuminAhmadKhan",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
