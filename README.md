@@ -1,6 +1,6 @@
 ![banner](readme-assets/github_new.png)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -128,6 +128,7 @@ Made with [contrib.rocks](https://contrib.rocks).
   <tbody>
     <tr>
       <td align="center"><a href="https://github.com/adityaxpique"><img src="https://avatars.githubusercontent.com/u/56078748?v=4?s=100" width="100px;" alt="Aditya Kumar Singh"/><br /><sub><b>Aditya Kumar Singh</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=adityaxpique" title="Code">💻</a> <a href="#maintenance-adityaxpique" title="Maintenance">🚧</a> <a href="#mentoring-adityaxpique" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center"><a href="https://github.com/cruxcode"><img src="https://avatars.githubusercontent.com/u/30747788?v=4?s=100" width="100px;" alt="Shyam Swaroop"/><br /><sub><b>Shyam Swaroop</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=cruxcode" title="Code">💻</a> <a href="#infra-cruxcode" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#projectManagement-cruxcode" title="Project Management">📆</a> <a href="#maintenance-cruxcode" title="Maintenance">🚧</a> <a href="#mentoring-cruxcode" title="Mentoring">🧑‍🏫</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/pulls?q=is%3Apr+reviewed-by%3Acruxcode" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=cruxcode" title="Tests">⚠️</a></td>
     </tr>
   </tbody>
 </table>
