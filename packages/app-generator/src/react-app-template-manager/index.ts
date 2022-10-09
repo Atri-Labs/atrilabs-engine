@@ -651,39 +651,6 @@ export function createReactAppTemplateManager(
       console.log("useStore data cursor match is null");
     }
 
-    const breakpointPropsData: {
-      [pageName: string]: { [maxWidth: string]: { [alias: string]: any } };
-    } = {};
-    propsForAllPages.forEach(({ propsForPage, pageName }) => {
-      breakpointPropsData[pageName] = {};
-      const maxWidthLevelData: {
-        [maxWidth: string]: { [alias: string]: any };
-      } = {};
-      propsForPage.forEach(({ alias, breakpointProps }) => {
-        const widths = Object.keys(breakpointProps);
-        widths.forEach((width) => {
-          if (maxWidthLevelData[width]) {
-            maxWidthLevelData[width][alias] = breakpointProps[width];
-          } else {
-            maxWidthLevelData[width] = { [alias]: breakpointProps[width] };
-          }
-        });
-      });
-      breakpointPropsData[pageName] = maxWidthLevelData;
-    });
-    const dataCursor2Match = useStoreTemplateText.match(
-      /\/\*\sDATA\s2\sCURSOR.*\n/
-    );
-    if (dataCursor2Match) {
-      slices.push({
-        index: dataCursor2Match.index!,
-        length: dataCursor2Match[0].length,
-        replaceWith: `...${JSON.stringify(breakpointPropsData, null, 2)}`,
-      });
-    } else {
-      console.log("useStore data cursor match is null");
-    }
-
     // write slices
     const newText = replaceText(useStoreTemplateText, slices);
     fs.writeFileSync(useStoreDestPath, newText);

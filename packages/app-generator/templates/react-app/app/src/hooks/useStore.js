@@ -41,10 +41,6 @@ const desktopModeProps = {
   /* DATA 1 CURSOR */
 };
 
-const breakpointProps = {
-  /* DATA 2 CURSOR */
-};
-
 useStore.setState(desktopModeProps);
 
 export default useStore;
