@@ -44,7 +44,8 @@
         "mentoring",
         "projectManagement",
         "review",
-        "test"
+        "test",
+        "bug"
       ]
     }
   ],
