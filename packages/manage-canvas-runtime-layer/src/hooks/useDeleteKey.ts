@@ -12,7 +12,7 @@ export const useDeleteKey = () => {
   useEffect(() => {
     let key = "Backspace";
     if (window.navigator) {
-      if (!window.navigator.userAgent.indexOf("Mac")) {
+      if (window.navigator.userAgent.indexOf("Mac") < 0) {
         key = "Delete";
       }
     }
