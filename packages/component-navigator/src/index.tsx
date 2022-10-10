@@ -9,6 +9,8 @@ import {
 import { useCallback, useState } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
+import "./styles.css";
+
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -57,7 +59,11 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={4}>
-        <div style={styles.iconContainer}>
+        <div
+          style={styles.iconContainer}
+          data-tooltip="Navigation Manager"
+          className="tool-tip"
+        >
           <IconMenu onClick={openDropContainer} active={false}>
             <CompNavIcon />
           </IconMenu>

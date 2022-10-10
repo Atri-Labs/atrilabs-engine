@@ -169,7 +169,7 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={1}>
-        <div style={styles.iconContainer}>
+        <div style={styles.iconContainer}  data-tooltip="Template Manager" className="tool-tip">
           <IconMenu onClick={openDropContainer} active={false}>
             <OpenTemplateIcon />
           </IconMenu>
