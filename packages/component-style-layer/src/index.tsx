@@ -16,7 +16,7 @@ This serves as the Data Manager component for this layer.
 */
 export default function () {
   // show tab and set alias
-  const { showTab, alias, setAliasCb, id } = useShowTab();
+  const { showTab, alias, setAliasCb, id, initialAlias } = useShowTab();
   const { patchCb, styles, treeOptions, breakpoint } = useManageCSS(id);
   const {
     openAssetManager,
@@ -64,6 +64,7 @@ export default function () {
                 colorValue={colorVal as [string]}
                 setColorValue={colorValSetter}
                 colorValueArraySetter={colorValueArraySetter}
+                initialAlias={initialAlias}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div
