@@ -89,6 +89,7 @@ export default function () {
               setShowPopup(!showPopup);
               callRunTaskApi();
             }}
+            data-tooltip="Build & Run" className="tool-tip"
           >
             {"Build & Run"}
           </span>
