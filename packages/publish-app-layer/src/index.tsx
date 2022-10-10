@@ -50,13 +50,13 @@ export default function () {
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
       const { repeat, ctrlKey, key, metaKey } = event;
-      if (!repeat && ctrlKey === true && key === "b") {
-        setShowPopup(!showPopup);
-        callRunTaskApi();
-      }
-
       if (window.navigator && window.navigator.userAgent) {
-        if (window.navigator.userAgent.indexOf("Mac")) {
+        if (window.navigator.userAgent.indexOf("Mac") >= 0) {
+          if (!repeat && metaKey === true && key === "b") {
+            setShowPopup(!showPopup);
+            callRunTaskApi();
+          }
+        } else if (!repeat && ctrlKey === true && key === "b") {
           if (!repeat && metaKey === true && key === "b") {
             setShowPopup(!showPopup);
             callRunTaskApi();
