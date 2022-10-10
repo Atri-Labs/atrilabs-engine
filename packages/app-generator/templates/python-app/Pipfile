@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = "*"
+fastapi = "0.84.0"
 uvicorn = {extras = ["standard"], version = "*"}
 jsonpickle = "*"
 python-multipart = "*"
