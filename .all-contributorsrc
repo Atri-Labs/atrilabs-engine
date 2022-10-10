@@ -7,6 +7,23 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "cruxcode",
+      "name": "Shyam Swaroop",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30747788?v=4",
+      "profile": "https://github.com/cruxcode",
+      "contributions": [
+        "code",
+        "doc",
+        "infra",
+        "projectManagement",
+        "maintenance",
+        "mentoring",
+        "review",
+        "test",
+        "video
+      ]
+    },
+    {
       "login": "adityaxpique",
       "name": "Aditya Kumar Singh",
       "avatar_url": "https://avatars.githubusercontent.com/u/56078748?v=4",
@@ -15,21 +32,6 @@
         "code",
         "maintenance",
         "mentoring"
-      ]
-    },
-    {
-      "login": "cruxcode",
-      "name": "Shyam Swaroop",
-      "avatar_url": "https://avatars.githubusercontent.com/u/30747788?v=4",
-      "profile": "https://github.com/cruxcode",
-      "contributions": [
-        "code",
-        "infra",
-        "projectManagement",
-        "maintenance",
-        "mentoring",
-        "review",
-        "test"
       ]
     },
     {
