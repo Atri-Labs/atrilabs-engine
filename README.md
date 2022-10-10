@@ -13,7 +13,7 @@
   <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
   <a href="https://pepy.tech/badge/atri/month" target="_blank"><img src="https://pepy.tech/badge/atri/month" alt="Downloads per month"></a>
   </br>
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social">
+  ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
   <h3 align="center">
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
