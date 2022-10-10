@@ -91,9 +91,7 @@ You can contribute in any or all of the following ways:
 - [create an Atri App](https://github.com/orgs/Atri-Apps/repositories) and share it with the [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
 - contribute to the Atri framework: You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable for newcomers. 
 
-Please refer to our [contributing guidelines](CONTRIBUTING.md) for details. 
-
-Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md). 
+Please refer to our [contributing guidelines](CONTRIBUTING.md) for details. Besides, please make sure you adhere to the [code of conduct](CODE_OF_CONDUCT.md). 
 
 If you make any contribution to our project (code or no-code; check the [vast list of contribution types](https://allcontributors.org/docs/en/emoji-key)), you will be featured in the table below 👇
 
