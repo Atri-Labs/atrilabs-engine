@@ -3,5 +3,6 @@ export type ComponentNode = {
   id: string;
   name: string;
   children?: ComponentNode[];
+  index: number;
   open: boolean;
 };
