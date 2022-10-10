@@ -145,6 +145,22 @@ export const useStoreUndoRedoEvents = () => {
             ].state.parent.id;
           if (currentParent === outermostParentId) {
             // TODO: create and push undo record
+            const compNode = componentTree.nodes[currentNodeId];
+            const { key, pkg } = compNode.meta;
+            if (key && pkg) {
+              const createEvent: CreateEvent = {
+                type: `CREATE$$${ComponentTreeId}`,
+                ...JSON.parse(JSON.stringify(compNode)),
+              };
+              const newDeleteCompEvent: DeleteEvent = {
+                type: `DELETE$$${ComponentTreeId}`,
+                id: compNode.id,
+              };
+              addToUndoQueue(forestPkgId, forestId, {
+                undo: [newDeleteCompEvent],
+                redo: [createEvent],
+              });
+            }
           }
         }
         if (
