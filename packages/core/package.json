@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/core",
-  "version": "0.0.66",
+  "version": "0.0.67",
   "description": "This package contains code for compilation and bundling of atrilabs package.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -38,7 +38,7 @@
     "react-dom": "18.0.0"
   },
   "dependencies": {
-    "@atrilabs/forest": "^0.0.66",
+    "@atrilabs/forest": "^0.0.67",
     "uuid": "^8.3.2"
   }
 }
