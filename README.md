@@ -82,14 +82,14 @@ Thanks for your interest in contributing to the Atri framework. 💖
 
 You can contribute in any or all of the following ways: 
 
-- submit a [bug report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose) 
-- propose an [Atri app](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
-- submit a [documentation report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
-- request a [new feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
-- suggest ways to [improve DX of an exisiting feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
-- ask a question in [Discussions](https://github.com/Atri-Labs/atrilabs-engine/discussions)
-- create an [Atri App](https://github.com/orgs/Atri-Apps/repositories) and share it with the [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
-- contribute to the code base: You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable for newcomers. 
+- [ask a question](https://github.com/Atri-Labs/atrilabs-engine/discussions)
+- [submit a bug report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- [request a new feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- [suggest ways to improve the developer experience of an existing feature](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- [submit a documentation report](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- [propose an Atri app](https://github.com/Atri-Labs/atrilabs-engine/issues/new/choose)
+- [create an Atri App](https://github.com/orgs/Atri-Apps/repositories) and share it with the [community](https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/show-and-tell)
+- contribute to the Atri framework: You can get started with ["good first issues"](https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) which are suitable for newcomers. 
 
 Please refer to our [contributing guidelines](CONTRIBUTING.md) for details. 
 
