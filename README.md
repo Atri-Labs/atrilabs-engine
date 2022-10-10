@@ -166,6 +166,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
     </tr>
     <tr>
       <td align="center"><a href="https://github.com/zapkirin"><img src="https://avatars.githubusercontent.com/u/112710485?v=4?s=100" width="100px;" alt="zapkirin"/><br /><sub><b>zapkirin</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=zapkirin" title="Documentation">📖</a> <a href="#question-zapkirin" title="Answering Questions">💬</a></td>
+      <td align="center"><a href="https://github.com/Vitika9"><img src="https://avatars.githubusercontent.com/u/79760854?v=4" width="100px;" alt="Vitika Soni"/><br /><sub><b>Vitika Soni</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Vitika9" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
