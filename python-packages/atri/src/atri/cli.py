@@ -208,7 +208,7 @@ def start(e_port, w_port, m_port, p_port, d_port, u_port, c_port, debug):
                 sys.stdout.close()
                 sys.stderr.close()
             except:
-                print("Some error occured while closing atri cli.")
+                print("Some error occurred while closing atri cli.")
                 printd(sys.exc_info())
                 exit(1)
             exit(0)
