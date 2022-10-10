@@ -12,8 +12,8 @@
     "dev": "atri-react-app-dev-server"
   },
   "dependencies": {
-    "@atrilabs/app-scripts": "^0.0.66",
-    "@atrilabs/core": "^0.0.66",
+    "@atrilabs/app-scripts": "^0.0.67",
+    "@atrilabs/core": "^0.0.67",
     "chokidar": "^3.5.3",
     "http-proxy-middleware": "^2.0.6",
     "react": "18.0.0",
