@@ -45,7 +45,7 @@ export function compressEvents(events: AnyEvent[], forestDef: ForestDef) {
 
       const reverseLinkMap: { [childId: string]: string } = {};
       linkRefIds.forEach((linkRefId) => {
-        return tree.links[linkRefId]!.childId;
+        reverseLinkMap[tree.links[linkRefId]!.childId] = linkRefId;
       });
 
       return nodeIds.map((nodeId): AnyEvent[] => {
