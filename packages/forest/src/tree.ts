@@ -15,28 +15,28 @@ export function createTree(treeDef: TreeDef, forest: Forest) {
     patch: (event, meta) => {
       const patchEvent = {
         ...event,
-        type: `PATCH${eventSuffix}`,
+        type: `PATCH$$${eventSuffix}`,
       };
       forest.patch(patchEvent, meta);
     },
     del: (event, meta) => {
       const delEvent = {
         ...event,
-        type: `DELETE${eventSuffix}`,
+        type: `DELETE$$${eventSuffix}`,
       };
       forest.del(delEvent, meta);
     },
     link: (event, meta) => {
       const linkEvent = {
         ...event,
-        type: `LINK${eventSuffix}`,
+        type: `LINK$$${eventSuffix}`,
       };
       forest.link(linkEvent, meta);
     },
     unlink: (event, meta) => {
       const unlinkEvent = {
         ...event,
-        type: `UNLINK${eventSuffix}`,
+        type: `UNLINK$$${eventSuffix}`,
       };
       forest.link(unlinkEvent, meta);
     },
