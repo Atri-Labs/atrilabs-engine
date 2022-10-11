@@ -1,50 +1,12 @@
 import { createForest } from "../src/forest";
-import { ForestDef, TreeDef } from "../src/types";
-
-const componentTreeDef: TreeDef = {
-  id: "componentTreeId",
-  modulePath: "componentTreeModule",
-  defFn: () => {
-    return {
-      validateCreate(_event) {
-        return true;
-      },
-      validatePatch(_event) {
-        return true;
-      },
-      onCreate(_event) {},
-    };
-  },
-};
-
-const cssTreeDef: TreeDef = {
-  id: "cssTreeId",
-  modulePath: "cssTreeModule",
-  defFn: () => {
-    return {
-      validateCreate(_event) {
-        return true;
-      },
-      validatePatch(_event) {
-        return true;
-      },
-      onCreate(_event) {},
-    };
-  },
-};
-
-const forestDef: ForestDef = {
-  id: "forestId",
-  pkg: "forestPkg",
-  trees: [componentTreeDef, cssTreeDef],
-};
+import { componentTreeDef, forestDef } from "./forestDefExample";
 
 test("createForest fn returns a forest with trees", () => {
   const forest = createForest(forestDef);
   expect(forest).toBeDefined();
   expect(forest.tree).toBeDefined();
 
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   expect(compTree).toBeDefined();
   const cssTree = forest.tree("cssTreeModule");
   expect(cssTree).toBeDefined();
@@ -52,7 +14,7 @@ test("createForest fn returns a forest with trees", () => {
 
 test("nodes get created on calling handleEvent", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
@@ -111,7 +73,7 @@ test("create after delete event, restores all nodes", () => {
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -119,7 +81,7 @@ test("create after delete event, restores all nodes", () => {
         },
       },
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp2",
         meta: {},
         state: {
@@ -127,11 +89,11 @@ test("create after delete event, restores all nodes", () => {
         },
       },
       {
-        type: `DELETE$$componentTreeModule`,
+        type: `DELETE$$${componentTreeDef.modulePath}`,
         id: "comp1",
       },
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {

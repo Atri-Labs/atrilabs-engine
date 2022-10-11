@@ -1,75 +1,66 @@
-import { AnyEvent, CreateEvent } from "../src/types";
+import { AnyEvent } from "../src/types";
 import { compressEvents } from "../src/compression";
+import { componentTreeDef, cssTreeDef, forestDef } from "./forestDefExample";
 
 test("patches are merged", () => {
   const events: AnyEvent[] = [
     {
-      type: "CREATE$$CompTreeId",
+      type: `CREATE$$${componentTreeDef.modulePath}`,
       meta: {},
       id: "comp1",
       state: { parent: { id: "body", index: 0 } },
     },
     {
-      type: "PATCH$$CompTreeId",
+      type: `PATCH$$${componentTreeDef.modulePath}`,
       id: "comp1",
       slice: { alias: "alias1" },
     },
     {
-      type: "PATCH$$CompTreeId",
+      type: `PATCH$$${componentTreeDef.modulePath}`,
       id: "comp1",
       slice: { alias: "alias2" },
     },
   ];
-  const compressedEvents = compressEvents(events);
-  expect(compressedEvents.length).toBe(2);
+  const compressedEvents = compressEvents(events, forestDef);
+  expect(compressedEvents.length).toBe(1);
 });
 
 test("create & delete results in no event", () => {
   const events: AnyEvent[] = [
     {
-      type: "CREATE$$CompTreeId",
+      type: `CREATE$$${componentTreeDef.modulePath}`,
       meta: {},
       id: "comp1",
       state: { parent: { id: "body", index: 0 } },
     },
     {
-      type: "DELETE$$CompTreeId",
+      type: `DELETE$$${componentTreeDef.modulePath}`,
       id: "comp1",
     },
   ];
-  const compressedEvents = compressEvents(events);
+  const compressedEvents = compressEvents(events, forestDef);
   expect(compressedEvents.length).toBe(0);
 });
 
-test("re-create removes delete event from compressed event", () => {
+test("deleting root tree node, results in no event for linked tree", () => {
   const events: AnyEvent[] = [
     {
-      type: "CREATE$$CompTreeId",
+      type: `CREATE$$${componentTreeDef.modulePath}`,
       meta: {},
       id: "comp1",
       state: { parent: { id: "body", index: 0 } },
     },
     {
-      type: "PATCH$$CompTreeId",
-      id: "comp1",
-      slice: { alias: "alias1" },
-    },
-    {
-      type: "DELETE$$CompTreeId",
-      id: "comp1",
-    },
-    {
-      type: "CREATE$$CompTreeId",
-      id: "comp1",
+      type: `LINK$$${cssTreeDef.modulePath}`,
       meta: {},
-      state: { parent: { id: "body", index: 0 } },
+      id: "css1",
+      state: { parent: { id: "", index: 0 } },
+    },
+    {
+      type: `DELETE$$${componentTreeDef.modulePath}`,
+      id: "comp1",
     },
   ];
-  const compressedEvents = compressEvents(events);
-  expect(compressedEvents.length).toBe(1);
-  expect(compressedEvents[0]).toHaveProperty("state");
-  expect((compressedEvents[0] as CreateEvent)["state"]).toHaveProperty(
-    "parent"
-  );
-  expect((compressedEvents[0] as CreateEvent)["state"]).toHaveProperty("alias");
+  const compressedEvents = compressEvents(events, forestDef);
+  expect(compressedEvents.length).toBe(0);
 });

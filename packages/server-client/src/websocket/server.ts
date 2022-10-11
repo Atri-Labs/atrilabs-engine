@@ -28,6 +28,7 @@ import {
   collectCreateTemplate,
   collectImportResources,
 } from "../utils/collect_stats";
+import { getForestDef } from "../utils/getForestDef";
 const app = express();
 const server = http.createServer(app);
 
@@ -123,6 +124,9 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     getMeta(forestPkgId);
     getPages(forestPkgId);
   }
+
+  const target = toolConfig.targets[0]!;
+  const forestDef = getForestDef(toolConfig, target.options["appForestPkgId"])!;
 
   io.on("connection", (socket) => {
     socket.on("getMeta", (forestPkgId, callback) => {
@@ -285,7 +289,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         initialLoadForest(forestPkgId);
         const eventManager = getEventManager(forestPkgId);
         const events = eventManager.fetchEvents(pageId);
-        const compressedEvents = compressEvents(events);
+        const compressedEvents = compressEvents(events, forestDef);
         callback(compressedEvents);
       } catch (err) {
         console.log(
