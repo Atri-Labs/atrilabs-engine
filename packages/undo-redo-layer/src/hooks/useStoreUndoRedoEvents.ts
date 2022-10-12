@@ -8,6 +8,10 @@ import {
 } from "@atrilabs/forest";
 import { useCallback, useEffect } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import {
+  createReverseMap,
+  getAllNodeIdsFromReverseMap,
+} from "@atrilabs/canvas-runtime-utils";
 
 type UndoRecord = {
   undo: AnyEvent[];
@@ -174,6 +178,28 @@ export const useStoreUndoRedoEvents = () => {
               addToUndoQueue(forestPkgId, forestId, {
                 undo: [newDeleteCompEvent],
                 redo: [createEvent],
+                beforeUndo: (oldRecord) => {
+                  const reverseMap = createReverseMap(
+                    componentTree.nodes,
+                    compNode.id
+                  );
+                  const allDeletedNodeIds = [compNode.id].concat(
+                    getAllNodeIdsFromReverseMap(reverseMap, compNode.id)
+                  );
+                  const createEvents = allDeletedNodeIds.map((nodeId) => {
+                    const deletedNode = JSON.parse(
+                      JSON.stringify(componentTree.nodes[nodeId])
+                    ) as TreeNode;
+                    const createEvent: CreateEvent = {
+                      type: `CREATE$$${ComponentTreeId}`,
+                      id: deletedNode.id,
+                      meta: deletedNode.meta,
+                      state: deletedNode.state,
+                    };
+                    return createEvent;
+                  });
+                  return { ...oldRecord, redo: createEvents };
+                },
               });
             }
           }
