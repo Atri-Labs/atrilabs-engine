@@ -7,3 +7,4 @@ lerna-debug.log
 lib-cjs/
 .vscode/
 .DS_Store
+coverage/

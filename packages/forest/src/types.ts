@@ -68,12 +68,15 @@ export type LinkEvent = TreeLink & EventDto;
 
 export type UnlinkEvent = LinkEvent;
 
+export type HardPatchEvent = { id: string; state: any } & EventDto;
+
 export type AnyEvent =
   | CreateEvent
   | PatchEvent
   | DeleteEvent
   | LinkEvent
-  | UnlinkEvent;
+  | UnlinkEvent
+  | HardPatchEvent;
 
 export type TreeDefReturnType = {
   validateCreate: (event: CreateEvent) => boolean;

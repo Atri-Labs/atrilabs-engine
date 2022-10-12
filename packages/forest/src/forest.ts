@@ -14,6 +14,7 @@ import {
   ForestUpdateSubscriber,
   EventMetaData,
   TreeNode,
+  HardPatchEvent,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -37,13 +38,6 @@ export function createForest(def: ForestDef): Forest {
     const id = def.modulePath;
     defaultFnMap[id] = def.defFn();
   });
-
-  const isRootTree = (treeId: string) => {
-    if (treeId === rootDef.modulePath) {
-      return true;
-    }
-    return false;
-  };
 
   // create an empty map of trees to be filled once API for forest is ready below
   const treeMap: { [treeId: string]: Tree } = {};
@@ -183,15 +177,6 @@ export function createForest(def: ForestDef): Forest {
         )
       );
       nodesToBeDeleted.reverse().forEach((nodeId) => {
-        // if event is from a root tree, call unlink on all child tree
-        if (isRootTree(treeId)) {
-          if (linkEvents[nodeId]) {
-            linkEvents[nodeId]!.forEach((event) => {
-              const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-              handleEvent(name, unlinkEvent, meta);
-            });
-          }
-        }
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
         const deletedNode = treeMap[treeId]!.nodes[nodeId]!;
         delete treeMap[treeId]!.nodes[nodeId];
@@ -246,6 +231,51 @@ export function createForest(def: ForestDef): Forest {
             treeId: treeId,
             rootTreeId: rootDef.id,
           },
+          { name, meta }
+        );
+      });
+    }
+    if (event.type.startsWith("HARDPATCH")) {
+      const patchEvent = event as HardPatchEvent;
+      const treeId = patchEvent.type.slice("HARDPATCH$$".length);
+      const tree = treeMap[treeId]!;
+      const patchEventHasParent = "parent" in patchEvent.state;
+      const oldState = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state)
+      );
+      const oldParent = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state.parent)
+      ) as { id: string; index: number };
+      // add parent field if not present
+      if (!patchEventHasParent) {
+        patchEvent.state.parent = tree.nodes[patchEvent.id]!.state.parent;
+      }
+      tree.nodes[patchEvent.id]!.state = patchEvent.state;
+      // emit rewire event only if parent has changed
+      if (
+        patchEventHasParent &&
+        (patchEvent.state.parent.id !== oldParent.id ||
+          patchEvent.state.parent.index !== oldParent.index)
+      ) {
+        forestUpdateSubscribers.forEach((cb) => {
+          cb(
+            {
+              type: "rewire",
+              treeId,
+              childId: patchEvent.id,
+              newParentId: patchEvent.state.parent.id,
+              newIndex: patchEvent.state.parent.index,
+              oldIndex: oldParent.index,
+              oldParentId: oldParent.id,
+            },
+            { name, meta }
+          );
+        });
+      }
+      // emit change event
+      forestUpdateSubscribers.forEach((cb) => {
+        cb(
+          { type: "change", id: patchEvent.id, treeId, oldState },
           { name, meta }
         );
       });

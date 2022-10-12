@@ -5,11 +5,20 @@ import {
   DeleteEvent,
   PatchEvent,
   TreeNode,
+  HardPatchEvent,
 } from "@atrilabs/forest";
 import { useCallback, useEffect } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import {
+  createReverseMap,
+  getAllNodeIdsFromReverseMap,
+} from "@atrilabs/canvas-runtime-utils";
 
-type UndoRecord = { undo: AnyEvent[]; redo: AnyEvent[] };
+type UndoRecord = {
+  undo: AnyEvent[];
+  redo: AnyEvent[];
+  beforeUndo?: (oldRecord: UndoRecord) => UndoRecord;
+};
 
 type Queue = {
   [forestPkgId: string]: {
@@ -52,6 +61,13 @@ export function popFromUndoQueue(forestPkgId: string, pageId: string) {
   if (forestPkgId in undoQueue && pageId in undoQueue[forestPkgId]) {
     const poppedEvent = undoQueue[forestPkgId][pageId].events.pop();
     if (poppedEvent) {
+      if (poppedEvent.beforeUndo) {
+        const newUndoRecord = poppedEvent.beforeUndo(
+          JSON.parse(JSON.stringify(poppedEvent))
+        );
+        poppedEvent.redo = newUndoRecord.redo;
+        poppedEvent.undo = newUndoRecord.undo;
+      }
       addToRedoQueue(forestPkgId, pageId, poppedEvent);
     }
     return poppedEvent;
@@ -117,17 +133,21 @@ export const useStoreUndoRedoEvents = () => {
           const compNode = componentTree.nodes[update.id];
           const { key, pkg } = compNode.meta;
           if (key && pkg) {
-            const createEvent: CreateEvent = {
-              type: `CREATE$$${ComponentTreeId}`,
-              ...JSON.parse(JSON.stringify(compNode)),
-            };
             const newDeleteCompEvent: DeleteEvent = {
               type: `DELETE$$${ComponentTreeId}`,
               id: compNode.id,
             };
             addToUndoQueue(forestPkgId, forestId, {
               undo: [newDeleteCompEvent],
-              redo: [createEvent],
+              redo: [],
+              beforeUndo: (oldRecord) => {
+                const compNode = componentTree.nodes[update.id];
+                const createEvent: CreateEvent = {
+                  type: `CREATE$$${ComponentTreeId}`,
+                  ...JSON.parse(JSON.stringify(compNode)),
+                };
+                return { ...oldRecord, redo: [createEvent] };
+              },
             });
           }
         }
@@ -159,6 +179,28 @@ export const useStoreUndoRedoEvents = () => {
               addToUndoQueue(forestPkgId, forestId, {
                 undo: [newDeleteCompEvent],
                 redo: [createEvent],
+                beforeUndo: (oldRecord) => {
+                  const reverseMap = createReverseMap(
+                    componentTree.nodes,
+                    compNode.id
+                  );
+                  const allDeletedNodeIds = [compNode.id].concat(
+                    getAllNodeIdsFromReverseMap(reverseMap, compNode.id)
+                  );
+                  const createEvents = allDeletedNodeIds.map((nodeId) => {
+                    const deletedNode = JSON.parse(
+                      JSON.stringify(componentTree.nodes[nodeId])
+                    ) as TreeNode;
+                    const createEvent: CreateEvent = {
+                      type: `CREATE$$${ComponentTreeId}`,
+                      id: deletedNode.id,
+                      meta: deletedNode.meta,
+                      state: deletedNode.state,
+                    };
+                    return createEvent;
+                  });
+                  return { ...oldRecord, redo: createEvents };
+                },
               });
             }
           }
@@ -224,15 +266,15 @@ export const useStoreUndoRedoEvents = () => {
           // deleting parent from state to avoid error message in console
           delete oldState["parent"];
           delete newState["parent"];
-          const oldPatch: PatchEvent = {
-            type: `PATCH$$${treeId}`,
+          const oldPatch: HardPatchEvent = {
+            type: `HARDPATCH$$${treeId}`,
             id: nodeId,
-            slice: oldState,
+            state: oldState,
           };
-          const newPatch: PatchEvent = {
-            type: `PATCH$$${treeId}`,
+          const newPatch: HardPatchEvent = {
+            type: `HARDPATCH$$${treeId}`,
             id: nodeId,
-            slice: newState,
+            state: newState,
           };
           addToUndoQueue(forestPkgId, forestId, {
             undo: [oldPatch],
