@@ -25,7 +25,7 @@ export default function () {
         if (event.ctrlKey) {
           if (event.key.toLowerCase() === "z") {
             onUndoPressed();
-          } else if (event.key.toLowerCase() === "r") {
+          } else if (event.key.toLowerCase() === "y") {
             onRedoPressed();
           }
         }
