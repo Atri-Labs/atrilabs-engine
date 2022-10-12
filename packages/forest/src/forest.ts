@@ -38,13 +38,6 @@ export function createForest(def: ForestDef): Forest {
     defaultFnMap[id] = def.defFn();
   });
 
-  const isRootTree = (treeId: string) => {
-    if (treeId === rootDef.modulePath) {
-      return true;
-    }
-    return false;
-  };
-
   // create an empty map of trees to be filled once API for forest is ready below
   const treeMap: { [treeId: string]: Tree } = {};
 
@@ -183,15 +176,6 @@ export function createForest(def: ForestDef): Forest {
         )
       );
       nodesToBeDeleted.reverse().forEach((nodeId) => {
-        // if event is from a root tree, call unlink on all child tree
-        if (isRootTree(treeId)) {
-          if (linkEvents[nodeId]) {
-            linkEvents[nodeId]!.forEach((event) => {
-              const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-              handleEvent(name, unlinkEvent, meta);
-            });
-          }
-        }
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
         const deletedNode = treeMap[treeId]!.nodes[nodeId]!;
         delete treeMap[treeId]!.nodes[nodeId];
