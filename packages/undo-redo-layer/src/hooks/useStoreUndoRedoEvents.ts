@@ -5,6 +5,7 @@ import {
   DeleteEvent,
   PatchEvent,
   TreeNode,
+  HardPatchEvent,
 } from "@atrilabs/forest";
 import { useCallback, useEffect } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
@@ -265,15 +266,15 @@ export const useStoreUndoRedoEvents = () => {
           // deleting parent from state to avoid error message in console
           delete oldState["parent"];
           delete newState["parent"];
-          const oldPatch: PatchEvent = {
-            type: `PATCH$$${treeId}`,
+          const oldPatch: HardPatchEvent = {
+            type: `HARDPATCH$$${treeId}`,
             id: nodeId,
-            slice: oldState,
+            state: oldState,
           };
-          const newPatch: PatchEvent = {
-            type: `PATCH$$${treeId}`,
+          const newPatch: HardPatchEvent = {
+            type: `HARDPATCH$$${treeId}`,
             id: nodeId,
-            slice: newState,
+            state: newState,
           };
           addToUndoQueue(forestPkgId, forestId, {
             undo: [oldPatch],
