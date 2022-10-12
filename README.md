@@ -50,6 +50,8 @@ Atri is a general purpose framework that can be used to build everything from e-
 
 ### Websites built using Atri framework
 
+- [Ecommerce app](https://atri-apps.github.io/full_stack_ecommerce_website)
+- [Restraunt ordering app](https://atri-apps.github.io/restaurant_website)
 - [Personal blog](https://atri-apps.github.io/personal_blog/)
 - [Data app](https://atri-apps.github.io/review_tabular_data/)
 
