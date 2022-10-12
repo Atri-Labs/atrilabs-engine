@@ -1097,9 +1097,17 @@ const keydownListener = (event: KeyboardEvent) => {
 subscribe("focus", (context) => {
   // on page change, contex.select.id might not exist in canvasComponentStore
   if (context.select?.id && canvasComponentStore[context.select.id]) {
+    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
+      "keydown",
+      keydownListener
+    );
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keydown",
       keydownListener
+    );
+    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
+      "keyup",
+      keyupListener
     );
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keyup",
