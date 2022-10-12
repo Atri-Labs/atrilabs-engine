@@ -1094,38 +1094,30 @@ const keydownListener = (event: KeyboardEvent) => {
     cb(service.state.context, { type: "keydown", event })
   );
 };
+let abortController: AbortController;
 subscribe("focus", (context) => {
+  if (abortController !== undefined && !abortController.signal.aborted) {
+    abortController.abort();
+  }
   // on page change, contex.select.id might not exist in canvasComponentStore
   if (context.select?.id && canvasComponentStore[context.select.id]) {
-    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
-      "keydown",
-      keydownListener
-    );
+    abortController = new AbortController();
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keydown",
-      keydownListener
-    );
-    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
-      "keyup",
-      keyupListener
+      keydownListener,
+      { signal: abortController.signal }
     );
     canvasComponentStore[context.select.id].ref.current?.addEventListener(
       "keyup",
-      keyupListener
+      keyupListener,
+      { signal: abortController.signal }
     );
   }
 });
-subscribe("blur", (context) => {
+subscribe("blur", (_context) => {
   // on page change, contex.select.id might not exist in canvasComponentStore
-  if (context.select?.id && canvasComponentStore[context.select.id]) {
-    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
-      "keydown",
-      keydownListener
-    );
-    canvasComponentStore[context.select.id].ref.current?.removeEventListener(
-      "keyup",
-      keyupListener
-    );
+  if (abortController && !abortController.signal.aborted) {
+    abortController.abort();
   }
 });
 function subscribeKeyup(
