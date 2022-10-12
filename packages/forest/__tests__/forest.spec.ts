@@ -66,7 +66,7 @@ test("delete event removes node and it's descendant", () => {
   expect(Object.keys(compTree!.nodes).length === 0).toBeTruthy();
 });
 
-test("create after delete event, restores all nodes", () => {
+test("create after delete event, DOES NOT restore all nodes", () => {
   const forest = createForest(forestDef);
   const compTree = forest.tree("componentTreeModule");
   forest.handleEvents({
@@ -104,7 +104,7 @@ test("create after delete event, restores all nodes", () => {
     meta: { agent: "server-sent" },
   });
   expect(compTree?.nodes).toBeDefined();
-  expect(Object.keys(compTree!.nodes).length).toBe(2);
+  expect(Object.keys(compTree!.nodes).length).toBe(1);
 });
 
 test("patch event updates state", () => {
@@ -135,7 +135,7 @@ test("patch event updates state", () => {
   expect(compTree!.nodes["comp1"]?.state["alias"]).toBe("comp1Alias");
 });
 
-test("create after delete event, restores all old state", () => {
+test("create after delete event, DOES not restore all old state", () => {
   const forest = createForest(forestDef);
   const compTree = forest.tree("componentTreeModule");
   forest.handleEvents({
@@ -172,5 +172,41 @@ test("create after delete event, restores all old state", () => {
     meta: { agent: "server-sent" },
   });
   expect(compTree?.nodes).toBeDefined();
-  expect(compTree!.nodes["comp1"]?.state["alias"]).toBe("comp1Alias");
+  expect(compTree!.nodes["comp1"]?.state["alias"]).toBeUndefined();
+});
+
+test("hard patch replaces state", () => {
+  const forest = createForest(forestDef);
+  const compTree = forest.tree("componentTreeModule");
+  forest.handleEvents({
+    name: "TEST_EVENTS",
+    events: [
+      {
+        type: `CREATE$$componentTreeModule`,
+        id: "comp1",
+        meta: {},
+        state: {
+          parent: { id: "body", index: 0 },
+        },
+      },
+      {
+        type: `PATCH$$componentTreeModule`,
+        id: "comp1",
+        slice: {
+          alias: "comp1Alias",
+        },
+      },
+      {
+        type: `HARDPATCH$$componentTreeModule`,
+        id: "comp1",
+        state: {
+          styles: { height: "10px" },
+        },
+      },
+    ],
+    meta: { agent: "server-sent" },
+  });
+  expect(compTree?.nodes).toBeDefined();
+  expect(compTree!.nodes["comp1"]!.state).toHaveProperty("styles");
+  expect(compTree!.nodes["comp1"]!.state).not.toHaveProperty("alias");
 });

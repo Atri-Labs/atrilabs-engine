@@ -14,6 +14,7 @@ import {
   ForestUpdateSubscriber,
   EventMetaData,
   TreeNode,
+  HardPatchEvent,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -230,6 +231,51 @@ export function createForest(def: ForestDef): Forest {
             treeId: treeId,
             rootTreeId: rootDef.id,
           },
+          { name, meta }
+        );
+      });
+    }
+    if (event.type.startsWith("HARDPATCH")) {
+      const patchEvent = event as HardPatchEvent;
+      const treeId = patchEvent.type.slice("HARDPATCH$$".length);
+      const tree = treeMap[treeId]!;
+      const patchEventHasParent = "parent" in patchEvent.state;
+      const oldState = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state)
+      );
+      const oldParent = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state.parent)
+      ) as { id: string; index: number };
+      // add parent field if not present
+      if (!patchEventHasParent) {
+        patchEvent.state.parent = tree.nodes[patchEvent.id]!.state.parent;
+      }
+      tree.nodes[patchEvent.id]!.state = patchEvent.state;
+      // emit rewire event only if parent has changed
+      if (
+        patchEventHasParent &&
+        (patchEvent.state.parent.id !== oldParent.id ||
+          patchEvent.state.parent.index !== oldParent.index)
+      ) {
+        forestUpdateSubscribers.forEach((cb) => {
+          cb(
+            {
+              type: "rewire",
+              treeId,
+              childId: patchEvent.id,
+              newParentId: patchEvent.state.parent.id,
+              newIndex: patchEvent.state.parent.index,
+              oldIndex: oldParent.index,
+              oldParentId: oldParent.id,
+            },
+            { name, meta }
+          );
+        });
+      }
+      // emit change event
+      forestUpdateSubscribers.forEach((cb) => {
+        cb(
+          { type: "change", id: patchEvent.id, treeId, oldState },
           { name, meta }
         );
       });
