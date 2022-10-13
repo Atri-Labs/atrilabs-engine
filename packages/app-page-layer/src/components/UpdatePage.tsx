@@ -158,16 +158,20 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
 
   const updatePage = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    if (isDuplicatePagename) {
+    if (
+      isDuplicatePagename ||
+      selectedFolder === null ||
+      pageName === null ||
+      pageName?.trim() === ""
+    ) {
       return;
     }
-    if (selectedFolder && pageName)
-      updatePage(
-        props.data[props.folderIndex].pages[props.pageIndex].id,
-        { folderId: selectedFolder.folder.id, name: pageName },
-        () => {},
-        () => {}
-      );
+    updatePage(
+      props.data[props.folderIndex].pages[props.pageIndex].id,
+      { folderId: selectedFolder.folder.id, name: pageName },
+      () => {},
+      () => {}
+    );
     props.close();
   }, [props, selectedFolder, pageName, updatePage, isDuplicatePagename]);
 
