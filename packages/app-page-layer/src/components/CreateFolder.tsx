@@ -99,7 +99,7 @@ export const CreateFolder: React.FC<CreateFolderProps> = React.memo((props) => {
     return false;
   }, [props.data, foldername]);
   const onCreateClick = useCallback(() => {
-    if (isDuplicateFoldername) {
+    if (isDuplicateFoldername || foldername.trim() === "") {
       return;
     }
     createFolder(
