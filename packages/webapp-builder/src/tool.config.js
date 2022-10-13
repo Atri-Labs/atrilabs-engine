@@ -75,6 +75,7 @@ module.exports = {
     { pkg: "@atrilabs/resource-processor-layer" },
     { pkg: "@atrilabs/undo-redo-layer" },
     { pkg: "@atrilabs/component-navigator" },
+    { pkg: "@atrilabs/services-status-layer" },
   ],
   output: "lib",
   services: {
