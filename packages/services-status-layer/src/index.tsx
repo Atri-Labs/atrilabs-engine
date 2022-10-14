@@ -16,7 +16,11 @@ export default function () {
             alignItems: "center",
           }}
         >
-          {status.isEventServerConnected ? <GreenDot /> : <RedDot />}
+          {status.isEventServerConnected && status.isIPCServerConnected ? (
+            <GreenDot />
+          ) : (
+            <RedDot />
+          )}
         </div>
       </Menu>
     </>

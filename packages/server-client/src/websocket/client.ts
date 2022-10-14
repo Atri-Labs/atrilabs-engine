@@ -2,9 +2,17 @@ import { BrowserClient } from "@atrilabs/core";
 import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 import { io, Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "./types";
+import {
+  ServerToClientEvents as IPCServerToClientEvents,
+  ClientToServerEvents as IPCClientToServerEvents,
+} from "../ipc-server/types";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
+);
+
+const ipcSocket: Socket<IPCServerToClientEvents, IPCClientToServerEvents> = io(
+  process.env["ATRI_TOOL_IPC_SERVER_CLIENT"] as string
 );
 
 function getMeta(forestPkgId: string, onData: (meta: any) => void) {
@@ -209,8 +217,13 @@ const getSocket: BrowserClient["getSocket"] = () => {
   return socket;
 };
 
+const getIPCSocket: BrowserClient["getSocket"] = () => {
+  return ipcSocket;
+};
+
 const client: BrowserClient = {
   getSocket,
+  getIPCSocket,
   getMeta,
   getPages,
   createFolder,

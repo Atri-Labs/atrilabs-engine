@@ -200,6 +200,7 @@ export type ImportedResource = {
 
 export type BrowserClient = {
   getSocket(): Socket;
+  getIPCSocket(): Socket;
   getMeta(forestPkgId: string, onData: (meta: any) => void): void;
   getPages(
     forestPkgId: string,
