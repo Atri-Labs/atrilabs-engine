@@ -45,6 +45,28 @@ export default function () {
   const onCrossClickCb = useCallback(() => {
     setShowPopup(false);
   }, []);
+
+  // keyboard shortcut for run and build
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const { repeat, ctrlKey, key, metaKey } = event;
+      if (window.navigator && window.navigator.userAgent) {
+        if (window.navigator.userAgent.indexOf("Mac") >= 0) {
+          if (!repeat && metaKey === true && key === "b") {
+            setShowPopup(!showPopup);
+            callRunTaskApi();
+          }
+        } else if (!repeat && ctrlKey === true && key === "b") {
+          if (!repeat && metaKey === true && key === "b") {
+            setShowPopup(!showPopup);
+            callRunTaskApi();
+          }
+        }
+      }
+    },
+    [callRunTaskApi, showPopup]
+  );
+
   // open http://localhost:4005
   const devWindow = useRef<Window | null>(null);
   useEffect(() => {
@@ -53,7 +75,11 @@ export default function () {
         devWindow.current = window.open("http://localhost:4005", "_blank");
       window.focus();
     }
-  }, [status]);
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [status, handleKeyPress]);
   return (
     <>
       <Menu name="PublishMenu" order={1}>
@@ -63,6 +89,7 @@ export default function () {
               setShowPopup(!showPopup);
               callRunTaskApi();
             }}
+            data-tooltip="Build & Run" className="tool-tip"
           >
             {"Build & Run"}
           </span>

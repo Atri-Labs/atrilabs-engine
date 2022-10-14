@@ -6,7 +6,7 @@ import {
   UploadContainerProps,
 } from "./components/upload-container/UploadContainer";
 import { ReactComponent as AssetIcon } from "./assets/asset-icon.svg";
-
+import "./styles.css"
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -23,7 +23,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "0 1rem",
     gridTemplateColumns: "auto auto",
     columnGap: "15px",
-  },
+  }
 };
 
 const modes: UploadContainerProps["modes"] = ["upload_multiple", "draggable"];
@@ -42,7 +42,7 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={2}>
-        <div style={styles.iconContainer} onClick={showAssetPanelCb}>
+        <div style={styles.iconContainer} onClick={showAssetPanelCb} data-tooltip="Asset Manager" className="tool-tip" >
           <AssetIcon style={styles.assetIcon} />
         </div>
       </Menu>
