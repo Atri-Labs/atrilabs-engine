@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { useGetPageTableData } from "./hooks/useGetPageTableData";
 import { ArrowDown } from "./icons/ArrowDown";
 import { PageEditor } from "./PageEditor";
-
+import "./stylesheets/formfield.module.css";
 interface PageSelectorProps {}
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -48,6 +48,8 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       onClick={() => {
         setShowPageEditor(true);
       }}
+      data-tooltip="Page Manager"
+      className="tool-tip"
     >
       <div>Page:</div>
       <div style={styles.p}>{selectedPage ? selectedPage.name : null}</div>
