@@ -22,6 +22,7 @@ export const TextBox = forwardRef<
       width: number;
       height: number;
     }) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(
@@ -41,7 +42,12 @@ export const TextBox = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} style={props.styles} onClick={onClick}>
+    <div
+      ref={ref}
+      className={props.className}
+      style={props.styles}
+      onClick={onClick}
+    >
       {props.custom.text}
     </div>
   );

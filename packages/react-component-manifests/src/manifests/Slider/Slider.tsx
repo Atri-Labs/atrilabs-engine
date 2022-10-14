@@ -30,6 +30,7 @@ export const Slider = forwardRef<
     };
     onChange?: (value: number) => void;
     onFinish?: (value: number) => void;
+    className?: string;
   }
 >((props, ref) => {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -176,6 +177,7 @@ export const Slider = forwardRef<
 
   return (
     <div
+      className={props.className}
       ref={ref}
       style={{
         ...props.styles,

@@ -51,6 +51,7 @@ export const Toggle = forwardRef<
     styles: React.CSSProperties;
     custom: { active: boolean; activeColor: string; inactiveColor: string };
     onChange: (checked: boolean) => void;
+    className?: string;
   }
 >((props, ref) => {
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
@@ -60,7 +61,11 @@ export const Toggle = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} style={{ ...props.styles, display: "inline-flex" }}>
+    <div
+      ref={ref}
+      style={{ ...props.styles, display: "inline-flex" }}
+      className={props.className}
+    >
       <ToggleHelper
         isOn={props.custom.active}
         onColor={props.custom.activeColor}

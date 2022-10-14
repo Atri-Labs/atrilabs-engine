@@ -1,0 +1,21 @@
+contact_links:
+
+  - name: "📚 Submit a Documentation Report"
+    url: https://github.com/Atri-Labs/framework-docs/issues
+    about: Did you spot a mistake in the docs, is anything unclear or do you have a suggestion?
+    
+  - name: "💬 Ask a question in the Discussion Forum"
+    url: https://github.com/Atri-Labs/atrilabs-engine/discussions
+    about: Installation issues, usage questions, general discussion and anything else that is not a bug report.
+    
+  - name: "🎁 Request a new feature"
+    url: https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/suggest-new-feature-ideas
+    about: Share and discuss ideas for new features with the community and maintainers
+    
+  - name: "🖥️ Discuss DX Improvement of existing features"
+    url: https://github.com/Atri-Labs/atrilabs-engine/discussions/categories/discuss-dx-improvement-ideas
+    about: Share and discuss ideas for improving developer experience of existing features 
+    
+  - name: "👋 Join Atri Community"
+    url: https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w
+    about: Join our community on Slack for other questions and general chat

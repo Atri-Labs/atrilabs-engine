@@ -5,40 +5,40 @@ export function createTree(treeDef: TreeDef, forest: Forest) {
   const tree: Tree = {
     nodes: {},
     links: {},
-    create: (event) => {
+    create: (event, meta) => {
       const createEvent = {
         ...event,
         type: `CREATE$$${eventSuffix}`,
       };
-      forest.create(createEvent);
+      forest.create(createEvent, meta);
     },
-    patch: (event) => {
+    patch: (event, meta) => {
       const patchEvent = {
         ...event,
-        type: `PATCH${eventSuffix}`,
+        type: `PATCH$$${eventSuffix}`,
       };
-      forest.patch(patchEvent);
+      forest.patch(patchEvent, meta);
     },
-    del: (event) => {
+    del: (event, meta) => {
       const delEvent = {
         ...event,
-        type: `DELETE${eventSuffix}`,
+        type: `DELETE$$${eventSuffix}`,
       };
-      forest.del(delEvent);
+      forest.del(delEvent, meta);
     },
-    link: (event) => {
+    link: (event, meta) => {
       const linkEvent = {
         ...event,
-        type: `LINK${eventSuffix}`,
+        type: `LINK$$${eventSuffix}`,
       };
-      forest.link(linkEvent);
+      forest.link(linkEvent, meta);
     },
-    unlink: (event) => {
+    unlink: (event, meta) => {
       const unlinkEvent = {
         ...event,
-        type: `UNLINK${eventSuffix}`,
+        type: `UNLINK$$${eventSuffix}`,
       };
-      forest.link(unlinkEvent);
+      forest.link(unlinkEvent, meta);
     },
   };
   return tree;

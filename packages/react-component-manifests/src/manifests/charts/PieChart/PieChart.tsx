@@ -36,6 +36,7 @@ export const PieChart = forwardRef<
       legend?: { show?: boolean };
       keys?: { value?: string };
     };
+    className?: string;
   }
 >((props, ref) => {
   const valueKey = useMemo(() => {
@@ -57,7 +58,11 @@ export const PieChart = forwardRef<
   }, [props.custom]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <PieChartRechart
         width={
           typeof props.styles.width === "string"

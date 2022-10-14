@@ -10,6 +10,7 @@ import {
   UnlinkEvent,
   Forest,
   ForestUpdateSubscriber,
+  EventMetaData,
 } from "./types";
 
 type Callback = () => void;
@@ -72,8 +73,8 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     }
     if (_forestUnsubscriber) _forestUnsubscriber();
     // call all current forest subscribers & update forest unsubscriber
-    _forestUnsubscriber = _currentForest.subscribeForest((update) => {
-      _currentForestSubscribers.forEach((cb) => cb(update));
+    _forestUnsubscriber = _currentForest.subscribeForest((update, options) => {
+      _currentForestSubscribers.forEach((cb) => cb(update, options));
     });
     onResetListeners.forEach((cb) => {
       cb();
@@ -102,23 +103,27 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     tree: (treeId: string) => {
       return _currentForest.tree(treeId);
     },
-    create: (event: CreateEvent) => {
-      return _currentForest.create(event);
+    create: (event: CreateEvent, meta: EventMetaData) => {
+      return _currentForest.create(event, meta);
     },
-    patch: (event: PatchEvent) => {
-      return _currentForest.patch(event);
+    patch: (event: PatchEvent, meta: EventMetaData) => {
+      return _currentForest.patch(event, meta);
     },
-    del: (event: DeleteEvent) => {
-      return _currentForest.del(event);
+    del: (event: DeleteEvent, meta: EventMetaData) => {
+      return _currentForest.del(event, meta);
     },
-    link: (event: LinkEvent) => {
-      return _currentForest.link(event);
+    link: (event: LinkEvent, meta: EventMetaData) => {
+      return _currentForest.link(event, meta);
     },
-    unlink: (event: UnlinkEvent) => {
-      return _currentForest.unlink(event);
+    unlink: (event: UnlinkEvent, meta: EventMetaData) => {
+      return _currentForest.unlink(event, meta);
     },
-    handleEvent: (event: AnyEvent) => {
-      return _currentForest.handleEvent(event);
+    handleEvents: (data: {
+      name: string;
+      events: AnyEvent[];
+      meta: { agent: "browser" | "server-sent" };
+    }) => {
+      return _currentForest.handleEvents(data);
     },
     on: (event, cb) => {
       if (event === "reset") {

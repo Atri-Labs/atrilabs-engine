@@ -137,17 +137,47 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
     setPageName(value);
   }, []);
 
+  const isDuplicatePagename = useMemo(() => {
+    if (pageName) {
+      const allPagenames = props.data
+        .map((folder) => {
+          return folder.pages.map((page) => {
+            return page.name;
+          });
+        })
+        .flat();
+      if (
+        allPagenames.includes(pageName) &&
+        pageName !== props.data[props.folderIndex].pages[props.pageIndex].name
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }, [props.data, pageName, props.folderIndex, props.pageIndex]);
+
   const updatePage = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    if (selectedFolder && pageName)
-      updatePage(
-        props.data[props.folderIndex].pages[props.pageIndex].id,
-        { folderId: selectedFolder.folder.id, name: pageName },
-        () => {},
-        () => {}
-      );
+    if (
+      isDuplicatePagename ||
+      selectedFolder === null ||
+      pageName === null ||
+      pageName?.trim() === ""
+    ) {
+      return;
+    }
+    updatePage(
+      props.data[props.folderIndex].pages[props.pageIndex].id,
+      { folderId: selectedFolder.folder.id, name: pageName },
+      () => {},
+      () => {}
+    );
     props.close();
-  }, [props, selectedFolder, pageName, updatePage]);
+  }, [props, selectedFolder, pageName, updatePage, isDuplicatePagename]);
+
+  const isHomePage = useMemo(() => {
+    return pageName === "Home" && selectedFolder?.folder.name === "/";
+  }, [pageName, selectedFolder]);
 
   return (
     <div style={styles.createPage}>
@@ -163,9 +193,11 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       <div style={styles.createPageHeader}>
         <h4 style={styles.pageContHeaderH4}>Page settings</h4>
         <div style={{ display: "flex" }}>
-          <span style={styles.iconsSpan} onClick={openConfirmDelete}>
-            <Trash />
-          </span>
+          {!isHomePage ? (
+            <span style={styles.iconsSpan} onClick={openConfirmDelete}>
+              <Trash />
+            </span>
+          ) : null}
           <span style={styles.iconsSpan} onClick={props.close}>
             <Cross />
           </span>
@@ -173,18 +205,23 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        {selectedFolder ? (
+        {selectedFolder !== null ? (
           <Dropdown
             options={folders}
             onSelect={onSelect}
             selectedIndex={selectedFolder.index}
+            disabled={isHomePage}
           />
         ) : null}
       </div>
       <div style={styles.createPageFormField}>
         <span>Page</span>
-        {pageName ? (
-          <Input onChange={onPageNameChange} value={pageName} />
+        {pageName !== null ? (
+          <Input
+            onChange={onPageNameChange}
+            value={pageName}
+            disabled={isHomePage}
+          />
         ) : null}
       </div>
       <div style={styles.slugContainer}>
@@ -207,6 +244,18 @@ export const UpdatePage: React.FC<UpdatePageProps> = React.memo((props) => {
               : ``}
           </div>
         </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          padding: "1rem",
+          ...smallText,
+          color: gray300,
+        }}
+      >
+        {isDuplicatePagename
+          ? `A page with name "${pageName}" already exists`
+          : null}
       </div>
       <div
         style={{ display: "flex", justifyContent: "center", padding: "1rem" }}

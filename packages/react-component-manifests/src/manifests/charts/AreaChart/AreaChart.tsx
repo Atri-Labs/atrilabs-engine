@@ -43,6 +43,7 @@ export const AreaChart = forwardRef<
       xAxis?: { show?: boolean; key?: string };
       yAxis?: { show?: boolean };
     };
+    className?: string;
   }
 >((props, ref) => {
   const xAxisKey = useMemo(() => {
@@ -81,7 +82,11 @@ export const AreaChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <AreaChartRechart
         width={
           typeof props.styles.width === "string"

@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/forest",
-  "version": "0.0.64",
+  "version": "0.0.71",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -23,7 +23,9 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "tsc",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run build",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
@@ -34,7 +36,10 @@
     "typescript": "4.6.3"
   },
   "devDependencies": {
+    "@types/jest": "^29.1.2",
     "@types/lowdb": "1.0.11",
-    "@types/node": "17.0.27"
+    "@types/node": "17.0.27",
+    "jest": "^29.1.2",
+    "ts-jest": "^29.0.3"
   }
 }

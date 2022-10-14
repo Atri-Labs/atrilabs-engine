@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
@@ -9,6 +9,7 @@ export const useShowTab = () => {
   const [showTab, setShowTab] = useState<boolean>(false);
   const tree = useTree(ComponentTreeId);
   const [alias, setAlias] = useState<string>("");
+  const initialAlias = useRef<string>("");
   const [id, setId] = useState<string | null>(null);
   const setAliasCb = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +24,13 @@ export const useShowTab = () => {
             alias,
           },
         };
-        api.postNewEvent(forestPkgId, forestId, patchEvent);
+        api.postNewEvents(forestPkgId, forestId, {
+          events: [patchEvent],
+          meta: {
+            agent: "browser",
+          },
+          name: "SET_ALIAS",
+        });
       }
     },
     [id]
@@ -59,6 +66,7 @@ export const useShowTab = () => {
           setAlias("");
         } else {
           setAlias(alias);
+          initialAlias.current = alias;
         }
         setId(id);
         setShowTab(true);
@@ -73,5 +81,5 @@ export const useShowTab = () => {
     });
     return unsub;
   }, []);
-  return { showTab, alias, setAliasCb, id };
+  return { showTab, alias, setAliasCb, id, initialAlias: initialAlias.current };
 };

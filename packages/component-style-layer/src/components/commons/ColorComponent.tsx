@@ -208,6 +208,8 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     );
   }, [props]);
 
+  const [colorVal, setColorVal] = useState<string>("");
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
@@ -224,6 +226,10 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
+          value={colorVal}
+          setValue={setColorVal}
+          applyFlag={true}
+          index={0}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>

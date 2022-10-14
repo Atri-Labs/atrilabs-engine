@@ -19,6 +19,7 @@ import {
   ResourceGeneraterOutput,
 } from "../types";
 import { ToolConfig } from "@atrilabs/core";
+import { jssToCss } from "./jssToCss";
 
 export function createReactAppTemplateManager(
   paths: {
@@ -88,6 +89,11 @@ export function createReactAppTemplateManager(
     paths.reactAppDest,
     "src",
     "page-cbs"
+  );
+  const pageCSSDestDirectory = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "page-css"
   );
 
   // variables to manage writes in App.jsx
@@ -455,8 +461,9 @@ export function createReactAppTemplateManager(
       const isParent = reverseMap[compId] !== undefined;
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
+      const className = `className="p-${name} ${alias}"`;
       if (isParent) {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
+        const start = `<${localIdentifier} ${className} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
         const mid = reverseMap[compId]
           .map((child) => {
             return createJSX(child.compId, pageComponentMap, reverseMap);
@@ -465,7 +472,7 @@ export function createReactAppTemplateManager(
         const end = `</${localIdentifier}>\n`;
         return start + mid + end;
       } else {
-        const start = `<${localIdentifier} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}/>\n`;
+        const start = `<${localIdentifier} ${className} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}/>\n`;
         return start;
       }
     }
@@ -506,30 +513,6 @@ export function createReactAppTemplateManager(
       }
     } else {
       console.log("jsx cursor not found");
-    }
-    const pageName1CursorMatch = pageText.match(
-      /\/\*\sPAGE\sNAME\s1\sCURSOR.*\)/
-    );
-    if (pageName1CursorMatch) {
-      slices.push({
-        index: pageName1CursorMatch.index!,
-        length: pageName1CursorMatch[0].length,
-        replaceWith: `"${name}")`,
-      });
-    } else {
-      console.log("page name 1 cursor not found");
-    }
-    const pageName2CursorMatch = pageText.match(
-      /\/\*\sPAGE\sNAME\s2\sCURSOR.*\)/
-    );
-    if (pageName2CursorMatch) {
-      slices.push({
-        index: pageName2CursorMatch.index!,
-        length: pageName2CursorMatch[0].length,
-        replaceWith: `"${name}")`,
-      });
-    } else {
-      console.log("page name 2 cursor not found");
     }
     // define component props, callbacks, refs etc.
     const componentCursorMatch = pageText.match(/\/\/\sCOMPONENT\sCURSOR.*\n/);
@@ -580,8 +563,9 @@ export function createReactAppTemplateManager(
             return `use${alias}Cb`;
           })
           .join(", ") +
-        ` } from "../page-cbs/${name}";\n`;
-      const newImportText = `${compImports}\n${importCbs}`;
+        ` } from "../page-cbs/${name}";`;
+      const importPageCss = `import "../page-css/${name}.css"`;
+      const newImportText = `${compImports}\n${importCbs}\n${importPageCss}\n`;
       slices.push({
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,
@@ -667,42 +651,94 @@ export function createReactAppTemplateManager(
       console.log("useStore data cursor match is null");
     }
 
-    const breakpointPropsData: {
-      [pageName: string]: { [maxWidth: string]: { [alias: string]: any } };
-    } = {};
-    propsForAllPages.forEach(({ propsForPage, pageName }) => {
-      breakpointPropsData[pageName] = {};
-      const maxWidthLevelData: {
-        [maxWidth: string]: { [alias: string]: any };
-      } = {};
-      propsForPage.forEach(({ alias, breakpointProps }) => {
-        const widths = Object.keys(breakpointProps);
-        widths.forEach((width) => {
-          if (maxWidthLevelData[width]) {
-            maxWidthLevelData[width][alias] = breakpointProps[width];
-          } else {
-            maxWidthLevelData[width] = { [alias]: breakpointProps[width] };
-          }
-        });
-      });
-      breakpointPropsData[pageName] = maxWidthLevelData;
-    });
-    const dataCursor2Match = useStoreTemplateText.match(
-      /\/\*\sDATA\s2\sCURSOR.*\n/
-    );
-    if (dataCursor2Match) {
-      slices.push({
-        index: dataCursor2Match.index!,
-        length: dataCursor2Match[0].length,
-        replaceWith: `...${JSON.stringify(breakpointPropsData, null, 2)}`,
-      });
-    } else {
-      console.log("useStore data cursor match is null");
-    }
-
     // write slices
     const newText = replaceText(useStoreTemplateText, slices);
     fs.writeFileSync(useStoreDestPath, newText);
+  }
+
+  async function _flushPageCSS(pageImport: {
+    name: string;
+    route: string;
+    source: string;
+  }) {
+    const pageName = pageImport.name;
+    const pagePropsGeneartorOutput = propsMap[pageName];
+    const components = componentMap[pageName]!;
+    const componentIds = Object.keys(components);
+    const promises = componentIds.map(async (compId) => {
+      const alias = components[compId].alias;
+      const cssSelector = `.p-${pageName}.${alias}`;
+      const cssProps = pagePropsGeneartorOutput[compId].cssProps;
+      if (cssProps) {
+        const allCSSPropNames = Object.keys(cssProps);
+        let jsxStyle: React.CSSProperties = {};
+        allCSSPropNames.forEach((propName) => {
+          jsxStyle = { ...cssProps[propName].props, ...jsxStyle };
+        });
+        const cssStr = await jssToCss(jsxStyle);
+        return `${cssSelector} {\n${cssStr}\n}`;
+      }
+    });
+    const cssStrs = await Promise.all(promises);
+    // breakpoints
+    const breakpointData: {
+      [maxWidth: string]: { [cssSelector: string]: string };
+    } = {};
+    const breakpointPromises = componentIds.map(async (compId) => {
+      const alias = components[compId].alias;
+      const cssSelector = `.p-${pageName}.${alias}`;
+      const cssProps = pagePropsGeneartorOutput[compId].cssProps;
+      if (cssProps) {
+        const allCSSPropNames = Object.keys(cssProps);
+        for (let i = 0; i < allCSSPropNames.length; i++) {
+          const propName = allCSSPropNames[i];
+          if (cssProps[propName].breakpoints) {
+            const allWidths = Object.keys(cssProps[propName].breakpoints);
+            for (let j = 0; j < allWidths.length; j++) {
+              const width = allWidths[j];
+              if (breakpointData[width] === undefined) {
+                breakpointData[width] = {};
+              }
+              breakpointData[width][cssSelector] = await jssToCss(
+                cssProps[propName].breakpoints[width]!
+              );
+            }
+          }
+        }
+      }
+    });
+    await Promise.all(breakpointPromises);
+    const breakpointStrs = Object.keys(breakpointData)
+      .map((maxWidth) => {
+        const allSelectors = Object.keys(breakpointData[maxWidth]);
+        const allSelectorStrs = allSelectors
+          .map((selector) => {
+            return `\t${selector} {${breakpointData[maxWidth][selector]}\n}`;
+          })
+          .join("\n");
+        return `@media screen and (max-width: ${maxWidth}px) {${allSelectorStrs}\n}`;
+      })
+      .join("\n");
+    const pageCSSContent =
+      cssStrs
+        .filter((cssStr) => {
+          return cssStr !== undefined;
+        })
+        .join("\n") +
+      "\n" +
+      breakpointStrs;
+    const destPath = path.resolve(pageCSSDestDirectory, `${pageName}.css`);
+    if (!fs.existsSync(path.dirname(destPath))) {
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    }
+    fs.writeFileSync(destPath, pageCSSContent);
+  }
+
+  async function flushPageCSS() {
+    for (let i = 0; i < pageImports.length; i++) {
+      const pageImport = pageImports[i];
+      await _flushPageCSS(pageImport);
+    }
   }
 
   // This function requires addComponents and addProps to already have been run
@@ -995,5 +1031,6 @@ export function createReactAppTemplateManager(
     flushIndexHtml,
     flushAtriAppInfo,
     flushIndexJSX,
+    flushPageCSS,
   };
 }

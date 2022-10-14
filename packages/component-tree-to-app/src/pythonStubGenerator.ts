@@ -8,7 +8,11 @@ import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest
 import { keyPropMap } from "./keyPropMap";
 import { keyCallbackMap } from "./keyCallbackMap";
 import { keyIoPropMap } from "./keyIoPropMap";
-import { extractCallbackHandlers } from "./utils";
+import {
+  createReverseMap,
+  extractCallbackHandlers,
+  getAllNodeIdsFromReverseMap,
+} from "./utils";
 type Options = Omit<PythonStubGeneratorOptions, "custom"> & {
   custom: {
     treeId: string;
@@ -45,9 +49,11 @@ export const pythonStubGenerator: PythonStubGeneratorFunction = (
   );
   if (options.forestDef.trees[0]?.id === componentTreeId) {
     const componentTree = options.forest.tree(componentTreeId)!;
-    const nodeIds = Object.keys(componentTree.nodes);
+    const nodes = componentTree.nodes;
+    const reverseMap = createReverseMap(nodes);
+    const nodeIds = getAllNodeIdsFromReverseMap(reverseMap);
     nodeIds.forEach((nodeId) => {
-      const node = componentTree.nodes[nodeId]!;
+      const node = nodes[nodeId]!;
       const alias = node.state["alias"];
       if (node.meta && node.meta.pkg && node.meta.key && alias) {
         const manifest: ReactComponentManifestSchema = options.getManifest(
@@ -113,9 +119,11 @@ const tempPythonStubGenerator: PythonStubGeneratorFunction = (
   );
   if (options.forestDef.trees[0]?.id === componentTreeId) {
     const componentTree = options.forest.tree(componentTreeId)!;
-    const nodeIds = Object.keys(componentTree.nodes);
+    const nodes = componentTree.nodes;
+    const reverseMap = createReverseMap(nodes);
+    const nodeIds = getAllNodeIdsFromReverseMap(reverseMap);
     nodeIds.forEach((nodeId) => {
-      const node = componentTree.nodes[nodeId]!;
+      const node = nodes[nodeId]!;
       const alias = node.state["alias"];
       if (node.meta && node.meta.pkg && node.meta.key && alias) {
         const pkg = node.meta.pkg;

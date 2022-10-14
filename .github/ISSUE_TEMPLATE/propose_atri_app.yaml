@@ -1,0 +1,70 @@
+name: ⚒️ Propose an Atri App
+description: Propose an app to be built using Atri framework
+title: "⚒️ "
+labels: ["atri-app", "good first issue"]
+assignees: 
+- 
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to propose an Atri app! We really appreciate your contribution. 🙏🏻 💖
+
+- type: textarea
+  attributes:
+    label: Title
+    description: Add the title of the app.
+    placeholder: Portfolio website.
+  validations:
+    required: true
+    
+- type: textarea
+  attributes:
+    label: Features
+    description: A concise description of the features of the app.
+    value: |
+      1. The app should be responsive.
+      
+      2. The app should be built using Atri framework. 
+      
+      3. The app's frontend should be built using visual editor and its backend written in Python.
+      
+      4. Design reference: The app creator is free to use a reference of their choice. 
+  validations:
+    required: true
+    
+- type: textarea
+  attributes:
+    label: Functionalities
+    description: A concise description of the functionalities of the app.
+    placeholder: |
+      1. When user clicks on <X>, <Y> appears.
+      
+      2. The user can download the results of <Y>. 
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Getting started
+    description: References for getting started.
+    value: |
+      1. Follow the instructions provided in the [contributing guidelines](https://github.com/Atri-Labs/atrilabs-engine/blob/main/CONTRIBUTING.md#creating-an-atri-app) to install and create an Atri app.
+      
+      2. You can also refer to [this YouTube playlist](https://www.youtube.com/watch?v=p135tfBvdaE&list=PLTQwOMNg4n8CJf2mbF5pJ3A9cEjr1gdRf) for video tutorials on how to create a similar app. 
+    render: markdown
+  validations:
+    required: true
+    
+- type: textarea
+  attributes:
+    label: Post development
+    description: What to do when development is completed.
+    value: |
+      1. Deploy your app using GitHub pages and Atri CLI. You can follow the steps provided in the [Docs](https://docs.atrilabs.com/deploy-app/deploy-ghpages).
+      
+      2. Submit a Pull Request (PR).
+      - Once your PR is merged, your app will be added to the [made-with-atri folder](https://github.com/Atri-Labs/atrilabs-engine/blob/main/made-with-atri/README.md)."
+    render: markdown
+  validations:
+    required: true

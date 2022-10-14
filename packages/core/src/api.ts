@@ -1,4 +1,4 @@
-import { AnyEvent } from "@atrilabs/forest";
+import { AnyEvent, EventMetaData } from "@atrilabs/forest";
 import { BrowserForestManager } from "./browserForestManager";
 import { BrowserClient } from "./types";
 
@@ -8,18 +8,29 @@ import { BrowserClient } from "./types";
  * @param client
  */
 function createAPI(client: BrowserClient) {
-  function postNewEvent(forestPkgId: string, pageId: string, event: AnyEvent) {
+  function postNewEvents(
+    forestPkgId: string,
+    pageId: string,
+    data: {
+      name: string;
+      events: AnyEvent[];
+      meta: EventMetaData;
+    }
+  ) {
     const forest = BrowserForestManager.getForest(forestPkgId, pageId);
     if (forest) {
-      forest.handleEvent(event);
-      client.postNewEvent(forestPkgId, pageId, event, (success) => {
-        if (!success) {
-          console.log("Failed to send event to backend");
-        }
+      forest.handleEvents(data);
+      const { events } = data;
+      events.forEach((event) => {
+        client.postNewEvent(forestPkgId, pageId, event, (success) => {
+          if (!success) {
+            console.log("Failed to send event to backend");
+          }
+        });
       });
     }
   }
-  return { ...client, postNewEvent };
+  return { ...client, postNewEvents };
 }
 
 /**

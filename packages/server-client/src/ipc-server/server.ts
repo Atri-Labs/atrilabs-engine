@@ -68,11 +68,11 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
     });
     socket.on("startPythonServer", (callback) => {
       if (clients["atri-cli"] === undefined) {
-        callback(false);
+        callback(-1);
       } else {
         const atriCliSocket = clients["atri-cli"]!;
-        atriCliSocket.emit("doStartPythonServer", (success) => {
-          callback(success);
+        atriCliSocket.emit("doStartPythonServer", (returnCode) => {
+          callback(returnCode);
         });
       }
     });

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   amber300,
   Dropdown,
@@ -96,7 +96,27 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
     setPageName(value);
   }, []);
   const createPage = useSocketApi();
+
+  const isDuplicatePagename = useMemo(() => {
+    if (pageName) {
+      const allPagenames = props.data
+        .map((folder) => {
+          return folder.pages.map((page) => {
+            return page.name;
+          });
+        })
+        .flat();
+      if (allPagenames.includes(pageName)) {
+        return true;
+      }
+    }
+    return false;
+  }, [props.data, pageName]);
+
   const onCreateClick = useCallback(() => {
+    if (isDuplicatePagename || pageName.trim() === "") {
+      return;
+    }
     createPage(
       pageName,
       selectedFolder.folder.id,
@@ -104,7 +124,8 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
       () => {}
     );
     props.close();
-  }, [props, selectedFolder, pageName, createPage]);
+  }, [props, selectedFolder, pageName, createPage, isDuplicatePagename]);
+
   return (
     <div style={styles.createPage}>
       <div style={styles.createPageHeader}>
@@ -143,6 +164,18 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
               (pageName ? `/${pageName}` : "")}
           </div>
         </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          padding: "1rem",
+          ...smallText,
+          color: gray300,
+        }}
+      >
+        {isDuplicatePagename
+          ? `A page with name "${pageName}" already exists`
+          : null}
       </div>
       <div
         style={{ display: "flex", justifyContent: "center", padding: "1rem" }}

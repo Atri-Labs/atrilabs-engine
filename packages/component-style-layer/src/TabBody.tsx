@@ -1,5 +1,10 @@
-import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
-import React from "react";
+import {
+  gray300,
+  gray800,
+  h1Heading,
+  smallText,
+} from "@atrilabs/design-system";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Size } from "./components/size/Size";
 import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
@@ -15,6 +20,7 @@ import { Miscellaneous } from "./components/miscellaneous/Miscellaneous";
 import { Outline } from "./components/outline/Outline";
 import { Css2Display } from "./components/css2display/Css2Display";
 import "./TabBody.css";
+import { getAliasList } from "./utils";
 
 export type TabBodyProps = {
   alias: string;
@@ -24,8 +30,13 @@ export type TabBodyProps = {
   treeOptions: CSSTreeOptions;
   openAssetManager: CssProprtyComponentType["openAssetManager"];
   openPalette: CssProprtyComponentType["openPalette"];
+  openPaletteWithoutEffect: CssProprtyComponentType["openPaletteWithoutEffect"];
   compId: string;
   breakpoint: Breakpoint | null;
+  colorValue: [string];
+  setColorValue: (color: string, index: number) => void;
+  colorValueArraySetter: (colorValues: [string]) => void;
+  initialAlias: string;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -51,20 +62,64 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Higher Order Component to arrange different sections
 // such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
+  const [alias, setAlias] = useState(props.initialAlias);
+  useEffect(() => {
+    setAlias(props.alias);
+  }, [props.alias]);
+
+  const [showDuplicateAliasMessage, setShowDuplicateAliasMessage] =
+    useState<boolean>(false);
+  const aliasListPromise = useRef<Promise<{ [alias: string]: boolean }> | null>(
+    null
+  );
+  const setAliasCb = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAlias(event.target.value);
+
+      // run this promise only once, after that reuse the result
+      if (aliasListPromise.current === null) {
+        aliasListPromise.current = new Promise<{ [alias: string]: boolean }>(
+          (res) => {
+            res(getAliasList());
+          }
+        );
+      }
+
+      aliasListPromise.current?.then((aliasDict) => {
+        if (
+          aliasDict[event.target.value] === undefined ||
+          event.target.value === props.initialAlias
+        ) {
+          props.setAliasCb(event);
+          setShowDuplicateAliasMessage(false);
+        } else {
+          setShowDuplicateAliasMessage(true);
+        }
+      });
+    },
+    [props]
+  );
   return (
     <div style={styles.container} className="tb-scroll">
       <input
         style={styles.aliasContainer}
-        onChange={props.setAliasCb}
-        value={props.alias}
+        onChange={setAliasCb}
+        value={alias}
       />
+      <div style={{ ...smallText, color: gray300, padding: "0.5rem" }}>
+        {showDuplicateAliasMessage ? "Error: This alias/name is taken." : ""}
+      </div>
       {props.treeOptions && props.treeOptions.css2DisplayOptions ? (
         <Css2Display
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.flexContainerOptions ? (
@@ -73,7 +128,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.flexChildOptions ? (
@@ -82,7 +141,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.sizeOptions ? (
@@ -91,7 +154,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.spacingOptions ? (
@@ -100,7 +167,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.borderOptions ? (
@@ -109,7 +180,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.outlineOptions ? (
@@ -118,7 +193,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.typographyOptions ? (
@@ -127,7 +206,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.backgroundOptions ? (
@@ -136,7 +219,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.positionOptions ? (
@@ -145,7 +232,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
       {props.treeOptions && props.treeOptions.miscellaneousOptions ? (
@@ -154,7 +245,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}
           openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
           compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
     </div>

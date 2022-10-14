@@ -16,6 +16,7 @@ export const Input = forwardRef<
     custom: { value: string; placeholder: string; isPasswordField?: boolean };
     onChange: (value: string) => void;
     onPressEnter: () => void;
+    className?: string;
   }
 >((props, ref) => {
   const onChange = useCallback(
@@ -35,6 +36,7 @@ export const Input = forwardRef<
   return (
     <input
       ref={ref}
+      className={props.className}
       style={props.styles}
       onChange={onChange}
       placeholder={props.custom.placeholder}

@@ -15,6 +15,7 @@ export const Checkbox = forwardRef<
     styles: React.CSSProperties;
     custom: { checked: boolean };
     onChange: (checked: boolean) => void;
+    className?: string;
   }
 >((props, ref) => {
   const onChange = useCallback(
@@ -26,6 +27,7 @@ export const Checkbox = forwardRef<
   return (
     <input
       ref={ref}
+      className={props.className}
       style={props.styles}
       onChange={onChange}
       type={"checkbox"}

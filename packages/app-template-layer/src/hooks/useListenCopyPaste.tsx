@@ -17,7 +17,7 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
       keyEvent.preventDefault();
 
       if (window.navigator && window.navigator.userAgent) {
-        if (window.navigator.userAgent.indexOf("Mac")) {
+        if (window.navigator.userAgent.indexOf("Mac") >= 0) {
           if (keyEvent.metaKey) {
             metaKeyDown.current = true;
           }
@@ -54,7 +54,7 @@ export const useListenCopyPaste = (props: ListenCopyPasteProps) => {
 
       if (window.navigator && window.navigator.userAgent) {
         // set metaKey to false if keyup on meta key
-        if (window.navigator.userAgent.indexOf("Mac")) {
+        if (window.navigator.userAgent.indexOf("Mac") >= 0) {
           if (keyEvent.metaKey) {
             metaKeyDown.current = false;
           }

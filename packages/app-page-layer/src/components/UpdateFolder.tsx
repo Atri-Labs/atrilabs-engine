@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   amber300,
   gray300,
@@ -75,7 +75,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export type UpdateFolderProps = {
   close: () => void;
-  data: PageTableData["0"]["folder"];
+  data: PageTableData;
+  folderIndex: number;
 };
 
 export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
@@ -87,7 +88,7 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   }, [props]);
   const onDelete = useCallback(() => {
     deleteFolder(
-      props.data.id,
+      props.data[props.folderIndex].folder.id,
       () => {},
       () => {}
     );
@@ -101,8 +102,23 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
   // Internal State for UI pattern
   const [foldername, setFoldername] = useState<string | null>(null);
   useEffect(() => {
-    setFoldername(props.data.name);
+    setFoldername(props.data[props.folderIndex].folder.name);
   }, [props]);
+
+  const isDuplicateFoldername = useMemo(() => {
+    if (foldername) {
+      const allFoldernames = props.data.map((folder) => {
+        return folder.folder.name;
+      });
+      if (
+        allFoldernames.includes(foldername) &&
+        foldername !== props.data[props.folderIndex].folder.name
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }, [props.data, foldername, props.folderIndex]);
 
   const onChange = useCallback(
     (value: string) => {
@@ -113,15 +129,21 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
 
   const updateFolder = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    if (foldername)
-      updateFolder(
-        props.data.id,
-        { name: foldername },
-        () => {},
-        () => {}
-      );
+    if (
+      isDuplicateFoldername ||
+      foldername === null ||
+      foldername?.trim() === ""
+    ) {
+      return;
+    }
+    updateFolder(
+      props.data[props.folderIndex].folder.id,
+      { name: foldername },
+      () => {},
+      () => {}
+    );
     props.close();
-  }, [props, foldername, updateFolder]);
+  }, [props, foldername, updateFolder, isDuplicateFoldername]);
   return (
     <div style={styles.createPage}>
       {showDeleteDialog ? (
@@ -146,7 +168,9 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
       </div>
       <div style={styles.createPageFormField}>
         <span>Folder</span>
-        {foldername ? <Input value={foldername} onChange={onChange} /> : null}
+        {foldername !== null ? (
+          <Input value={foldername} onChange={onChange} />
+        ) : null}
       </div>
       <div style={styles.slugContainer}>
         <div style={styles.slugContent}>
@@ -161,6 +185,18 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
           </div>
           {foldername ? <div>{`/${foldername.replace("/", "")}`}</div> : null}
         </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          padding: "1rem",
+          ...smallText,
+          color: gray300,
+        }}
+      >
+        {isDuplicateFoldername
+          ? `A folder with name "${foldername}" already exists`
+          : null}
       </div>
       <div
         style={{ display: "flex", justifyContent: "center", padding: "1rem" }}

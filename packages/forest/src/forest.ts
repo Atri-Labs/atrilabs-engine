@@ -12,6 +12,9 @@ import {
   Tree,
   Forest,
   ForestUpdateSubscriber,
+  EventMetaData,
+  TreeNode,
+  HardPatchEvent,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -35,13 +38,6 @@ export function createForest(def: ForestDef): Forest {
     const id = def.modulePath;
     defaultFnMap[id] = def.defFn();
   });
-
-  const isRootTree = (treeId: string) => {
-    if (treeId === rootDef.modulePath) {
-      return true;
-    }
-    return false;
-  };
 
   // create an empty map of trees to be filled once API for forest is ready below
   const treeMap: { [treeId: string]: Tree } = {};
@@ -75,7 +71,7 @@ export function createForest(def: ForestDef): Forest {
     return reverseMap;
   }
 
-  function handleEvent(event: AnyEvent) {
+  function handleEvent(name: string, event: AnyEvent, meta: EventMetaData) {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
       const treeId = createEvent.type.slice("CREATE$$".length);
@@ -86,12 +82,15 @@ export function createForest(def: ForestDef): Forest {
           state: createEvent.state,
         };
         forestUpdateSubscribers.forEach((cb) => {
-          cb({
-            type: "wire",
-            id: createEvent.id,
-            parentId: createEvent.state.parent.id,
-            treeId,
-          });
+          cb(
+            {
+              type: "wire",
+              id: createEvent.id,
+              parentId: createEvent.state.parent.id,
+              treeId,
+            },
+            { name, meta }
+          );
         });
       }
     }
@@ -99,6 +98,11 @@ export function createForest(def: ForestDef): Forest {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice("PATCH$$".length);
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
+        const stringified = JSON.stringify(
+          tree(treeId)!.nodes[patchEvent.id]!["state"]
+        );
+        const newState = JSON.parse(stringified);
+        const oldState = JSON.parse(stringified);
         // patch parent
         if (patchEvent.slice && patchEvent.slice.parent) {
           if (patchEvent.slice.parent.id && patchEvent.slice.parent.index) {
@@ -108,22 +112,23 @@ export function createForest(def: ForestDef): Forest {
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
               tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-                JSON.parse(
-                  JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
-                ),
+                newState,
                 JSON.parse(JSON.stringify(patchEvent.slice)),
                 mergeStateCustomizer
               );
               forestUpdateSubscribers.forEach((cb) => {
-                cb({
-                  type: "rewire",
-                  treeId,
-                  childId: patchEvent.id,
-                  newParentId: patchEvent.slice.parent.id,
-                  newIndex: patchEvent.slice.parent.index,
-                  oldIndex,
-                  oldParentId,
-                });
+                cb(
+                  {
+                    type: "rewire",
+                    treeId,
+                    childId: patchEvent.id,
+                    newParentId: patchEvent.slice.parent.id,
+                    newIndex: patchEvent.slice.parent.index,
+                    oldIndex,
+                    oldParentId,
+                  },
+                  { name, meta }
+                );
               });
             }
             return;
@@ -136,14 +141,15 @@ export function createForest(def: ForestDef): Forest {
         }
         // patch other fields
         tree(treeId)!.nodes[patchEvent.id]!["state"] = mergeWith(
-          JSON.parse(
-            JSON.stringify(tree(treeId)!.nodes[patchEvent.id]!["state"])
-          ),
+          newState,
           JSON.parse(JSON.stringify(patchEvent.slice)),
           mergeStateCustomizer
         );
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "change", id: patchEvent.id, treeId });
+          cb(
+            { type: "change", id: patchEvent.id, treeId, oldState },
+            { name, meta }
+          );
         });
       }
     }
@@ -153,23 +159,40 @@ export function createForest(def: ForestDef): Forest {
       // find all children and add them to be delete array
       const nodesToBeDeleted = [delEvent.id];
       const reverseMap = createReverseMap(treeMap[treeId]!.nodes);
-      if (reverseMap[delEvent.id]) {
-        nodesToBeDeleted.push(...reverseMap[delEvent.id]!);
-      }
-      nodesToBeDeleted.reverse().forEach((nodeId) => {
-        // if event is from a root tree, call unlink on all child tree
-        if (isRootTree(treeId)) {
-          if (linkEvents[nodeId]) {
-            linkEvents[nodeId]!.forEach((event) => {
-              const unlinkEvent = { ...event, type: `UNLINK$$${treeId}` };
-              handleEvent(unlinkEvent);
-            });
-          }
+      let currentIndex = 0;
+      while (currentIndex < nodesToBeDeleted.length) {
+        const currentNodeId = nodesToBeDeleted[currentIndex]!;
+        if (reverseMap[currentNodeId]) {
+          nodesToBeDeleted.push(...reverseMap[currentNodeId]!);
         }
+        currentIndex++;
+      }
+
+      const topNode = treeMap[treeId]!.nodes[delEvent.id]!;
+      const copyOfNodesToBeDeleted: TreeNode[] = JSON.parse(
+        JSON.stringify(
+          nodesToBeDeleted.map((id) => {
+            return treeMap[treeId]!.nodes[id]!;
+          })
+        )
+      );
+      nodesToBeDeleted.reverse().forEach((nodeId) => {
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
+        const deletedNode = treeMap[treeId]!.nodes[nodeId]!;
         delete treeMap[treeId]!.nodes[nodeId];
         forestUpdateSubscribers.forEach((cb) => {
-          cb({ type: "dewire", childId: nodeId, parentId, treeId });
+          cb(
+            {
+              type: "dewire",
+              childId: nodeId,
+              parentId,
+              treeId,
+              deletedNode,
+              topNode,
+              deletedNodes: copyOfNodesToBeDeleted,
+            },
+            { name, meta }
+          );
         });
       });
     }
@@ -183,13 +206,16 @@ export function createForest(def: ForestDef): Forest {
         ? linkEvents[linkEvent.refId]?.push(linkEvent)
         : (linkEvents[linkEvent.refId] = [linkEvent]);
       forestUpdateSubscribers.forEach((cb) => {
-        cb({
-          type: "link",
-          refId: linkEvent.refId,
-          childId: linkEvent.childId,
-          treeId: treeId,
-          rootTreeId: rootDef.id,
-        });
+        cb(
+          {
+            type: "link",
+            refId: linkEvent.refId,
+            childId: linkEvent.childId,
+            treeId: treeId,
+            rootTreeId: rootDef.id,
+          },
+          { name, meta }
+        );
       });
     }
     if (event.type.startsWith("UNLINK")) {
@@ -197,42 +223,101 @@ export function createForest(def: ForestDef): Forest {
       const treeId = unlinkEvent.type.slice("UNLINK$$".length);
       delete treeMap[treeId]!.links[unlinkEvent.refId];
       forestUpdateSubscribers.forEach((cb) => {
-        cb({
-          type: "unlink",
-          refId: unlinkEvent.refId,
-          childId: unlinkEvent.childId,
-          treeId: treeId,
-          rootTreeId: rootDef.id,
+        cb(
+          {
+            type: "unlink",
+            refId: unlinkEvent.refId,
+            childId: unlinkEvent.childId,
+            treeId: treeId,
+            rootTreeId: rootDef.id,
+          },
+          { name, meta }
+        );
+      });
+    }
+    if (event.type.startsWith("HARDPATCH")) {
+      const patchEvent = event as HardPatchEvent;
+      const treeId = patchEvent.type.slice("HARDPATCH$$".length);
+      const tree = treeMap[treeId]!;
+      const patchEventHasParent = "parent" in patchEvent.state;
+      const oldState = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state)
+      );
+      const oldParent = JSON.parse(
+        JSON.stringify(tree.nodes[patchEvent.id]!.state.parent)
+      ) as { id: string; index: number };
+      // add parent field if not present
+      if (!patchEventHasParent) {
+        patchEvent.state.parent = tree.nodes[patchEvent.id]!.state.parent;
+      }
+      tree.nodes[patchEvent.id]!.state = patchEvent.state;
+      // emit rewire event only if parent has changed
+      if (
+        patchEventHasParent &&
+        (patchEvent.state.parent.id !== oldParent.id ||
+          patchEvent.state.parent.index !== oldParent.index)
+      ) {
+        forestUpdateSubscribers.forEach((cb) => {
+          cb(
+            {
+              type: "rewire",
+              treeId,
+              childId: patchEvent.id,
+              newParentId: patchEvent.state.parent.id,
+              newIndex: patchEvent.state.parent.index,
+              oldIndex: oldParent.index,
+              oldParentId: oldParent.id,
+            },
+            { name, meta }
+          );
         });
+      }
+      // emit change event
+      forestUpdateSubscribers.forEach((cb) => {
+        cb(
+          { type: "change", id: patchEvent.id, treeId, oldState },
+          { name, meta }
+        );
       });
     }
   }
 
+  function handleEvents(data: {
+    name: string;
+    events: AnyEvent[];
+    meta: EventMetaData;
+  }) {
+    const { name, events, meta } = data;
+    events.forEach((event) => {
+      handleEvent(name, event, meta);
+    });
+  }
+
   // create a node
-  function create(event: CreateEvent) {
+  function create(event: CreateEvent, meta: EventMetaData) {
     const type = event.type.slice("CREATE$$".length);
-    handleEvent(event);
+    handleEvents({ name: "", events: [event], meta });
     defaultFnMap[type]!.onCreate(event);
   }
 
   // patch a node
-  function patch(event: PatchEvent) {
-    handleEvent(event);
+  function patch(event: PatchEvent, meta: EventMetaData) {
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // delete a node
-  function del(event: DeleteEvent) {
-    handleEvent(event);
+  function del(event: DeleteEvent, meta: EventMetaData) {
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // link nodes between two trees
-  function link(event: LinkEvent) {
-    handleEvent(event);
+  function link(event: LinkEvent, meta: EventMetaData) {
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // unlink nodes between two trees
-  function unlink(event: UnlinkEvent) {
-    handleEvent(event);
+  function unlink(event: UnlinkEvent, meta: EventMetaData) {
+    handleEvents({ name: "", events: [event], meta });
   }
 
   // subscibe forest
@@ -253,7 +338,7 @@ export function createForest(def: ForestDef): Forest {
     del,
     link,
     unlink,
-    handleEvent,
+    handleEvents,
     subscribeForest,
   };
 

@@ -14,7 +14,11 @@ export default function () {
     if (!forestsLoaded.current[forestId]) {
       api.fetchEvents(forestPkgId, forestId).then((events) => {
         events.forEach((event) => {
-          currentForest.handleEvent(event);
+          currentForest.handleEvents({
+            events: [event],
+            meta: { agent: "server-sent" },
+            name: "",
+          });
         });
       });
       forestsLoaded.current[forestId] = { forestPkgId };
@@ -45,9 +49,11 @@ export default function () {
         forestsLoaded.current[forestId] &&
         forestPkgId === forestsLoaded.current[forestId].forestPkgId
       ) {
-        BrowserForestManager.getForest(forestPkgId, forestId)?.handleEvent(
-          event
-        );
+        BrowserForestManager.getForest(forestPkgId, forestId)?.handleEvents({
+          events: [event],
+          meta: { agent: "server-sent" },
+          name: "",
+        });
       }
     });
   }, []);

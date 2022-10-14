@@ -7,7 +7,7 @@ import {
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
-import { CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
+import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
@@ -53,6 +53,7 @@ export const useSubscribeNewDrop = () => {
            * 3. Associate Alias with the Component
            */
           // 1. Create Props
+          const events: AnyEvent[] = [];
           if (manifest) {
             const component = manifest.component;
             const propsKeys = Object.keys(component.dev.attachProps);
@@ -72,14 +73,14 @@ export const useSubscribeNewDrop = () => {
                   property: { [propKey]: initialValue },
                 },
               };
-              api.postNewEvent(forestPkgId, forestId, createEvent);
+              events.push(createEvent);
 
               const linkEvent: LinkEvent = {
                 type: `LINK$$${treeId}`,
                 refId: compId,
                 childId: propCompId,
               };
-              api.postNewEvent(forestPkgId, forestId, linkEvent);
+              events.push(linkEvent);
             }
           }
 
@@ -99,14 +100,14 @@ export const useSubscribeNewDrop = () => {
                 property: { callbacks: defaultCallbacks },
               },
             };
-            api.postNewEvent(forestPkgId, forestId, createEvent);
+            events.push(createEvent);
 
             const linkEvent: LinkEvent = {
               type: `LINK$$${CallbackTreeId}`,
               refId: compId,
               childId: callbackCompId,
             };
-            api.postNewEvent(forestPkgId, forestId, linkEvent);
+            events.push(linkEvent);
           }
 
           // 3. Create Component
@@ -120,7 +121,14 @@ export const useSubscribeNewDrop = () => {
             },
             state: { parent: { id: caughtBy, index: index } },
           };
-          api.postNewEvent(forestPkgId, forestId, event);
+          events.push(event);
+
+          // Dispatch events
+          api.postNewEvents(forestPkgId, forestId, {
+            events,
+            name: "NEW_DROP",
+            meta: { agent: "browser" },
+          });
 
           // 3. Associate Alias
           api.getNewAlias(forestPkgId, key, (alias) => {
@@ -131,7 +139,11 @@ export const useSubscribeNewDrop = () => {
                 alias,
               },
             };
-            api.postNewEvent(forestPkgId, forestId, setAliasEvent);
+            api.postNewEvents(forestPkgId, forestId, {
+              events: [setAliasEvent],
+              name: "NEW_DROP_ALIAS",
+              meta: { agent: "browser" },
+            });
           });
         }
       }

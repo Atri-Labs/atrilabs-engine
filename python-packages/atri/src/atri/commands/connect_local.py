@@ -58,6 +58,7 @@ def handle_ipc_events(sio, paths):
             return True, out
         except Exception:
             print("except", traceback.print_exc())
+        return False, b''
     @sio.on("doBuildPython")
     async def doBuildPython():
         printd("doBuildPython called")
@@ -108,7 +109,10 @@ def handle_ipc_events(sio, paths):
             await python_server_proc.wait()
             if python_server_proc.returncode != 0:
                 print("Error occured while running python -m controllers.server serve")
+            returncode = python_server_proc.returncode
             python_server_proc = None
+            return returncode
+        return 0
 async def start_ipc_connection(port: str, app_dir):
     abs_app_dir = os.path.abspath(app_dir)
     paths = {"app_dir": abs_app_dir}

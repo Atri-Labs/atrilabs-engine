@@ -47,6 +47,7 @@ export const BarChart = forwardRef<
       // Bar Chart specific options
       stacked?: boolean;
     };
+    className?: string;
   }
 >((props, ref) => {
   const xAxisKey = useMemo(() => {
@@ -85,7 +86,11 @@ export const BarChart = forwardRef<
   }, [areOrderProvided, props.custom, xAxisKey]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block", ...props.styles }}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block", ...props.styles }}
+      className={props.className}
+    >
       <BarChartRechart
         width={
           typeof props.styles.width === "string"
