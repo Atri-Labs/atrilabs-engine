@@ -205,7 +205,12 @@ const subscribeResourceUpdates: BrowserClient["subscribeResourceUpdates"] = (
   socket.on("newResource", cb);
 };
 
+const getSocket: BrowserClient["getSocket"] = () => {
+  return socket;
+};
+
 const client: BrowserClient = {
+  getSocket,
   getMeta,
   getPages,
   createFolder,
