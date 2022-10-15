@@ -304,6 +304,13 @@ export type BrowserClient = {
   subscribeResourceUpdates: (
     callback: (resource: ImportedResource) => void
   ) => void;
+  getAttachedServicesStatus: (
+    callback: (status: { [clientName: string]: boolean }) => void
+  ) => void;
+  // returns a function to unsubscribe
+  subscribeServiceStatus: (
+    callback: (status: { [clientName: string]: boolean }) => void
+  ) => () => void;
 };
 
 export type Script = {

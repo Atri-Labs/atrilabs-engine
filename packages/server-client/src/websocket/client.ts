@@ -221,6 +221,27 @@ const getIPCSocket: BrowserClient["getSocket"] = () => {
   return ipcSocket;
 };
 
+ipcSocket.on("connect", () => {
+  ipcSocket.emit("registerAs", "browser", () => {});
+});
+
+const getAttachedServicesStatus: BrowserClient["getAttachedServicesStatus"] = (
+  cb
+) => {
+  ipcSocket.emit("getAttachedServicesStatus", (status) => {
+    cb(status);
+  });
+};
+
+const subscribeServiceStatus: BrowserClient["subscribeServiceStatus"] = (
+  cb
+) => {
+  ipcSocket.on("attachedServiceStatusChanged", cb);
+  return () => {
+    ipcSocket.off("attachedServiceStatusChanged", cb);
+  };
+};
+
 const client: BrowserClient = {
   getSocket,
   getIPCSocket,
@@ -248,6 +269,8 @@ const client: BrowserClient = {
   importResource,
   getResources,
   subscribeResourceUpdates,
+  getAttachedServicesStatus,
+  subscribeServiceStatus,
 };
 
 export default client;

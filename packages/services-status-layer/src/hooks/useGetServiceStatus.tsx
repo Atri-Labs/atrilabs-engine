@@ -5,9 +5,13 @@ export const useGetServiceStatus = () => {
   const [status, setStatus] = useState<{
     isEventServerConnected: boolean;
     isIPCServerConnected: boolean;
+    atriCLIConnected: boolean;
+    publishServerConnected: boolean;
   }>({
     isEventServerConnected: false,
     isIPCServerConnected: false,
+    atriCLIConnected: false,
+    publishServerConnected: false,
   });
   useEffect(() => {
     const socket = api.getSocket();
@@ -64,6 +68,46 @@ export const useGetServiceStatus = () => {
 
       ipcSocket.off("connect", onIPCSocketConnected);
       ipcSocket.off("disconnect", onIPCSocketDisconnected);
+    };
+  }, []);
+
+  useEffect(() => {
+    const ipcSocket = api.getIPCSocket();
+    let unsub: () => void;
+
+    const onIPCSocketConnection = () => {
+      api.getAttachedServicesStatus((newStatus) => {
+        setStatus((status) => {
+          return {
+            ...status,
+            atriCLIConnected: newStatus["atri-cli"] ? true : false,
+            publishServerConnected: newStatus["publish-server"] ? true : false,
+          };
+        });
+      });
+      unsub = api.subscribeServiceStatus((newStatus) => {
+        setStatus((status) => {
+          return {
+            ...status,
+            atriCLIConnected: newStatus["atri-cli"] ? true : false,
+            publishServerConnected: newStatus["publish-server"] ? true : false,
+          };
+        });
+      });
+    };
+
+    if (ipcSocket.connected) {
+      onIPCSocketConnection();
+    } else {
+      ipcSocket.on("connect", () => {
+        onIPCSocketConnection();
+      });
+    }
+
+    return () => {
+      if (unsub) {
+        unsub();
+      }
     };
   }, []);
   return { status };

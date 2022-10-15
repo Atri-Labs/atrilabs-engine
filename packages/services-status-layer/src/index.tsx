@@ -16,7 +16,10 @@ export default function () {
             alignItems: "center",
           }}
         >
-          {status.isEventServerConnected && status.isIPCServerConnected ? (
+          {status.isEventServerConnected &&
+          status.isIPCServerConnected &&
+          status.publishServerConnected &&
+          status.atriCLIConnected ? (
             <GreenDot />
           ) : (
             <RedDot />
