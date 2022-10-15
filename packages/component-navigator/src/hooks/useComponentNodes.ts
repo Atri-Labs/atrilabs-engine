@@ -1,122 +1,78 @@
 import { useState, useEffect, useCallback } from "react";
-import { BrowserForestManager, manifestRegistryController, api } from "@atrilabs/core";
-import { PatchEvent, Tree } from "@atrilabs/forest";
+import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import { ComponentNode } from '../types';
-
+import { ComponentNode } from "../types";
+import { markAllNodesClosed, transformTreeToComponentNode } from "../utils";
 
 export const useComponentNodes = () => {
-    const { items: newTree, oldItems } = transformTreeToComponentNodes(BrowserForestManager.currentForest.tree(ComponentTreeId)!, {});
-    const [oldItemsMap, setOldItemsMap] = useState<{ [id: string]: ComponentNode }>(oldItems);
+  const [rootComponentNode, setRootComponentNode] =
+    useState<ComponentNode | null>(null);
 
-    const [items, setItems] = useState<ComponentNode[]>(newTree);
-    useEffect(() => {
-        const unsubscribe = BrowserForestManager.currentForest.subscribeForest((_) => {
-            const newTree = BrowserForestManager.currentForest.tree(ComponentTreeId)!;
-            const { items, oldItems } = transformTreeToComponentNodes(newTree, oldItemsMap);
-            setItems(items);
-            setOldItemsMap(oldItems);
+  // keep a record of open/closed item
+  const [openOrCloseMap, setOpenOrCloseMap] = useState<{
+    [compId: string]: boolean;
+  }>({});
 
-            return () => {
-                unsubscribe();
-            };
-        });
-    }, []);
-    const patchCb = useCallback(
-        (nodeId: string, parentId: any) => {
-            const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-            const forestId = BrowserForestManager.currentForest.forestId;
-            const newParent = recursionFind(parentId, items);
-            if (newParent?.type !== 'acceptsChild') {
-                return;
-            }
-            const node = recursionFind(nodeId, items);
-            if (!node) {
-                return;
-            }
-            newParent.children = newParent.children!.concat(node);
-            newParent.children?.forEach((curr, index) => {
-                const patchEvent: PatchEvent = {
-                    type: `PATCH$$${ComponentTreeId}`,
-                    slice: {
-                        parent: {
-                            id: newParent?.id,
-                            index: index + 1,
-                        }
-                    },
-                    id: curr.id,
-                };
-                api.postNewEvent(forestPkgId, forestId, patchEvent, () => { });
-            });
-        },
-        [items]
+  // compTree changes when user navigates from one page to another
+  const compTree = useTree(ComponentTreeId);
+
+  useEffect(() => {
+    const newOpenOrCloseMap: { [id: string]: boolean } = {};
+    // initially all nodes are closed
+    const nodeIds = Object.keys(compTree.nodes);
+    markAllNodesClosed(nodeIds, newOpenOrCloseMap);
+
+    const rootComponentNode = transformTreeToComponentNode(
+      compTree,
+      newOpenOrCloseMap
     );
-    const toggleNode = useCallback(
-        (nodeId: string) => {
-            const newItems = items;
-            const itemsMap = oldItemsMap;
-            const node = recursionFind(nodeId, newItems);
-            if (!node) {
-                return;
-            }
-            const nodeMapItem = itemsMap[nodeId];
-            if (!nodeMapItem) {
-                return;
-            }
-            nodeMapItem.open = !nodeMapItem.open;
-            node.open = nodeMapItem.open;
-            itemsMap[nodeId] = nodeMapItem;
-            setOldItemsMap(itemsMap);
-            setItems([...newItems]);
-        },
-        [items]
+
+    setOpenOrCloseMap(newOpenOrCloseMap);
+    setRootComponentNode(rootComponentNode);
+  }, [compTree]);
+
+  useEffect(() => {
+    const unsub = BrowserForestManager.currentForest.subscribeForest(
+      (update) => {
+        if (update.treeId === ComponentTreeId) {
+          const rootComponentNode = transformTreeToComponentNode(
+            compTree,
+            openOrCloseMap
+          );
+          setRootComponentNode(rootComponentNode);
+        }
+      }
     );
-    return { items, patchCb, toggleNode };
+    return unsub;
+  }, [compTree, openOrCloseMap]);
+
+  const toggleNode = useCallback((id: string) => {
+    setOpenOrCloseMap((openOrCloseMap) => {
+      return { ...openOrCloseMap, [id]: !openOrCloseMap[id] };
+    });
+  }, []);
+
+  const patchCb = useCallback(
+    (nodeId: string, newParentId: string, newIndex: number) => {
+      const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+      const forestId = BrowserForestManager.currentForest.forestId;
+      const slice = {
+        parent: { id: newParentId, index: newIndex },
+      };
+      const patchEvent: PatchEvent = {
+        type: `PATCH$$${ComponentTreeId}`,
+        slice,
+        id: nodeId,
+      };
+      api.postNewEvents(forestPkgId, forestId, {
+        events: [patchEvent],
+        meta: { agent: "browser" },
+        name: "REPOSITION",
+      });
+    },
+    []
+  );
+
+  return { rootComponentNode, toggleNode, patchCb };
 };
-
-function recursionFind(nodeId: string, items: ComponentNode[]): ComponentNode | undefined {
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].id === nodeId) {
-            return items[i];
-        }
-        if (items[i].children) {
-            const found = recursionFind(nodeId, items[i].children!);
-            if (found) {
-                return found;
-            }
-        }
-    }
-}
-
-function transformTreeToComponentNodes(tree: Tree, oldItemsMap: { [id: string]: ComponentNode }): { items: ComponentNode[], oldItems: { [id: string]: ComponentNode } } {
-    const oldBody = oldItemsMap['body'];
-    const itemsMap: { [id: string]: ComponentNode } = {
-        'body': { type: 'acceptsChild', id: 'body', name: 'Root', open: oldBody ? oldBody.open : true, children: [], index: 1 },
-    };
-    const manifestRegistry = manifestRegistryController.readManifestRegistry();
-
-    Object.keys(tree.nodes).forEach((id) => {
-        const node = tree.nodes[id];
-        const manifest = manifestRegistry[node.meta.manifestSchemaId].components.find(
-            (curr) => {
-                return curr.pkg === node.meta.pkg && curr.component.meta.key === node.meta.key;
-            }
-        );
-        const acceptsChild = manifest?.component?.dev?.acceptsChild ? 'acceptsChild' : 'normal';
-        const oldBody = oldItemsMap[node.id];
-        itemsMap[node.id] = { type: acceptsChild, id: node.id, name: node.state.alias, open: oldBody ? oldBody.open : true, children: [], index: node.state.parent.index };
-    });
-    const items: ComponentNode[] = [itemsMap['body']];
-    Object.keys(itemsMap).forEach((id) => {
-        const node = tree.nodes[id];
-        if (!node) {
-            return;
-        }
-        const parent = itemsMap[node.state.parent.id];
-        if (parent && parent.type === 'acceptsChild') {
-            parent.children?.push(itemsMap[id]);
-            parent.children = parent.children?.sort((a, b) => a.index - b.index);
-        }
-    });
-    return { items: items.sort((a, b) => a.name.localeCompare(b.name)), oldItems: itemsMap };
-}

@@ -7,14 +7,19 @@ import {
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
-import React, { MouseEvent, useCallback, useState } from "react";
+import React, { MouseEvent, useCallback, useMemo, useState } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
 import { useComponentNodes } from "./hooks/useComponentNodes";
-import { clickOverlay, hoverOverlay, useMarginOverlay } from "./hooks/useMarginOverlay";
+import {
+  clickOverlay,
+  hoverOverlay,
+  useMarginOverlay,
+} from "./hooks/useMarginOverlay";
 import { ComponentNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
+import { flattenRootNode } from "./utils";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -26,7 +31,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     userSelect: "none",
     overflow: "auto",
-    fontFamily: 'Inter sans-serif',
+    fontFamily: "Inter sans-serif",
   },
   dropContainerItemHeader: {
     display: "flex",
@@ -62,12 +67,15 @@ export default function () {
   }, []);
 
   const { removeMarginOverlay } = useMarginOverlay(clickOverlay);
-  const { items: tree, patchCb, toggleNode } = useComponentNodes();
+  const { rootComponentNode, toggleNode, patchCb } = useComponentNodes();
+  const flattenedNodes = useMemo(() => {
+    return rootComponentNode !== null ? flattenRootNode(rootComponentNode) : [];
+  }, [rootComponentNode]);
   const onClickOnNavigator = (evt: MouseEvent) => {
     removeMarginOverlay();
     evt.stopPropagation();
     evt.preventDefault();
-  }
+  };
   const [selectedNode, setSelectedNode] = useState<ComponentNode | null>(null);
 
   return (
@@ -91,16 +99,18 @@ export default function () {
                 </span>
               </div>
             </header>
-            <div>{
-              tree.map((node: ComponentNode) => (<ComponentNodeEl
-                key={node.id}
-                node={node}
-                sendPatch={patchCb}
-                toggleNode={toggleNode}
-                selectedNode={selectedNode}
-                setSelectedNode={setSelectedNode}
-              />))
-            }</div>
+            <div>
+              {flattenedNodes.map((node: ComponentNode) => (
+                <ComponentNodeEl
+                  key={node.id}
+                  node={node}
+                  sendPatch={patchCb}
+                  toggleNode={toggleNode}
+                  selectedNode={selectedNode}
+                  setSelectedNode={setSelectedNode}
+                />
+              ))}
+            </div>
           </div>
         </Container>
       ) : null}
@@ -110,31 +120,40 @@ export default function () {
 
 type ComponentNodeElProps = {
   node: ComponentNode;
-  sendPatch: (id: string, parentId: string) => void;
+  sendPatch: (id: string, newParentId: string, newIndex: number) => void;
   toggleNode: (id: string) => void;
   selectedNode?: ComponentNode | null;
   setSelectedNode: (node: ComponentNode) => void;
-}
+};
 
-const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({ node, sendPatch, toggleNode, selectedNode, setSelectedNode }) => {
-  if (!node) {
-    return null;
-  }
-  const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay(hoverOverlay);
-  const { createMarginOverlay: createMarginOverlay1, removeMarginOverlay: removeMarginOverlay1 } = useMarginOverlay(clickOverlay);
-  const children = node.children?.map((child) => (<ComponentNodeEl
-    key={child.id}
-    node={child}
-    sendPatch={sendPatch}
-    toggleNode={toggleNode}
-    selectedNode={selectedNode}
-    setSelectedNode={setSelectedNode}
-  />));
+const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
+  node,
+  sendPatch,
+  toggleNode,
+  selectedNode,
+  setSelectedNode,
+}) => {
+  const { createMarginOverlay, removeMarginOverlay } =
+    useMarginOverlay(hoverOverlay);
+  const {
+    createMarginOverlay: createMarginOverlay1,
+    removeMarginOverlay: removeMarginOverlay1,
+  } = useMarginOverlay(clickOverlay);
+  const children = node.children?.map((child) => (
+    <ComponentNodeEl
+      key={child.id}
+      node={child}
+      sendPatch={sendPatch}
+      toggleNode={toggleNode}
+      selectedNode={selectedNode}
+      setSelectedNode={setSelectedNode}
+    />
+  ));
   const showOverlay = (evt: React.MouseEvent) => {
-    removeMarginOverlay()
-    createMarginOverlay(node.id)
+    removeMarginOverlay();
+    createMarginOverlay(node.id);
     evt.preventDefault();
-  }
+  };
   const showOverlayOnClick = (evt: React.MouseEvent) => {
     //To change parent in Canvas and tree
     // sendPatch(
@@ -147,27 +166,45 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({ node, sendPatch, togg
     setSelectedNode(node);
     evt.stopPropagation();
     evt.preventDefault();
-  }
+  };
 
   const toggleOpen = (evt: React.MouseEvent) => {
-    if (node.type === 'acceptsChild') {
+    if (node.type === "acceptsChild") {
       toggleNode(node.id);
     }
     evt.stopPropagation();
     evt.preventDefault();
-  }
+  };
   const hideOverlay = (evt: React.MouseEvent) => {
-    removeMarginOverlay()
+    removeMarginOverlay();
     evt.preventDefault();
-  }
+  };
   return (
-    <div style={{
-      marginLeft: '10px',
-      padding: '4px 0px',
-      backgroundColor: selectedNode && selectedNode.id === node.id ? gray800 : 'transparent'
-    }} onClick={showOverlayOnClick}>
-      {node.type === 'acceptsChild' && (<span onClick={toggleOpen}>{node.open ? <CaretDown /> : <CaretRight />}</span>)}
-      <span style={{ color: selectedNode && selectedNode.id === node.id ? gray500 : gray300 }} onMouseEnter={showOverlay} onMouseLeave={hideOverlay}> {node.name}</span>
+    <div
+      style={{
+        marginLeft: "10px",
+        padding: "4px 0px",
+        backgroundColor:
+          selectedNode && selectedNode.id === node.id ? gray800 : "transparent",
+      }}
+      onClick={showOverlayOnClick}
+    >
+      {node.type === "acceptsChild" && (
+        <span onClick={toggleOpen}>
+          {node.open ? <CaretDown /> : <CaretRight />}
+        </span>
+      )}
+      <span
+        style={{
+          color:
+            selectedNode && selectedNode.id === node.id ? gray500 : gray300,
+        }}
+        onMouseEnter={showOverlay}
+        onMouseLeave={hideOverlay}
+      >
+        {" "}
+        {node.name}
+      </span>
       {node.open && children}
     </div>
   );
