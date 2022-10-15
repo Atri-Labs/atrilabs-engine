@@ -2,12 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import { ComponentNode } from "../types";
+import { NavigatorNode } from "../types";
 import { markAllNodesClosed, transformTreeToComponentNode } from "../utils";
 
 export const useComponentNodes = () => {
   const [rootComponentNode, setRootComponentNode] =
-    useState<ComponentNode | null>(null);
+    useState<NavigatorNode | null>(null);
 
   // keep a record of open/closed item
   const [openOrCloseMap, setOpenOrCloseMap] = useState<{
