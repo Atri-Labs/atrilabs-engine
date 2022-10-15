@@ -81,7 +81,7 @@ function _transformTreeToComponentNode(
  * @param openOrCloseMap
  * @returns root navigator node
  */
-export function transformTreeToComponentNode(
+export function transformTreeToNavigatorNode(
   tree: Tree,
   openOrCloseMap: { [compId: string]: boolean }
 ): NavigatorNode {
@@ -96,7 +96,7 @@ export function transformTreeToComponentNode(
   return rootComponentNode;
 }
 
-export function flattenRootNode(rootComponentNode: NavigatorNode) {
+export function flattenRootNavigatorNode(rootComponentNode: NavigatorNode) {
   const flattenNodes = [rootComponentNode];
   let currentIndex = 0;
   while (currentIndex < flattenNodes.length) {

@@ -3,10 +3,10 @@ import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { NavigatorNode } from "../types";
-import { markAllNodesClosed, transformTreeToComponentNode } from "../utils";
+import { markAllNodesClosed, transformTreeToNavigatorNode } from "../utils";
 
-export const useComponentNodes = () => {
-  const [rootComponentNode, setRootComponentNode] =
+export const useNavigatorNodes = () => {
+  const [rootNavigatorNode, setRootNavigatorNode] =
     useState<NavigatorNode | null>(null);
 
   // keep a record of open/closed item
@@ -23,24 +23,24 @@ export const useComponentNodes = () => {
     const nodeIds = Object.keys(compTree.nodes);
     markAllNodesClosed(nodeIds, newOpenOrCloseMap);
 
-    const rootComponentNode = transformTreeToComponentNode(
+    const rootnavigatorNode = transformTreeToNavigatorNode(
       compTree,
       newOpenOrCloseMap
     );
 
     setOpenOrCloseMap(newOpenOrCloseMap);
-    setRootComponentNode(rootComponentNode);
+    setRootNavigatorNode(rootnavigatorNode);
   }, [compTree]);
 
   useEffect(() => {
     const unsub = BrowserForestManager.currentForest.subscribeForest(
       (update) => {
         if (update.treeId === ComponentTreeId) {
-          const rootComponentNode = transformTreeToComponentNode(
+          const rootnavigatorNode = transformTreeToNavigatorNode(
             compTree,
             openOrCloseMap
           );
-          setRootComponentNode(rootComponentNode);
+          setRootNavigatorNode(rootnavigatorNode);
         }
       }
     );
@@ -74,5 +74,5 @@ export const useComponentNodes = () => {
     []
   );
 
-  return { rootComponentNode, toggleNode, patchCb };
+  return { rootNavigatorNode, toggleNode, patchCb };
 };

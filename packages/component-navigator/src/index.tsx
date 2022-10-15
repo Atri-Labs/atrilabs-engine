@@ -10,7 +10,7 @@ import {
 import React, { MouseEvent, useCallback, useMemo, useState } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
-import { useComponentNodes } from "./hooks/useComponentNodes";
+import { useNavigatorNodes } from "./hooks/useComponentNodes";
 import {
   clickOverlay,
   hoverOverlay,
@@ -19,7 +19,7 @@ import {
 import { NavigatorNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
-import { flattenRootNode } from "./utils";
+import { flattenRootNavigatorNode } from "./utils";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -67,10 +67,12 @@ export default function () {
   }, []);
 
   const { removeMarginOverlay } = useMarginOverlay(clickOverlay);
-  const { rootComponentNode, toggleNode, patchCb } = useComponentNodes();
+  const { rootNavigatorNode, toggleNode, patchCb } = useNavigatorNodes();
   const flattenedNodes = useMemo(() => {
-    return rootComponentNode !== null ? flattenRootNode(rootComponentNode) : [];
-  }, [rootComponentNode]);
+    return rootNavigatorNode !== null
+      ? flattenRootNavigatorNode(rootNavigatorNode)
+      : [];
+  }, [rootNavigatorNode]);
   const onClickOnNavigator = (evt: MouseEvent) => {
     removeMarginOverlay();
     evt.stopPropagation();
