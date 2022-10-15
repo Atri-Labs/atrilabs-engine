@@ -96,16 +96,27 @@ export function transformTreeToNavigatorNode(
   return rootComponentNode;
 }
 
+function _flattenRootNavigatorNode(
+  flattenNodes: NavigatorNode[],
+  currentNode: NavigatorNode
+) {
+  const children = currentNode.children;
+  if (children) {
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      flattenNodes.push(child);
+      _flattenRootNavigatorNode(flattenNodes, child);
+    }
+  }
+}
+
+/**
+ * Walks depth first and flattens all nodes in an array
+ * @param rootComponentNode node to start walking from
+ * @returns array of all nodes in depth first
+ */
 export function flattenRootNavigatorNode(rootComponentNode: NavigatorNode) {
   const flattenNodes = [rootComponentNode];
-  let currentIndex = 0;
-  while (currentIndex < flattenNodes.length) {
-    const current = flattenNodes[currentIndex];
-    const children = current.children;
-    if (children) {
-      flattenNodes.push(...children);
-    }
-    currentIndex++;
-  }
+  _flattenRootNavigatorNode(flattenNodes, rootComponentNode);
   return flattenNodes;
 }
