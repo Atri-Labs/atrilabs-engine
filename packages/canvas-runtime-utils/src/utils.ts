@@ -110,3 +110,25 @@ export function getAllNodeIdsFromReverseMap(
   nodeIds.delete(rootId);
   return Array.from(nodeIds);
 }
+
+/**
+ *
+ * @param nodes map of tree id and tree node
+ * @param rootNodeId id of node to start breadth first walk from.
+ * @returns parent-children map where children are sorted
+ */
+export function createSortedParentChildMap(
+  nodes: { [nodeId: string]: TreeNode },
+  rootNodeId: string
+) {
+  const parentChildMap = createReverseMap(nodes, rootNodeId);
+  const parentNodeIds = Object.keys(parentChildMap);
+  for (let i = 0; i < parentNodeIds.length; i++) {
+    const currentParentNodeId = parentNodeIds[i];
+    const currentNodesChildIds = parentChildMap[currentParentNodeId];
+    currentNodesChildIds.sort((a, b) => {
+      return nodes[a].state.parent.index - nodes[b].state.parent.index;
+    });
+  }
+  return parentChildMap;
+}
