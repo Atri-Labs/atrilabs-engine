@@ -16,7 +16,7 @@ import {
   hoverOverlay,
   useMarginOverlay,
 } from "./hooks/useMarginOverlay";
-import { ComponentNode } from "./types";
+import { NavigatorNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
 import { flattenRootNode } from "./utils";
@@ -76,7 +76,7 @@ export default function () {
     evt.stopPropagation();
     evt.preventDefault();
   };
-  const [selectedNode, setSelectedNode] = useState<ComponentNode | null>(null);
+  const [selectedNode, setSelectedNode] = useState<NavigatorNode | null>(null);
 
   return (
     <>
@@ -100,7 +100,7 @@ export default function () {
               </div>
             </header>
             <div>
-              {flattenedNodes.map((node: ComponentNode) => (
+              {flattenedNodes.map((node: NavigatorNode) => (
                 <ComponentNodeEl
                   key={node.id}
                   node={node}
@@ -119,11 +119,11 @@ export default function () {
 }
 
 type ComponentNodeElProps = {
-  node: ComponentNode;
+  node: NavigatorNode;
   sendPatch: (id: string, newParentId: string, newIndex: number) => void;
   toggleNode: (id: string) => void;
-  selectedNode?: ComponentNode | null;
-  setSelectedNode: (node: ComponentNode) => void;
+  selectedNode?: NavigatorNode | null;
+  setSelectedNode: (node: NavigatorNode) => void;
 };
 
 const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({

@@ -1,7 +1,7 @@
 import { manifestRegistryController } from "@atrilabs/core";
 import { Tree } from "@atrilabs/forest";
 import { createSortedParentChildMap } from "@atrilabs/canvas-runtime-utils";
-import { ComponentNode } from "./types";
+import { NavigatorNode } from "./types";
 
 export function markAllNodesClosed(
   nodeIds: string[],
@@ -16,9 +16,9 @@ function _transformTreeToComponentNode(
   tree: Tree,
   openOrCloseMap: { [compId: string]: boolean },
   parentChildMap: { [parentId: string]: string[] }
-): ComponentNode {
+): NavigatorNode {
   const rootNodeId = "body";
-  const rootComponentNode: ComponentNode = {
+  const rootComponentNode: NavigatorNode = {
     type: "acceptsChild",
     id: rootNodeId,
     name: "Root",
@@ -53,7 +53,7 @@ function _transformTreeToComponentNode(
         const acceptsChild = manifest?.component?.dev?.acceptsChild
           ? "acceptsChild"
           : "normal";
-        const componentNode: ComponentNode = {
+        const componentNode: NavigatorNode = {
           type: acceptsChild,
           id: node.id,
           name: node.state.alias,
@@ -79,12 +79,12 @@ function _transformTreeToComponentNode(
  *
  * @param tree
  * @param openOrCloseMap
- * @returns
+ * @returns root navigator node
  */
 export function transformTreeToComponentNode(
   tree: Tree,
   openOrCloseMap: { [compId: string]: boolean }
-): ComponentNode {
+): NavigatorNode {
   // createSortedParentChildMap is an utiltiy function that
   // creates a map of parent id as key & array of child id as value
   const parentChildMap = createSortedParentChildMap(tree.nodes, "body");
@@ -96,7 +96,7 @@ export function transformTreeToComponentNode(
   return rootComponentNode;
 }
 
-export function flattenRootNode(rootComponentNode: ComponentNode) {
+export function flattenRootNode(rootComponentNode: NavigatorNode) {
   const flattenNodes = [rootComponentNode];
   let currentIndex = 0;
   while (currentIndex < flattenNodes.length) {
