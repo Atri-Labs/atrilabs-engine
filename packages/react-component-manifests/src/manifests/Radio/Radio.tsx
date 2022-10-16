@@ -34,8 +34,8 @@ export const Radio = forwardRef<
         checked={props.custom.checked}
         style={{
           ...props.styles,
-          height: props.custom.radius || props.styles.height,
-          width: props.custom.radius || props.styles.width,
+          height: props.custom.radius,
+          width: props.custom.radius,
         }}
       />
       {props.custom.label ? <label>{props.custom.label}</label> : null}
@@ -61,6 +61,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     name: "text",
     label: "text",
     checked: "boolean",
+    radius: "number",
   },
 };
 
@@ -78,6 +79,7 @@ const compManifest: ReactComponentManifestSchema = {
           cursor: "pointer",
           display: "inline-flex",
           columnGap: "10px",
+          alignItems: "center",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
