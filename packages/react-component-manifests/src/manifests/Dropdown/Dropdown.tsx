@@ -54,7 +54,6 @@ export const Dropdown = forwardRef<
 });
 
 const DevDropdown: typeof Dropdown = forwardRef((props, ref) => {
-  props.custom["disabled"] = true;
   return <Dropdown {...props} ref={ref} />;
 });
 
