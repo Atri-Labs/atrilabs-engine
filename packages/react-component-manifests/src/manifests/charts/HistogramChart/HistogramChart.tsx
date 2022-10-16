@@ -51,6 +51,8 @@ export const HistogramChart = forwardRef<
       legend?: { show?: boolean };
       xAxis?: { show?: boolean; key?: string };
       yAxis?: { show?: boolean; key?: string };
+      chartWidth: number;
+      chartHeight: number;
     };
     className?: string;
   }
@@ -90,16 +92,8 @@ export const HistogramChart = forwardRef<
       className={props.className}
     >
       <ComposedChart
-        width={
-          typeof props.styles.width === "string"
-            ? parseInt(props.styles.width)
-            : props.styles.width
-        }
-        height={
-          typeof props.styles.height === "string"
-            ? parseInt(props.styles.height)
-            : props.styles.height
-        }
+        width={props.custom.chartWidth}
+        height={props.custom.chartHeight}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         data={props.custom.data}
         barGap={0}
@@ -233,6 +227,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
     legend: "map",
     xAxis: "map",
     yAxis: "map",
+    chartHeight: "number",
+    chartWidth: "number",
   },
 };
 
@@ -247,7 +243,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { width: "400px", height: "400px" },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -260,6 +256,8 @@ const compManifest: ReactComponentManifestSchema = {
           options: { line: { type: "monotone", strokeWidth: 2 } },
           toolTip: { show: true },
           legend: { show: true },
+          chartHeight: 400,
+          chartWidth: 400,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
