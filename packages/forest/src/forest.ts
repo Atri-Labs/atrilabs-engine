@@ -177,6 +177,9 @@ export function createForest(def: ForestDef): Forest {
         )
       );
       nodesToBeDeleted.reverse().forEach((nodeId) => {
+        if (treeMap[treeId]!.nodes[nodeId] === undefined) {
+          console.log(delEvent.id, topNode, nodeId);
+        }
         const parentId = treeMap[treeId]!.nodes[nodeId]!.state.parent.id;
         const deletedNode = treeMap[treeId]!.nodes[nodeId]!;
         delete treeMap[treeId]!.nodes[nodeId];
