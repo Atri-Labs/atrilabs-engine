@@ -28,15 +28,13 @@ export const useGetServiceStatus = () => {
 
     if (socket.connected) {
       onEventServerConnected();
-    } else {
-      socket.on("connect", onEventServerConnected);
     }
+    socket.on("connect", onEventServerConnected);
 
     if (socket.disconnected) {
       onEventServerDisconnected();
-    } else {
-      socket.on("disconnect", onEventServerDisconnected);
     }
+    socket.on("disconnect", onEventServerDisconnected);
 
     const ipcSocket = api.getIPCSocket();
     const onIPCSocketConnected = () => {
@@ -52,15 +50,13 @@ export const useGetServiceStatus = () => {
 
     if (ipcSocket.connected) {
       onIPCSocketConnected();
-    } else {
-      ipcSocket.on("connect", onIPCSocketConnected);
     }
+    ipcSocket.on("connect", onIPCSocketConnected);
 
     if (ipcSocket.disconnected) {
       onIPCSocketDisconnected();
-    } else {
-      ipcSocket.on("disconnect", onIPCSocketDisconnected);
     }
+    ipcSocket.on("disconnect", onIPCSocketDisconnected);
 
     return () => {
       socket.off("connect", onEventServerConnected);
@@ -98,11 +94,10 @@ export const useGetServiceStatus = () => {
 
     if (ipcSocket.connected) {
       onIPCSocketConnection();
-    } else {
-      ipcSocket.on("connect", () => {
-        onIPCSocketConnection();
-      });
     }
+    ipcSocket.on("connect", () => {
+      onIPCSocketConnection();
+    });
 
     return () => {
       if (unsub) {
