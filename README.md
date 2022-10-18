@@ -6,12 +6,9 @@
   </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine?color=FEF08A" alt="Open issues"></a>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue?color=FEF08A" alt="Good first issues"></a>
-  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Aatri-app" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/atri-app?color=FEF08A&label=create-atri-app%20issues" alt="Create Atri App"></a>
-  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3Acreate-component" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/create-component?color=FEF08A" alt="Create component"></a>
   </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions" target="_blank"><img src="https://img.shields.io/github/discussions/Atri-Labs/atrilabs-engine?color=DB2777" alt="Discussions"></a>
   <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
-  <a href="https://pepy.tech/badge/atri/month" target="_blank"><img src="https://pepy.tech/badge/atri/month" alt="Downloads per month"></a>
   </br>
   ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
   <h3 align="center">

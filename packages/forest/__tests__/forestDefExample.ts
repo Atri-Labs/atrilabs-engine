@@ -1,8 +1,8 @@
 import { ForestDef, TreeDef } from "../src/types";
 
 export const componentTreeDef: TreeDef = {
-  id: "componentTreeModule",
-  modulePath: "componentTreeModule",
+  id: "@atrilabs/app-design-forest/lib/componentTree.js",
+  modulePath: "@atrilabs/app-design-forest/lib/componentTree.js",
   defFn: () => {
     return {
       validateCreate(_event) {
@@ -17,8 +17,40 @@ export const componentTreeDef: TreeDef = {
 };
 
 export const cssTreeDef: TreeDef = {
-  id: "cssTreeModule",
-  modulePath: "cssTreeModule",
+  id: "@atrilabs/app-design-forest/lib/cssTree.js",
+  modulePath: "@atrilabs/app-design-forest/lib/cssTree.js",
+  defFn: () => {
+    return {
+      validateCreate(_event) {
+        return true;
+      },
+      validatePatch(_event) {
+        return true;
+      },
+      onCreate(_event) {},
+    };
+  },
+};
+
+export const callbackTreeDef: TreeDef = {
+  id: "@atrilabs/app-design-forest/lib/callbackHandlerTree.js",
+  modulePath: "@atrilabs/app-design-forest/lib/callbackHandlerTree.js",
+  defFn: () => {
+    return {
+      validateCreate(_event) {
+        return true;
+      },
+      validatePatch(_event) {
+        return true;
+      },
+      onCreate(_event) {},
+    };
+  },
+};
+
+export const customPropsTreeDef: TreeDef = {
+  id: "@atrilabs/app-design-forest/lib/customPropsTree.js",
+  modulePath: "@atrilabs/app-design-forest/lib/customPropsTree.js",
   defFn: () => {
     return {
       validateCreate(_event) {
@@ -35,5 +67,5 @@ export const cssTreeDef: TreeDef = {
 export const forestDef: ForestDef = {
   id: "forestId",
   pkg: "forestPkg",
-  trees: [componentTreeDef, cssTreeDef],
+  trees: [componentTreeDef, cssTreeDef, callbackTreeDef, customPropsTreeDef],
 };

@@ -1,5 +1,5 @@
 import { createForest } from "../src/forest";
-import { componentTreeDef, forestDef } from "./forestDefExample";
+import { componentTreeDef, cssTreeDef, forestDef } from "./forestDefExample";
 
 test("createForest fn returns a forest with trees", () => {
   const forest = createForest(forestDef);
@@ -8,7 +8,7 @@ test("createForest fn returns a forest with trees", () => {
 
   const compTree = forest.tree(componentTreeDef.modulePath);
   expect(compTree).toBeDefined();
-  const cssTree = forest.tree("cssTreeModule");
+  const cssTree = forest.tree(cssTreeDef.modulePath);
   expect(cssTree).toBeDefined();
 });
 
@@ -19,7 +19,7 @@ test("nodes get created on calling handleEvent", () => {
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -35,12 +35,12 @@ test("nodes get created on calling handleEvent", () => {
 
 test("delete event removes node and it's descendant", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -48,7 +48,7 @@ test("delete event removes node and it's descendant", () => {
         },
       },
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp2",
         meta: {},
         state: {
@@ -56,7 +56,7 @@ test("delete event removes node and it's descendant", () => {
         },
       },
       {
-        type: `DELETE$$componentTreeModule`,
+        type: `DELETE$$${componentTreeDef.modulePath}`,
         id: "comp1",
       },
     ],
@@ -68,7 +68,7 @@ test("delete event removes node and it's descendant", () => {
 
 test("create after delete event, DOES NOT restore all nodes", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
@@ -109,12 +109,12 @@ test("create after delete event, DOES NOT restore all nodes", () => {
 
 test("patch event updates state", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -122,7 +122,7 @@ test("patch event updates state", () => {
         },
       },
       {
-        type: `PATCH$$componentTreeModule`,
+        type: `PATCH$$${componentTreeDef.modulePath}`,
         id: "comp1",
         slice: {
           alias: "comp1Alias",
@@ -137,12 +137,12 @@ test("patch event updates state", () => {
 
 test("create after delete event, DOES not restore all old state", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -150,18 +150,18 @@ test("create after delete event, DOES not restore all old state", () => {
         },
       },
       {
-        type: `PATCH$$componentTreeModule`,
+        type: `PATCH$$${componentTreeDef.modulePath}`,
         id: "comp1",
         slice: {
           alias: "comp1Alias",
         },
       },
       {
-        type: `DELETE$$componentTreeModule`,
+        type: `DELETE$$${componentTreeDef.modulePath}`,
         id: "comp1",
       },
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -177,12 +177,12 @@ test("create after delete event, DOES not restore all old state", () => {
 
 test("hard patch replaces state", () => {
   const forest = createForest(forestDef);
-  const compTree = forest.tree("componentTreeModule");
+  const compTree = forest.tree(componentTreeDef.modulePath);
   forest.handleEvents({
     name: "TEST_EVENTS",
     events: [
       {
-        type: `CREATE$$componentTreeModule`,
+        type: `CREATE$$${componentTreeDef.modulePath}`,
         id: "comp1",
         meta: {},
         state: {
@@ -190,14 +190,14 @@ test("hard patch replaces state", () => {
         },
       },
       {
-        type: `PATCH$$componentTreeModule`,
+        type: `PATCH$$${componentTreeDef.modulePath}`,
         id: "comp1",
         slice: {
           alias: "comp1Alias",
         },
       },
       {
-        type: `HARDPATCH$$componentTreeModule`,
+        type: `HARDPATCH$$${componentTreeDef.modulePath}`,
         id: "comp1",
         state: {
           styles: { height: "10px" },

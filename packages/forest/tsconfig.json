@@ -4,7 +4,8 @@
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "resolveJsonModule": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

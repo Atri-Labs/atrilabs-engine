@@ -42,6 +42,8 @@ export const LineChart = forwardRef<
       legend?: { show?: boolean };
       xAxis?: { show?: boolean; key?: string };
       yAxis?: { show?: boolean };
+      chartWidth: number;
+      chartHeight: number;
     };
     className?: string;
   }
@@ -88,16 +90,8 @@ export const LineChart = forwardRef<
       className={props.className}
     >
       <LineChartRechart
-        width={
-          typeof props.styles.width === "string"
-            ? parseInt(props.styles.width)
-            : props.styles.width
-        }
-        height={
-          typeof props.styles.height === "string"
-            ? parseInt(props.styles.height)
-            : props.styles.height
-        }
+        width={props.custom.chartWidth}
+        height={props.custom.chartHeight}
         data={props.custom.data}
       >
         {props.custom.cartesianGrid?.show ? (
@@ -210,6 +204,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
     legend: "map",
     xAxis: "map",
     yAxis: "map",
+    chartHeight: "number",
+    chartWidth: "number",
   },
 };
 
@@ -224,7 +220,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { width: "400px", height: "400px" },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -236,6 +232,8 @@ const compManifest: ReactComponentManifestSchema = {
           yAxis: { show: true },
           toolTip: { show: true },
           legend: { show: true },
+          chartHeight: 400,
+          chartWidth: 400,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
