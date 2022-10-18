@@ -43,6 +43,7 @@ const PUBLISH_SERVER_CLIENT = `http://localhost:${PUBLISH_SERVER_PORT}`;
 const IPC_SERVER_PORT = process.env["IPC_SERVER_PORT"]
   ? parseInt(process.env["IPC_SERVER_PORT"])
   : 4006;
+const IPC_SERVER_CLIENT = `http://localhost:${IPC_SERVER_PORT}`;
 
 module.exports = {
   pkgManager: "yarn",
@@ -75,6 +76,7 @@ module.exports = {
     { pkg: "@atrilabs/resource-processor-layer" },
     { pkg: "@atrilabs/undo-redo-layer" },
     { pkg: "@atrilabs/component-navigator" },
+    { pkg: "@atrilabs/services-status-layer" },
   ],
   output: "lib",
   services: {
@@ -175,6 +177,7 @@ module.exports = {
     EVENT_SERVER_CLIENT,
     MANIFEST_SERVER_CLIENT,
     PUBLISH_SERVER_CLIENT,
+    IPC_SERVER_CLIENT,
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {

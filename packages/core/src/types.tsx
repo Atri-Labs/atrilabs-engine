@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
+import { Socket } from "socket.io-client";
 
 /**
  * NOTE: A layer entry function must return Container, Menu, Tab
@@ -198,6 +199,8 @@ export type ImportedResource = {
 };
 
 export type BrowserClient = {
+  getSocket(): Socket;
+  getIPCSocket(): Socket;
   getMeta(forestPkgId: string, onData: (meta: any) => void): void;
   getPages(
     forestPkgId: string,
@@ -301,6 +304,13 @@ export type BrowserClient = {
   subscribeResourceUpdates: (
     callback: (resource: ImportedResource) => void
   ) => void;
+  getAttachedServicesStatus: (
+    callback: (status: { [clientName: string]: boolean }) => void
+  ) => void;
+  // returns a function to unsubscribe
+  subscribeServiceStatus: (
+    callback: (status: { [clientName: string]: boolean }) => void
+  ) => () => void;
 };
 
 export type Script = {

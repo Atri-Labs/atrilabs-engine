@@ -64,6 +64,7 @@
     "@atrilabs/publish-app-layer": "^0.0.73",
     "@atrilabs/react-component-manifest-schema": "^0.0.73",
     "@atrilabs/react-component-manifests": "^0.0.73",
+    "@atrilabs/services-status-layer": "^0.0.73",
     "@atrilabs/scripts": "^0.0.73",
     "@atrilabs/server-client": "^0.0.73",
     "@emotion/react": "^11.10.0",
