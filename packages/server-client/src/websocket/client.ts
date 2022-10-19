@@ -7,13 +7,29 @@ import {
   ClientToServerEvents as IPCClientToServerEvents,
 } from "../ipc-server/types";
 
+const auth = { projectId: "" };
+
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
+  process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string,
+  { autoConnect: false, auth }
 );
 
 const ipcSocket: Socket<IPCServerToClientEvents, IPCClientToServerEvents> = io(
-  process.env["ATRI_TOOL_IPC_SERVER_CLIENT"] as string
+  process.env["ATRI_TOOL_IPC_SERVER_CLIENT"] as string,
+  { autoConnect: false, auth }
 );
+
+fetch("/api/project-info")
+  .then((resp) => resp.json())
+  .then((resp) => {
+    const projectId = resp["projectId"];
+    if (projectId) {
+      auth.projectId = projectId;
+      socket.connect();
+      ipcSocket.connect();
+    }
+  })
+  .catch((err) => console.log("Error in fetching /project-info", err));
 
 function getMeta(forestPkgId: string, onData: (meta: any) => void) {
   socket.emit("getMeta", forestPkgId, onData);

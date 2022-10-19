@@ -67,6 +67,9 @@ processToolConfig(toolPkgInfo)
           [toolConfig.assetManager.urlPath]: {
             target: toolConfig.devServerProxy.hostname,
           },
+          "/api": {
+            target: toolConfig.devServerProxy.hostname,
+          },
         },
       };
 
