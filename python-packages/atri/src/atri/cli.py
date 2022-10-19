@@ -1,5 +1,7 @@
 """This script is the entrypoint for command line utilities provided in Atri Framework."""
 import sys
+
+from .utils.setup_env import setup_env
 from atri.errors import NO_CONDA_ENVIRONMENT_FOUND
 from atri.utils.is_pkg_installed import is_conda_installed_sync
 import click
@@ -30,6 +32,7 @@ from .stats import collect_atri_start, collect_create_dockerfile
 from .utils.manage_session import manage_session
 
 find_and_set_app_directory()
+setup_env()
 
 class VirtTypeQuestion(click.Option):
 
