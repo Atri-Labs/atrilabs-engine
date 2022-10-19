@@ -65,7 +65,7 @@ processToolConfig(toolPkgInfo)
         hot: true,
         proxy: {
           [toolConfig.assetManager.urlPath]: {
-            target: toolConfig.assetManager.hostname,
+            target: toolConfig.devServerProxy.hostname,
           },
         },
       };

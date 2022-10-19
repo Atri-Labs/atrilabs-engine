@@ -31,6 +31,7 @@ const EVENT_SERVER_PORT = process.env["EVENT_SERVER_PORT"]
 const FILE_SERVER_PORT = process.env["FILE_SERVER_PORT"]
   ? parseInt(process.env["FILE_SERVER_PORT"])
   : 4002;
+const FILE_SERVER_CLIENT = `http://localhost:${FILE_SERVER_PORT}`;
 const EVENT_SERVER_CLIENT = `http://localhost:${EVENT_SERVER_PORT}`;
 const MANIFEST_SERVER_PORT = process.env["MANIFEST_SERVER_PORT"]
   ? parseInt(process.env["MANIFEST_SERVER_PORT"])
@@ -189,8 +190,10 @@ module.exports = {
     { pkg: "@atrilabs/react-component-manifest-schema" },
   ],
   manifestDirs: [{ pkg: "@atrilabs/react-component-manifests" }],
+  devServerProxy: {
+    hostname: FILE_SERVER_CLIENT,
+  },
   assetManager: {
-    hostname: EVENT_SERVER_CLIENT,
     urlPath: "/app-assets",
     assetsDir: `${compileAppOutputDir}/assets`,
   },
