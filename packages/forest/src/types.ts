@@ -68,7 +68,12 @@ export type LinkEvent = TreeLink & EventDto;
 
 export type UnlinkEvent = LinkEvent;
 
-export type HardPatchEvent = { id: string; state: any } & EventDto;
+export type HardPatchEvent = {
+  id: string;
+  state: any;
+  // apply the state to a selected field only
+  selector?: string[];
+} & EventDto;
 
 export type AnyEvent =
   | CreateEvent

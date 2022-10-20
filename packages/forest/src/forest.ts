@@ -242,46 +242,77 @@ export function createForest(def: ForestDef): Forest {
       const patchEvent = event as HardPatchEvent;
       const treeId = patchEvent.type.slice("HARDPATCH$$".length);
       const tree = treeMap[treeId]!;
-      const patchEventHasParent = "parent" in patchEvent.state;
-      const oldState = JSON.parse(
-        JSON.stringify(tree.nodes[patchEvent.id]!.state)
-      );
-      const oldParent = JSON.parse(
-        JSON.stringify(tree.nodes[patchEvent.id]!.state.parent)
-      ) as { id: string; index: number };
-      // add parent field if not present
-      if (!patchEventHasParent) {
-        patchEvent.state.parent = tree.nodes[patchEvent.id]!.state.parent;
-      }
-      tree.nodes[patchEvent.id]!.state = patchEvent.state;
-      // emit rewire event only if parent has changed
-      if (
-        patchEventHasParent &&
-        (patchEvent.state.parent.id !== oldParent.id ||
-          patchEvent.state.parent.index !== oldParent.index)
-      ) {
+      if (patchEvent.selector === undefined) {
+        const patchEventHasParent = "parent" in patchEvent.state;
+        const oldState = JSON.parse(
+          JSON.stringify(tree.nodes[patchEvent.id]!.state)
+        );
+        const oldParent = JSON.parse(
+          JSON.stringify(tree.nodes[patchEvent.id]!.state.parent)
+        ) as { id: string; index: number };
+        // add parent field if not present
+        if (!patchEventHasParent) {
+          patchEvent.state.parent = tree.nodes[patchEvent.id]!.state.parent;
+        }
+        tree.nodes[patchEvent.id]!.state = patchEvent.state;
+        // emit rewire event only if parent has changed
+        if (
+          patchEventHasParent &&
+          (patchEvent.state.parent.id !== oldParent.id ||
+            patchEvent.state.parent.index !== oldParent.index)
+        ) {
+          forestUpdateSubscribers.forEach((cb) => {
+            cb(
+              {
+                type: "rewire",
+                treeId,
+                childId: patchEvent.id,
+                newParentId: patchEvent.state.parent.id,
+                newIndex: patchEvent.state.parent.index,
+                oldIndex: oldParent.index,
+                oldParentId: oldParent.id,
+              },
+              { name, meta }
+            );
+          });
+        }
+        // emit change event
         forestUpdateSubscribers.forEach((cb) => {
           cb(
-            {
-              type: "rewire",
-              treeId,
-              childId: patchEvent.id,
-              newParentId: patchEvent.state.parent.id,
-              newIndex: patchEvent.state.parent.index,
-              oldIndex: oldParent.index,
-              oldParentId: oldParent.id,
-            },
+            { type: "change", id: patchEvent.id, treeId, oldState },
+            { name, meta }
+          );
+        });
+      } else {
+        // store old state
+        const oldState = JSON.parse(
+          JSON.stringify(tree.nodes[patchEvent.id]!.state)
+        );
+        const selector = patchEvent.selector!;
+        let curr: any = tree.nodes[patchEvent.id]!.state;
+
+        // get or create selector fields
+        for (let i = 0; i < selector!.length; i++) {
+          const currentSelector = selector[i]!;
+          if (!(currentSelector in curr)) {
+            curr[currentSelector] = {};
+          }
+          if (i === selector.length - 1) {
+            // assign new state
+            curr[currentSelector] = patchEvent.state;
+          } else {
+            curr = curr[currentSelector];
+          }
+        }
+
+        // emit change event
+        forestUpdateSubscribers.forEach((cb) => {
+          cb(
+            { type: "change", id: patchEvent.id, treeId, oldState },
             { name, meta }
           );
         });
       }
-      // emit change event
-      forestUpdateSubscribers.forEach((cb) => {
-        cb(
-          { type: "change", id: patchEvent.id, treeId, oldState },
-          { name, meta }
-        );
-      });
     }
   }
 
