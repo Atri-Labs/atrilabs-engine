@@ -27,6 +27,11 @@ export default function (toolConfig: ToolConfig, options: FileServerOptions) {
     console.log(`[file-server] Directory Not Found: ${options.dir}`);
     exit();
   }
+
+  app.get("/api/project-info", (_req, res) => {
+    res.send({ projectId: process.env["ATRI_PROJECT_ID"] });
+  });
+
   // serve static assets
   const assetUrlPrefix = toolConfig.assetManager.urlPath;
   const assetsDir = toolConfig.assetManager.assetsDir;

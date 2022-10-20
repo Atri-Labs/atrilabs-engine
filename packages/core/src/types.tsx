@@ -124,9 +124,10 @@ export type ToolConfig = {
   };
   manifestSchema: { pkg: string }[];
   manifestDirs: { pkg: string }[];
-  assetManager: {
-    // will be used to fetch the assets by webpack dev server
+  devServerProxy: {
     hostname: string;
+  };
+  assetManager: {
     // ex. - /assets (no trailing slashes)
     urlPath: string;
     // ex. - node_modules/.targets/assets
