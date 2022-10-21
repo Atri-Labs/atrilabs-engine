@@ -5,6 +5,7 @@ bin/
 yarn-error.log
 lerna-debug.log
 lib-cjs/
+.idea/*
 .vscode/
 .DS_Store
 coverage/
