@@ -7,7 +7,6 @@ name = "pypi"
 click = "*"
 python-socketio = {extras = ["asyncio_client"], version = "*"}
 toml = "*"
-pyyaml = "*"
 questionary = "*"
 requests = "*"
 pymongo = {extras = ["srv"], version = "*"}
