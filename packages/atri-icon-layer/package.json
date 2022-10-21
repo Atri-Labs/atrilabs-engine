@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/atri-icon-layer",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,14 +29,14 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.74",
-    "@atrilabs/design-system": "^0.0.74",
-    "@atrilabs/scripts": "^0.0.74",
-    "eslint-plugin-atrilabs": "^0.0.74",
+    "@atrilabs/core": "^0.0.75",
+    "@atrilabs/design-system": "^0.0.75",
+    "@atrilabs/scripts": "^0.0.75",
+    "eslint-plugin-atrilabs": "^0.0.75",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@atrilabs/layer-types": "^0.0.74",
+    "@atrilabs/layer-types": "^0.0.75",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
