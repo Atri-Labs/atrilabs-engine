@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-template-layer",
-  "version": "0.0.75",
+  "version": "0.0.76",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,12 +29,12 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime-utils": "^0.0.75",
-    "@atrilabs/core": "^0.0.75",
-    "@atrilabs/design-system": "^0.0.75",
-    "@atrilabs/layer-types": "^0.0.75",
-    "@atrilabs/scripts": "^0.0.75",
-    "eslint-plugin-atrilabs": "^0.0.75",
+    "@atrilabs/canvas-runtime-utils": "^0.0.76",
+    "@atrilabs/core": "^0.0.76",
+    "@atrilabs/design-system": "^0.0.76",
+    "@atrilabs/layer-types": "^0.0.76",
+    "@atrilabs/scripts": "^0.0.76",
+    "eslint-plugin-atrilabs": "^0.0.76",
     "typescript": "4.6.3"
   },
   "devDependencies": {
