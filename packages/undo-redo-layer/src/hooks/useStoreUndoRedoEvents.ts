@@ -84,6 +84,12 @@ export function popFromRedoQueue(forestPkgId: string, pageId: string) {
   }
 }
 
+function clearRedoQueue(forestPkgId: string, pageId: string) {
+  if (forestPkgId in redoQueue && pageId in redoQueue[forestPkgId]) {
+    redoQueue[forestPkgId][pageId] = { events: [] };
+  }
+}
+
 const UNDO_REDO_NAME = "UNDO_REDO_EVENT";
 
 export const useStoreUndoRedoEvents = () => {
@@ -126,6 +132,9 @@ export const useStoreUndoRedoEvents = () => {
         const { forestId, forestPkgId } = BrowserForestManager.currentForest;
         const componentTree =
           BrowserForestManager.currentForest.tree(ComponentTreeId);
+
+        // added to handle issue #389
+        clearRedoQueue(forestPkgId, forestId);
 
         if (agent === "browser" && componentTree) {
           if (

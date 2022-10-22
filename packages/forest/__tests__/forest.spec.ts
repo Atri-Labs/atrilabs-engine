@@ -210,3 +210,53 @@ test("hard patch replaces state", () => {
   expect(compTree!.nodes["comp1"]!.state).toHaveProperty("styles");
   expect(compTree!.nodes["comp1"]!.state).not.toHaveProperty("alias");
 });
+
+test("hard patch with selector replaces selected state", () => {
+  const forest = createForest(forestDef);
+  const compTree = forest.tree(componentTreeDef.modulePath);
+  forest.handleEvents({
+    name: "TEST_EVENTS",
+    events: [
+      {
+        type: `CREATE$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        meta: {},
+        state: {
+          parent: { id: "body", index: 0 },
+        },
+      },
+      {
+        type: `PATCH$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        slice: {
+          alias: "comp1Alias",
+        },
+      },
+      {
+        type: `HARDPATCH$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        state: {
+          styles: {
+            height: "20px",
+          },
+        },
+        selector: ["breakpoints", "991"],
+      },
+    ],
+    meta: { agent: "server-sent" },
+  });
+  expect(compTree?.nodes).toBeDefined();
+  expect(compTree!.nodes["comp1"]!.state).not.toHaveProperty("styles");
+  expect(compTree!.nodes["comp1"]!.state).toHaveProperty("alias");
+  expect(compTree!.nodes["comp1"]!.state).toHaveProperty("breakpoints");
+  expect(compTree!.nodes["comp1"]!.state["breakpoints"]).toHaveProperty("991");
+  expect(compTree!.nodes["comp1"]!.state["breakpoints"]["991"]).toHaveProperty(
+    "styles"
+  );
+  expect(
+    compTree!.nodes["comp1"]!.state["breakpoints"]["991"]["styles"]
+  ).toHaveProperty("height");
+  expect(
+    compTree!.nodes["comp1"]!.state["breakpoints"]["991"]["styles"]["height"]
+  ).toBe("20px");
+});
