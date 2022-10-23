@@ -1,4 +1,4 @@
-import { ComponentNode } from "../types";
+// import { ComponentNode } from "../types";
 
 // export type ComponentNavigatorProps = {
 //   rootNode: ComponentNode;

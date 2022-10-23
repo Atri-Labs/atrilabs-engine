@@ -14,3 +14,18 @@ export type NavigatorNode = {
   // parentNode is null for body
   parentNode: NavigatorNode | null;
 };
+
+// export type DragComp = { comp: React.FC<any>; props: any };
+
+export type DragData = {
+  id: string;
+  parentId: string;
+  currentIndex: number;
+};
+
+export type StartDragArgs = {
+  dragData: DragData;
+  lastY: number;
+};
+
+export type Location = { pageX: number; pageY: number };

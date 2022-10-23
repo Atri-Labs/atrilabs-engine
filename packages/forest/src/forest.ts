@@ -111,7 +111,10 @@ export function createForest(def: ForestDef): Forest {
         const oldState = JSON.parse(stringified);
         // patch parent
         if (patchEvent.slice && patchEvent.slice.parent) {
-          if (patchEvent.slice.parent.id && patchEvent.slice.parent.index) {
+          if (
+            patchEvent.slice.parent.id &&
+            !isNaN(patchEvent.slice.parent.index)
+          ) {
             const oldParentId =
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.id;
             const oldIndex =

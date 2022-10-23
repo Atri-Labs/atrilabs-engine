@@ -7,7 +7,13 @@ import {
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
-import React, { MouseEvent, useCallback, useMemo, useState } from "react";
+import React, {
+  MouseEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
 import { useNavigatorNodes } from "./hooks/useComponentNodes";
@@ -20,6 +26,7 @@ import { NavigatorNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
 import { flattenRootNavigatorNode } from "./utils";
+import { useDragDrop } from "./hooks/useDragDrop";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -65,20 +72,29 @@ export default function () {
   const closeContainer = useCallback(() => {
     setShowDropContianer(false);
   }, []);
+  const ref = useRef<HTMLDivElement>(null);
 
   const { removeMarginOverlay } = useMarginOverlay(clickOverlay);
-  const { rootNavigatorNode, toggleNode, patchCb } = useNavigatorNodes();
-  const flattenedNodes = useMemo(() => {
-    return rootNavigatorNode !== null
-      ? flattenRootNavigatorNode(rootNavigatorNode)
-      : [];
-  }, [rootNavigatorNode]);
+  const { rootNavigatorNode, nodeMap, toggleNode, patchCb, openOrCloseMap } =
+    useNavigatorNodes();
+  const [selectedNode, setSelectedNode] = useState<NavigatorNode | null>(null);
+  const dragDt = useDragDrop(
+    rootNavigatorNode,
+    nodeMap,
+    openOrCloseMap,
+    patchCb,
+    setSelectedNode
+  );
+  // const flattenedNodes = useMemo(() => {
+  //   return rootNavigatorNode !== null
+  //     ? flattenRootNavigatorNode(rootNavigatorNode)
+  //     : [];
+  // }, [rootNavigatorNode]);
   const onClickOnNavigator = (evt: MouseEvent) => {
     removeMarginOverlay();
     evt.stopPropagation();
     evt.preventDefault();
   };
-  const [selectedNode, setSelectedNode] = useState<NavigatorNode | null>(null);
 
   return (
     <>
@@ -90,7 +106,7 @@ export default function () {
         </div>
       </Menu>
 
-      {showDropPanel ? (
+      {showDropPanel && rootNavigatorNode ? (
         <Container name="Drop" onClose={closeContainer}>
           <div style={styles.dropContainerItem} onClick={onClickOnNavigator}>
             <header style={styles.dropContainerItemHeader}>
@@ -102,16 +118,19 @@ export default function () {
               </div>
             </header>
             <div>
-              {flattenedNodes.map((node: NavigatorNode) => (
+              <div ref={ref}>
+                {/* {flattenedNodes.map((node: NavigatorNode) => ( */}
                 <ComponentNodeEl
-                  key={node.id}
-                  node={node}
+                  key={rootNavigatorNode.id}
+                  node={rootNavigatorNode}
                   sendPatch={patchCb}
                   toggleNode={toggleNode}
                   selectedNode={selectedNode}
                   setSelectedNode={setSelectedNode}
+                  openOrCloseMap={openOrCloseMap}
                 />
-              ))}
+                {/* ))} */}
+              </div>
             </div>
           </div>
         </Container>
@@ -122,7 +141,13 @@ export default function () {
 
 type ComponentNodeElProps = {
   node: NavigatorNode;
-  sendPatch: (id: string, newParentId: string, newIndex: number) => void;
+  openOrCloseMap: { [key: string]: boolean };
+  sendPatch: (
+    id: string,
+    newParentId: string,
+    newIndex: number,
+    isMovingUp: boolean
+  ) => void;
   toggleNode: (id: string) => void;
   selectedNode?: NavigatorNode | null;
   setSelectedNode: (node: NavigatorNode) => void;
@@ -134,6 +159,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
   toggleNode,
   selectedNode,
   setSelectedNode,
+  openOrCloseMap,
 }) => {
   const { createMarginOverlay, removeMarginOverlay } =
     useMarginOverlay(hoverOverlay);
@@ -149,6 +175,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
       toggleNode={toggleNode}
       selectedNode={selectedNode}
       setSelectedNode={setSelectedNode}
+      openOrCloseMap={openOrCloseMap}
     />
   ));
   const showOverlay = (evt: React.MouseEvent) => {
@@ -157,18 +184,13 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
     evt.preventDefault();
   };
   const showOverlayOnClick = (evt: React.MouseEvent) => {
-    //To change parent in Canvas and tree
-    // sendPatch(
-    //   node.id,
-    //   'body');
-    // removeMarginOverlay()
-
     removeMarginOverlay1();
     createMarginOverlay1(node.id);
     setSelectedNode(node);
     evt.stopPropagation();
     evt.preventDefault();
   };
+  const isOpen = openOrCloseMap[node.id];
 
   const toggleOpen = (evt: React.MouseEvent) => {
     if (node.type === "acceptsChild") {
@@ -183,6 +205,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
   };
   return (
     <div
+      id={node.id}
       style={{
         marginLeft: "10px",
         padding: "4px 0px",
@@ -193,7 +216,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
     >
       {node.type === "acceptsChild" && (
         <span onClick={toggleOpen}>
-          {node.open ? <CaretDown /> : <CaretRight />}
+          {isOpen ? <CaretDown /> : <CaretRight />}
         </span>
       )}
       <span
@@ -207,7 +230,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
         {" "}
         {node.name}
       </span>
-      {node.open && children}
+      {isOpen && children}
     </div>
   );
 };

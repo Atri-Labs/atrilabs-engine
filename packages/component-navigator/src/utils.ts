@@ -16,7 +16,7 @@ function _transformTreeToComponentNode(
   tree: Tree,
   openOrCloseMap: { [compId: string]: boolean },
   parentChildMap: { [parentId: string]: string[] }
-): NavigatorNode {
+): { rootNode: NavigatorNode; nodeMap: { [id: string]: NavigatorNode } } {
   const rootNodeId = "body";
   const rootComponentNode: NavigatorNode = {
     type: "acceptsChild",
@@ -29,6 +29,9 @@ function _transformTreeToComponentNode(
     children: [],
     index: 0,
     parentNode: null,
+  };
+  const nodeMap: { [id: string]: NavigatorNode } = {
+    body: rootComponentNode,
   };
 
   const manifestRegistry = manifestRegistryController.readManifestRegistry();
@@ -65,6 +68,7 @@ function _transformTreeToComponentNode(
           index: index,
           parentNode: currentParentComponentNode,
         };
+        nodeMap[componentNode.id] = componentNode;
         currentParentComponentNode.children?.push(componentNode);
         toVisitNodeComponentNodes.push(componentNode);
       });
@@ -72,7 +76,7 @@ function _transformTreeToComponentNode(
 
     currentIndex++;
   }
-  return rootComponentNode;
+  return { rootNode: rootComponentNode, nodeMap: nodeMap };
 }
 
 /**
@@ -84,16 +88,16 @@ function _transformTreeToComponentNode(
 export function transformTreeToNavigatorNode(
   tree: Tree,
   openOrCloseMap: { [compId: string]: boolean }
-): NavigatorNode {
+): { rootNode: NavigatorNode; nodeMap: { [id: string]: NavigatorNode } } {
   // createSortedParentChildMap is an utiltiy function that
   // creates a map of parent id as key & array of child id as value
   const parentChildMap = createSortedParentChildMap(tree.nodes, "body");
-  const rootComponentNode = _transformTreeToComponentNode(
+  const result = _transformTreeToComponentNode(
     tree,
     openOrCloseMap,
     parentChildMap
   );
-  return rootComponentNode;
+  return result;
 }
 
 function _flattenRootNavigatorNode(
