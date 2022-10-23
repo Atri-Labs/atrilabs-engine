@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
-import { PatchEvent, TreeNode } from "@atrilabs/forest";
+import { DeleteEvent, PatchEvent, TreeNode } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { NavigatorNode } from "../types";
 import { markAllNodesClosed, transformTreeToNavigatorNode } from "../utils";
@@ -81,7 +81,6 @@ export const useNavigatorNodes = () => {
         const slice = {
           parent: { id: newParentId, index: i - 1 },
         };
-        console.log(parent.children[i].name, i - 1);
         const patchEvent: PatchEvent = {
           type: `PATCH$$${ComponentTreeId}`,
           slice,
@@ -100,7 +99,6 @@ export const useNavigatorNodes = () => {
         const slice = {
           parent: { id: newParentId, index: i + 1 },
         };
-        console.log(parent.children[i].name, i + 1);
         const patchEvent: PatchEvent = {
           type: `PATCH$$${ComponentTreeId}`,
           slice,
@@ -129,5 +127,11 @@ export const useNavigatorNodes = () => {
     [nodeMap]
   );
 
-  return { rootNavigatorNode, nodeMap, toggleNode, patchCb, openOrCloseMap };
+  return {
+    rootNavigatorNode,
+    nodeMap,
+    toggleNode,
+    patchCb,
+    openOrCloseMap,
+  };
 };

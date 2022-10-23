@@ -27,6 +27,7 @@ import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
 import { flattenRootNavigatorNode } from "./utils";
 import { useDragDrop } from "./hooks/useDragDrop";
+import { useDeleteKey } from "./hooks/useDeleteKey";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -75,16 +76,22 @@ export default function () {
   const ref = useRef<HTMLDivElement>(null);
 
   const { removeMarginOverlay } = useMarginOverlay(clickOverlay);
+  const { removeMarginOverlay: removeMarginOverlay1 } =
+    useMarginOverlay(hoverOverlay);
   const { rootNavigatorNode, nodeMap, toggleNode, patchCb, openOrCloseMap } =
     useNavigatorNodes();
   const [selectedNode, setSelectedNode] = useState<NavigatorNode | null>(null);
-  const dragDt = useDragDrop(
+  useDragDrop(
     rootNavigatorNode,
     nodeMap,
     openOrCloseMap,
     patchCb,
     setSelectedNode
   );
+  useDeleteKey(selectedNode, () => {
+    removeMarginOverlay1();
+    removeMarginOverlay();
+  });
   // const flattenedNodes = useMemo(() => {
   //   return rootNavigatorNode !== null
   //     ? flattenRootNavigatorNode(rootNavigatorNode)
@@ -205,7 +212,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
   };
   return (
     <div
-      id={node.id}
+      id={`comp-nav-${node.id}`}
       style={{
         marginLeft: "10px",
         padding: "4px 0px",

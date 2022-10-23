@@ -265,7 +265,7 @@ function isMouseInsideBounds(
   ) {
     return null;
   }
-  const element = document.getElementById(node.id);
+  const element = document.getElementById(`comp-nav-${node.id}`);
   if (!element) {
     return null;
   }
@@ -308,7 +308,7 @@ function aboveOrBelowChildChildIndex(
   node: NavigatorNode,
   above: boolean
 ): number | null {
-  const element = document.getElementById(node.id);
+  const element = document.getElementById(`comp-nav-${node.id}`);
   if (!element || !node.children || node.children.length === 0) {
     return null;
   }
@@ -325,7 +325,7 @@ function aboveOrBelowChildChildIndex(
   for (let i = start; above ? i < end : i > end; i += update) {
     const child = children[i];
 
-    const element = document.getElementById(child.id);
+    const element = document.getElementById(`comp-nav-${child.id}`);
     if (!element) {
       continue;
     }
