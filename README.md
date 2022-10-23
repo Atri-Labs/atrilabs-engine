@@ -1,4 +1,4 @@
-![banner](readme-assets/github_new.png)
+![banner](readme-assets/github_beta.png)
 
 <div align="center">
 
