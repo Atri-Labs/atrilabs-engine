@@ -78,16 +78,10 @@ export default function () {
   const { removeMarginOverlay } = useMarginOverlay(clickOverlay);
   const { removeMarginOverlay: removeMarginOverlay1 } =
     useMarginOverlay(hoverOverlay);
-  const { rootNavigatorNode, nodeMap, toggleNode, patchCb, openOrCloseMap } =
+  const { rootNavigatorNode, toggleNode, patchCb, openOrCloseMap } =
     useNavigatorNodes();
   const [selectedNode, setSelectedNode] = useState<NavigatorNode | null>(null);
-  useDragDrop(
-    rootNavigatorNode,
-    nodeMap,
-    openOrCloseMap,
-    patchCb,
-    setSelectedNode
-  );
+  useDragDrop(rootNavigatorNode, openOrCloseMap, patchCb, setSelectedNode);
   useDeleteKey(selectedNode, () => {
     removeMarginOverlay1();
     removeMarginOverlay();

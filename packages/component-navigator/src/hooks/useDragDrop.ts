@@ -148,7 +148,6 @@ export function isNewDropInProgress() {
 // =============== hook used in Canvas component to enable drag & drop mechanism ==
 export const useDragDrop = (
   node: NavigatorNode | null,
-  nodeMap: { [id: string]: NavigatorNode },
   openOrCloseMap: { [id: string]: boolean },
   patchCb: (
     nodeId: string,
