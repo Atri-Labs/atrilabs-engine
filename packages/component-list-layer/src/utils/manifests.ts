@@ -27,6 +27,7 @@ import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
+import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -101,6 +102,7 @@ const defaultImports = [
   DropdownManifests,
   TableManifests,
   DivManifests,
+  Icon,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
