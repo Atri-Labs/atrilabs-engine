@@ -16,7 +16,6 @@ import {
   PythonStubGeneratorOptions,
   PythonStubGeneratorOutput,
   ResourceGeneratorFunction,
-  ResourceGeneratorOptions,
 } from "../types";
 import { createReactAppTemplateManager } from "../react-app-template-manager";
 import {
@@ -301,6 +300,7 @@ export default async function generateApp(
   reactTemplateManager.flushAtriServerInfo();
   reactTemplateManager.flushPageCbs();
   reactTemplateManager.flushAtriAppInfo();
+  reactTemplateManager.createCustomCodeDirectories();
   await reactTemplateManager.flushPageCSS();
 
   const pythonGeneratorFunctions: {

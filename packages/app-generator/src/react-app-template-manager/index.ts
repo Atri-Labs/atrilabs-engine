@@ -95,6 +95,11 @@ export function createReactAppTemplateManager(
     "src",
     "page-css"
   );
+  const customCodeDestDirectory = path.resolve(
+    paths.reactAppDest,
+    "src",
+    "custom"
+  );
 
   // variables to manage writes in App.jsx
   const pageImports: { name: string; route: string; source: string }[] = [];
@@ -461,7 +466,7 @@ export function createReactAppTemplateManager(
       const isParent = reverseMap[compId] !== undefined;
       const localIdentifier = pageComponentMap[compId].localIdentifier;
       const alias = pageComponentMap[compId].alias;
-      const className = `className="p-${name} ${alias}"`;
+      const className = `className="p-${name} ${alias} bpt"`;
       if (isParent) {
         const start = `<${localIdentifier} ${className} {...${alias}Props} {...${alias}Cb} {...${alias}IoProps}>\n`;
         const mid = reverseMap[compId]
@@ -564,8 +569,9 @@ export function createReactAppTemplateManager(
           })
           .join(", ") +
         ` } from "../page-cbs/${name}";`;
-      const importPageCss = `import "../page-css/${name}.css"`;
-      const newImportText = `${compImports}\n${importCbs}\n${importPageCss}\n`;
+      const importPageCss = `import "../page-css/${name}.css";`;
+      const importCustomIndex = `import "../custom/${name}";`;
+      const newImportText = `${compImports}\n${importCbs}\n${importPageCss}\n${importCustomIndex}\n`;
       slices.push({
         index: importCursorMatch.index!,
         length: importCursorMatch[0].length,
@@ -686,7 +692,7 @@ export function createReactAppTemplateManager(
     } = {};
     const breakpointPromises = componentIds.map(async (compId) => {
       const alias = components[compId].alias;
-      const cssSelector = `.p-${pageName}.${alias}`;
+      const cssSelector = `.p-${pageName}.${alias}.bpt`;
       const cssProps = pagePropsGeneartorOutput[compId].cssProps;
       if (cssProps) {
         const allCSSPropNames = Object.keys(cssProps);
@@ -717,7 +723,7 @@ export function createReactAppTemplateManager(
         const allSelectors = Object.keys(breakpointData[maxWidth]);
         const allSelectorStrs = allSelectors
           .map((selector) => {
-            return `\t${selector} {\n\t\t${breakpointData[maxWidth][selector]}\n\t}`;
+            return `\t${selector} {\n${breakpointData[maxWidth][selector]}\n\t}`;
           })
           .join("\n");
         return `@media screen and (max-width: ${maxWidth}px) {\n${allSelectorStrs}\n}`;
@@ -1012,6 +1018,19 @@ export function createReactAppTemplateManager(
     }
   }
 
+  function createCustomCodeDirectories() {
+    pageImports.forEach((pageImport) => {
+      const dirName = path.resolve(customCodeDestDirectory, pageImport.name);
+      const indexFilePath = path.resolve(dirName, "index.ts");
+      if (!fs.existsSync(dirName)) {
+        fs.mkdirSync(dirName, { recursive: true });
+      }
+      if (!fs.existsSync(indexFilePath)) {
+        fs.writeFileSync(indexFilePath, "");
+      }
+    });
+  }
+
   return {
     copyTemplate,
     createPage,
@@ -1036,5 +1055,6 @@ export function createReactAppTemplateManager(
     flushAtriAppInfo,
     flushIndexJSX,
     flushPageCSS,
+    createCustomCodeDirectories,
   };
 }
