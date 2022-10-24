@@ -9,10 +9,10 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
 export const Icon = forwardRef<
-  SVGSVGElement,
+  HTMLElement,
   {
     styles: React.CSSProperties;
-    custom: { path: string };
+    custom: { svg: string };
     onClick: (event: {
       eventX: number;
       eventY: number;
@@ -41,14 +41,16 @@ export const Icon = forwardRef<
     [props]
   );
   return (
-    <>
-      <svg ref={ref}
+    <i
+      ref={ref}
       className={props.className}
-      style={props.styles}
-      onClick={onClick} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/>
-      </svg>
-      </>
+      style={{
+        display: "inline-block",
+        ...props.styles
+      }}
+      onClick={onClick}
+      dangerouslySetInnerHTML={{__html: props.custom.svg}}
+    />
   );
 });
 
@@ -56,7 +58,7 @@ const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
-  typographyOptions: true,
+  typographyOptions: false,
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
@@ -67,7 +69,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    path: "text",
+    svg: "text",
   },
 };
 
@@ -82,7 +84,12 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          height: "20px",
+          height: "30px",
+          minHeight: "30px",
+          maxHeight: "30px",
+          width: "30px",
+          minWidth: "30px",
+          maxWidth: "30px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -90,7 +97,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          path: <path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/>,
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>',
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
