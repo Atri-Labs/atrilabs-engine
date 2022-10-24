@@ -7,13 +7,7 @@ import {
   h1Heading,
   IconMenu,
 } from "@atrilabs/design-system";
-import React, {
-  MouseEvent,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { MouseEvent, useCallback, useRef, useState } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
 import { useNavigatorNodes } from "./hooks/useComponentNodes";
@@ -25,7 +19,7 @@ import {
 import { NavigatorNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
-import { flattenRootNavigatorNode, getNavigatorNodeDomId } from "./utils";
+import { getNavigatorNodeDomId } from "./utils";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useDeleteKey } from "./hooks/useDeleteKey";
 const styles: { [key: string]: React.CSSProperties } = {
