@@ -25,7 +25,7 @@ import {
 import { NavigatorNode } from "./types";
 import CaretDown from "./assets/CaretDown";
 import CaretRight from "./assets/CaretRight";
-import { flattenRootNavigatorNode } from "./utils";
+import { flattenRootNavigatorNode, getNavigatorNodeDomId } from "./utils";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useDeleteKey } from "./hooks/useDeleteKey";
 const styles: { [key: string]: React.CSSProperties } = {
@@ -206,7 +206,7 @@ const ComponentNodeEl: React.FC<ComponentNodeElProps> = ({
   };
   return (
     <div
-      id={`comp-nav-${node.id}`}
+      id={getNavigatorNodeDomId(node.id)}
       style={{
         marginLeft: "10px",
         padding: "4px 0px",

@@ -124,3 +124,12 @@ export function flattenRootNavigatorNode(rootComponentNode: NavigatorNode) {
   _flattenRootNavigatorNode(flattenNodes, rootComponentNode);
   return flattenNodes;
 }
+
+/**
+ * getNavigatorNodeDomId gives the id attribute for the dom element for a navigator node
+ * @param nodeId id from which the dom element id has to be derived from
+ * @returns id attribute of the dom element
+ */
+export function getNavigatorNodeDomId(nodeId: string): string {
+  return `comp-nav-dom-${nodeId}`;
+}
