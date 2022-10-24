@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { BoxDimension, Dimension, Position } from "../types";
 import { ComponentCoords, getCoords } from "../utils";
@@ -9,7 +9,6 @@ type HintDimension = {
 };
 
 type BoxOverlay = (comp: { dimension: BoxDimension }) => HintDimension;
-
 
 export type HintOverlay = {
   overlayId: string;
@@ -22,7 +21,7 @@ type HintOverlayDimension = {
   box: HintDimension;
   bodyCoords: ComponentCoords;
   compCoords: ComponentCoords;
-}
+};
 
 let hintOverlays: { [overlayId: string]: HintOverlay } = {};
 let hintOverlaySubscriber: (() => void) | undefined;
@@ -47,7 +46,9 @@ export function removeHintOverlays(overlayIds: string[]) {
   }
 }
 
-function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension | null {
+function calculateBoxDimensions(
+  props: HintOverlay
+): HintOverlayDimension | null {
   if (canvasComponentStore[props.compId]) {
     if (
       canvasComponentStore["body"].ref.current &&
@@ -88,26 +89,16 @@ function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension | null
 }
 
 const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
-  const boxDimensions = calculateBoxDimensions(props);
-  let initialBox = null, initialBody = null, initialComp = null;
-  if (boxDimensions) {
-    initialBox = boxDimensions.box;
-    initialBody = boxDimensions.bodyCoords;
-    initialComp = boxDimensions.compCoords;
-  }
-  const [box, setBox] = useState<ReturnType<HintOverlay["box"]> | null>(initialBox);
-  const [bodyPosition, setBodyPosition] = useState<Position | null>(initialBody);
-  const [compPosition, setCompPosition] = useState<Position | null>(initialComp);
-  useEffect(() => {
-    const boxDimensions = calculateBoxDimensions(props);
-    if (!boxDimensions) {
-      return;
-    }
-    const { box, bodyCoords, compCoords } = boxDimensions;
-    setBox(box);
-    setBodyPosition({ top: bodyCoords.top, left: bodyCoords.left });
-    setCompPosition({ top: compCoords.top, left: compCoords.left });
+  const boxDimensions = useMemo(() => {
+    return calculateBoxDimensions(props);
   }, [props]);
+  if (!boxDimensions) {
+    return <></>;
+  }
+  const { box, bodyCoords, compCoords } = boxDimensions;
+  const bodyPosition = { top: bodyCoords.top, left: bodyCoords.left };
+  const compPosition = { top: compCoords.top, left: compCoords.left };
+
   return (
     <React.Fragment>
       {box && compPosition && bodyPosition ? (
