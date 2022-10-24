@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/component-icon-manifest-schema",
-  "version": "0.0.75",
+  "version": "0.0.76",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -27,7 +27,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.75",
+    "@atrilabs/core": "^0.0.76",
     "@types/joi": "^17.2.3",
     "joi": "^17.6.0",
     "typescript": "^4.6.4"

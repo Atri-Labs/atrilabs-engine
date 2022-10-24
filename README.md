@@ -1,4 +1,4 @@
-![banner](readme-assets/github_new.png)
+![banner](readme-assets/github_beta.png)
 
 <div align="center">
 
@@ -20,6 +20,8 @@
     <span> | </span>
     <a href="https://www.linkedin.com/company/atri-labs">LinkedIn</a>
     <span> | </span>
+    <a href="https://twitter.com/atrilabs">Twitter</a>
+    <span> | </span>
     <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions">Discussions</a>
     <span> | </span>
     <a href="https://github.com/mindsdb/mindsdb/projects">Contribute</a>
@@ -29,7 +31,7 @@
 
 ----------------------------------------
 
-Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&hashtags=webframework,fullstack,react,python)
+Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
 - Frontend development: Use our visual editor to increase your productivity. You can also add your custom React code
 - Backend development: Currently, we support Python for backend development. We are planning to add support for NodeJS soon. 

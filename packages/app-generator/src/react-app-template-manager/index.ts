@@ -715,6 +715,10 @@ export function createReactAppTemplateManager(
     });
     await Promise.all(breakpointPromises);
     const breakpointStrs = Object.keys(breakpointData)
+      // Sorting breakpoints in reverse order to fix issue #449
+      .sort((a, b) => {
+        return parseInt(b) - parseInt(a);
+      })
       .map((maxWidth) => {
         const allSelectors = Object.keys(breakpointData[maxWidth]);
         const allSelectorStrs = allSelectors
