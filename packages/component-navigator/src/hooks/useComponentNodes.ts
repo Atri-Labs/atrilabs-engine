@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
-import { DeleteEvent, PatchEvent, TreeNode } from "@atrilabs/forest";
+import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { NavigatorNode } from "../types";
 import { markAllNodesClosed, transformTreeToNavigatorNode } from "../utils";

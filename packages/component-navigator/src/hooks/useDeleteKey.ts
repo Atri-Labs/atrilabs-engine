@@ -41,5 +41,5 @@ export const useDeleteKey = (
     return () => {
       window.removeEventListener("keyup", keyupCb);
     };
-  }, [selectedNode]);
+  }, [selectedNode, removeMarginOverlay]);
 };

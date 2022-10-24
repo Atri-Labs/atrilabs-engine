@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { createMachine, assign, Action, interpret } from "xstate";
 
 import { getCoords } from "@atrilabs/canvas-runtime/src/utils";
@@ -248,7 +248,7 @@ export const useDragDrop = (
       window.removeEventListener("mouseup", mouseUpCb);
       window.removeEventListener("mousemove", mouseMoveCb);
     };
-  }, [node, openOrCloseMap]);
+  }, [node, openOrCloseMap, setSelectedNode, patchCb]);
   return {};
 };
 
@@ -260,7 +260,7 @@ function isMouseInsideBounds(
 ): NavigatorNode | null {
   if (
     !considerNormalNode &&
-    (!node.children || node.children.length == 0 || !openOrCloseMap[node.id])
+    (!node.children || node.children.length === 0 || !openOrCloseMap[node.id])
   ) {
     return null;
   }
