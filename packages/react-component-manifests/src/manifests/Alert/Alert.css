@@ -1,0 +1,22 @@
+#icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#icon-logo {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+#information {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 8px 15px,
+}
+
+#description {
+  font-size: 16px;
+  font-weight: 300;
+  padding: 8px 15px,
+}
