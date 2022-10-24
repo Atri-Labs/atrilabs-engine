@@ -570,7 +570,7 @@ export function createReactAppTemplateManager(
           .join(", ") +
         ` } from "../page-cbs/${name}";`;
       const importPageCss = `import "../page-css/${name}.css";`;
-      const importCustomIndex = `import "../custom/${name}.ts";`;
+      const importCustomIndex = `import "../custom/${name}";`;
       const newImportText = `${compImports}\n${importCbs}\n${importPageCss}\n${importCustomIndex}\n`;
       slices.push({
         index: importCursorMatch.index!,
@@ -719,10 +719,10 @@ export function createReactAppTemplateManager(
         const allSelectors = Object.keys(breakpointData[maxWidth]);
         const allSelectorStrs = allSelectors
           .map((selector) => {
-            return `\t${selector} {${breakpointData[maxWidth][selector]}\n}`;
+            return `\t${selector} {\n${breakpointData[maxWidth][selector]}\n\t}`;
           })
           .join("\n");
-        return `@media screen and (max-width: ${maxWidth}px) {${allSelectorStrs}\n}`;
+        return `@media screen and (max-width: ${maxWidth}px) {\n${allSelectorStrs}\n}`;
       })
       .join("\n");
     const pageCSSContent =
