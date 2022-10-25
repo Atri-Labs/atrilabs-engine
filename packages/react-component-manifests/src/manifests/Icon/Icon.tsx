@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, SVGProps, useCallback } from "react";
+import React, { forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -44,10 +44,7 @@ export const Icon = forwardRef<
     <i
       ref={ref}
       className={props.className}
-      style={{
-        display: "inline-block",
-        ...props.styles
-      }}
+      style={props.styles}
       onClick={onClick}
       dangerouslySetInnerHTML={{__html: props.custom.svg}}
     />
@@ -55,7 +52,7 @@ export const Icon = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: false,
@@ -84,12 +81,8 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          height: "30px",
-          minHeight: "30px",
-          maxHeight: "30px",
-          width: "30px",
-          minWidth: "30px",
-          maxWidth: "30px",
+          display: "inline-flex",
+          height: "1rem",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
