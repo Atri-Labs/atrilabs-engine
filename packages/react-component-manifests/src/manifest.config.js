@@ -109,5 +109,9 @@ module.exports = {
       modulePath: "./src/manifests/Table/Table.tsx",
       exportedVarName: "DataTable",
     },
+    NewButton: {
+      modulePath: "./src/manifests/NewButton/NewButton.tsx",
+      exportedVarName: "NewButton",
+    },
   },
 };
