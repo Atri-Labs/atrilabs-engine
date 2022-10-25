@@ -14,7 +14,8 @@ export type CustomPropsTreeOptions = {
       | "internal_link"
       | "component_selector"
       | "map"
-      | "external_link";
+      | "external_link"
+      | "enum";
   };
 };
 
