@@ -2,6 +2,7 @@ import { manifestRegistryController } from "@atrilabs/core";
 import { Tree } from "@atrilabs/forest";
 import { createSortedParentChildMap } from "@atrilabs/canvas-runtime-utils";
 import { NavigatorNode } from "./types";
+import type { MouseEvent } from "react";
 
 export function markAllNodesClosed(
   nodeIds: string[],
@@ -145,11 +146,21 @@ export function flattenRootNavigatorNode(
   return flattenNodes;
 }
 
-/**
- * getNavigatorNodeDomId gives the id attribute for the dom element for a navigator node
- * @param nodeId id from which the dom element id has to be derived from
- * @returns id attribute of the dom element
- */
-export function getNavigatorNodeDomId(nodeId: string): string {
-  return `comp-nav-dom-${nodeId}`;
+export const tabbedContentHeight = 24;
+
+export function getHoverIndex(
+  ref: React.MutableRefObject<HTMLDivElement | null>,
+  event: MouseEvent
+) {
+  if (ref.current) {
+    const { y } = ref.current.getBoundingClientRect();
+    const netY = event.clientY - y + ref.current.scrollTop;
+    const hoverIndex = Math.floor(netY / tabbedContentHeight);
+    if (hoverIndex < 0) {
+      return 0;
+    }
+    return hoverIndex;
+  }
 }
+
+export const horizontalStepSize = 10;

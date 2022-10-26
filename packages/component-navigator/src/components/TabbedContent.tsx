@@ -1,6 +1,7 @@
 import { gray300, gray500, smallText } from "@atrilabs/design-system";
 import CaretDown from "../assets/CaretDown";
 import CaretRight from "../assets/CaretRight";
+import { tabbedContentHeight } from "../utils";
 import "./TabbedContent.css";
 
 export type TabbedContentProps = {
@@ -35,7 +36,7 @@ function getLinePositions(tabs: number) {
 export const TabbedContent: React.FC<TabbedContentProps> = (props) => {
   return (
     <div
-      style={{ height: "24px", position: "relative" }}
+      style={{ height: `${tabbedContentHeight}px`, position: "relative" }}
       className="tabbed-content-comp-nav"
     >
       {props.tabs > 0

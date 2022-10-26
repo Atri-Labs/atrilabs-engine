@@ -1,6 +1,11 @@
 import { useCallback, useRef, MouseEvent } from "react";
+import {
+  sendMouseDownEvent,
+  sendMouseMoveEvent,
+  sendMouseUpEvent,
+} from "../hooks/useDragDrop";
 import { NavigatorNode } from "../types";
-import { flattenRootNavigatorNode } from "../utils";
+import { flattenRootNavigatorNode, getHoverIndex } from "../utils";
 import { TabbedContent } from "./TabbedContent";
 
 export type ComponentNavigatorProps = {
@@ -35,17 +40,27 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
         if (hoverIndex < flattenedNodes.length && hoverIndex >= 0) {
           props.onHover?.(flattenedNodes[hoverIndex].id);
         }
+        sendMouseMoveEvent(event);
       }
     },
     [props, flattenedNodes]
   );
+  const onMouseDown = useCallback(
+    (event: MouseEvent) => {
+      sendMouseDownEvent(props.rootNode, flattenedNodes, event, ref);
+    },
+    [props.rootNode, flattenedNodes]
+  );
+
+  const onMouseUp = useCallback((event: MouseEvent) => {
+    sendMouseUpEvent();
+  }, []);
+
   const onClick = useCallback(
     (event: MouseEvent) => {
       if (ref.current) {
-        const { y } = ref.current.getBoundingClientRect();
-        const netY = event.clientY - y + ref.current.scrollTop;
-        const hoverIndex = Math.floor(netY / 24);
-        if (hoverIndex < flattenedNodes.length && hoverIndex >= 0) {
+        const hoverIndex = getHoverIndex(ref, event);
+        if (hoverIndex !== undefined && hoverIndex < flattenedNodes.length) {
           props.onSelect?.(flattenedNodes[hoverIndex].id);
         }
       }
@@ -59,6 +74,8 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
       onClick={onClick}
       ref={ref}
       style={{ overflow: "auto", boxSizing: "border-box" }}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
     >
       {flattenedNodes.map((node) => {
         const showCaret = node.type === "acceptsChild";
