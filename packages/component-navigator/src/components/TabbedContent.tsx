@@ -66,9 +66,16 @@ export const TabbedContent: React.FC<TabbedContentProps> = (props) => {
           transform: "translate(0, -50%)",
           display: "flex",
           alignItems: "center",
+          height: "100%",
         }}
       >
         <div
+          style={{
+            paddingRight: "4px",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
           onClick={() => {
             props.onCaretClicked?.(props.id);
           }}
@@ -76,14 +83,7 @@ export const TabbedContent: React.FC<TabbedContentProps> = (props) => {
           {props.showRightCaret ? <CaretRight /> : null}
           {props.showDownCaret ? <CaretDown /> : null}
         </div>
-        <span
-          style={{
-            paddingLeft:
-              props.showDownCaret || props.showRightCaret ? "4px" : undefined,
-          }}
-        >
-          {props.name}
-        </span>
+        <span>{props.name}</span>
       </div>
     </div>
   );
