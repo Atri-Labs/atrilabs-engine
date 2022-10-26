@@ -17,3 +17,8 @@ Sources:
 - Demo GIF/image: ![calories](https://github.com/mhered/calcount4/blob/main/assets/images/calories.gif)
 - Deployed app link: https://mhered.github.io/calcount4/
 - GitHub code link: https://github.com/mhered/calcount4
+
+
+## URL_SHORTENER
+A Url shortener which takes input as long URL and converts it to shorter version.
+Github Code link : https://github.com/JadhavSankalp7/A-URL_SHORTENER
