@@ -13,6 +13,9 @@ export type NavigatorNode = {
   open: boolean;
   // parentNode is null for body
   parentNode: NavigatorNode | null;
+  // depth of the node (this field is just for optimization)
+  // starts from 0 at root/body
+  depth: number;
 };
 
 // export type DragComp = { comp: React.FC<any>; props: any };

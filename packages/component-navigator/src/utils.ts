@@ -29,6 +29,7 @@ function _transformTreeToComponentNode(
     children: [],
     index: 0,
     parentNode: null,
+    depth: 0,
   };
   const nodeMap: { [id: string]: NavigatorNode } = {
     body: rootComponentNode,
@@ -68,6 +69,7 @@ function _transformTreeToComponentNode(
           children: [],
           index: index,
           parentNode: currentParentComponentNode,
+          depth: currentParentComponentNode.depth + 1,
         };
         nodeMap[componentNode.id] = componentNode;
         currentParentComponentNode.children?.push(componentNode);
@@ -102,7 +104,7 @@ export function transformTreeToNavigatorNode(
 }
 
 function _flattenRootNavigatorNode(
-  flattenNodes: (NavigatorNode & { tabs: number })[],
+  flattenNodes: NavigatorNode[],
   respectOpenOrClose: boolean,
   currentNode: NavigatorNode,
   currentTabs: number
@@ -112,7 +114,7 @@ function _flattenRootNavigatorNode(
   if (children && shouldTraverseChildren) {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
-      flattenNodes.push({ ...child, tabs: currentTabs + 1 });
+      flattenNodes.push(child);
       _flattenRootNavigatorNode(
         flattenNodes,
         respectOpenOrClose,
@@ -133,7 +135,7 @@ export function flattenRootNavigatorNode(
   rootComponentNode: NavigatorNode,
   respectOpenOrClose: boolean
 ) {
-  const flattenNodes = [{ ...rootComponentNode, tabs: 0 }];
+  const flattenNodes = [rootComponentNode];
   _flattenRootNavigatorNode(
     flattenNodes,
     respectOpenOrClose,

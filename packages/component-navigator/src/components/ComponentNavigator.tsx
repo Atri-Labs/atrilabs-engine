@@ -67,7 +67,7 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
             key={node.id}
             id={node.id}
             name={node.name}
-            tabs={node.tabs}
+            tabs={node.depth}
             showDownCaret={showCaret ? node.open : undefined}
             showRightCaret={showCaret ? !node.open : undefined}
             onCaretClicked={(id) => {
