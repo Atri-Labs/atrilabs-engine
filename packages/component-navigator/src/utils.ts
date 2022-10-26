@@ -56,14 +56,15 @@ function _transformTreeToComponentNode(
         const acceptsChild = manifest?.component?.dev?.acceptsChild
           ? "acceptsChild"
           : "normal";
+        // this can happen when a new component is added to the canvas
+        if (openOrCloseMap[node.id] === undefined) {
+          openOrCloseMap[node.id] = false;
+        }
         const componentNode: NavigatorNode = {
           type: acceptsChild,
           id: node.id,
           name: node.state.alias,
-          open:
-            openOrCloseMap[node.id] !== undefined
-              ? openOrCloseMap[node.id]
-              : false,
+          open: openOrCloseMap[node.id],
           children: [],
           index: index,
           parentNode: currentParentComponentNode,
@@ -101,15 +102,23 @@ export function transformTreeToNavigatorNode(
 }
 
 function _flattenRootNavigatorNode(
-  flattenNodes: NavigatorNode[],
-  currentNode: NavigatorNode
+  flattenNodes: (NavigatorNode & { tabs: number })[],
+  respectOpenOrClose: boolean,
+  currentNode: NavigatorNode,
+  currentTabs: number
 ) {
   const children = currentNode.children;
-  if (children) {
+  const shouldTraverseChildren = respectOpenOrClose ? currentNode.open : true;
+  if (children && shouldTraverseChildren) {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
-      flattenNodes.push(child);
-      _flattenRootNavigatorNode(flattenNodes, child);
+      flattenNodes.push({ ...child, tabs: currentTabs + 1 });
+      _flattenRootNavigatorNode(
+        flattenNodes,
+        respectOpenOrClose,
+        child,
+        currentTabs + 1
+      );
     }
   }
 }
@@ -117,11 +126,20 @@ function _flattenRootNavigatorNode(
 /**
  * Walks depth first and flattens all nodes in an array
  * @param rootComponentNode node to start walking from
+ * @param respectOpenOrClose true if flatten node should node include closed nodes or its descendants
  * @returns array of all nodes in depth first
  */
-export function flattenRootNavigatorNode(rootComponentNode: NavigatorNode) {
-  const flattenNodes = [rootComponentNode];
-  _flattenRootNavigatorNode(flattenNodes, rootComponentNode);
+export function flattenRootNavigatorNode(
+  rootComponentNode: NavigatorNode,
+  respectOpenOrClose: boolean
+) {
+  const flattenNodes = [{ ...rootComponentNode, tabs: 0 }];
+  _flattenRootNavigatorNode(
+    flattenNodes,
+    respectOpenOrClose,
+    rootComponentNode,
+    0
+  );
   return flattenNodes;
 }
 

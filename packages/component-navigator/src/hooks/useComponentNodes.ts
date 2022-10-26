@@ -44,6 +44,7 @@ export const useNavigatorNodes = () => {
             openOrCloseMap
           );
           setNodeMap(nodeMap);
+          setOpenOrCloseMap({ ...openOrCloseMap });
           setRootNavigatorNode(rootNode);
         }
       }
@@ -51,22 +52,23 @@ export const useNavigatorNodes = () => {
     return unsub;
   }, [compTree, openOrCloseMap]);
 
-  const toggleNode = useCallback((id: string) => {
-    setOpenOrCloseMap((openOrCloseMap) => {
-      return { ...openOrCloseMap, [id]: !openOrCloseMap[id] };
-    });
-  }, []);
+  const toggleNode = useCallback(
+    (id: string) => {
+      const navNode = nodeMap[id];
+      navNode.open = !navNode.open;
+
+      setOpenOrCloseMap((openOrCloseMap) => {
+        return { ...openOrCloseMap, [id]: !openOrCloseMap[id] };
+      });
+    },
+    [nodeMap]
+  );
 
   /**
    * This function repositions a node in the tree to a new index
    */
   const patchCb = useCallback(
-    (
-      nodeId: string,
-      newParentId: string,
-      newIndex: number,
-      isMovingUp: boolean
-    ) => {
+    (nodeId: string, newParentId: string, newIndex: number) => {
       const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
       const forestId = BrowserForestManager.currentForest.forestId;
       const parent = nodeMap[newParentId];
@@ -76,45 +78,6 @@ export const useNavigatorNodes = () => {
       }
       if (!parent.children) {
         parent.children = [];
-      }
-      //if the node is moving down, we need to decrease the index of all the node till the new index by 1
-      for (let i = node.index; i < newIndex + 1 && !isMovingUp; i++) {
-        if (parent.children[i].id === nodeId) {
-          continue;
-        }
-        const slice = {
-          parent: { id: newParentId, index: i - 1 },
-        };
-        const patchEvent: PatchEvent = {
-          type: `PATCH$$${ComponentTreeId}`,
-          slice,
-          id: parent.children[i].id,
-        };
-        api.postNewEvents(forestPkgId, forestId, {
-          events: [patchEvent],
-          meta: { agent: "browser" },
-          name: "REPOSITION",
-        });
-      }
-
-      //if the node is moving up, we need to increase the index of all the node from the new index by 1
-      for (let i = newIndex; i < parent.children.length && isMovingUp; i++) {
-        if (parent.children[i].id === nodeId) {
-          continue;
-        }
-        const slice = {
-          parent: { id: newParentId, index: i + 1 },
-        };
-        const patchEvent: PatchEvent = {
-          type: `PATCH$$${ComponentTreeId}`,
-          slice,
-          id: parent.children[i].id,
-        };
-        api.postNewEvents(forestPkgId, forestId, {
-          events: [patchEvent],
-          meta: { agent: "browser" },
-          name: "REPOSITION",
-        });
       }
 
       //finally update the node's index to the parent
