@@ -17,3 +17,7 @@ Sources:
 - Demo GIF/image: ![calories](https://github.com/mhered/calcount4/blob/main/assets/images/calories.gif)
 - Deployed app link: https://mhered.github.io/calcount4/
 - GitHub code link: https://github.com/mhered/calcount4
+
+ ## Arithmetic Calculator
+ Simple Arithmetic Calculator Developed using python. 
+ Github Link :https://github.com/RohitKakade/Arithmetic-Calculator
