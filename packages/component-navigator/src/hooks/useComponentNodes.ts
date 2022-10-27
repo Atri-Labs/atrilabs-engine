@@ -121,6 +121,7 @@ export const useNavigatorNodes = () => {
       });
       navNode.index = index;
       navNode.parentNode = parentNavNode;
+      navNode.depth = parentNavNode.depth + 1;
       parentNavNode.children.splice(index, 0, navNode);
       parentNavNode.children.forEach((child, index) => {
         child.index = index;

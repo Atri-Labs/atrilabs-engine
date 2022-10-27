@@ -129,6 +129,16 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
             context.draggedNode!.index + 1
           );
         }
+        const newIndexIsParent =
+          context.flattenedNodes![newIndex]!.id ===
+          context.draggedNode!.parentNode!.id;
+        if (movingUp && newIndexIsParent) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.draggedNode!.parentNode!.parentNode!.id,
+            context.draggedNode!.parentNode!.index
+          );
+        }
         context.initialX = event.event.clientX;
         context.draggedNodeIndexInFlattenedArray = newIndex;
       }
