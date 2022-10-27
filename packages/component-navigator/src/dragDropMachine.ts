@@ -110,35 +110,66 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         const oldIndexInFlattenedArray =
           context.draggedNodeIndexInFlattenedArray!;
         const movingUp = oldIndexInFlattenedArray - newIndex > 0 ? true : false;
-        const newIndexHadSibling =
+        const newIndexIsSibling =
           context.flattenedNodes![newIndex]!.parentNode!.id ===
           context.draggedNode!.parentNode!.id
             ? true
             : false;
-        if (movingUp && newIndexHadSibling) {
+        const newIndexIsParent =
+          context.flattenedNodes![newIndex]!.id ===
+          context.draggedNode!.parentNode!.id;
+        const newIndexIsSomeOpenParent =
+          context.flattenedNodes![newIndex]!.type === "acceptsChild" &&
+          context.flattenedNodes![newIndex]!.open;
+        const newIndexisLastChild =
+          context.flattenedNodes![newIndex]!.parentNode?.children &&
+          context.flattenedNodes![newIndex]!.index ===
+            context.flattenedNodes![newIndex]!.parentNode!.children!.length - 1;
+        if (movingUp && newIndexIsSibling) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.id,
             context.draggedNode!.index - 1
           );
-        }
-        if (!movingUp && newIndexHadSibling) {
+        } else if (
+          !movingUp &&
+          newIndexIsSibling &&
+          !newIndexIsSomeOpenParent
+        ) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.id,
             context.draggedNode!.index + 1
           );
-        }
-        const newIndexIsParent =
-          context.flattenedNodes![newIndex]!.id ===
-          context.draggedNode!.parentNode!.id;
-        if (movingUp && newIndexIsParent) {
+        } else if (movingUp && newIndexIsParent) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.parentNode!.id,
             context.draggedNode!.parentNode!.index
           );
+        } else if (!movingUp && newIndexIsSomeOpenParent) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.flattenedNodes![newIndex]!.id,
+            0
+          );
+        } else if (movingUp && newIndexisLastChild) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.flattenedNodes![newIndex]!.parentNode!.id,
+            context.flattenedNodes![newIndex]!.parentNode!.children!.length - 1
+          );
+        } else if (!movingUp) {
+          // make it a sibling
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.flattenedNodes![newIndex]!.parentNode!.id,
+            context.flattenedNodes![newIndex]!.index + 1
+          );
+        } else {
+          console.log("None of the conditions match for reposition");
         }
+
         context.initialX = event.event.clientX;
         context.draggedNodeIndexInFlattenedArray = newIndex;
       }
