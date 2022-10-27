@@ -28,6 +28,7 @@ import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Alert/Alert";
+import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -103,6 +104,7 @@ const defaultImports = [
   TableManifests,
   DivManifests,
   AlertManifests,
+  Icon,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
