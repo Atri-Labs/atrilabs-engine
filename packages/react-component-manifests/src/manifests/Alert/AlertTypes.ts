@@ -1,4 +1,14 @@
-const AlertTypes: {[title: string]: { title: string, description: string, statusIcon: string, borderColor: string, backgroundColor: string }} = {
+interface AlertTypesStructure {
+    [title: string] : {
+        title: string, 
+        description: string, 
+        statusIcon: string, 
+        borderColor: string, 
+        backgroundColor: string
+    }
+}
+
+const AlertTypes: AlertTypesStructure = {
     "success": {
         "title": "Success Title",
         "description": "Success Description",
