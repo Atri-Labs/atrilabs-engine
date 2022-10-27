@@ -8,6 +8,7 @@ type DragDropMachineContext = {
   rootNode?: NavigatorNode;
   flattendedNodes?: NavigatorNode[];
   containerRef?: React.MutableRefObject<HTMLDivElement | null>; // assuming ref won't change during transition
+  draggedNode?: NavigatorNode;
   // assign after every successful drag in y/x direction
   // also assign before entering dragInProgress state
   draggedNodeIndexInFlattenedArray?: number;
@@ -24,28 +25,40 @@ type MouseDownEvent = {
 };
 type MouseMoveEvent = { type: "mouseMove"; event: MouseEvent };
 type MouseUpEvent = { type: "mouseUp" };
-type DragDropMachineEvent = MouseDownEvent | MouseMoveEvent | MouseUpEvent;
+type ClosedNavigatorNodeEvent = {
+  type: "closedNavigatorNodeEvent";
+  rootNode: NavigatorNode;
+  flattenedNodes: NavigatorNode[];
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  draggedNodeIndexInFlattenedArray: number;
+};
+type DragDropMachineEvent =
+  | MouseDownEvent
+  | MouseMoveEvent
+  | MouseUpEvent
+  | ClosedNavigatorNodeEvent;
 
 // states
 const idle = "idle";
 const dragInProgress = "dragInProgress";
+export const waitingForNodesToClose = "waitingForNodesToClose";
 
+// actions
 const onMouseDownAction = assign<DragDropMachineContext, MouseDownEvent>(
   (_context, event) => {
-    return event;
+    const { draggedNodeIndexInFlattenedArray, flattenedNodes } = event;
+    if (
+      draggedNodeIndexInFlattenedArray !== undefined &&
+      flattenedNodes !== undefined
+    ) {
+      const draggedNode = flattenedNodes[draggedNodeIndexInFlattenedArray];
+      return { ...event, draggedNode };
+    } else {
+      // TODO: throw error. this should not happen.
+      return {};
+    }
   }
 );
-
-export type MouseMoveSubscriber = (
-  context: DragDropMachineContext,
-  event: MouseMoveEvent
-) => void;
-
-const mouseMoveSubscribers: MouseMoveSubscriber[] = [];
-
-export function subscribeMouseMove(cb: MouseMoveSubscriber) {
-  mouseMoveSubscribers.push(cb);
-}
 
 const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
   (context, event) => {
@@ -93,6 +106,50 @@ const onMouseUpAction = assign<DragDropMachineContext, MouseUpEvent>(() => {
   return {};
 });
 
+const onClosedNodeAction = assign<
+  DragDropMachineContext,
+  ClosedNavigatorNodeEvent
+>((context, event) => {
+  return { ...context, ...event };
+});
+
+// guards
+const shouldNotBeOpen = (
+  _context: DragDropMachineContext,
+  event: MouseDownEvent
+) => {
+  const { flattenedNodes, draggedNodeIndexInFlattenedArray } = event;
+  if (
+    draggedNodeIndexInFlattenedArray !== undefined &&
+    flattenedNodes !== undefined
+  ) {
+    const draggedNavNode = flattenedNodes[draggedNodeIndexInFlattenedArray];
+    if (draggedNavNode.open && draggedNavNode.type === "acceptsChild") {
+      return false;
+    }
+  }
+  return true;
+};
+
+type WaitSubsriber = (context: DragDropMachineContext) => void;
+const waitSubscribers: WaitSubsriber[] = [];
+export function subscribeWait(cb: WaitSubsriber) {
+  waitSubscribers.push(cb);
+  return () => {
+    const foundIndex = waitSubscribers.findIndex((value) => {
+      return value === cb;
+    });
+    if (foundIndex >= 0) {
+      waitSubscribers.splice(foundIndex, 1);
+    }
+  };
+}
+function callWaitSubscribers(context: DragDropMachineContext) {
+  waitSubscribers.forEach((cb) => {
+    cb(context);
+  });
+}
+
 const navigatorDragDropMachine = createMachine<
   DragDropMachineContext,
   DragDropMachineEvent
@@ -103,13 +160,31 @@ const navigatorDragDropMachine = createMachine<
   states: {
     [idle]: {
       on: {
-        mouseDown: { target: dragInProgress, actions: [onMouseDownAction] },
+        mouseDown: [
+          {
+            target: dragInProgress,
+            actions: [onMouseDownAction],
+            cond: shouldNotBeOpen,
+          },
+          { target: waitingForNodesToClose, actions: [onMouseDownAction] },
+        ],
       },
     },
     [dragInProgress]: {
       on: {
         mouseMove: { target: dragInProgress, actions: [onMouseMoveAction] },
         mouseUp: { target: idle, actions: [onMouseUpAction] },
+      },
+    },
+    [waitingForNodesToClose]: {
+      on: {
+        closedNavigatorNodeEvent: {
+          target: dragInProgress,
+          actions: [onClosedNodeAction],
+        },
+      },
+      entry: (context) => {
+        callWaitSubscribers(context);
       },
     },
   },
@@ -143,4 +218,23 @@ export function sendMouseMoveEvent(event: MouseEvent) {
 
 export function sendMouseUpEvent() {
   return service.send({ type: "mouseUp" });
+}
+
+export function sendClosedNodeEvent(
+  rootNode: NavigatorNode,
+  flattenedNodes: NavigatorNode[],
+  draggedNodeIndexInFlattenedArray: number,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
+) {
+  return service.send({
+    type: "closedNavigatorNodeEvent",
+    rootNode,
+    flattenedNodes,
+    containerRef,
+    draggedNodeIndexInFlattenedArray,
+  });
+}
+
+export function getMachineState() {
+  return { context: service.state.context, value: service.state.value };
 }

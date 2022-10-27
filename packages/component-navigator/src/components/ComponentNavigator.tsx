@@ -1,8 +1,12 @@
-import { useCallback, useRef, MouseEvent } from "react";
+import { useCallback, useRef, MouseEvent, useEffect } from "react";
 import {
+  getMachineState,
+  sendClosedNodeEvent,
   sendMouseDownEvent,
   sendMouseMoveEvent,
   sendMouseUpEvent,
+  subscribeWait,
+  waitingForNodesToClose,
 } from "../dragDropMachine";
 import { NavigatorNode } from "../types";
 import { flattenRootNavigatorNode, getHoverIndex } from "../utils";
@@ -67,6 +71,31 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
     },
     [props, flattenedNodes]
   );
+
+  const machineState = getMachineState();
+  if (machineState.value === waitingForNodesToClose) {
+    const { draggedNode, draggedNodeIndexInFlattenedArray } =
+      machineState.context;
+    if (draggedNode?.open) {
+      props.onToggleOpen?.(draggedNode.id);
+    } else {
+      sendClosedNodeEvent(
+        props.rootNode,
+        flattenedNodes,
+        draggedNodeIndexInFlattenedArray!,
+        ref
+      );
+    }
+  }
+
+  useEffect(() => {
+    subscribeWait((context) => {
+      const { draggedNode } = context;
+      if (draggedNode?.open) {
+        props.onToggleOpen?.(draggedNode.id);
+      }
+    });
+  }, [props]);
 
   return (
     <div
