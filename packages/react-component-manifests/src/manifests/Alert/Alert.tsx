@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useMemo } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -7,13 +7,15 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import AlertTypes from "./AlertTypes";
+import closeIcon from "./close.svg";
 import "./Alert.css"
 
 export const Alert = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string, description?: string, statusIcon?: string };
+    custom: { alertType: string, title: string, description?: string, statusIcon?: string, isClosable: boolean };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -24,11 +26,24 @@ export const Alert = forwardRef<
     },
     [props]
   );
+  const alertStyle = useMemo(() => {
+    const alertType = AlertTypes[props.custom.alertType];
+    if(alertType === undefined) return {
+      backgroundColor: AlertTypes["success"].backgroundColor,
+      border: `1px solid ${AlertTypes["success"].borderColor}`,
+      color: "#000000d9",
+    };
+    return { 
+      backgroundColor: alertType.backgroundColor,
+      border: `1px solid ${alertType.borderColor}`,
+      color: "#000000d9",
+    };
+  }, [props.custom.alertType]);
   return (
     <div
       ref={ref}
       className={props.className}
-      style={{columnGap: "10px", ...props.styles}}
+      style={{columnGap: "10px", ...alertStyle, ...props.styles}}
       onClick={onClick}
     >
       { props.custom.statusIcon &&
@@ -48,6 +63,15 @@ export const Alert = forwardRef<
             </div> 
         }
       </div>
+      { props.custom.isClosable && 
+        <button style={{backgroundColor: "#00000000", border: "none"}}>
+          <img
+             id="close-button"
+             src={closeIcon}
+             alt="Icon to close the alert" 
+            />
+        </button> 
+      }
     </div>
   );
 });
@@ -67,9 +91,11 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    alertType: "text",
     title: "text",
     description: "text",
-    statusIcon: "static_asset"
+    statusIcon: "static_asset",
+    isClosable: "boolean",
   },
 };
 
@@ -84,11 +110,9 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          color: "#fff",
-          backgroundColor: "#4bb543",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
+          paddingTop: "15px",
+          paddingLeft: "24px",
+          paddingBottom: "15px",
           paddingRight: "15px",
           display: "flex",
           flexDirection: "row",
@@ -101,7 +125,11 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          title: "Success",
+          alertType: "success",
+          title: "Title",
+          description: "Description",
+          statusIcon: "./error.svg",
+          isClosable: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
