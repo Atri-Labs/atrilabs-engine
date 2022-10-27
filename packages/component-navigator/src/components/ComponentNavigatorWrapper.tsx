@@ -4,7 +4,8 @@ import { useNavigatorNodes } from "../hooks/useComponentNodes";
 import { ComponentNavigator } from "./ComponentNavigator";
 
 export const ComponentNavigatorWrapper = () => {
-  const { rootNavigatorNode, toggleNode, patchCb } = useNavigatorNodes();
+  const { rootNavigatorNode, toggleNode, repositionNavNode } =
+    useNavigatorNodes();
 
   const onNavigatorNodeSelect = useCallback((compId: string) => {
     raiseSelectEvent(compId);
@@ -14,11 +15,12 @@ export const ComponentNavigatorWrapper = () => {
     raiseHoverEvent(compId);
   }, []);
 
-  const onReposition = useCallback(
+  const onChange = useCallback(
     (change: { id: string; parentId: string; index: number }) => {
-      patchCb(change.id, change.parentId, change.index);
+      // call reposition navigator node
+      repositionNavNode(change.id, change.parentId, change.index);
     },
-    [patchCb]
+    [repositionNavNode]
   );
   return (
     <>
@@ -28,7 +30,7 @@ export const ComponentNavigatorWrapper = () => {
           onToggleOpen={toggleNode}
           onSelect={onNavigatorNodeSelect}
           onHover={onNavigatorNodeHover}
-          onChange={onReposition}
+          onChange={onChange}
         />
       ) : null}
     </>

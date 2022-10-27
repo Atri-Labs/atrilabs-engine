@@ -5,6 +5,7 @@ import {
   sendMouseDownEvent,
   sendMouseMoveEvent,
   sendMouseUpEvent,
+  subscribeReposition,
   subscribeWait,
   waitingForNodesToClose,
 } from "../dragDropMachine";
@@ -89,12 +90,20 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
   }
 
   useEffect(() => {
-    subscribeWait((context) => {
+    const unsub = subscribeWait((context) => {
       const { draggedNode } = context;
       if (draggedNode?.open) {
         props.onToggleOpen?.(draggedNode.id);
       }
     });
+    return unsub;
+  }, [props]);
+
+  useEffect(() => {
+    const unsub = subscribeReposition((id, parentId, index) => {
+      props.onChange?.({ id, parentId, index });
+    });
+    return unsub;
   }, [props]);
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useReducer } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
@@ -6,6 +6,8 @@ import { NavigatorNode } from "../types";
 import { markAllNodesClosed, transformTreeToNavigatorNode } from "../utils";
 
 export const useNavigatorNodes = () => {
+  const [, forceUpdate] = useReducer((c: number) => c + 1, 0);
+
   const [rootNavigatorNode, setRootNavigatorNode] =
     useState<NavigatorNode | null>(null);
 
@@ -70,7 +72,7 @@ export const useNavigatorNodes = () => {
   );
 
   /**
-   * This function repositions a node in the tree to a new index
+   * This function repositions a node in the component tree to a new index
    */
   const patchCb = useCallback(
     (nodeId: string, newParentId: string, newIndex: number) => {
@@ -103,11 +105,37 @@ export const useNavigatorNodes = () => {
     [nodeMap]
   );
 
+  /**
+   * This function repositions a node in the navigator tree
+   */
+  const repositionNavNode = useCallback(
+    (id: string, parentId: string, index: number) => {
+      const navNode = nodeMap[id];
+      const parentNavNode = nodeMap[parentId];
+      if (parentNavNode.children === undefined) {
+        parentNavNode.children = [];
+      }
+      navNode.parentNode?.children?.splice(navNode.index, 1);
+      navNode.parentNode?.children?.forEach((node, index) => {
+        node.index = index;
+      });
+      navNode.index = index;
+      navNode.parentNode = parentNavNode;
+      parentNavNode.children.splice(index, 0, navNode);
+      parentNavNode.children.forEach((child, index) => {
+        child.index = index;
+      });
+      forceUpdate();
+    },
+    [nodeMap]
+  );
+
   return {
     rootNavigatorNode,
     nodeMap,
     toggleNode,
     patchCb,
     openOrCloseMap,
+    repositionNavNode,
   };
 };

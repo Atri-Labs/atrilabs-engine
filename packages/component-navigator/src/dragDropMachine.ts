@@ -66,6 +66,34 @@ const onMouseDownAction = assign<DragDropMachineContext, MouseDownEvent>(
   }
 );
 
+type RepositionSubscriber = (
+  id: string,
+  parentId: string,
+  index: number
+) => void;
+
+const repositionSubscribers: RepositionSubscriber[] = [];
+
+export function subscribeReposition(cb: RepositionSubscriber) {
+  repositionSubscribers.push(cb);
+  return () => {
+    const foundIndex = repositionSubscribers.findIndex((val) => val === cb);
+    if (foundIndex >= 0) {
+      repositionSubscribers.splice(foundIndex, 1);
+    }
+  };
+}
+
+function callRepositionSubscribers(
+  id: string,
+  parentId: string,
+  index: number
+) {
+  repositionSubscribers.forEach((cb) => {
+    cb(id, parentId, index);
+  });
+}
+
 const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
   (context, event) => {
     const { containerRef } = context;
@@ -79,9 +107,30 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         newIndex >= 0
       ) {
         // TODO: call callbacks for reposition
+        const oldIndexInFlattenedArray =
+          context.draggedNodeIndexInFlattenedArray!;
+        const movingUp = oldIndexInFlattenedArray - newIndex > 0 ? true : false;
+        const newIndexHadSibling =
+          context.flattenedNodes![newIndex]!.parentNode!.id ===
+          context.draggedNode!.parentNode!.id
+            ? true
+            : false;
+        if (movingUp && newIndexHadSibling) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.draggedNode!.parentNode!.id,
+            context.draggedNode!.index - 1
+          );
+        }
+        if (!movingUp && newIndexHadSibling) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.draggedNode!.parentNode!.id,
+            context.draggedNode!.index + 1
+          );
+        }
         context.initialX = event.event.clientX;
         context.draggedNodeIndexInFlattenedArray = newIndex;
-        console.log("change position", newIndex);
       }
 
       // check horizontal movement on left direction
