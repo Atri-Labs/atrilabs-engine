@@ -38,7 +38,12 @@ export const useNavigatorNodes = () => {
   useEffect(() => {
     const unsub = BrowserForestManager.currentForest.subscribeForest(
       (update) => {
-        if (update.treeId === ComponentTreeId) {
+        if (
+          update.treeId === ComponentTreeId &&
+          (update.type === "rewire" ||
+            update.type === "wire" ||
+            update.type === "dewire")
+        ) {
           const { rootNode, nodeMap } = transformTreeToNavigatorNode(
             compTree,
             openOrCloseMap
