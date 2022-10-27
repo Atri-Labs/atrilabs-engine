@@ -3,7 +3,7 @@ import {
   sendMouseDownEvent,
   sendMouseMoveEvent,
   sendMouseUpEvent,
-} from "../hooks/useDragDrop";
+} from "../dragDropMachine";
 import { NavigatorNode } from "../types";
 import { flattenRootNavigatorNode, getHoverIndex } from "../utils";
 import { TabbedContent } from "./TabbedContent";
