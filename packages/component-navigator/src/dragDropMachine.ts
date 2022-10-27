@@ -6,7 +6,7 @@ import { getHoverIndex, horizontalStepSize } from "./utils";
 type DragDropMachineContext = {
   // assign before entering dragInProgress state
   rootNode?: NavigatorNode;
-  flattendedNodes?: NavigatorNode[];
+  flattenedNodes?: NavigatorNode[];
   containerRef?: React.MutableRefObject<HTMLDivElement | null>; // assuming ref won't change during transition
   draggedNode?: NavigatorNode;
   // assign after every successful drag in y/x direction
@@ -40,6 +40,7 @@ type DragDropMachineEvent =
 
 // states
 const idle = "idle";
+const dragStarted = "dragStarted";
 const dragInProgress = "dragInProgress";
 export const waitingForNodesToClose = "waitingForNodesToClose";
 
@@ -55,6 +56,11 @@ const onMouseDownAction = assign<DragDropMachineContext, MouseDownEvent>(
       return { ...event, draggedNode };
     } else {
       // TODO: throw error. this should not happen.
+      console.log(
+        "The fields from event should not be undefined.",
+        draggedNodeIndexInFlattenedArray,
+        flattenedNodes
+      );
       return {};
     }
   }
@@ -114,11 +120,8 @@ const onClosedNodeAction = assign<
 });
 
 // guards
-const shouldNotBeOpen = (
-  _context: DragDropMachineContext,
-  event: MouseDownEvent
-) => {
-  const { flattenedNodes, draggedNodeIndexInFlattenedArray } = event;
+const shouldNotBeOpen = (context: DragDropMachineContext) => {
+  const { flattenedNodes, draggedNodeIndexInFlattenedArray } = context;
   if (
     draggedNodeIndexInFlattenedArray !== undefined &&
     flattenedNodes !== undefined
@@ -127,6 +130,12 @@ const shouldNotBeOpen = (
     if (draggedNavNode.open && draggedNavNode.type === "acceptsChild") {
       return false;
     }
+  } else {
+    console.log(
+      "The fields from context should not be undefined",
+      draggedNodeIndexInFlattenedArray,
+      flattenedNodes
+    );
   }
   return true;
 };
@@ -160,14 +169,23 @@ const navigatorDragDropMachine = createMachine<
   states: {
     [idle]: {
       on: {
-        mouseDown: [
+        mouseDown: {
+          target: dragStarted,
+          actions: [onMouseDownAction],
+        },
+      },
+    },
+    [dragStarted]: {
+      on: {
+        mouseMove: [
           {
             target: dragInProgress,
-            actions: [onMouseDownAction],
+            actions: [onMouseMoveAction],
             cond: shouldNotBeOpen,
           },
-          { target: waitingForNodesToClose, actions: [onMouseDownAction] },
+          { target: waitingForNodesToClose },
         ],
+        mouseUp: { target: idle, actions: [onMouseUpAction] },
       },
     },
     [dragInProgress]: {
