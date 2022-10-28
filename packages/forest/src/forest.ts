@@ -107,6 +107,7 @@ export function createForest(def: ForestDef): Forest {
         if (patchEvent.slice && patchEvent.slice.parent) {
           if (
             patchEvent.slice.parent.id &&
+            patchEvent.slice.parent.index !== undefined &&
             !isNaN(patchEvent.slice.parent.index)
           ) {
             const oldParentId =
