@@ -177,9 +177,18 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         context.initialX !== undefined &&
         context.initialX - event.event.clientX >= horizontalStepSize
       ) {
+        const draggedNode = context.draggedNode!;
+        const draggedNodesParent = context.draggedNode!.parentNode!;
+        const isLastChild =
+          draggedNode.index === draggedNodesParent.children!.length - 1;
+        if (isLastChild) {
+          callRepositionSubscribers(
+            draggedNode.id,
+            draggedNodesParent.parentNode!.id,
+            draggedNodesParent.index + 1
+          );
+        }
         context.initialX = context.initialX - horizontalStepSize;
-        console.log("move left");
-        // TODO: call callbacks if possible to move left
       }
 
       // check horizontal movement on right direction
@@ -187,9 +196,22 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         context.initialX !== undefined &&
         context.initialX - event.event.clientX <= -horizontalStepSize
       ) {
+        const draggedNode = context.draggedNode!;
+        if (draggedNode.index - 1 >= 0) {
+          const draggedNodesPrevSibling =
+            draggedNode.parentNode!.children![draggedNode.index - 1];
+          const isPrevSiblingAnOpenParent =
+            draggedNodesPrevSibling.type === "acceptsChild" &&
+            draggedNodesPrevSibling.open;
+          if (isPrevSiblingAnOpenParent) {
+            callRepositionSubscribers(
+              draggedNode.id,
+              draggedNodesPrevSibling.id,
+              draggedNodesPrevSibling.children?.length || 0
+            );
+          }
+        }
         context.initialX = context.initialX + horizontalStepSize;
-        console.log("move right");
-        // TODO: call callbacks if possible to move right
       }
     }
     return context;
