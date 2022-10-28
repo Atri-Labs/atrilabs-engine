@@ -5,8 +5,6 @@ import { getHoverIndex, horizontalStepSize } from "./utils";
 
 type DragDropMachineContext = {
   // assign before entering dragInProgress state
-  rootNode?: NavigatorNode;
-  flattenedNodes?: NavigatorNode[];
   containerRef?: React.MutableRefObject<HTMLDivElement | null>; // assuming ref won't change during transition
   draggedNode?: NavigatorNode;
   // assign after every successful drag in y/x direction
@@ -17,17 +15,19 @@ type DragDropMachineContext = {
 
 type MouseDownEvent = {
   type: "mouseDown";
-  rootNode: NavigatorNode;
   flattenedNodes: NavigatorNode[];
   draggedNodeIndexInFlattenedArray: number;
   initialX: number;
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
 };
-type MouseMoveEvent = { type: "mouseMove"; event: MouseEvent };
+type MouseMoveEvent = {
+  type: "mouseMove";
+  event: MouseEvent;
+  flattenedNodes: NavigatorNode[];
+};
 type MouseUpEvent = { type: "mouseUp" };
 type ClosedNavigatorNodeEvent = {
   type: "closedNavigatorNodeEvent";
-  rootNode: NavigatorNode;
   flattenedNodes: NavigatorNode[];
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
   draggedNodeIndexInFlattenedArray: number;
@@ -97,42 +97,59 @@ function callRepositionSubscribers(
 const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
   (context, event) => {
     const { containerRef } = context;
+    const { flattenedNodes } = event;
     if (containerRef !== undefined && containerRef.current !== null) {
       // check vertical movement
       const { y } = containerRef.current.getBoundingClientRect();
       const netY = event.event.clientY - y + containerRef.current.scrollTop;
       const newIndex = Math.floor(netY / 24);
+      const isDraggedNodeAlreadyAtNewIndex =
+        flattenedNodes![newIndex].id === context.draggedNode!.id;
       if (
         newIndex !== context.draggedNodeIndexInFlattenedArray &&
-        newIndex >= 0
+        newIndex >= 0 &&
+        !isDraggedNodeAlreadyAtNewIndex
       ) {
         // TODO: call callbacks for reposition
         const oldIndexInFlattenedArray =
           context.draggedNodeIndexInFlattenedArray!;
         const movingUp = oldIndexInFlattenedArray - newIndex > 0 ? true : false;
+        const movingDown =
+          oldIndexInFlattenedArray - newIndex < 0 ? true : false;
         const newIndexIsSibling =
-          context.flattenedNodes![newIndex]!.parentNode!.id ===
+          flattenedNodes![newIndex]!.parentNode!.id ===
           context.draggedNode!.parentNode!.id
             ? true
             : false;
         const newIndexIsParent =
-          context.flattenedNodes![newIndex]!.id ===
-          context.draggedNode!.parentNode!.id;
+          flattenedNodes![newIndex]!.id === context.draggedNode!.parentNode!.id;
         const newIndexIsSomeOpenParent =
-          context.flattenedNodes![newIndex]!.type === "acceptsChild" &&
-          context.flattenedNodes![newIndex]!.open;
+          flattenedNodes![newIndex]!.type === "acceptsChild" &&
+          flattenedNodes![newIndex]!.open;
         const newIndexisLastChild =
-          context.flattenedNodes![newIndex]!.parentNode?.children &&
-          context.flattenedNodes![newIndex]!.index ===
-            context.flattenedNodes![newIndex]!.parentNode!.children!.length - 1;
+          flattenedNodes![newIndex]!.parentNode?.children &&
+          flattenedNodes![newIndex]!.index ===
+            flattenedNodes![newIndex]!.parentNode!.children!.length - 1;
         if (movingUp && newIndexIsSibling) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.id,
             context.draggedNode!.index - 1
           );
+        } else if (movingUp && newIndexIsParent) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            context.draggedNode!.parentNode!.parentNode!.id,
+            context.draggedNode!.parentNode!.index
+          );
+        } else if (movingUp && newIndexisLastChild) {
+          callRepositionSubscribers(
+            context.draggedNode!.id,
+            flattenedNodes![newIndex]!.parentNode!.id,
+            flattenedNodes![newIndex]!.parentNode!.children!.length - 1
+          );
         } else if (
-          !movingUp &&
+          movingDown &&
           newIndexIsSibling &&
           !newIndexIsSomeOpenParent
         ) {
@@ -141,30 +158,11 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
             context.draggedNode!.parentNode!.id,
             context.draggedNode!.index + 1
           );
-        } else if (movingUp && newIndexIsParent) {
+        } else if (movingDown && newIndexIsSomeOpenParent) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            context.draggedNode!.parentNode!.parentNode!.id,
-            context.draggedNode!.parentNode!.index
-          );
-        } else if (!movingUp && newIndexIsSomeOpenParent) {
-          callRepositionSubscribers(
-            context.draggedNode!.id,
-            context.flattenedNodes![newIndex]!.id,
+            flattenedNodes![newIndex]!.id,
             0
-          );
-        } else if (movingUp && newIndexisLastChild) {
-          callRepositionSubscribers(
-            context.draggedNode!.id,
-            context.flattenedNodes![newIndex]!.parentNode!.id,
-            context.flattenedNodes![newIndex]!.parentNode!.children!.length - 1
-          );
-        } else if (!movingUp) {
-          // make it a sibling
-          callRepositionSubscribers(
-            context.draggedNode!.id,
-            context.flattenedNodes![newIndex]!.parentNode!.id,
-            context.flattenedNodes![newIndex]!.index + 1
           );
         } else {
           console.log("None of the conditions match for reposition");
@@ -210,8 +208,12 @@ const onClosedNodeAction = assign<
 });
 
 // guards
-const shouldNotBeOpen = (context: DragDropMachineContext) => {
-  const { flattenedNodes, draggedNodeIndexInFlattenedArray } = context;
+const shouldNotBeOpen = (
+  context: DragDropMachineContext,
+  event: MouseMoveEvent
+) => {
+  const { draggedNodeIndexInFlattenedArray } = context;
+  const { flattenedNodes } = event;
   if (
     draggedNodeIndexInFlattenedArray !== undefined &&
     flattenedNodes !== undefined
@@ -302,7 +304,6 @@ const service = interpret(navigatorDragDropMachine);
 service.start();
 
 export function sendMouseDownEvent(
-  rootNode: NavigatorNode,
   flattenedNodes: NavigatorNode[],
   event: MouseEvent,
   containerRef: React.MutableRefObject<HTMLDivElement | null>
@@ -311,7 +312,6 @@ export function sendMouseDownEvent(
   if (hoverIndex !== undefined) {
     return service.send({
       type: "mouseDown",
-      rootNode,
       flattenedNodes,
       draggedNodeIndexInFlattenedArray: hoverIndex!,
       initialX: event.clientX,
@@ -320,8 +320,11 @@ export function sendMouseDownEvent(
   }
 }
 
-export function sendMouseMoveEvent(event: MouseEvent) {
-  return service.send({ type: "mouseMove", event });
+export function sendMouseMoveEvent(
+  event: MouseEvent,
+  flattenedNodes: NavigatorNode[]
+) {
+  return service.send({ type: "mouseMove", event, flattenedNodes });
 }
 
 export function sendMouseUpEvent() {
@@ -329,14 +332,12 @@ export function sendMouseUpEvent() {
 }
 
 export function sendClosedNodeEvent(
-  rootNode: NavigatorNode,
   flattenedNodes: NavigatorNode[],
   draggedNodeIndexInFlattenedArray: number,
   containerRef: React.MutableRefObject<HTMLDivElement | null>
 ) {
   return service.send({
     type: "closedNavigatorNodeEvent",
-    rootNode,
     flattenedNodes,
     containerRef,
     draggedNodeIndexInFlattenedArray,

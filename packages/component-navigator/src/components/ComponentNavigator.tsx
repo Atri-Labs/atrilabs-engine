@@ -45,16 +45,16 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
         if (hoverIndex < flattenedNodes.length && hoverIndex >= 0) {
           props.onHover?.(flattenedNodes[hoverIndex].id);
         }
-        sendMouseMoveEvent(event);
+        sendMouseMoveEvent(event, flattenedNodes);
       }
     },
     [props, flattenedNodes]
   );
   const onMouseDown = useCallback(
     (event: MouseEvent) => {
-      sendMouseDownEvent(props.rootNode, flattenedNodes, event, ref);
+      sendMouseDownEvent(flattenedNodes, event, ref);
     },
-    [props.rootNode, flattenedNodes]
+    [flattenedNodes]
   );
 
   const onMouseUp = useCallback((event: MouseEvent) => {
@@ -81,7 +81,6 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
       props.onToggleOpen?.(draggedNode.id);
     } else {
       sendClosedNodeEvent(
-        props.rootNode,
         flattenedNodes,
         draggedNodeIndexInFlattenedArray!,
         ref
