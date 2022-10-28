@@ -453,15 +453,6 @@
         "bug",
         "question"
       ]
-    },
-    {
-      "login": "awdhesh-kumar27",
-      "name": "Awdhesh Kumar",
-      "avatar_url": "https://avatars.githubusercontent.com/u/100534409?v=4",
-      "profile": "https://leetcode.com/awdhesh_kumar/",
-      "contributions": [
-        "bug"
-      ]
     }
   ],
   "contributorsPerLine": 7,
