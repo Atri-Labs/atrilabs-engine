@@ -107,7 +107,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-48-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -178,6 +178,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://github.com/grishamg"><img src="https://avatars.githubusercontent.com/u/90051331?v=4?s=100" width="100px;" alt="Grisham Garg"/><br /><sub><b>Grisham Garg</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Agrishamg" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/Ankittripa"><img src="https://avatars.githubusercontent.com/u/95485610?v=4?s=100" width="100px;" alt="Ankittripa"/><br /><sub><b>Ankittripa</b></sub></a><br /><a href="#ideas-Ankittripa" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-Ankittripa" title="Mentoring">🧑‍🏫</a> <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3AAnkittripa" title="Bug reports">🐛</a> <a href="#question-Ankittripa" title="Answering Questions">💬</a></td>
       <td align="center"><a href="http://www.codeholic.epizy.com"><img src="https://avatars.githubusercontent.com/u/68885196?v=4?s=100" width="100px;" alt="sahil kandpal"/><br /><sub><b>sahil kandpal</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Asahilkandpal" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/khalid2203"><img src="https://avatars.githubusercontent.com/u/100707364?v=4?s=100" width="100px;" alt="Khalid Saifullah"/><br /><sub><b>Khalid Saifullah</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Akhalid2203" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
