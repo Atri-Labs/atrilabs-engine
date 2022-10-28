@@ -69,7 +69,9 @@ const onMouseDownAction = assign<DragDropMachineContext, MouseDownEvent>(
 type RepositionSubscriber = (
   id: string,
   parentId: string,
-  index: number
+  index: number,
+  oldNavIndex: number,
+  movement: 1 | 0 | -1
 ) => void;
 
 const repositionSubscribers: RepositionSubscriber[] = [];
@@ -87,10 +89,12 @@ export function subscribeReposition(cb: RepositionSubscriber) {
 function callRepositionSubscribers(
   id: string,
   parentId: string,
-  index: number
+  index: number,
+  oldNavIndex: number,
+  movement: 1 | 0 | -1
 ) {
   repositionSubscribers.forEach((cb) => {
-    cb(id, parentId, index);
+    cb(id, parentId, index, oldNavIndex, movement);
   });
 }
 
@@ -109,14 +113,14 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
       }
       const isDraggedNodeAlreadyAtNewIndex =
         flattenedNodes![newIndex].id === context.draggedNode!.id;
+      const oldIndexInFlattenedArray =
+        context.draggedNodeIndexInFlattenedArray!;
       if (
         newIndex !== context.draggedNodeIndexInFlattenedArray &&
         newIndex > 0 &&
         !isDraggedNodeAlreadyAtNewIndex
       ) {
         // TODO: call callbacks for reposition
-        const oldIndexInFlattenedArray =
-          context.draggedNodeIndexInFlattenedArray!;
         const movingUp = oldIndexInFlattenedArray - newIndex > 0 ? true : false;
         const movingDown =
           oldIndexInFlattenedArray - newIndex < 0 ? true : false;
@@ -138,19 +142,25 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.id,
-            context.draggedNode!.index - 1
+            context.draggedNode!.index - 1,
+            oldIndexInFlattenedArray,
+            -1
           );
         } else if (movingUp && newIndexIsParent) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.parentNode!.id,
-            context.draggedNode!.parentNode!.index
+            context.draggedNode!.parentNode!.index,
+            oldIndexInFlattenedArray,
+            -1
           );
         } else if (movingUp && newIndexisLastChild) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             flattenedNodes![newIndex]!.parentNode!.id,
-            flattenedNodes![newIndex]!.parentNode!.children!.length - 1
+            flattenedNodes![newIndex]!.parentNode!.children!.length - 1,
+            oldIndexInFlattenedArray,
+            -1
           );
         } else if (
           movingDown &&
@@ -160,13 +170,17 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
           callRepositionSubscribers(
             context.draggedNode!.id,
             context.draggedNode!.parentNode!.id,
-            context.draggedNode!.index + 1
+            context.draggedNode!.index + 1,
+            oldIndexInFlattenedArray,
+            1
           );
         } else if (movingDown && newIndexIsSomeOpenParent) {
           callRepositionSubscribers(
             context.draggedNode!.id,
             flattenedNodes![newIndex]!.id,
-            0
+            0,
+            oldIndexInFlattenedArray,
+            1
           );
         } else {
           console.log("None of the conditions match for reposition");
@@ -189,7 +203,9 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
           callRepositionSubscribers(
             draggedNode.id,
             draggedNodesParent.parentNode!.id,
-            draggedNodesParent.index + 1
+            draggedNodesParent.index + 1,
+            oldIndexInFlattenedArray,
+            0
           );
         }
         context.initialX = context.initialX - horizontalStepSize;
@@ -211,7 +227,9 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
             callRepositionSubscribers(
               draggedNode.id,
               draggedNodesPrevSibling.id,
-              draggedNodesPrevSibling.children?.length || 0
+              draggedNodesPrevSibling.children?.length || 0,
+              oldIndexInFlattenedArray,
+              0
             );
           }
         }

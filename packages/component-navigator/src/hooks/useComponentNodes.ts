@@ -3,7 +3,11 @@ import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { NavigatorNode } from "../types";
-import { markAllNodesClosed, transformTreeToNavigatorNode } from "../utils";
+import {
+  flattenRootNavigatorNode,
+  markAllNodesClosed,
+  transformTreeToNavigatorNode,
+} from "../utils";
 
 export const useNavigatorNodes = () => {
   const [, forceUpdate] = useReducer((c: number) => c + 1, 0);
@@ -12,6 +16,19 @@ export const useNavigatorNodes = () => {
     useState<NavigatorNode | null>(null);
 
   const [nodeMap, setNodeMap] = useState<{ [id: string]: NavigatorNode }>({});
+
+  const [flattenedNodes, setFlattenedNodes] = useState<NavigatorNode[]>([]);
+  useEffect(() => {
+    if (rootNavigatorNode !== null) {
+      const flattenedNodes = flattenRootNavigatorNode(rootNavigatorNode, true);
+      setFlattenedNodes(flattenedNodes);
+    }
+  }, [rootNavigatorNode]);
+  const reComputeFlattenedNodes = useCallback(() => {
+    if (rootNavigatorNode === null) return;
+    const flattenedNodes = flattenRootNavigatorNode(rootNavigatorNode, true);
+    setFlattenedNodes(flattenedNodes);
+  }, [rootNavigatorNode]);
 
   // keep a record of open/closed item
   const [openOrCloseMap, setOpenOrCloseMap] = useState<{
@@ -67,8 +84,10 @@ export const useNavigatorNodes = () => {
       setOpenOrCloseMap((openOrCloseMap) => {
         return { ...openOrCloseMap, [id]: !openOrCloseMap[id] };
       });
+
+      reComputeFlattenedNodes();
     },
-    [nodeMap]
+    [nodeMap, reComputeFlattenedNodes]
   );
 
   /**
@@ -109,7 +128,14 @@ export const useNavigatorNodes = () => {
    * This function repositions a node in the navigator tree
    */
   const repositionNavNode = useCallback(
-    (id: string, parentId: string, index: number) => {
+    (
+      id: string,
+      parentId: string,
+      index: number,
+      oldNavIndex: number,
+      movement: 1 | 0 | -1
+    ) => {
+      // update following nav nodes: old parent, dragged nav node and new parent
       const navNode = nodeMap[id];
       const parentNavNode = nodeMap[parentId];
       if (parentNavNode.children === undefined) {
@@ -126,6 +152,14 @@ export const useNavigatorNodes = () => {
       parentNavNode.children.forEach((child, index) => {
         child.index = index;
       });
+
+      // update flattendNodes
+      setFlattenedNodes((old) => {
+        const newFlatten = [...old];
+        newFlatten.splice(oldNavIndex, 1);
+        newFlatten.splice(oldNavIndex + movement, 0, navNode);
+        return newFlatten;
+      });
       forceUpdate();
     },
     [nodeMap]
@@ -134,9 +168,11 @@ export const useNavigatorNodes = () => {
   return {
     rootNavigatorNode,
     nodeMap,
+    flattenedNodes,
     toggleNode,
     patchCb,
     openOrCloseMap,
     repositionNavNode,
+    reComputeFlattenedNodes,
   };
 };

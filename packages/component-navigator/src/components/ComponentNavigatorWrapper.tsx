@@ -6,8 +6,13 @@ import { ComponentNavigator } from "./ComponentNavigator";
 import { getComponentNode } from "@atrilabs/canvas-runtime-utils";
 
 export const ComponentNavigatorWrapper = () => {
-  const { rootNavigatorNode, toggleNode, repositionNavNode, patchCb } =
-    useNavigatorNodes();
+  const {
+    rootNavigatorNode,
+    toggleNode,
+    repositionNavNode,
+    patchCb,
+    flattenedNodes,
+  } = useNavigatorNodes();
 
   const onNavigatorNodeSelect = useCallback((compId: string) => {
     raiseSelectEvent(compId);
@@ -18,9 +23,21 @@ export const ComponentNavigatorWrapper = () => {
   }, []);
 
   const onChange = useCallback(
-    (change: { id: string; parentId: string; index: number }) => {
+    (change: {
+      id: string;
+      parentId: string;
+      index: number;
+      oldNavIndex: number;
+      movement: 1 | 0 | -1;
+    }) => {
       // call reposition navigator node
-      repositionNavNode(change.id, change.parentId, change.index);
+      repositionNavNode(
+        change.id,
+        change.parentId,
+        change.index,
+        change.oldNavIndex,
+        change.movement
+      );
     },
     [repositionNavNode]
   );
@@ -67,7 +84,7 @@ export const ComponentNavigatorWrapper = () => {
     <>
       {rootNavigatorNode !== null ? (
         <ComponentNavigator
-          rootNode={rootNavigatorNode}
+          flattenedNodes={flattenedNodes}
           onToggleOpen={toggleNode}
           onSelect={onNavigatorNodeSelect}
           onHover={onNavigatorNodeHover}

@@ -11,13 +11,19 @@ import {
   waitingForNodesToClose,
 } from "../dragDropMachine";
 import { NavigatorNode } from "../types";
-import { flattenRootNavigatorNode, getHoverIndex } from "../utils";
+import { getHoverIndex } from "../utils";
 import { TabbedContent } from "./TabbedContent";
 
 export type ComponentNavigatorProps = {
-  rootNode: NavigatorNode;
+  flattenedNodes: NavigatorNode[];
   // Call onChange everytime the selected node is repositioned
-  onChange?: (change: { id: string; parentId: string; index: number }) => void;
+  onChange?: (change: {
+    id: string;
+    parentId: string;
+    index: number;
+    oldNavIndex: number;
+    movement: 1 | 0 | -1;
+  }) => void;
   // Call onHover everytime user hovers over a component
   onHover?: (id: string) => void;
   // Call onSelect everytime user clicks on a component
@@ -34,7 +40,7 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
   props
 ) => {
   // TODO: maybe sub-optimal to keep this function call outside
-  const flattenedNodes = flattenRootNavigatorNode(props.rootNode, true);
+  const flattenedNodes = props.flattenedNodes;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const onMouseMove = useCallback(
@@ -100,9 +106,11 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
   }, [props]);
 
   useEffect(() => {
-    const unsub = subscribeReposition((id, parentId, index) => {
-      props.onChange?.({ id, parentId, index });
-    });
+    const unsub = subscribeReposition(
+      (id, parentId, index, oldNavIndex, movement) => {
+        props.onChange?.({ id, parentId, index, oldNavIndex, movement });
+      }
+    );
     return unsub;
   }, [props]);
 
