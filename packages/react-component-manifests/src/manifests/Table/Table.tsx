@@ -28,16 +28,7 @@ export const DataTable = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div
-      className={props.className}
-      ref={ref}
-      style={{
-        ...props.styles,
-        height: props.custom.autoHeight
-          ? undefined
-          : props.styles.height || "400px",
-      }}
-    >
+    <div className={props.className} ref={ref} style={props.styles}>
       <DataGrid
         autoHeight={props.custom.autoHeight}
         rowHeight={props.custom.rowHeight || 20}
@@ -129,7 +120,9 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          height: "400px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

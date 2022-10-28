@@ -28,8 +28,11 @@ import {
   collectCreateTemplate,
   collectImportResources,
 } from "../utils/collect_stats";
+import { getForestDef } from "../utils/getForestDef";
 const app = express();
 const server = http.createServer(app);
+
+console.log("[websocket_server] projectId", process.env["ATRI_PROJECT_ID"]);
 
 app.use(cors({ origin: "*" }));
 
@@ -124,7 +127,22 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
     getPages(forestPkgId);
   }
 
+  const target = toolConfig.targets[0]!;
+  const forestDef = getForestDef(toolConfig, target.options["appForestPkgId"])!;
+
   io.on("connection", (socket) => {
+    if (socket.handshake.auth) {
+      console.log(
+        "[websocket_server] auth projectId",
+        socket.handshake.auth["projectId"]
+      );
+
+      if (
+        socket.handshake.auth["projectId"] !== process.env["ATRI_PROJECT_ID"]
+      ) {
+        socket.disconnect();
+      }
+    }
     socket.on("getMeta", (forestPkgId, callback) => {
       try {
         initialLoadForest(forestPkgId);
@@ -285,7 +303,7 @@ export default function (toolConfig: ToolConfig, options: EventServerOptions) {
         initialLoadForest(forestPkgId);
         const eventManager = getEventManager(forestPkgId);
         const events = eventManager.fetchEvents(pageId);
-        const compressedEvents = compressEvents(events);
+        const compressedEvents = compressEvents(events, forestDef);
         callback(compressedEvents);
       } catch (err) {
         console.log(

@@ -16,7 +16,7 @@ import { ReactComponent as DownloadCloud } from "./assets/download-cloud.svg";
 import { useState, useCallback, useRef } from "react";
 import { Cross } from "./assets/Cross";
 import { useFetchResources } from "./hooks/useFetchResources";
-
+import "./styles.css";
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,
@@ -80,7 +80,11 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={3}>
-        <div style={styles.iconContainer}>
+        <div
+          style={styles.iconContainer}
+          data-tooltip="Resource Manager"
+          className="tool-tip"
+        >
           <IconMenu onClick={openDropContainer} active={false}>
             <DownloadCloud />
           </IconMenu>

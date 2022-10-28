@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-export type ClientName = "atri-cli" | "publish-server";
+export type ClientName = "atri-cli" | "publish-server" | "browser";
 
 export interface ServerToClientEvents {
   doComputeInitialState: (
@@ -9,8 +9,11 @@ export interface ServerToClientEvents {
     callback: (success: boolean, computedState: string) => void
   ) => void;
   doBuildPython: (callback: (success: boolean) => void) => void;
-  doStartPythonServer: (callback: (success: boolean) => void) => void;
+  doStartPythonServer: (callback: (returnCode: number) => void) => void;
   doReloadPage: () => void;
+  attachedServiceStatusChanged: (status: {
+    [key in Exclude<ClientName, "browser">]: boolean;
+  }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -24,8 +27,13 @@ export interface ClientToServerEvents {
     callback: (success: boolean, computedState: string) => void
   ) => void;
   buildPython: (callback: (success: boolean) => void) => void;
-  startPythonServer: (callback: (success: boolean) => void) => void;
+  startPythonServer: (callback: (returnCode: number) => void) => void;
   reloadPage: () => void;
+  getAttachedServicesStatus: (
+    callback: (status: {
+      [key in Exclude<ClientName, "browser">]: boolean;
+    }) => void
+  ) => void;
 }
 
 export interface InterServerEvents {}

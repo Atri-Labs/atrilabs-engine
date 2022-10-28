@@ -110,14 +110,8 @@ export const Miscellaneous: React.FC<CssProprtyComponentType> = (props) => {
               <option style={styles.select} value="col-resize">
                 col-resize
               </option>
-              <option style={styles.select} value="col-resize">
-                col-resize
-              </option>
               <option style={styles.select} value="copy">
                 copy
-              </option>
-              <option style={styles.select} value="crosshair">
-                crosshair
               </option>
               <option style={styles.select} value="crosshair">
                 crosshair
@@ -136,9 +130,6 @@ export const Miscellaneous: React.FC<CssProprtyComponentType> = (props) => {
               </option>
               <option style={styles.select} value="grabbing">
                 grabbing
-              </option>
-              <option style={styles.select} value="help">
-                help
               </option>
               <option style={styles.select} value="help">
                 help

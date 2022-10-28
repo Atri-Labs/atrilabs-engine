@@ -7,29 +7,20 @@
   "commitConvention": "angular",
   "contributors": [
     {
-      "login": "adityaxpique",
-      "name": "Aditya Kumar Singh",
-      "avatar_url": "https://avatars.githubusercontent.com/u/56078748?v=4",
-      "profile": "https://github.com/adityaxpique",
-      "contributions": [
-        "code",
-        "maintenance",
-        "mentoring"
-      ]
-    },
-    {
       "login": "cruxcode",
       "name": "Shyam Swaroop",
       "avatar_url": "https://avatars.githubusercontent.com/u/30747788?v=4",
       "profile": "https://github.com/cruxcode",
       "contributions": [
         "code",
+        "doc",
         "infra",
         "projectManagement",
         "maintenance",
         "mentoring",
         "review",
-        "test"
+        "test",
+        "video"
       ]
     },
     {
@@ -48,12 +39,31 @@
       ]
     },
     {
+      "login": "adityaxpique",
+      "name": "Aditya Kumar Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56078748?v=4",
+      "profile": "https://github.com/adityaxpique",
+      "contributions": [
+        "code",
+        "maintenance",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "melvinodsa",
+      "name": "Melvin Davis",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7814072?v=4",
+      "profile": "https://www.melvindavis.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "jonathanalvares9009",
       "name": "Jonathan Elroy Alvares",
       "avatar_url": "https://avatars.githubusercontent.com/u/74007627?v=4",
       "profile": "https://github.com/jonathanalvares9009",
       "contributions": [
-        "test",
         "code"
       ]
     },
@@ -63,7 +73,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/49454292?v=4",
       "profile": "https://github.com/Supratim30",
       "contributions": [
-        "test",
         "code"
       ]
     },
@@ -403,6 +412,45 @@
       "profile": "https://github.com/zapkirin",
       "contributions": [
         "doc",
+        "question"
+      ]
+    },
+    {
+      "login": "Vitika9",
+      "name": "Vitika Soni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79760854?v=4",
+      "profile": "https://github.com/Vitika9",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "VivekThazhathattil",
+      "name": "Vivek T.",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63693789?v=4",
+      "profile": "https://www.codechef.com/users/dumbledog",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "grishamg",
+      "name": "Grisham Garg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90051331?v=4",
+      "profile": "https://github.com/grishamg",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Ankittripa",
+      "name": "Ankittripa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/95485610?v=4",
+      "profile": "https://github.com/Ankittripa",
+      "contributions": [
+        "ideas",
+        "mentoring",
+        "bug",
         "question"
       ]
     }

@@ -31,13 +31,37 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
   });
 
   const clients: { [key in ClientName]?: ClientSocket } = {};
+  // many browser tabs can connect at once, hence, an array
+  const browserClients: ClientSocket[] = [];
+
+  function getAttachedServicesStatus() {
+    return {
+      "atri-cli": clients["atri-cli"] ? true : false,
+      "publish-server": clients["publish-server"] ? true : false,
+    };
+  }
+
+  function sendUpdatedToBrowserClients() {
+    browserClients.forEach((browserSocket) => {
+      browserSocket.emit(
+        "attachedServiceStatusChanged",
+        getAttachedServicesStatus()
+      );
+    });
+  }
 
   io.on("connection", (socket) => {
     let clientName: ClientName;
     // the socket need to register itself with a name
     socket.on("registerAs", (incomingClientName, callback) => {
       clientName = incomingClientName;
-      clients[clientName] = socket;
+      if (incomingClientName === "browser") {
+        browserClients.push(socket);
+      } else {
+        clients[incomingClientName] = socket;
+        // inform browsers about client connection
+        sendUpdatedToBrowserClients();
+      }
       console.log("[ipc_server] client registered:", incomingClientName);
       callback(true);
     });
@@ -68,17 +92,28 @@ export default function (_toolConfig: ToolConfig, options: IPCServerOptions) {
     });
     socket.on("startPythonServer", (callback) => {
       if (clients["atri-cli"] === undefined) {
-        callback(false);
+        callback(-1);
       } else {
         const atriCliSocket = clients["atri-cli"]!;
-        atriCliSocket.emit("doStartPythonServer", (success) => {
-          callback(success);
+        atriCliSocket.emit("doStartPythonServer", (returnCode) => {
+          callback(returnCode);
         });
       }
     });
     socket.on("disconnect", (reason) => {
-      clients[clientName] = undefined;
+      if (clientName === "browser") {
+        const index = browserClients.findIndex((a) => a === socket);
+        if (index >= 0) {
+          browserClients.splice(index, 1);
+        }
+      } else {
+        clients[clientName] = undefined;
+        sendUpdatedToBrowserClients();
+      }
       console.log("Socket disconnected with reason\n", reason);
+    });
+    socket.on("getAttachedServicesStatus", (callback) => {
+      callback(getAttachedServicesStatus());
     });
   });
 

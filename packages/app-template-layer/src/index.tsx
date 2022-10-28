@@ -169,7 +169,11 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={1}>
-        <div style={styles.iconContainer}>
+        <div
+          style={styles.iconContainer}
+          data-tooltip="Template Manager"
+          className="tool-tip"
+        >
           <IconMenu onClick={openDropContainer} active={false}>
             <OpenTemplateIcon />
           </IconMenu>
@@ -263,7 +267,12 @@ export default function () {
 
       {selected ? (
         <Menu name="PublishMenu" order={0}>
-          <div style={styles.outerDiv} onClickCapture={onCreateTemplateClickCb}>
+          <div
+            style={styles.outerDiv}
+            onClickCapture={onCreateTemplateClickCb}
+            data-tooltip="Create Template"
+            className="tool-tip"
+          >
             Create Template
             {showCreateTemplatePopup ? (
               <div

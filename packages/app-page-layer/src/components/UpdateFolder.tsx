@@ -129,16 +129,19 @@ export const UpdateFolder: React.FC<UpdateFolderProps> = React.memo((props) => {
 
   const updateFolder = useSocketApi();
   const onUpdateClick = useCallback(() => {
-    if (isDuplicateFoldername) {
+    if (
+      isDuplicateFoldername ||
+      foldername === null ||
+      foldername?.trim() === ""
+    ) {
       return;
     }
-    if (foldername)
-      updateFolder(
-        props.data[props.folderIndex].folder.id,
-        { name: foldername },
-        () => {},
-        () => {}
-      );
+    updateFolder(
+      props.data[props.folderIndex].folder.id,
+      { name: foldername },
+      () => {},
+      () => {}
+    );
     props.close();
   }, [props, foldername, updateFolder, isDuplicateFoldername]);
   return (

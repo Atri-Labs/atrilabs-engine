@@ -114,7 +114,7 @@ export const CreatePage: React.FC<CreatePageProps> = React.memo((props) => {
   }, [props.data, pageName]);
 
   const onCreateClick = useCallback(() => {
-    if (isDuplicatePagename) {
+    if (isDuplicatePagename || pageName.trim() === "") {
       return;
     }
     createPage(

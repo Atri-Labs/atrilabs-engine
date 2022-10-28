@@ -13,7 +13,7 @@ export default function () {
       redo();
     };
     const keyUpCb = (event: KeyboardEvent) => {
-      if (window.navigator.userAgent.indexOf("Mac")) {
+      if (window.navigator.userAgent.indexOf("Mac") >= 0) {
         if (event.metaKey) {
           if (event.key.toLowerCase() === "z" && !event.shiftKey) {
             onUndoPressed();
@@ -25,7 +25,7 @@ export default function () {
         if (event.ctrlKey) {
           if (event.key.toLowerCase() === "z") {
             onUndoPressed();
-          } else if (event.key.toLowerCase() === "r") {
+          } else if (event.key.toLowerCase() === "y") {
             onRedoPressed();
           }
         }

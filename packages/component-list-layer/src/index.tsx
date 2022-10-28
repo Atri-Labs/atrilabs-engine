@@ -69,7 +69,7 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={0}>
-        <div style={styles.iconContainer}>
+        <div style={styles.iconContainer} data-tooltip="Component Manager" className="tool-tip">
           <IconMenu onClick={onClick} active={false}>
             <Insert />
           </IconMenu>

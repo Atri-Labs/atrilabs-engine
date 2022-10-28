@@ -28,7 +28,7 @@ export type Tree = {
   unlink: (event: Omit<UnlinkEvent, "type">, meta: EventMetaData) => void;
 };
 
-export type EventMetaData = { agent: "browser" | "server-sent" };
+export type EventMetaData = { agent: "browser" | "server-sent"; custom?: any };
 
 export type Forest = {
   tree: (name: string) => Tree | undefined;
@@ -68,12 +68,20 @@ export type LinkEvent = TreeLink & EventDto;
 
 export type UnlinkEvent = LinkEvent;
 
+export type HardPatchEvent = {
+  id: string;
+  state: any;
+  // apply the state to a selected field only
+  selector?: string[];
+} & EventDto;
+
 export type AnyEvent =
   | CreateEvent
   | PatchEvent
   | DeleteEvent
   | LinkEvent
-  | UnlinkEvent;
+  | UnlinkEvent
+  | HardPatchEvent;
 
 export type TreeDefReturnType = {
   validateCreate: (event: CreateEvent) => boolean;
@@ -213,7 +221,10 @@ export type ForestUpdate =
 
 export type ForestUpdateSubscriber = (
   update: ForestUpdate,
-  more: { name: string; meta: { agent: "browser" | "server-sent" } }
+  more: {
+    name: string;
+    meta: EventMetaData;
+  }
 ) => void;
 
 export type ForestUpdateUnsubscriber = () => void;

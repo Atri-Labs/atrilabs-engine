@@ -2,10 +2,34 @@ import { BrowserClient } from "@atrilabs/core";
 import { AnyEvent, Folder, Page, PageDetails } from "@atrilabs/forest";
 import { io, Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "./types";
+import {
+  ServerToClientEvents as IPCServerToClientEvents,
+  ClientToServerEvents as IPCClientToServerEvents,
+} from "../ipc-server/types";
+
+const auth = { projectId: "" };
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string
+  process.env["ATRI_TOOL_EVENT_SERVER_CLIENT"] as string,
+  { autoConnect: false, auth }
 );
+
+const ipcSocket: Socket<IPCServerToClientEvents, IPCClientToServerEvents> = io(
+  process.env["ATRI_TOOL_IPC_SERVER_CLIENT"] as string,
+  { autoConnect: false, auth }
+);
+
+fetch("/api/project-info")
+  .then((resp) => resp.json())
+  .then((resp) => {
+    const projectId = resp["projectId"];
+    if (projectId) {
+      auth.projectId = projectId;
+      socket.connect();
+      ipcSocket.connect();
+    }
+  })
+  .catch((err) => console.log("Error in fetching /project-info", err));
 
 function getMeta(forestPkgId: string, onData: (meta: any) => void) {
   socket.emit("getMeta", forestPkgId, onData);
@@ -205,7 +229,38 @@ const subscribeResourceUpdates: BrowserClient["subscribeResourceUpdates"] = (
   socket.on("newResource", cb);
 };
 
+const getSocket: BrowserClient["getSocket"] = () => {
+  return socket;
+};
+
+const getIPCSocket: BrowserClient["getSocket"] = () => {
+  return ipcSocket;
+};
+
+ipcSocket.on("connect", () => {
+  ipcSocket.emit("registerAs", "browser", () => {});
+});
+
+const getAttachedServicesStatus: BrowserClient["getAttachedServicesStatus"] = (
+  cb
+) => {
+  ipcSocket.emit("getAttachedServicesStatus", (status) => {
+    cb(status);
+  });
+};
+
+const subscribeServiceStatus: BrowserClient["subscribeServiceStatus"] = (
+  cb
+) => {
+  ipcSocket.on("attachedServiceStatusChanged", cb);
+  return () => {
+    ipcSocket.off("attachedServiceStatusChanged", cb);
+  };
+};
+
 const client: BrowserClient = {
+  getSocket,
+  getIPCSocket,
   getMeta,
   getPages,
   createFolder,
@@ -230,6 +285,8 @@ const client: BrowserClient = {
   importResource,
   getResources,
   subscribeResourceUpdates,
+  getAttachedServicesStatus,
+  subscribeServiceStatus,
 };
 
 export default client;

@@ -1,159 +1,82 @@
-import {
-  AnyEvent,
-  CreateEvent,
-  DeleteEvent,
-  LinkEvent,
-  PatchEvent,
-  UnlinkEvent,
-} from "./types";
-import { mergeWith } from "lodash";
-
-function mergeStateCustomizer(obj: any, src: any) {
-  // replace array instead of default merge
-  if (Array.isArray(obj)) {
-    return src;
-  }
-}
-
-function detectEventType(event: AnyEvent) {
-  const [eventType, treeId] = event.type.split("$$");
-  return { eventType, treeId };
-}
+import { AnyEvent, ForestDef } from "./types";
+import { createForest } from "./forest";
 
 /**
  * It implements a tree agnostic compression algorithm.
  * All patch events are merged. Only last link event is kept.
  * Only last unlink event is kept. A node is dropped if delete is emitted.
  */
-export function compressEvents(events: AnyEvent[]) {
-  const intermediateCompression: {
-    [treeId: string]: {
-      nodes: {
-        [nodeId: string]: {
-          create?: CreateEvent;
-          patch?: PatchEvent;
-          link?: LinkEvent;
-          unlink?: UnlinkEvent;
-          linkLast?: boolean;
-          creationIndex?: number;
-        };
-      };
-    };
-  } = {};
-  for (let i = 0; i < events.length; i++) {
-    const event = events[i]!;
-    const { eventType, treeId } = detectEventType(event);
-    if (!eventType) {
-      console.log(
-        "ERROR: event type not found in event\n",
-        JSON.stringify(event, null, 2)
-      );
-      continue;
-    }
-    if (!treeId) {
-      console.log(
-        "ERROR: treeId not found in event\n",
-        JSON.stringify(event, null, 2)
-      );
-      continue;
-    }
-    if (intermediateCompression[treeId] === undefined) {
-      intermediateCompression[treeId] = { nodes: {} };
-    }
-    switch (eventType) {
-      case "CREATE":
-        const createEvent = event as CreateEvent;
-        const createdNodeId = createEvent.id;
-        intermediateCompression[treeId]!.nodes[createdNodeId] = {
-          ...intermediateCompression[treeId]!.nodes[createdNodeId],
-          create: createEvent,
-          creationIndex: i,
-        };
-        break;
-      case "DELETE":
-        const deleteEvent = event as DeleteEvent;
-        const deletedNodeId = deleteEvent.id;
-        delete intermediateCompression[treeId]!.nodes[deletedNodeId];
-        break;
-      case "PATCH":
-        const patchEvent = event as PatchEvent;
-        const patchedNodeId = patchEvent.id;
-        if (intermediateCompression[treeId]!.nodes[patchedNodeId]?.patch) {
-          const currentPatchEvent =
-            intermediateCompression[treeId]!.nodes[patchedNodeId]!.patch!;
-          // mutating current patch event by merging with new patch event
-          mergeWith(
-            currentPatchEvent.slice,
-            patchEvent.slice,
-            mergeStateCustomizer
-          );
-        } else {
-          intermediateCompression[treeId]!.nodes[patchedNodeId] = {
-            ...intermediateCompression[treeId]!.nodes[patchedNodeId],
-            patch: patchEvent,
-          };
-        }
-        break;
-      case "LINK":
-        const linkEvent = event as LinkEvent;
-        const linkNodeId = linkEvent.childId;
-        intermediateCompression[treeId]!.nodes[linkNodeId] = {
-          ...intermediateCompression[treeId]!.nodes[linkNodeId],
-          link: linkEvent,
-          linkLast: true,
-        };
-        break;
-      case "UNLINK":
-        const unlinkEvent = event as UnlinkEvent;
-        const unlinkNodeId = unlinkEvent.childId;
-        intermediateCompression[treeId]!.nodes[unlinkNodeId] = {
-          ...intermediateCompression[treeId]!.nodes[unlinkNodeId],
-          unlink: unlinkEvent,
-          linkLast: false,
-        };
-        break;
-      default:
-        console.log(
-          "ERROR: unknown event type\n",
-          JSON.stringify(event, null, 2)
-        );
-        break;
-    }
+export function compressEvents(events: AnyEvent[], forestDef: ForestDef) {
+  if (forestDef.trees.length === 0) {
+    throw Error("Need atleas one tree in ForestDef");
   }
 
-  // flatten all trees
-  const allNodes = Object.keys(intermediateCompression)
+  const forest = createForest(forestDef);
+  forest.handleEvents({
+    name: "COMPRESSION",
+    events,
+    meta: { agent: "server-sent" },
+  });
+  const treeIds = forestDef.trees.map((treeDef) => {
+    return treeDef.id;
+  });
+
+  const rootTreeId = treeIds[0]!;
+  // root tree components
+  const rootTree = forest.tree(rootTreeId)!;
+  const rootTreeNodeMap = rootTree.nodes;
+  const rootTreeNodeIds = Object.keys(rootTreeNodeMap);
+
+  // process non root trees first
+  const nonRootTreeEvents = treeIds
+    .filter((treeId) => treeId !== rootTreeId)
     .map((treeId) => {
-      return Object.keys(intermediateCompression[treeId]!.nodes).map(
-        (nodeId) => {
-          return { ...intermediateCompression[treeId]!.nodes[nodeId]!, nodeId };
-        }
-      );
+      const tree = forest.tree(treeId)!;
+      const nodeMap = tree.nodes;
+      const linkRefIds = Object.keys(tree.links);
+      // keep only those nodes that are linked to root tree
+      const nodeIds = linkRefIds
+        .filter((refId) => {
+          return refId in rootTreeNodeMap;
+        })
+        .map((refId) => {
+          return tree.links[refId]!.childId;
+        });
+
+      const reverseLinkMap: { [childId: string]: string } = {};
+      linkRefIds.forEach((linkRefId) => {
+        reverseLinkMap[tree.links[linkRefId]!.childId] = linkRefId;
+      });
+
+      return nodeIds.map((nodeId): AnyEvent[] => {
+        const node = nodeMap[nodeId]!;
+        return [
+          {
+            type: `CREATE$$${treeId}`,
+            id: nodeId,
+            meta: node.meta,
+            state: node.state,
+          },
+          {
+            type: `LINK$$${treeId}`,
+            childId: nodeId,
+            refId: reverseLinkMap[nodeId]!,
+          },
+        ];
+      });
     })
     .flat()
-    .filter((node) => {
-      return node.create !== undefined;
-    });
+    .flat();
 
-  // sort nodes based on their creation index
-  allNodes.sort((a, b) => {
-    return a.creationIndex! - b.creationIndex!;
+  const rootTreeEvents = rootTreeNodeIds.map((nodeId): AnyEvent => {
+    const node = rootTreeNodeMap[nodeId]!;
+    return {
+      type: `CREATE$$${rootTreeId}`,
+      id: nodeId,
+      meta: node.meta,
+      state: node.state,
+    };
   });
 
-  const newEvents: AnyEvent[] = [];
-  allNodes.forEach((node) => {
-    newEvents.push(node.create!);
-    if (node.patch) newEvents.push(node.patch);
-    if (node.linkLast !== undefined) {
-      switch (node.linkLast) {
-        case false:
-          if (node.unlink) newEvents.push(node.unlink!);
-          break;
-        default:
-          if (node.link) newEvents.push(node.link!);
-      }
-    }
-  });
-
-  return newEvents;
+  return [...nonRootTreeEvents, ...rootTreeEvents];
 }
