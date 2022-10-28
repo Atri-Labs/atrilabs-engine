@@ -20,11 +20,11 @@ async def on_connect(sio):
             printd("Registered as atri-cli with ipc server.")
     await sio.emit("registerAs", "atri-cli", callback=print_success_cb)
 
-def add_packages_to_global_pipfile(global_pip_path: str, current_pip_path):
+def add_packages_to_global_pipfile(global_pip_path: str, current_pip_path: str):
     current_pip_file = toml.load(current_pip_path)
     global_pip_file = toml.load(global_pip_path)
 
-    for pckg,version in current_pip_file['packages'].items():
+    for pckg, version in current_pip_file['packages'].items():
         global_pip_file['packages'][pckg] = version
     for pckg, version in current_pip_file['dev-packages'].items():
         global_pip_file['dev-packages'][pckg] = version
@@ -32,13 +32,16 @@ def add_packages_to_global_pipfile(global_pip_path: str, current_pip_path):
     with open(global_pip_path, 'w') as f:
         toml.dump(global_pip_file, f)
 
-def add_packages_to_global_yml_file(global_yml_path, current_pip_path):
+def add_packages_to_global_yml_file(global_yml_path : str, current_pip_path: str):
     current_pip_file = toml.load(current_pip_path)
     with open(global_yml_path, 'r') as stream:
         data_loaded = yaml.safe_load(stream)
         for pckg, version in current_pip_file['packages'].items():
             if version != '*':
-                data_loaded['dependencies'] += [f'{pckg}{version}']
+                if type(version) == dict:
+                    data_loaded['dependencies'] += [f'{pckg}{version["version"]}']
+                else:
+                    data_loaded['dependencies'] += [f'{pckg}{version}']
             else:
                 data_loaded['dependencies'] += [pckg]
         for pckg, version in current_pip_file['dev-packages'].items():
@@ -103,53 +106,33 @@ def handle_ipc_events(sio, paths):
         initial_pipfile_path = os.path.join(controllers_dir, "Pipfile")
         # check if Pipfile exist in controller directory
         if os.path.exists(initial_pipfile_path):
-            # read Pipfile
-            # pipfile_data = toml.load(initial_pipfile_path)
-            # pkgs = pipfile_data["packages"]
-            # dev_pkgs = pipfile_data["dev-packages"]
-            # # run pipenv install <package_name> for each file in Pipfile inside app_dir
-            # for pkg in pkgs:
-            #     version = pkgs[pkg]
-            #     if type(version) != str:
-            #         version = version["version"]
-            #     child_proc = await install_package(app_dir, pkg, version)
-            #     _, stderr = await child_proc.communicate()
-            #     if child_proc.returncode != 0:
-            #         print("Failed: {} install".format(get_virtualenv_type()), pkg, version)
-            #         if stderr:
-            #             printd("[stderr]\n", stderr)
-            #     else:
-            #         printd("Installed", pkg, version)
-            # for pkg in dev_pkgs:
-            #     version = dev_pkgs[pkg]
-            #     if type(version) != str:
-            #         version = version["version"]
-            #     child_proc = await install_package(app_dir, pkg, version)
-            #     _, stderr = await child_proc.communicate()
-            #     if child_proc.returncode != 0:
-            #         print("Failed: {} install".format(get_virtualenv_type()), pkg, version)
-            #         if stderr:
-            #             printd("[stderr]\n", stderr)
-            #     else:
-            #         printd("Installed", pkg, version)
             current_env = get_virtualenv_type()
             if current_env == 'pipenv':
-                add_packages_to_global_pipfile(os.path.join(app_dir,'Pipfile'),initial_pipfile_path)
+                add_packages_to_global_pipfile(os.path.join(app_dir, 'Pipfile'), initial_pipfile_path)
                 child_proc =  await run_shell_cmd('pipenv install', app_dir)
                 _, stderr = await child_proc.communicate()
 
-                #TODO :- Add users feedback of some sort to show packages installed
-
+                if child_proc.returncode != 0:
+                    print("Failed: {} installation of internal dependencies".format(get_virtualenv_type()))
+                    if stderr:
+                        printd("[stderr]\n", stderr)
+                else:
+                    printd("Installed Packages")
 
             elif current_env == 'conda':
 
                 child_proc = await run_shell_cmd('conda env export > environment.yml', app_dir)
                 _, stderr = await child_proc.communicate()
-                add_packages_to_global_yml_file(Path.joinpath(app_dir, 'environment.yml'), initial_pipfile_path)
+                add_packages_to_global_yml_file(os.path.join(app_dir, 'environment.yml'), initial_pipfile_path)
                 child_proc = await run_shell_cmd('conda env update -f environment.yml', app_dir)
                 _, stderr = await child_proc.communicate()
 
-                # TODO :- Add users feedback of some sort to show packages installed
+                if child_proc.returncode != 0:
+                    print("Failed: {} installation of internal dependencies".format(get_virtualenv_type()))
+                    if stderr:
+                        printd("[stderr]\n", stderr)
+                else:
+                    printd("Installed Packages")
 
             # delete Pipfile from controllers_dir
             os.remove(initial_pipfile_path)
@@ -163,7 +146,7 @@ def handle_ipc_events(sio, paths):
             python_server_proc = await call_serve(app_dir)
             await python_server_proc.wait()
             if python_server_proc.returncode != 0:
-                print("Error occured while running python -m controllers.server serve")
+                print("Error occurred while running python -m controllers.server serve")
             returncode = python_server_proc.returncode
             python_server_proc = None
             return returncode
