@@ -1,4 +1,6 @@
 import { Breakpoint, ComponentCoordsWM } from "@atrilabs/canvas-runtime";
+import { BrowserForestManager } from "@atrilabs/core";
+import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import { TreeNode } from "@atrilabs/forest";
 
 // ================== body ===============================
@@ -131,4 +133,9 @@ export function createSortedParentChildMap(
     });
   }
   return parentChildMap;
+}
+
+export function getComponentNode(id: string) {
+  const compTree = BrowserForestManager.currentForest.tree(ComponentTreeId);
+  return compTree!.nodes[id];
 }

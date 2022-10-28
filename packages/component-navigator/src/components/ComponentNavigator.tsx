@@ -5,6 +5,7 @@ import {
   sendMouseDownEvent,
   sendMouseMoveEvent,
   sendMouseUpEvent,
+  subscribeDragEnd,
   subscribeReposition,
   subscribeWait,
   waitingForNodesToClose,
@@ -24,7 +25,7 @@ export type ComponentNavigatorProps = {
   // Call onDragStart whenever the drag process starts
   onDragStart?: (id: string) => void;
   // Call onDragEnd whenever the drag process stops
-  onDragEnd?: (id: string) => void;
+  onDragEnd?: (draggedNode: NavigatorNode) => void;
   // Open or close a subtree
   onToggleOpen?: (id: string) => void;
 };
@@ -101,6 +102,13 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
   useEffect(() => {
     const unsub = subscribeReposition((id, parentId, index) => {
       props.onChange?.({ id, parentId, index });
+    });
+    return unsub;
+  }, [props]);
+
+  useEffect(() => {
+    const unsub = subscribeDragEnd((draggedNode) => {
+      props.onDragEnd?.(draggedNode);
     });
     return unsub;
   }, [props]);

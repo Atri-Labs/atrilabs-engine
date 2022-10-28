@@ -103,11 +103,15 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
       const { y } = containerRef.current.getBoundingClientRect();
       const netY = event.event.clientY - y + containerRef.current.scrollTop;
       const newIndex = Math.floor(netY / 24);
+      if (newIndex <= 0) {
+        // do not do anything if reached root node or beyond
+        return context;
+      }
       const isDraggedNodeAlreadyAtNewIndex =
         flattenedNodes![newIndex].id === context.draggedNode!.id;
       if (
         newIndex !== context.draggedNodeIndexInFlattenedArray &&
-        newIndex >= 0 &&
+        newIndex > 0 &&
         !isDraggedNodeAlreadyAtNewIndex
       ) {
         // TODO: call callbacks for reposition
@@ -218,9 +222,32 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
   }
 );
 
-const onMouseUpAction = assign<DragDropMachineContext, MouseUpEvent>(() => {
-  return {};
-});
+type DragEndSubscriber = (draggedNode: NavigatorNode) => void;
+
+const dragEndSubsrcibers: DragEndSubscriber[] = [];
+
+export function subscribeDragEnd(cb: DragEndSubscriber) {
+  dragEndSubsrcibers.push(cb);
+  return () => {
+    const foundIndex = dragEndSubsrcibers.findIndex((val) => val === cb);
+    if (foundIndex >= 0) {
+      dragEndSubsrcibers.splice(foundIndex, 1);
+    }
+  };
+}
+
+function callDragEndSubscribers(draggedNode: NavigatorNode) {
+  dragEndSubsrcibers.forEach((cb) => {
+    cb(draggedNode);
+  });
+}
+
+const onMouseUpAction = assign<DragDropMachineContext, MouseUpEvent>(
+  (context) => {
+    callDragEndSubscribers(context.draggedNode!);
+    return {};
+  }
+);
 
 const onClosedNodeAction = assign<
   DragDropMachineContext,
@@ -250,6 +277,16 @@ const shouldNotBeOpen = (
       draggedNodeIndexInFlattenedArray,
       flattenedNodes
     );
+  }
+  return true;
+};
+
+const shouldNotBeRoot = (
+  _context: DragDropMachineContext,
+  event: MouseDownEvent
+) => {
+  if (event.draggedNodeIndexInFlattenedArray === 0) {
+    return false;
   }
   return true;
 };
@@ -286,6 +323,7 @@ const navigatorDragDropMachine = createMachine<
         mouseDown: {
           target: dragStarted,
           actions: [onMouseDownAction],
+          cond: shouldNotBeRoot,
         },
       },
     },
