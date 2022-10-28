@@ -181,7 +181,7 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         const draggedNodesParent = context.draggedNode!.parentNode!;
         const isLastChild =
           draggedNode.index === draggedNodesParent.children!.length - 1;
-        if (isLastChild) {
+        if (isLastChild && draggedNodesParent.parentNode !== null) {
           callRepositionSubscribers(
             draggedNode.id,
             draggedNodesParent.parentNode!.id,
