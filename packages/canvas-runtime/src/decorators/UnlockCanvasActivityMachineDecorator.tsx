@@ -88,7 +88,10 @@ export const UnlockCanvasActivityMachineDecorator: React.FC<DecoratorProps> = (
         const childElement = childElements[i];
         setDescendantsTabIndexToNegOne(childElement);
         childElement.setAttribute("tabindex", "-1");
-        if (childElement.ELEMENT_NODE) {
+        if (
+          childElement.ELEMENT_NODE &&
+          process.env["ATRI_TOOL_MODE"] !== "component_development"
+        ) {
           (childElement as HTMLElement).style.pointerEvents = "none";
         }
       }

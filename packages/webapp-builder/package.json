@@ -28,6 +28,7 @@
     "clean": "rimraf lib && rimraf dist",
     "build": "build-atri-tool",
     "start": "dev-atri-tool",
+    "start:comp_dev": "MODE=component_development dev-atri-tool",
     "server": "ATRI_PROJECT_ID=TestProjectId bootstrap-atri-services",
     "buildManifests": "build-manifest-pkg --freeze",
     "generateApp": "run-atri-target --task generate --target 'Web App'",
