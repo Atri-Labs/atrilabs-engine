@@ -131,9 +131,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    title: "array",
-    description: "array",
-    open: "array_boolean",
+    title: { type: "array" },
+    description: { type: "array" },
+    open: { type: "array_boolean" },
   },
 };
 

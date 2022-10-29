@@ -68,7 +68,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
+    text: { type: "text" },
   },
 };
 

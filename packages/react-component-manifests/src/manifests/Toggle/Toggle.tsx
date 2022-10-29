@@ -91,9 +91,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    active: "boolean",
-    activeColor: "color",
-    inactiveColor: "color",
+    active: { type: "boolean" },
+    activeColor: { type: "color" },
+    inactiveColor: { type: "color" },
   },
 };
 

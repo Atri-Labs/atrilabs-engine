@@ -46,7 +46,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
   return (
     <div style={styles.container}>
       {propNames.map((propName) => {
-        const propType = props.treeOptions.dataTypes[propName];
+        const propType = props.treeOptions.dataTypes[propName].type;
         if (propType === "text")
           return (
             <Text

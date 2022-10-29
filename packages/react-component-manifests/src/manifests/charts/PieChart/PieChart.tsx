@@ -148,13 +148,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    data: "array",
-    options: "array",
-    toolTip: "map",
-    legend: "map",
-    keys: "map",
-    chartHeight: "number",
-    chartWidth: "number",
+    data: { type: "array" },
+    options: { type: "array" },
+    toolTip: { type: "map" },
+    legend: { type: "map" },
+    keys: { type: "map" },
+    chartHeight: { type: "number" },
+    chartWidth: { type: "number" },
   },
 };
 

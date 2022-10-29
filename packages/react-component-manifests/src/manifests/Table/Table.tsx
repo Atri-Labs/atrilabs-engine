@@ -99,13 +99,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    rows: "array",
-    cols: "array",
-    checkboxSelection: "boolean",
-    autoHeight: "boolean",
-    numRows: "number",
-    rowHeight: "number",
-    selection: "array",
+    rows: { type: "array" },
+    cols: { type: "array" },
+    checkboxSelection: { type: "boolean" },
+    autoHeight: { type: "boolean" },
+    numRows: { type: "number" },
+    rowHeight: { type: "number" },
+    selection: { type: "array" },
   },
 };
 

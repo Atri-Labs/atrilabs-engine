@@ -69,8 +69,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    alt: "text",
-    src: "static_asset",
+    alt: { type: "text" },
+    src: { type: "static_asset" },
   },
 };
 

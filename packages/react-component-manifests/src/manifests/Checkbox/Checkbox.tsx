@@ -51,7 +51,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    checked: "boolean",
+    checked: { type: "boolean" },
   },
 };
 

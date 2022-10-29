@@ -94,10 +94,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    multuple: "boolean",
-    showFilename: "boolean",
-    text: "text",
-    disabled: "boolean",
+    multuple: { type: "boolean" },
+    showFilename: { type: "boolean" },
+    text: { type: "text" },
+    disabled: { type: "boolean" },
   },
 };
 

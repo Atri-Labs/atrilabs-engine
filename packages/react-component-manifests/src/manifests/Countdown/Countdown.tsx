@@ -263,15 +263,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    days: "number",
-    hours: "number",
-    minutes: "number",
-    seconds: "number",
-    frozen: "boolean",
-    showDays: "boolean",
-    showHours: "boolean",
-    showMinutes: "boolean",
-    showSeconds: "boolean",
+    days: { type: "number" },
+    hours: { type: "number" },
+    minutes: { type: "number" },
+    seconds: { type: "number" },
+    frozen: { type: "boolean" },
+    showDays: { type: "boolean" },
+    showHours: { type: "boolean" },
+    showMinutes: { type: "boolean" },
+    showSeconds: { type: "boolean" },
   },
 };
 
