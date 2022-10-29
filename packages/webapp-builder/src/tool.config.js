@@ -46,6 +46,9 @@ const IPC_SERVER_PORT = process.env["IPC_SERVER_PORT"]
   : 4006;
 const IPC_SERVER_CLIENT = `http://localhost:${IPC_SERVER_PORT}`;
 
+// mode can be component_development, development, production
+const MODE = process.env["MODE"];
+
 module.exports = {
   pkgManager: "yarn",
   forests: forestsConfig,
@@ -179,6 +182,7 @@ module.exports = {
     MANIFEST_SERVER_CLIENT,
     PUBLISH_SERVER_CLIENT,
     IPC_SERVER_CLIENT,
+    MODE,
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {
