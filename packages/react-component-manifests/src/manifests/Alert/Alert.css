@@ -1,0 +1,28 @@
+#icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#icon-logo {
+  max-width: 1rem;
+}
+
+#information {
+  row-gap: 1rem;
+}
+
+#information {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+#description {
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+#close-button {
+  border: none;
+  background-color: #00000000;
+}
