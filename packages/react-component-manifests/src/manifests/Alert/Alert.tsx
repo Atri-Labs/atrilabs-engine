@@ -149,6 +149,7 @@ const compManifest: ReactComponentManifestSchema = {
           flexDirection: "row",
           alignItems: "flex-start",
           columnGap: "10px",
+          justifyContent: "space-between"
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
