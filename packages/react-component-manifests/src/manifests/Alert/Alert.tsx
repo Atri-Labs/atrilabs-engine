@@ -116,7 +116,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    alertType: { type: "text" },
+    alertType: {
+      type: "enum",
+      options: ["success", "info", "warning", "error"],
+    },
     title: { type: "text" },
     description: { type: "text" },
     successIcon: { type: "static_asset" },
@@ -153,7 +156,6 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          alertType: "success",
           title: "Alert Title",
           description: "Alert Description",
           isClosable: true,
