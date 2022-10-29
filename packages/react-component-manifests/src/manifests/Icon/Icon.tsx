@@ -46,7 +46,7 @@ export const Icon = forwardRef<
       className={props.className}
       style={props.styles}
       onClick={onClick}
-      dangerouslySetInnerHTML={{__html: props.custom.svg}}
+      dangerouslySetInnerHTML={{ __html: props.custom.svg }}
     />
   );
 });
@@ -66,7 +66,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    svg: "text",
+    svg: { type: "text" },
   },
 };
 
@@ -106,10 +106,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Icon"} },
+  panel: { comp: CommonIcon, props: { name: "Icon" } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Icon", containerStyle: { padding: "1rem" }},
+    props: { name: "Icon", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
