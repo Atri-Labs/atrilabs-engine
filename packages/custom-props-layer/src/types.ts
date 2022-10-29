@@ -12,6 +12,7 @@ export type TabBodyProps = {
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">
   ) => void;
+  options?: string[];
 };
 
 export type ComponentProps = TabBodyProps & {
