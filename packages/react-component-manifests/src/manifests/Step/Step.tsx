@@ -229,10 +229,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    color: "color",
-    current: "number",
-    title: "array",
-    description: "array",
+    color: { type: "color" },
+    current: { type: "number" },
+    title: { type: "array" },
+    description: { type: "array" },
   },
 };
 

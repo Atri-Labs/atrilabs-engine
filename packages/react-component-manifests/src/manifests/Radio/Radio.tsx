@@ -58,10 +58,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    name: "text",
-    label: "text",
-    checked: "boolean",
-    radius: "number",
+    name: { type: "text" },
+    label: { type: "text" },
+    checked: { type: "boolean" },
+    radius: { type: "number" },
   },
 };
 

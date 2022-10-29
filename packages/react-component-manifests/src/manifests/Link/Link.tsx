@@ -71,8 +71,8 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: "text",
-    url: "internal_link",
+    text: { type: "text" },
+    url: { type: "internal_link" },
   },
 };
 

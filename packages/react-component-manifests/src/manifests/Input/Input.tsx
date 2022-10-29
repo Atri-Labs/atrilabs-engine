@@ -62,9 +62,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    value: "text",
-    placeholder: "text",
-    isPasswordField: "boolean",
+    value: { type: "text" },
+    placeholder: { type: "text" },
+    isPasswordField: { type: "boolean" },
   },
 };
 

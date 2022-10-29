@@ -72,9 +72,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    values: "array",
-    selectedValue: "text",
-    displayedValues: "array",
+    values: { type: "array" },
+    selectedValue: { type: "text" },
+    displayedValues: { type: "array" },
   },
 };
 

@@ -99,13 +99,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    open: "boolean",
-    src: "static_asset",
-    iconHeight: "number",
-    iconWidth: "number",
-    strokeColor: "color",
-    gap: "number",
-    alignRight: "boolean",
+    open: { type: "boolean" },
+    src: { type: "static_asset" },
+    iconHeight: { type: "number" },
+    iconWidth: { type: "number" },
+    strokeColor: { type: "color" },
+    gap: { type: "number" },
+    alignRight: { type: "boolean" },
   },
 };
 

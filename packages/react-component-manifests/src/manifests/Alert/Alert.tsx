@@ -66,7 +66,13 @@ export const Alert = forwardRef<
     } else {
       return props.custom.successIcon || SuccessIcon;
     }
-  }, [props.custom.alertType]);
+  }, [
+    props.custom.alertType,
+    props.custom.errorIcon,
+    props.custom.warningIcon,
+    props.custom.infoIcon,
+    props.custom.successIcon,
+  ]);
 
   return (
     <div
@@ -110,14 +116,14 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    alertType: "text",
-    title: "text",
-    description: "text",
-    successIcon: "static_asset",
-    infoIcon: "static_asset",
-    warningIcon: "static_asset",
-    errorIcon: "static_asset",
-    isClosable: "boolean",
+    alertType: { type: "text" },
+    title: { type: "text" },
+    description: { type: "text" },
+    successIcon: { type: "static_asset" },
+    infoIcon: { type: "static_asset" },
+    warningIcon: { type: "static_asset" },
+    errorIcon: { type: "static_asset" },
+    isClosable: { type: "boolean" },
   },
 };
 

@@ -249,9 +249,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    minValue: "number",
-    maxValue: "number",
-    value: "number",
+    minValue: { type: "number" },
+    maxValue: { type: "number" },
+    value: { type: "number" },
   },
 };
 

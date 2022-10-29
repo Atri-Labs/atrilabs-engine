@@ -153,9 +153,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    items: "array",
-    startTile: "number",
-    imageItems: "array_static_asset",
+    items: { type: "array" },
+    startTile: { type: "number" },
+    imageItems: { type: "array_static_asset" },
   },
 };
 

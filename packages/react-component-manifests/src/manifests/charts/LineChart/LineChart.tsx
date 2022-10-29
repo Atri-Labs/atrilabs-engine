@@ -197,15 +197,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    cartesianGrid: "map",
-    data: "array",
-    options: "map",
-    toolTip: "map",
-    legend: "map",
-    xAxis: "map",
-    yAxis: "map",
-    chartHeight: "number",
-    chartWidth: "number",
+    cartesianGrid: { type: "map" },
+    data: { type: "array" },
+    options: { type: "map" },
+    toolTip: { type: "map" },
+    legend: { type: "map" },
+    xAxis: { type: "map" },
+    yAxis: { type: "map" },
+    chartHeight: { type: "number" },
+    chartWidth: { type: "number" },
   },
 };
 
