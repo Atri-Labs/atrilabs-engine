@@ -2,10 +2,20 @@ import React, { useEffect, useState } from "react";
 import { createMachine, assign, Action, interpret } from "xstate";
 import type { StartDragArgs, DragComp, DragData, Location } from "../types";
 import {
+  cancelMachineLock,
+  isMachineLocked,
   lockMachineForCompDrop,
   lockMachineForDataDrop,
   lockMachineForTemplateDrop,
+  setDataDropTarget,
+  unlockMachine,
+  unsetDataDropTarget,
 } from "../decorators/CanvasActivityDecorator";
+import { findCatcher, getCoords } from "../utils";
+import {
+  canvasComponentStore,
+  canvasComponentTree,
+} from "../CanvasComponentData";
 
 type DragDropMachineContext = {
   startDragArgs: StartDragArgs | null;
@@ -168,7 +178,6 @@ export const useDragDrop = (
       service.send({ type: "MOUSE_UP", loc: event });
     };
     const mouseEnteredCb = (event: MouseEvent) => {
-      console.log("mouse entered");
       service.send({ type: "CANVAS_ENTERED" });
     };
     const mouseExitedCb = (event: MouseEvent) => {
@@ -235,13 +244,189 @@ export const useDragDrop = (
     props: any;
     style: React.CSSProperties;
   } | null>(null);
+  const [canvasOverlay, setCanvasOverlay] = useState<{
+    comp: React.FC;
+    props: any;
+    style: React.CSSProperties;
+  } | null>(null);
   useEffect(() => {
+    const displayDragComponentOutsideCanvas = (
+      args: StartDragArgs,
+      loc: Location
+    ) => {
+      if (containerRef.current) {
+        const containerCoords = getCoords(containerRef.current);
+        const absoluteTop = loc.pageY - containerCoords.top + 10;
+        const absoluteLeft = loc.pageX - containerCoords.left + 10;
+        const style: React.CSSProperties = {
+          top: absoluteTop,
+          left: absoluteLeft,
+          position: "absolute",
+        };
+        setOverlay({ ...args.dragComp, style });
+      }
+    };
+    const removeDragComponentOutsideCanvas = () => {
+      setOverlay(null);
+    };
+
+    const displayDragComponentInsideCanvas = (
+      args: StartDragArgs,
+      loc: Location
+    ) => {
+      const absoluteTop = loc.pageY + 10;
+      const absoluteLeft = loc.pageX + 10;
+      const style: React.CSSProperties = {
+        top: absoluteTop,
+        left: absoluteLeft,
+        position: "absolute",
+      };
+      setCanvasOverlay({ ...args.dragComp, style });
+    };
+    const removeDragComponentInsideCanvas = () => {
+      setCanvasOverlay(null);
+    };
+
+    const callNewDropSubscribers = (
+      args: StartDragArgs,
+      loc: Location,
+      caughtBy: string
+    ) => {
+      dropSubscribers.forEach((cb) => cb(args, loc, caughtBy));
+    };
+
+    const callNewDragSubscribers = (
+      args: StartDragArgs,
+      loc: Location,
+      caughtBy: string | null
+    ) => {
+      dragSubscribers.forEach((cb) => cb(args, loc, caughtBy));
+    };
+
     service.onTransition((state, event) => {
+      if (
+        state.value === OUT_OF_CANVAS &&
+        event.type === MOUSE_MOVE &&
+        state.context.startDragArgs
+      ) {
+        displayDragComponentOutsideCanvas(
+          state.context.startDragArgs,
+          event.loc
+        );
+      }
+
+      if (state.value === IN_CANVAS) {
+        removeDragComponentOutsideCanvas();
+      }
+
+      if (
+        state.value === IN_CANVAS &&
+        event.type === "MOUSE_MOVE" &&
+        state.context.startDragArgs
+      ) {
+        displayDragComponentInsideCanvas(
+          state.context.startDragArgs,
+          event.loc
+        );
+      }
+
+      if (state.value === OUT_OF_CANVAS) {
+        removeDragComponentInsideCanvas();
+      }
+
+      // reset machine
       if (state.value === DRAG_SUCCESS || state.value === DRAG_FAILED) {
         service.send({ type: RESTART });
+        removeDragComponentInsideCanvas();
+        removeDragComponentOutsideCanvas();
+      }
+
+      // create dropped component
+      if (
+        state.value === DRAG_SUCCESS &&
+        event.type === "MOUSE_UP" &&
+        state.context.startDragArgs
+      ) {
+        const caughtBy = findCatcher(
+          canvasComponentTree,
+          canvasComponentStore,
+          state.context.startDragArgs.dragData,
+          event.loc
+        );
+        if (caughtBy) {
+          // inform drop subscribers
+          callNewDropSubscribers(
+            state.context.startDragArgs,
+            event.loc,
+            caughtBy!.id
+          );
+        }
+        if (state.context.startDragArgs.dragData.type === "src") {
+          // if caughtBy is null then unset data drop target, otherwise set the target
+          if (caughtBy) {
+            setDataDropTarget(caughtBy.id);
+          } else {
+            unsetDataDropTarget();
+          }
+          // If we are dropping src, then we can immidiately unlock the machine,
+          // once we have set/unset the target.
+          unlockMachine();
+        }
+        // Wait for 500 ms before unlocking the machine
+        // If caughtBy is null, then immidiately unlock the machine
+        if (caughtBy) {
+          setTimeout(() => {
+            if (isMachineLocked()) {
+              cancelMachineLock();
+              console.error(
+                "Cancel machine lock was created as a escape hatch and isn't expected to happen. Please report to Atri Labs about this error message."
+              );
+            }
+          }, 500);
+        } else {
+          cancelMachineLock();
+        }
+      }
+
+      // inform drag subscribers
+      if (
+        state.value === IN_CANVAS &&
+        event.type === MOUSE_MOVE &&
+        state.context.startDragArgs
+      ) {
+        if (state.context.startDragArgs) {
+          const caughtBy = findCatcher(
+            canvasComponentTree,
+            canvasComponentStore,
+            state.context.startDragArgs.dragData,
+            event.loc
+          );
+          // drag subscribers are informed in both the cases when caughtBy is null or non-null
+          if (caughtBy) {
+            callNewDragSubscribers(
+              state.context.startDragArgs,
+              event.loc,
+              caughtBy!.id
+            );
+          } else {
+            callNewDragSubscribers(
+              state.context.startDragArgs,
+              event.loc,
+              null
+            );
+          }
+          if (state.context.startDragArgs.dragData.type === "src") {
+            // if caughtBy is null then unset data drop target, otherwise set it
+            if (caughtBy) {
+              setDataDropTarget(caughtBy.id);
+            } else {
+              unsetDataDropTarget();
+            }
+          }
+        }
       }
     });
   }, [containerRef, setOverlay]);
 
-  return overlay;
+  return { overlay, canvasOverlay };
 };

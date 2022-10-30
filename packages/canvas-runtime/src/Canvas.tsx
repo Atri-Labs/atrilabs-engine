@@ -30,7 +30,7 @@ export const Canvas: React.FC = React.memo(() => {
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
-  const overlay = useDragDrop(dragzoneRef, iframeRef);
+  const { overlay, canvasOverlay } = useDragDrop(dragzoneRef, iframeRef);
   const { stylesheets } = useSubscribeStylesheetUpdates();
   useEffect(() => {
     if (iframeRef && iframeRef.contentWindow) {
@@ -83,7 +83,14 @@ export const Canvas: React.FC = React.memo(() => {
                 >
                   {iframeRef && iframeRef.contentDocument
                     ? ReactDOM.createPortal(
-                        <DecoratorRenderer compId="body" decoratorIndex={0} />,
+                        <>
+                          <DecoratorRenderer compId="body" decoratorIndex={0} />
+                          {canvasOverlay ? (
+                            <div style={canvasOverlay.style}>
+                              <canvasOverlay.comp {...canvasOverlay.props} />
+                            </div>
+                          ) : null}
+                        </>,
                         iframeRef.contentDocument.body
                       )
                     : null}
