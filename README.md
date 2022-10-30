@@ -107,7 +107,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-52-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -183,6 +183,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
     <tr>
       <td align="center"><a href="https://github.com/ahmed733"><img src="https://avatars.githubusercontent.com/u/58221987?v=4?s=100" width="100px;" alt="ahmed733"/><br /><sub><b>ahmed733</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Aahmed733" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://leetcode.com/awdhesh_kumar/"><img src="https://avatars.githubusercontent.com/u/100534409?v=4?s=100" width="100px;" alt="Awdhesh Kumar"/><br /><sub><b>Awdhesh Kumar</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Aawdhesh-kumar27" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/Jitulteron7"><img src="https://avatars.githubusercontent.com/u/58761652?v=4?s=100" width="100px;" alt="Jitul Teron"/><br /><sub><b>Jitul Teron</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Jitulteron7" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
