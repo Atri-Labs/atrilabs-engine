@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { canvasComponentStore } from "../CanvasComponentData";
-import { BoxDimension, Dimension, Position } from "../types";
+import { BoxDimension, Position } from "../types";
 import { ComponentCoords, getCoords } from "../utils";
 
 type HintDimension = {
@@ -124,25 +124,25 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
   );
 };
 
-export const useHintOverlays = (dimension: Dimension | undefined) => {
+export const useHintOverlays = () => {
   const [hintNodes, setHintNodes] = useState<React.ReactNode[]>([]);
 
   const setNodesCb = useCallback(() => {
-    if (dimension) {
-      const hintNodeIds = Object.keys(hintOverlays);
-      const hintNodes = hintNodeIds.map((hintNodeId) => {
-        const hintOverlay = hintOverlays[hintNodeId]!;
-        return (
-          <HintOverlayBox
-            {...hintOverlay}
-            scale={dimension.scale}
-            key={hintOverlay.overlayId}
-          />
-        );
-      });
-      setHintNodes(hintNodes);
-    }
-  }, [dimension]);
+    const hintNodeIds = Object.keys(hintOverlays);
+    const hintNodes = hintNodeIds.map((hintNodeId) => {
+      const hintOverlay = hintOverlays[hintNodeId]!;
+      return (
+        <HintOverlayBox
+          {...hintOverlay}
+          // Since overlays are already inside the iframe, we don't need to scale
+          // overlays again.
+          scale={1}
+          key={hintOverlay.overlayId}
+        />
+      );
+    });
+    setHintNodes(hintNodes);
+  }, []);
 
   useEffect(() => {
     // set nodes whenever a overlay data structure is changed
