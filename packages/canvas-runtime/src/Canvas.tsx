@@ -1,10 +1,11 @@
 import { Container, getRef } from "@atrilabs/core";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
+import { acknowledgeEventPropagation } from "./decorators/CanvasActivityDecorator";
 import { useAutoResize } from "./hooks/useAutoResize";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
-import { useHintOverlays } from "./hooks/useHintOverlays";
 import { useSubscribeStylesheetUpdates } from "./hooks/useSubscribeStylesheet";
 import stylesModule from "./styles.module.css";
 
@@ -29,8 +30,13 @@ export const Canvas: React.FC = React.memo(() => {
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
   const overlay = useDragDrop(dragzoneRef);
-  const hintOverlays = useHintOverlays(dimension);
   const { stylesheets } = useSubscribeStylesheetUpdates();
+  const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
+  useEffect(() => {
+    if (iframeRef && iframeRef.contentWindow) {
+      acknowledgeEventPropagation(iframeRef.contentWindow);
+    }
+  }, [iframeRef, iframeRef?.contentWindow]);
   return (
     <>
       <div
@@ -70,27 +76,18 @@ export const Canvas: React.FC = React.memo(() => {
                   transformOrigin: "0 0",
                 }}
               >
-                <div
-                  // this div actually contains all dropped elements
-                  style={{
-                    // absolute prevents the height of page to increase when content increases
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    overflow: "hidden",
-                  }}
+                <iframe
+                  title="canvas"
+                  ref={setIframeRef}
+                  style={{ width: "100%", height: "100%" }}
                 >
-                  <DecoratorRenderer compId="body" decoratorIndex={0} />
-                  {/*
-                  hint overlays are sibling of body because they need to be scroll along with
-                  the component they are overlayed with respect to.
-                  */}
-                  {hintOverlays.map((hint) => {
-                    return hint;
-                  })}
-                </div>
+                  {iframeRef && iframeRef.contentDocument
+                    ? ReactDOM.createPortal(
+                        <DecoratorRenderer compId="body" decoratorIndex={0} />,
+                        iframeRef.contentDocument.body
+                      )
+                    : null}
+                </iframe>
               </div>
             ) : null}
           </div>
