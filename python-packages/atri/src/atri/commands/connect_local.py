@@ -32,7 +32,7 @@ def add_packages_to_global_pipfile(global_pip_path: str, current_pip_path: str):
     with open(global_pip_path, 'w') as f:
         toml.dump(global_pip_file, f)
 
-def add_packages_to_global_yml_file(global_yml_path : str, current_pip_path: str):
+def add_packages_to_global_yml_file(global_yml_path: str, current_pip_path: str):
     current_pip_file = toml.load(current_pip_path)
     with open(global_yml_path, 'r') as stream:
         data_loaded = yaml.safe_load(stream)
