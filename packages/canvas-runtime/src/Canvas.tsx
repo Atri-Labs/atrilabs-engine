@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
 import { acknowledgeEventPropagation } from "./decorators/CanvasActivityDecorator";
 import { useAutoResize } from "./hooks/useAutoResize";
+import { useBindEvents } from "./hooks/useBindEvents";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
@@ -39,6 +40,7 @@ export const Canvas: React.FC = React.memo(() => {
     }
   }, [iframeRef, iframeRef?.contentWindow]);
   const hintOverlays = useHintOverlays();
+  useBindEvents(iframeRef);
   return (
     <>
       <div
