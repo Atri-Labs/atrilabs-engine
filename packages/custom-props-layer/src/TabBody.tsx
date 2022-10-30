@@ -175,7 +175,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
             <Enum
               {...props}
               options={options}
-              {...options}
               propName={propName}
               key={propName}
               routes={routes}
