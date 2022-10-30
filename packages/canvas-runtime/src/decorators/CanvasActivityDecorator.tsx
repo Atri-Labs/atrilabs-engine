@@ -890,15 +890,17 @@ service.start();
 let overHandled = false;
 let upHandled = false;
 let downHandled = false;
-window.addEventListener("mousemove", () => {
-  overHandled = false;
-});
-window.addEventListener("mouseup", () => {
-  upHandled = false;
-});
-window.addEventListener("mousedown", () => {
-  downHandled = false;
-});
+export function acknowledgeEventPropagation(iFrameWindow: Window) {
+  iFrameWindow.addEventListener("mousemove", () => {
+    overHandled = false;
+  });
+  iFrameWindow.addEventListener("mouseup", () => {
+    upHandled = false;
+  });
+  iFrameWindow.addEventListener("mousedown", () => {
+    downHandled = false;
+  });
+}
 
 const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
   useEffect(() => {
