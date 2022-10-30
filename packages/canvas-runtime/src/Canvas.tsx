@@ -29,9 +29,9 @@ export const Canvas: React.FC = React.memo(() => {
   const ref = useRef<HTMLDivElement>(null);
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
-  const overlay = useDragDrop(dragzoneRef);
-  const { stylesheets } = useSubscribeStylesheetUpdates();
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
+  const overlay = useDragDrop(dragzoneRef, iframeRef);
+  const { stylesheets } = useSubscribeStylesheetUpdates();
   useEffect(() => {
     if (iframeRef && iframeRef.contentWindow) {
       acknowledgeEventPropagation(iframeRef.contentWindow);
