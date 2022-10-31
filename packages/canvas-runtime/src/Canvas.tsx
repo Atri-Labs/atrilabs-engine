@@ -1,4 +1,5 @@
 import { Container, getRef } from "@atrilabs/core";
+import { gray500 } from "@atrilabs/design-system";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
@@ -21,8 +22,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   "canvas-subcontainer": {
     background: "white",
     boxSizing: "border-box",
-    overflow: "auto",
-    border: "6px solid #6b7280",
+    overflow: "hidden",
   },
 };
 
@@ -83,14 +83,14 @@ export const Canvas: React.FC = React.memo(() => {
                 <iframe
                   title="canvas"
                   ref={setIframeRef}
-                  style={{ width: "100%", height: "100%" }}
+                  style={{ width: "100%", height: "100%", border: "none" }}
                 >
                   {iframeRef && iframeRef.contentDocument
                     ? ReactDOM.createPortal(
                         <>
                           <style
                             dangerouslySetInnerHTML={{
-                              __html: `* {padding: 0; margin: 0;}`,
+                              __html: `* {padding: 0; margin: 0;} body {padding: 10px; box-shadow: inset 0 0 0 10px ${gray500};}`,
                             }}
                           ></style>
                           <DecoratorRenderer compId="body" decoratorIndex={0} />
