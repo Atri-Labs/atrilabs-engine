@@ -1,7 +1,11 @@
 import { Container, getRef } from "@atrilabs/core";
-import React, { useRef } from "react";
+import { gray500 } from "@atrilabs/design-system";
+import React, { useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
+import { acknowledgeEventPropagation } from "./decorators/CanvasActivityDecorator";
 import { useAutoResize } from "./hooks/useAutoResize";
+import { useBindEvents } from "./hooks/useBindEvents";
 import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
@@ -18,8 +22,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   "canvas-subcontainer": {
     background: "white",
     boxSizing: "border-box",
-    overflow: "auto",
-    border: "6px solid #6b7280",
+    overflow: "hidden",
   },
 };
 
@@ -28,9 +31,16 @@ export const Canvas: React.FC = React.memo(() => {
   const ref = useRef<HTMLDivElement>(null);
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
-  const overlay = useDragDrop(dragzoneRef);
-  const hintOverlays = useHintOverlays(dimension);
+  const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
+  const { overlay, canvasOverlay } = useDragDrop(dragzoneRef, iframeRef);
   const { stylesheets } = useSubscribeStylesheetUpdates();
+  useEffect(() => {
+    if (iframeRef && iframeRef.contentWindow) {
+      acknowledgeEventPropagation(iframeRef.contentWindow);
+    }
+  }, [iframeRef, iframeRef?.contentWindow]);
+  const hintOverlays = useHintOverlays();
+  useBindEvents(iframeRef);
   return (
     <>
       <div
@@ -70,27 +80,37 @@ export const Canvas: React.FC = React.memo(() => {
                   transformOrigin: "0 0",
                 }}
               >
-                <div
-                  // this div actually contains all dropped elements
-                  style={{
-                    // absolute prevents the height of page to increase when content increases
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    overflow: "hidden",
-                  }}
+                <iframe
+                  title="canvas"
+                  ref={setIframeRef}
+                  style={{ width: "100%", height: "100%", border: "none" }}
                 >
-                  <DecoratorRenderer compId="body" decoratorIndex={0} />
-                  {/*
-                  hint overlays are sibling of body because they need to be scroll along with
-                  the component they are overlayed with respect to.
-                  */}
-                  {hintOverlays.map((hint) => {
-                    return hint;
-                  })}
-                </div>
+                  {iframeRef && iframeRef.contentDocument
+                    ? ReactDOM.createPortal(
+                        <>
+                          <style
+                            dangerouslySetInnerHTML={{
+                              __html: `* {padding: 0; margin: 0;} body {padding: 10px; box-shadow: inset 0 0 0 10px ${gray500};}`,
+                            }}
+                          ></style>
+                          <DecoratorRenderer compId="body" decoratorIndex={0} />
+                          {canvasOverlay ? (
+                            <div style={canvasOverlay.style}>
+                              <canvasOverlay.comp {...canvasOverlay.props} />
+                            </div>
+                          ) : null}
+                          {/*
+                          hint overlays are sibling of body because they need to be scroll along with
+                          the component they are overlayed with respect to.
+                          */}
+                          {hintOverlays.map((hint) => {
+                            return hint;
+                          })}
+                        </>,
+                        iframeRef.contentDocument.body
+                      )
+                    : null}
+                </iframe>
               </div>
             ) : null}
           </div>
