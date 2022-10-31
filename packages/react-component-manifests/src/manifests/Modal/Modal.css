@@ -1,4 +1,4 @@
-.ant-modal-root {
+.atri-modal-root {
   background-color: #00000073;
   position: fixed;
   top: 0;
@@ -10,23 +10,16 @@
   align-items: center;
 }
 
-.ant-modal-wrap {
+.atri-modal-wrap {
   z-index: 1;
   display: flex;
   flex-direction: column;
   padding: 15px 15px 20px 15px;
   row-gap: 20px;
   background-color: #fff;
-  width: 40%;
 }
 
-@media only screen and (max-width: 720px) {
-  .ant-modal-wrap {
-    width: 80%;
-  }
-}
-
-.ant-modal-header {
+.atri-modal-header {
   display: flex;
   justify-content: space-between;
   padding: 16px 24px;
@@ -35,10 +28,9 @@
   border-radius: 2px 2px 0 0;
 }
 
-.ant-modal-close {
+.atri-modal-close {
   color: #00000073;
   font-weight: 700;
-  /* line-height: 1; */
   text-decoration: none;
   background: 0 0;
   border: 0;
@@ -47,12 +39,11 @@
   transition: color 0.3s;
 }
 
-.ant-modal-body {
+.atri-modal-body {
   padding: 16px 24px;
 }
 
-.ant-modal-footer {
-  /* background-color: aqua; */
+.atri-modal-footer {
   display: flex;
   column-gap: 40px;
   justify-content: flex-end;
@@ -60,9 +51,8 @@
   padding: 16px 24px;
 }
 
-.ant-btn-cancel,
-.ant-btn-ok {
+.atri-btn-cancel,
+.atri-btn-ok {
   padding: 8px 12px;
   font-weight: 700;
-  /* background-color: green; */
 }

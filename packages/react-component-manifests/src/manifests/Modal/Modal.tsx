@@ -20,7 +20,18 @@ export const Modal = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: {};
+    custom: {
+      modalSize: string;
+      okButtonColor: string;
+      okButtonBgColor: string;
+      okButtonBorderColor: string;
+      cancelButtonColor: string;
+      cancelButtonBgColor: string;
+      cancelButtonBorderColor: string;
+      closeModalAfter: number;
+      open: boolean;
+      content: string;
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -28,7 +39,7 @@ export const Modal = forwardRef<
   const el: React.MutableRefObject<HTMLDivElement> = useRef(
     document.createElement("div")
   );
-  const [dynamic, setDynamic] = useState(!el.current.parentElement);
+  const [dynamic, setDynamic] = useState(props.custom.open);
   useEffect(() => {
     if (dynamic) {
       el.current.id = "modal-root";
@@ -46,6 +57,12 @@ export const Modal = forwardRef<
     },
     [props]
   );
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDynamic(false);
+    }, props.custom.closeModalAfter);
+    return () => clearTimeout(timer);
+  }, []);
   return createPortal(
     <div
       ref={ref}
@@ -53,20 +70,23 @@ export const Modal = forwardRef<
       style={props.styles}
       onClick={onClick}
     >
-      <div className="ant-modal-root">
-        <div tabIndex={-1} className="ant-modal-wrap">
-          <div className="ant-modal-header">
-            <div className="ant-modal-title" id="rc_unique_2">
+      <div className="atri-modal-root">
+        <div
+          tabIndex={-1}
+          className="atri-modal-wrap"
+          style={{ width: props.custom.modalSize }}
+        >
+          <div className="atri-modal-header">
+            <div className="atri-modal-title" id="rc_unique_2">
               Basic Modal
             </div>
             <button
               type="button"
               aria-label="Close"
-              className="ant-modal-close"
+              className="atri-modal-close"
               onClick={() => {
-                console.log("Closed");
+                setDynamic(false);
               }}
-              style={{ backgroundColor: "red" }}
             >
               <svg
                 viewBox="64 64 896 896"
@@ -81,16 +101,30 @@ export const Modal = forwardRef<
               </svg>
             </button>
           </div>
-          <div className="ant-modal-body">
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+          <div className="atri-modal-body">
+            <p>{props.custom.content}</p>
           </div>
-          <div className="ant-modal-footer">
-            <button type="button" className="ant-btn-cancel" onClick={() => {console.log("Cancel clicked")}}>
+          <div className="atri-modal-footer">
+            <button
+              type="button"
+              className="atri-btn-cancel"
+              style={{
+                backgroundColor: props.custom.cancelButtonBgColor,
+                color: props.custom.cancelButtonColor,
+                border: `1px solid ${props.custom.cancelButtonBorderColor}`,
+              }}
+            >
               <span>Cancel</span>
             </button>
-            <button type="button" className="ant-btn-ok" disabled={true}>
+            <button
+              type="button"
+              className="atri-btn-ok"
+              style={{
+                backgroundColor: props.custom.okButtonBgColor,
+                color: props.custom.okButtonColor,
+                border: `1px solid ${props.custom.okButtonBorderColor}`,
+              }}
+            >
               <span>OK</span>
             </button>
           </div>
@@ -115,7 +149,18 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {},
+  dataTypes: {
+    modalSize: { type: "text" },
+    okButtonColor: { type: "color" },
+    okButtonBgColor: { type: "color" },
+    okButtonBorderColor: { type: "color" },
+    cancelButtonColor: { type: "color" },
+    cancelButtonBgColor: { type: "color" },
+    cancelButtonBorderColor: { type: "color" },
+    closeModalAfter: { type: "number" },
+    open: { type: "boolean" },
+    content: { type: "large_text" },
+  },
 };
 
 const compManifest: ReactComponentManifestSchema = {
@@ -134,7 +179,18 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          modalSize: "50%",
+          okButtonColor: "#fff",
+          okButtonBgColor: "#1890ff",
+          okButtonBorderColor: "#1890ff",
+          cancelButtonColor: "#000",
+          cancelButtonBgColor: "#fff",
+          cancelButtonBorderColor: "#000",
+          closeModalAfter: 3000,
+          open: true,
+          content: "Type something here!"
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
