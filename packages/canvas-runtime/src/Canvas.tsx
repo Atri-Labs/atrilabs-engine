@@ -54,8 +54,6 @@ export const Canvas: React.FC = React.memo(() => {
           userSelect: "none",
         }}
       >
-        {stylesheets}
-
         {breakpoint ? (
           <div
             // this div is used to limit the max-width
@@ -99,6 +97,7 @@ export const Canvas: React.FC = React.memo(() => {
                               <canvasOverlay.comp {...canvasOverlay.props} />
                             </div>
                           ) : null}
+                          {stylesheets}
                           {/*
                           hint overlays are sibling of body because they need to be scroll along with
                           the component they are overlayed with respect to.
