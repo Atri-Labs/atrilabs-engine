@@ -82,8 +82,10 @@ You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9
 <div align="center">
 
   [![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
-
+  
 </div>
+
+You can then follow our [video tutorials](https://docs.atrilabs.com/tutorials/bkg_swapper) to create full-stack apps.
 
 ## How to contribute?
 
