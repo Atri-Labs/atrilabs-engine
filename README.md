@@ -24,7 +24,7 @@
     <span> | </span>
     <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions">Discussions</a>
     <span> | </span>
-    <a href="https://github.com/mindsdb/mindsdb/projects">Contribute</a>
+    <a href="https://github.com/Atri-Labs/atrilabs-engine#how-to-contribute">Contribute</a>
   </h3>
   
 </div>
