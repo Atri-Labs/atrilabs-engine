@@ -46,9 +46,7 @@ export function removeHintOverlays(overlayIds: string[]) {
   }
 }
 
-function calculateBoxDimensions(
-  props: HintOverlay
-): HintOverlayDimension | null {
+function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension {
   if (canvasComponentStore[props.compId]) {
     if (
       canvasComponentStore["body"].ref.current &&
@@ -85,42 +83,58 @@ function calculateBoxDimensions(
       return { box, bodyCoords, compCoords };
     }
   }
-  return null;
+  return {
+    box: { position: { top: 0, left: 0 }, dimension: { width: 0, height: 0 } },
+    bodyCoords: { top: 0, left: 0, height: 0, width: 0 },
+    compCoords: { top: 0, left: 0, width: 0, height: 0 },
+  };
 }
 
-const bodyPadding = 10;
-
 const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
-  const boxDimensions = useMemo(() => {
+  const { box, bodyCoords, compCoords } = useMemo(() => {
     return calculateBoxDimensions(props);
   }, [props]);
-  if (!boxDimensions) {
-    return <></>;
-  }
-  const { box, bodyCoords, compCoords } = boxDimensions;
-  const bodyPosition = { top: bodyCoords.top, left: bodyCoords.left };
-  const compPosition = { top: compCoords.top, left: compCoords.left };
+
+  const { top, left, width, height } = useMemo(() => {
+    const bodyPosition = { top: bodyCoords.top, left: bodyCoords.left };
+    const compPosition = { top: compCoords.top, left: compCoords.left };
+    return {
+      top:
+        (compPosition.top - bodyPosition.top + box.position.top) / props.scale,
+      left:
+        (compPosition.left - bodyPosition.left + box.position.left) /
+        props.scale,
+      width: box.dimension.width / props.scale,
+      height: box.dimension.height / props.scale,
+    };
+  }, [box, bodyCoords, compCoords, props.scale]);
+
+  const isOverlayInsideCanvas = useMemo(() => {
+    if (left < 0) {
+      return false;
+    }
+    if (left + width > bodyCoords.width) {
+      return false;
+    }
+    if (top < 0) {
+      return false;
+    }
+    if (top + height > bodyCoords.height) {
+      return false;
+    }
+    return true;
+  }, [left, width, bodyCoords, top, height]);
 
   return (
     <React.Fragment>
-      {box && compPosition && bodyPosition ? (
+      {box && isOverlayInsideCanvas ? (
         <div
           style={{
             position: "absolute",
-            top:
-              (compPosition.top -
-                bodyPosition.top +
-                box.position.top +
-                bodyPadding) /
-              props.scale,
-            left:
-              (compPosition.left -
-                bodyPosition.left +
-                box.position.left +
-                bodyPadding) /
-              props.scale,
-            width: box.dimension.width / props.scale,
-            height: box.dimension.height / props.scale,
+            top,
+            left,
+            width,
+            height,
             pointerEvents: "none",
             userSelect: "none",
           }}
