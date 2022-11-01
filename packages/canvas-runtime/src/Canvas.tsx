@@ -9,7 +9,6 @@ import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
 import { useSubscribeStylesheetUpdates } from "./hooks/useSubscribeStylesheet";
-import stylesModule from "./styles.module.css";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -17,6 +16,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     height: "100%",
     position: "relative",
+    overflow: "hidden",
   },
   "canvas-subcontainer": {
     background: "white",
@@ -62,7 +62,6 @@ export const Canvas: React.FC = React.memo(() => {
               maxWidth: breakpoint.max,
               width: "100%",
             }}
-            className={stylesModule["canvas-container"]}
             ref={ref}
           >
             {dimension ? (
@@ -80,7 +79,12 @@ export const Canvas: React.FC = React.memo(() => {
                 <iframe
                   title="canvas"
                   ref={setIframeRef}
-                  style={{ width: "100%", height: "100%", border: "none" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    boxSizing: "border-box",
+                  }}
                 >
                   {iframeRef && iframeRef.contentDocument
                     ? ReactDOM.createPortal(
