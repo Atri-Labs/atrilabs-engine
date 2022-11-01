@@ -1,5 +1,4 @@
 import { Container, getRef } from "@atrilabs/core";
-import { gray500 } from "@atrilabs/design-system";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
@@ -88,7 +87,7 @@ export const Canvas: React.FC = React.memo(() => {
                         <>
                           <style
                             dangerouslySetInnerHTML={{
-                              __html: `* {padding: 0; margin: 0;} body {padding: 10px; box-shadow: inset 0 0 0 10px ${gray500};}`,
+                              __html: `* {padding: 0; margin: 0;}`,
                             }}
                           ></style>
                           <DecoratorRenderer compId="body" decoratorIndex={0} />
