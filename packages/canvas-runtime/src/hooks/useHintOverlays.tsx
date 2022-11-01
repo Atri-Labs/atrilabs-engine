@@ -88,8 +88,6 @@ function calculateBoxDimensions(
   return null;
 }
 
-const bodyPadding = 10;
-
 const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
   const boxDimensions = useMemo(() => {
     return calculateBoxDimensions(props);
@@ -108,16 +106,10 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
           style={{
             position: "absolute",
             top:
-              (compPosition.top -
-                bodyPosition.top +
-                box.position.top +
-                bodyPadding) /
+              (compPosition.top - bodyPosition.top + box.position.top) /
               props.scale,
             left:
-              (compPosition.left -
-                bodyPosition.left +
-                box.position.left +
-                bodyPadding) /
+              (compPosition.left - bodyPosition.left + box.position.left) /
               props.scale,
             width: box.dimension.width / props.scale,
             height: box.dimension.height / props.scale,
