@@ -1,5 +1,5 @@
 import { Container, getRef } from "@atrilabs/core";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { DecoratorRenderer } from "./DecoratorRenderer";
 import { acknowledgeEventPropagation } from "./decorators/CanvasActivityDecorator";
@@ -9,6 +9,7 @@ import { useBreakpoint } from "./hooks/useBreakpoint";
 import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
 import { useSubscribeStylesheetUpdates } from "./hooks/useSubscribeStylesheet";
+import { GlobalContext } from "@atrilabs/react-component-manifest-schema/lib/GlobalContext";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -40,6 +41,9 @@ export const Canvas: React.FC = React.memo(() => {
   }, [iframeRef, iframeRef?.contentWindow]);
   const hintOverlays = useHintOverlays();
   useBindEvents(iframeRef);
+  const globalContextValue = useMemo(() => {
+    if (iframeRef?.contentWindow) return { window: iframeRef.contentWindow };
+  }, [iframeRef]);
   return (
     <>
       <div
@@ -86,7 +90,7 @@ export const Canvas: React.FC = React.memo(() => {
                     boxSizing: "border-box",
                   }}
                 >
-                  {iframeRef && iframeRef.contentDocument
+                  {iframeRef && iframeRef.contentDocument && globalContextValue
                     ? ReactDOM.createPortal(
                         <>
                           <style
@@ -94,7 +98,12 @@ export const Canvas: React.FC = React.memo(() => {
                               __html: `* {padding: 0; margin: 0;}`,
                             }}
                           ></style>
-                          <DecoratorRenderer compId="body" decoratorIndex={0} />
+                          <GlobalContext.Provider value={globalContextValue}>
+                            <DecoratorRenderer
+                              compId="body"
+                              decoratorIndex={0}
+                            />
+                          </GlobalContext.Provider>
                           {canvasOverlay ? (
                             <div style={canvasOverlay.style}>
                               <canvasOverlay.comp {...canvasOverlay.props} />
