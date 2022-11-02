@@ -44,7 +44,7 @@ If you like our project, please support us by giving us **a star ⭐!**
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
 
 
-![teaser-image](readme-assets/teaser-image.png)
+![teaser-image](readme-assets/intro.gif)
 
 
 ### Websites built using Atri framework
