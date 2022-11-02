@@ -1,0 +1,58 @@
+.atri-modal-root {
+  background-color: #00000073;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.atri-modal-wrap {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 15px 20px 15px;
+  row-gap: 20px;
+  background-color: #fff;
+}
+
+.atri-modal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  color: #000000d9;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 2px 2px 0 0;
+}
+
+.atri-modal-close {
+  color: #00000073;
+  font-weight: 700;
+  text-decoration: none;
+  background: 0 0;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.atri-modal-body {
+  padding: 16px 24px;
+}
+
+.atri-modal-footer {
+  display: flex;
+  column-gap: 40px;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 16px 24px;
+}
+
+.atri-btn-cancel,
+.atri-btn-ok {
+  padding: 8px 12px;
+  font-weight: 700;
+}
