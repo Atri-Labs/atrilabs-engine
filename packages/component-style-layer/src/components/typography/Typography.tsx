@@ -31,6 +31,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   drop: {
     display: "flex",
     alignItems: "baseline",
+    cursor: "pointer",
   },
   header: {
     ...h5Heading,

@@ -20,6 +20,7 @@ export const IconMenu: React.FC<IconMenuProps> = (props) => {
         overflow: "hidden",
         height: "100%",
         background: props.active ? gray900 : "",
+        cursor: "pointer",
       }}
     >
       {props.children}
