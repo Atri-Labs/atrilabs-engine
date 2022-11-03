@@ -84,7 +84,7 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
               : { transform: "rotate(0deg)" }
           }
         />
-        <div style={styles.header}>Flex Child1</div>
+        <div style={styles.header}>Flex Child</div>
       </div>
       <div
         style={
