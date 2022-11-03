@@ -1,0 +1,8 @@
+form {
+    display: flex;
+    row-gap: 10px;
+}
+
+.input-field {
+    background-color: aqua;
+}
