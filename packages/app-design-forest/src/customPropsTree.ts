@@ -17,7 +17,7 @@ export type SimpleCustomProp = {
 };
 
 export type EnumCustomProp = {
-  type: "enum";
+  type: "enum" | "array_enum";
   options: string[];
 };
 
