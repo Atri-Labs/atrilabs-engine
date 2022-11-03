@@ -7,8 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { createPortal } from "react-dom";
-import { GlobalContext } from "@atrilabs/react-component-manifest-schema/lib/GlobalContext";
+import { GlobalContext, createPortal } from "@atrilabs/core/lib/reactUtilities";
 
 export const Modal = forwardRef<
   HTMLDivElement,
@@ -155,7 +154,9 @@ export const Modal = forwardRef<
         </div>
       </div>
     </div>,
-    globalContext.window.document.body
+    globalContext.window,
+    "body",
+    globalContext.portals
   );
 });
 

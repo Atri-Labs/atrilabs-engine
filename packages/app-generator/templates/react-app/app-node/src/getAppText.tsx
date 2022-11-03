@@ -1,12 +1,16 @@
 import App from "../../app/src/App";
 import ReactDOMServer from "react-dom/server";
+import React from "react";
 import { StaticRouter } from "react-router-dom/server";
+import { GlobalContext } from "@atrilabs/core/lib/reactUtilities";
 
 function renderRoute(App: React.FC, route: string): string {
   const appStr = ReactDOMServer.renderToString(
-    <StaticRouter location={route}>
-      <App />
-    </StaticRouter>
+    <GlobalContext.Provider value={{ window, portals: undefined }}>
+      <StaticRouter location={route}>
+        <App />
+      </StaticRouter>
+    </GlobalContext.Provider>
   );
   return appStr;
 }
