@@ -137,7 +137,7 @@ export default function createWebpackConfig(
          */
         {
           enforce: "pre",
-          exclude: /@babel(?:\/|\\{1,2})runtime/,
+          exclude: /node_modules/,
           test: /\.(js|mjs|jsx|ts|tsx|css)$/,
           loader: require.resolve("source-map-loader"),
         },
