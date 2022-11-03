@@ -65,13 +65,14 @@ export const Form = forwardRef<
           </div>
         );
       })}
+      {/* {props.custom.types} */}
       <button>Submit</button>
     </form>
   );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -85,7 +86,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    types: { type: "map" },
+    types: { type: "array_enum", options: ["text", "password"] },
     labels: { type: "array" },
     placeholders: { type: "array" },
     ids: { type: "array" },
