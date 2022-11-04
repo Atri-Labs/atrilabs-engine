@@ -23,16 +23,10 @@ export const Form = forwardRef<
       resetButtonBgColor?: string;
       resetButtonColor?: string;
     };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    onClick: (buttonClicked: "Submit" | "Reset") => void;
     className?: string;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
   return (
     <form ref={ref} className={props.className} style={props.styles}>
       {props.custom.types.map((type, index) => {
@@ -65,7 +59,6 @@ export const Form = forwardRef<
               placeholder={placeholderText}
               id={id}
               style={{ padding: "0.5em" }}
-              onClick={onClick}
             />
           </div>
         );
