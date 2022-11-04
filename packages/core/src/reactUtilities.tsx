@@ -18,8 +18,16 @@ export function isRunningInBrowser() {
   return window !== undefined;
 }
 
+/**
+ * This throws an error when used in the generated app
+ * @returns
+ */
 export function isRunningInEditor() {
-  return process.env["ATRI_TOOL_INSIDE_EDITOR"] === "true" ?? false;
+  try {
+    return process.env["ATRI_TOOL_INSIDE_EDITOR"] === "true" ?? false;
+  } catch (err) {
+    return false;
+  }
 }
 /**
  * Always render component immidiately if inside editor otherwise render after useEffect
