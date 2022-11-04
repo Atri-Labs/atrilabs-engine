@@ -18,6 +18,11 @@ export const Form = forwardRef<
       labels: string[];
       placeholders: string[];
       ids: string[];
+      showResetButton: boolean;
+      submitButtonBgColor?: string;
+      submitButtonColor?: string;
+      resetButtonBgColor?: string;
+      resetButtonColor?: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -48,25 +53,55 @@ export const Form = forwardRef<
         return (
           <div
             style={{
-              padding: "10px",
               display: "flex",
-              flexDirection: "column",
+              justifyContent: "end",
+              columnGap: "1em",
+              alignItems: "baseline",
             }}
+            key={index}
           >
             <label htmlFor="id">{labelText}</label>
             <input
-              style={{ marginTop: "10px" }}
               type={type}
-              key={index}
               placeholder={placeholderText}
               id={id}
+              style={{ padding: "0.5em" }}
               onClick={onClick}
             />
           </div>
         );
       })}
-      {/* {props.custom.types} */}
-      <button>Submit</button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          columnGap: "1em",
+          alignItems: "baseline",
+        }}
+      >
+        <button
+          style={{
+            padding: "4px 15px",
+            color: props.custom.submitButtonColor,
+            backgroundColor: props.custom.submitButtonBgColor,
+            border: "1px solid transparent",
+          }}
+        >
+          Submit
+        </button>
+        {props.custom.showResetButton && (
+          <button
+            style={{
+              padding: "4px 15px",
+              color: props.custom.resetButtonColor,
+              backgroundColor: props.custom.resetButtonBgColor,
+              border: "1px solid #d9d9d9",
+            }}
+          >
+            Reset
+          </button>
+        )}
+      </div>
     </form>
   );
 });
@@ -86,10 +121,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    types: { type: "array_enum", options: ["text", "password"] },
+    types: { type: "array" },
     labels: { type: "array" },
     placeholders: { type: "array" },
     ids: { type: "array" },
+    showResetButton: { type: "boolean" },
+    submitButtonBgColor: { type: "color" },
+    submitButtonColor: { type: "color" },
+    resetButtonBgColor: { type: "color" },
+    resetButtonColor: { type: "color" },
   },
 };
 
@@ -103,14 +143,27 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          display: "inline-flex",
+          flexDirection: "column",
+          rowGap: "1em",
+          padding: "10px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          types: [],
+          types: ["text", "password"],
+          labels: ["Enter your name:", "Password:"],
+          placeholders: ["Enter your name", "Password"],
+          ids: ["name", "pwd"],
+          showResetButton: true,
+          submitButtonBgColor: "#1890ff",
+          submitButtonColor: "#fff",
+          resetButtonBgColor: "#fff",
+          resetButtonColor: "#000",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
