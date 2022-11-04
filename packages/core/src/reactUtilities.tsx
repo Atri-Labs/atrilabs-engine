@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import ReactDOMServer from "react-dom/server";
-import Cheerio, { load } from "cheerio";
+import { load } from "cheerio";
 import { Portals } from "./types";
 
 export const GlobalContext = React.createContext<{
@@ -18,6 +18,17 @@ export function isRunningInBrowser() {
   return window !== undefined;
 }
 
+export function isRunningInEditor() {
+  return process.env["ATRI_TOOL_INSIDE_EDITOR"] === "true" ?? false;
+}
+/**
+ * Always render component immidiately if inside editor otherwise render after useEffect
+ * @param node
+ * @param window
+ * @param selector
+ * @param portals
+ * @returns
+ */
 export function createPortal(
   node: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
   window: Window | undefined,
@@ -36,7 +47,10 @@ export function createPortal(
   useEffect(() => {
     setRenderPortals(true);
   }, []);
-  return renderPortals
+
+  return isRunningInEditor()
+    ? ReactDOM.createPortal(node, window.document.querySelector(selector)!)
+    : renderPortals
     ? ReactDOM.createPortal(node, window.document.querySelector(selector)!)
     : null;
 }
