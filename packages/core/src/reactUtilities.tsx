@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import ReactDOMServer from "react-dom/server";
 import Cheerio, { load } from "cheerio";
@@ -32,7 +32,13 @@ export function createPortal(
     console.log(`Cannot find selector ${selector}`);
     return null;
   }
-  return ReactDOM.createPortal(node, window.document.querySelector(selector)!);
+  const [renderPortals, setRenderPortals] = useState(false);
+  useEffect(() => {
+    setRenderPortals(true);
+  }, []);
+  return renderPortals
+    ? ReactDOM.createPortal(node, window.document.querySelector(selector)!)
+    : null;
 }
 
 export function addPortalsToHtml(html: string, portals: Portals) {

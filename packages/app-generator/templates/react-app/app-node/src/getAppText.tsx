@@ -22,10 +22,9 @@ function renderRoute(App: React.FC, route: string, portals: Portals): string {
 export function getAppText(url: string, appHtmlContent: string) {
   const portals: Portals = [];
   const appText = renderRoute(App, url, portals);
-  const intermediatText = appHtmlContent.replace(
+  const finalText = appHtmlContent.replace(
     '<div id="root" style="height: 100vh"></div>',
     `<div id="root" style="height: 100vh">${appText}</div>`
   );
-  const finalText = addPortalsToHtml(intermediatText, portals);
   return finalText;
 }
