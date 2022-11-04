@@ -125,4 +125,10 @@ export const keyCallbackMap: {
       actions: [{ type: "controlled", selector: ["custom", "selection"] }],
     },
   },
+  Modal: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
 };

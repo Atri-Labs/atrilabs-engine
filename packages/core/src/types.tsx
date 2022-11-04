@@ -378,3 +378,8 @@ export type BuildInfo = {
   manifestDirs: string[];
   assetUrlPrefix: string;
 };
+
+export type Portals = {
+  node: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+  selector: string;
+}[];

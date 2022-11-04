@@ -16,6 +16,9 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { watch } from "chokidar";
 import { forwardGetPageRequest } from "./forwarder";
 
+// @ts-ignore
+global.window = undefined;
+
 // constants needed externally
 const serverInfo = getServerInfo(__dirname);
 const nodeModulesPath = findNearestNodeModulesDirectory(__dirname, null);
