@@ -52,6 +52,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   drop: {
     display: "flex",
     alignItems: "baseline",
+    cursor: "pointer",
   },
   optionName: {
     ...smallText,
