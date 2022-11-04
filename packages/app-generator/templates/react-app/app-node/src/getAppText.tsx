@@ -2,11 +2,15 @@ import App from "../../app/src/App";
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { StaticRouter } from "react-router-dom/server";
-import { GlobalContext } from "@atrilabs/core/lib/reactUtilities";
+import {
+  addPortalsToHtml,
+  GlobalContext,
+} from "@atrilabs/core/lib/reactUtilities";
+import { Portals } from "@atrilabs/core/lib/types";
 
-function renderRoute(App: React.FC, route: string): string {
+function renderRoute(App: React.FC, route: string, portals: Portals): string {
   const appStr = ReactDOMServer.renderToString(
-    <GlobalContext.Provider value={{ window, portals: undefined }}>
+    <GlobalContext.Provider value={{ window, portals }}>
       <StaticRouter location={route}>
         <App />
       </StaticRouter>
@@ -16,10 +20,12 @@ function renderRoute(App: React.FC, route: string): string {
 }
 
 export function getAppText(url: string, appHtmlContent: string) {
-  const appText = renderRoute(App, url);
-  const finalText = appHtmlContent.replace(
+  const portals: Portals = [];
+  const appText = renderRoute(App, url, portals);
+  const intermediatText = appHtmlContent.replace(
     '<div id="root" style="height: 100vh"></div>',
     `<div id="root" style="height: 100vh">${appText}</div>`
   );
+  const finalText = addPortalsToHtml(intermediatText, portals);
   return finalText;
 }

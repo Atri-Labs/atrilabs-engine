@@ -30,14 +30,15 @@ export function createPortal(
   }
   if (window.document.querySelector(selector) === null) {
     console.log(`Cannot find selector ${selector}`);
+    return null;
   }
   return ReactDOM.createPortal(node, window.document.querySelector(selector)!);
 }
 
 export function addPortalsToHtml(html: string, portals: Portals) {
-  const cheerioApi = load(html);
+  const root = load(html);
   portals.forEach(({ node, selector }) => {
-    cheerioApi(ReactDOMServer.renderToString(node)).appendTo(Cheerio(selector));
+    root(selector).append(ReactDOMServer.renderToString(node));
   });
-  return cheerioApi.html();
+  return root.html();
 }
