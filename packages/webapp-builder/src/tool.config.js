@@ -48,6 +48,9 @@ const IPC_SERVER_CLIENT = `http://localhost:${IPC_SERVER_PORT}`;
 
 // mode can be component_development, development, production
 const MODE = process.env["MODE"];
+// INSIDE_EDITOR is use by components like Modal to have slightly
+// different behavior inside & outside editor
+const INSIDE_EDITOR = "true";
 
 module.exports = {
   pkgManager: "yarn",
@@ -183,6 +186,7 @@ module.exports = {
     PUBLISH_SERVER_CLIENT,
     IPC_SERVER_CLIENT,
     MODE,
+    INSIDE_EDITOR,
   },
   runtimes: [{ pkg: "@atrilabs/canvas-runtime" }],
   manifestClient: {
