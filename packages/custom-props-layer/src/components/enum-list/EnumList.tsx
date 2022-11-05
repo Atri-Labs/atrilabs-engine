@@ -49,53 +49,53 @@ export const EnumList: React.FC<ComponentProps> = (props) => {
   return (
     <ArrayPropertyContainer>
       <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
-
-      {Array.isArray(propValue)
-        ? propValue.map((value, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  columnGap: "1em",
-                  marginBottom: "0.5em",
-                }}
-              >
-                <select
-                  value={value}
-                  onChange={(e) => {
-                    editValueCb(index, e.target.value);
-                  }}
-                  style={{
-                    height: "25px",
-                    backgroundColor: gray900,
-                    border: "none",
-                    outline: "none",
-                    color: "white",
-                    padding: "0 4px",
-                    minWidth: "none",
-                    width: "100%",
-                  }}
-                >
-                  {props.options!.map((option: string, index: number) => (
-                    <option value={option} key={index}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+      <div style={{ display: "flex", rowGap: "0.5em" }}>
+        {Array.isArray(propValue)
+          ? propValue.map((value, index) => {
+              return (
                 <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  onClick={() => {
-                    deleteValueCb(index);
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    columnGap: "1em",
                   }}
                 >
-                  <MinusIcon />
+                  <select
+                    value={value}
+                    onChange={(e) => {
+                      editValueCb(index, e.target.value);
+                    }}
+                    style={{
+                      height: "25px",
+                      backgroundColor: gray900,
+                      border: "none",
+                      outline: "none",
+                      color: "white",
+                      padding: "0 4px",
+                      minWidth: "none",
+                      width: "100%",
+                    }}
+                  >
+                    {props.options!.map((option: string, index: number) => (
+                      <option value={option} key={index}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  <div
+                    style={{ display: "flex", alignItems: "center" }}
+                    onClick={() => {
+                      deleteValueCb(index);
+                    }}
+                  >
+                    <MinusIcon />
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        : null}
+              );
+            })
+          : null}
+      </div>
     </ArrayPropertyContainer>
   );
 };
