@@ -32,7 +32,18 @@ export function createCommonWebpackConfig(
       },
       {
         loader: require.resolve("css-loader"),
-        options: cssOptions,
+        options: {
+          ...cssOptions,
+          // url below resolves https://github.com/webpack-contrib/mini-css-extract-plugin/issues/286#issuecomment-979389073
+          url: {
+            filter: (url: string) => {
+              if (url.startsWith("/app-assets")) {
+                return false;
+              }
+              return true;
+            },
+          },
+        },
       },
       {
         // Options for PostCSS as we reference these options twice
