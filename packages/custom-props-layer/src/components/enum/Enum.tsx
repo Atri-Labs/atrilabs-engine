@@ -1,5 +1,5 @@
 import { gray900 } from "@atrilabs/design-system";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";

@@ -17,6 +17,7 @@ import { ComponentSelector } from "./components/component-selector/ComponentSele
 import { ExternalLink } from "./components/external-link/ExternalLink";
 import { Enum } from "./components/enum/Enum";
 import { EnumCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { EnumList } from "./components/enum-list/EnumList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -173,6 +174,21 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           const options = enumCustomProps.options;
           return (
             <Enum
+              {...props}
+              options={options}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "array_enum") {
+          const enumListCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as EnumCustomProp;
+          const options = enumListCustomProps.options;
+          return (
+            <EnumList
               {...props}
               options={options}
               propName={propName}
