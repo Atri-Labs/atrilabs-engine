@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/server-client",
-  "version": "0.0.80",
+  "version": "0.0.81",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -28,10 +28,10 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^0.0.80",
-    "@atrilabs/forest": "^0.0.80",
-    "@atrilabs/manifest-shims": "^0.0.80",
-    "@atrilabs/scripts": "^0.0.80",
+    "@atrilabs/core": "^0.0.81",
+    "@atrilabs/forest": "^0.0.81",
+    "@atrilabs/manifest-shims": "^0.0.81",
+    "@atrilabs/scripts": "^0.0.81",
     "@types/css-tree": "^1.0.7",
     "chokidar": "^3.5.3",
     "css-tree": "^2.2.1",
