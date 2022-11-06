@@ -26,6 +26,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     padding: "1rem",
     rowGap: "0.5rem",
+    overflow: "auto",
+    height: "100%",
+    boxSizing: "border-box",
   },
 
   // alias container
