@@ -9,6 +9,9 @@ import {
   buildInfoFilename,
 } from "../shared/utils";
 
+// @ts-ignore
+global.window = undefined;
+
 const mode = getMode();
 setNodeAndBabelEnv(mode);
 
