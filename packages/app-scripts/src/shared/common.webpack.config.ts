@@ -2,6 +2,7 @@ import { Configuration, RuleSetRule } from "webpack";
 
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -210,7 +211,8 @@ export function createCommonWebpackConfig(
       filename: "static/css/[name].[contenthash:8].css",
       chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
     }),
-  ];
+    isEnvProduction && new CompressionPlugin(),
+  ].filter(Boolean);
 
   return { oneOf, plugins };
 }

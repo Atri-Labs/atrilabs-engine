@@ -2,11 +2,11 @@ import App from "../../app/src/App";
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { StaticRouter } from "react-router-dom/server";
-import {
-  addPortalsToHtml,
-  GlobalContext,
-} from "@atrilabs/core/lib/reactUtilities";
+import { GlobalContext } from "@atrilabs/core/lib/reactUtilities";
 import { Portals } from "@atrilabs/core/lib/types";
+
+// @ts-ignore
+global.window = undefined;
 
 function renderRoute(App: React.FC, route: string, portals: Portals): string {
   const appStr = ReactDOMServer.renderToString(
