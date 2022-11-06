@@ -12,6 +12,8 @@ export type TabBodyProps = {
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">
   ) => void;
+  // options is currently being used with the enum custom property
+  options?: string[];
 };
 
 export type ComponentProps = TabBodyProps & {

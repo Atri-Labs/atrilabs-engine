@@ -2,6 +2,7 @@ import { Configuration, RuleSetRule } from "webpack";
 
 const getCSSModuleLocalIdent = require("react-dev-utils/getCSSModuleLocalIdent");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
@@ -32,7 +33,18 @@ export function createCommonWebpackConfig(
       },
       {
         loader: require.resolve("css-loader"),
-        options: cssOptions,
+        options: {
+          ...cssOptions,
+          // url below resolves https://github.com/webpack-contrib/mini-css-extract-plugin/issues/286#issuecomment-979389073
+          url: {
+            filter: (url: string) => {
+              if (url.startsWith("/app-assets")) {
+                return false;
+              }
+              return true;
+            },
+          },
+        },
       },
       {
         // Options for PostCSS as we reference these options twice
@@ -199,7 +211,8 @@ export function createCommonWebpackConfig(
       filename: "static/css/[name].[contenthash:8].css",
       chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
     }),
-  ];
+    isEnvProduction && new CompressionPlugin(),
+  ].filter(Boolean);
 
   return { oneOf, plugins };
 }

@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/core",
-  "version": "0.0.79",
+  "version": "0.0.82",
   "description": "This package contains code for compilation and bundling of atrilabs package.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -29,6 +29,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.31",
     "@types/react": "18.0.5",
     "@types/react-dom": "18.0.1",
     "@types/uuid": "^8.3.4"
@@ -38,7 +39,8 @@
     "react-dom": "18.0.0"
   },
   "dependencies": {
-    "@atrilabs/forest": "^0.0.79",
+    "@atrilabs/forest": "^0.0.82",
+    "cheerio": "^1.0.0-rc.12",
     "uuid": "^8.3.2"
   }
 }

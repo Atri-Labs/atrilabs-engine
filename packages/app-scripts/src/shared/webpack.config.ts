@@ -30,7 +30,7 @@ export default function createWebpackConfig(
   if (options.shouldUseSourceMap) {
     rules.push({
       enforce: "pre" as "pre",
-      exclude: /@babel(?:\/|\\{1,2})runtime/,
+      exclude: /node_modules/,
       test: /\.(js|mjs|jsx|ts|tsx|css)$/,
       loader: require.resolve("source-map-loader"),
     });

@@ -24,3 +24,5 @@ export default function (): ManifestSchema {
   }
   return { validate };
 }
+
+export * from "./GlobalContext";

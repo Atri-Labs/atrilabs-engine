@@ -29,6 +29,8 @@ import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Ta
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Alert/Alert";
 import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
+import Modal from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
+import Form from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -105,6 +107,8 @@ const defaultImports = [
   DivManifests,
   AlertManifests,
   Icon,
+  Modal,
+  Form
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);

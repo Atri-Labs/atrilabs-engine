@@ -113,5 +113,13 @@ module.exports = {
       modulePath: "./src/manifests/NewButton/NewButton.tsx",
       exportedVarName: "NewButton",
     },
+    Modal: {
+      modulePath: "./src/manifests/Modal/Modal.tsx",
+      exportedVarName: "Modal",
+    },
+    Form: {
+      modulePath: "./src/manifests/Form/Form.tsx",
+      exportedVarName: "Form",
+    },
   },
 };

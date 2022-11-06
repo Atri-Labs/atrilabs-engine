@@ -15,6 +15,9 @@ import { InternalLink } from "./components/internal-link/InternalLink";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { ComponentSelector } from "./components/component-selector/ComponentSelector";
 import { ExternalLink } from "./components/external-link/ExternalLink";
+import { Enum } from "./components/enum/Enum";
+import { EnumCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { EnumList } from "./components/enum-list/EnumList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -23,6 +26,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     padding: "1rem",
     rowGap: "0.5rem",
+    overflow: "auto",
+    height: "100%",
+    boxSizing: "border-box",
   },
 
   // alias container
@@ -164,6 +170,36 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               routes={routes}
             />
           );
+        if (propType === "enum") {
+          const enumCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as EnumCustomProp;
+          const options = enumCustomProps.options;
+          return (
+            <Enum
+              {...props}
+              options={options}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "array_enum") {
+          const enumListCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as EnumCustomProp;
+          const options = enumListCustomProps.options;
+          return (
+            <EnumList
+              {...props}
+              options={options}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
         return <React.Fragment key={propName}></React.Fragment>;
       })}
     </div>

@@ -78,6 +78,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "2.5rem",
     boxSizing: "border-box",
     border: `1px solid ${gray800}`,
+    cursor: "pointer",
   },
   propertyTabHeaderItem: {
     width: "2.5rem",
