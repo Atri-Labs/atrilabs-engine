@@ -55,7 +55,8 @@ body:
 - type: textarea
   attributes:
     label: System configuration
-    description: | Please share your system configuration. For example,
+    description: | 
+      Please share your system configuration. For example,
       1. OS: [e.g. macOS Monterey 12.6]
       2. Bits: [e.g. 64 bit]
       3. Browser: [e.g. Google Chrome]
