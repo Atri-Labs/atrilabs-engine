@@ -28,6 +28,15 @@ body:
     
 - type: textarea
   attributes:
+    label: Error message
+    description: Run `atri start --debug` and paste the error message that you are receiving in your terminal
+    placeholder: |
+      Please paste the error message here, if applicable
+  validations:
+    required: false
+    
+- type: textarea
+  attributes:
     label: Screenshots
     description: If applicable, add screenshots to help explain your problem.
     placeholder: |
