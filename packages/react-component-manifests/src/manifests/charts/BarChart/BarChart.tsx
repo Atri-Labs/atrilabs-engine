@@ -96,8 +96,6 @@ export const BarChart = forwardRef<
       <BarChartRechart
         width={props.custom.chartWidth}
         height={props.custom.chartHeight}
-        // margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
-
         data={props.custom.data}
       >
         {props.custom.cartesianGrid?.show ? (
@@ -106,14 +104,14 @@ export const BarChart = forwardRef<
           />
         ) : null}
         {props.custom.xAxis?.show ? (
-          <XAxis fontFamily="IBM Plex Sans" dataKey={xAxisKey} />
+          <XAxis fontFamily={props.styles.fontFamily} dataKey={xAxisKey} />
         ) : null}
         {props.custom.yAxis?.show ? (
-          <YAxis fontFamily="IBM Plex Sans" width={40} />
+          <YAxis fontFamily={props.styles.fontFamily} width={40} />
         ) : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
         {props.custom.legend?.show ? (
-          <Legend fontFamily="IBM Plex Sans" />
+          <Legend fontFamily={props.styles.fontFamily} />
         ) : null}
         {sortedKeys.map((key, index) => {
           const fillColor =
@@ -199,7 +197,7 @@ const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,
-  typographyOptions: false,
+  typographyOptions: true,
   spacingOptions: false,
   sizeOptions: true,
   borderOptions: false,
@@ -234,7 +232,9 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          fontFamily: "IBM Plex Sans",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
