@@ -5,12 +5,10 @@ import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import Color from "color";
 import {
   RadialBarChart as RadialBarChartRechart,
   RadialBar,
   Legend,
-  Tooltip,
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
@@ -36,14 +34,33 @@ export const RadialbarChart = forwardRef<
       };
       toolTip?: { show?: boolean };
       legend?: { show?: boolean };
-      xAxis?: { show?: boolean; key?: string };
-      yAxis?: { show?: boolean };
+      innerRadius?: number;
+      barSize?: number;
+      radialBar?: {
+        show?: boolean;
+        key: string;
+        options?: {
+          [key: string]: {
+            position?: string;
+            fill?: string;
+          };
+        };
+      };
       chartWidth: number;
       chartHeight: number;
     };
     className?: string;
   }
 >((props, ref) => {
+  const modifiedData = useMemo(() => {
+    // add colors to the data points
+    return props.custom.data.map((item, index) => {
+      return (props.custom.data[index] = {
+        ...props.custom.data[index],
+        fill: getColorAt(index),
+      });
+    });
+  }, [props.custom]);
   return (
     <div
       ref={ref}
@@ -51,29 +68,19 @@ export const RadialbarChart = forwardRef<
       className={props.className}
     >
       <RadialBarChartRechart
-        width={500}
-        height={500}
-        cx={350}
-        cy={200}
-        innerRadius={20}
-        outerRadius={140}
-        barSize={20}
-        data={props.custom.data}
+        width={props.custom.chartWidth}
+        height={props.custom.chartHeight}
+        innerRadius={props.custom.innerRadius}
+        barSize={props.custom.barSize}
+        data={modifiedData}
       >
-        <RadialBar
-          label={{ position: "insideStart", fill: "#fff" }}
-          background
-          dataKey="uv"
-        />
-        {/* <Legend
-          iconSize={10}
-          width={120}
-          height={140}
-          layout="vertical"
-          verticalAlign="middle"
-          align="right"
-        /> */}
-        <Tooltip />
+        {props.custom.legend?.show && <Legend />}
+        {props.custom.radialBar?.show && (
+          <RadialBar
+            label={{ ...props.custom.radialBar.options }}
+            dataKey={props.custom.radialBar.key}
+          />
+        )}
       </RadialBarChartRechart>
     </div>
   );
@@ -86,38 +93,26 @@ export const DevRadialbarChart: typeof RadialbarChart = forwardRef(
         {
           name: "A",
           uv: 31.47,
-          pv: 2400,
-          fill: "#8884d8",
         },
         {
           name: "B",
           uv: 26.69,
-          pv: 4567,
-          fill: "#83a6ed",
         },
         {
           name: "C",
           uv: 15.69,
-          pv: 1398,
-          fill: "#8dd1e1",
         },
         {
           name: "D",
           uv: 8.22,
-          pv: 9800,
-          fill: "#82ca9d",
         },
         {
           name: "E",
           uv: 8.63,
-          pv: 3908,
-          fill: "#a4de6c",
         },
         {
           name: "F",
           uv: 2.63,
-          pv: 4800,
-          fill: "#d0ed57",
         },
       ];
       const options = {
@@ -178,12 +173,17 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           data: [],
-          xAxis: { show: true, key: "x" },
-          yAxis: { show: true },
-          toolTip: { show: true },
           legend: { show: true },
           chartHeight: 400,
           chartWidth: 400,
+          radialBar: {
+            show: true,
+            key: "uv",
+            options: {
+              position: "insideStart",
+              fill: "#fff",
+            },
+          },
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
