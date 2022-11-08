@@ -97,6 +97,10 @@ module.exports = {
       modulePath: "./src/manifests/charts/CandleStick/CandleStick.tsx",
       exportedVarName: "CandleStick",
     },
+    RadialbarChart: {
+      modulePath: "./src/manifests/charts/RadialbarChart/RadialbarChart.tsx",
+      exportedVarName: "RadialbarChart",
+    },
     Checkbox: {
       modulePath: "./src/manifests/Checkbox/Checkbox.tsx",
       exportedVarName: "Checkbox",
