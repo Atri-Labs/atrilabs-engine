@@ -101,6 +101,10 @@ module.exports = {
       modulePath: "./src/manifests/charts/RadialbarChart/RadialbarChart.tsx",
       exportedVarName: "RadialbarChart",
     },
+    GranttChart: {
+      modulePath: "./src/manifests/charts/GranttChart/GranttChart.tsx",
+      exportedVarName: "GranttChart",
+    },
     Checkbox: {
       modulePath: "./src/manifests/Checkbox/Checkbox.tsx",
       exportedVarName: "Checkbox",
