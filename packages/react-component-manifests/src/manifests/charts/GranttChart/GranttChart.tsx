@@ -5,7 +5,14 @@ import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../../CommonIcon";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { PieChart as PieChartRechart, Pie, Tooltip, Legend } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { getColorAt } from "../utils/colors";
@@ -15,81 +22,110 @@ export const GranttChart = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      data:
-        | {
-            [key: string]: string | number;
-          }[]
-        | {
-            [key: string]: string | number;
-          }[][];
-      options?: {
-        cx?: string;
-        cy?: string;
-        outerRadius?: number | string;
-        innerRadius?: number | string;
-        fill?: string;
-        showLabel?: boolean;
-        animate?: boolean;
+      cartesianGrid?: { show?: boolean; strokeDasharray?: string };
+      data: {
+        [key: string]: number | string | Date;
       }[];
+      options?: {
+        [key: string]: {
+          height?: number;
+          width?: number;
+          margin?: {
+            [key: string]: {
+              top: number;
+              right: number;
+              left: number;
+              bottom: number;
+            };
+          };
+        };
+      };
       toolTip?: { show?: boolean };
       legend?: { show?: boolean };
       keys?: { value?: string };
+      xAxis?: { show?: boolean; key?: string; type?: string };
+      yAxis?: { show?: boolean; type?: string };
       chartWidth: number;
       chartHeight: number;
     };
     className?: string;
   }
 >((props, ref) => {
-  const valueKey = useMemo(() => {
-    return props.custom.keys?.value || "value";
-  }, [props.custom]);
+  function convertTasksToRechartsData(tasks: any) {
+    const minTimestamp = tasks[0].startDate.valueOf();
+    return tasks.map((task: any) => {
+      const startTimestamp = task.startDate.getTime();
+      const duration = task.endDate.valueOf() - startTimestamp;
+      return {
+        ...task,
+        value: startTimestamp - minTimestamp + duration / 2,
+      };
+    });
+  }
 
-  const reshapedData = useMemo(() => {
-    if (
-      Array.isArray(props.custom.data) &&
-      !Array.isArray(props.custom.data[0])
-    ) {
-      return [props.custom.data] as {
-        [key: string]: number;
-      }[][];
-    }
-    return props.custom.data as {
-      [key: string]: number;
-    }[][];
-  }, [props.custom]);
-
+  const noLine = () => ({
+    lineStart() {},
+    lineEnd() {},
+    point(x: number, y: number) {},
+  });
+  const CustomizedDot = (props: {
+    cx: number;
+    cy: number;
+    height: number;
+    width: number;
+    payload: {
+      startDate: string;
+      endDate: string;
+      name: string;
+      status: "RUNNING" | "FAILED";
+      value: number;
+    };
+  }) => {
+    const { cx, cy, height, width, payload: task } = props;
+    return (
+      <rect
+        width={width}
+        height={height}
+        x={cx - width / 2}
+        y={cy - height / 2}
+        fill={task.status === "FAILED" ? "red" : "green"}
+      />
+    );
+  };
   return (
     <div
       ref={ref}
       style={{ display: "inline-block", ...props.styles }}
       className={props.className}
     >
-      <PieChartRechart
+      <LineChart
+        layout="vertical"
         width={props.custom.chartWidth}
         height={props.custom.chartHeight}
-        data={props.custom.data}
+        data={convertTasksToRechartsData(props.custom.data)}
+        margin={{ ...props.custom.options.margin }}
       >
-        {props.custom.toolTip?.show ? <Tooltip /> : null}
-        {props.custom.legend?.show ? <Legend /> : null}
-        {reshapedData.map((data, index) => {
-          const fillColor =
-            props.custom.options?.[index]?.fill || getColorAt(index);
-          return (
-            <Pie
-              key={index}
-              data={data}
-              dataKey={valueKey}
-              fill={fillColor}
-              isAnimationActive={props.custom.options?.[index]?.animate}
-              cx={props.custom?.options?.[index]?.cx}
-              cy={props.custom?.options?.[index]?.cy}
-              innerRadius={props.custom?.options?.[index]?.innerRadius}
-              outerRadius={props.custom?.options?.[index]?.outerRadius}
-              label={props.custom?.options?.[index]?.showLabel}
-            />
-          );
-        })}
-      </PieChartRechart>
+        {props.custom.cartesianGrid?.show && (
+          <CartesianGrid
+            strokeDasharray={props.custom.cartesianGrid?.strokeDasharray}
+          />
+        )}
+        {props.custom.xAxis?.show && <XAxis type={props.custom.xAxis?.type} />}
+        {props.custom.yAxis?.show && (
+          <YAxis
+            dataKey={props.custom.xAxis?.key}
+            type={props.custom.yAxis?.type}
+          />
+        )}
+        {props.custom.toolTip?.show && <Tooltip />}
+        <Line
+          dataKey="value"
+          type={noLine}
+          dot={<CustomizedDot {...props.custom.options} />}
+          activeDot={false}
+          isAnimationActive={false}
+        />
+      </LineChart>
     </div>
   );
 });
@@ -97,35 +133,36 @@ export const GranttChart = forwardRef<
 export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
-      [
-        { name: "Group A1", value: 400 },
-        { name: "Group B1", value: 300 },
-        { name: "Group C1", value: 200 },
-        { name: "Group D1", value: 100 },
-      ],
-      [
-        { name: "A11", value: 100 },
-        { name: "A21", value: 200 },
-        { name: "B11", value: 300 },
-        { name: "B21", value: 400 },
-      ],
-    ];
-    const options = [
       {
-        cx: "50%",
-        cy: "50%",
-        outerRadius: "40%",
-        showLabel: true,
-        animate: false,
+        startDate: new Date("Sun Dec 09 01:36:45 EST 2012"),
+        endDate: new Date("Sun Dec 09 02:36:45 EST 2012"),
+        name: "A Job",
+        status: "FAILED",
+      },
+
+      {
+        startDate: new Date("Sun Dec 09 01:56:32 EST 2012"),
+        endDate: new Date("Sun Dec 09 06:35:47 EST 2012"),
+        name: "B Job",
+        status: "RUNNING",
       },
       {
-        cx: "50%",
-        cy: "50%",
-        innerRadius: "65%",
-        showLabel: true,
-        animate: false,
+        startDate: new Date("Sun Dec 09 04:56:32 EST 2012"),
+        endDate: new Date("Sun Dec 09 06:35:47 EST 2012"),
+        name: "C Job",
+        status: "RUNNING",
       },
     ];
+    const options = {
+      height: 16,
+      width: 80,
+      margin: {
+        top: 20,
+        right: 30,
+        left: 20,
+        bottom: 5,
+      },
+    };
     return { ...props.custom, data, options };
   }, [props.custom]);
 
@@ -176,8 +213,10 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           data: [],
+          cartesianGrid: { show: true, strokeDasharray: "3" },
+          xAxis: { show: true, key: "name", type: "number" },
+          yAxis: { show: true, type: "category" },
           toolTip: { show: true },
-          legend: { show: true },
           chartHeight: 400,
           chartWidth: 400,
         },
