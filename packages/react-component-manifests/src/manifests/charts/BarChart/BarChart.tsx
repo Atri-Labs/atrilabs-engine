@@ -69,7 +69,6 @@ export const BarChart = forwardRef<
     }
     return true;
   }, [props.custom, xAxisKey]);
-
   const sortedKeys = useMemo(() => {
     if (props.custom.data.length > 0) {
       return Object.keys(props.custom.data[0])
@@ -235,6 +234,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           data: [],
+          cartesianGrid: { show: true, strokeDasharray: "3" },
           xAxis: { show: true, key: "x" },
           yAxis: { show: true },
           toolTip: { show: true },
