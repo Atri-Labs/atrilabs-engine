@@ -12,6 +12,9 @@ import {
   buildServerWithDefaults,
 } from "../shared/utils";
 
+// @ts-ignore
+global.window = undefined;
+
 const appServerInfo: ServerInfo = JSON.parse(
   fs.readFileSync("atri-server-info.json").toString()
 );

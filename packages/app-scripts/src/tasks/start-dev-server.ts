@@ -12,6 +12,9 @@ import {
 } from "../shared/utils";
 import http from "http";
 
+// @ts-ignore
+global.window = undefined;
+
 const mode = getMode();
 setNodeAndBabelEnv(mode);
 
