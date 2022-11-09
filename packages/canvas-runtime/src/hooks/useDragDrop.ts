@@ -425,6 +425,10 @@ export const useDragDrop = (
           }
         }
       }
+
+      if (state.value === DRAG_FAILED) {
+        cancelMachineLock();
+      }
     });
   }, [containerRef, setOverlay]);
 

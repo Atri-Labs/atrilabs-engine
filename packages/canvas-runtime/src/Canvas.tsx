@@ -10,6 +10,7 @@ import { useDragDrop } from "./hooks/useDragDrop";
 import { useHintOverlays } from "./hooks/useHintOverlays";
 import { useSubscribeStylesheetUpdates } from "./hooks/useSubscribeStylesheet";
 import { GlobalContext } from "@atrilabs/core";
+import { useAttachEventsToIframe } from "./hooks/useAttachEventsToIframe";
 
 const styles: { [key: string]: React.CSSProperties } = {
   "canvas-container": {
@@ -32,6 +33,7 @@ export const Canvas: React.FC = React.memo(() => {
   const dimension = useAutoResize(ref, breakpoint);
   const dragzoneRef = getRef("Dragzone");
   const [iframeRef, setIframeRef] = useState<HTMLIFrameElement | null>(null);
+  useAttachEventsToIframe({ iframe: iframeRef });
   const { overlay, canvasOverlay } = useDragDrop(dragzoneRef, iframeRef);
   const { stylesheets } = useSubscribeStylesheetUpdates();
   useEffect(() => {
