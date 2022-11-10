@@ -31,6 +31,7 @@ import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Al
 import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
 import Modal from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
 import Form from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
+import UnorderedList from "@atrilabs/react-component-manifests/src/manifests/UnorderedList/UnorderedList";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -108,7 +109,8 @@ const defaultImports = [
   AlertManifests,
   Icon,
   Modal,
-  Form
+  Form,
+  UnorderedList,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
