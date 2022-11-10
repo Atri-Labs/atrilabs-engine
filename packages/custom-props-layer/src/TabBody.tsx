@@ -16,8 +16,12 @@ import { usePageRoutes } from "./hooks/usePageRoutes";
 import { ComponentSelector } from "./components/component-selector/ComponentSelector";
 import { ExternalLink } from "./components/external-link/ExternalLink";
 import { Enum } from "./components/enum/Enum";
-import { EnumCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import {
+  EnumCustomProp,
+  MapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { EnumList } from "./components/enum-list/EnumList";
+import { Map } from "./components/map/Map";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -194,6 +198,21 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
             <EnumList
               {...props}
               options={options}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "map") {
+          const mapCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as MapCustomProp;
+          const attributes = mapCustomProps.attributes;
+          return (
+            <EnumList
+              {...props}
+              attributes={attributes}
               propName={propName}
               key={propName}
               routes={routes}
