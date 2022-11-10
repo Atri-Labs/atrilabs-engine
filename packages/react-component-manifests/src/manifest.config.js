@@ -121,5 +121,9 @@ module.exports = {
       modulePath: "./src/manifests/Form/Form.tsx",
       exportedVarName: "Form",
     },
+    Testimonial: {
+      modulePath: "./src/manifests/Testimonial/Testimonial.tsx",
+      exportedVarName: "Testimonial",
+    },
   },
 };

@@ -28,6 +28,7 @@ import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Alert/Alert";
+import TestimonialManifests from "@atrilabs/react-component-manifests/src/manifests/Testimonial/Testimonial";
 import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
 import Modal from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
 import Form from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
@@ -106,9 +107,10 @@ const defaultImports = [
   TableManifests,
   DivManifests,
   AlertManifests,
+  TestimonialManifests,
   Icon,
   Modal,
-  Form
+  Form,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
