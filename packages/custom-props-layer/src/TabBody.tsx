@@ -210,7 +210,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           ] as MapCustomProp;
           const attributes = mapCustomProps.attributes;
           return (
-            <EnumList
+            <Map
               {...props}
               attributes={attributes}
               propName={propName}
