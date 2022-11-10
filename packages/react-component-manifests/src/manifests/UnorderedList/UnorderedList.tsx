@@ -7,6 +7,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import logo from "./logo.png";
 
 export const UnorderedList = forwardRef<
   HTMLDivElement,
@@ -18,7 +19,7 @@ export const UnorderedList = forwardRef<
       //Title of the list
       title: string;
       listItems: string[];
-      listItemUrl?: string[];
+      listItemUrls?: string[];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -31,18 +32,135 @@ export const UnorderedList = forwardRef<
     [props]
   );
   return (
-    <div ref={ref} className={props.className} style={props.styles}>
-      <h1>{props.custom.title}</h1>
+    <div ref={ref} className={props.className} style={{ ...props.styles }}>
       <ul>
-        {props.custom.listItems.map((listItem, index) => {
-          return <li onClick={onClick}>{listItem}</li>;
-        })}
+        <li
+          style={{
+            padding: "0.5em 0",
+            borderBottom: "1px solid rgba(0,0,0,.06)",
+          }}
+        >
+          <div style={{ display: "flex", columnGap: "0.5em" }}>
+            <div>
+              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+              }}
+            >
+              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
+              <p style={{ color: "#00000073", fontSize: "1em" }}>
+                A new approach to full-stack development
+              </p>
+            </div>
+          </div>
+        </li>
+        <li
+          style={{
+            padding: "0.5em 0",
+            borderBottom: "1px solid rgba(0,0,0,.06)",
+          }}
+        >
+          <div style={{ display: "flex", columnGap: "0.5em" }}>
+            <div>
+              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+              }}
+            >
+              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
+              <p style={{ color: "#00000073", fontSize: "1em" }}>
+                A new approach to full-stack development
+              </p>
+            </div>
+          </div>
+        </li>
+        <li
+          style={{
+            padding: "0.5em 0",
+            borderBottom: "1px solid rgba(0,0,0,.06)",
+          }}
+        >
+          <div style={{ display: "flex", columnGap: "0.5em" }}>
+            <div>
+              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+              }}
+            >
+              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
+              <p style={{ color: "#00000073", fontSize: "1em" }}>
+                A new approach to full-stack development
+              </p>
+            </div>
+          </div>
+        </li>
+        <li
+          style={{
+            padding: "0.5em 0",
+            borderBottom: "1px solid rgba(0,0,0,.06)",
+          }}
+        >
+          <div style={{ display: "flex", columnGap: "0.5em" }}>
+            <div>
+              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+              }}
+            >
+              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
+              <p style={{ color: "#00000073", fontSize: "1em" }}>
+                A new approach to full-stack development
+              </p>
+            </div>
+          </div>
+        </li>
+        <li
+          style={{
+            padding: "0.5em 0",
+            borderBottom: "1px solid rgba(0,0,0,.06)",
+          }}
+        >
+          <div style={{ display: "flex", columnGap: "0.5em" }}>
+            <div>
+              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+              }}
+            >
+              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
+              <p style={{ color: "#00000073", fontSize: "1em" }}>
+                A new approach to full-stack development
+              </p>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  css2DisplayOptions: true,
   flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
@@ -60,7 +178,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     type: { type: "enum", options: ["disc", "circle", "square", "none"] },
     title: { type: "text" },
     listItems: { type: "array" },
-    listItemUrl: { type: "array" },
+    listItemUrls: { type: "array" },
   },
 };
 
@@ -83,6 +201,7 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           type: "none",
           listItems: [],
+          listItemUrls: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
