@@ -31,17 +31,45 @@ export const Testimonial = forwardRef<
       style={props.styles}
       onClick={onClick}
     >
-      <div style={{ display: "flex" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          padding: "0.1em 0.1em 0",
+          columnGap: "0.5em",
+        }}
+      >
         <div>
-          <img src={logo} alt="Profile of reviewer" height="32em" />
+          <img src={logo} alt="Profile of reviewer" width="32em" />
         </div>
         <div>
-          <h4>Anonymous</h4>
-          <p>Chief Technology Officer, Anon</p>
+          <h3 style={{ color: "#000000d9", fontSize: "1em" }}>Anonymous</h3>
+          <p style={{ color: "#00000073", fontSize: "1em" }}>
+            Chief Technology Officer, Anon
+          </p>
         </div>
       </div>
-      <div>qwerty</div>
-      <div>qwerty</div>
+      <div
+        style={{
+          padding: "0.1em 0.1em 0",
+          color: "#000000d9",
+          fontSize: "1em",
+        }}
+      >
+        Fewer lines of code. Better code quality. Minimal learning curve.
+      </div>
+      <div
+        style={{
+          padding: "0.1em 0.1em 0",
+          color: "#00000073",
+          fontSize: "1em",
+        }}
+      >
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat
+        repellat minus labore consequatur illum veritatis numquam iste placeat
+        consequuntur soluta quidem ducimus, fugiat voluptates ab. Exercitationem
+        velit soluta eum voluptas.
+      </div>
     </div>
   );
 });
@@ -76,9 +104,9 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          display: "flex",
+          display: "inline-flex",
           flexDirection: "column",
-          rowGap: "0.3em",
+          rowGap: "0.5em",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
