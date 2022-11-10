@@ -15,7 +15,6 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { getColorAt } from "../utils/colors";
 import { ReactComponent as Icon } from "../PieChart/icon.svg";
 export const GranttChart = forwardRef<
   HTMLDivElement,
@@ -27,31 +26,25 @@ export const GranttChart = forwardRef<
         [key: string]: number | string | Date;
       }[];
       options?: {
-        [key: string]: {
-          height?: number;
-          width?: number;
-          margin?: {
-            [key: string]: {
-              top: number;
-              right: number;
-              left: number;
-              bottom: number;
-            };
-          };
+        margin?: {
+          top: number;
+          right: number;
+          left: number;
+          bottom: number;
         };
       };
       toolTip?: { show?: boolean };
       legend?: { show?: boolean };
       keys?: { value?: string };
-      xAxis?: { show?: boolean; key?: string; type?: string };
-      yAxis?: { show?: boolean; type?: string };
+      xAxis?: { show?: boolean; key?: string; type?: "category" | "number" };
+      yAxis?: { show?: boolean; type?: "category" | "number" };
       chartWidth: number;
       chartHeight: number;
     };
     className?: string;
   }
 >((props, ref) => {
-  function convertTasksToRechartsData(tasks: any) {
+  const convertTasksToRechartsData = (tasks: any) => {
     const minTimestamp = tasks[0].startDate.valueOf();
     return tasks.map((task: any) => {
       const startTimestamp = task.startDate.getTime();
@@ -61,27 +54,17 @@ export const GranttChart = forwardRef<
         value: startTimestamp - minTimestamp + duration / 2,
       };
     });
-  }
-
+  };
   const noLine = () => ({
     lineStart() {},
     lineEnd() {},
     point(x: number, y: number) {},
   });
-  const CustomizedDot = (props: {
-    cx: number;
-    cy: number;
-    height: number;
-    width: number;
-    payload: {
-      startDate: string;
-      endDate: string;
-      name: string;
-      status: "RUNNING" | "FAILED";
-      value: number;
-    };
-  }) => {
-    const { cx, cy, height, width, payload: task } = props;
+  const CustomizedDot = (props: any) => {
+    // REFERENCE : https://recharts.org/en-US/examples/CustomizedDotLineChart
+    const { cx, cy, payload: task } = props;
+    const height = 16;
+    const width = 80;
     return (
       <rect
         width={width}
@@ -103,7 +86,7 @@ export const GranttChart = forwardRef<
         width={props.custom.chartWidth}
         height={props.custom.chartHeight}
         data={convertTasksToRechartsData(props.custom.data)}
-        margin={{ ...props.custom.options.margin }}
+        margin={{ ...props.custom.options?.margin }}
       >
         {props.custom.cartesianGrid?.show && (
           <CartesianGrid
@@ -121,7 +104,7 @@ export const GranttChart = forwardRef<
         <Line
           dataKey="value"
           type={noLine}
-          dot={<CustomizedDot {...props.custom.options} />}
+          dot={<CustomizedDot />}
           activeDot={false}
           isAnimationActive={false}
         />
@@ -129,7 +112,6 @@ export const GranttChart = forwardRef<
     </div>
   );
 });
-
 export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
@@ -154,8 +136,6 @@ export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
       },
     ];
     const options = {
-      height: 16,
-      width: 80,
       margin: {
         top: 20,
         right: 30,
@@ -165,10 +145,8 @@ export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
     };
     return { ...props.custom, data, options };
   }, [props.custom]);
-
   return <GranttChart {...props} ref={ref} custom={custom} />;
 });
-
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: false,
@@ -181,7 +159,6 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
-
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     data: { type: "array" },
@@ -193,7 +170,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
     chartWidth: { type: "number" },
   },
 };
-
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "GranttChart", category: "Data" },
   render: {
@@ -228,7 +204,6 @@ const compManifest: ReactComponentManifestSchema = {
     defaultCallbackHandlers: {},
   },
 };
-
 const iconManifest = {
   panel: { comp: CommonIcon, props: { name: "Grantt", svg: Icon } },
   drag: {
@@ -244,3 +219,4 @@ export default {
     [iconSchemaId]: [iconManifest],
   },
 };
+// Source code for Granttchart : https://codesandbox.io/s/recharts-gantt-forked-dzqlox?file=/src/index.js:2033-2046
