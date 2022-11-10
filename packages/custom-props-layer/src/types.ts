@@ -1,4 +1,7 @@
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import {
+  CustomPropsTreeOptions,
+  SimpleCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import {
   ColorPickerDialogProps,
   OpenAssetManagerCallabck,
@@ -14,6 +17,8 @@ export type TabBodyProps = {
   ) => void;
   // options is currently being used with the enum custom property
   options?: string[];
+  // attributes is currently being used with the map custom property
+  attributes?: SimpleCustomProp[];
 };
 
 export type ComponentProps = TabBodyProps & {
