@@ -17,9 +17,10 @@ export const UnorderedList = forwardRef<
       //The list-style-type for the list
       type: string;
       //Title of the list
-      title: string;
-      listItems: string[];
-      listItemUrls?: string[];
+      titles: string[];
+      descriptions: string[];
+      titleColor: string;
+      descriptionColor: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -34,126 +35,48 @@ export const UnorderedList = forwardRef<
   return (
     <div ref={ref} className={props.className} style={{ ...props.styles }}>
       <ul>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
-            </div>
-            <div
+        {props.custom.titles.map((title, index) => {
+          return (
+            <li
               style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
+                padding: "0.5em 0",
+                borderBottom: "1px solid rgba(0,0,0,.06)",
               }}
+              key={index}
             >
-              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
-              <p style={{ color: "#00000073", fontSize: "1em" }}>
-                A new approach to full-stack development
-              </p>
-            </div>
-          </div>
-        </li>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
-              }}
-            >
-              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
-              <p style={{ color: "#00000073", fontSize: "1em" }}>
-                A new approach to full-stack development
-              </p>
-            </div>
-          </div>
-        </li>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
-              }}
-            >
-              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
-              <p style={{ color: "#00000073", fontSize: "1em" }}>
-                A new approach to full-stack development
-              </p>
-            </div>
-          </div>
-        </li>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
-              }}
-            >
-              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
-              <p style={{ color: "#00000073", fontSize: "1em" }}>
-                A new approach to full-stack development
-              </p>
-            </div>
-          </div>
-        </li>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              <img src={logo} alt={"logo for alternate text"} height={"30em"} />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
-              }}
-            >
-              <h4 style={{ color: "#000000d9", fontSize: "1em" }}>Atri Labs</h4>
-              <p style={{ color: "#00000073", fontSize: "1em" }}>
-                A new approach to full-stack development
-              </p>
-            </div>
-          </div>
-        </li>
+              <div style={{ display: "flex", columnGap: "0.5em" }}>
+                <div>
+                  <img
+                    src={logo}
+                    alt={"logo for alternate text"}
+                    height={"30em"}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    rowGap: "0.5em",
+                  }}
+                >
+                  <h4
+                    style={{ color: props.custom.titleColor, fontSize: "1em" }}
+                  >
+                    {title}
+                  </h4>
+                  <p
+                    style={{
+                      color: props.custom.descriptionColor,
+                      fontSize: "1em",
+                    }}
+                  >
+                    {props.custom.descriptions[index]}
+                  </p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -176,9 +99,10 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     type: { type: "enum", options: ["disc", "circle", "square", "none"] },
-    title: { type: "text" },
-    listItems: { type: "array" },
-    listItemUrls: { type: "array" },
+    titles: { type: "array" },
+    descriptions: { type: "array" },
+    titleColor: { type: "color" },
+    descriptionColor: { type: "color" },
   },
 };
 
@@ -200,8 +124,10 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           type: "none",
-          listItems: [],
-          listItemUrls: [],
+          titles: [],
+          descriptions: [],
+          titleColor: "#000000d9",
+          descriptionColor: "#00000073",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
