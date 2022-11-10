@@ -12,7 +12,6 @@ export type SimpleCustomProp = {
     | "array_static_asset"
     | "internal_link"
     | "component_selector"
-    | "map"
     | "external_link";
 };
 
