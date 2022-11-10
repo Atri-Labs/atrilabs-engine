@@ -16,6 +16,11 @@ export type SimpleCustomProp = {
     | "external_link";
 };
 
+export type MapCustomProp = {
+  type: "map";
+  attributes: SimpleCustomProp[];
+};
+
 export type EnumCustomProp = {
   type: "enum" | "array_enum";
   options: string[];
@@ -23,7 +28,7 @@ export type EnumCustomProp = {
 
 export type CustomPropsTreeOptions = {
   dataTypes: {
-    [propName: string]: SimpleCustomProp | EnumCustomProp;
+    [propName: string]: SimpleCustomProp | MapCustomProp | EnumCustomProp;
   };
 };
 
