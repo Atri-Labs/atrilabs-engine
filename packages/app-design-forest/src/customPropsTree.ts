@@ -17,7 +17,18 @@ export type SimpleCustomProp = {
 
 export type MapCustomProp = {
   type: "map";
-  attributes: SimpleCustomProp[];
+  attributes: {
+    name: string;
+    type:
+      | "text"
+      | "number"
+      | "large_text"
+      | "static_asset"
+      | "boolean"
+      | "color"
+      | "internal_link"
+      | "external_link";
+  }[];
 };
 
 export type EnumCustomProp = {
