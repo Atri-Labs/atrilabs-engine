@@ -7,17 +7,10 @@ import {
   OpenAssetManagerCallabck,
 } from "@atrilabs/shared-layer-lib";
 
-type attributeTypes =
-  | "text"
-  | "number"
-  | "large_text"
-  | "static_asset"
-  | "boolean"
-  | "color"
-  | "internal_link"
-  | "external_link";
+type AttributeTypes = MapCustomProp["attributes"];
 
 export type TabBodyProps = {
+  // propType?: string;
   patchCb: (slice: any) => void;
   customProps: any;
   treeOptions: CustomPropsTreeOptions;
@@ -28,15 +21,20 @@ export type TabBodyProps = {
   // options is currently being used with the enum custom property
   options?: string[];
   // attributes is currently being used with the map custom property
-  attributes?: { name: string; type: attributeTypes }[];
+  attributes?: AttributeTypes;
 };
 
 export type ComponentProps = TabBodyProps & {
   propName: string;
+  selector?: string[];
   openAssetManager: OpenAssetManagerCallabck;
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">
   ) => void;
   routes: string[];
   objectName?: string;
+};
+
+export type CommonPropTypeContainerTypes = ComponentProps & {
+  propType: string;
 };

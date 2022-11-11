@@ -24,7 +24,8 @@ export type MapCustomProp = {
   type: "map";
   attributes: {
     fieldName: string;
-    type: SimpleCustomProp | EnumCustomProp;
+    type: SimpleCustomProp["type"] | EnumCustomProp["type"];
+    options?: string[];
   }[];
 };
 
