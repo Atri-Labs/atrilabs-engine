@@ -6,33 +6,32 @@ import { TextInput } from "../commons/TextInput";
 
 export const Text: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
-    if (props.objectName)
-      return props.customProps[props.objectName][props.propName] || "";
     return props.customProps[props.propName] || "";
   }, [props]);
+  const selector = useMemo(() => {
+    return props.selector || [];
+  }, [props]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (props.objectName) {
-        props.patchCb({
-          property: {
-            custom: {
-              [props.objectName]: {
-                [props.propName]: e.target.value,
-              },
-            },
-          },
+      const createObject = (fields: string[], value: string) => {
+        const reducer: any = (
+          acc: string,
+          item: string,
+          index: number,
+          arr: string[]
+        ) => ({
+          [item]: index + 1 < arr.length ? acc : value,
         });
-      } else {
-        props.patchCb({
-          property: {
-            custom: {
-              [props.propName]: e.target.value,
-            },
-          },
-        });
-      }
+        return fields.reduceRight(reducer, {});
+      };
+      props.patchCb({
+        property: {
+          custom: createObject(selector, e.target.value),
+        },
+      });
     },
-    [props]
+    [props, selector]
   );
   return (
     <PropertyContainer>
