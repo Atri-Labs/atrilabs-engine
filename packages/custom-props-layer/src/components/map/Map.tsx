@@ -10,6 +10,7 @@ export const Map: React.FC<ComponentProps> = (props) => {
     return props.attributes || [];
   }, [props]);
   const { routes } = usePageRoutes();
+
   return (
     <div
       style={{
@@ -25,6 +26,7 @@ export const Map: React.FC<ComponentProps> = (props) => {
           <CommonPropTypeContainer
             {...props}
             selector={[props.propName, attribute.fieldName]}
+            options={attribute.options}
             propType={attribute.type}
             propName={attribute.fieldName}
             key={attribute.fieldName}

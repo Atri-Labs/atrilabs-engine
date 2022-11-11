@@ -140,7 +140,8 @@ export const CommonPropTypeContainer: React.FC<CommonPropTypeContainerTypes> = (
     const enumCustomProps = props.treeOptions.dataTypes[
       propName
     ] as EnumCustomProp;
-    const options = enumCustomProps.options;
+    const options = props.options || enumCustomProps.options;
+
     return (
       <Enum
         {...props}
