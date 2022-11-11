@@ -3,6 +3,7 @@ import { useMemo, useCallback } from "react";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { Label } from "../commons/Label";
 import { NumberInput } from "../commons/NumberInput";
+import { createObject } from "../../utility/Utility";
 
 export const Number: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -18,17 +19,6 @@ export const Number: React.FC<ComponentProps> = (props) => {
 
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const createObject = (fields: string[], value: string | number) => {
-        const reducer: any = (
-          acc: string,
-          item: string,
-          index: number,
-          arr: string[]
-        ) => ({
-          [item]: index + 1 < arr.length ? acc : value,
-        });
-        return fields.reduceRight(reducer, {});
-      };
       props.patchCb({
         property: {
           custom: createObject(
