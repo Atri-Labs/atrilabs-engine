@@ -15,25 +15,17 @@ export type SimpleCustomProp = {
     | "external_link";
 };
 
-export type MapCustomProp = {
-  type: "map";
-  attributes: {
-    name: string;
-    type:
-      | "text"
-      | "number"
-      | "large_text"
-      | "static_asset"
-      | "boolean"
-      | "color"
-      | "internal_link"
-      | "external_link";
-  }[];
-};
-
 export type EnumCustomProp = {
   type: "enum" | "array_enum";
   options: string[];
+};
+
+export type MapCustomProp = {
+  type: "map";
+  attributes: {
+    fieldName: string;
+    type: SimpleCustomProp | EnumCustomProp;
+  }[];
 };
 
 export type CustomPropsTreeOptions = {
