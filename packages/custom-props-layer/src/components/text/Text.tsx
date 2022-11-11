@@ -5,12 +5,16 @@ import { PropertyContainer } from "../commons/PropertyContainer";
 import { TextInput } from "../commons/TextInput";
 
 export const Text: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || "";
-  }, [props]);
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || "";
+  }, [props, selector]);
 
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

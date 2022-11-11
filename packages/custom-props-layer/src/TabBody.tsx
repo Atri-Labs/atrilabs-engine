@@ -48,6 +48,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           return (
             <Map
               {...props}
+              attributes={attributes}
               propName={propName}
               key={propName}
               routes={routes}
@@ -57,6 +58,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         return (
           <CommonPropTypeContainer
             {...props}
+            selector={[propName]}
             propType={propType}
             propName={propName}
             key={propName}

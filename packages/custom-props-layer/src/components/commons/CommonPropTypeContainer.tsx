@@ -29,10 +29,19 @@ export const CommonPropTypeContainer: React.FC<CommonPropTypeContainerTypes> = (
   const propName = useMemo(() => {
     return props.propName;
   }, [props.propName]);
+  const selector = useMemo(() => {
+    return props.selector || [];
+  }, [props]);
 
   if (propType === "text")
     return (
-      <Text {...props} propName={propName} key={propName} routes={routes} />
+      <Text
+        {...props}
+        selector={selector}
+        propName={propName}
+        key={propName}
+        routes={routes}
+      />
     );
   if (propType === "static_asset")
     return (
