@@ -1,41 +1,27 @@
-import { gray100, gray800, smallText } from "@atrilabs/design-system";
+import { gray900 } from "@atrilabs/design-system";
 import React, { useEffect, useRef, useState } from "react";
 
 export type ControlledInputProps = {
-  type: string;
   value: string | number | undefined;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => void;
-  styleItem: keyof React.CSSProperties;
-  disabled: string;
-  placeholder: string;
-  pattern: string | undefined;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   inputBox: {
-    ...smallText,
-    outline: "none",
-    color: gray100,
-    backgroundColor: gray800,
-    height: "26px",
-    width: "25px",
+    height: "25px",
+    backgroundColor: gray900,
     border: "none",
-    borderRadius: "2px 0 0 2px",
-    paddingLeft: "6px",
+    outline: "none",
+    color: "white",
+    padding: "0 4px",
+    minWidth: "none",
+    width: "calc(100% - 0.5rem)",
   },
 };
 
 const ControlledInput: React.FC<ControlledInputProps> = ({
-  type,
   value,
   onChange,
-  styleItem,
-  disabled,
-  placeholder,
-  pattern,
 }) => {
   const [cursor, setCursor] = useState<number>();
   const ref = useRef<any>(null);
@@ -51,7 +37,7 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
     if (e.target.selectionStart || e.target.selectionStart === 0) {
       setCursor(e.target.selectionStart);
     }
-    onChange && onChange(e, styleItem);
+    onChange && onChange(e);
   };
 
   return (
@@ -59,11 +45,7 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
       ref={ref}
       value={value}
       onChange={handleChange}
-      type={type}
       style={styles.inputBox}
-      placeholder={placeholder}
-      disabled={disabled === "auto" ? true : false}
-      pattern={pattern}
     />
   );
 };
