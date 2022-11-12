@@ -3,26 +3,36 @@ import { ComponentProps } from "../../types";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { Label } from "../commons/Label";
+import { createObject } from "../../utility/Utility";
 
 export const StaticAsset: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || "Select Image";
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || "Select Image";
+  }, [props, selector]);
+
   const onClick = useCallback(() => {
     props.openAssetManager(
       ["select", "upload"],
-      ["property", "custom", props.propName]
+      ["property", "custom", ...selector]
     );
-  }, [props]);
+  }, [props, selector]);
+
   const onClearClick = useCallback(() => {
     props.patchCb({
       property: {
-        custom: {
-          [props.propName]: "",
-        },
+        custom: createObject(selector, ""),
       },
     });
-  }, [props]);
+  }, [props, selector]);
+
   return (
     <PropertyContainer>
       <Label name={props.propName} />
