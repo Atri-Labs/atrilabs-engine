@@ -29,7 +29,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
     },
     [props, selector, srcs]
   );
-  console.log("Static Asset List", srcs);
+
   const onClearClick = useCallback(
     (index: number) => {
       const previousSrcs = [...srcs];
