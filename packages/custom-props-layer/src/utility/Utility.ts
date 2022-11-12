@@ -1,6 +1,6 @@
 export const createObject = (
   fields: string[],
-  value: string | number | boolean
+  value: string | number | boolean | boolean[]
 ) => {
   const reducer: any = (
     acc: string,
