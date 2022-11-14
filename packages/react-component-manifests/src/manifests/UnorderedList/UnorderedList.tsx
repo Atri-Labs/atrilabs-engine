@@ -82,7 +82,6 @@ export const UnorderedList = forwardRef<
             </div>
           </div>
         </li>
-        );
       </ul>
     </div>
   );

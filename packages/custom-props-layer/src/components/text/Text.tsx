@@ -3,21 +3,29 @@ import { useMemo, useCallback } from "react";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { TextInput } from "../commons/TextInput";
+import { createObject } from "../../utility/Utility";
+
 export const Text: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || "";
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || "";
+  }, [props, selector]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: e.target.value,
-          },
+          custom: createObject(selector, e.target.value),
         },
       });
     },
-    [props]
+    [props, selector]
   );
   return (
     <PropertyContainer>

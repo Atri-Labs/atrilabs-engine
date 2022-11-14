@@ -1,24 +1,30 @@
 import { gray900 } from "@atrilabs/design-system";
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { createObject } from "../../utility/Utility";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
 export const InternalLink: React.FC<ComponentProps> = (props) => {
-  const propValue: string = useMemo(() => {
-    return props.customProps[props.propName] || "";
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue: string = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || "";
+  }, [props, selector]);
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: e.target.value,
-          },
+          custom: createObject(selector, e.target.value),
         },
       });
     },
-    [props]
+    [props, selector]
   );
 
   return (

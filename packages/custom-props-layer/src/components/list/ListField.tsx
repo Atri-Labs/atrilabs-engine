@@ -4,33 +4,37 @@ import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 import { TextInput } from "../commons/TextInput";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
+import { createObject } from "../../utility/Utility";
 
 export const ListField: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || [];
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || [];
+  }, [props, selector]);
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: {
-          [props.propName]: [...propValue, ""],
-        },
+        custom: createObject(selector, propValue.concat("")),
       },
     });
-  }, [props, propValue]);
+  }, [props, selector, propValue]);
   const editValueCb = useCallback(
     (index: number, value: string) => {
       const updatedValue = [...propValue];
       updatedValue.splice(index, 1, value);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(selector, updatedValue),
         },
       });
     },
-    [props, propValue]
+    [propValue, props, selector]
   );
   const onReposition = useCallback(
     (deleteAt: number, insertAt: number) => {
@@ -39,13 +43,11 @@ export const ListField: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(insertAt, 0, deletedItem);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(selector, updatedValue),
         },
       });
     },
-    [propValue, props]
+    [propValue, props, selector]
   );
   const deleteValueCb = useCallback(
     (index: number) => {
@@ -53,14 +55,13 @@ export const ListField: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(selector, updatedValue),
         },
       });
     },
-    [props, propValue]
+    [propValue, props, selector]
   );
+
   return (
     <ArrayPropertyContainer>
       <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
