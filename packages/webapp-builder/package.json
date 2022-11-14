@@ -30,6 +30,7 @@
     "start": "dev-atri-tool",
     "start:comp_dev": "MODE=component_development dev-atri-tool",
     "server": "ATRI_PROJECT_ID=TestProjectId bootstrap-atri-services",
+    "serverpws": "set ATRI_PROJECT_ID=TestProjectId&& bootstrap-atri-services",
     "buildManifests": "build-manifest-pkg --freeze",
     "generateApp": "run-atri-target --task generate --target 'Web App'",
     "buildApp": "run-atri-target --task build --target 'Web App'",
