@@ -105,9 +105,9 @@ module.exports = {
       modulePath: "./src/manifests/charts/RadialbarChart/RadialbarChart.tsx",
       exportedVarName: "RadialbarChart",
     },
-    GranttChart: {
-      modulePath: "./src/manifests/charts/GranttChart/GranttChart.tsx",
-      exportedVarName: "GranttChart",
+    GanttChart: {
+      modulePath: "./src/manifests/charts/GranttChart/GanttChart.tsx",
+      exportedVarName: "GanttChart",
     },
     TreemapChart: {
       modulePath: "./src/manifests/charts/TreemapChart/TreemapChart.tsx",

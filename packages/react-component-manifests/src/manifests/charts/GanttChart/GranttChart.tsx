@@ -16,7 +16,12 @@ import {
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { ReactComponent as Icon } from "../PieChart/icon.svg";
-export const GranttChart = forwardRef<
+import {
+  convertTasksToRechartsData,
+  noLine,
+  CustomizedDot,
+} from "./components";
+export const GanttChart = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -44,37 +49,6 @@ export const GranttChart = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const convertTasksToRechartsData = (tasks: any) => {
-    const minTimestamp = tasks[0].startDate.valueOf();
-    return tasks.map((task: any) => {
-      const startTimestamp = task.startDate.getTime();
-      const duration = task.endDate.valueOf() - startTimestamp;
-      return {
-        ...task,
-        value: startTimestamp - minTimestamp + duration / 2,
-      };
-    });
-  };
-  const noLine = () => ({
-    lineStart() {},
-    lineEnd() {},
-    point(x: number, y: number) {},
-  });
-  const CustomizedDot = (props: any) => {
-    // REFERENCE : https://recharts.org/en-US/examples/CustomizedDotLineChart
-    const { cx, cy, payload: task } = props;
-    const height = 16;
-    const width = 80;
-    return (
-      <rect
-        width={width}
-        height={height}
-        x={cx - width / 2}
-        y={cy - height / 2}
-        fill={task.status === "FAILED" ? "red" : "green"}
-      />
-    );
-  };
   return (
     <div
       ref={ref}
@@ -104,7 +78,7 @@ export const GranttChart = forwardRef<
         <Line
           dataKey="value"
           type={noLine}
-          dot={<CustomizedDot />}
+          dot={<CustomizedDot cx={0} cy={0} payload={{}} />}
           activeDot={false}
           isAnimationActive={false}
         />
@@ -112,7 +86,7 @@ export const GranttChart = forwardRef<
     </div>
   );
 });
-export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
+export const DevPieChart: typeof GanttChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
       {
@@ -145,7 +119,7 @@ export const DevPieChart: typeof GranttChart = forwardRef((props, ref) => {
     };
     return { ...props.custom, data, options };
   }, [props.custom]);
-  return <GranttChart {...props} ref={ref} custom={custom} />;
+  return <GanttChart {...props} ref={ref} custom={custom} />;
 });
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
@@ -171,9 +145,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
   },
 };
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "GranttChart", category: "Data" },
+  meta: { key: "GanttChart", category: "Data" },
   render: {
-    comp: GranttChart,
+    comp: GanttChart,
   },
   dev: {
     comp: DevPieChart,
@@ -205,10 +179,10 @@ const compManifest: ReactComponentManifestSchema = {
   },
 };
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Grantt", svg: Icon } },
+  panel: { comp: CommonIcon, props: { name: "Gantt", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Grantt", containerStyle: { padding: "1rem" }, svg: Icon },
+    props: { name: "Gantt", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };
