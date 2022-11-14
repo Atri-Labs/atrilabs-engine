@@ -137,5 +137,9 @@ module.exports = {
       modulePath: "./src/manifests/Form/Form.tsx",
       exportedVarName: "Form",
     },
+    Overlay: {
+      modulePath: "./src/manifests/Overlay/Overlay.tsx",
+      exportedVarName: "Overlay",
+    },
   },
 };

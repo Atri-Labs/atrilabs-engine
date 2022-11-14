@@ -1,5 +1,5 @@
 import { gray100, gray800, smallText } from "@atrilabs/design-system";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 export type ControlledInputProps = {
   type: string;
@@ -28,6 +28,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+/**
+ * This controlled input code is inspired from
+ * https://stackoverflow.com/a/68928267/8755319
+ * @param param0
+ * @returns
+ */
 const ControlledInput: React.FC<ControlledInputProps> = ({
   type,
   value,
@@ -37,10 +43,10 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
   placeholder,
   pattern,
 }) => {
-  const [cursor, setCursor] = useState<number>();
+  const [cursor, setCursor] = useState<number | null>(null);
   const ref = useRef<any>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const input = ref.current;
     if (input) {
       input.setSelectionRange(cursor, cursor);
@@ -48,9 +54,7 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
   }, [ref, cursor, value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.selectionStart || e.target.selectionStart === 0) {
-      setCursor(e.target.selectionStart);
-    }
+    setCursor(e.target.selectionStart);
     onChange && onChange(e, styleItem);
   };
 
