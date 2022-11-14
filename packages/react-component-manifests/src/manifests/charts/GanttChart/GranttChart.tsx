@@ -86,7 +86,7 @@ export const GanttChart = forwardRef<
     </div>
   );
 });
-export const DevPieChart: typeof GanttChart = forwardRef((props, ref) => {
+export const DevGanttChart: typeof GanttChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
       {
@@ -150,7 +150,7 @@ const compManifest: ReactComponentManifestSchema = {
     comp: GanttChart,
   },
   dev: {
-    comp: DevPieChart,
+    comp: DevGanttChart,
     decorators: [],
     attachProps: {
       styles: {
