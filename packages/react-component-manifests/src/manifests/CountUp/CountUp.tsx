@@ -9,6 +9,7 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Countup.css";
 import { ReactComponent as Icon } from "./icon.svg";
+import { CountUpAnimation } from "./CountUpAnimation";
 export type DateTimeDisplayComponentTypes = {
   value: number;
   type: string;
@@ -19,46 +20,37 @@ export type ShowCounterComponentTypes = {
 export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   className,
 }) => {
-  return (
-    <div
-      className={`show-counter ${className ? className : ""}`}
-      style={{ display: "inline-flex", padding: "1rem" }}
-    ></div>
-  );
+  return <div style={{ display: "inline-flex", padding: "1rem" }}></div>;
 };
 export type CountupProps = {
   styles: React.CSSProperties;
   custom: {
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    frozen: boolean;
-    showDays: boolean;
-    showHours: boolean;
-    showMinutes: boolean;
-    showSeconds: boolean;
+    itemCount: number;
+    duration: number;
+    items: {
+      coutUpTo: string;
+      itemTitle: string;
+    }[];
   };
   className?: string;
 };
-
 export const Countup = forwardRef<HTMLDivElement, CountupProps>(
   (props, ref) => {
     return (
       <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
-        111
+        <CountUpAnimation
+          value={props.custom.itemCount}
+          duration={props.custom.duration}
+        />
       </div>
     );
   }
 );
-
 export const DevCountup = forwardRef<HTMLDivElement, CountupProps>(
   (props, ref) => {
-    props.custom.frozen = true;
     return <Countup ref={ref} {...props} />;
   }
 );
-
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
@@ -71,21 +63,12 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
-
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    days: { type: "number" },
-    hours: { type: "number" },
-    // minutes: { type: "number" },
-    // seconds: { type: "number" },
-    // frozen: { type: "boolean" },
-    // showDays: { type: "boolean" },
-    // showHours: { type: "boolean" },
-    // showMinutes: { type: "boolean" },
-    // showSeconds: { type: "boolean" },
+    itemCount: { type: "number" },
+    duration: { type: "number" },
   },
 };
-
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "Countup", category: "Basics" },
   render: {
@@ -104,15 +87,9 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          days: 1,
-          hours: 1,
-          minutes: 1,
-          seconds: 1,
-          frozen: true,
-          showDays: true,
-          showHours: true,
-          showMinutes: true,
-          showSeconds: true,
+          itemCount: 50,
+          duration: 2000,
+          items: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -142,4 +119,3 @@ export default {
     [iconSchemaId]: [iconManifest],
   },
 };
-// https://www.cssscript.com/number-countup-animation-counter/
