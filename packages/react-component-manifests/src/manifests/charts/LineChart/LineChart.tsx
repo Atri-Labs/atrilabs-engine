@@ -229,7 +229,6 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           data: [],
           cartesianGrid: { show: true, strokeDasharray: "3" },
-
           xAxis: { show: true, key: "x" },
           yAxis: { show: true },
           toolTip: { show: true },

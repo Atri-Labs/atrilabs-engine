@@ -1,10 +1,16 @@
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import {
+  CustomPropsTreeOptions,
+  MapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import {
   ColorPickerDialogProps,
   OpenAssetManagerCallabck,
 } from "@atrilabs/shared-layer-lib";
 
+type AttributeTypes = MapCustomProp["attributes"];
+
 export type TabBodyProps = {
+  // propType?: string;
   patchCb: (slice: any) => void;
   customProps: any;
   treeOptions: CustomPropsTreeOptions;
@@ -14,13 +20,21 @@ export type TabBodyProps = {
   ) => void;
   // options is currently being used with the enum custom property
   options?: string[];
+  // attributes is currently being used with the map custom property
+  attributes?: AttributeTypes;
 };
 
 export type ComponentProps = TabBodyProps & {
   propName: string;
+  selector?: string[];
   openAssetManager: OpenAssetManagerCallabck;
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">
   ) => void;
   routes: string[];
+  objectName?: string;
+};
+
+export type CommonPropTypeContainerTypes = ComponentProps & {
+  propType: string;
 };
