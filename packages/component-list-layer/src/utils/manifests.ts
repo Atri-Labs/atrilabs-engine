@@ -5,6 +5,7 @@ import ButtonManifests from "@atrilabs/react-component-manifests/src/manifests/B
 import AccordianManifests from "@atrilabs/react-component-manifests/src/manifests/Accordion/Accordion";
 import CarouselManifests from "@atrilabs/react-component-manifests/src/manifests/Carousel/Carousel";
 import CountdownManifests from "@atrilabs/react-component-manifests/src/manifests/Countdown/Countdown";
+import CountupManifests from "@atrilabs/react-component-manifests/src/manifests/CountUp/CountUp";
 import FlexManifests from "@atrilabs/react-component-manifests/src/manifests/Flex/Flex";
 import ImageManifests from "@atrilabs/react-component-manifests/src/manifests/Image/Image";
 import InputManifests from "@atrilabs/react-component-manifests/src/manifests/Input/Input";
@@ -86,6 +87,7 @@ const defaultImports = [
   AccordianManifests,
   CarouselManifests,
   CountdownManifests,
+  CountupManifests,
   FlexManifests,
   ImageManifests,
   InputManifests,
