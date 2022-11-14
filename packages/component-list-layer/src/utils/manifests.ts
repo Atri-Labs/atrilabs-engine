@@ -14,7 +14,7 @@ import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/S
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
 import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/Toggle/Toggle";
 import UploadManifests from "@atrilabs/react-component-manifests/src/manifests/Upload/Upload";
-import Link from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
+import LinkManifests from "@atrilabs/react-component-manifests/src/manifests/Link/Link";
 import MenuManifests from "@atrilabs/react-component-manifests/src/manifests/Menu/Menu";
 import LineChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/LineChart/LineChart";
 import BarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/BarChart/BarChart";
@@ -29,9 +29,10 @@ import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Alert/Alert";
-import Icon from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
-import Modal from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
-import Form from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
+import IconManifests from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
+import ModalManifests from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
+import FormManifests from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
+import OverlayManifests from "@atrilabs/react-component-manifests/src/manifests/Overlay/Overlay";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -93,7 +94,7 @@ const defaultImports = [
   StepManifests,
   ToggleManifests,
   UploadManifests,
-  Link,
+  LinkManifests,
   MenuManifests,
   LineChartManifests,
   BarChartManifests,
@@ -108,9 +109,10 @@ const defaultImports = [
   TableManifests,
   DivManifests,
   AlertManifests,
-  Icon,
-  Modal,
-  Form,
+  IconManifests,
+  ModalManifests,
+  FormManifests,
+  OverlayManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
