@@ -5,6 +5,7 @@ import ButtonManifests from "@atrilabs/react-component-manifests/src/manifests/B
 import AccordianManifests from "@atrilabs/react-component-manifests/src/manifests/Accordion/Accordion";
 import CarouselManifests from "@atrilabs/react-component-manifests/src/manifests/Carousel/Carousel";
 import CountdownManifests from "@atrilabs/react-component-manifests/src/manifests/Countdown/Countdown";
+import CountupManifests from "@atrilabs/react-component-manifests/src/manifests/CountUp/CountUp";
 import FlexManifests from "@atrilabs/react-component-manifests/src/manifests/Flex/Flex";
 import ImageManifests from "@atrilabs/react-component-manifests/src/manifests/Image/Image";
 import InputManifests from "@atrilabs/react-component-manifests/src/manifests/Input/Input";
@@ -24,6 +25,8 @@ import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests
 import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
 import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 import RadialbarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/RadialbarChart/RadiadbarChart";
+import GranttChartManifest from "@atrilabs/react-component-manifests/src/manifests/charts/GanttChart/GranttChart";
+import TreemapChartManifest from "@atrilabs/react-component-manifests/src/manifests/charts/TreemapChart/TreemapChart";
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
@@ -84,6 +87,7 @@ const defaultImports = [
   AccordianManifests,
   CarouselManifests,
   CountdownManifests,
+  CountupManifests,
   FlexManifests,
   ImageManifests,
   InputManifests,
@@ -103,6 +107,8 @@ const defaultImports = [
   HistogramChartManifests,
   CandleStickManifests,
   RadialbarChartManifests,
+  GranttChartManifest,
+  TreemapChartManifest,
   CheckboxManifests,
   DropdownManifests,
   TableManifests,

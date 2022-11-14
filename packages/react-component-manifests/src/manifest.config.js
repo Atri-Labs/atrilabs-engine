@@ -41,6 +41,10 @@ module.exports = {
       modulePath: "./src/manifests/Countdown/Countdown.tsx",
       exportedVarName: "Countdown",
     },
+    Countup: {
+      modulePath: "./src/manifests/CountUp/CountUp.tsx",
+      exportedVarName: "Countup",
+    },
     Link: {
       modulePath: "./src/manifests/Link/Link.tsx",
       exportedVarName: "Link",
@@ -100,6 +104,14 @@ module.exports = {
     RadialbarChart: {
       modulePath: "./src/manifests/charts/RadialbarChart/RadialbarChart.tsx",
       exportedVarName: "RadialbarChart",
+    },
+    GanttChart: {
+      modulePath: "./src/manifests/charts/GranttChart/GanttChart.tsx",
+      exportedVarName: "GanttChart",
+    },
+    TreemapChart: {
+      modulePath: "./src/manifests/charts/TreemapChart/TreemapChart.tsx",
+      exportedVarName: "TreemapChart",
     },
     Checkbox: {
       modulePath: "./src/manifests/Checkbox/Checkbox.tsx",

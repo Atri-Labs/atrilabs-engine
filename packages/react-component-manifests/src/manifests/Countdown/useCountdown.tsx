@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 export type useCountdownHookType = {
   targetDate: number;
   countDown: number;
