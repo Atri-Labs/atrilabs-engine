@@ -91,16 +91,16 @@ export const Step = forwardRef<
         }
         .step-progress {
           height: 1px;
-          width: 100%;
-          margin-left: -25px;
-          margin-right: 5px;
+          width: 110%;
+          margin-left: -5px;
+          margin-right: 20px;
         }
         .step-progress-notreached {
           height: 1px;
           width: 110%;
           background-color: #8f9598;
-          margin-left: -25px;
-          margin-right: 5px;
+          margin-left: -5px;
+          margin-right: 20px;
         }
         .step-icon-done {
           display: inline-block;
@@ -148,56 +148,63 @@ export const Step = forwardRef<
             style={{ width: `${100 / props.custom.title.length}%` }}
           >
             {props.custom.current > i + 1 ? (
-              <div className="icon-holder">
-                <span className="step-icon-done">
-                  <div
-                    style={{
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                      borderColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-circle"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-stem"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-kick "
-                  ></div>
-                </span>
+              <div>
+                <div className="icon-holder">
+                  <span className="step-icon-done">
+                    <div
+                      style={{
+                        borderWidth: "1px",
+                        borderStyle: "solid",
+                        borderColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-circle"
+                    ></div>
+                    <div
+                      style={{
+                        backgroundColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-stem"
+                    ></div>
+                    <div
+                      style={{
+                        backgroundColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-kick "
+                    ></div>
+                  </span>
+                </div>
+                <div className="step-details">
+                  <h5>{step}</h5>
+                  <p>{props.custom.description[i]}</p>
+                </div>
               </div>
             ) : props.custom.current === i + 1 ? (
-              <div className="icon-holder">
-                <div
-                  className="step-icon"
-                  style={{ backgroundColor: `${props.custom.color}` }}
-                >
-                  {i + 1}
+              <div>
+                <div className="icon-holder">
+                  <div
+                    className="step-icon"
+                    style={{ backgroundColor: `${props.custom.color}` }}
+                  >
+                    {i + 1}
+                  </div>
+                </div>
+                <div className="step-details">
+                  <h5>{step}</h5>
+                  <p>{props.custom.description[i]}</p>
                 </div>
               </div>
             ) : (
-              <div className="icon-holder">
-                <div className="step-icon-notreached">{i + 1}</div>
+              <div>
+                <div className="icon-holder">
+                  <div className="step-icon-notreached">{i + 1}</div>
+                </div>
+                <div className="step-details-notreached">
+                  <h5>{step}</h5>
+                  <p>{props.custom.description[i]}</p>
+                </div>
               </div>
             )}
-            {i <= props.custom.current ? (
-              <div className="step-details">
-                <h5>{step}</h5>
-                <p>{props.custom.description[i]}</p>
-              </div>
-            ) : (
-              <div className="step-details-notreached">
-                <h5>{step}</h5>
-                <p>{props.custom.description[i]}</p>
-              </div>
-            )}
-
+            s
             {i + 1 < props.custom.title.length &&
             i + 1 < props.custom.current ? (
               <div className="progress-holder">
@@ -307,15 +314,15 @@ export const DevStep = forwardRef<
         .step-progress {
           height: 1px;
           width: 110%;
-          margin-left: -25px;
-          margin-right: 5px;
+          margin-left: -5px;
+          margin-right: 20px;
         }
         .step-progress-notreached {
           height: 1px;
           width: 110%;
           background-color: #8f9598;
-          margin-left: -25px;
-          margin-right: 5px;
+          margin-left: -5px;
+          margin-right: 20px;
         }
         .step-icon-done {
           display: inline-block;
@@ -363,53 +370,60 @@ export const DevStep = forwardRef<
             style={{ width: `${100 / modifiedTitleArray.length}%` }}
           >
             {props.custom.current > i + 1 ? (
-              <div className="icon-holder">
-                <span className="step-icon-done">
-                  <div
-                    style={{
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                      borderColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-circle"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-stem"
-                  ></div>
-                  <div
-                    style={{
-                      backgroundColor: `${props.custom.color}`,
-                    }}
-                    className="step-icon-done-kick "
-                  ></div>
-                </span>
+              <div style={{ display: "flex" }}>
+                <div className="icon-holder">
+                  <span className="step-icon-done">
+                    <div
+                      style={{
+                        borderWidth: "1px",
+                        borderStyle: "solid",
+                        borderColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-circle"
+                    ></div>
+                    <div
+                      style={{
+                        backgroundColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-stem"
+                    ></div>
+                    <div
+                      style={{
+                        backgroundColor: `${props.custom.color}`,
+                      }}
+                      className="step-icon-done-kick "
+                    ></div>
+                  </span>
+                </div>
+                <div className="step-details">
+                  <h5>{step}</h5>
+                  <p>{modifiedDescriptionArray[i]}</p>
+                </div>
               </div>
             ) : props.custom.current === i + 1 ? (
-              <div className="icon-holder">
-                <div
-                  className="step-icon"
-                  style={{ backgroundColor: `${props.custom.color}` }}
-                >
-                  {i + 1}
+              <div style={{ display: "flex" }}>
+                <div className="icon-holder">
+                  <div
+                    className="step-icon"
+                    style={{ backgroundColor: `${props.custom.color}` }}
+                  >
+                    {i + 1}
+                  </div>
+                </div>
+                <div className="step-details">
+                  <h5>{step}</h5>
+                  <p>{modifiedDescriptionArray[i]}</p>
                 </div>
               </div>
             ) : (
-              <div className="icon-holder">
-                <div className="step-icon-notreached">{i + 1}</div>
-              </div>
-            )}
-            {i <= props.custom.current ? (
-              <div className="step-details">
-                <h5>{step}</h5>
-                <p>{modifiedDescriptionArray[i]}</p>
-              </div>
-            ) : (
-              <div className="step-details-notreached">
-                <h5>{step}</h5>
-                <p>{modifiedDescriptionArray[i]}</p>
+              <div style={{ display: "flex", width: "80%" }}>
+                <div className="icon-holder">
+                  <div className="step-icon-notreached">{i + 1}</div>
+                </div>
+                <div className="step-details-notreached">
+                  <h5>{step}</h5>
+                  <p>{modifiedDescriptionArray[i]}</p>
+                </div>
               </div>
             )}
 
@@ -467,7 +481,9 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          width: "100%",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
