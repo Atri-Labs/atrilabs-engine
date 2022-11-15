@@ -25,7 +25,7 @@ import PieChartManifests from "@atrilabs/react-component-manifests/src/manifests
 import HistogramChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/HistogramChart/HistogramChart";
 import CandleStickManifests from "@atrilabs/react-component-manifests/src/manifests/charts/CandleStick/CandleStick";
 import RadialbarChartManifests from "@atrilabs/react-component-manifests/src/manifests/charts/RadialbarChart/RadiadbarChart";
-import GranttChartManifest from "@atrilabs/react-component-manifests/src/manifests/charts/GanttChart/GranttChart";
+import GranttChartManifest from "@atrilabs/react-component-manifests/src/manifests/charts/GanttChart/GanttChart";
 import TreemapChartManifest from "@atrilabs/react-component-manifests/src/manifests/charts/TreemapChart/TreemapChart";
 import CheckboxManifests from "@atrilabs/react-component-manifests/src/manifests/Checkbox/Checkbox";
 import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests/Dropdown/Dropdown";
