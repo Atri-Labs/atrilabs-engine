@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import ControlledInput from "./ControlledInput";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {
   const propValue = useMemo(() => {
@@ -21,7 +22,7 @@ export const LargeText: React.FC<ComponentProps> = (props) => {
   return (
     <div>
       <div style={{ color: "white" }}>{props.propName}</div>
-      <textarea value={propValue} onChange={callPatchCb} rows={5} />
+      <ControlledInput value={propValue} onChange={callPatchCb} />
     </div>
   );
 };
