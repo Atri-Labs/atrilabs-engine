@@ -176,61 +176,97 @@ export const Slider = forwardRef<
   );
 
   return (
-    <div
-      className={props.className}
-      ref={ref}
-      style={{
-        ...props.styles,
-        position: "relative",
-        display: "inline-block",
-        height: `calc(2 * ${radius})`,
-      }}
-    >
-      {/** track */}
+    <>
+      <style>
+        {`.slider-parent {
+            width: 400px;
+            margin: 20px;
+            position: relative;
+          }
+          
+          .slider-rail {
+            width: 105%;
+            height: 5px;
+            border-radius: 8px;
+            background: #f5f5f5;
+          }
+          .slider-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70%;
+            height: 5px;
+            border-radius: 8px;
+            background-color: #91d5ff;
+          }
+          .slider-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background-color: white;
+            position: absolute;
+            top: -8px;
+            border: 2px solid #91d5ff;
+            box-shadow: 1px 1px 10px #91d5ff, 0px 0px 20px #91d5ff;
+          }
+          `}
+      </style>
       <div
+        className={props.className}
+        ref={ref}
         style={{
-          height: thickness,
-          backgroundColor: trackColor,
+          ...props.styles,
           position: "relative",
-          top: "50%",
-          transform: "translate(0px, -50%)",
-          // center of thumb should match the starting point of track
-          width: `calc(100% - 2 * ${radius})`,
-          left: radius,
-        }}
-        ref={trackRef}
-        onClick={onTrackClicked}
-      ></div>
-      {/** selected track */}
-      <div
-        style={{
-          height: thickness,
-          backgroundColor: selectColor,
-          position: "absolute",
-          top: "50%",
-          transform: "translate(0px, -50%)",
-          // center of thumb should match the starting point of track
-          width: thumbPosition,
-          left: radius,
-        }}
-        onClick={onTrackClicked}
-      ></div>
-      {/** thumb */}
-      <div
-        ref={thumbRef}
-        style={{
-          position: "absolute",
-          left: thumbPosition,
+          display: "inline-block",
           height: `calc(2 * ${radius})`,
-          width: `calc(2 * ${radius})`,
-          backgroundColor: thumbColor,
-          top: "50%",
-          transform: `translate(0px, -50%)`,
-          borderRadius: "50%",
         }}
-        onMouseDown={onMouseDown}
-      ></div>
-    </div>
+      >
+        {/** track */}
+        <div
+          style={{
+            height: thickness,
+            backgroundColor: trackColor,
+            position: "relative",
+            top: "50%",
+            transform: "translate(0px, -50%)",
+            // center of thumb should match the starting point of track
+            width: `calc(100% - 2 * ${radius})`,
+            left: radius,
+          }}
+          ref={trackRef}
+          onClick={onTrackClicked}
+        ></div>
+        {/** selected track */}
+        <div
+          style={{
+            height: thickness,
+            backgroundColor: selectColor,
+            position: "absolute",
+            top: "50%",
+            transform: "translate(0px, -50%)",
+            // center of thumb should match the starting point of track
+            width: thumbPosition,
+            left: radius,
+          }}
+          onClick={onTrackClicked}
+        ></div>
+        {/** thumb */}
+        <div
+          ref={thumbRef}
+          style={{
+            position: "absolute",
+            left: thumbPosition,
+            height: `calc(2 * ${radius})`,
+            width: `calc(2 * ${radius})`,
+            backgroundColor: thumbColor,
+            top: "50%",
+            transform: `translate(0px, -50%)`,
+            borderRadius: "50%",
+          }}
+          onMouseDown={onMouseDown}
+        ></div>
+      </div>
+    </>
   );
 });
 
