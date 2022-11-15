@@ -9,7 +9,7 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import "./Countup.css";
 import { ReactComponent as Icon } from "./icon.svg";
-import { CountUpAnimation } from "./CountUpAnimation";
+import CountUpAnimation from "./CountUpAnimation";
 export type DateTimeDisplayComponentTypes = {
   value: number;
   type: string;
@@ -20,7 +20,12 @@ export type ShowCounterComponentTypes = {
 export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   className,
 }) => {
-  return <div style={{ display: "inline-flex", padding: "1rem" }}></div>;
+  return (
+    <div
+      className={className}
+      style={{ display: "inline-flex", padding: "1rem" }}
+    ></div>
+  );
 };
 export type CountupProps = {
   styles: React.CSSProperties;

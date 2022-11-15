@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 const easeOutQuad = (t: number) => t * (2 - t);
 const frameDuration = 1000 / 60;
-export const CountUpAnimation: React.FC<CountUpAnimationProp> = ({
+let CountUpAnimation: React.FC<CountUpAnimationProp> = ({
   value,
   duration,
 }) => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number>(0);
   useEffect(() => {
     let frame = 0;
     const totalFrames: number = Math.round(duration / frameDuration);
@@ -14,7 +14,6 @@ export const CountUpAnimation: React.FC<CountUpAnimationProp> = ({
         frame++;
         const progress = easeOutQuad(frame / totalFrames);
         setCount(value * progress);
-
         if (frame === totalFrames) {
           clearInterval(counter);
         }
@@ -23,6 +22,8 @@ export const CountUpAnimation: React.FC<CountUpAnimationProp> = ({
   }, [value, duration]);
   return <>{Math.floor(count)}</>;
 };
+CountUpAnimation = React.memo(CountUpAnimation);
+export default CountUpAnimation;
 interface CountUpAnimationProp {
   value: number;
   duration: number;
