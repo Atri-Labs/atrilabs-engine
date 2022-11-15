@@ -8,7 +8,6 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import Chevron from "./Chevron";
-import "./Accordion.css";
 import { ReactComponent as Icon } from "./icon.svg";
 
 export type AccordionComponentTypes = {

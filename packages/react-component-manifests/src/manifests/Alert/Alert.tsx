@@ -13,7 +13,6 @@ import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
-import "./Alert.css";
 
 export const Alert = forwardRef<
   HTMLDivElement,

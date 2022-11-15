@@ -7,7 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import "./Slider.css";
 import { ReactComponent as Icon } from "./icon.svg";
 
 function isStringANumber(value: string) {
