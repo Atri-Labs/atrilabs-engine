@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { createMachine, assign, interpret } from "xstate";
 import { canvasComponentStore } from "../CanvasComponentData";
 import { DecoratorProps, DecoratorRenderer } from "../DecoratorRenderer";
-import { bubbleUp, getAllDescendants, getCoords, isInsideBox } from "../utils";
+import { bubbleUp, getAllDescendants } from "../utils";
 import { Location } from "../types";
 
 // states
@@ -293,10 +293,7 @@ const onHoverStart = assign<
   },
 });
 
-const onManualHoverStart = assign<
-  CanvasActivityContext,
-  OverEvent | ManualHoverEvent
->({
+const onManualHoverStart = assign<CanvasActivityContext, ManualHoverEvent>({
   hover: (_context, event) => {
     return { id: event.id, manualHover: true };
   },
@@ -904,21 +901,6 @@ export function acknowledgeEventPropagation(iFrameWindow: Window) {
 
 const CanvasActivityDecorator: React.FC<DecoratorProps> = (props) => {
   useEffect(() => {
-    // useEffect for body only
-    if (props.compId === "body") {
-      const mousemove = (event: MouseEvent) => {
-        const body = canvasComponentStore["body"].ref.current!;
-        if (!isInsideBox(event, getCoords(body))) {
-          service.send({ type: "OUT_OF_CANVAS" });
-        }
-      };
-      window.addEventListener("mousemove", mousemove, { capture: true });
-      return () => {
-        window.removeEventListener("mousemove", mousemove);
-      };
-    }
-  }, [props]);
-  useEffect(() => {
     const comp = canvasComponentStore[props.compId].ref.current;
     if (comp) {
       const mouseover = (event: MouseEvent) => {
@@ -1026,7 +1008,9 @@ function getTemplateRootId() {
 
 function isMachineLocked() {
   return (
-    service.state.value === lockCompDrop || service.state.value === lockDataDrop
+    service.state.value.toString() === lockCompDrop ||
+    service.state.value.toString() === lockDataDrop ||
+    service.state.value.toString() === lockTemplateDrop
   );
 }
 
@@ -1036,6 +1020,10 @@ function emitClearCanvasEvent() {
 
 function sendDeleteComponent(compId: string) {
   service.send({ type: "DELETE_COMPONENT_EVENT", id: compId });
+}
+
+function sendOutOfCanvasEvent() {
+  service.send({ type: "OUT_OF_CANVAS" });
 }
 
 // ===================================================================
@@ -1184,4 +1172,5 @@ export {
   subscribeKeydown,
   raiseSelectEvent,
   raiseHoverEvent,
+  sendOutOfCanvasEvent,
 };

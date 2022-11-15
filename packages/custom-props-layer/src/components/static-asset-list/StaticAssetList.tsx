@@ -1,51 +1,56 @@
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { createObject } from "../../utility/Utility";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 
 export const StaticAssetList: React.FC<ComponentProps> = (props) => {
+  const selector = useMemo(() => {
+    return props.selector || [];
+  }, [props]);
+
   const srcs = useMemo(() => {
-    return (props.customProps[props.propName] || []) as string[];
-  }, [props.customProps, props.propName]);
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return (currentValue || []) as string[];
+  }, [props.customProps, selector]);
+
   const onClick = useCallback(
     (index: number) => {
       props.openAssetManager(
         ["select", "upload"],
-        ["property", "custom", props.propName],
-        { currentArray: props.customProps[props.propName] || [], index }
+        ["property", "custom", ...selector],
+        { currentArray: srcs || [], index }
       );
     },
-    [props]
+    [props, selector, srcs]
   );
 
   const onClearClick = useCallback(
     (index: number) => {
-      console.log("onclear called");
       const previousSrcs = [...srcs];
       previousSrcs.splice(index, 1);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: previousSrcs,
-          },
+          custom: createObject(selector, previousSrcs),
         },
       });
     },
-    [props, srcs]
+    [props, selector, srcs]
   );
 
   const onInsertClick = useCallback(() => {
     const previousSrcs = [...srcs];
     props.patchCb({
       property: {
-        custom: {
-          [props.propName]: [...previousSrcs, ""],
-        },
+        custom: createObject(selector, [...previousSrcs, ""]),
       },
     });
-  }, [props, srcs]);
+  }, [props, selector, srcs]);
 
   const onReposition = useCallback(
     (deleteAt: number, insertAt: number) => {
@@ -54,13 +59,11 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(insertAt, 0, deletedItem);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(selector, updatedValue),
         },
       });
     },
-    [srcs, props]
+    [srcs, props, selector]
   );
 
   return (
