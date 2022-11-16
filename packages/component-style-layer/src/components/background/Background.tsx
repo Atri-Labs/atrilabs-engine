@@ -32,7 +32,7 @@ import { ReactComponent as BCY } from "../../assets/background/content-box-icon.
 import { ReactComponent as BCO } from "../../assets/background/border-box-icon.svg";
 import PropertyRender from "../commons/PropertyRender";
 import MultiplePropertyRender from "../commons/MultiplePropertyRender";
-import { ColorComponent } from "../commons/ColorComponent";
+import { NewColorComponent } from "../commons/NewColorComponent";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -267,8 +267,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
         {/**Background Color */}
         {backgroundTypes[selectedTypeIndex].color && (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={styles.optionName}>Color</span>
-            <ColorComponent
+            <NewColorComponent
               name="Background Color"
               styleItem="backgroundColor"
               styles={props.styles}
