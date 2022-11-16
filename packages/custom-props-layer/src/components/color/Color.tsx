@@ -21,7 +21,7 @@ export const Color: React.FC<ComponentProps> = (props) => {
     (color: string) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, color),
+          custom: createObject(props.customProps, selector, color),
         },
       });
     },

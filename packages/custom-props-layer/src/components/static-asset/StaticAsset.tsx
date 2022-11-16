@@ -28,7 +28,7 @@ export const StaticAsset: React.FC<ComponentProps> = (props) => {
   const onClearClick = useCallback(() => {
     props.patchCb({
       property: {
-        custom: createObject(selector, ""),
+        custom: createObject(props.customProps, selector, ""),
       },
     });
   }, [props, selector]);

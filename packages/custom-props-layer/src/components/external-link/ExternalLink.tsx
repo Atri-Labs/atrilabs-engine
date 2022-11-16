@@ -17,7 +17,7 @@ export const ExternalLink: React.FC<ComponentProps> = (props) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, e.target.value),
+          custom: createObject(props.customProps, selector, e.target.value),
         },
       });
     },

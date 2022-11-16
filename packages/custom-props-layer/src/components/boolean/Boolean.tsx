@@ -21,7 +21,7 @@ export const Boolean: React.FC<ComponentProps> = (props) => {
     (value: boolean) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, value),
+          custom: createObject(props.customProps, selector, value),
         },
       });
     },

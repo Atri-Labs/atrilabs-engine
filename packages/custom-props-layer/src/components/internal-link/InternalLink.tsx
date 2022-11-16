@@ -20,7 +20,7 @@ export const InternalLink: React.FC<ComponentProps> = (props) => {
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, e.target.value),
+          custom: createObject(props.customProps, selector, e.target.value),
         },
       });
     },

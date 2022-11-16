@@ -20,7 +20,7 @@ export const ComponentSelector: React.FC<ComponentProps> = (props) => {
     (alias: string) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, alias),
+          custom: createObject(props.customProps, selector, alias),
         },
       });
     },

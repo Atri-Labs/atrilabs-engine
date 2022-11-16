@@ -18,7 +18,7 @@ export const LargeText: React.FC<ComponentProps> = (props) => {
       (e) => {
         props.patchCb({
           property: {
-            custom: createObject(selector, e.target.value),
+            custom: createObject(props.customProps, selector, e.target.value),
           },
         });
       },

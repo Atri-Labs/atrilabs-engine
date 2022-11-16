@@ -22,6 +22,7 @@ export const Number: React.FC<ComponentProps> = (props) => {
       props.patchCb({
         property: {
           custom: createObject(
+            props.customProps,
             selector,
             e.target.value ? parseFloat(e.target.value) : ""
           ),

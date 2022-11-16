@@ -36,7 +36,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
       previousSrcs.splice(index, 1);
       props.patchCb({
         property: {
-          custom: createObject(selector, previousSrcs),
+          custom: createObject(props.customProps, selector, previousSrcs),
         },
       });
     },
@@ -47,7 +47,10 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
     const previousSrcs = [...srcs];
     props.patchCb({
       property: {
-        custom: createObject(selector, [...previousSrcs, ""]),
+        custom: createObject(props.customProps, selector, [
+          ...previousSrcs,
+          "",
+        ]),
       },
     });
   }, [props, selector, srcs]);
@@ -59,7 +62,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(insertAt, 0, deletedItem);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
