@@ -8,7 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
-
+import { RatingContainer } from "./RatingContainer";
 export const Rating = forwardRef<
   HTMLDivElement,
   {
@@ -24,7 +24,7 @@ export const Rating = forwardRef<
 >((props, ref) => {
   return (
     <div ref={ref} className={props.className} style={props.styles}>
-      star
+      <RatingContainer {...props.custom} />
     </div>
   );
 });
@@ -44,10 +44,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
+    total: { type: "number" },
+    rating: { type: "number" },
   },
 };
-
 const compManifest: ReactComponentManifestSchema = {
   meta: { key: "Rating", category: "Basics" },
   render: {

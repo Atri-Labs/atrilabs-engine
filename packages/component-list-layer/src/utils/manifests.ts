@@ -11,6 +11,7 @@ import ImageManifests from "@atrilabs/react-component-manifests/src/manifests/Im
 import InputManifests from "@atrilabs/react-component-manifests/src/manifests/Input/Input";
 import TextboxManifests from "@atrilabs/react-component-manifests/src/manifests/TextBox/TextBox";
 import RadioManifests from "@atrilabs/react-component-manifests/src/manifests/Radio/Radio";
+import RatingManifests from "@atrilabs/react-component-manifests/src/manifests/Rating/Rating";
 import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/Slider/Slider";
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
 import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/Toggle/Toggle";
@@ -94,6 +95,7 @@ const defaultImports = [
   InputManifests,
   TextboxManifests,
   RadioManifests,
+  RatingManifests,
   SliderManifests,
   StepManifests,
   ToggleManifests,

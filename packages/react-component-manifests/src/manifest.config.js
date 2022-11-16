@@ -61,10 +61,10 @@ module.exports = {
       modulePath: "./src/manifests/Step/Step.tsx",
       exportedVarName: "Step",
     },
-    // Rating: {
-    //   modulePath: "",
-    //   exportedVarName: "Rating",
-    // },
+    Rating: {
+      modulePath: "./src/manifests/Rating/Rating.tsx",
+      exportedVarName: "Rating",
+    },
     TextBox: {
       modulePath: "./src/manifests/TextBox/TextBox.tsx",
       exportedVarName: "TextBox",
