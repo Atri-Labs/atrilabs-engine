@@ -251,6 +251,8 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           data: [],
+          cartesianGrid: { show: true, strokeDasharray: "3" },
+
           xAxis: { show: true, key: "x" },
           yAxis: { show: true, key: "y" },
           options: { line: { type: "monotone", strokeWidth: 2 } },
