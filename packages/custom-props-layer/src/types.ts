@@ -26,7 +26,7 @@ export type TabBodyProps = {
 
 export type ComponentProps = TabBodyProps & {
   propName: string;
-  selector?: string[];
+  selector?: (string | number)[];
   openAssetManager: OpenAssetManagerCallabck;
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">

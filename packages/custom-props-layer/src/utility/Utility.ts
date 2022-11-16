@@ -1,14 +1,14 @@
 export const createObject = (
-  fields: string[],
+  referenceObject: any = {},
+  [prop, ...rest]: (string | number)[],
   value: string | number | boolean | boolean[] | string[]
 ) => {
-  const reducer: any = (
-    acc: string,
-    item: string,
-    index: number,
-    arr: string[]
-  ) => ({
-    [item]: index + 1 < arr.length ? acc : value,
-  });
-  return fields.reduceRight(reducer, {});
+  const newObject: any = Array.isArray(referenceObject)
+    ? [...referenceObject]
+    : { ...referenceObject };
+  if (rest.length > 0 && typeof rest[0] === "number") newObject[prop] = [];
+  newObject[prop] = rest.length
+    ? createObject(referenceObject[prop], rest, value)
+    : value;
+  return newObject;
 };
