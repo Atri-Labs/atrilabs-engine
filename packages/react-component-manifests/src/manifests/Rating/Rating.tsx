@@ -66,7 +66,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           total: 5,
-          rating: 4,
+          rating: 3.5,
           unratedColor: "#C4C4C4",
           ratedColor: "#E5CF00",
         },
