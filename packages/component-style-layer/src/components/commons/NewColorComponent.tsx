@@ -201,27 +201,19 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
     opacityDisabledHandler(String(props.styles[props.styleItem]))
   );
 
-  //   const [propColor, setPropColor] = useState(props.styles[props.styleItem]);
-
-  //   useEffect(() => {
-  //     setOpacityValue(
-  //       props.styles[props.styleItem]
-  //         ? getOpacityValue(String(props.styles[props.styleItem]))
-  //         : "100"
-  //     );
-  //   }, [props]);
-
-  //   useEffect(() => {
-  //     setPropColor(props.styles[props.styleItem]);
-  //   }, [props]);
-
   useEffect(() => {
     setIsOpacityDisabled(
       opacityDisabledHandler(String(props.styles[props.styleItem]))
     );
   }, [props]);
 
-  const [colorVal, setColorVal] = useState<string>("");
+  useEffect(() => {
+    setOpacityValue(
+      props.styles[props.styleItem]
+        ? getOpacityValue(String(props.styles[props.styleItem]))
+        : "100"
+    );
+  }, [props]);
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
@@ -257,10 +249,6 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
-          value={colorVal}
-          setValue={setColorVal}
-          applyFlag={true}
-          index={0}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>
