@@ -61,12 +61,14 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
             propName
           ] as MapCustomProp;
           const attributes = mapCustomProps.attributes;
+          const singleObjectName = mapCustomProps.singleObjectName;
           return (
             <MapList
               {...props}
               selector={[propName]}
               attributes={attributes}
               propName={propName}
+              singleObjectName={singleObjectName}
               key={propName}
               routes={routes}
             />
