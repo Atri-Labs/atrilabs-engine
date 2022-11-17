@@ -7,6 +7,8 @@ import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
+import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
+import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
 const createMapObject = (attributes: { fieldName: string; type: string }[]) => {
   const obj: any = {};
@@ -43,6 +45,10 @@ export const MapList: React.FC<ComponentProps> = (props) => {
     return props.selector || [];
   }, [props]);
 
+  const singleObjectName = useMemo(() => {
+    return props.singleObjectName || "";
+  }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
@@ -67,6 +73,33 @@ export const MapList: React.FC<ComponentProps> = (props) => {
     });
   }, [props, selector, propValue, attributes]);
 
+  const deleteValueCb = useCallback(
+    (index: number) => {
+      const updatedValue = [...propValue];
+      updatedValue.splice(index, 1);
+      props.patchCb({
+        property: {
+          custom: createObject(props.customProps, selector, updatedValue),
+        },
+      });
+    },
+    [propValue, props, selector]
+  );
+
+  const onReposition = useCallback(
+    (deleteAt: number, insertAt: number) => {
+      const updatedValue = [...propValue];
+      const deletedItem = updatedValue.splice(deleteAt, 1)[0];
+      updatedValue.splice(insertAt, 0, deletedItem);
+      props.patchCb({
+        property: {
+          custom: createObject(props.customProps, selector, updatedValue),
+        },
+      });
+    },
+    [propValue, props, selector]
+  );
+
   const { routes } = usePageRoutes();
 
   return (
@@ -75,36 +108,60 @@ export const MapList: React.FC<ComponentProps> = (props) => {
       <div
         style={{ display: "flex", flexDirection: "column", rowGap: "0.5em" }}
       >
-        {Array.isArray(propValue)
-          ? propValue.map((value, index) => {
+        {Array.isArray(propValue) ? (
+          <RearrangeListWrapper
+            onReposition={onReposition}
+            onMinusClick={deleteValueCb}
+            minusButton={false}
+          >
+            {propValue.map((value, index) => {
               return (
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
+                    borderBottom: "1px solid #fff",
                   }}
                   key={index}
                 >
-                  <PropertyContainer>
-                    <Label name={index.toString()} />
-                  </PropertyContainer>
-                  {attributes.map((attribute) => {
-                    return (
-                      <CommonPropTypeContainer
-                        {...props}
-                        selector={[props.propName, index, attribute.fieldName]}
-                        options={attribute.options}
-                        propType={attribute.type}
-                        propName={attribute.fieldName}
-                        key={attribute.fieldName}
-                        routes={routes}
-                      />
-                    );
-                  })}
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <PropertyContainer>
+                      <Label name={singleObjectName} />
+                    </PropertyContainer>
+                    <div
+                      onClick={() => {
+                        deleteValueCb(index);
+                      }}
+                    >
+                      <MinusIcon />
+                    </div>
+                  </div>
+                  <div>
+                    {attributes.map((attribute) => {
+                      return (
+                        <CommonPropTypeContainer
+                          {...props}
+                          selector={[
+                            props.propName,
+                            index,
+                            attribute.fieldName,
+                          ]}
+                          options={attribute.options}
+                          propType={attribute.type}
+                          propName={attribute.fieldName}
+                          key={attribute.fieldName}
+                          routes={routes}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               );
-            })
-          : null}
+            })}
+          </RearrangeListWrapper>
+        ) : null}
       </div>
     </ArrayPropertyContainer>
   );

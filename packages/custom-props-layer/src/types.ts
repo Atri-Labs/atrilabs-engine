@@ -22,6 +22,7 @@ export type TabBodyProps = {
   options?: string[];
   // attributes is currently being used with the map custom property
   attributes?: AttributeTypes;
+  singleObjectName?: string;
 };
 
 export type ComponentProps = TabBodyProps & {

@@ -75,6 +75,7 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
       <RearrangeListWrapper
         onReposition={onReposition}
         onMinusClick={onClearClick}
+        minusButton={true}
       >
         {srcs.map((value, index) => {
           return (

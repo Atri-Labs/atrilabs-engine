@@ -74,6 +74,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
         <RearrangeListWrapper
           onReposition={onReposition}
           onMinusClick={deleteValueCb}
+          minusButton={true}
         >
           {propValue.map((value, index) => {
             return (
