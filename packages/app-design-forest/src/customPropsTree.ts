@@ -22,6 +22,7 @@ export type EnumCustomProp = {
 
 export type MapCustomProp = {
   type: "map" | "array_map";
+  singleObjectName?: string;
   attributes: {
     fieldName: string;
     type: SimpleCustomProp["type"] | EnumCustomProp["type"];
