@@ -3,7 +3,7 @@ import { ComponentProps } from "../../types";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { Label } from "../commons/Label";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const StaticAsset: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

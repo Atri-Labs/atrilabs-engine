@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

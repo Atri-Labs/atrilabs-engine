@@ -4,7 +4,7 @@ import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const EnumList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

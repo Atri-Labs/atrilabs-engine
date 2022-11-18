@@ -4,7 +4,7 @@ import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 import { TextInput } from "../commons/TextInput";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const ListField: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

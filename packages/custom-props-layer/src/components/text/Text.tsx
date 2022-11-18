@@ -3,7 +3,7 @@ import { useMemo, useCallback } from "react";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { TextInput } from "../commons/TextInput";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const Text: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
