@@ -1,7 +1,7 @@
 import { Breakpoint, ComponentCoordsWM } from "@atrilabs/canvas-runtime";
 import { BrowserForestManager } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import { TreeNode } from "@atrilabs/forest";
+import { Tree, TreeNode } from "@atrilabs/forest";
 
 // ================== body ===============================
 export function lrtbSort(coords: ComponentCoordsWM[]) {
@@ -134,8 +134,25 @@ export function createSortedParentChildMap(
   }
   return parentChildMap;
 }
-
 export function getComponentNode(id: string) {
   const compTree = BrowserForestManager.currentForest.tree(ComponentTreeId);
   return compTree!.nodes[id];
+}
+export function getAncestors(id: string, ancestors: string[] = []) {
+  // return an array of ancestors
+  const compNode = getComponentNode(id);
+  const compParent = compNode.state.parent.id;
+  ancestors.push(compNode.id);
+  if (compParent !== "body") {
+    getAncestors(compParent, ancestors);
+  }
+  return ancestors;
+}
+export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
+  const cssNode = cssTree.links[id];
+  const cssNodeId = cssNode.childId;
+  return {
+    alias: componentTree.nodes[id].state?.alias,
+    styles: cssTree.nodes[cssNodeId].state?.property.styles,
+  };
 }
