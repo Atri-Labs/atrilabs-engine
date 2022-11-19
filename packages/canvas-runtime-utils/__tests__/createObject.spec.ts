@@ -60,17 +60,10 @@ test("creates a nested object with array only if array exists in reference objec
   }).toMatchObject(newObject);
 });
 
-test("does not create a nested object with array when array does not exist in reference object", () => {
-  const referenceObject = {
-    a: {
-      b: {},
-    },
-  };
-  const newObject = createObject(
-    referenceObject,
-    ["a", "b", "c", 0, "y"],
-    "New World"
-  );
+test("create a nested object with array when array does not exist in reference object", () => {
+  const newObject = createObject({}, ["a", "b", "c", 0, "y"], "New World");
   const expectArray = newObject["a"]["b"]["c"];
-  expect(expectArray).not.toBe([{ y: "New World" }]);
+  expect(JSON.stringify(expectArray)).toBe(
+    JSON.stringify([{ y: "New World" }])
+  );
 });
