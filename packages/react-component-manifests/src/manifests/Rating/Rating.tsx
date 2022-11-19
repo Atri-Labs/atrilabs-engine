@@ -7,80 +7,53 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import "./Countup.css";
 import { ReactComponent as Icon } from "./icon.svg";
-import CountUpAnimation from "./CountUpAnimation";
-export type DateTimeDisplayComponentTypes = {
-  value: number;
-  type: string;
-};
-export type ShowCounterComponentTypes = {
-  className?: string;
-};
-export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
-  className,
-}) => {
+import { RatingContainer } from "./RatingContainer";
+export const Rating = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: {
+      total: number;
+      rating: number;
+      unratedColor: string;
+      ratedColor: string;
+    };
+    className?: string;
+  }
+>((props, ref) => {
   return (
-    <div
-      className={className}
-      style={{ display: "inline-flex", padding: "1rem" }}
-    ></div>
+    <div ref={ref} className={props.className} style={props.styles}>
+      <RatingContainer {...props.custom} />
+    </div>
   );
-};
-export type CountupProps = {
-  styles: React.CSSProperties;
-  custom: {
-    itemCount: number;
-    duration: number;
-    items: {
-      coutUpTo: string;
-      itemTitle: string;
-    }[];
-  };
-  className?: string;
-};
-export const Countup = forwardRef<HTMLDivElement, CountupProps>(
-  (props, ref) => {
-    return (
-      <div ref={ref} style={{ display: "inline-flex", ...props.styles }}>
-        <CountUpAnimation
-          value={props.custom.itemCount}
-          duration={props.custom.duration}
-        />
-      </div>
-    );
-  }
-);
-export const DevCountup = forwardRef<HTMLDivElement, CountupProps>(
-  (props, ref) => {
-    return <Countup ref={ref} {...props} />;
-  }
-);
+});
+
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
-  typographyOptions: true,
+  typographyOptions: false,
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
   outlineOptions: true,
-  backgroundOptions: true,
+  backgroundOptions: false,
   miscellaneousOptions: true,
 };
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    itemCount: { type: "number" },
-    duration: { type: "number" },
+    total: { type: "number" },
+    rating: { type: "number" },
   },
 };
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Countup", category: "Basics" },
+  meta: { key: "Rating", category: "Basics" },
   render: {
-    comp: Countup,
+    comp: Rating,
   },
   dev: {
-    comp: DevCountup,
     decorators: [],
     attachProps: {
       styles: {
@@ -92,9 +65,10 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          itemCount: 50,
-          duration: 2000,
-          items: [],
+          total: 5,
+          rating: 3.5,
+          unratedColor: "#C4C4C4",
+          ratedColor: "#E5CF00",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -106,14 +80,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Countup", svg: Icon } },
+  panel: { comp: CommonIcon, props: { name: "Rating", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: {
-      name: "Countup",
-      containerStyle: { padding: "1rem" },
-      svg: Icon,
-    },
+    props: { name: "Rating", containerStyle: { padding: "1rem", svg: Icon } },
   },
   renderSchema: compManifest,
 };
