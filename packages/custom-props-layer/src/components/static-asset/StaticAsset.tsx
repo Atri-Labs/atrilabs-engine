@@ -21,7 +21,8 @@ export const StaticAsset: React.FC<ComponentProps> = (props) => {
   const onClick = useCallback(() => {
     props.openAssetManager(
       ["select", "upload"],
-      ["property", "custom", ...selector]
+      [...selector],
+      props.customProps
     );
   }, [props, selector]);
 
