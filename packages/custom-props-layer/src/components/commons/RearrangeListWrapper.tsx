@@ -6,6 +6,7 @@ export type RearrangeListWrapperProps = {
   onReposition: RearrangeListProps["onReposition"];
   onMinusClick: (index: number) => void;
   children: React.ReactNode[];
+  minusButton: boolean;
 };
 
 export const RearrangeListWrapper: React.FC<RearrangeListWrapperProps> = (
@@ -40,18 +41,20 @@ export const RearrangeListWrapper: React.FC<RearrangeListWrapperProps> = (
               }}
             >
               {value}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-                onClick={() => {
-                  props.onMinusClick(index);
-                }}
-              >
-                <MinusIcon />
-              </div>
+              {props.minusButton && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                  onClick={() => {
+                    props.onMinusClick(index);
+                  }}
+                >
+                  <MinusIcon />
+                </div>
+              )}
             </div>
           ),
           key: index.toString(),

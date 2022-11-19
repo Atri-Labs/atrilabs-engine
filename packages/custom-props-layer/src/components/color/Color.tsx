@@ -1,7 +1,7 @@
 import { gray900 } from "@atrilabs/design-system";
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
@@ -21,7 +21,7 @@ export const Color: React.FC<ComponentProps> = (props) => {
     (color: string) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, color),
+          custom: createObject(props.customProps, selector, color),
         },
       });
     },

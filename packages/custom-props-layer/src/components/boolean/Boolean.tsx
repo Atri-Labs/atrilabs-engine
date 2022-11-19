@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { Checkbox } from "../commons/Checkbox";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
@@ -21,7 +21,7 @@ export const Boolean: React.FC<ComponentProps> = (props) => {
     (value: boolean) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, value),
+          custom: createObject(props.customProps, selector, value),
         },
       });
     },

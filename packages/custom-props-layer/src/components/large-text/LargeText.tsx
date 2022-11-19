@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import ControlledInput from "./ControlledInput";
-import { createObject } from "../../utility/Utility";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -19,7 +19,7 @@ export const LargeText: React.FC<ComponentProps> = (props) => {
       (e) => {
         props.patchCb({
           property: {
-            custom: createObject(selector, e.target.value),
+            custom: createObject(props.customProps, selector, e.target.value),
           },
         });
       },
