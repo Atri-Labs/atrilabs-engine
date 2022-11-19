@@ -16,23 +16,46 @@ export type SimpleCustomProp = {
 };
 
 export type EnumCustomProp = {
-  type: "enum" | "array_enum";
+  type: "enum";
   options: string[];
 };
 
+export type ArrayEnumCustomProp = {
+  type: "array_enum";
+  options: EnumCustomProp["options"];
+};
+
 export type MapCustomProp = {
-  type: "map" | "array_map";
-  singleObjectName?: string;
-  attributes: {
+  type: "map";
+  attributes: ({
     fieldName: string;
-    type: SimpleCustomProp["type"] | EnumCustomProp["type"];
-    options?: string[];
-  }[];
+  } & (SimpleCustomProp | EnumCustomProp))[];
+};
+
+export type ArrayMapCustomProp = {
+  type: "array_map";
+  singleObjectName?: string;
+  attributes: MapCustomProp["attributes"];
+};
+
+/**
+ * This type represents a custom field that takes an object as a value.
+ * This object does not have fixed keys unlike MapCustomProp.
+ */
+export type VariableKeyMapCustomProp = {
+  type: "variable_key_map";
+  attributes: MapCustomProp["attributes"];
 };
 
 export type CustomPropsTreeOptions = {
   dataTypes: {
-    [propName: string]: SimpleCustomProp | MapCustomProp | EnumCustomProp;
+    [propName: string]:
+      | SimpleCustomProp
+      | MapCustomProp
+      | EnumCustomProp
+      | ArrayEnumCustomProp
+      | ArrayMapCustomProp
+      | VariableKeyMapCustomProp;
   };
 };
 
