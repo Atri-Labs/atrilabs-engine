@@ -7,7 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import "./Countdown.css";
 import { useCountdown } from "./useCountdown";
 import { ReactComponent as Icon } from "./icon.svg";
 
@@ -29,7 +28,6 @@ export const DateTimeDisplay: React.FC<DateTimeDisplayComponentTypes> = ({
 };
 
 export const ExpiredNotice = () => {
-  //CARE
   return (
     <div className="expired-notice">
       <span>Countdown has expired!</span>
@@ -61,62 +59,126 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
   className,
 }) => {
   return (
-    <div
-      className={`show-counter ${className ? className : ""}`}
-      style={{ display: "inline-flex" }}
-    >
-      {showDays && (
-        <div style={{ display: "flex" }}>
-          <DateTimeDisplay value={days} type={"Days"} />
-        </div>
-      )}
-      <div
-        style={
-          showDays === false ||
-          (showHours === false &&
-            showMinutes === false &&
-            showSeconds === false)
-            ? { display: "none" }
-            : { display: "flex" }
+    <>
+      <style>
+        {`
+        .expired-notice {
+          text-align: center;
+          padding: 2rem;
+          border: 1px solid #ebebeb;
+          border-radius: 0.25rem;
+          margin: 0.5rem;
         }
-      >
-        <p>:</p>
-      </div>
-      {showHours && (
-        <div style={{ display: "flex" }}>
-          <DateTimeDisplay value={hours} type={"Hours"} />
-        </div>
-      )}
-      <div
-        style={
-          showHours === false ||
-          (showMinutes === false && showSeconds === false)
-            ? { display: "none" }
-            : { display: "flex" }
+        
+        .expired-notice > span {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: red;
         }
-      >
-        <p>:</p>
-      </div>
-      {showMinutes && (
-        <div style={{ display: "flex" }}>
-          <DateTimeDisplay value={minutes} type={"Mins"} />
-        </div>
-      )}
-      <div
-        style={
-          showMinutes === false || showSeconds === false
-            ? { display: "none" }
-            : { display: "flex" }
+        
+        .expired-notice > p {
+          font-size: 1.5rem;
         }
+        
+        .show-counter {
+          padding: 0.5rem;
+          display: flex;
+        }
+        
+        .show-counter .countdown-link {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          font-weight: 700;
+          font-size: 1.25rem;
+          line-height: 1.75rem;
+          padding: 0.5rem;
+          border: 1px solid #ebebeb;
+          border-radius: 0.25rem;
+          text-decoration: none;
+          color: #000;
+        }
+        
+        .show-counter .countdown {
+          line-height: 1.25rem;
+          padding: 0 0.75rem 0 0.75rem;
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .show-counter .countdown.danger {
+          color: #ff0000;
+        }
+        
+        .show-counter .countdown > p {
+          margin: 0;
+        }
+        
+        .show-counter .countdown > span {
+          text-transform: uppercase;
+          font-size: 0.75rem;
+          line-height: 1rem;
+        }`}
+      </style>
+      <div
+        className={`show-counter ${className ? className : ""}`}
+        style={{ display: "inline-flex" }}
       >
-        <p>:</p>
-      </div>
-      {showSeconds && (
-        <div style={{ display: "flex" }}>
-          <DateTimeDisplay value={seconds} type={"Seconds"} />
+        {showDays && (
+          <div style={{ display: "flex" }}>
+            <DateTimeDisplay value={days} type={"Days"} />
+          </div>
+        )}
+        <div
+          style={
+            showDays === false ||
+            (showHours === false &&
+              showMinutes === false &&
+              showSeconds === false)
+              ? { display: "none" }
+              : { display: "flex" }
+          }
+        >
+          <p>:</p>
         </div>
-      )}
-    </div>
+        {showHours && (
+          <div style={{ display: "flex" }}>
+            <DateTimeDisplay value={hours} type={"Hours"} />
+          </div>
+        )}
+        <div
+          style={
+            showHours === false ||
+            (showMinutes === false && showSeconds === false)
+              ? { display: "none" }
+              : { display: "flex" }
+          }
+        >
+          <p>:</p>
+        </div>
+        {showMinutes && (
+          <div style={{ display: "flex" }}>
+            <DateTimeDisplay value={minutes} type={"Mins"} />
+          </div>
+        )}
+        <div
+          style={
+            showMinutes === false || showSeconds === false
+              ? { display: "none" }
+              : { display: "flex" }
+          }
+        >
+          <p>:</p>
+        </div>
+        {showSeconds && (
+          <div style={{ display: "flex" }}>
+            <DateTimeDisplay value={seconds} type={"Seconds"} />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 export type CountdownTimerComponentTypes = {
