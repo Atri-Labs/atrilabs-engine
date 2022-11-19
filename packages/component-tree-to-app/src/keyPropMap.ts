@@ -353,4 +353,11 @@ export const keyPropMap: any = {
       title: "",
     },
   },
+  Overlay: {
+    styles: { ...FlexStyle },
+    custom: {
+      closeModalAfter: 0,
+      open: false,
+    },
+  },
 };
