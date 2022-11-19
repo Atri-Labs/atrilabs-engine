@@ -143,7 +143,7 @@ export function getComponentNode(id: string) {
 export function createObject(
   referenceObject: any,
   keys: (string | number)[],
-  value: string | number
+  value: string | number | boolean | string[] | number[] | boolean[]
 ) {
   if (referenceObject === null) return referenceObject;
   if (keys.length === 0) {
