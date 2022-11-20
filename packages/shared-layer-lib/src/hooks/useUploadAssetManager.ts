@@ -27,9 +27,23 @@ export const useUploadAssetManager = ({
   const callPatchCbWithUrl = useCallback(
     (selector: (string | number)[], url: string) => {
       const value = wrapInUrl ? `url("${url}")` : url;
-      patchCb(createObject(referenceObject, selector, value));
+      if (appendToArray) {
+        const copyArray = [...appendToArray.currentArray];
+        if (
+          appendToArray.index >= 0 &&
+          appendToArray.index < copyArray.length
+        ) {
+          copyArray.splice(appendToArray.index, 1, value);
+        } else if (appendToArray.index < 0) {
+          copyArray.push(value);
+        }
+        console.log("useUploadAssetManager callPatchCbWithUrl 2", copyArray);
+        patchCb(createObject(referenceObject, selector, copyArray));
+      } else {
+        patchCb(createObject(referenceObject, selector, value));
+      }
     },
-    [referenceObject, wrapInUrl, patchCb]
+    [appendToArray, patchCb, referenceObject, wrapInUrl]
   );
 
   const onCrossClicked = useCallback(() => {

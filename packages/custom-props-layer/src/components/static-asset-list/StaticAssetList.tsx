@@ -23,8 +23,12 @@ export const StaticAssetList: React.FC<ComponentProps> = (props) => {
     (index: number) => {
       props.openAssetManager(
         ["select", "upload"],
-        ["property", "custom", ...selector],
-        { currentArray: srcs || [], index }
+        [...selector],
+        props.customProps,
+        {
+          currentArray: srcs || [],
+          index,
+        }
       );
     },
     [props, selector, srcs]
