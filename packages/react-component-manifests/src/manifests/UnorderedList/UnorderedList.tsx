@@ -7,7 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import logo from "./logo.png";
 
 export const UnorderedList = forwardRef<
   HTMLDivElement,
@@ -16,14 +15,14 @@ export const UnorderedList = forwardRef<
     custom: {
       //The list-style-type for the list
       type: string;
+      titleColor: string;
+      descriptionColor?: string;
       //Title of the list
       items: {
         title: string;
-        titleColor: string;
         description?: string;
-        descriptionColor?: string;
         icon?: string;
-      };
+      }[];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -38,50 +37,52 @@ export const UnorderedList = forwardRef<
   return (
     <div ref={ref} className={props.className} style={{ ...props.styles }}>
       <ul style={{ listStyle: props.custom.type }}>
-        <li
-          style={{
-            padding: "0.5em 0",
-            borderBottom: "1px solid rgba(0,0,0,.06)",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: "0.5em" }}>
-            <div>
-              {props.custom.items.icon && (
-                <img
-                  src={props.custom.items.icon}
-                  alt="Element icon"
-                  height="32em"
-                />
-              )}
-            </div>
-            <div
+        {props.custom.items.map((item, index) => {
+          return (
+            <li
               style={{
-                display: "flex",
-                flexDirection: "column",
-                rowGap: "0.5em",
+                padding: "0.5em 0",
+                borderBottom: "1px solid rgba(0,0,0,.06)",
               }}
+              onClick={onClick}
+              key={index}
             >
-              <h4
-                style={{
-                  color: props.custom.items.titleColor,
-                  fontSize: "1em",
-                }}
-              >
-                {props.custom.items.title}
-              </h4>
-              {props.custom.items.description && (
-                <p
+              <div style={{ display: "flex", columnGap: "0.5em" }}>
+                <div>
+                  {item.icon && (
+                    <img src={item.icon} alt="Element icon" height="32em" />
+                  )}
+                </div>
+                <div
                   style={{
-                    color: props.custom.items.descriptionColor,
-                    fontSize: "1em",
+                    display: "flex",
+                    flexDirection: "column",
+                    rowGap: "0.5em",
                   }}
                 >
-                  {props.custom.items.description}
-                </p>
-              )}
-            </div>
-          </div>
-        </li>
+                  <h4
+                    style={{
+                      color: props.custom.titleColor,
+                      fontSize: "1em",
+                    }}
+                  >
+                    {item.title}
+                  </h4>
+                  {item.description && (
+                    <p
+                      style={{
+                        color: props.custom.descriptionColor,
+                        fontSize: "1em",
+                      }}
+                    >
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -104,24 +105,19 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     type: { type: "enum", options: ["disc", "circle", "square", "none"] },
+    titleColor: { type: "color" },
+    descriptionColor: { type: "color" },
     items: {
-      type: "map",
+      type: "array_map",
+      singleObjectName: "item",
       attributes: [
         {
           fieldName: "title",
           type: "text",
         },
         {
-          fieldName: "titleColor",
-          type: "color",
-        },
-        {
           fieldName: "description",
           type: "text",
-        },
-        {
-          fieldName: "descriptionColor",
-          type: "color",
         },
         {
           fieldName: "icon",
@@ -150,11 +146,9 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           type: "none",
-          items: {
-            title: "Atri Labs",
-            titleColor: "#000000d9",
-            descriptionColor: "#00000073",
-          },
+          titleColor: "#000000d9",
+          descriptionColor: "#00000073",
+          items: [{ title: "Atri Labs" }],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
