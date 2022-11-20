@@ -19,6 +19,8 @@ export const sky200 = "#bae6fd";
 export const sky400 = "#38BDF8";
 export const sky500 = "#0ea5e9";
 export const sky800 = "#075985";
+// teal
+export const teal400 = "#2DD4BF";
 // inputLiner-Grad
 export const inputgrad =
   "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #1f2937";

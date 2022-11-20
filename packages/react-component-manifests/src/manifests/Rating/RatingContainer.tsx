@@ -31,8 +31,9 @@ export const RatingContainer: React.FC<RatingContainerProp> = ({
       );
     }
   );
-  const nonRatingStars = Array.from(Array(nonRatings).keys()).map(
-    (_, index) => {
+  let nonRatingStars;
+  if (nonRatings >= 0) {
+    nonRatingStars = Array.from(Array(nonRatings).keys()).map((_, index) => {
       return (
         <StarUnrated
           key={index.toString()}
@@ -40,8 +41,8 @@ export const RatingContainer: React.FC<RatingContainerProp> = ({
           ratedColor={ratedColor}
         ></StarUnrated>
       );
-    }
-  );
+    });
+  }
   return (
     <div>
       {fullRatingStars}
