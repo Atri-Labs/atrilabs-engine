@@ -1,4 +1,4 @@
-import { gray900 } from "@atrilabs/design-system";
+import ControlledInput from "./ControlledInput";
 
 export type TextInputProps = {
   value: string;
@@ -6,20 +6,5 @@ export type TextInputProps = {
 };
 
 export const TextInput: React.FC<TextInputProps> = (props) => {
-  return (
-    <input
-      value={props.value}
-      onChange={props.onChange}
-      style={{
-        height: "25px",
-        backgroundColor: gray900,
-        border: "none",
-        outline: "none",
-        color: "white",
-        padding: "0 4px",
-        minWidth: "none",
-        width: "calc(100% - 0.5rem)",
-      }}
-    />
-  );
+  return <ControlledInput value={props.value} onChange={props.onChange} />;
 };

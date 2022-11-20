@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { Checkbox } from "../commons/Checkbox";
@@ -20,7 +20,11 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: createObject(selector, propValue.concat(false)),
+        custom: createObject(
+          props.customProps,
+          selector,
+          propValue.concat(false)
+        ),
       },
     });
   }, [props, propValue, selector]);
@@ -31,7 +35,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1, !oldValue);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -43,7 +47,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -56,7 +60,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(insertAt, 0, deletedItem);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -70,6 +74,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
         <RearrangeListWrapper
           onReposition={onReposition}
           onMinusClick={deleteValueCb}
+          minusButton={true}
         >
           {propValue.map((value, index) => {
             return (

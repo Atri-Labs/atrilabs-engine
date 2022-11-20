@@ -7,7 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import "./Toggle.css";
 import { ReactComponent as Icon } from "./icon.svg";
 
 export type ToggleComponentTypes = {
@@ -24,24 +23,72 @@ export const ToggleHelper: React.FC<ToggleComponentTypes> = ({
   handleToggle,
 }) => {
   return (
-    <div className="toggle-holder">
-      <input
-        checked={isOn}
-        onChange={handleToggle}
-        className="toggle-switch-checkbox"
-        id="toggle-switch-new"
-        type="checkbox"
-      />
-      <label
-        style={
-          isOn ? { background: `${onColor}` } : { background: `${offColor}` }
-        }
-        className="toggle-switch-label"
-        htmlFor="toggle-switch-new"
-      >
-        <span className="toggle-switch-button" />
-      </label>
-    </div>
+    <>
+      <style>
+        {`.toggle-holder {
+            width: 100%;
+            height: 100%;
+          }
+          .toggle-switch-checkbox {
+            height: 0;
+            width: 0;
+            visibility: hidden;
+          }
+          
+          .toggle-switch-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            background: grey;
+            border-radius: 100px;
+            position: relative;
+            transition: background-color 0.2s;
+          }
+          
+          .toggle-switch-label .toggle-switch-button {
+            position: absolute;
+            top: 5%;
+            left: 4px;
+            width: 45%;
+            height: 90%;
+            border-radius: 50%;
+            transition: 0.2s;
+            background: #fff;
+          }
+          
+          .toggle-switch-checkbox:checked + .toggle-switch-label .toggle-switch-button {
+            left: calc(100% - 4px);
+            transform: translateX(-100%);
+          }
+          
+          .toggle-switch-label:active .toggle-switch-button {
+            width: 40%;
+          }
+
+          `}
+      </style>
+      <div className="toggle-holder">
+        <input
+          checked={isOn}
+          onChange={handleToggle}
+          className="toggle-switch-checkbox"
+          id="toggle-switch-new"
+          type="checkbox"
+        />
+        <label
+          style={
+            isOn ? { background: `${onColor}` } : { background: `${offColor}` }
+          }
+          className="toggle-switch-label"
+          htmlFor="toggle-switch-new"
+        >
+          <span className="toggle-switch-button" />
+        </label>
+      </div>
+    </>
   );
 };
 

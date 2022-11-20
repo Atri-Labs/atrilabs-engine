@@ -4,7 +4,7 @@ import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 import { TextInput } from "../commons/TextInput";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const ListField: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -20,7 +20,7 @@ export const ListField: React.FC<ComponentProps> = (props) => {
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: createObject(selector, propValue.concat("")),
+        custom: createObject(props.customProps, selector, propValue.concat("")),
       },
     });
   }, [props, selector, propValue]);
@@ -30,7 +30,7 @@ export const ListField: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1, value);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -43,7 +43,7 @@ export const ListField: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(insertAt, 0, deletedItem);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -55,7 +55,7 @@ export const ListField: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -70,6 +70,7 @@ export const ListField: React.FC<ComponentProps> = (props) => {
         <RearrangeListWrapper
           onReposition={onReposition}
           onMinusClick={deleteValueCb}
+          minusButton={true}
         >
           {propValue.map((value, index) => {
             return (
