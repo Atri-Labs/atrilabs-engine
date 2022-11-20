@@ -57,19 +57,19 @@ const styles: { [key: string]: React.CSSProperties } = {
 const CssOfElement: React.FC<CssOfElementProp> = ({ compId, showAlias }) => {
   const cssTree = useTree(CssTreeId);
   const tree = useTree(ComponentTreeId);
-  const rootStyles = getStylesAlias(compId, tree, cssTree);
-  const css = Object.keys(rootStyles.styles).map((ele, id) => {
+  const { alias, cssStyles } = getStylesAlias(compId, tree, cssTree);
+  const css = Object.keys(cssStyles).map((ele, index) => {
     return (
-      <div key={id + ele} style={styles.cssContainer}>
+      <div key={index + ele} style={styles.cssContainer}>
         <span style={styles.cssProperty}>{ele}: </span>
-        <span style={styles.cssValues}>{rootStyles.styles[ele]}</span>
+        <span style={styles.cssValues}>{cssStyles[ele]}</span>
       </div>
     );
   });
   return (
     <div>
       {showAlias && (
-        <h3 style={styles.cssParentAlias}>Inherited from {rootStyles.alias}</h3>
+        <h3 style={styles.cssParentAlias}>Inherited from {alias}</h3>
       )}
       {css}
     </div>
@@ -77,10 +77,16 @@ const CssOfElement: React.FC<CssOfElementProp> = ({ compId, showAlias }) => {
 };
 export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
   const [showProperties, setShowProperties] = useState<boolean>(false);
+  // returns array of ancestors, 0th index is the component itself, 1st index is parent if exists, 2th is the grandparent and so on
   const ancestorsId = getAncestors(compId);
-  const CssSummary = ancestorsId.map((ele, id) => {
+  const CssSummary = ancestorsId.map((ele, index) => {
+    // show alias of only of the parents
     return (
-      <CssOfElement key={ele} compId={ele} showAlias={id >= 1 ? true : false} />
+      <CssOfElement
+        key={ele}
+        compId={ele}
+        showAlias={index >= 1 ? true : false}
+      />
     );
   });
   return (

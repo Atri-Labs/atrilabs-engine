@@ -153,6 +153,6 @@ export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
   const cssNodeId = cssNode.childId;
   return {
     alias: componentTree.nodes[id].state?.alias,
-    styles: cssTree.nodes[cssNodeId].state?.property.styles,
+    cssStyles: cssTree.nodes[cssNodeId].state?.property.styles,
   };
 }
