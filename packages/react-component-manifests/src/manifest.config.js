@@ -141,6 +141,10 @@ module.exports = {
       modulePath: "./src/manifests/Form/Form.tsx",
       exportedVarName: "Form",
     },
+    UnorderedList: {
+      modulePath: "./src/manifests/UnorderedList/UnorderedList.tsx",
+      exportedVarName: "UnorderedList",
+    },
     Overlay: {
       modulePath: "./src/manifests/Overlay/Overlay.tsx",
       exportedVarName: "Overlay",
