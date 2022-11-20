@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useManualHover } from "../../hooks/useManualHover";
 import { ComponentProps } from "../../types";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const ComponentSelector: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -20,7 +20,7 @@ export const ComponentSelector: React.FC<ComponentProps> = (props) => {
     (alias: string) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, alias),
+          custom: createObject(props.customProps, selector, alias),
         },
       });
     },

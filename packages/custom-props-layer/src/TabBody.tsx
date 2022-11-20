@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
 import { MapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { Map } from "./components/map/Map";
+import { MapList } from "./components/map-list/MapList";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 
@@ -50,6 +51,24 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               {...props}
               attributes={attributes}
               propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "array_map") {
+          const mapCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as MapCustomProp;
+          const attributes = mapCustomProps.attributes;
+          const singleObjectName = mapCustomProps.singleObjectName;
+          return (
+            <MapList
+              {...props}
+              selector={[propName]}
+              attributes={attributes}
+              propName={propName}
+              singleObjectName={singleObjectName}
               key={propName}
               routes={routes}
             />

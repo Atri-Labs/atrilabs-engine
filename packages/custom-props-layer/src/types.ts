@@ -22,11 +22,12 @@ export type TabBodyProps = {
   options?: string[];
   // attributes is currently being used with the map custom property
   attributes?: AttributeTypes;
+  singleObjectName?: string;
 };
 
 export type ComponentProps = TabBodyProps & {
   propName: string;
-  selector?: string[];
+  selector?: (string | number)[];
   openAssetManager: OpenAssetManagerCallabck;
   openColorPicker: (
     colorPickerProps: Omit<ColorPickerDialogProps, "onCrossClick">

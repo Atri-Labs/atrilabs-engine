@@ -3,7 +3,7 @@ import { ComponentProps } from "../../types";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const NumberList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -21,7 +21,7 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: createObject(selector, propValue.concat(0)),
+        custom: createObject(props.customProps, selector, propValue.concat(0)),
       },
     });
   }, [props, selector, propValue]);
@@ -32,7 +32,7 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1, parseFloat(value) || "");
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
@@ -45,7 +45,7 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1);
       props.patchCb({
         property: {
-          custom: createObject(selector, updatedValue),
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },

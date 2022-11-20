@@ -77,7 +77,6 @@ const CssOfElement: React.FC<CssOfElementProp> = ({ compId, showAlias }) => {
 };
 export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
   const [showProperties, setShowProperties] = useState<boolean>(false);
-  // returns array of ancestors, 0th index is the component itself, 1st index is parent if exists, 2th is the grandparent and so on
   const ancestorsId = getAncestors(compId);
   const CssSummary = ancestorsId.map((ele, index) => {
     // show alias of only of the parents

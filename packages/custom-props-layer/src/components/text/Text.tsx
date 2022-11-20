@@ -3,7 +3,7 @@ import { useMemo, useCallback } from "react";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { TextInput } from "../commons/TextInput";
-import { createObject } from "../../utility/Utility";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const Text: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -13,6 +13,7 @@ export const Text: React.FC<ComponentProps> = (props) => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      console.log(`propVal ${prop}`, currentValue, selector);
     }
     return currentValue || "";
   }, [props, selector]);
@@ -21,12 +22,13 @@ export const Text: React.FC<ComponentProps> = (props) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       props.patchCb({
         property: {
-          custom: createObject(selector, e.target.value),
+          custom: createObject(props.customProps, selector, e.target.value),
         },
       });
     },
     [props, selector]
   );
+
   return (
     <PropertyContainer>
       <Label name={props.propName} />
