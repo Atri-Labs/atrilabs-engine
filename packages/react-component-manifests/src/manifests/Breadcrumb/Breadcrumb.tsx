@@ -32,6 +32,18 @@ export const Breadcrumb = forwardRef<
     },
     [props]
   );
+  const { divider, items } = props.custom;
+  const contnet = items.map((element, index) => {
+    return (
+      <span key={element.name + index}>
+        <span>{element.name}</span>
+        {/* skip divider on the last element */}
+        <span style={{ margin: "0 0.25rem" }}>
+          {index !== items.length - 1 ? divider : ""}
+        </span>
+      </span>
+    );
+  });
   return (
     <div
       ref={ref}
@@ -39,7 +51,7 @@ export const Breadcrumb = forwardRef<
       style={props.styles}
       onClick={onClick}
     >
-      Bread
+      {contnet}
     </div>
   );
 });
@@ -58,7 +70,23 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
+    divider: {
+      type: "text",
+    },
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        {
+          fieldName: "name",
+          type: "text",
+        },
+        {
+          fieldName: "link",
+          type: "text",
+        },
+      ],
+    },
   },
 };
 
