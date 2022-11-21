@@ -33,6 +33,7 @@ import DropdownManifests from "@atrilabs/react-component-manifests/src/manifests
 import TableManifests from "@atrilabs/react-component-manifests/src/manifests/Table/Table";
 import DivManifests from "@atrilabs/react-component-manifests/src/manifests/Div/Div";
 import AlertManifests from "@atrilabs/react-component-manifests/src/manifests/Alert/Alert";
+import UnorderedListManifests from "@atrilabs/react-component-manifests/src/manifests/UnorderedList/UnorderedList";
 import IconManifests from "@atrilabs/react-component-manifests/src/manifests/Icon/Icon";
 import ModalManifests from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
 import FormManifests from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
@@ -121,6 +122,7 @@ const defaultImports = [
   ModalManifests,
   FormManifests,
   OverlayManifests,
+  UnorderedListManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
