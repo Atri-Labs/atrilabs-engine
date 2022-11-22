@@ -11,7 +11,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { ArrowDown, ArrowUp } from "./components";
+import { ArrowDown, ArrowUp, MenuItemsMap } from "./components";
 
 export const VerticalMenu = forwardRef<
   HTMLDivElement,
@@ -45,21 +45,16 @@ export const VerticalMenu = forwardRef<
     >
       <span
         style={{
-          display: "flex",
-          justifyContent: "space-between",
+          // display: "flex",
+          // justifyContent: "space-between",
+          // alignItems: "center",
           columnGap: ".25rem",
-          alignItems: "center",
         }}
       >
         {title} {!open ? <ArrowDown /> : <ArrowUp />}
       </span>
       {/* render menu items */}
-      <main>
-        {open &&
-          menuItems.map((element) => {
-            return <div>{element.name}</div>;
-          })}
-      </main>
+      {open && <MenuItemsMap menuAray={menuItems} />}
     </div>
   );
 });
@@ -87,7 +82,16 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     open: { type: "boolean" },
-    menuItems: { type: "array_map" },
+    menuItems: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        {
+          fieldName: "name",
+          type: "text",
+        },
+      ],
+    },
   },
 };
 

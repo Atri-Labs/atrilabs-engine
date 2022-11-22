@@ -1,3 +1,4 @@
+// ----------------------- ICONS-----------------------------------------------
 export const ArrowDown: React.FC = () => {
   return (
     <svg
@@ -30,3 +31,33 @@ export const ArrowUp: React.FC = () => {
     </svg>
   );
 };
+// -------------------------------------------------------------------------------------
+// ----------------------------- FUNCTIONAL COMPOENENTS-----------------------------------
+export const MenuItemsMap: React.FC<MenuItemsMapProp> = ({ menuAray }) => {
+  const content = menuAray.map((element) => {
+    return (
+      <div key={element.name}>
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            columnGap: ".25rem",
+          }}
+        >
+          {element.name}
+          {element.subMenuItems && <ArrowUp />}
+        </span>
+        {element.subMenuItems?.map((element) => {
+          return (
+            <div key={element.subMenuItemsName}>{element.subMenuItemsName}</div>
+          );
+        })}
+      </div>
+    );
+  });
+  return <>{content}</>;
+};
+interface MenuItemsMapProp {
+  menuAray: { name: string; subMenuItems?: { subMenuItemsName: string }[] }[];
+}
+// -------------------------------------------------------------------------------------
