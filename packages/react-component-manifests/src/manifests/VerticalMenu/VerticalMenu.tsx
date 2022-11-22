@@ -11,6 +11,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { ArrowDown, ArrowUp } from "./components";
 
 export const VerticalMenu = forwardRef<
   HTMLDivElement,
@@ -18,6 +19,7 @@ export const VerticalMenu = forwardRef<
     styles: React.CSSProperties;
     custom: {
       title: string;
+      open: boolean;
       menuItems: {
         name: string;
         onClick: () => {};
@@ -34,13 +36,30 @@ export const VerticalMenu = forwardRef<
     className?: string;
   }
 >((props, ref) => {
+  const { title, menuItems, open } = props.custom;
   return (
     <div
       ref={ref}
       style={{ ...props.styles, position: "relative" }}
       className={props.className}
     >
-      VerticalMenu
+      <span
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          columnGap: ".25rem",
+          alignItems: "center",
+        }}
+      >
+        {title} {!open ? <ArrowDown /> : <ArrowUp />}
+      </span>
+      {/* render menu items */}
+      <main>
+        {open &&
+          menuItems.map((element) => {
+            return <div>{element.name}</div>;
+          })}
+      </main>
     </div>
   );
 });
@@ -68,12 +87,7 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     open: { type: "boolean" },
-    src: { type: "static_asset" },
-    iconHeight: { type: "number" },
-    iconWidth: { type: "number" },
-    strokeColor: { type: "color" },
-    gap: { type: "number" },
-    alignRight: { type: "boolean" },
+    menuItems: { type: "array_map" },
   },
 };
 
@@ -94,9 +108,30 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          open: true,
-          iconHeight: 24,
-          iconWidth: 24,
+          title: "Navigation",
+          open: false,
+          menuItems: [
+            {
+              name: "Submenu One",
+            },
+            {
+              name: "Submenu Two",
+            },
+            {
+              name: "Submenu Three",
+              subMenuItems: [
+                {
+                  subMenuItemsName: "submenu three item #1",
+                },
+                {
+                  subMenuItemsName: "submenu three item #2",
+                },
+                {
+                  subMenuItemsName: "submenu three item #3",
+                },
+              ],
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
