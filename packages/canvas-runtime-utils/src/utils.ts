@@ -157,12 +157,15 @@ export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
     cssStyles: cssTree.nodes[cssNodeId].state?.property.styles,
   };
 }
+
 export function createObject(
   referenceObject: any,
   keys: (string | number)[],
-  value: string | number | boolean | string[] | number[] | boolean[]
+  value: string | number | string[] | number[]
 ) {
-  if (referenceObject === null) return referenceObject;
+  if (referenceObject === null) {
+    throw "Reference object cannot be null";
+  }
   if (keys.length === 0) {
     return value;
   }
@@ -174,10 +177,19 @@ export function createObject(
     const nextRemainingKeys = remainingKeys.slice(1);
 
     if (
-      typeof referenceObject[key] === "string" ||
-      typeof referenceObject[key] === "number"
+      referenceObject[key] !== undefined &&
+      typeof nextKey === "string" &&
+      Array.isArray(referenceObject[key])
     ) {
-      return referenceObject;
+      throw "Datatype of selector and reference object does not match";
+    }
+
+    if (
+      referenceObject[key] !== undefined &&
+      typeof nextKey === "number" &&
+      typeof referenceObject[key] === "object"
+    ) {
+      throw "Datatype of selector and reference object does not match";
     }
 
     if (typeof nextKey === "number") {
@@ -187,11 +199,13 @@ export function createObject(
       }
 
       // Fill empty index with empty object
-      if (referenceObject[key].length < nextKey + 1) {
+      if (nextKey <= referenceObject[key].length) {
         const delta = nextKey + 1 - referenceObject[key].length;
         for (let i = 0; i < delta; i++) {
           referenceObject[key].push({});
         }
+      } else {
+        throw "Cannot add index that is greater than the array size";
       }
 
       // recursively write the object
