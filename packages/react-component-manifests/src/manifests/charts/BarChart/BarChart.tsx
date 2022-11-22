@@ -102,16 +102,10 @@ export const BarChart = forwardRef<
             strokeDasharray={props.custom.cartesianGrid?.strokeDasharray}
           />
         ) : null}
-        {props.custom.xAxis?.show ? (
-          <XAxis fontFamily={props.styles.fontFamily} dataKey={xAxisKey} />
-        ) : null}
-        {props.custom.yAxis?.show ? (
-          <YAxis fontFamily={props.styles.fontFamily} width={40} />
-        ) : null}
+        {props.custom.xAxis?.show ? <XAxis dataKey={xAxisKey} /> : null}
+        {props.custom.yAxis?.show ? <YAxis width={40} /> : null}
         {props.custom.toolTip?.show ? <Tooltip /> : null}
-        {props.custom.legend?.show ? (
-          <Legend fontFamily={props.styles.fontFamily} />
-        ) : null}
+        {props.custom.legend?.show ? <Legend /> : null}
         {sortedKeys.map((key, index) => {
           const fillColor =
             props.custom.options?.[key]?.fill || getColorAt(index);
@@ -231,9 +225,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          fontFamily: "IBM Plex Sans",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
