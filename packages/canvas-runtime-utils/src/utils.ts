@@ -134,10 +134,12 @@ export function createSortedParentChildMap(
   }
   return parentChildMap;
 }
+
 export function getComponentNode(id: string) {
   const compTree = BrowserForestManager.currentForest.tree(ComponentTreeId);
   return compTree!.nodes[id];
 }
+
 export function getAncestors(id: string, ancestors: string[] = []) {
   // returns array of ancestors, 0th index is the component itself, 1st index is parent if exists, 2th is the grandparent and so on
   const compNode = getComponentNode(id);
@@ -148,6 +150,7 @@ export function getAncestors(id: string, ancestors: string[] = []) {
   }
   return ancestors;
 }
+
 export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
   // returns the alias and styles of an element
   const cssNode = cssTree.links[id];
@@ -157,6 +160,7 @@ export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
     cssStyles: cssTree.nodes[cssNodeId].state?.property.styles,
   };
 }
+
 export function createObject(
   referenceObject: any,
   keys: (string | number)[],
