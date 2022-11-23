@@ -9,6 +9,7 @@ export const Number: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
@@ -31,6 +32,7 @@ export const Number: React.FC<ComponentProps> = (props) => {
     },
     [props, selector]
   );
+
   return (
     <PropertyContainer>
       <Label name={props.propName} />
