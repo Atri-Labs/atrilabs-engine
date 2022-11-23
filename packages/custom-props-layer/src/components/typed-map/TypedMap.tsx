@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
-export const VariableMap: React.FC<ComponentProps> = (props) => {
+export const TypedMap: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);

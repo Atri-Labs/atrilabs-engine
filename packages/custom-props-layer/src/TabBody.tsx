@@ -4,13 +4,13 @@ import { TabBodyProps } from "./types";
 import {
   ArrayMapCustomProp,
   MapCustomProp,
-  VariableKeyMapCustomProp,
+  TypedMapCustomProp,
 } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { Map } from "./components/map/Map";
 import { MapList } from "./components/map-list/MapList";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
-import { VariableMap } from "./components/variable-map/VariableMap";
+import { TypedMap } from "./components/typed-map/TypedMap";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -79,13 +79,13 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
             />
           );
         }
-        if (propType === "variable_key_map") {
-          const variableMapCustomProps = props.treeOptions.dataTypes[
+        if (propType === "typed_map") {
+          const typedMapCustomProps = props.treeOptions.dataTypes[
             propName
-          ] as VariableKeyMapCustomProp;
-          const attributes = variableMapCustomProps.attributes;
+          ] as TypedMapCustomProp;
+          const attributes = typedMapCustomProps.attributes;
           return (
-            <VariableMap
+            <TypedMap
               {...props}
               selector={[propName]}
               attributes={attributes}

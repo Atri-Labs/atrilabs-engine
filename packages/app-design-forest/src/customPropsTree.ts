@@ -45,6 +45,11 @@ export type ArrayMapCustomProp = {
 export type VariableKeyMapCustomProp = {
   type: "variable_key_map";
   attributes: MapCustomProp["attributes"];
+};
+
+export type TypedMapCustomProp = {
+  type: "typed_map";
+  attributes: MapCustomProp["attributes"];
   selectedOption?: string;
 };
 
@@ -56,7 +61,8 @@ export type CustomPropsTreeOptions = {
       | EnumCustomProp
       | ArrayEnumCustomProp
       | ArrayMapCustomProp
-      | VariableKeyMapCustomProp;
+      | VariableKeyMapCustomProp
+      | TypedMapCustomProp;
   };
 };
 
