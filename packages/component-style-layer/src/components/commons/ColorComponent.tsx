@@ -31,11 +31,20 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   optionName: {
     ...smallText,
+    width: "1.5rem",
+    color: "white",
     display: "flex",
     alignItems: "center",
-    width: "4rem",
-    color: "white",
-    height: "25px",
+    justifyContent: "center",
+  },
+  gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 40px 40px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
   },
 };
 
@@ -102,8 +111,9 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
+  console.log(convertedRgbValue);
   if (convertedRgbValue.a === undefined) {
-    return "";
+    return "0";
   } else if (convertedRgbValue.a) {
     Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
       ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
@@ -116,6 +126,20 @@ export const getOpacityValue = (hex: Color["hex"]) => {
 };
 
 export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
+  const [opacityValue, setOpacityValue] = useState<string>(
+    props.styles[props.styleItem]
+      ? getOpacityValue(String(props.styles[props.styleItem]))
+      : "100"
+  );
+
+  useEffect(() => {
+    setOpacityValue(
+      props.styles[props.styleItem]
+        ? getOpacityValue(String(props.styles[props.styleItem]))
+        : "100"
+    );
+  }, [props]);
+
   const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
     props.patchCb({
       property: {
@@ -129,36 +153,33 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     });
   };
 
-  const handleOpacityInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    styleItem: keyof React.CSSProperties
-  ) => {
+  const handleOpacityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     parseInt(e.target.value) > 100
       ? setOpacityValue("100")
       : setOpacityValue(e.target.value);
-
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            e.target.value !== ""
-              ? handleOpacityChange(
-                  String(Number(e.target.value) / 100),
-                  String(props.styles[props.styleItem])
-                )
-              : handleOpacityChange(
-                  String(e.target.value),
-                  String(props.styles[props.styleItem])
-                ),
-        },
-      },
-    });
   };
+
+  const opacityDisabledHandler = (Color: string) => {
+    let Flag;
+    Color === "undefined" ? (Flag = true) : (Flag = false);
+    return Flag;
+  };
+
+  const opacityHelper = useCallback((opacity: string) => {
+    let opacityHelperValue;
+    opacity === ""
+      ? (opacityHelperValue = 0)
+      : (opacityHelperValue = Number(opacity));
+    return opacityHelperValue;
+  }, []);
+
   const handleOpacityChange = useCallback(
     (opacityValue: string, hex: Color["hex"]) => {
+      console.log(opacityValue);
       let convertedRgbValue = hex2rgb(hex);
+      console.log(convertedRgbValue);
       if (opacityValue === "") {
-        convertedRgbValue.a = 0;
+        return rgb2hex(convertedRgbValue);
       } else if (opacityHelper(opacityValue) >= 1) {
         convertedRgbValue.a = 1;
       } else if (opacityHelper(opacityValue) < 0) {
@@ -168,39 +189,44 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
       }
       return rgb2hex(convertedRgbValue);
     },
-    []
+    [opacityHelper]
   );
-  const opacityHelper = (opacityValue: string) => {
-    let opacityHelperValue;
-    opacityValue === ""
-      ? (opacityHelperValue = 100)
-      : (opacityHelperValue = Number(opacityValue));
-    return opacityHelperValue;
+
+  const applyOpacity = () => {
+    if (opacityValue === "") {
+      props.patchCb({
+        property: {
+          styles: {
+            [props.styleItem]: handleOpacityChange(
+              String(opacityValue),
+              String(props.styles[props.styleItem])
+            ),
+          },
+        },
+      });
+    } else {
+      props.patchCb({
+        property: {
+          styles: {
+            [props.styleItem]: handleOpacityChange(
+              String(Number(opacityValue) / 100),
+              String(props.styles[props.styleItem])
+            ),
+          },
+        },
+      });
+    }
   };
 
-  const opacityDisabledHandler = (Color: string) => {
-    let Flag;
-    Color === "undefined" ? (Flag = true) : (Flag = false);
-    return Flag;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      applyOpacity();
+    }
   };
-
-  const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles[props.styleItem]
-      ? getOpacityValue(String(props.styles[props.styleItem]))
-      : "100"
-  );
 
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
     opacityDisabledHandler(String(props.styles[props.styleItem]))
   );
-
-  useEffect(() => {
-    setOpacityValue(
-      props.styles[props.styleItem]
-        ? getOpacityValue(String(props.styles[props.styleItem]))
-        : "100"
-    );
-  }, [props]);
 
   useEffect(() => {
     setIsOpacityDisabled(
@@ -208,16 +234,32 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
     );
   }, [props]);
 
-  const [colorVal, setColorVal] = useState<string>("");
-
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div style={styles.gridContainer}>
       <div
+        style={styles.optionName}
         onClick={() => {
           props.openPalette(props.styleItem, props.name);
         }}
-        style={{ width: "55px", marginRight: "10px" }}
       >
+        <div
+          style={
+            props.styles[props.styleItem] === undefined ||
+            props.styles[props.styleItem] === ""
+              ? {
+                  height: "10px",
+                  width: "10px",
+                  backgroundColor: `black`,
+                }
+              : {
+                  height: "10px",
+                  width: "10px",
+                  backgroundColor: `${props.styles[props.styleItem]}`,
+                }
+          }
+        ></div>
+      </div>
+      <div style={{ width: "55px", marginRight: "10px" }}>
         <ColorInput
           styleItem={props.styleItem}
           styles={props.styles}
@@ -226,10 +268,6 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
-          value={colorVal}
-          setValue={setColorVal}
-          applyFlag={true}
-          index={0}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>
@@ -238,8 +276,9 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
             type="text"
             value={opacityValue}
             disabled={isOpacityDisabled}
-            onChange={(e) => handleOpacityInputChange(e, props.styleItem)}
-            onKeyDown={(e) => console.log(e)}
+            onChange={(e) => handleOpacityInputChange(e)}
+            onBlur={(e) => applyOpacity()}
+            onKeyDown={(e) => handleKeyDown(e)}
             style={styles.inputContainerBox}
             placeholder="100"
           />
