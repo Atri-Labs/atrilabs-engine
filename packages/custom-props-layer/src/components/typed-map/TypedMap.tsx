@@ -7,13 +7,21 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
     }
-    return currentValue["selectedOption"] || "";
+    return currentValue["selectedOption"] || "none";
   }, [props, selector]);
+
+  const options = useMemo(() => {
+    const options = props.attributes!.map((attribute) => attribute.fieldName);
+    options.push("none");
+    return options;
+  }, [props.attributes]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       props.patchCb({
@@ -48,9 +56,9 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
           width: "100%",
         }}
       >
-        {props.attributes!.map((attribute, index) => (
-          <option value={attribute.fieldName} key={index}>
-            {attribute.fieldName}
+        {options.map((option, index) => (
+          <option value={option} key={index}>
+            {option}
           </option>
         ))}
       </select>
