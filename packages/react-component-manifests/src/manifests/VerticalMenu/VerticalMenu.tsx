@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
@@ -19,24 +19,25 @@ export const VerticalMenu = forwardRef<
     styles: React.CSSProperties;
     custom: {
       title: string;
-      open: boolean;
       menuItems: {
         name: string;
-        onClick: () => {};
         subMenuItems?: {
           subMenuItemsName: string;
-          onClick: () => {};
           subMenu?: {
             itemsName: string;
-            onClick: () => {};
           }[];
         }[];
       }[];
     };
     className?: string;
+    onClick: (menuItem: { name: string }) => void;
   }
 >((props, ref) => {
-  const { title, menuItems, open } = props.custom;
+  const { title, menuItems } = props.custom;
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
   return (
     <div
       ref={ref}
@@ -45,16 +46,27 @@ export const VerticalMenu = forwardRef<
     >
       <span
         style={{
-          // display: "flex",
+          display: "flex",
           // justifyContent: "space-between",
-          // alignItems: "center",
+          alignItems: "center",
           columnGap: ".25rem",
         }}
       >
-        {title} {!open ? <ArrowDown /> : <ArrowUp />}
+        <p>{title}</p>
+        <span onClick={toggleMenu}>
+          {!showMenu ? <ArrowDown /> : <ArrowUp />}
+        </span>
       </span>
       {/* render menu items */}
-      {open && <MenuItemsMap menuAray={menuItems} />}
+      {showMenu && (
+        <main
+          style={{
+            marginLeft: "1.2rem",
+          }}
+        >
+          <MenuItemsMap menuAray={menuItems} onClick={props.onClick} />
+        </main>
+      )}
     </div>
   );
 });
@@ -81,7 +93,6 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    open: { type: "boolean" },
     menuItems: {
       type: "array_map",
       singleObjectName: "item",
@@ -105,7 +116,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { display: "inline-block" },
+        initialValue: { display: "inline-block", position: "relative" },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -113,7 +124,6 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           title: "Navigation",
-          open: false,
           menuItems: [
             {
               name: "Submenu One",

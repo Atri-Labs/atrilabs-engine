@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 // ----------------------- ICONS-----------------------------------------------
 export const ArrowDown: React.FC = () => {
   return (
@@ -33,7 +35,16 @@ export const ArrowUp: React.FC = () => {
 };
 // -------------------------------------------------------------------------------------
 // ----------------------------- FUNCTIONAL COMPOENENTS-----------------------------------
-export const MenuItemsMap: React.FC<MenuItemsMapProp> = ({ menuAray }) => {
+export const MenuItemsMap: React.FC<MenuItemsMapProp> = ({
+  menuAray,
+  onClick,
+}) => {
+  const onClickMenuItem = useCallback(
+    (menuItem: { name: string }) => {
+      onClick(menuItem);
+    },
+    [onClick]
+  );
   const content = menuAray.map((element) => {
     return (
       <div key={element.name}>
@@ -44,14 +55,22 @@ export const MenuItemsMap: React.FC<MenuItemsMapProp> = ({ menuAray }) => {
             columnGap: ".25rem",
           }}
         >
-          {element.name}
+          <span onClick={() => onClickMenuItem(element)}>{element.name}</span>
           {element.subMenuItems && <ArrowUp />}
         </span>
-        {element.subMenuItems?.map((element) => {
-          return (
-            <div key={element.subMenuItemsName}>{element.subMenuItemsName}</div>
-          );
-        })}
+        <section
+          style={{
+            marginLeft: "1.2rem",
+          }}
+        >
+          {element.subMenuItems?.map((element) => {
+            return (
+              <div key={element.subMenuItemsName}>
+                {element.subMenuItemsName}
+              </div>
+            );
+          })}
+        </section>
       </div>
     );
   });
@@ -59,5 +78,6 @@ export const MenuItemsMap: React.FC<MenuItemsMapProp> = ({ menuAray }) => {
 };
 interface MenuItemsMapProp {
   menuAray: { name: string; subMenuItems?: { subMenuItemsName: string }[] }[];
+  onClick: (menuItem: { name: string }) => void;
 }
 // -------------------------------------------------------------------------------------
