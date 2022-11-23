@@ -102,8 +102,9 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
+  console.log(convertedRgbValue);
   if (convertedRgbValue.a === undefined) {
-    return "";
+    return "0";
   } else if (convertedRgbValue.a) {
     Math.ceil(convertedRgbValue.a * 100) - convertedRgbValue.a * 100 < 0.5
       ? (convertedRgbValue.a = Math.ceil(convertedRgbValue.a * 100))
@@ -116,6 +117,20 @@ export const getOpacityValue = (hex: Color["hex"]) => {
 };
 
 export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
+  const [opacityValue, setOpacityValue] = useState<string>(
+    props.styles[props.styleItem]
+      ? getOpacityValue(String(props.styles[props.styleItem]))
+      : "100"
+  );
+
+  useEffect(() => {
+    setOpacityValue(
+      props.styles[props.styleItem]
+        ? getOpacityValue(String(props.styles[props.styleItem]))
+        : "100"
+    );
+  }, [props]);
+
   const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
     props.patchCb({
       property: {
@@ -141,19 +156,21 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
     return Flag;
   };
 
-  const opacityHelper = (opacityValue: string) => {
+  const opacityHelper = useCallback((opacity: string) => {
     let opacityHelperValue;
-    opacityValue === ""
-      ? (opacityHelperValue = 100)
-      : (opacityHelperValue = Number(opacityValue));
+    opacity === ""
+      ? (opacityHelperValue = 0)
+      : (opacityHelperValue = Number(opacity));
     return opacityHelperValue;
-  };
+  }, []);
 
   const handleOpacityChange = useCallback(
     (opacityValue: string, hex: Color["hex"]) => {
+      console.log(opacityValue);
       let convertedRgbValue = hex2rgb(hex);
+      console.log(convertedRgbValue);
       if (opacityValue === "") {
-        convertedRgbValue.a = 0;
+        return rgb2hex(convertedRgbValue);
       } else if (opacityHelper(opacityValue) >= 1) {
         convertedRgbValue.a = 1;
       } else if (opacityHelper(opacityValue) < 0) {
@@ -163,26 +180,33 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
       }
       return rgb2hex(convertedRgbValue);
     },
-    []
+    [opacityHelper]
   );
 
   const applyOpacity = () => {
-    props.patchCb({
-      property: {
-        styles: {
-          [props.styleItem]:
-            opacityValue !== ""
-              ? handleOpacityChange(
-                  String(Number(opacityValue) / 100),
-                  String(props.styles[props.styleItem])
-                )
-              : handleOpacityChange(
-                  String(opacityValue),
-                  String(props.styles[props.styleItem])
-                ),
+    if (opacityValue === "") {
+      props.patchCb({
+        property: {
+          styles: {
+            [props.styleItem]: handleOpacityChange(
+              String(opacityValue),
+              String(props.styles[props.styleItem])
+            ),
+          },
         },
-      },
-    });
+      });
+    } else {
+      props.patchCb({
+        property: {
+          styles: {
+            [props.styleItem]: handleOpacityChange(
+              String(Number(opacityValue) / 100),
+              String(props.styles[props.styleItem])
+            ),
+          },
+        },
+      });
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -191,12 +215,6 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
     }
   };
 
-  const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles[props.styleItem]
-      ? getOpacityValue(String(props.styles[props.styleItem]))
-      : "100"
-  );
-
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
     opacityDisabledHandler(String(props.styles[props.styleItem]))
   );
@@ -204,14 +222,6 @@ export const NewColorComponent: React.FC<ColorComponentProps> = (props) => {
   useEffect(() => {
     setIsOpacityDisabled(
       opacityDisabledHandler(String(props.styles[props.styleItem]))
-    );
-  }, [props]);
-
-  useEffect(() => {
-    setOpacityValue(
-      props.styles[props.styleItem]
-        ? getOpacityValue(String(props.styles[props.styleItem]))
-        : "100"
     );
   }, [props]);
 

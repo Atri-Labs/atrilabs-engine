@@ -48,6 +48,16 @@ const toRGBAObject = (rgbaStr: string) => {
 };
 
 export const NewColorInput: React.FC<InputProps> = (props) => {
+  const trimForInputBox = (value: string) => {
+    if (value.length === 5) {
+      return value.substring(0, 4);
+    } else if (value.length === 9) {
+      return value.substring(0, 7);
+    } else {
+      return value;
+    }
+  };
+
   const convertToSixDigitHex = (colorVal: string) => {
     colorVal = colorVal.slice(1);
     if (colorVal.length === 3 || colorVal.length === 4) {
@@ -65,22 +75,25 @@ export const NewColorInput: React.FC<InputProps> = (props) => {
   const hexColorInputValidator = (recievedColor: string) => {
     if (recievedColor === "") {
       onValidInput("");
-    }
-    if (recievedColor.length === 4) {
+    } else if (recievedColor.length === 4) {
       recievedColor = convertToSixDigitHex(recievedColor);
       onValidInput(recievedColor);
       props.setOpacityValue(getOpacityValue(`${recievedColor} + ff`));
     } else if (recievedColor.length === 7) {
       onValidInput(recievedColor);
       props.setOpacityValue(getOpacityValue(`${recievedColor} + ff`));
-    }
-    if (recievedColor.length === 5) {
+    } else if (recievedColor.length === 5) {
       recievedColor = convertToSixDigitHex(recievedColor);
       onValidInput(recievedColor);
       props.setOpacityValue(getOpacityValue(recievedColor));
     } else if (recievedColor.length === 9) {
       onValidInput(recievedColor);
       props.setOpacityValue(getOpacityValue(recievedColor));
+    } else {
+      setColorValue(trimForInputBox(String(props.styles[props.styleItem])));
+      props.setOpacityValue(
+        getOpacityValue(String(props.styles[props.styleItem]))
+      );
     }
   };
 
@@ -108,10 +121,6 @@ export const NewColorInput: React.FC<InputProps> = (props) => {
   const [colorValue, setColorValue] = useState<string>(
     String(props.styles[props.styleItem])
   );
-
-  useEffect(() => {
-    setColorValue(String(props.styles[props.styleItem]));
-  }, [props]);
 
   useEffect(() => {
     const propertyColorValue = String(props.styles[props.styleItem]);
@@ -158,6 +167,31 @@ export const NewColorInput: React.FC<InputProps> = (props) => {
   const applyColor = () => {
     if (colorValue.substring(0, 1) === "#") {
       hexColorInputValidator(colorValue);
+      if (colorValue.length === 4) {
+        props.patchCb({
+          property: {
+            styles: {
+              [props.styleItem]: colorValue + "f",
+            },
+          },
+        });
+      } else if (colorValue.length === 7) {
+        props.patchCb({
+          property: {
+            styles: {
+              [props.styleItem]: colorValue + "ff",
+            },
+          },
+        });
+      } else if (colorValue.length === 5 || colorValue.length === 9) {
+        props.patchCb({
+          property: {
+            styles: {
+              [props.styleItem]: colorValue,
+            },
+          },
+        });
+      }
     } else if (
       (colorValue.substring(0, 3).toLowerCase() === "rgb" &&
         colorValue[colorValue.length - 1] === ")") ||
@@ -165,14 +199,14 @@ export const NewColorInput: React.FC<InputProps> = (props) => {
         colorValue[colorValue.length - 1] === ")")
     ) {
       rgbaColorInputValidator(props.rgb2hex(toRGBAObject(colorValue)));
-    }
-    props.patchCb({
-      property: {
-        styles: {
-          [props.styleItem]: colorValue,
+      props.patchCb({
+        property: {
+          styles: {
+            [props.styleItem]: colorValue,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
