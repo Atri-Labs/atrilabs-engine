@@ -1,11 +1,16 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
-import { MapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import {
+  ArrayMapCustomProp,
+  MapCustomProp,
+  VariableKeyMapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { Map } from "./components/map/Map";
 import { MapList } from "./components/map-list/MapList";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
+import { VariableMap } from "./components/variable-map/VariableMap";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -59,7 +64,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         if (propType === "array_map") {
           const mapCustomProps = props.treeOptions.dataTypes[
             propName
-          ] as MapCustomProp;
+          ] as ArrayMapCustomProp;
           const attributes = mapCustomProps.attributes;
           const singleObjectName = mapCustomProps.singleObjectName;
           return (
@@ -69,6 +74,22 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
               attributes={attributes}
               propName={propName}
               singleObjectName={singleObjectName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "variable_key_map") {
+          const variableMapCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as VariableKeyMapCustomProp;
+          const attributes = variableMapCustomProps.attributes;
+          return (
+            <VariableMap
+              {...props}
+              selector={[propName]}
+              attributes={attributes}
+              propName={propName}
               key={propName}
               routes={routes}
             />
