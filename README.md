@@ -12,7 +12,7 @@
   </br>
   ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
   <h3 align="center">
-    <a href="https://atrilabs.com/">Website</a>
+    <a href="https://atrilabs.com">Website</a>
     <span> | </span>
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
