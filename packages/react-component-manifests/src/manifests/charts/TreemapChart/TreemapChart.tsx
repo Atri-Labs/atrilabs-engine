@@ -8,7 +8,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { Treemap as TreemapChartRechart } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { ReactComponent as Icon } from "../PieChart/icon.svg";
+import { ReactComponent as Icon } from "./icon.svg";
 export const TreemapChart = forwardRef<
   HTMLDivElement,
   {

@@ -12,6 +12,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { ArrowDown, ArrowUp, MenuItemsMap } from "./components";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const VerticalMenu = forwardRef<
   HTMLDivElement,
@@ -160,13 +161,13 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "VerticalMenu", svg: CommonIcon } },
+  panel: { comp: CommonIcon, props: { name: "VerticalMenu", svg: Icon } },
   drag: {
     comp: CommonIcon,
     props: {
       name: "VerticalMenu",
       containerStyle: { padding: "1rem" },
-      svg: CommonIcon,
+      svg: Icon,
     },
   },
   renderSchema: compManifest,

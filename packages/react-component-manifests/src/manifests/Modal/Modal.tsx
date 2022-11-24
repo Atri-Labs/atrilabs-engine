@@ -8,6 +8,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { GlobalContext, createPortal } from "@atrilabs/core/lib/reactUtilities";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Modal = forwardRef<
   HTMLDivElement,
@@ -231,10 +232,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Modal" } },
+  panel: { comp: CommonIcon, props: { name: "Modal", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Modal", containerStyle: { padding: "1rem" } },
+    props: { name: "Modal", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };

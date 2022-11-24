@@ -17,6 +17,7 @@ import {
   flexRowReverseSort,
   flexColReverseSort,
 } from "@atrilabs/react-component-manifest-schema/lib/utils";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Overlay = forwardRef<
   HTMLDivElement,
@@ -147,10 +148,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Overlay" } },
+  panel: { comp: CommonIcon, props: { name: "Overlay", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Overlay", containerStyle: { padding: "1rem" } },
+    props: { name: "Overlay", containerStyle: { padding: "1rem" }, svg: Icon },
   },
   renderSchema: compManifest,
 };
