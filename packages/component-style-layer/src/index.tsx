@@ -8,7 +8,6 @@ import { useUploadAssetManager } from "./hooks/useUploadAssetManager";
 import { useShowColorPalette } from "./hooks/useShowColorPalette";
 import { useShowColorPaletteWithoutEffect } from "./hooks/useShowColorPaletteWithoutEffect";
 import { ColorPickerAsset } from "./components/commons/ColorPickerAsset";
-import { ColorPickerAssetWithoutEffect } from "./components/commons/ColorPickerAssetWithoutEffect";
 import { gray700 } from "@atrilabs/design-system";
 
 /*
@@ -80,25 +79,6 @@ export default function () {
                     styles={styles}
                     patchCb={patchCb}
                     title={title}
-                  />
-                </div>
-              ) : null}
-              {showColorPaletteWithoutEffect ? (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "0.2rem",
-                    left: "-17rem",
-                  }}
-                >
-                  <ColorPickerAssetWithoutEffect
-                    closePalette={closePaletteWithoutEffect}
-                    styles={styles}
-                    patchCb={patchCb}
-                    title={titleWithoutEffect}
-                    colorValues={colorVal as [string]}
-                    colorValSetter={colorValSetter}
-                    index={linkColorPaletteToIndex}
                   />
                 </div>
               ) : null}

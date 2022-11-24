@@ -16,7 +16,7 @@ import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/drop
 
 import { CssProprtyComponentType } from "../../types";
 import PropertyRender from "../commons/PropertyRender";
-import { FlexChildInput } from "../commons/FlexChildInput";
+import ControlledInput from "../commons/ControlledInput";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -73,6 +73,19 @@ const alignSelfValues = [
 export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -115,27 +128,36 @@ export const FlexChild: React.FC<CssProprtyComponentType> = (props) => {
           <div>Order</div>
           <div style={styles.optionName}>Override</div>
           <div>
-            <FlexChildInput
+            <ControlledInput
+              type="text"
+              value={props.styles["flexGrow"] || ""}
+              onChange={handleChange}
               styleItem="flexGrow"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
+              disabled={""}
+              placeholder="0"
+              pattern="^[0-9]+$"
             />
           </div>
           <div>
-            <FlexChildInput
+            <ControlledInput
+              type="text"
+              value={props.styles["flexShrink"] || ""}
+              onChange={handleChange}
               styleItem="flexShrink"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="1"
+              disabled={""}
+              placeholder="1"
+              pattern="^[0-9]+$"
             />
           </div>
           <div>
-            <FlexChildInput
+            <ControlledInput
+              type="text"
+              value={props.styles["order"] || ""}
+              onChange={handleChange}
               styleItem="order"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
+              disabled={""}
+              placeholder="0"
+              pattern="^[0-9]+$"
             />
           </div>
         </div>

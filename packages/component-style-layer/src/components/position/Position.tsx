@@ -22,9 +22,9 @@ import { ReactComponent as CL } from "../../assets/position/clear/left-icon.svg"
 import { ReactComponent as CR } from "../../assets/position/clear/right-icon.svg";
 import { ReactComponent as CN } from "../../assets/position/clear/none-icon.svg";
 import { ReactComponent as CB } from "../../assets/position/clear/both-icon.svg";
-import { Input } from "../commons/Input";
 import PositionTrapezoid from "./PositionTrapezoid";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
+import ControlledInput from "../commons/ControlledInput";
 
 export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
@@ -350,6 +350,19 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
       property: { styles: { bottom: parseInt(attrValue) } },
     });
   };
+
+  const handleZIndexChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    styleItem: keyof React.CSSProperties
+  ) => {
+    props.patchCb({
+      property: {
+        styles: {
+          [styleItem]: parseInt(e.target.value),
+        },
+      },
+    });
+  };
   return (
     <>
       <div style={styles.container}>
@@ -425,12 +438,14 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             <div style={styles.zindex}>
               <div style={styles.optionName}>z-index</div>
               <div style={{ width: "55px" }}>
-                <Input
+                <ControlledInput
+                  type="text"
+                  value={props.styles["zIndex"] || ""}
+                  onChange={handleZIndexChange}
                   styleItem="zIndex"
-                  styles={props.styles}
-                  patchCb={props.patchCb}
-                  defaultValue=""
-                  parseToInt={true}
+                  disabled={""}
+                  placeholder=""
+                  pattern="[0-9]+"
                 />
               </div>
             </div>

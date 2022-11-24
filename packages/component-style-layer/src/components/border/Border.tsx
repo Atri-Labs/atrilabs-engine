@@ -8,17 +8,13 @@ import {
   gray500,
   agastyaLine,
 } from "@atrilabs/design-system";
-import React, { useState, useEffect, useCallback } from "react";
-import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
+import React, { useState } from "react";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
-import { ReactComponent as Minus } from "../../assets/background/none-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { ColorComponent } from "../commons/ColorComponent";
-import { ColorComponentWithoutEffect } from "../commons/ColorComponentWithoutEffect";
-import { SizeInputWithoutEffect } from "../commons/SizeInputWithoutEffect";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -248,48 +244,48 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
     useState<number>(0);
 
   // Box Shadow
-  const [boxShadowProps, setBoxShadowProps] = useState([
-    {
-      inset: false,
-      xoffset: "0px",
-      yoffset: "0px",
-      blur: "0px",
-      spread: "0px",
-      color: "ffffff",
-    },
-  ]);
-  const createColorArray = () => {
-    let arr;
-    boxShadowProps.forEach((bsProp, index) => {
-      arr.push(bsProp.color);
-    });
-    if (arr) {
-      props.colorValueArraySetter(arr);
-    }
+  // const [boxShadowProps, setBoxShadowProps] = useState([
+  //   {
+  //     inset: false,
+  //     xoffset: "0px",
+  //     yoffset: "0px",
+  //     blur: "0px",
+  //     spread: "0px",
+  //     color: "ffffff",
+  //   },
+  // ]);
+  // const createColorArray = () => {
+  //   let arr;
+  //   boxShadowProps.forEach((bsProp, index) => {
+  //     arr.push(bsProp.color);
+  //   });
+  //   if (arr) {
+  //     props.colorValueArraySetter(arr);
+  //   }
 
-    return arr;
-  };
+  //   return arr;
+  // };
 
-  const [boxShadow, setBoxShadow] = useState<string>("");
+  // const [boxShadow, setBoxShadow] = useState<string>("");
 
-  const handleInsetChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const arr = [...boxShadowProps];
-    arr[index].inset = e.target.checked;
-    setBoxShadowProps(arr);
-  };
+  // const handleInsetChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   index: number
+  // ) => {
+  //   const arr = [...boxShadowProps];
+  //   arr[index].inset = e.target.checked;
+  //   setBoxShadowProps(arr);
+  // };
 
-  const handleBoxShadowChange = useCallback(() => {
-    patchCb({
-      property: {
-        styles: {
-          boxShadow: boxShadow,
-        },
-      },
-    });
-  }, [patchCb, boxShadow]);
+  // const handleBoxShadowChange = useCallback(() => {
+  //   patchCb({
+  //     property: {
+  //       styles: {
+  //         boxShadow: boxShadow,
+  //       },
+  //     },
+  //   });
+  // }, [patchCb, boxShadow]);
 
   // useEffect(() => {
   //   setBoxShadow(
@@ -319,29 +315,29 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
   //   handleBoxShadowChange();
   // }, [props.colorValue, boxShadowProps, handleBoxShadowChange]);
 
-  const handleBsIncrement = () => {
-    setBoxShadowProps((boxShadowProps) => [
-      ...boxShadowProps,
-      {
-        inset: false,
-        xoffset: "0px",
-        yoffset: "0px",
-        blur: "0px",
-        spread: "0px",
-        color: "ffffff",
-      },
-    ]);
-    createColorArray();
-  };
+  // const handleBsIncrement = () => {
+  //   setBoxShadowProps((boxShadowProps) => [
+  //     ...boxShadowProps,
+  //     {
+  //       inset: false,
+  //       xoffset: "0px",
+  //       yoffset: "0px",
+  //       blur: "0px",
+  //       spread: "0px",
+  //       color: "ffffff",
+  //     },
+  //   ]);
+  //   createColorArray();
+  // };
 
-  const handleBsDecrement = (index: number) => {
-    const arr = [...boxShadowProps];
-    if (arr.length > 1) {
-      arr.splice(index, 1);
-    }
-    setBoxShadowProps(arr);
-    createColorArray();
-  };
+  // const handleBsDecrement = (index: number) => {
+  //   const arr = [...boxShadowProps];
+  //   if (arr.length > 1) {
+  //     arr.splice(index, 1);
+  //   }
+  //   setBoxShadowProps(arr);
+  //   createColorArray();
+  // };
 
   return (
     <div style={styles.container}>
@@ -587,7 +583,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             />
           </div>
         </div>
-        <div
+        {/* <div
           style={{ display: "flex", rowGap: "1rem", flexDirection: "column" }}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -703,7 +699,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   );
