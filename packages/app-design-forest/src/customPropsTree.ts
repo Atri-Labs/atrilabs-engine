@@ -49,7 +49,9 @@ export type VariableKeyMapCustomProp = {
 
 export type TypedMapCustomProp = {
   type: "typed_map";
-  attributes: MapCustomProp["attributes"];
+  attributes: ({
+    fieldName: string;
+  } & (SimpleCustomProp | EnumCustomProp | ArrayEnumCustomProp))[];
   selectedOption?: string;
 };
 
