@@ -51,7 +51,12 @@ export type TypedMapCustomProp = {
   type: "typed_map";
   attributes: ({
     fieldName: string;
-  } & (SimpleCustomProp | EnumCustomProp | ArrayEnumCustomProp))[];
+  } & (
+    | SimpleCustomProp
+    | EnumCustomProp
+    | ArrayEnumCustomProp
+    | MapCustomProp
+  ))[];
   selectedOption?: string;
 };
 

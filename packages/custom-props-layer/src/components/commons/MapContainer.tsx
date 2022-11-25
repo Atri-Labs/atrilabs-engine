@@ -16,8 +16,13 @@ export const MapContainer: React.FC<CommonPropTypeContainerTypes> = (props) => {
     return props.selector || [];
   }, [props]);
 
-  const mapCustomProps = props.treeOptions.dataTypes[propName] as MapCustomProp;
-  const attributes = mapCustomProps.attributes;
+  const attributes = useMemo(() => {
+    const mapCustomProps = props.treeOptions.dataTypes[
+      propName
+    ] as MapCustomProp;
+    if (mapCustomProps !== undefined) return mapCustomProps.attributes;
+    return props.attributes;
+  }, [propName, props.attributes, props.treeOptions.dataTypes]);
 
   return (
     <Map

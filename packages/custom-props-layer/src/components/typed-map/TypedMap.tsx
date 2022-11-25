@@ -4,6 +4,7 @@ import { ComponentProps } from "../../types";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
+import { MapContainer } from "../commons/MapContainer";
 
 const findIndex = (options: string[], key: string) => {
   for (let i = 0; i < options.length; i++) {
@@ -24,12 +25,15 @@ const getInitialValue = (attribute: any) => {
   ];
   const numberType = ["number", "array_number"];
   const booleanType = ["boolean", "array_boolean"];
+  const mapType = ["map", "array_map"];
   if (stringType.indexOf(attribute.type) !== -1) {
     return "";
   } else if (numberType.indexOf(attribute.type) !== -1) {
     return 0;
   } else if (booleanType.indexOf(attribute.type) !== -1) {
     return false;
+  } else if (mapType.indexOf(attribute.type) !== -1) {
+    return {};
   } else {
     return [];
   }
@@ -90,8 +94,6 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
     [options, props, selector]
   );
 
-  console.log("TypedMap", selector);
-
   return (
     <div>
       <div>
@@ -119,6 +121,17 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
           ))}
         </select>
       </div>
+      {attribute && attribute.type === "map" && (
+        <MapContainer
+          {...props}
+          selector={[...selector, "property", attribute.fieldName]}
+          attributes={attribute.attributes}
+          propType={attribute.type}
+          propName={attribute.fieldName}
+          key={attribute.fieldName}
+          routes={routes}
+        />
+      )}
       {attribute && (
         <CommonPropTypeContainer
           {...props}

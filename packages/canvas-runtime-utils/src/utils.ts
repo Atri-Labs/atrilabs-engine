@@ -164,7 +164,7 @@ export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
 export function createObject(
   referenceObject: any,
   keys: (string | number)[],
-  value: string | number | boolean | string[] | number[] | boolean[]
+  value: string | number | boolean | string[] | number[] | boolean[] | object
 ) {
   if (referenceObject === null) return referenceObject;
   if (keys.length === 0) {
