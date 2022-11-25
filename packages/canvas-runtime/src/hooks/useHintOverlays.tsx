@@ -98,36 +98,45 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
   const { top, left, width, height } = useMemo(() => {
     const bodyPosition = { top: bodyCoords.top, left: bodyCoords.left };
     const compPosition = { top: compCoords.top, left: compCoords.left };
+    const top =
+      (compPosition.top - bodyPosition.top + box.position.top) / props.scale;
+    const left =
+      (compPosition.left - bodyPosition.left + box.position.left) / props.scale;
+    const width = box.dimension.width / props.scale;
+    const height = box.dimension.height / props.scale;
+    const topAccess = top < 0 ? Math.abs(top) : 0;
+    const leftAccess = left < 0 ? Math.abs(left) : 0;
+    let rightAccess = 0;
+    if (left + width > bodyCoords.width) {
+      rightAccess = left + width - bodyCoords.width;
+    }
     return {
-      top:
-        (compPosition.top - bodyPosition.top + box.position.top) / props.scale,
-      left:
-        (compPosition.left - bodyPosition.left + box.position.left) /
-        props.scale,
-      width: box.dimension.width / props.scale,
-      height: box.dimension.height / props.scale,
+      top: top + topAccess,
+      left: rightAccess > 0 ? left - rightAccess : left + leftAccess,
+      width: width,
+      height: height - topAccess > 0 ? height - topAccess : height,
     };
   }, [box, bodyCoords, compCoords, props.scale]);
 
   const isOverlayInsideCanvas = useMemo(() => {
-    if (left < 0) {
-      return false;
-    }
-    if (left + width > bodyCoords.width) {
-      return false;
-    }
-    if (top < 0) {
-      return false;
-    }
-    if (top + height > bodyCoords.height) {
-      return false;
-    }
+    // if (left < 0) {
+    //   return false;
+    // }
+    // if (left + width > bodyCoords.width) {
+    //   return false;
+    // }
+    // if (top < 0) {
+    //   return false;
+    // }
+    // if (top + height > bodyCoords.height) {
+    //   return false;
+    // }
     return true;
   }, [left, width, bodyCoords, top, height]);
 
   return (
     <React.Fragment>
-      {box && isOverlayInsideCanvas ? (
+      {box && (
         <div
           style={{
             position: "absolute",
@@ -141,7 +150,7 @@ const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (props) => {
         >
           {props.comp}
         </div>
-      ) : null}
+      )}
     </React.Fragment>
   );
 };
