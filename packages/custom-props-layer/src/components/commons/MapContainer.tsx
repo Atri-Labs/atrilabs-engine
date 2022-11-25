@@ -24,14 +24,17 @@ export const MapContainer: React.FC<CommonPropTypeContainerTypes> = (props) => {
     return props.attributes;
   }, [propName, props.attributes, props.treeOptions.dataTypes]);
 
-  return (
-    <Map
-      {...props}
-      selector={selector}
-      attributes={attributes}
-      propName={propName}
-      key={propName}
-      routes={routes}
-    />
-  );
+  if (props.propType === "map") {
+    return (
+      <Map
+        {...props}
+        selector={selector}
+        attributes={attributes}
+        propName={propName}
+        key={propName}
+        routes={routes}
+      />
+    );
+  }
+  return <React.Fragment key={propName}></React.Fragment>;
 };

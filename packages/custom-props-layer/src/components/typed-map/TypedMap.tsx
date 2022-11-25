@@ -13,32 +13,6 @@ const findIndex = (options: string[], key: string) => {
   return -1;
 };
 
-const getInitialValue = (attribute: any) => {
-  const stringType = [
-    "text",
-    "large_text",
-    "static_asset",
-    "color",
-    "internal_link",
-    "external_link",
-    "enum",
-  ];
-  const numberType = ["number", "array_number"];
-  const booleanType = ["boolean", "array_boolean"];
-  const mapType = ["map", "array_map"];
-  if (stringType.indexOf(attribute.type) !== -1) {
-    return "";
-  } else if (numberType.indexOf(attribute.type) !== -1) {
-    return 0;
-  } else if (booleanType.indexOf(attribute.type) !== -1) {
-    return false;
-  } else if (mapType.indexOf(attribute.type) !== -1) {
-    return {};
-  } else {
-    return [];
-  }
-};
-
 export const TypedMap: React.FC<ComponentProps> = (props) => {
   const { routes } = usePageRoutes();
 
@@ -77,21 +51,8 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
           ),
         },
       });
-      props.patchCb({
-        property: {
-          custom: createObject(
-            props.customProps,
-            [...selector, "property"],
-            e.target.value !== "none"
-              ? getInitialValue(
-                  props.attributes![findIndex(options, e.target.value)]
-                )
-              : ""
-          ),
-        },
-      });
     },
-    [options, props, selector]
+    [props, selector]
   );
 
   return (
@@ -121,21 +82,20 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
           ))}
         </select>
       </div>
-      {attribute && attribute.type === "map" && (
+      {attribute.type === "map" ? (
         <MapContainer
           {...props}
-          selector={[...selector, "property", attribute.fieldName]}
+          selector={[...selector, attribute.fieldName]}
           attributes={attribute.attributes}
           propType={attribute.type}
           propName={attribute.fieldName}
           key={attribute.fieldName}
           routes={routes}
         />
-      )}
-      {attribute && (
+      ) : (
         <CommonPropTypeContainer
           {...props}
-          selector={[...selector, "property"]}
+          selector={[...selector, attribute.fieldName]}
           options={attribute.options}
           propType={attribute.type}
           propName={attribute.fieldName}
