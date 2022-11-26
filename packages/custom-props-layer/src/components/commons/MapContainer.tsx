@@ -36,8 +36,6 @@ export const MapContainer: React.FC<CommonPropTypeContainerTypes> = (props) => {
     return props.singleObjectName;
   }, [propName, props.singleObjectName, props.treeOptions.dataTypes]);
 
-  console.log("MapContainer", props.propType);
-
   if (props.propType === "map") {
     return (
       <Map
@@ -54,7 +52,7 @@ export const MapContainer: React.FC<CommonPropTypeContainerTypes> = (props) => {
     return (
       <MapList
         {...props}
-        selector={[propName]}
+        selector={selector}
         attributes={attributes}
         propName={propName}
         singleObjectName={singleObjectName}

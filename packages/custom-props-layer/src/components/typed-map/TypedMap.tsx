@@ -82,7 +82,7 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
           ))}
         </select>
       </div>
-      {attribute.type === "map" ? (
+      {attribute.type === "map" || attribute.type === "array_map" ? (
         <MapContainer
           {...props}
           selector={[...selector, attribute.fieldName]}

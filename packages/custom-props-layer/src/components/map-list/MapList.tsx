@@ -143,11 +143,7 @@ export const MapList: React.FC<ComponentProps> = (props) => {
                       return (
                         <CommonPropTypeContainer
                           {...props}
-                          selector={[
-                            props.propName,
-                            index,
-                            attribute.fieldName,
-                          ]}
+                          selector={[...selector, index, attribute.fieldName]}
                           options={attribute.options}
                           propType={attribute.type}
                           propName={attribute.fieldName}
