@@ -56,6 +56,7 @@ export type TypedMapCustomProp = {
     | EnumCustomProp
     | ArrayEnumCustomProp
     | MapCustomProp
+    | ArrayMapCustomProp
   ))[];
   selectedOption?: string;
 };
