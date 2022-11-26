@@ -1,12 +1,7 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
-import {
-  ArrayMapCustomProp,
-  TypedMapCustomProp,
-} from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { Map } from "./components/map/Map";
-import { MapList } from "./components/map-list/MapList";
+import { TypedMapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { TypedMap } from "./components/typed-map/TypedMap";
@@ -46,31 +41,13 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     <div style={styles.container}>
       {propNames.map((propName) => {
         const propType = props.treeOptions.dataTypes[propName].type;
-        if (propType === "map") {
+        if (propType === "map" || propType === "array_map") {
           return (
             <MapContainer
               {...props}
               selector={[propName]}
               propType={propType}
               propName={propName}
-              key={propName}
-              routes={routes}
-            />
-          );
-        }
-        if (propType === "array_map") {
-          const mapCustomProps = props.treeOptions.dataTypes[
-            propName
-          ] as ArrayMapCustomProp;
-          const attributes = mapCustomProps.attributes;
-          const singleObjectName = mapCustomProps.singleObjectName;
-          return (
-            <MapList
-              {...props}
-              selector={[propName]}
-              attributes={attributes}
-              propName={propName}
-              singleObjectName={singleObjectName}
               key={propName}
               routes={routes}
             />
