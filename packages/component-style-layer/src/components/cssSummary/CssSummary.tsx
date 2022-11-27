@@ -79,11 +79,11 @@ export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
   const [showProperties, setShowProperties] = useState<boolean>(false);
   const ancestorsId = getAncestors(compId);
   const CssSummary = ancestorsId.map((ele, index) => {
-    // show alias of only of the parents
     return (
       <CssOfElement
         key={ele}
         compId={ele}
+        // show alias of only of the parents
         showAlias={index >= 1 ? true : false}
       />
     );
