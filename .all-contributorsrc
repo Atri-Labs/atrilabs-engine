@@ -517,6 +517,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mhered",
+      "name": "Manuel Heredia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/75589082?v=4",
+      "profile": "https://github.com/mhered",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
