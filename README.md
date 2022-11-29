@@ -41,6 +41,10 @@ Atri framework is a full-stack web development framework to build Progressive We
 
 If you like our project, please support us by giving us **a star ⭐!**
 
+> **Ranked #7 in popularity among all TypeScript repositories in GitHub for the week of Nov 21.** [Source](https://ossinsight.io/)
+
+> **Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
+
 ## What can I build using this framework?
 
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
