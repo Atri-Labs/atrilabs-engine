@@ -2,15 +2,15 @@
 
 <div align="center">
 
-  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest" target="_blank"><img src="https://img.shields.io/github/hacktoberfest/2022/Atri-Labs/atrilabs-engine" alt="Hacktoberfest"></a>
-  </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine?color=FEF08A" alt="Open issues"></a>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue?color=FEF08A" alt="Good first issues"></a>
-  </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions" target="_blank"><img src="https://img.shields.io/github/discussions/Atri-Labs/atrilabs-engine?color=DB2777" alt="Discussions"></a>
-  <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
   </br>
+  <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
   ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
+  <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">
+  <img src="https://img.shields.io/youtube/channel/views/UC1uR2Q5x_8olWS_Y4PdK1Bw?label=YouTube&style=social" alt="Watch on YouTube">
+ </a>
   <h3 align="center">
     <a href="https://atrilabs.com">Website</a>
     <span> | </span>
