@@ -499,6 +499,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "anujsingla",
+      "name": "Anuj Singla",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16379731?v=4",
+      "profile": "https://www.youtube.com/channel/UCw4WQJ6A38AnUTQKhxwITSw",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "anujsi",
+      "name": "Anuj Singla",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30435233?v=4",
+      "profile": "https://github.com/anujsi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mhered",
+      "name": "Manuel Heredia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/75589082?v=4",
+      "profile": "https://github.com/mhered",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
