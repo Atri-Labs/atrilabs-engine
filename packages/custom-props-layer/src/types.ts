@@ -1,13 +1,13 @@
 import {
   CustomPropsTreeOptions,
-  MapCustomProp,
+  TypedMapCustomProp,
 } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import {
   ColorPickerDialogProps,
   OpenAssetManagerCallabck,
 } from "@atrilabs/shared-layer-lib";
 
-type AttributeTypes = MapCustomProp["attributes"];
+type AttributeTypes = TypedMapCustomProp["attributes"];
 
 export type TabBodyProps = {
   // propType?: string;

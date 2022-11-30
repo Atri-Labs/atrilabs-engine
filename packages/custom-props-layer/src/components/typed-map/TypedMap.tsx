@@ -5,6 +5,30 @@ import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
 import { MapContainer } from "../commons/MapContainer";
+import {
+  ArrayEnumCustomProp,
+  ArrayMapCustomProp,
+  EnumCustomProp,
+  MapCustomProp,
+  SimpleCustomProp,
+  TypedMapCustomProp,
+  VariableKeyMapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
+
+type AttributeType = {
+  type:
+    | SimpleCustomProp["type"]
+    | MapCustomProp["type"]
+    | EnumCustomProp["type"]
+    | ArrayEnumCustomProp["type"]
+    | ArrayMapCustomProp["type"]
+    | VariableKeyMapCustomProp["type"]
+    | TypedMapCustomProp["type"]
+    | "none";
+  fieldName: string;
+  options?: string[];
+  attributes?: TypedMapCustomProp["attributes"];
+};
 
 const findIndex = (options: string[], key: string) => {
   for (let i = 0; i < options.length; i++) {
@@ -34,9 +58,9 @@ export const TypedMap: React.FC<ComponentProps> = (props) => {
     return options;
   }, [props.attributes]);
 
-  const attribute = useMemo(() => {
+  const attribute: AttributeType = useMemo(() => {
     const idx = findIndex(options, propValue);
-    if (idx === options.length - 1) return "";
+    if (idx === options.length - 1) return { type: "none", fieldName: "" };
     return props.attributes![idx];
   }, [options, propValue, props.attributes]);
 

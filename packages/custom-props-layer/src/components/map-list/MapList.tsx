@@ -9,6 +9,28 @@ import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
+import {
+  SimpleCustomProp,
+  MapCustomProp,
+  EnumCustomProp,
+  ArrayEnumCustomProp,
+  ArrayMapCustomProp,
+  VariableKeyMapCustomProp,
+  TypedMapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
+
+type AttributeType = {
+  type:
+    | SimpleCustomProp["type"]
+    | MapCustomProp["type"]
+    | EnumCustomProp["type"]
+    | ArrayEnumCustomProp["type"]
+    | ArrayMapCustomProp["type"]
+    | VariableKeyMapCustomProp["type"]
+    | TypedMapCustomProp["type"];
+  fieldName: string;
+  options?: string[];
+};
 
 const createMapObject = (attributes: { fieldName: string; type: string }[]) => {
   const obj: any = {};
@@ -56,8 +78,7 @@ export const MapList: React.FC<ComponentProps> = (props) => {
     }
     return currentValue || [];
   }, [props, selector]);
-
-  const attributes = useMemo(() => {
+  const attributes: AttributeType[] = useMemo(() => {
     return props.attributes || [];
   }, [props]);
 

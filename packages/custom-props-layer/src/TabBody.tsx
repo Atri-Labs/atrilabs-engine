@@ -1,7 +1,10 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
-import { TypedMapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import {
+  ArrayTypedMapCustomProp,
+  TypedMapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { TypedMap } from "./components/typed-map/TypedMap";
@@ -73,7 +76,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
         if (propType === "array_typed_map") {
           const typedMapCustomProps = props.treeOptions.dataTypes[
             propName
-          ] as TypedMapCustomProp;
+          ] as ArrayTypedMapCustomProp;
           const attributes = typedMapCustomProps.attributes;
           return (
             <TypedMapList
