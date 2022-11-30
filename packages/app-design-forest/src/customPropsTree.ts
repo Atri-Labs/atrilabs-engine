@@ -76,7 +76,8 @@ export type CustomPropsTreeOptions = {
       | ArrayEnumCustomProp
       | ArrayMapCustomProp
       | VariableKeyMapCustomProp
-      | TypedMapCustomProp;
+      | TypedMapCustomProp
+      | ArrayTypedMapCustomProp;
   };
 };
 

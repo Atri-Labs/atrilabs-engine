@@ -1,34 +1,10 @@
 import { gray900 } from "@atrilabs/design-system";
 import { useCallback, useMemo } from "react";
-import { ComponentProps } from "../../types";
+import { AttributeType, ComponentProps } from "../../types";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
 import { MapContainer } from "../commons/MapContainer";
-import {
-  ArrayEnumCustomProp,
-  ArrayMapCustomProp,
-  EnumCustomProp,
-  MapCustomProp,
-  SimpleCustomProp,
-  TypedMapCustomProp,
-  VariableKeyMapCustomProp,
-} from "@atrilabs/app-design-forest/lib/customPropsTree";
-
-type AttributeType = {
-  type:
-    | SimpleCustomProp["type"]
-    | MapCustomProp["type"]
-    | EnumCustomProp["type"]
-    | ArrayEnumCustomProp["type"]
-    | ArrayMapCustomProp["type"]
-    | VariableKeyMapCustomProp["type"]
-    | TypedMapCustomProp["type"]
-    | "none";
-  fieldName: string;
-  options?: string[];
-  attributes?: TypedMapCustomProp["attributes"];
-};
 
 const findIndex = (options: string[], key: string) => {
   for (let i = 0; i < options.length; i++) {

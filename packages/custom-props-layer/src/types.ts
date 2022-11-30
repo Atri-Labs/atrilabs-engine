@@ -1,6 +1,12 @@
 import {
+  ArrayEnumCustomProp,
+  ArrayMapCustomProp,
   CustomPropsTreeOptions,
+  EnumCustomProp,
+  MapCustomProp,
+  SimpleCustomProp,
   TypedMapCustomProp,
+  VariableKeyMapCustomProp,
 } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import {
   ColorPickerDialogProps,
@@ -38,4 +44,19 @@ export type ComponentProps = TabBodyProps & {
 
 export type CommonPropTypeContainerTypes = ComponentProps & {
   propType: string;
+};
+
+export type AttributeType = {
+  type:
+    | SimpleCustomProp["type"]
+    | MapCustomProp["type"]
+    | EnumCustomProp["type"]
+    | ArrayEnumCustomProp["type"]
+    | ArrayMapCustomProp["type"]
+    | VariableKeyMapCustomProp["type"]
+    | TypedMapCustomProp["type"]
+    | "none";
+  fieldName: string;
+  options?: string[];
+  attributes?: TypedMapCustomProp["attributes"];
 };
