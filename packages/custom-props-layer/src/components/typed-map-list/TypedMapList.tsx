@@ -5,6 +5,7 @@ import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { ArrayTypedMapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
 
 export const TypedMapList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
@@ -25,10 +26,21 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     return currentValue || [];
   }, [props, selector]);
 
+  const values = useMemo(() => {
+    return propValue.map(
+      (value: Pick<ArrayTypedMapCustomProp, "selectedOption">) =>
+        value["selectedOption"]
+    );
+  }, [propValue]);
+
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: createObject(props.customProps, selector, propValue.concat("")),
+        custom: createObject(
+          props.customProps,
+          selector,
+          propValue.concat({ selectedOption: "none" })
+        ),
       },
     });
   }, [props, selector, propValue]);
@@ -39,7 +51,11 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1, value);
       props.patchCb({
         property: {
-          custom: createObject(props.customProps, selector, updatedValue),
+          custom: createObject(
+            props.customProps,
+            [...selector, index, "selectedOption"],
+            value
+          ),
         },
       });
     },
@@ -69,7 +85,7 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
         style={{ display: "flex", flexDirection: "column", rowGap: "0.5em" }}
       >
         {Array.isArray(propValue)
-          ? propValue.map((value, index) => {
+          ? values.map((value: string, index: number) => {
               return (
                 <div
                   key={index}
