@@ -7,6 +7,7 @@ export const LargeText: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
@@ -14,6 +15,7 @@ export const LargeText: React.FC<ComponentProps> = (props) => {
     }
     return currentValue || "";
   }, [props, selector]);
+
   const callPatchCb: React.ChangeEventHandler<HTMLTextAreaElement> =
     useCallback(
       (e) => {
