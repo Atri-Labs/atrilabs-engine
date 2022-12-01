@@ -23,8 +23,8 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     return options;
   }, [props.attributes]);
 
-  const attributesMap: Map<string, AttributeType> = useMemo(() => {
-    const attributesMap = new Map(
+  const attributesMap = useMemo(() => {
+    const attributesMap: Map<string, AttributeType> = new Map(
       props.attributes!.map((obj) => {
         return [obj.fieldName, obj];
       })
