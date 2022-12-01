@@ -1,13 +1,18 @@
 import { useCallback, useMemo } from "react";
-import { ComponentProps } from "../../types";
+import { AttributeType, ComponentProps } from "../../types";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { ArrayTypedMapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { MapContainer } from "../commons/MapContainer";
+import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
+import { usePageRoutes } from "../../hooks/usePageRoutes";
 
 export const TypedMapList: React.FC<ComponentProps> = (props) => {
+  const { routes } = usePageRoutes();
+
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
@@ -18,12 +23,13 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     return options;
   }, [props.attributes]);
 
-  const attributesMap: Map<string, object> = useMemo(() => {
+  const attributesMap: Map<string, AttributeType> = useMemo(() => {
     const attributesMap = new Map(
       props.attributes!.map((obj) => {
         return [obj.fieldName, obj];
       })
     );
+    attributesMap.set("none", { type: "none", fieldName: "" });
     return attributesMap;
   }, [props.attributes]);
 
@@ -97,43 +103,68 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
           ? values.map((value: string, index: number) => {
               return (
                 <div
-                  key={index}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    columnGap: "1em",
+                    borderBottom: "1px solid white",
+                    paddingBottom: "0.2em",
                   }}
                 >
-                  <select
-                    value={value}
-                    onChange={(e) => {
-                      editValueCb(index, e.target.value);
-                    }}
-                    style={{
-                      height: "25px",
-                      backgroundColor: gray900,
-                      border: "none",
-                      outline: "none",
-                      color: "white",
-                      padding: "0 4px",
-                      minWidth: "none",
-                      width: "100%",
-                    }}
-                  >
-                    {options.map((option: string, index: number) => (
-                      <option value={option} key={index}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
                   <div
-                    style={{ display: "flex", alignItems: "center" }}
-                    onClick={() => {
-                      deleteValueCb(index);
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      columnGap: "1em",
                     }}
                   >
-                    <MinusIcon />
+                    <select
+                      value={value}
+                      onChange={(e) => {
+                        editValueCb(index, e.target.value);
+                      }}
+                      style={{
+                        height: "25px",
+                        backgroundColor: gray900,
+                        border: "none",
+                        outline: "none",
+                        color: "white",
+                        padding: "0 4px",
+                        minWidth: "none",
+                        width: "100%",
+                      }}
+                    >
+                      {options.map((option: string, index: number) => (
+                        <option value={option} key={index}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => {
+                        deleteValueCb(index);
+                      }}
+                    >
+                      <MinusIcon />
+                    </div>
                   </div>
+                  {attributesMap.get(value)!["type"] === "map" ||
+                  attributesMap.get(value)!["type"] === "array_map" ? (
+                    "qwerty"
+                  ) : (
+                    <CommonPropTypeContainer
+                      {...props}
+                      selector={[
+                        ...selector,
+                        index,
+                        attributesMap.get(value)!["fieldName"],
+                      ]}
+                      options={attributesMap.get(value)!.options}
+                      propType={attributesMap.get(value)!.type}
+                      propName={attributesMap.get(value)!.fieldName}
+                      key={attributesMap.get(value)!.fieldName}
+                      routes={routes}
+                    />
+                  )}
                 </div>
               );
             })
