@@ -18,6 +18,15 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     return options;
   }, [props.attributes]);
 
+  const attributesMap: Map<string, object> = useMemo(() => {
+    const attributesMap = new Map(
+      props.attributes!.map((obj) => {
+        return [obj.fieldName, obj];
+      })
+    );
+    return attributesMap;
+  }, [props.attributes]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
@@ -74,7 +83,7 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     },
     [propValue, props, selector]
   );
-
+  console.log("TypedMapList", attributesMap);
   return (
     <ArrayPropertyContainer>
       <ArrayLabel
