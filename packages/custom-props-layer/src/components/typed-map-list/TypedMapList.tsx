@@ -37,6 +37,7 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || [];
   }, [props, selector]);
@@ -103,13 +104,13 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
           ? values.map((value: string, index: number) => {
               return (
                 <div
+                  key={index}
                   style={{
                     borderBottom: "1px solid white",
                     paddingBottom: "0.2em",
                   }}
                 >
                   <div
-                    key={index}
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -149,14 +150,26 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
                   </div>
                   {attributesMap.get(value)!["type"] === "map" ||
                   attributesMap.get(value)!["type"] === "array_map" ? (
-                    "qwerty"
+                    <MapContainer
+                      {...props}
+                      selector={[
+                        ...selector,
+                        index,
+                        attributesMap.get(value)!.fieldName,
+                      ]}
+                      attributes={attributesMap.get(value)!.attributes}
+                      propType={attributesMap.get(value)!.type}
+                      propName={attributesMap.get(value)!.fieldName}
+                      key={attributesMap.get(value)!.fieldName}
+                      routes={routes}
+                    />
                   ) : (
                     <CommonPropTypeContainer
                       {...props}
                       selector={[
                         ...selector,
                         index,
-                        attributesMap.get(value)!["fieldName"],
+                        attributesMap.get(value)!.fieldName,
                       ]}
                       options={attributesMap.get(value)!.options}
                       propType={attributesMap.get(value)!.type}
