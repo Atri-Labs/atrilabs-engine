@@ -33,7 +33,7 @@
 
 ----------------------------------------
 
-> **📈 Ranked #7 in popularity among all TypeScript repositories in GitHub for the week of Nov 21.** [Source](https://ossinsight.io/)
+> **📈 Ranked #7 in popularity among all TypeScript repositories in GitHub for the week of Nov 21.** [Source](https://user-images.githubusercontent.com/102641692/204081761-06d0f525-004e-4cb9-8c1c-4c7bc0271b10.png)
 
 > **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
