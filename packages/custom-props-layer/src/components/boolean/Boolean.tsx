@@ -14,6 +14,7 @@ export const Boolean: React.FC<ComponentProps> = (props) => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || false;
   }, [props, selector]);
