@@ -1,7 +1,7 @@
 import { Breakpoint, ComponentCoordsWM } from "@atrilabs/canvas-runtime";
 import { BrowserForestManager } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-import { TreeNode } from "@atrilabs/forest";
+import { Tree, TreeNode } from "@atrilabs/forest";
 
 // ================== body ===============================
 export function lrtbSort(coords: ComponentCoordsWM[]) {
@@ -134,8 +134,81 @@ export function createSortedParentChildMap(
   }
   return parentChildMap;
 }
-
 export function getComponentNode(id: string) {
   const compTree = BrowserForestManager.currentForest.tree(ComponentTreeId);
   return compTree!.nodes[id];
+}
+export function getAncestors(id: string, ancestors: string[] = []) {
+  // returns array of ancestors, 0th index is the component itself, 1st index is parent if exists, 2th is the grandparent and so on
+  const compNode = getComponentNode(id);
+  const compParent = compNode.state.parent.id;
+  ancestors.push(compNode.id);
+  if (compParent !== "body") {
+    getAncestors(compParent, ancestors);
+  }
+  return ancestors;
+}
+export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
+  // returns the alias and styles of an element
+  const cssNode = cssTree.links[id];
+  const cssNodeId = cssNode.childId;
+  return {
+    alias: componentTree.nodes[id].state?.alias,
+    cssStyles: cssTree.nodes[cssNodeId].state?.property.styles,
+  };
+}
+export function createObject(
+  referenceObject: any,
+  keys: (string | number)[],
+  value: string | number | boolean | string[] | number[] | boolean[]
+) {
+  if (referenceObject === null) return referenceObject;
+  if (keys.length === 0) {
+    return value;
+  }
+  if (keys.length === 1) {
+    referenceObject[keys[0]] = value;
+  } else {
+    const [key, ...remainingKeys] = keys;
+    const nextKey = remainingKeys[0];
+    const nextRemainingKeys = remainingKeys.slice(1);
+
+    if (
+      typeof referenceObject[key] === "string" ||
+      typeof referenceObject[key] === "number"
+    ) {
+      return referenceObject;
+    }
+
+    if (typeof nextKey === "number") {
+      if (referenceObject[key] === undefined || referenceObject[key] === null) {
+        // create array
+        referenceObject[key] = [];
+      }
+
+      // Fill empty index with empty object
+      if (referenceObject[key].length < nextKey + 1) {
+        const delta = nextKey + 1 - referenceObject[key].length;
+        for (let i = 0; i < delta; i++) {
+          referenceObject[key].push({});
+        }
+      }
+
+      // recursively write the object
+      referenceObject[key][nextKey] = createObject(
+        referenceObject[key][nextKey],
+        nextRemainingKeys,
+        value
+      );
+    } else {
+      // recursively write the object
+      referenceObject[key] = createObject(
+        typeof referenceObject[key] === "undefined" ? {} : referenceObject[key],
+        remainingKeys,
+        value
+      );
+    }
+  }
+
+  return referenceObject;
 }

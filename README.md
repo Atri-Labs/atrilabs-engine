@@ -2,16 +2,18 @@
 
 <div align="center">
 
-  <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aopen+is%3Aissue+label%3Ahacktoberfest" target="_blank"><img src="https://img.shields.io/github/hacktoberfest/2022/Atri-Labs/atrilabs-engine" alt="Hacktoberfest"></a>
-  </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine?color=FEF08A" alt="Open issues"></a>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank"><img src="https://img.shields.io/github/issues/Atri-Labs/atrilabs-engine/good%20first%20issue?color=FEF08A" alt="Good first issues"></a>
-  </br>
   <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions" target="_blank"><img src="https://img.shields.io/github/discussions/Atri-Labs/atrilabs-engine?color=DB2777" alt="Discussions"></a>
-  <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
   </br>
+  <a href="https://pepy.tech/badge/atri" target="_blank"><img src="https://pepy.tech/badge/atri" alt="Downloads"></a>
   ![GitHub Repo stars](https://img.shields.io/github/stars/Atri-Labs/atrilabs-engine?style=social)
+  <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">
+  <img src="https://img.shields.io/youtube/channel/views/UC1uR2Q5x_8olWS_Y4PdK1Bw?label=YouTube&style=social" alt="Watch on YouTube">
+ </a>
   <h3 align="center">
+    <a href="https://atrilabs.com">Website</a>
+    <span> | </span>
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
     <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w">Community Slack</a>
@@ -30,6 +32,10 @@
 </div>
 
 ----------------------------------------
+
+> **📈 Ranked #7 in popularity among all TypeScript repositories in GitHub for the week of Nov 21.** [Source](https://user-images.githubusercontent.com/102641692/204081761-06d0f525-004e-4cb9-8c1c-4c7bc0271b10.png)
+
+> **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
 Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
@@ -109,7 +115,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-52-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-55-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -186,6 +192,9 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://github.com/ahmed733"><img src="https://avatars.githubusercontent.com/u/58221987?v=4?s=100" width="100px;" alt="ahmed733"/><br /><sub><b>ahmed733</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Aahmed733" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://leetcode.com/awdhesh_kumar/"><img src="https://avatars.githubusercontent.com/u/100534409?v=4?s=100" width="100px;" alt="Awdhesh Kumar"/><br /><sub><b>Awdhesh Kumar</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/issues?q=author%3Aawdhesh-kumar27" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/Jitulteron7"><img src="https://avatars.githubusercontent.com/u/58761652?v=4?s=100" width="100px;" alt="Jitul Teron"/><br /><sub><b>Jitul Teron</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=Jitulteron7" title="Code">💻</a></td>
+      <td align="center"><a href="https://www.youtube.com/channel/UCw4WQJ6A38AnUTQKhxwITSw"><img src="https://avatars.githubusercontent.com/u/16379731?v=4?s=100" width="100px;" alt="Anuj Singla"/><br /><sub><b>Anuj Singla</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=anujsingla" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/anujsi"><img src="https://avatars.githubusercontent.com/u/30435233?v=4?s=100" width="100px;" alt="Anuj Singla"/><br /><sub><b>Anuj Singla</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=anujsi" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/mhered"><img src="https://avatars.githubusercontent.com/u/75589082?v=4?s=100" width="100px;" alt="Manuel Heredia"/><br /><sub><b>Manuel Heredia</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=mhered" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

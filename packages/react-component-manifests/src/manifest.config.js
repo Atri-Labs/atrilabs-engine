@@ -41,6 +41,10 @@ module.exports = {
       modulePath: "./src/manifests/Countdown/Countdown.tsx",
       exportedVarName: "Countdown",
     },
+    Countup: {
+      modulePath: "./src/manifests/CountUp/CountUp.tsx",
+      exportedVarName: "Countup",
+    },
     Link: {
       modulePath: "./src/manifests/Link/Link.tsx",
       exportedVarName: "Link",
@@ -56,6 +60,10 @@ module.exports = {
     Step: {
       modulePath: "./src/manifests/Step/Step.tsx",
       exportedVarName: "Step",
+    },
+    Rating: {
+      modulePath: "./src/manifests/Rating/Rating.tsx",
+      exportedVarName: "Rating",
     },
     TextBox: {
       modulePath: "./src/manifests/TextBox/TextBox.tsx",
@@ -97,6 +105,18 @@ module.exports = {
       modulePath: "./src/manifests/charts/CandleStick/CandleStick.tsx",
       exportedVarName: "CandleStick",
     },
+    RadialbarChart: {
+      modulePath: "./src/manifests/charts/RadialbarChart/RadialbarChart.tsx",
+      exportedVarName: "RadialbarChart",
+    },
+    GanttChart: {
+      modulePath: "./src/manifests/charts/GranttChart/GanttChart.tsx",
+      exportedVarName: "GanttChart",
+    },
+    TreemapChart: {
+      modulePath: "./src/manifests/charts/TreemapChart/TreemapChart.tsx",
+      exportedVarName: "TreemapChart",
+    },
     Checkbox: {
       modulePath: "./src/manifests/Checkbox/Checkbox.tsx",
       exportedVarName: "Checkbox",
@@ -124,6 +144,14 @@ module.exports = {
     Testimonial: {
       modulePath: "./src/manifests/Testimonial/Testimonial.tsx",
       exportedVarName: "Testimonial",
+    },
+    UnorderedList: {
+      modulePath: "./src/manifests/UnorderedList/UnorderedList.tsx",
+      exportedVarName: "UnorderedList",
+    },
+    Overlay: {
+      modulePath: "./src/manifests/Overlay/Overlay.tsx",
+      exportedVarName: "Overlay",
     },
   },
 };

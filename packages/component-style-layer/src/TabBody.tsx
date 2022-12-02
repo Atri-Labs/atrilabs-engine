@@ -21,6 +21,7 @@ import { Outline } from "./components/outline/Outline";
 import { Css2Display } from "./components/css2display/Css2Display";
 import "./TabBody.css";
 import { getAliasList } from "./utils";
+import { CssSummary } from "./components/cssSummary/CssSummary";
 
 export type TabBodyProps = {
   alias: string;
@@ -109,6 +110,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       <div style={{ ...smallText, color: gray300, padding: "0.5rem" }}>
         {showDuplicateAliasMessage ? "Error: This alias/name is taken." : ""}
       </div>
+      <CssSummary compId={props.compId} />
       {props.treeOptions && props.treeOptions.css2DisplayOptions ? (
         <Css2Display
           styles={props.styles}

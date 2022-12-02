@@ -13,7 +13,6 @@ import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
-import "./Alert.css";
 
 export const Alert = forwardRef<
   HTMLDivElement,
@@ -75,29 +74,62 @@ export const Alert = forwardRef<
   ]);
 
   return (
-    <div
-      ref={ref}
-      className={props.className}
-      style={{ ...alertStyle, ...props.styles }}
-      onClick={onClick}
-    >
-      <div id="icon">
-        <img id="icon-logo" src={alertStatusIcon} alt="Icon for alert" />
+    <>
+      <style>
+        {`#icon {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+          }
+
+          #icon-logo {
+            max-width: 1rem;
+          }
+
+          #information {
+            row-gap: 1rem;
+          }
+
+          #information {
+            font-size: 1rem;
+            font-weight: 700;
+          }
+
+          #description {
+            font-size: 0.8rem;
+            font-weight: 300;
+          }
+
+          #close-button {
+            border: none;
+            background-color: #00000000;
+          }
+        `}
+      </style>
+      <div
+        ref={ref}
+        className={props.className}
+        style={{ ...alertStyle, ...props.styles }}
+        onClick={onClick}
+      >
+        <div id="icon">
+          <img id="icon-logo" src={alertStatusIcon} alt="Icon for alert" />
+        </div>
+        <div id="information">
+          <div>{props.custom.title}</div>
+          <div id="description">{props.custom.description}</div>
+        </div>
+        {props.custom.isClosable && (
+          <button id="close-button">
+            <img
+              id="close-button"
+              src={closeIcon}
+              alt="Icon to close the alert"
+            />
+          </button>
+        )}
       </div>
-      <div id="information">
-        <div>{props.custom.title}</div>
-        <div id="description">{props.custom.description}</div>
-      </div>
-      {props.custom.isClosable && (
-        <button id="close-button">
-          <img
-            id="close-button"
-            src={closeIcon}
-            alt="Icon to close the alert"
-          />
-        </button>
-      )}
-    </div>
+    </>
   );
 });
 
@@ -149,7 +181,7 @@ const compManifest: ReactComponentManifestSchema = {
           flexDirection: "row",
           alignItems: "flex-start",
           columnGap: "10px",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },

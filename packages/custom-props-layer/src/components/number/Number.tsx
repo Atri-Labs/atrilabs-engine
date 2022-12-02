@@ -3,21 +3,33 @@ import { useMemo, useCallback } from "react";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { Label } from "../commons/Label";
 import { NumberInput } from "../commons/NumberInput";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+
 export const Number: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || "";
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || 0;
+  }, [props, selector]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: e.target.value ? parseFloat(e.target.value) : "",
-          },
+          custom: createObject(
+            props.customProps,
+            selector,
+            e.target.value ? parseFloat(e.target.value) : ""
+          ),
         },
       });
     },
-    [props]
+    [props, selector]
   );
   return (
     <PropertyContainer>

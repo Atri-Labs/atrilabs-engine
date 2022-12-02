@@ -1,24 +1,31 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { Checkbox } from "../commons/Checkbox";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
 export const Boolean: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || false;
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || false;
+  }, [props, selector]);
+
   const callPatchCb = useCallback(
     (value: boolean) => {
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: value,
-          },
+          custom: createObject(props.customProps, selector, value),
         },
       });
     },
-    [props]
+    [props, selector]
   );
   return (
     <PropertyContainer>

@@ -1,27 +1,35 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import ControlledInput from "./ControlledInput";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || "";
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || "";
+  }, [props, selector]);
   const callPatchCb: React.ChangeEventHandler<HTMLTextAreaElement> =
     useCallback(
       (e) => {
         props.patchCb({
           property: {
-            custom: {
-              [props.propName]: e.target.value,
-            },
+            custom: createObject(props.customProps, selector, e.target.value),
           },
         });
       },
-      [props]
+      [props, selector]
     );
+
   return (
     <div>
       <div style={{ color: "white" }}>{props.propName}</div>
-      <textarea value={propValue} onChange={callPatchCb} rows={5} />
+      <ControlledInput value={propValue} onChange={callPatchCb} />
     </div>
   );
 };

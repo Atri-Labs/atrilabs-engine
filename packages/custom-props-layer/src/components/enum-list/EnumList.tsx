@@ -4,33 +4,37 @@ import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
+import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
 export const EnumList: React.FC<ComponentProps> = (props) => {
-  const propValue = useMemo(() => {
-    return props.customProps[props.propName] || [];
+  const selector = useMemo(() => {
+    return props.selector || [];
   }, [props]);
+  const propValue = useMemo(() => {
+    let currentValue = props.customProps;
+    for (let prop of selector) {
+      currentValue = currentValue[prop];
+    }
+    return currentValue || [];
+  }, [props, selector]);
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
-        custom: {
-          [props.propName]: [...propValue, ""],
-        },
+        custom: createObject(props.customProps, selector, propValue.concat("")),
       },
     });
-  }, [props, propValue]);
+  }, [props, selector, propValue]);
   const editValueCb = useCallback(
     (index: number, value: string) => {
       const updatedValue = [...propValue];
       updatedValue.splice(index, 1, value);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
-    [props, propValue]
+    [propValue, props, selector]
   );
   const deleteValueCb = useCallback(
     (index: number) => {
@@ -38,18 +42,19 @@ export const EnumList: React.FC<ComponentProps> = (props) => {
       updatedValue.splice(index, 1);
       props.patchCb({
         property: {
-          custom: {
-            [props.propName]: updatedValue,
-          },
+          custom: createObject(props.customProps, selector, updatedValue),
         },
       });
     },
-    [props, propValue]
+    [propValue, props, selector]
   );
+
   return (
     <ArrayPropertyContainer>
       <ArrayLabel onAddClick={insertValueCb} name={props.propName} />
-      <div style={{ display: "flex", rowGap: "0.5em" }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", rowGap: "0.5em" }}
+      >
         {Array.isArray(propValue)
           ? propValue.map((value, index) => {
               return (
