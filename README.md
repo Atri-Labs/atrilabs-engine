@@ -77,7 +77,7 @@ pipenv install atri==0.0.78
 pipenv shell
 atri start
 ```
-##Note: Python version should be >=3.8 & <=3.10.8##
+**Note: Python version should be >=3.8 & <=3.10.8**
 
 - The visual editor is available at http://localhost:4002. 
 - Once you click `Build and Run` in your visual editor, your website will start running at http://localhost:4005/. 
