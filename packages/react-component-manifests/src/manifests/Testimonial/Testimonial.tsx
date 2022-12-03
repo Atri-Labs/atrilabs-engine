@@ -13,7 +13,15 @@ export const Testimonial = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
+    custom: {
+      isPaginated: boolean;
+      testimonials: {
+        name: string;
+        designation: string;
+        review: string;
+        profile_pic: string;
+      }[];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -89,7 +97,17 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
+    isPaginated: { type: "boolean" },
+    testimonials: {
+      type: "array_map",
+      singleObjectName: "testimonial",
+      attributes: [
+        { type: "text", fieldName: "name" },
+        { type: "text", fieldName: "designation" },
+        { type: "text", fieldName: "review" },
+        { type: "static_asset", fieldName: "profile_pic" },
+      ],
+    },
   },
 };
 
@@ -114,7 +132,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          isPaginated: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
