@@ -32,6 +32,48 @@ export const Testimonial = forwardRef<
     },
     [props]
   );
+  if (props.custom.isPaginated) {
+    return (
+      <div
+        ref={ref}
+        className={props.className}
+        style={{ ...props.styles, display: "flex" }}
+        onClick={onClick}
+      >
+        <button
+          style={{
+            backgroundColor: "black",
+            borderColor: "black",
+            borderRadius: "50%",
+            padding: "0.8em",
+          }}
+        >
+          <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
+            <path
+              d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225
+                    c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"
+            ></path>
+          </svg>
+        </button>
+        <div style={{ width: "80%" }}></div>
+        <button
+          style={{
+            backgroundColor: "black",
+            borderColor: "black",
+            borderRadius: "50%",
+            padding: "0.8em",
+          }}
+        >
+          <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
+            <path
+              d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5
+                    c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    );
+  }
   return (
     <div
       ref={ref}
@@ -39,51 +81,62 @@ export const Testimonial = forwardRef<
       style={props.styles}
       onClick={onClick}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "0.1em 0.1em 0",
-          columnGap: "0.5em",
-        }}
-      >
-        <div>
-          <img src={logo} alt="Profile of reviewer" width="32em" />
-        </div>
-        <div>
-          <h3 style={{ color: "#000000d9", fontSize: "1em" }}>Anonymous</h3>
-          <p style={{ color: "#00000073", fontSize: "1em" }}>
-            Chief Technology Officer, Anon
-          </p>
-        </div>
-      </div>
-      <div
-        style={{
-          padding: "0.1em 0.1em 0",
-          color: "#000000d9",
-          fontSize: "1em",
-        }}
-      >
-        Fewer lines of code. Better code quality. Minimal learning curve.
-      </div>
-      <div
-        style={{
-          padding: "0.1em 0.1em 0",
-          color: "#00000073",
-          fontSize: "1em",
-        }}
-      >
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quaerat
-        repellat minus labore consequatur illum veritatis numquam iste placeat
-        consequuntur soluta quidem ducimus, fugiat voluptates ab. Exercitationem
-        velit soluta eum voluptas.
-      </div>
+      {props.custom.testimonials.map((testimonial, index) => {
+        return (
+          <div
+            key={index}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "50%",
+              rowGap: "0.5em",
+              columnGap: "0.5em",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0.1em 0.1em 0",
+                columnGap: "0.5em",
+              }}
+            >
+              {testimonial.profile_pic && (
+                <div>
+                  <img
+                    src={testimonial.profile_pic}
+                    alt="Profile of reviewer"
+                    width="32em"
+                  />
+                </div>
+              )}
+              <div>
+                <h3 style={{ color: "#000000d9", fontSize: "1em" }}>
+                  {testimonial.name}
+                </h3>
+                <p style={{ color: "#00000073", fontSize: "1em" }}>
+                  {testimonial.designation}
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                padding: "0.1em 0.1em 0",
+                color: "#00000073",
+                fontSize: "1em",
+              }}
+            >
+              {testimonial.review}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -104,7 +157,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       attributes: [
         { type: "text", fieldName: "name" },
         { type: "text", fieldName: "designation" },
-        { type: "text", fieldName: "review" },
+        { type: "large_text", fieldName: "review" },
         { type: "static_asset", fieldName: "profile_pic" },
       ],
     },
@@ -122,9 +175,10 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          display: "inline-flex",
-          flexDirection: "column",
-          rowGap: "0.5em",
+          display: "flex",
+          justifyContent: "center",
+          rowGap: "10px",
+          flexWrap: "wrap",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -133,6 +187,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           isPaginated: true,
+          testimonials: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
