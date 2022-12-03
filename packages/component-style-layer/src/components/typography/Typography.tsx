@@ -325,7 +325,6 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
           </div>
         </PropertyRender>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={styles.optionName}>Color</span>
           <ColorComponent
             name="Color"
             styleItem="color"
