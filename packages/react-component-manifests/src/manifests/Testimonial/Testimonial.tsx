@@ -7,7 +7,63 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import logo from "./logo.png";
+
+type TestimonialItemTypes = {
+  index: number;
+  profile_pic: string;
+  name: string;
+  designation: string;
+  review: string;
+};
+
+const TestimonialItem: React.FC<TestimonialItemTypes> = ({
+  index,
+  profile_pic,
+  name,
+  designation,
+  review,
+}) => {
+  return (
+    <div
+      key={index}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "50%",
+        rowGap: "0.5em",
+        columnGap: "0.5em",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          padding: "0.1em 0.1em 0",
+          columnGap: "0.5em",
+        }}
+      >
+        {profile_pic && (
+          <div>
+            <img src={profile_pic} alt="Profile of reviewer" width="32em" />
+          </div>
+        )}
+        <div>
+          <h3 style={{ color: "#000000d9", fontSize: "1em" }}>{name}</h3>
+          <p style={{ color: "#00000073", fontSize: "1em" }}>{designation}</p>
+        </div>
+      </div>
+      <div
+        style={{
+          padding: "0.1em 0.1em 0",
+          color: "#00000073",
+          fontSize: "1em",
+        }}
+      >
+        {review}
+      </div>
+    </div>
+  );
+};
 
 export const Testimonial = forwardRef<
   HTMLDivElement,
@@ -37,7 +93,12 @@ export const Testimonial = forwardRef<
       <div
         ref={ref}
         className={props.className}
-        style={{ ...props.styles, display: "flex" }}
+        style={{
+          ...props.styles,
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
         onClick={onClick}
       >
         <button
@@ -46,6 +107,7 @@ export const Testimonial = forwardRef<
             borderColor: "black",
             borderRadius: "50%",
             padding: "0.8em",
+            height: "4em",
           }}
         >
           <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
@@ -55,13 +117,14 @@ export const Testimonial = forwardRef<
             ></path>
           </svg>
         </button>
-        <div style={{ width: "80%" }}></div>
+        <div style={{ width: "80%", height: "500px" }}></div>
         <button
           style={{
             backgroundColor: "black",
             borderColor: "black",
             borderRadius: "50%",
             padding: "0.8em",
+            height: "4em",
           }}
         >
           <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
@@ -74,6 +137,7 @@ export const Testimonial = forwardRef<
       </div>
     );
   }
+
   return (
     <div
       ref={ref}
@@ -83,52 +147,13 @@ export const Testimonial = forwardRef<
     >
       {props.custom.testimonials.map((testimonial, index) => {
         return (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              width: "50%",
-              rowGap: "0.5em",
-              columnGap: "0.5em",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "0.1em 0.1em 0",
-                columnGap: "0.5em",
-              }}
-            >
-              {testimonial.profile_pic && (
-                <div>
-                  <img
-                    src={testimonial.profile_pic}
-                    alt="Profile of reviewer"
-                    width="32em"
-                  />
-                </div>
-              )}
-              <div>
-                <h3 style={{ color: "#000000d9", fontSize: "1em" }}>
-                  {testimonial.name}
-                </h3>
-                <p style={{ color: "#00000073", fontSize: "1em" }}>
-                  {testimonial.designation}
-                </p>
-              </div>
-            </div>
-            <div
-              style={{
-                padding: "0.1em 0.1em 0",
-                color: "#00000073",
-                fontSize: "1em",
-              }}
-            >
-              {testimonial.review}
-            </div>
-          </div>
+          <TestimonialItem
+            index={index}
+            profile_pic={testimonial.profile_pic}
+            name={testimonial.name}
+            designation={testimonial.designation}
+            review={testimonial.review}
+          />
         );
       })}
     </div>
