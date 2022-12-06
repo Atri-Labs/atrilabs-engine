@@ -188,9 +188,6 @@ export const Outline: React.FC<CssProprtyComponentType> = (props) => {
           </div>
         </div>
         <div style={styles.gridInputContainer}>
-          <div style={styles.optionName}>
-            <BC />
-          </div>
           <ColorComponent
             name="Outline Color"
             styleItem="outlineColor"

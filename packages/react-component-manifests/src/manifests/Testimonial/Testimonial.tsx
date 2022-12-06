@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { useState, useEffect, forwardRef, useCallback } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -8,59 +8,206 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
-type TestimonialItemTypes = {
-  index: number;
-  profile_pic: string;
-  name: string;
-  designation: string;
-  review: string;
+export type TestimonialItemTypes = {
+  children: string;
+  width: string;
+  height: string;
+  backgroundImage: string;
 };
 
-const TestimonialItem: React.FC<TestimonialItemTypes> = ({
-  index,
-  profile_pic,
-  name,
-  designation,
-  review,
+export type TestimonialWrapperTypes = {
+  children: any;
+  startTile: number;
+  isCircle: boolean;
+  indicatorPosition: string;
+};
+
+export const TestimonialItem: React.FC<TestimonialItemTypes> = ({
+  children,
+  width,
+  height,
+  backgroundImage,
 }) => {
   return (
     <div
-      key={index}
       style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "50%",
-        rowGap: "0.5em",
-        columnGap: "0.5em",
+        width: width,
+        backgroundSize: "cover",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: height,
+        color: "#000",
       }}
+    >
+      {children}
+    </div>
+  );
+};
+
+export const TestimonialWrapper: React.FC<TestimonialWrapperTypes> = ({
+  children,
+  startTile,
+  isCircle,
+  indicatorPosition,
+}) => {
+  const [activeIndex, setActiveIndex] = useState(startTile - 1);
+  const [paused, setPaused] = useState(false);
+
+  const updateIndex = (newIndex: number) => {
+    if (newIndex < 0) {
+      newIndex = React.Children.count(children) - 1;
+    } else if (newIndex >= React.Children.count(children)) {
+      newIndex = 0;
+    }
+    setActiveIndex(newIndex);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!paused) {
+        updateIndex(activeIndex + 1);
+      }
+    }, 3000);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  });
+
+  return (
+    <div
+      style={{ overflow: "hidden", height: "100%" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "0.1em 0.1em 0",
-          columnGap: "0.5em",
+          transform: `translateX(-${activeIndex * 100}%)`,
+          whiteSpace: "nowrap",
+          transition: "transform 0.3s",
         }}
       >
-        {profile_pic && (
-          <div>
-            <img src={profile_pic} alt="Profile of reviewer" width="32em" />
-          </div>
-        )}
-        <div>
-          <h3 style={{ color: "#000000d9", fontSize: "1em" }}>{name}</h3>
-          <p style={{ color: "#00000073", fontSize: "1em" }}>{designation}</p>
+        {React.Children.map(children, (child) => {
+          return React.cloneElement(child, { width: "100%", height: "100%" });
+        })}
+      </div>
+      {!isCircle && (
+        <div
+          style={
+            indicatorPosition === "Top"
+              ? {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  position: "relative",
+                  bottom: "95%",
+                }
+              : indicatorPosition === "Left"
+              ? {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  position: "relative",
+                  bottom: "50%",
+                  left: "-45%",
+                  transform: "rotate(90deg)",
+                }
+              : indicatorPosition === "Right"
+              ? {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  position: "relative",
+                  bottom: "50%",
+                  left: "45%",
+                  transform: "rotate(270deg)",
+                }
+              : {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  position: "relative",
+                  bottom: "10%",
+                }
+          }
+        >
+          {React.Children.map(children, (child, index) => {
+            return (
+              <button
+                style={
+                  index === activeIndex
+                    ? {
+                        margin: "5px",
+                        border: "none",
+                        width: "30px",
+                        position: "relative",
+                        zIndex: "1",
+                        height: "1px",
+                        transition: "width 0.3s ease-in",
+                        backgroundColor: "#000",
+                      }
+                    : {
+                        margin: "5px",
+                        border: "none",
+                        width: "40px",
+                        position: "relative",
+                        zIndex: "1",
+                        height: "1px",
+                        transition: "width 0.3s ease-in",
+                        backgroundColor: "#000",
+                      }
+                }
+                onClick={() => {
+                  updateIndex(index);
+                }}
+              ></button>
+            );
+          })}
         </div>
-      </div>
-      <div
-        style={{
-          padding: "0.1em 0.1em 0",
-          color: "#00000073",
-          fontSize: "1em",
-        }}
-      >
-        {review}
-      </div>
+      )}
+      {isCircle && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {React.Children.map(children, (child, index) => {
+            return (
+              <button
+                style={
+                  index === activeIndex
+                    ? {
+                        margin: "5px",
+                        border: "none",
+                        width: "12px",
+                        marginTop: "-15px",
+                        position: "relative",
+                        zIndex: "1",
+                        height: "12px",
+                        transition: "width 0.3s ease-in",
+                        borderRadius: "50%",
+                        backgroundColor: "#222",
+                      }
+                    : {
+                        margin: "5px",
+                        border: "none",
+                        width: "12px",
+                        marginTop: "-15px",
+                        position: "relative",
+                        zIndex: "1",
+                        height: "12px",
+                        transition: "width 0.3s ease-in",
+                        borderRadius: "50%",
+                        backgroundColor: "#808080",
+                      }
+                }
+                onClick={() => {
+                  updateIndex(index);
+                }}
+              ></button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
@@ -70,13 +217,11 @@ export const Testimonial = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      isPaginated: boolean;
-      testimonials: {
-        name: string;
-        designation: string;
-        review: string;
-        profile_pic: string;
-      }[];
+      items: [];
+      startTile: number;
+      imageItems: [];
+      isIndicatorCircle: boolean;
+      indicatorPosition: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -88,80 +233,86 @@ export const Testimonial = forwardRef<
     },
     [props]
   );
-  if (props.custom.isPaginated) {
-    return (
-      <div
-        ref={ref}
-        className={props.className}
-        style={{
-          ...props.styles,
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-        onClick={onClick}
-      >
-        <button
-          style={{
-            backgroundColor: "black",
-            borderColor: "black",
-            borderRadius: "50%",
-            padding: "0.8em",
-            height: "4em",
-          }}
-        >
-          <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
-            <path
-              d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225
-                    c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"
-            ></path>
-          </svg>
-        </button>
-        <div style={{ width: "80%", height: "500px" }}></div>
-        <button
-          style={{
-            backgroundColor: "black",
-            borderColor: "black",
-            borderRadius: "50%",
-            padding: "0.8em",
-            height: "4em",
-          }}
-        >
-          <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
-            <path
-              d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5
-                    c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div
       ref={ref}
-      className={props.className}
       style={props.styles}
       onClick={onClick}
+      className={props.className}
     >
-      {props.custom.testimonials.map((testimonial, index) => {
-        return (
+      <TestimonialWrapper
+        startTile={props.custom.startTile}
+        isCircle={props.custom.isIndicatorCircle}
+        indicatorPosition={props.custom.indicatorPosition}
+      >
+        {props.custom.items.map((item, i) => (
           <TestimonialItem
-            index={index}
-            profile_pic={testimonial.profile_pic}
-            name={testimonial.name}
-            designation={testimonial.designation}
-            review={testimonial.review}
-          />
-        );
-      })}
+            width="100%"
+            height="100%"
+            key={i}
+            backgroundImage={props.custom.imageItems[i]}
+          >
+            {item ? item : "Sample Text"}
+          </TestimonialItem>
+        ))}
+      </TestimonialWrapper>
+    </div>
+  );
+});
+
+export const DevTestimonial = forwardRef<
+  HTMLDivElement,
+  {
+    styles: React.CSSProperties;
+    custom: {
+      items: [];
+      startTile: number;
+      imageItems: [];
+      isIndicatorCircle: boolean;
+      indicatorPosition: string;
+    };
+    onClick: (event: { pageX: number; pageY: number }) => void;
+    className?: string;
+  }
+>((props, ref) => {
+  const modifiedItemsArray =
+    props.custom.items.length === 0 ? ["Sample Text"] : props.custom.items;
+
+  const onClick = useCallback(
+    (e: React.MouseEvent) => {
+      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+    },
+    [props]
+  );
+  return (
+    <div
+      ref={ref}
+      style={props.styles}
+      onClick={onClick}
+      className={props.className}
+    >
+      <TestimonialWrapper
+        startTile={props.custom.startTile}
+        isCircle={props.custom.isIndicatorCircle}
+        indicatorPosition={props.custom.indicatorPosition}
+      >
+        {modifiedItemsArray.map((item, i) => (
+          <TestimonialItem
+            width="100%"
+            height="100%"
+            key={i}
+            backgroundImage={props.custom.imageItems[i]}
+          >
+            {item ? item : "Sample Text"}
+          </TestimonialItem>
+        ))}
+      </TestimonialWrapper>
     </div>
   );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -175,16 +326,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    isPaginated: { type: "boolean" },
-    testimonials: {
-      type: "array_map",
-      singleObjectName: "testimonial",
-      attributes: [
-        { type: "text", fieldName: "name" },
-        { type: "text", fieldName: "designation" },
-        { type: "large_text", fieldName: "review" },
-        { type: "static_asset", fieldName: "profile_pic" },
-      ],
+    items: { type: "array" },
+    startTile: { type: "number" },
+    imageItems: { type: "array_static_asset" },
+    isIndicatorCircle: { type: "boolean" },
+    indicatorPosition: {
+      type: "enum",
+      options: ["", "Top", "Bottom", "Left", "Right"],
     },
   },
 };
@@ -195,15 +343,14 @@ const compManifest: ReactComponentManifestSchema = {
     comp: Testimonial,
   },
   dev: {
+    comp: Testimonial,
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          display: "flex",
-          justifyContent: "center",
-          rowGap: "10px",
-          flexWrap: "wrap",
+          height: "300px",
+          width: "400px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -211,8 +358,10 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          isPaginated: true,
-          testimonials: [],
+          items: [],
+          startTile: 0,
+          imageItems: [],
+          isIndicatorCircle: false,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
