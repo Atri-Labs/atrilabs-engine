@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useEffect, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -7,61 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import "./testimonial.css";
-
-type TestimonialItemTypes = {
-  profile_pic: string;
-  name: string;
-  designation: string;
-  review: string;
-};
-
-const TestimonialItem: React.FC<TestimonialItemTypes> = ({
-  profile_pic,
-  name,
-  designation,
-  review,
-}) => {
-  return (
-    <div
-      className="card"
-      style={{
-        minHeight: "100%",
-        background: "#fff",
-        borderRadius: "20px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "1em",
-        columnGap: "1em",
-      }}
-    >
-      {profile_pic && (
-        <div>
-          <img src={profile_pic} alt="" width="200" height="300" />
-        </div>
-      )}
-      <div
-        className="card-details"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          rowGap: "1em",
-          paddingLeft: "1em",
-        }}
-      >
-        <div>{name}</div>
-        <div>{designation}</div>
-        <div>
-          This project setup uses webpack for handling all assets. webpack
-          offers a custom way of “extending” the concept of import beyond
-          JavaScript. To express that a JavaScript file depends on a CSS file,
-          you need to import the CSS from the JavaScript file:
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export const Testimonial = forwardRef<
   HTMLDivElement,
@@ -86,26 +31,73 @@ export const Testimonial = forwardRef<
     },
     [props]
   );
+  const [activeIndex, setActiveIndex] = useState(props.custom.startTile - 1);
+  const [paused, setPaused] = useState(false);
+
+  const updateIndex = (newIndex: number) => {
+    if (newIndex < 0) {
+      newIndex = props.custom.testimonials.length - 1;
+    } else if (newIndex >= props.custom.testimonials.length) {
+      newIndex = 0;
+    }
+    setActiveIndex(newIndex);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!paused) {
+        updateIndex(activeIndex + 1);
+      }
+    }, 3000);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  });
+
   return (
     <div
       ref={ref}
       style={{
-        ...props.styles,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        columnGap: "1em",
       }}
       onClick={onClick}
       className={props.className}
     >
+      <button
+        style={{
+          backgroundColor: "black",
+          borderColor: "black",
+          borderRadius: "50%",
+          padding: "0.8em",
+          height: "4em",
+        }}
+        onClick={() => {
+          updateIndex(activeIndex - 1);
+        }}
+      >
+        <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
+          <path
+            d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225
+                            c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"
+          ></path>
+        </svg>
+      </button>
       <div
         className="container"
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100%",
+          width: "80%",
           overflow: "hidden",
         }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
       >
         <div
           className="wrapper"
@@ -114,17 +106,51 @@ export const Testimonial = forwardRef<
             height: "100%",
             display: "flex",
             justifyContent: "space-between",
-            transition: "1s",
+            marginLeft: `-${100 * activeIndex}%`,
+            transition: "margin-left 3s",
           }}
         >
           {props.custom.testimonials.map((testimonial, index) => (
-            <TestimonialItem
+            <div
+              className="card"
               key={index}
-              profile_pic={testimonial.profile_pic}
-              name={testimonial.name}
-              designation={testimonial.designation}
-              review={testimonial.review}
-            />
+              style={{
+                ...props.styles,
+                minHeight: "100%",
+                width: "100%",
+                background: "#fff",
+                borderRadius: "20px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "1em",
+                columnGap: "1em",
+              }}
+            >
+              {testimonial.profile_pic && (
+                <div>
+                  <img
+                    src={testimonial.profile_pic}
+                    alt=""
+                    width="200"
+                    height="300"
+                  />
+                </div>
+              )}
+              <div
+                className="card-details"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: "1em",
+                  paddingLeft: "1em",
+                }}
+              >
+                <div>{testimonial.name}</div>
+                <div>{testimonial.designation}</div>
+                <div>{testimonial.review}</div>
+              </div>
+            </div>
           ))}
         </div>
         <div
@@ -136,33 +162,67 @@ export const Testimonial = forwardRef<
             paddingBottom: "1em",
           }}
         >
-          {props.custom.testimonials.map((testimonial, index) => (
+          {props.custom.testimonials.map((_, index) => (
             <button
               className="active"
-              style={{
-                // background: "none",
-                outline: "none",
-                // width: "15px",
-                height: "15px",
-                // borderRadius: "50%",
-                border: "2px solid #000",
-                cursor: "pointer",
-                marginLeft: "5px",
-                transition: ".5s",
-                width: "40px",
-                borderRadius: "50px",
-                background: "#fff",
+              key={index}
+              style={
+                index === activeIndex
+                  ? {
+                      outline: "none",
+                      height: "15px",
+                      border: "2px solid #000",
+                      cursor: "pointer",
+                      marginLeft: "5px",
+                      transition: ".5s",
+                      width: "40px",
+                      borderRadius: "50px",
+                      background: "#fff",
+                    }
+                  : {
+                      background: "none",
+                      outline: "none",
+                      width: "15px",
+                      height: "15px",
+                      borderRadius: "50%",
+                      border: "2px solid #000",
+                      cursor: "pointer",
+                      marginLeft: "5px",
+                      transition: ".5s",
+                    }
+              }
+              onClick={() => {
+                updateIndex(index);
               }}
             ></button>
           ))}
         </div>
       </div>
+      <button
+        style={{
+          backgroundColor: "black",
+          borderColor: "black",
+          borderRadius: "50%",
+          padding: "0.8em",
+          height: "4em",
+        }}
+        onClick={() => {
+          updateIndex(activeIndex + 1);
+        }}
+      >
+        <svg viewBox="0 0 477.175 477.175" height={"1.5em"} fill="white">
+          <path
+            d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5
+                                c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z"
+          ></path>
+        </svg>
+      </button>
     </div>
   );
 });
 
 const cssTreeOptions: CSSTreeOptions = {
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
