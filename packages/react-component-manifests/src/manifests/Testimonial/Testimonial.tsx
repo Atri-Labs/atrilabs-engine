@@ -14,6 +14,7 @@ export const Testimonial = forwardRef<
     styles: React.CSSProperties;
     custom: {
       startTile: number;
+      intervalTime: number;
       testimonials: {
         profile_pic: string;
         name: string;
@@ -48,7 +49,7 @@ export const Testimonial = forwardRef<
       if (!paused) {
         updateIndex(activeIndex + 1);
       }
-    }, 3000);
+    }, props.custom.intervalTime * 1000);
 
     return () => {
       if (interval) {
@@ -107,7 +108,7 @@ export const Testimonial = forwardRef<
             display: "flex",
             justifyContent: "space-between",
             marginLeft: `-${100 * activeIndex}%`,
-            transition: "margin-left 3s",
+            transition: `${props.custom.intervalTime}s`,
           }}
         >
           {props.custom.testimonials.map((testimonial, index) => (
@@ -237,6 +238,7 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     startTile: { type: "number" },
+    intervalTime: { type: "number" },
     testimonials: {
       type: "array_map",
       singleObjectName: "testimonial",
@@ -268,10 +270,9 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [],
           startTile: 0,
-          imageItems: [],
-          isIndicatorCircle: false,
+          intervalTime: 2,
+          testimonials: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
