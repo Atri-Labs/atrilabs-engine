@@ -38,6 +38,7 @@ import IconManifests from "@atrilabs/react-component-manifests/src/manifests/Ico
 import ModalManifests from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
 import FormManifests from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
 import OverlayManifests from "@atrilabs/react-component-manifests/src/manifests/Overlay/Overlay";
+import CascaderManifests from "@atrilabs/react-component-manifests/src/manifests/Cascader/Cascader";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -123,6 +124,7 @@ const defaultImports = [
   FormManifests,
   OverlayManifests,
   UnorderedListManifests,
+  CascaderManifests,
 ];
 
 const registry = defaultImportsToRegistry(defaultImports);
