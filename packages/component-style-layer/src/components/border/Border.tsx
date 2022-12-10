@@ -578,9 +578,6 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             </div>
           </div>
           <div style={styles.gridInputContainer}>
-            <div style={styles.optionName}>
-              <BC />
-            </div>
             <ColorComponent
               name="Border Color"
               styleItem={setBorderTypeColor()}
