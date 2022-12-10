@@ -39,6 +39,7 @@ import ModalManifests from "@atrilabs/react-component-manifests/src/manifests/Mo
 import FormManifests from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
 import OverlayManifests from "@atrilabs/react-component-manifests/src/manifests/Overlay/Overlay";
 import CascaderManifests from "@atrilabs/react-component-manifests/src/manifests/Cascader/Cascader";
+import TestimonialManifests from "@atrilabs/react-component-manifests/src/manifests/Testimonial/Testimonial";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -119,6 +120,7 @@ const defaultImports = [
   TableManifests,
   DivManifests,
   AlertManifests,
+  TestimonialManifests,
   IconManifests,
   ModalManifests,
   FormManifests,

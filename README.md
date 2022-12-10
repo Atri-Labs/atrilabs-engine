@@ -39,19 +39,23 @@
 
 Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
-- Frontend development: Use our visual editor to increase your productivity. You can also add your custom React code
+- Frontend development: Write React code or use our visual editor to increase your productivity
 - Backend development: Currently, we support Python for backend development. We are planning to add support for NodeJS soon. 
 - Deployment support: Our CLI provides rich support for easy deployment at your platform of choice such as GitHub Pages, AWS, etc. 
+
+## Watch the 1 min introduction video to Atri framework 👇
+
+<div align="center">
+
+  [![Watch the video](https://img.youtube.com/vi/w2NYAlIyM8Y/0.jpg)](https://youtu.be/w2NYAlIyM8Y)
+  
+</div>
 
 If you like our project, please support us by giving us **a star ⭐!**
 
 ## What can I build using this framework?
 
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
-
-
-![teaser-image](readme-assets/intro.gif)
-
 
 ### Websites built using Atri framework
 
