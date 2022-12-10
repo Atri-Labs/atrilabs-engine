@@ -12,6 +12,7 @@ import InputManifests from "@atrilabs/react-component-manifests/src/manifests/In
 import TextboxManifests from "@atrilabs/react-component-manifests/src/manifests/TextBox/TextBox";
 import RadioManifests from "@atrilabs/react-component-manifests/src/manifests/Radio/Radio";
 import RatingManifests from "@atrilabs/react-component-manifests/src/manifests/Rating/Rating";
+import BreadcrumbManifests from "@atrilabs/react-component-manifests/src/manifests/Breadcrumb/Breadcrumb";
 import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/Slider/Slider";
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
 import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/Toggle/Toggle";
@@ -90,6 +91,7 @@ const defaultImports = [
   ButtonManifests,
   AccordianManifests,
   CarouselManifests,
+  BreadcrumbManifests,
   CountdownManifests,
   CountupManifests,
   FlexManifests,
