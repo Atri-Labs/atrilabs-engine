@@ -34,50 +34,96 @@ export const Cascader = forwardRef<
       }}
       onClick={onClick}
     >
-      <input
-        type="search"
-        placeholder="Select an option: "
-        style={{ padding: "0.5em", borderRadius: "5px" }}
-      />
+      <label
+        style={{ position: "relative", width: props.styles.width || "160px" }}
+      >
+        <svg
+          viewBox="64 64 896 896"
+          focusable="false"
+          data-icon="down"
+          width="1em"
+          height="1em"
+          fill="currentColor"
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "10px",
+            transform: "translateY(-50%)",
+            color: "#ccc",
+          }}
+        >
+          <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path>
+        </svg>
+        <input
+          type="search"
+          placeholder="Please select"
+          style={{
+            padding: "0.5em",
+            borderRadius: "5px",
+            color: "#ccc",
+            border: "1px solid #ccc",
+            width: props.styles.width || "160px",
+          }}
+        />
+      </label>
       <div
         style={{
-          backgroundColor: "blue",
-          display: "inline-flex",
-          columnGap: "0.5em",
+          display: "flex",
+          zIndex: "2",
         }}
       >
         <div
           style={{
-            backgroundColor: "blue",
             display: "inline-flex",
             flexDirection: "column",
+            minWidth: "110px",
           }}
         >
-          <div>123</div>
-          <div>456</div>
-          <div>789</div>
+          <button>Hello1</button>
+          <button>Hello2</button>
+          <button>Hello3</button>
+          <button>Hello4</button>
+          <button>Hello5</button>
         </div>
         <div
           style={{
-            backgroundColor: "blue",
             display: "inline-flex",
             flexDirection: "column",
+            minWidth: "110px",
           }}
         >
-          <div>123</div>
-          <div>456</div>
-          <div>789</div>
+          <button>Hello1</button>
+          <button>Hello2</button>
+          <button>Hello3</button>
+          <button>Hello4</button>
+          <button>Hello5</button>
         </div>
         <div
           style={{
-            backgroundColor: "blue",
             display: "inline-flex",
             flexDirection: "column",
+            minWidth: "110px",
           }}
         >
-          <div>123</div>
-          <div>456</div>
-          <div>789</div>
+          <button>Hello1</button>
+          <button>Hello2</button>
+          <button>Hello3</button>
+          <button>Hello4</button>
+          <button>Hello5</button>
+        </div>
+        <div
+          style={{
+            display: "inline-flex",
+            flexDirection: "column",
+            minWidth: "110px",
+          }}
+        >
+          <button>Hello1</button>
+          <button>Hello2</button>
+          <button>Hello3</button>
+          <button>Hello4</button>
+          <button>Hello5</button>
         </div>
       </div>
     </div>
@@ -113,7 +159,9 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          width: "160px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
