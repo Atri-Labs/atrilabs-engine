@@ -9,13 +9,16 @@ export const Enum: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
-    return currentValue || false;
+    return currentValue || "";
   }, [props, selector]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       props.patchCb({

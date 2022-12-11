@@ -47,6 +47,26 @@ export type VariableKeyMapCustomProp = {
   attributes: MapCustomProp["attributes"];
 };
 
+export type TypedMapCustomProp = {
+  type: "typed_map";
+  attributes: ({
+    fieldName: string;
+  } & (
+    | SimpleCustomProp
+    | EnumCustomProp
+    | ArrayEnumCustomProp
+    | MapCustomProp
+    | ArrayMapCustomProp
+  ))[];
+  selectedOption?: string;
+};
+
+export type ArrayTypedMapCustomProp = {
+  type: "array_typed_map";
+  attributes: TypedMapCustomProp["attributes"];
+  selectedOption?: string;
+};
+
 export type CustomPropsTreeOptions = {
   dataTypes: {
     [propName: string]:
@@ -55,7 +75,9 @@ export type CustomPropsTreeOptions = {
       | EnumCustomProp
       | ArrayEnumCustomProp
       | ArrayMapCustomProp
-      | VariableKeyMapCustomProp;
+      | VariableKeyMapCustomProp
+      | TypedMapCustomProp
+      | ArrayTypedMapCustomProp;
   };
 };
 

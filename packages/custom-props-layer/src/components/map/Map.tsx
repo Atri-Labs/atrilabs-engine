@@ -1,14 +1,19 @@
 import { useMemo } from "react";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
-import { ComponentProps } from "../../types";
+import { AttributeType, ComponentProps } from "../../types";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
 export const Map: React.FC<ComponentProps> = (props) => {
-  const attributes = useMemo(() => {
+  const attributes: AttributeType[] = useMemo(() => {
     return props.attributes || [];
   }, [props]);
+
+  const selector = useMemo(() => {
+    return props.selector || [];
+  }, [props]);
+
   const { routes } = usePageRoutes();
 
   return (
@@ -25,11 +30,11 @@ export const Map: React.FC<ComponentProps> = (props) => {
         return (
           <CommonPropTypeContainer
             {...props}
-            selector={[props.propName, attribute.fieldName]}
+            selector={[...selector, attribute.fieldName]}
             options={attribute.options}
             propType={attribute.type}
             propName={attribute.fieldName}
-            key={attribute.fieldName}
+            key={index}
             routes={routes}
           />
         );

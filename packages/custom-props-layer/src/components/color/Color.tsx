@@ -9,10 +9,12 @@ export const Color: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || "";
   }, [props, selector]);
@@ -27,6 +29,7 @@ export const Color: React.FC<ComponentProps> = (props) => {
     },
     [props, selector]
   );
+
   const onClickCb = useCallback(() => {
     props.openColorPicker({
       title: props.propName,

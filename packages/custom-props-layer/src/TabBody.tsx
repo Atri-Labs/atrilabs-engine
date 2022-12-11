@@ -1,11 +1,15 @@
 import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
 import React, { useMemo } from "react";
 import { TabBodyProps } from "./types";
-import { MapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { Map } from "./components/map/Map";
-import { MapList } from "./components/map-list/MapList";
+import {
+  ArrayTypedMapCustomProp,
+  TypedMapCustomProp,
+} from "@atrilabs/app-design-forest/lib/customPropsTree";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
+import { TypedMap } from "./components/typed-map/TypedMap";
+import { MapContainer } from "./components/commons/MapContainer";
+import { TypedMapList } from "./components/typed-map-list/TypedMapList";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -41,14 +45,27 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     <div style={styles.container}>
       {propNames.map((propName) => {
         const propType = props.treeOptions.dataTypes[propName].type;
-        if (propType === "map") {
-          const mapCustomProps = props.treeOptions.dataTypes[
-            propName
-          ] as MapCustomProp;
-          const attributes = mapCustomProps.attributes;
+        if (propType === "map" || propType === "array_map") {
           return (
-            <Map
+            <MapContainer
               {...props}
+              selector={[propName]}
+              propType={propType}
+              propName={propName}
+              key={propName}
+              routes={routes}
+            />
+          );
+        }
+        if (propType === "typed_map") {
+          const typedMapCustomProps = props.treeOptions.dataTypes[
+            propName
+          ] as TypedMapCustomProp;
+          const attributes = typedMapCustomProps.attributes;
+          return (
+            <TypedMap
+              {...props}
+              selector={[propName]}
               attributes={attributes}
               propName={propName}
               key={propName}
@@ -56,19 +73,17 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
             />
           );
         }
-        if (propType === "array_map") {
-          const mapCustomProps = props.treeOptions.dataTypes[
+        if (propType === "array_typed_map") {
+          const typedMapCustomProps = props.treeOptions.dataTypes[
             propName
-          ] as MapCustomProp;
-          const attributes = mapCustomProps.attributes;
-          const singleObjectName = mapCustomProps.singleObjectName;
+          ] as ArrayTypedMapCustomProp;
+          const attributes = typedMapCustomProps.attributes;
           return (
-            <MapList
+            <TypedMapList
               {...props}
               selector={[propName]}
               attributes={attributes}
               propName={propName}
-              singleObjectName={singleObjectName}
               key={propName}
               routes={routes}
             />
