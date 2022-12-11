@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -23,6 +23,8 @@ export const Cascader = forwardRef<
     },
     [props]
   );
+  const [expanded, setExpanded] = useState<boolean>(false);
+
   return (
     <div
       ref={ref}
@@ -41,8 +43,8 @@ export const Cascader = forwardRef<
           viewBox="64 64 896 896"
           focusable="false"
           data-icon="down"
-          width="1em"
-          height="1em"
+          width="0.8em"
+          height="0.8em"
           fill="currentColor"
           aria-hidden="true"
           style={{
@@ -65,67 +67,175 @@ export const Cascader = forwardRef<
             border: "1px solid #ccc",
             width: props.styles.width || "160px",
           }}
+          onClick={() => setExpanded((expanded) => !expanded)}
         />
       </label>
-      <div
-        style={{
-          display: "flex",
-          zIndex: "2",
-        }}
-      >
+      {expanded && (
         <div
           style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            minWidth: "110px",
+            display: "flex",
+            zIndex: "2",
+            padding: "0.3em",
           }}
         >
-          <button>Hello1</button>
-          <button>Hello2</button>
-          <button>Hello3</button>
-          <button>Hello4</button>
-          <button>Hello5</button>
+          <div
+            style={{
+              display: "inline-flex",
+              flexDirection: "column",
+            }}
+          >
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+          </div>
+          <div
+            style={{
+              display: "inline-flex",
+              flexDirection: "column",
+            }}
+          >
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+          </div>
+          <div
+            style={{
+              display: "inline-flex",
+              flexDirection: "column",
+            }}
+          >
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+            <button
+              style={{
+                padding: "0.3em",
+                border: "none",
+                background: "none",
+              }}
+            >
+              Hello1
+            </button>
+          </div>
         </div>
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            minWidth: "110px",
-          }}
-        >
-          <button>Hello1</button>
-          <button>Hello2</button>
-          <button>Hello3</button>
-          <button>Hello4</button>
-          <button>Hello5</button>
-        </div>
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            minWidth: "110px",
-          }}
-        >
-          <button>Hello1</button>
-          <button>Hello2</button>
-          <button>Hello3</button>
-          <button>Hello4</button>
-          <button>Hello5</button>
-        </div>
-        <div
-          style={{
-            display: "inline-flex",
-            flexDirection: "column",
-            minWidth: "110px",
-          }}
-        >
-          <button>Hello1</button>
-          <button>Hello2</button>
-          <button>Hello3</button>
-          <button>Hello4</button>
-          <button>Hello5</button>
-        </div>
-      </div>
+      )}
     </div>
   );
 });
