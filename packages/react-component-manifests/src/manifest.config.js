@@ -37,6 +37,10 @@ module.exports = {
       modulePath: "./src/manifests/Carousel/Carousel.tsx",
       exportedVarName: "Carousel",
     },
+    Breadcrumb: {
+      modulePath: "./src/manifests/Breadcrumb/Breadcrumb.tsx",
+      exportedVarName: "Breadcrumb",
+    },
     Countdown: {
       modulePath: "./src/manifests/Countdown/Countdown.tsx",
       exportedVarName: "Countdown",
