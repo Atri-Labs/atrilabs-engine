@@ -9,13 +9,16 @@ export const InternalLink: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue: string = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || "";
   }, [props, selector]);
+
   const callPatchCb = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       props.patchCb({

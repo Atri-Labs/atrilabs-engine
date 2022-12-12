@@ -37,6 +37,10 @@ module.exports = {
       modulePath: "./src/manifests/Carousel/Carousel.tsx",
       exportedVarName: "Carousel",
     },
+    Breadcrumb: {
+      modulePath: "./src/manifests/Breadcrumb/Breadcrumb.tsx",
+      exportedVarName: "Breadcrumb",
+    },
     Countdown: {
       modulePath: "./src/manifests/Countdown/Countdown.tsx",
       exportedVarName: "Countdown",
@@ -140,6 +144,10 @@ module.exports = {
     Form: {
       modulePath: "./src/manifests/Form/Form.tsx",
       exportedVarName: "Form",
+    },
+    Testimonial: {
+      modulePath: "./src/manifests/Testimonial/Testimonial.tsx",
+      exportedVarName: "Testimonial",
     },
     UnorderedList: {
       modulePath: "./src/manifests/UnorderedList/UnorderedList.tsx",

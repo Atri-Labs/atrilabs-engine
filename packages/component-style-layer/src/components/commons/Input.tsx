@@ -1,4 +1,3 @@
-// import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React from "react";
 import { CssProprtyComponentType } from "../../types";
 import ControlledInput from "./ControlledInput";
@@ -10,20 +9,6 @@ export type InputProps = {
   defaultValue: string;
   parseToInt: boolean;
 };
-
-// const styles: { [key: string]: React.CSSProperties } = {
-//   inputBox: {
-//     ...smallText,
-//     outline: "none",
-//     color: gray100,
-//     padding: "3px",
-//     backgroundColor: gray800,
-//     width: "50px",
-//     border: "none",
-//     borderRadius: "2px",
-//     lineHeight: "20px",
-//   },
-// };
 
 export const Input: React.FC<InputProps> = (props) => {
   const handleChange = (
@@ -50,14 +35,6 @@ export const Input: React.FC<InputProps> = (props) => {
   };
   return (
     <div>
-      {/* <input
-        type="text"
-        value={props.styles[props.styleItem] || ""}
-        placeholder={props.defaultValue}
-        onChange={(e) => handleChange(e, props.styleItem)}
-        style={styles.inputBox}
-        pattern={props.parseToInt ? "[0-9]+" : undefined}
-      /> */}
       <ControlledInput
         type="text"
         value={props.styles[props.styleItem] || ""}

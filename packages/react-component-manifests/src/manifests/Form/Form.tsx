@@ -22,6 +22,14 @@ export const Form = forwardRef<
       submitButtonColor?: string;
       resetButtonBgColor?: string;
       resetButtonColor?: string;
+      form: {
+        selectedOption: string;
+        selectAttribute: {
+          selectOptions?: string[];
+          selectLabel?: string;
+          selectIdentifier?: string;
+        };
+      };
     };
     onClick: (buttonClicked: "Submit" | "Reset") => void;
     className?: string;
@@ -53,7 +61,7 @@ export const Form = forwardRef<
             }}
             key={index}
           >
-            <label htmlFor="id">{labelText}</label>
+            <label htmlFor={id}>{labelText}</label>
             <input
               type={type}
               placeholder={placeholderText}
@@ -63,6 +71,30 @@ export const Form = forwardRef<
           </div>
         );
       })}
+      {props.custom.form.selectedOption !== "none" && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            columnGap: "1em",
+            alignItems: "baseline",
+          }}
+        >
+          <label htmlFor={props.custom.form.selectAttribute.selectIdentifier}>
+            {props.custom.form.selectAttribute.selectLabel}
+          </label>
+          <select
+            id={props.custom.form.selectAttribute.selectIdentifier}
+            style={{ padding: "0.5em" }}
+          >
+            {props.custom.form.selectAttribute.selectOptions?.map(
+              (option, index) => {
+                return <option key={index}>{option}</option>;
+              }
+            )}
+          </select>
+        </div>
+      )}
       <div
         style={{
           display: "flex",
@@ -122,6 +154,20 @@ const customTreeOptions: CustomPropsTreeOptions = {
     submitButtonColor: { type: "color" },
     resetButtonBgColor: { type: "color" },
     resetButtonColor: { type: "color" },
+    form: {
+      type: "typed_map",
+      attributes: [
+        {
+          fieldName: "selectAttribute",
+          type: "map",
+          attributes: [
+            { fieldName: "selectLabel", type: "text" },
+            { fieldName: "selectIdentifier", type: "text" },
+            { fieldName: "selectOptions", type: "array" },
+          ],
+        },
+      ],
+    },
   },
 };
 
@@ -156,6 +202,10 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
+          form: {
+            selectedOption: "none",
+            selectAttribute: {},
+          },
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

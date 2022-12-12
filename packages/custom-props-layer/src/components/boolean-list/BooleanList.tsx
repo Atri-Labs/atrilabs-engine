@@ -10,13 +10,16 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
   }, [props]);
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || [];
   }, [props, selector]);
+
   const insertValueCb = useCallback(() => {
     props.patchCb({
       property: {
@@ -28,6 +31,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
       },
     });
   }, [props, propValue, selector]);
+
   const editValueCb = useCallback(
     (index: number) => {
       const oldValue = propValue[index];
@@ -41,6 +45,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
     },
     [props, propValue, selector]
   );
+
   const deleteValueCb = useCallback(
     (index: number) => {
       const updatedValue = [...propValue];
@@ -53,6 +58,7 @@ export const BooleanList: React.FC<ComponentProps> = (props) => {
     },
     [props, propValue, selector]
   );
+
   const onReposition = useCallback(
     (deleteAt: number, insertAt: number) => {
       const updatedValue = [...propValue];

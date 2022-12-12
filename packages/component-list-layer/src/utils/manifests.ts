@@ -12,6 +12,7 @@ import InputManifests from "@atrilabs/react-component-manifests/src/manifests/In
 import TextboxManifests from "@atrilabs/react-component-manifests/src/manifests/TextBox/TextBox";
 import RadioManifests from "@atrilabs/react-component-manifests/src/manifests/Radio/Radio";
 import RatingManifests from "@atrilabs/react-component-manifests/src/manifests/Rating/Rating";
+import BreadcrumbManifests from "@atrilabs/react-component-manifests/src/manifests/Breadcrumb/Breadcrumb";
 import SliderManifests from "@atrilabs/react-component-manifests/src/manifests/Slider/Slider";
 import StepManifests from "@atrilabs/react-component-manifests/src/manifests/Step/Step";
 import ToggleManifests from "@atrilabs/react-component-manifests/src/manifests/Toggle/Toggle";
@@ -38,6 +39,7 @@ import IconManifests from "@atrilabs/react-component-manifests/src/manifests/Ico
 import ModalManifests from "@atrilabs/react-component-manifests/src/manifests/Modal/Modal";
 import FormManifests from "@atrilabs/react-component-manifests/src/manifests/Form/Form";
 import OverlayManifests from "@atrilabs/react-component-manifests/src/manifests/Overlay/Overlay";
+import TestimonialManifests from "@atrilabs/react-component-manifests/src/manifests/Testimonial/Testimonial";
 
 const reactComponentManifestPkg = "@atrilabs/react-component-manifests";
 
@@ -89,6 +91,7 @@ const defaultImports = [
   ButtonManifests,
   AccordianManifests,
   CarouselManifests,
+  BreadcrumbManifests,
   CountdownManifests,
   CountupManifests,
   FlexManifests,
@@ -118,6 +121,7 @@ const defaultImports = [
   TableManifests,
   DivManifests,
   AlertManifests,
+  TestimonialManifests,
   IconManifests,
   ModalManifests,
   FormManifests,
