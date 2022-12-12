@@ -14,7 +14,6 @@ export const Text: React.FC<ComponentProps> = (props) => {
     for (let prop of selector) {
       currentValue = currentValue[prop];
       if (currentValue === undefined) break;
-      console.log(`propVal ${prop}`, currentValue, selector);
     }
     return currentValue || "";
   }, [props, selector]);
