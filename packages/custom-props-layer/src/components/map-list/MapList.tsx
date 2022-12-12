@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
-import { ComponentProps } from "../../types";
+import { AttributeType, ComponentProps } from "../../types";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
@@ -53,11 +53,11 @@ export const MapList: React.FC<ComponentProps> = (props) => {
     let currentValue = props.customProps;
     for (let prop of selector) {
       currentValue = currentValue[prop];
+      if (currentValue === undefined) break;
     }
     return currentValue || [];
   }, [props, selector]);
-
-  const attributes = useMemo(() => {
+  const attributes: AttributeType[] = useMemo(() => {
     return props.attributes || [];
   }, [props]);
 
@@ -143,11 +143,7 @@ export const MapList: React.FC<ComponentProps> = (props) => {
                       return (
                         <CommonPropTypeContainer
                           {...props}
-                          selector={[
-                            props.propName,
-                            index,
-                            attribute.fieldName,
-                          ]}
+                          selector={[...selector, index, attribute.fieldName]}
                           options={attribute.options}
                           propType={attribute.type}
                           propName={attribute.fieldName}
