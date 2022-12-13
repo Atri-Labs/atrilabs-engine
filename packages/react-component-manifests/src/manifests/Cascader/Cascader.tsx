@@ -83,6 +83,7 @@ export const Cascader = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
+      hover: boolean;
       rootOptions: string[];
       options: {
         level: number;
@@ -194,6 +195,21 @@ export const Cascader = forwardRef<
           >
             {props.custom.rootOptions.map((rootOption, index) => (
               <div
+                onMouseEnter={(e) => {
+                  if (
+                    props.custom.hover &&
+                    checkHasChildren(0, rootOption, props.custom.options)
+                  )
+                    showCascaderOptions(
+                      setCascadeOptions,
+                      setValue,
+                      setExpanded,
+                      cascadeOptions,
+                      0,
+                      rootOption,
+                      props.custom.options
+                    );
+                }}
                 onClick={(e) => {
                   showCascaderOptions(
                     setCascadeOptions,
@@ -248,6 +264,21 @@ export const Cascader = forwardRef<
             >
               {cascadeOption.map((option, index) => (
                 <div
+                  onMouseEnter={(e) => {
+                    if (
+                      props.custom.hover &&
+                      checkHasChildren(level + 1, option, props.custom.options)
+                    )
+                      showCascaderOptions(
+                        setCascadeOptions,
+                        setValue,
+                        setExpanded,
+                        cascadeOptions,
+                        level + 1,
+                        option,
+                        props.custom.options
+                      );
+                  }}
                   onClick={(e) => {
                     showCascaderOptions(
                       setCascadeOptions,
@@ -318,6 +349,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    hover: { type: "boolean" },
     rootOptions: { type: "array" },
     options: {
       type: "array_map",
@@ -350,6 +382,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          hover: false,
           rootOptions: ["India", "USA", "France", "Canada"],
           options: [
             {
