@@ -8,11 +8,64 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
+const showCascaderOptions = (
+  setCascadeOptions: React.Dispatch<React.SetStateAction<string[][]>>,
+  cascadeOptions: string[][],
+  currentLevel: number,
+  currentSelection: string,
+  options: {
+    level: number;
+    parent: string;
+    children: string[];
+  }[]
+) => {
+  // Get the clicked options
+  const optionsOnCurrentLevel = options.filter(
+    (option) =>
+      option.level === currentLevel + 1 && option.parent === currentSelection
+  );
+
+  // If level 0 is clicked and options are empty reset
+  if (currentLevel === 0 && optionsOnCurrentLevel.length === 0)
+    setCascadeOptions([]);
+  // If any level other than 0 is clicked and options are empty reset
+  else if (currentLevel !== 0 && optionsOnCurrentLevel.length === 0) {
+    const currOptions = [];
+    for (let idx = 0; idx < currentLevel; idx++) {
+      currOptions.push(cascadeOptions[idx]);
+    }
+    setCascadeOptions([...currOptions, []]);
+  }
+  // If there are no options for the current selection return
+  if (optionsOnCurrentLevel.length === 0) return;
+
+  // Set children options for root level
+  if (currentLevel === 0)
+    setCascadeOptions([optionsOnCurrentLevel[0].children]);
+  // Set children
+  if (currentLevel < cascadeOptions.length) {
+    const currOptions = [];
+    for (let idx = 0; idx < currentLevel; idx++) {
+      currOptions.push(cascadeOptions[idx]);
+    }
+    setCascadeOptions([...currOptions, optionsOnCurrentLevel[0].children]);
+  } else {
+    setCascadeOptions([...cascadeOptions, optionsOnCurrentLevel[0].children]);
+  }
+};
+
 export const Cascader = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: {};
+    custom: {
+      rootOptions: string[];
+      options: {
+        level: number;
+        parent: string;
+        children: string[];
+      }[];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -24,7 +77,8 @@ export const Cascader = forwardRef<
     [props]
   );
   const [expanded, setExpanded] = useState<boolean>(false);
-
+  const [cascadeOptions, setCascadeOptions] = useState<string[][]>([]);
+  console.log("Cascader", cascadeOptions);
   return (
     <div
       ref={ref}
@@ -77,7 +131,7 @@ export const Cascader = forwardRef<
             zIndex: "2",
             paddingTop: "0.1em",
             position: "absolute",
-            marginTop: "1.8em",
+            marginTop: "2em",
           }}
         >
           <div
@@ -85,535 +139,100 @@ export const Cascader = forwardRef<
               display: "inline-flex",
               flexDirection: "column",
               padding: "0.1em",
-              borderRight: "1px solid #ccc",
               backgroundColor: "#ffffffff",
             }}
           >
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
+            {props.custom.rootOptions.map((rootOption, index) => (
+              <div
+                onClick={(e) => {
+                  showCascaderOptions(
+                    setCascadeOptions,
+                    cascadeOptions,
+                    0,
+                    rootOption,
+                    props.custom.options
+                  );
+                }}
+                key={index}
+                style={{
+                  padding: "0.3em",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
+                  {rootOption}
+                </span>
+                <span role="img" aria-label="right">
+                  <svg
+                    viewBox="64 64 896 896"
+                    focusable="false"
+                    data-icon="right"
+                    width="0.8em"
+                    height="0.8em"
+                    color="#ccc"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
+                  </svg>
+                </span>
+              </div>
+            ))}
           </div>
-          <div
-            style={{
-              display: "inline-flex",
-              flexDirection: "column",
-              padding: "0.1em",
-              borderRight: "1px solid #ccc",
-              backgroundColor: "#ffffffff",
-            }}
-          >
+          {cascadeOptions.map((cascadeOption, level) => (
             <div
+              key={level}
               style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
+                display: "inline-flex",
+                flexDirection: "column",
+                padding: "0.1em",
+                backgroundColor: "#ffffffff",
               }}
             >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
+              {cascadeOption.map((option, index) => (
+                <div
+                  onClick={(e) => {
+                    showCascaderOptions(
+                      setCascadeOptions,
+                      cascadeOptions,
+                      level + 1,
+                      option,
+                      props.custom.options
+                    );
+                  }}
+                  key={index}
+                  style={{
+                    padding: "0.3em",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
+                  <span
+                    style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}
+                  >
+                    {option}
+                  </span>
+                  <span role="img" aria-label="right">
+                    <svg
+                      viewBox="64 64 896 896"
+                      focusable="false"
+                      data-icon="right"
+                      width="0.8em"
+                      height="0.8em"
+                      color="#ccc"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
+                    </svg>
+                  </span>
+                </div>
+              ))}
             </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "inline-flex",
-              flexDirection: "column",
-              padding: "0.1em",
-              borderRight: "1px solid #ccc",
-              backgroundColor: "#ffffffff",
-            }}
-          >
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "inline-flex",
-              flexDirection: "column",
-              padding: "0.1em",
-              borderRight: "1px solid #ccc",
-              backgroundColor: "#ffffffff",
-            }}
-          >
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.3em",
-                display: "flex",
-                alignItems: "center",
-                columnGap: "0.3em",
-              }}
-            >
-              <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
-                Hello1
-              </span>
-              <span role="img" aria-label="right">
-                <svg
-                  viewBox="64 64 896 896"
-                  focusable="false"
-                  data-icon="right"
-                  width="0.8em"
-                  height="0.8em"
-                  color="#ccc"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                </svg>
-              </span>
-            </div>
-          </div>
+          ))}
         </div>
       )}
     </div>
@@ -635,7 +254,16 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
+    rootOptions: { type: "array" },
+    options: {
+      type: "array_map",
+      singleObjectName: "option",
+      attributes: [
+        { type: "number", fieldName: "level" },
+        { type: "text", fieldName: "parent" },
+        { type: "array", fieldName: "children" },
+      ],
+    },
   },
 };
 
@@ -657,7 +285,9 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          rootOptions: [],
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
