@@ -8,6 +8,23 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
+const checkHasChildren = (
+  currentLevel: number,
+  currentSelection: string,
+  options: {
+    level: number;
+    parent: string;
+    children: string[];
+  }[]
+) => {
+  // Get the clicked options
+  const optionsOnCurrentLevel = options.filter(
+    (option) =>
+      option.level === currentLevel + 1 && option.parent === currentSelection
+  );
+  return optionsOnCurrentLevel.length > 0 ? true : false;
+};
+
 const showCascaderOptions = (
   setCascadeOptions: React.Dispatch<React.SetStateAction<string[][]>>,
   cascadeOptions: string[][],
@@ -78,7 +95,7 @@ export const Cascader = forwardRef<
   );
   const [expanded, setExpanded] = useState<boolean>(false);
   const [cascadeOptions, setCascadeOptions] = useState<string[][]>([]);
-  console.log("Cascader", cascadeOptions);
+
   return (
     <div
       ref={ref}
@@ -164,20 +181,22 @@ export const Cascader = forwardRef<
                 <span style={{ fontSize: "1em", color: "rgba(0, 0, 0, 0.7)" }}>
                   {rootOption}
                 </span>
-                <span role="img" aria-label="right">
-                  <svg
-                    viewBox="64 64 896 896"
-                    focusable="false"
-                    data-icon="right"
-                    width="0.8em"
-                    height="0.8em"
-                    color="#ccc"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
-                  </svg>
-                </span>
+                {checkHasChildren(0, rootOption, props.custom.options) && (
+                  <span role="img" aria-label="right">
+                    <svg
+                      viewBox="64 64 896 896"
+                      focusable="false"
+                      data-icon="right"
+                      width="0.8em"
+                      height="0.8em"
+                      color="#ccc"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
+                    </svg>
+                  </span>
+                )}
               </div>
             ))}
           </div>
