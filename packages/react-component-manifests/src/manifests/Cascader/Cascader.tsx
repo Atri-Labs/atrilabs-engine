@@ -165,7 +165,7 @@ export const Cascader = forwardRef<
           style={{
             padding: "0.5em",
             borderRadius: "5px",
-            color: "#ccc",
+            color: value ? "black" : "#ccc",
             border: "1px solid #ccc",
             width: props.styles.width || "160px",
           }}
