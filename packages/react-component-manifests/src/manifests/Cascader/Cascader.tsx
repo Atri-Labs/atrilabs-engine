@@ -165,7 +165,7 @@ export const Cascader = forwardRef<
           style={{
             padding: "0.5em",
             borderRadius: "5px",
-            color: value ? "black" : "#ccc",
+            color: value ? "#000" : "#ccc",
             border: "1px solid #ccc",
             width: props.styles.width || "160px",
           }}
@@ -350,7 +350,39 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          rootOptions: [],
+          rootOptions: ["India", "USA", "France", "Canada"],
+          options: [
+            {
+              level: 1,
+              parent: "India",
+              children: ["Goa", "Maharashtra", "Delhi"],
+            },
+            {
+              level: 1,
+              parent: "USA",
+              children: ["California", "Washington DC", "Texas"],
+            },
+            {
+              level: 1,
+              parent: "France",
+              children: ["Corsica", "Brittany"],
+            },
+            {
+              level: 1,
+              parent: "Canada",
+              children: ["Ontario", "Montreal"],
+            },
+            {
+              level: 2,
+              parent: "Goa",
+              children: ["Mapusa", "Panaji", "Margao"],
+            },
+            {
+              level: 2,
+              parent: "California",
+              children: ["LA", "San Diego", "San Francisco"],
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
