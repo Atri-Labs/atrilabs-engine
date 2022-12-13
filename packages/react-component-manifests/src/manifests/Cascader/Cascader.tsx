@@ -7,7 +7,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { valueToPercent } from "@mui/base";
 
 const checkHasChildren = (
   currentLevel: number,
@@ -119,26 +118,48 @@ export const Cascader = forwardRef<
       <label
         style={{ position: "relative", width: props.styles.width || "160px" }}
       >
-        <svg
-          viewBox="64 64 896 896"
-          focusable="false"
-          data-icon="down"
-          width="0.8em"
-          height="0.8em"
-          fill="currentColor"
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "10px",
-            transform: "translateY(-50%)",
-            color: "#ccc",
-          }}
-        >
-          <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path>
-        </svg>
+        {value ? (
+          <svg
+            viewBox="64 64 896 896"
+            focusable="false"
+            data-icon="down"
+            width="1em"
+            height="1em"
+            fill="currentColor"
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: "40%",
+              right: "10px",
+              color: "#ccc",
+            }}
+            onClick={() => setValue("")}
+          >
+            <path d="M443.6,387.1L312.4,255.4l131.5-130c5.4-5.4,5.4-14.2,0-19.6l-37.4-37.6c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4  L256,197.8L124.9,68.3c-2.6-2.6-6.1-4-9.8-4c-3.7,0-7.2,1.5-9.8,4L68,105.9c-5.4,5.4-5.4,14.2,0,19.6l131.5,130L68.4,387.1  c-2.6,2.6-4.1,6.1-4.1,9.8c0,3.7,1.4,7.2,4.1,9.8l37.4,37.6c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1L256,313.1l130.7,131.1  c2.7,2.7,6.2,4.1,9.8,4.1c3.5,0,7.1-1.3,9.8-4.1l37.4-37.6c2.6-2.6,4.1-6.1,4.1-9.8C447.7,393.2,446.2,389.7,443.6,387.1z" />
+          </svg>
+        ) : (
+          <svg
+            viewBox="64 64 896 896"
+            focusable="false"
+            data-icon="down"
+            width="0.8em"
+            height="0.8em"
+            fill="currentColor"
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "10px",
+              transform: "translateY(-50%)",
+              color: "#ccc",
+            }}
+          >
+            <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path>
+          </svg>
+        )}
+
         <input
-          type="search"
+          type="text"
           placeholder="Please select"
           value={value}
           style={{
@@ -148,7 +169,9 @@ export const Cascader = forwardRef<
             border: "1px solid #ccc",
             width: props.styles.width || "160px",
           }}
-          onClick={() => setExpanded((expanded) => !expanded)}
+          onClick={() => {
+            if (!value) setExpanded((expanded) => !expanded);
+          }}
         />
       </label>
       {expanded && (
