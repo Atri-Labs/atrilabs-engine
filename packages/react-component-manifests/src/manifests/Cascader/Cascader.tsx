@@ -29,6 +29,7 @@ const checkHasChildren = (
 const showCascaderOptions = (
   setCascadeOptions: React.Dispatch<React.SetStateAction<string[][]>>,
   setValue: React.Dispatch<React.SetStateAction<string>>,
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>,
   cascadeOptions: string[][],
   currentLevel: number,
   currentSelection: string,
@@ -45,8 +46,11 @@ const showCascaderOptions = (
   );
 
   // If level 0 is clicked and options are empty reset
-  if (currentLevel === 0 && optionsOnCurrentLevel.length === 0)
+  if (currentLevel === 0 && optionsOnCurrentLevel.length === 0) {
     setCascadeOptions([]);
+    setValue(currentSelection);
+    setExpanded(false);
+  }
   // If any level other than 0 is clicked and options are empty reset
   else if (currentLevel !== 0 && optionsOnCurrentLevel.length === 0) {
     const currOptions = [];
@@ -54,6 +58,8 @@ const showCascaderOptions = (
       currOptions.push(cascadeOptions[idx]);
     }
     setCascadeOptions([...currOptions, []]);
+    setValue(currentSelection);
+    setExpanded(false);
   }
   // If there are no options for the current selection return
   if (optionsOnCurrentLevel.length === 0) return;
@@ -134,6 +140,7 @@ export const Cascader = forwardRef<
         <input
           type="search"
           placeholder="Please select"
+          value={value}
           style={{
             padding: "0.5em",
             borderRadius: "5px",
@@ -168,6 +175,7 @@ export const Cascader = forwardRef<
                   showCascaderOptions(
                     setCascadeOptions,
                     setValue,
+                    setExpanded,
                     cascadeOptions,
                     0,
                     rootOption,
@@ -221,6 +229,7 @@ export const Cascader = forwardRef<
                     showCascaderOptions(
                       setCascadeOptions,
                       setValue,
+                      setExpanded,
                       cascadeOptions,
                       level + 1,
                       option,
