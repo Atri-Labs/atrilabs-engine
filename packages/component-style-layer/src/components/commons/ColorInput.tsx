@@ -101,22 +101,6 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     onValidInput(recievedColor);
     props.setOpacityValue(getOpacityValue(recievedColor));
   };
-  //     (typeOfInput: string, colorVal: string) => {
-  //       let trimmedColorVal;
-  //       colorVal === "undefined"
-  //         ? (trimmedColorVal = "")
-  //         : (trimmedColorVal = colorVal);
-
-  //       if (colorVal.length === 5 && typeOfInput !== "deleteContentBackward") {
-  //         colorVal = convertToSixDigitHex(colorVal);
-  //         trimmedColorVal = colorVal.substring(0, 7);
-  //       } else if (colorVal.length >= 9) {
-  //         trimmedColorVal = colorVal.substring(0, 7);
-  //       }
-  //       return trimmedColorVal;
-  //     },
-  //     []
-  //   );
 
   const [colorValue, setColorValue] = useState<string>(
     String(props.styles[props.styleItem])
