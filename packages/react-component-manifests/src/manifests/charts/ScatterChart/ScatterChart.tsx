@@ -207,13 +207,50 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    cartesianGrid: { type: "map" },
+    cartesianGrid: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "text" },
+        { fieldName: "strokeDasharray", type: "text" },
+      ],
+    },
     data: { type: "array" },
     options: { type: "array" },
-    toolTip: { type: "map" },
-    legend: { type: "map" },
-    xAxis: { type: "map" },
-    yAxis: { type: "map" },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    xAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+      ],
+    },
+    yAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+      ],
+    },
+    zAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+      ],
+    },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },
