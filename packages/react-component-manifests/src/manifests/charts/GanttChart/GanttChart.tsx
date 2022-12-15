@@ -138,9 +138,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     data: { type: "array" },
     options: { type: "array" },
-    toolTip: { type: "map" },
-    legend: { type: "map" },
-    keys: { type: "map" },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },
