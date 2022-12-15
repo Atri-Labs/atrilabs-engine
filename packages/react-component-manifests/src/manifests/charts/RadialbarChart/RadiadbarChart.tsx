@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { ReactComponent as Icon } from "../PieChart/icon.svg";
+import { ReactComponent as Icon } from "./icon.svg";
 import { getColorAt } from "../utils/colors";
 export const RadialbarChart = forwardRef<
   HTMLDivElement,

@@ -13,6 +13,7 @@ import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
+import { ReactComponent as Icon } from "./icon.svg";
 
 export const Alert = forwardRef<
   HTMLDivElement,
@@ -207,10 +208,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Alert" } },
+  panel: { comp: CommonIcon, props: { name: "Alert", svg: Icon } },
   drag: {
     comp: CommonIcon,
-    props: { name: "Alert", containerStyle: { padding: "1rem" } },
+    props: { name: "Alert", containerStyle: { padding: "1rem", svg: Icon } },
   },
   renderSchema: compManifest,
 };

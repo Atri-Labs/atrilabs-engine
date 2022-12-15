@@ -81,6 +81,10 @@ module.exports = {
       modulePath: "./src/manifests/Menu/Menu.tsx",
       exportedVarName: "Menu",
     },
+    VerticalMenu: {
+      modulePath: "./src/manifests/VerticalMenu/VerticalMenu.tsx",
+      exportedVarName: "VerticalMenu",
+    },
     LineChart: {
       modulePath: "./src/manifests/charts/LineChart/LineChart.tsx",
       exportedVarName: "LineChart",

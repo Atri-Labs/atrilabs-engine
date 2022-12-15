@@ -15,12 +15,13 @@ import {
 } from "recharts";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { ReactComponent as Icon } from "../PieChart/icon.svg";
+import { ReactComponent as Icon } from "./icon.svg";
 import {
   convertTasksToRechartsData,
   noLine,
   CustomizedDot,
 } from "./components";
+
 export const GanttChart = forwardRef<
   HTMLDivElement,
   {
