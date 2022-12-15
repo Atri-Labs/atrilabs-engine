@@ -161,5 +161,9 @@ module.exports = {
       modulePath: "./src/manifests/Overlay/Overlay.tsx",
       exportedVarName: "Overlay",
     },
+    Cascader: {
+      modulePath: "./src/manifests/Cascader/Cascader.tsx",
+      exportedVarName: "Cascader",
+    },
   },
 };
