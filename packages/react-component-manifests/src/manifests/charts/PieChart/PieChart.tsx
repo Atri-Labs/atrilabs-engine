@@ -149,7 +149,30 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     data: { type: "array" },
-    options: { type: "array" },
+    options: {
+      type: "array_map",
+      attributes: [
+        { fieldName: "cx", type: "text" },
+        { fieldName: "cy", type: "text" },
+        { fieldName: "outerRadius", type: "text" },
+        { fieldName: "innerRadius", type: "text" },
+        { fieldName: "fill", type: "text" },
+        { fieldName: "showLabel", type: "boolean" },
+        { fieldName: "animate", type: "boolean" },
+      ],
+    },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    keys: {
+      type: "map",
+      attributes: [{ fieldName: "value", type: "text" }],
+    },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },
