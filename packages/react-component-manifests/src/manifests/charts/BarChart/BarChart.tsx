@@ -204,7 +204,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     cartesianGrid: {
       type: "map",
       attributes: [
-        { fieldName: "show", type: "text" },
+        { fieldName: "show", type: "boolean" },
         { fieldName: "strokeDasharray", type: "text" },
       ],
     },
