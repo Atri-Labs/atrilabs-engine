@@ -220,7 +220,36 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    cartesianGrid: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "strokeDasharray", type: "text" },
+      ],
+    },
     data: { type: "array" },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    xAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+      ],
+    },
+    yAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+      ],
+    },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },
