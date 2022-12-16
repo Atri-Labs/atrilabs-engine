@@ -8,17 +8,13 @@ import {
   gray500,
   agastyaLine,
 } from "@atrilabs/design-system";
-import React, { useState, useCallback, useEffect } from "react";
-import { ReactComponent as BC } from "../../assets/border/border-color-icon.svg";
+import React, { useState } from "react";
 import { ReactComponent as BR } from "../../assets/border/border-radius-icon.svg";
 import { ReactComponent as BS } from "../../assets/border/border-style-icon.svg";
 import { ReactComponent as BW } from "../../assets/border/border-width-icon.svg";
-import { ReactComponent as Minus } from "../../assets/background/none-icon.svg";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { ColorComponent } from "../commons/ColorComponent";
-import { ColorComponentWithoutEffect } from "../commons/ColorComponentWithoutEffect";
-import { SizeInputWithoutEffect } from "../commons/SizeInputWithoutEffect";
 import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -157,6 +153,7 @@ export type borderRadiusTypeOptions = {
   all: boolean;
   separate: boolean;
 };
+
 export type boxShadowPropsType = {
   inset: boolean;
   xoffset: string;
@@ -164,28 +161,31 @@ export type boxShadowPropsType = {
   blur: string;
   spread: string;
 };
+
 export const singleBorderRadiusOptions: borderRadiusTypeOptions = {
   all: true,
   separate: false,
 };
+
 export const separateBorderRadiusOptions: borderRadiusTypeOptions = {
   all: false,
   separate: true,
 };
+
 const borderRadiusTypes = [
   singleBorderRadiusOptions,
   separateBorderRadiusOptions,
 ];
+
 export const Border: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const patchCb = props.patchCb;
+
   const handleBorderChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>,
     styleItem: keyof React.CSSProperties
   ) => {
-    console.log(styleItem);
     props.patchCb({
       property: {
         styles: {
@@ -217,6 +217,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       return "borderWidth";
     }
   };
+
   const setBorderTypeStyle = (): keyof React.CSSProperties => {
     if (activeBorderType === "Top") {
       return "borderTopStyle";
@@ -230,6 +231,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
       return "borderStyle";
     }
   };
+
   const setBorderTypeColor = (): keyof React.CSSProperties => {
     if (activeBorderType === "Top") {
       return "borderTopColor";
@@ -246,102 +248,6 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
 
   const [selectedBorderRadiusTypeIndex, setSelectedBorderRadiusTypeIndex] =
     useState<number>(0);
-
-  // Box Shadow
-  const [boxShadowProps, setBoxShadowProps] = useState([
-    {
-      inset: false,
-      xoffset: "0px",
-      yoffset: "0px",
-      blur: "0px",
-      spread: "0px",
-      color: "ffffff",
-    },
-  ]);
-  const createColorArray = () => {
-    let arr;
-    boxShadowProps.forEach((bsProp, index) => {
-      arr.push(bsProp.color);
-    });
-    if (arr) {
-      props.colorValueArraySetter(arr);
-    }
-
-    return arr;
-  };
-
-  const [boxShadow, setBoxShadow] = useState<string>("");
-
-  const handleInsetChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const arr = [...boxShadowProps];
-    arr[index].inset = e.target.checked;
-    setBoxShadowProps(arr);
-  };
-
-  const handleBoxShadowChange = useCallback(() => {
-    patchCb({
-      property: {
-        styles: {
-          boxShadow: boxShadow,
-        },
-      },
-    });
-  }, [patchCb, boxShadow]);
-
-  useEffect(() => {
-    setBoxShadow(
-      boxShadowProps[0].inset
-        ? "inset" +
-            " " +
-            boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-        : boxShadowProps[0].xoffset +
-            " " +
-            boxShadowProps[0].yoffset +
-            " " +
-            boxShadowProps[0].blur +
-            " " +
-            boxShadowProps[0].spread +
-            " " +
-            props.colorValue
-    );
-
-    handleBoxShadowChange();
-  }, [props.colorValue, boxShadowProps, handleBoxShadowChange]);
-
-  const handleBsIncrement = () => {
-    setBoxShadowProps((boxShadowProps) => [
-      ...boxShadowProps,
-      {
-        inset: false,
-        xoffset: "0px",
-        yoffset: "0px",
-        blur: "0px",
-        spread: "0px",
-        color: "ffffff",
-      },
-    ]);
-    createColorArray();
-  };
-
-  const handleBsDecrement = (index: number) => {
-    const arr = [...boxShadowProps];
-    if (arr.length > 1) {
-      arr.splice(index, 1);
-    }
-    setBoxShadowProps(arr);
-    createColorArray();
-  };
 
   return (
     <div style={styles.container}>
@@ -430,6 +336,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               />
             </div>
           )}
+
           {borderRadiusTypes[selectedBorderRadiusTypeIndex].separate && (
             <div style={styles.borderTypeGridContainer}>
               <div style={styles.optionName}>
@@ -474,7 +381,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.borderGrid}>
             <span>&nbsp;</span>
             <span
-              onClick={(e) => {
+              onClick={() => {
                 setBorderType("Top");
               }}
               style={
@@ -487,7 +394,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             </span>
             <span>&nbsp;</span>
             <span
-              onClick={(e) => {
+              onClick={() => {
                 setBorderType("Left");
               }}
               style={
@@ -499,7 +406,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               L
             </span>
             <span
-              onClick={(e) => {
+              onClick={() => {
                 setBorderType("");
               }}
               style={
@@ -511,7 +418,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               A
             </span>
             <span
-              onClick={(e) => {
+              onClick={() => {
                 setBorderType("Right");
               }}
               style={
@@ -524,7 +431,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
             </span>
             <span>&nbsp;</span>
             <span
-              onClick={(e) => {
+              onClick={() => {
                 setBorderType("Bottom");
               }}
               style={
@@ -577,6 +484,7 @@ export const Border: React.FC<CssProprtyComponentType> = (props) => {
               </select>
             </div>
           </div>
+
           <div style={styles.gridInputContainer}>
             <ColorComponent
               name="Border Color"
