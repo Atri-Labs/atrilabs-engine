@@ -136,6 +136,7 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     cartesianGrid: {
