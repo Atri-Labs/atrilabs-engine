@@ -215,10 +215,6 @@ export const ColorComponentWithoutEffect: React.FC<
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
-          value={props.value[props.index]}
-          setValue={props.setValue}
-          applyFlag={false}
-          index={props.index}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>

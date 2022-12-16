@@ -87,6 +87,7 @@ export const GanttChart = forwardRef<
     </div>
   );
 });
+
 export const DevGanttChart: typeof GanttChart = forwardRef((props, ref) => {
   const custom = useMemo(() => {
     const data = [
@@ -122,6 +123,7 @@ export const DevGanttChart: typeof GanttChart = forwardRef((props, ref) => {
   }, [props.custom]);
   return <GanttChart {...props} ref={ref} custom={custom} />;
 });
+
 const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: false,
@@ -134,13 +136,45 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    cartesianGrid: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "strokeDasharray", type: "text" },
+      ],
+    },
     data: { type: "array" },
     options: { type: "array" },
-    toolTip: { type: "map" },
-    legend: { type: "map" },
-    keys: { type: "map" },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    keys: {
+      type: "map",
+      attributes: [{ fieldName: "value", type: "text" }],
+    },
+    xAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "type", type: "text" },
+      ],
+    },
+    yAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "type", type: "text" },
+      ],
+    },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },

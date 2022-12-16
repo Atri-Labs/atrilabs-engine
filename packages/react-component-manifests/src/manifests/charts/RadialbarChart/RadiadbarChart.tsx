@@ -142,13 +142,41 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    cartesianGrid: { type: "map" },
+    cartesianGrid: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "text" },
+        { fieldName: "strokeDasharray", type: "text" },
+      ],
+    },
     data: { type: "array" },
-    options: { type: "map" },
-    toolTip: { type: "map" },
-    legend: { type: "map" },
-    xAxis: { type: "map" },
-    yAxis: { type: "map" },
+    options: {
+      type: "variable_key_map",
+      attributes: [
+        { fieldName: "stroke", type: "text" },
+        { fieldName: "fill", type: "text" },
+        { fieldName: "type", type: "text" },
+        { fieldName: "animate", type: "boolean" },
+        { fieldName: "order", type: "number" },
+      ],
+    },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    radialBar: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+      ],
+    },
+    innerRadius: { type: "number" },
+    barSize: { type: "number" },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },
