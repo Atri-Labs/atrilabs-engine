@@ -10,14 +10,20 @@ import { useShowColorPaletteWithoutEffect } from "./hooks/useShowColorPaletteWit
 import { ColorPickerAsset } from "./components/commons/ColorPickerAsset";
 import { ColorPickerAssetWithoutEffect } from "./components/commons/ColorPickerAssetWithoutEffect";
 import { gray700 } from "@atrilabs/design-system";
+import { useGetTrees } from "./hooks/useGetTrees";
 
 /*
 This serves as the Data Manager component for this layer.
 */
 export default function () {
   // show tab and set alias
-  const { showTab, alias, setAliasCb, id, initialAlias } = useShowTab();
-  const { patchCb, styles, treeOptions, breakpoint } = useManageCSS(id);
+  const { compTree, cssTree } = useGetTrees();
+  const { showTab, alias, setAliasCb, id, initialAlias } = useShowTab(compTree);
+  const { patchCb, styles, treeOptions, breakpoint } = useManageCSS({
+    id,
+    compTree,
+    cssTree,
+  });
   const {
     openAssetManager,
     modes,
@@ -65,6 +71,8 @@ export default function () {
                 setColorValue={colorValSetter}
                 colorValueArraySetter={colorValueArraySetter}
                 initialAlias={initialAlias}
+                cssTree={cssTree}
+                compTree={compTree}
               />
               {showColorPalette && linkColorPaletteToStyleItem ? (
                 <div

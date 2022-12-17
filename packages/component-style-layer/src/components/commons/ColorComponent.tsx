@@ -111,7 +111,6 @@ export const rgb2hex = ({ r, g, b, a }: Color["rgb"]) => {
 
 export const getOpacityValue = (hex: Color["hex"]) => {
   let convertedRgbValue = hex2rgb(hex);
-  console.log(convertedRgbValue);
   if (convertedRgbValue.a === undefined) {
     return "0";
   } else if (convertedRgbValue.a) {
