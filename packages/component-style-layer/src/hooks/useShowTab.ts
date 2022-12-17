@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { api, BrowserForestManager } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { PatchEvent } from "@atrilabs/forest";
+import { PatchEvent, Tree } from "@atrilabs/forest";
 
-export const useShowTab = () => {
+export const useShowTab = (compTree: Tree) => {
   const [showTab, setShowTab] = useState<boolean>(false);
-  const tree = useTree(ComponentTreeId);
   const [alias, setAlias] = useState<string>("");
   const initialAlias = useRef<string>("");
   const [id, setId] = useState<string | null>(null);
@@ -41,25 +40,25 @@ export const useShowTab = () => {
       if (update.type === "change") {
         const id = update.id;
         if (
-          tree.nodes[id] &&
-          tree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
+          compTree.nodes[id] &&
+          compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
         ) {
-          const alias = tree.nodes[id].state.alias;
+          const alias = compTree.nodes[id].state.alias;
           setAlias(alias);
         }
       }
     });
     return unsub;
-  }, [tree]);
+  }, [compTree]);
 
   useEffect(() => {
     const unsub = subscribeCanvasActivity("select", (context) => {
       const id = context.select!.id;
       if (
-        tree.nodes[id] &&
-        tree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
+        compTree.nodes[id] &&
+        compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
       ) {
-        const alias = tree.nodes[id].state.alias;
+        const alias = compTree.nodes[id].state.alias;
         // When a new component is dropped, it is automatically selected, hence, it might
         // be that no alias has been created till now.
         if (alias === undefined) {
@@ -73,7 +72,7 @@ export const useShowTab = () => {
       }
     });
     return unsub;
-  }, [tree]);
+  }, [compTree]);
   useEffect(() => {
     const unsub = subscribeCanvasActivity("selectEnd", (context) => {
       setShowTab(false);
@@ -81,5 +80,11 @@ export const useShowTab = () => {
     });
     return unsub;
   }, []);
-  return { showTab, alias, setAliasCb, id, initialAlias: initialAlias.current };
+  return {
+    showTab,
+    alias,
+    setAliasCb,
+    id,
+    initialAlias: initialAlias.current,
+  };
 };
