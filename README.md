@@ -33,9 +33,9 @@
 
 ----------------------------------------
 
-> **📈 Trending as #1 TypeScript repository in GitHub!** 
+> **📈 Trending as the #1 TypeScript repository in GitHub!** [Source](readme-assets/top_ts_repo.png)
 
-> **🎉 Ranked top 10 TypeScript repositories in Nov and Dec**[Source](https://user-images.githubusercontent.com/102641692/204081761-06d0f525-004e-4cb9-8c1c-4c7bc0271b10.png)
+> **🎉 Ranked as a top 10 TypeScript repository in GitHub in Nov and Dec.** [Source](https://user-images.githubusercontent.com/102641692/204081761-06d0f525-004e-4cb9-8c1c-4c7bc0271b10.png)
 
 > **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
