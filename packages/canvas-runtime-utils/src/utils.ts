@@ -162,70 +162,52 @@ export function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
 }
 
 export function createObject(
-  referenceObject: any,
-  keys: (string | number)[],
+  referenceObj: any,
+  selector: (string | number)[],
   value: string | number | boolean | string[] | number[] | boolean[] | object
 ) {
-  if (referenceObject === null) {
-    throw "Reference object cannot be null";
+  // Check if the object is null or undefined
+  if (referenceObj === null || referenceObj === undefined) {
+    throw new Error("Cannot patch a null or undefined object");
   }
-  if (keys.length === 0) {
+
+  // Create a copy of the object
+  const newObj = JSON.parse(JSON.stringify(referenceObj));
+
+  // Base case: if the selector array is empty, set the value of the new object to the given value
+  if (selector.length === 0) {
     return value;
   }
-  if (keys.length === 1) {
-    referenceObject[keys[0]] = value;
-  } else {
-    const [key, ...remainingKeys] = keys;
-    const nextKey = remainingKeys[0];
-    const nextRemainingKeys = remainingKeys.slice(1);
 
-    if (
-      referenceObject[key] !== undefined &&
-      typeof nextKey === "string" &&
-      Array.isArray(referenceObject[key])
-    ) {
-      throw "Datatype of selector and reference object does not match";
+  // Recursive case: update the value of the property or element specified by the first element of the selector array
+  const [key, ...remainingKeys] = selector;
+  if (typeof key === "string") {
+    if (typeof newObj === "string") return value;
+    // If the key is a string, it refers to an object property
+    if (typeof newObj !== "object") {
+      throw new Error("Cannot access property of non-object or string");
     }
-
-    if (
-      referenceObject[key] !== undefined &&
-      typeof nextKey === "number" &&
-      typeof referenceObject[key] === "object"
-    ) {
-      throw "Datatype of selector and reference object does not match";
+    if (!newObj.hasOwnProperty(key)) {
+      newObj[key] = {};
     }
-
-    if (typeof nextKey === "number") {
-      if (referenceObject[key] === undefined || referenceObject[key] === null) {
-        // create array
-        referenceObject[key] = [];
-      }
-
-      // Fill empty index with empty object
-      if (nextKey <= referenceObject[key].length) {
-        const delta = nextKey + 1 - referenceObject[key].length;
-        for (let i = 0; i < delta; i++) {
-          referenceObject[key].push({});
-        }
-      } else {
-        throw "Cannot add index that is greater than the array size";
-      }
-
-      // recursively write the object
-      referenceObject[key][nextKey] = createObject(
-        referenceObject[key][nextKey],
-        nextRemainingKeys,
-        value
-      );
+    newObj[key] = createObject(newObj[key], remainingKeys, value);
+  } else if (typeof key === "number") {
+    // If the key is a number, it refers to an array element
+    if (!Array.isArray(newObj)) {
+      throw new Error("Cannot access element of non-array");
+    }
+    // If the key is 0 (first element) or equal to the length of the array (last element), set the value at the specified location in the array
+    if ((key === 0 || key === newObj.length) && selector.length == 1) {
+      newObj[key] = value;
     } else {
-      // recursively write the object
-      referenceObject[key] = createObject(
-        typeof referenceObject[key] === "undefined" ? {} : referenceObject[key],
-        remainingKeys,
-        value
-      );
+      if (key > newObj.length) {
+        throw new Error("Array index out of bounds");
+      }
+      newObj[key] = createObject(newObj[key], remainingKeys, value);
     }
+  } else {
+    throw new Error("Invalid selector: element is not a string or a number");
   }
 
-  return referenceObject;
+  return newObj;
 }
