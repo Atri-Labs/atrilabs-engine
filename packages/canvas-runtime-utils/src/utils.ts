@@ -166,45 +166,43 @@ export function createObject(
   selector: (string | number)[],
   value: string | number | boolean | string[] | number[] | boolean[] | object
 ) {
-  // Check if the object is null or undefined
   if (referenceObj === null || referenceObj === undefined) {
     throw new Error("Cannot patch a null or undefined object");
   }
 
-  // Create a copy of the object
-  const newObj = JSON.parse(JSON.stringify(referenceObj));
-
-  // Base case: if the selector array is empty, set the value of the new object to the given value
   if (selector.length === 0) {
-    return value;
+    throw new Error("Selector array cannot be empty");
   }
 
-  // Recursive case: update the value of the property or element specified by the first element of the selector array
+  const newObj = JSON.parse(JSON.stringify(referenceObj));
+
   const [key, ...remainingKeys] = selector;
-  if (typeof key === "string") {
-    if (typeof newObj === "string") return value;
-    // If the key is a string, it refers to an object property
+
+  // Base case: if the selector array is empty, set the value of the new object to the given value
+  if (selector.length === 1 && typeof key === "string") {
     if (typeof newObj !== "object") {
       throw new Error("Cannot access property of non-object or string");
     }
-    if (!newObj.hasOwnProperty(key)) {
-      newObj[key] = {};
-    }
-    newObj[key] = createObject(newObj[key], remainingKeys, value);
-  } else if (typeof key === "number") {
-    // If the key is a number, it refers to an array element
+    newObj[key] = value;
+    return newObj;
+  }
+
+  if (selector.length === 1 && typeof key === "number") {
     if (!Array.isArray(newObj)) {
       throw new Error("Cannot access element of non-array");
     }
-    // If the key is 0 (first element) or equal to the length of the array (last element), set the value at the specified location in the array
     if ((key === 0 || key === newObj.length) && selector.length == 1) {
       newObj[key] = value;
+    } else if (key > newObj.length) {
+      throw new Error("Array index out of bounds");
     } else {
-      if (key > newObj.length) {
-        throw new Error("Array index out of bounds");
-      }
-      newObj[key] = createObject(newObj[key], remainingKeys, value);
+      newObj[key] = value;
     }
+    return newObj;
+  }
+
+  if (typeof key === "string" || typeof key === "number") {
+    newObj[key] = createObject(newObj[key], remainingKeys, value);
   } else {
     throw new Error("Invalid selector: element is not a string or a number");
   }
