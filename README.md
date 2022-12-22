@@ -122,7 +122,7 @@ If you make any contribution to our project (code or no-code; check the [vast li
 ## Contributors 🎉
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-55-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-56-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We are grateful to these wonderful people who contributed to Atri framework. 🙏 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -202,6 +202,7 @@ We are grateful to these wonderful people who contributed to Atri framework. �
       <td align="center"><a href="https://www.youtube.com/channel/UCw4WQJ6A38AnUTQKhxwITSw"><img src="https://avatars.githubusercontent.com/u/16379731?v=4?s=100" width="100px;" alt="Anuj Singla"/><br /><sub><b>Anuj Singla</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=anujsingla" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/anujsi"><img src="https://avatars.githubusercontent.com/u/30435233?v=4?s=100" width="100px;" alt="Anuj Singla"/><br /><sub><b>Anuj Singla</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=anujsi" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/mhered"><img src="https://avatars.githubusercontent.com/u/75589082?v=4?s=100" width="100px;" alt="Manuel Heredia"/><br /><sub><b>Manuel Heredia</b></sub></a><br /><a href="https://github.com/Atri-Labs/atrilabs-engine/commits?author=mhered" title="Code">💻</a></td>
+      <td align="center"><a href="https://nishant2209.github.io/Portfolio/"><img src="https://avatars.githubusercontent.com/u/71169457?v=4?s=100" width="100px;" alt="Nishant Kumar Singh "/><br /><sub><b>Nishant Kumar Singh </b></sub></a><br /><a href="#mentoring-Nishant2209" title="Mentoring">🧑‍🏫</a> <a href="#question-Nishant2209" title="Answering Questions">💬</a></td>
     </tr>
   </tbody>
 </table>
