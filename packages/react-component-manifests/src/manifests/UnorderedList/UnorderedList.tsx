@@ -8,6 +8,12 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 
+type Item = {
+  title: string;
+  description?: string;
+  icon?: string;
+};
+
 export const UnorderedList = forwardRef<
   HTMLDivElement,
   {
@@ -18,19 +24,15 @@ export const UnorderedList = forwardRef<
       titleColor: string;
       descriptionColor?: string;
       //Title of the list
-      items: {
-        title: string;
-        description?: string;
-        icon?: string;
-      }[];
+      items: Item[];
     };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    onClick: (event: { item: Item; index: number }) => void;
     className?: string;
   }
 >((props, ref) => {
   const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
+    (item: Item, index: number) => {
+      props.onClick({ item, index });
     },
     [props]
   );
@@ -44,7 +46,9 @@ export const UnorderedList = forwardRef<
                 padding: "0.5em 0",
                 borderBottom: "1px solid rgba(0,0,0,.06)",
               }}
-              onClick={onClick}
+              onClick={() => {
+                onClick(item, index);
+              }}
               key={index}
             >
               <div style={{ display: "flex", columnGap: "0.5em" }}>

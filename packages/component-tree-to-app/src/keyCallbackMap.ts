@@ -132,4 +132,54 @@ export const keyCallbackMap: {
     },
   },
   Overlay: {},
+  UnorderedList: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  Testimonial: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  Rating: {},
+  VerticalMenu: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "controlled", selector: ["custom", "open"] }],
+    },
+  },
+  Icon: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  Form: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  CountUp: {},
+  Cascader: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  Breadcrumb: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
+  Alert: {
+    onClick: {
+      handlers: [],
+      actions: [{ type: "do_nothing" }],
+    },
+  },
 };
