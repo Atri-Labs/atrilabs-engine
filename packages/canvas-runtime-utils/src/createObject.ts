@@ -1,5 +1,5 @@
 /**
- * Walks
+ * Walks and changes value in place.
  * @param referenceObj object that is referenced and mutateted
  * @param selector path to traverse
  * @param value value to assign
@@ -88,6 +88,27 @@ function _createObject(
   return referenceObj;
 }
 
+/**
+ * The referenceObj can be an object or undefined.
+ * If a sub-path doesn't exist in the refernceObj, then, it will be created.
+ * New elements to an array can be added at the end of array only.
+ *
+ * How to use?
+ *
+ * 1. If you want to mutate one item in the array?
+ *
+ * `createObj(referenceObj, ["path", "to", "array", 2], "somevalue");`
+ *
+ * 2. If you want to mutate entire array or more than one index?
+ *
+ * `createObj(referenceObj, ["path", "to", "array"], ["some", "new", "array"])`
+ *
+ * Currently, you can't mutate more than one element in an array at once.
+ * @param referenceObj  reference object to copy existing values
+ * @param selector describes path to traverse
+ * @param value new value to assign at the end of path
+ * @returns
+ */
 export function createObject(
   referenceObj: any,
   selector: (string | number)[],
