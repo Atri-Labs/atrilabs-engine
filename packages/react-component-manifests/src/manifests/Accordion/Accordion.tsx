@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef } from "react";
+import React, { useRef, forwardRef, useMemo } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -113,29 +113,26 @@ export const Accordion = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      items: { title: string; description?: string; open: boolean }[];
-      title: string[];
-      description: string[];
-      open: boolean[];
+      items: { title: string; description?: string; open?: boolean }[];
     };
-    onTitleClick: (open: boolean[]) => void;
+    onTitleClick: (open: boolean) => void;
     className?: string;
   }
 >((props, ref) => {
   return (
     <div ref={ref} style={props.styles}>
-      {props.custom.title.map((title, i) => (
+      {props.custom.items.map((item, index) => (
         <AccordionComponent
           className={props.className}
-          key={i}
-          title={title}
-          description={props.custom.description[i]}
+          key={index}
+          title={item.title}
+          description={item.description || ""}
           onTitleClick={() => {
-            const open = [...props.custom.open];
-            open[i] = !open[i];
+            const open = item.open || false;
+            item.open = !item.open;
             props.onTitleClick(open);
           }}
-          open={props.custom.open[i]}
+          open={item.open || false}
         />
       ))}
     </div>
@@ -148,29 +145,28 @@ export const DevAccordian = forwardRef<
     styles: React.CSSProperties;
     custom: {
       items: { title: string; description?: string; open: boolean }[];
-      title: string[];
-      description: string[];
-      open: boolean[];
     };
-    onTitleClick: (open: boolean[]) => void;
+    onTitleClick: (open: boolean) => void;
     className?: string;
   }
 >((props, ref) => {
-  const modifiedTitleArray =
-    props.custom.title.length === 0 ? ["Title"] : props.custom.title;
-  const modifiedDescriptionArray =
-    props.custom.description.length === 0
-      ? ["Description will appear here."]
-      : props.custom.description;
-  const modifiedOpenArray =
-    props.custom.open.length === 0 ? [false] : props.custom.open;
+  const items = useMemo(() => {
+    if (props.custom.items.length === 0)
+      return [
+        {
+          title: "Title",
+          description: "Description will appear here.",
+          open: false,
+        },
+      ];
+    return props.custom.items;
+  }, [props.custom.items]);
+
   return (
     <Accordion
       {...props}
       custom={{
-        title: modifiedTitleArray,
-        description: modifiedDescriptionArray,
-        open: modifiedOpenArray,
+        items: items,
       }}
       ref={ref}
     />
@@ -201,9 +197,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
         { fieldName: "open", type: "boolean" },
       ],
     },
-    title: { type: "array" },
-    description: { type: "array" },
-    open: { type: "array_boolean" },
   },
 };
 
