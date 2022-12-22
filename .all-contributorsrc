@@ -536,6 +536,15 @@
         "mentoring",
         "question"
       ]
+    },
+    {
+      "login": "Sarfraz-droid",
+      "name": "MOHAMMAD SARFRAZ ALAM",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73013838?v=4",
+      "profile": "https://sarfraz-alam.netlify.app/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
