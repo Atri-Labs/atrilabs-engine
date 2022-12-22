@@ -112,7 +112,12 @@ export const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string[]; description: string[]; open: boolean[] };
+    custom: {
+      items: { title: string; description?: string; open: boolean }[];
+      title: string[];
+      description: string[];
+      open: boolean[];
+    };
     onTitleClick: (open: boolean[]) => void;
     className?: string;
   }
@@ -141,7 +146,12 @@ export const DevAccordian = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string[]; description: string[]; open: boolean[] };
+    custom: {
+      items: { title: string; description?: string; open: boolean }[];
+      title: string[];
+      description: string[];
+      open: boolean[];
+    };
     onTitleClick: (open: boolean[]) => void;
     className?: string;
   }
@@ -182,6 +192,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "title", type: "text" },
+        { fieldName: "description", type: "text" },
+        { fieldName: "open", type: "boolean" },
+      ],
+    },
     title: { type: "array" },
     description: { type: "array" },
     open: { type: "array_boolean" },
@@ -206,6 +225,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          items: [],
           title: [],
           description: [],
           open: [],
