@@ -71,10 +71,7 @@ function _createObject(
     referenceObj[key] = value;
   }
 
-  // walk recursively until you have reached the last selector
-  if (shouldWalkRecursively()) {
-    walk();
-  } else {
+  function assignValue() {
     switch (typeof key) {
       case "string":
         assignValueToObjectField(key);
@@ -83,6 +80,13 @@ function _createObject(
         assignValueToArrayIndex(key);
         break;
     }
+  }
+
+  // walk recursively until you have reached the last selector
+  if (shouldWalkRecursively()) {
+    walk();
+  } else {
+    assignValue();
   }
 
   return referenceObj;
