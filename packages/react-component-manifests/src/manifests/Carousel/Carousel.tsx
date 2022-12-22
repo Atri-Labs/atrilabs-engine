@@ -221,9 +221,8 @@ export const Carousel = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      items: [];
+      items: { text: string; image?: string }[];
       startTile: number;
-      imageItems: [];
       isIndicatorCircle: boolean;
       indicatorPosition: string;
     };
@@ -269,9 +268,8 @@ export const DevCarousel = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      items: [];
+      items: { text: string; image?: string }[];
       startTile: number;
-      imageItems: [];
       isIndicatorCircle: boolean;
       indicatorPosition: string;
     };
@@ -330,10 +328,16 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    items: { type: "array" },
     startTile: { type: "number" },
-    imageItems: { type: "array_static_asset" },
     isIndicatorCircle: { type: "boolean" },
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "text", type: "text" },
+        { fieldName: "image", type: "static_asset" },
+      ],
+    },
     indicatorPosition: {
       type: "enum",
       options: ["", "Top", "Bottom", "Left", "Right"],
@@ -364,7 +368,6 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           items: [],
           startTile: 0,
-          imageItems: [],
           isIndicatorCircle: false,
         },
         treeOptions: customTreeOptions,
