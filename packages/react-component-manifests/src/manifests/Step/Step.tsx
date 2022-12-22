@@ -17,8 +17,6 @@ export const Step = forwardRef<
       color: string;
       current: number;
       steps: { title: string; description: string }[];
-      title: [];
-      description: [];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -150,7 +148,7 @@ export const Step = forwardRef<
           <div
             className="step-wrapper"
             key={i}
-            style={{ width: `${100 / props.custom.title.length}%` }}
+            style={{ width: `${100 / props.custom.steps.length}%` }}
           >
             {props.custom.current > i + 1 ? (
               <div>
@@ -239,8 +237,6 @@ export const DevStep = forwardRef<
       color: string;
       current: number;
       steps: { title: string; description: string }[];
-      title: [];
-      description: [];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
@@ -481,8 +477,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
         { fieldName: "description", type: "text" },
       ],
     },
-    title: { type: "array" },
-    description: { type: "array" },
   },
 };
 
