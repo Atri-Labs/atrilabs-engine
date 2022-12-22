@@ -146,7 +146,7 @@ export const Step = forwardRef<
         onClick={onClick}
         className={`step-parent ${props.className}`}
       >
-        {props.custom.title.map((step, i) => (
+        {props.custom.steps.map((step, i) => (
           <div
             className="step-wrapper"
             key={i}
@@ -179,8 +179,8 @@ export const Step = forwardRef<
                   </span>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : props.custom.current === i + 1 ? (
@@ -194,8 +194,8 @@ export const Step = forwardRef<
                   </div>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : (
@@ -204,13 +204,13 @@ export const Step = forwardRef<
                   <div className="step-icon-notreached">{i + 1}</div>
                 </div>
                 <div className="step-details-notreached">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             )}
             s
-            {i + 1 < props.custom.title.length &&
+            {i + 1 < props.custom.steps.length &&
             i + 1 < props.custom.current ? (
               <div className="progress-holder">
                 <div
@@ -218,7 +218,7 @@ export const Step = forwardRef<
                   style={{ backgroundColor: `${props.custom.color}` }}
                 ></div>
               </div>
-            ) : i + 1 < props.custom.title.length &&
+            ) : i + 1 < props.custom.steps.length &&
               i + 1 >= props.custom.current ? (
               <div className="progress-holder">
                 <div className="step-progress-notreached"></div>
