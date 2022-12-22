@@ -16,7 +16,7 @@ export const Dropdown = forwardRef<
     custom: {
       values: string[];
       selectedValue?: string;
-      dropdown: { displayed: string; value: string }[];
+      dropdownItems: { displayed: string; value: string }[];
       displayedValues?: string[];
       disabled?: boolean;
     };
@@ -39,14 +39,10 @@ export const Dropdown = forwardRef<
       style={props.styles}
       ref={ref}
     >
-      {props.custom.values.map((value, index) => {
-        const displayedValue =
-          props.custom.displayedValues?.[index] !== undefined
-            ? props.custom.displayedValues?.[index]
-            : value;
+      {props.custom.dropdownItems.map((dropdownItem, index) => {
         return (
-          <option value={value} key={value}>
-            {displayedValue}
+          <option value={dropdownItem.value} key={index}>
+            {dropdownItem.displayed || dropdownItem.value}
           </option>
         );
       })}
@@ -76,7 +72,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     values: { type: "array" },
     displayedValues: { type: "array" },
     selectedValue: { type: "text" },
-    dropdown: {
+    dropdownItems: {
       type: "array_map",
       attributes: [
         { fieldName: "displayed", type: "text" },
@@ -105,6 +101,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           values: [],
+          dropdownItems: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
