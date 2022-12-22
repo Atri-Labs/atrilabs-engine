@@ -16,6 +16,7 @@ export const Dropdown = forwardRef<
     custom: {
       values: string[];
       selectedValue?: string;
+      dropdown: { displayed: string; value: string }[];
       displayedValues?: string[];
       disabled?: boolean;
     };
@@ -73,8 +74,15 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     values: { type: "array" },
-    selectedValue: { type: "text" },
     displayedValues: { type: "array" },
+    selectedValue: { type: "text" },
+    dropdown: {
+      type: "array_map",
+      attributes: [
+        { fieldName: "displayed", type: "text" },
+        { fieldName: "value", type: "text" },
+      ],
+    },
   },
 };
 
