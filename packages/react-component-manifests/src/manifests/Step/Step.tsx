@@ -13,7 +13,13 @@ export const Step = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { color: string; current: number; title: []; description: [] };
+    custom: {
+      color: string;
+      current: number;
+      steps: { title: string; description: string }[];
+      title: [];
+      description: [];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -229,7 +235,13 @@ export const DevStep = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { color: string; current: number; title: []; description: [] };
+    custom: {
+      color: string;
+      current: number;
+      steps: { title: string; description: string }[];
+      title: [];
+      description: [];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -464,6 +476,14 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     color: { type: "color" },
     current: { type: "number" },
+    steps: {
+      type: "array_map",
+      singleObjectName: "step",
+      attributes: [
+        { fieldName: "title", type: "text" },
+        { fieldName: "description", type: "text" },
+      ],
+    },
     title: { type: "array" },
     description: { type: "array" },
   },
