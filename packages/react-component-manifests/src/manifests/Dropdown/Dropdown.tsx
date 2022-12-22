@@ -14,10 +14,8 @@ export const Dropdown = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      values: string[];
       selectedValue?: string;
       dropdownItems: { displayed: string; value: string }[];
-      displayedValues?: string[];
       disabled?: boolean;
     };
     onChange: (selectedValue: string) => void;
@@ -69,8 +67,6 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    values: { type: "array" },
-    displayedValues: { type: "array" },
     selectedValue: { type: "text" },
     dropdownItems: {
       type: "array_map",
