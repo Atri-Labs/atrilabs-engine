@@ -5,6 +5,10 @@ module.exports = {
     { pkg: "@atrilabs/component-icon-manifest-schema" },
   ],
   componentMap: {
+    Alert: {
+      modulePath: "./src/manifests/Alert/Alert.tsx",
+      exportedVarName: "Alert",
+    },
     Button: {
       modulePath: "./src/manifests/Button/Button.tsx",
       exportedVarName: "Button",
