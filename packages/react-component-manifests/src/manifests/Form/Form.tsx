@@ -42,7 +42,6 @@ export const Form = forwardRef<
           | "checkbox"
           | "time"
           | "file"
-          | "image"
           | "select";
         text: inputTypes;
         password: inputTypes;
@@ -66,12 +65,6 @@ export const Form = forwardRef<
         time: Pick<inputTypes, "id" | "label">;
         file: Pick<inputTypes, "id" | "label"> & {
           multiple?: boolean;
-        };
-        image: {
-          width?: number;
-          height?: number;
-          alt?: string;
-          src?: string;
         };
         select: {
           selectOptions?: string[];
@@ -325,16 +318,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
             { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
             { fieldName: "multiple", type: "boolean" },
-          ],
-        },
-        {
-          fieldName: "image",
-          type: "map",
-          attributes: [
-            { fieldName: "width", type: "number" },
-            { fieldName: "height", type: "number" },
-            { fieldName: "alt", type: "text" },
-            { fieldName: "src", type: "static_asset" },
           ],
         },
         {
