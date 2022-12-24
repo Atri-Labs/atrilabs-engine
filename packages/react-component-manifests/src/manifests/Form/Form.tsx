@@ -31,6 +31,7 @@ export const Form = forwardRef<
           selectOptions?: string[];
           selectLabel?: string;
           selectIdentifier?: string;
+          multiple?: boolean;
         };
       };
     };
@@ -80,7 +81,7 @@ export const Form = forwardRef<
           </div>
         );
       })}
-      {props.custom.form.selectedOption !== "none" && (
+      {/* {props.custom.form.selectedOption !== "none" && (
         <div
           style={{
             display: "flex",
@@ -103,7 +104,7 @@ export const Form = forwardRef<
             )}
           </select>
         </div>
-      )}
+      )} */}
       <div
         style={{
           display: "flex",
@@ -172,12 +173,56 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "typed_map",
       attributes: [
         {
-          fieldName: "selectAttribute",
+          fieldName: "select",
           type: "map",
           attributes: [
             { fieldName: "selectLabel", type: "text" },
             { fieldName: "selectIdentifier", type: "text" },
             { fieldName: "selectOptions", type: "array" },
+            { fieldName: "multiple", type: "boolean" },
+          ],
+        },
+      ],
+    },
+    form1: {
+      type: "array_typed_map",
+      attributes: [
+        {
+          fieldName: "text",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "password",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "radio",
+          type: "map",
+          attributes: [
+            { fieldName: "name", type: "text" },
+            { fieldName: "label", type: "array" },
+            { fieldName: "id", type: "array" },
+            { fieldName: "value", type: "array" },
+          ],
+        },
+        {
+          fieldName: "select",
+          type: "map",
+          attributes: [
+            { fieldName: "selectLabel", type: "text" },
+            { fieldName: "selectIdentifier", type: "text" },
+            { fieldName: "selectOptions", type: "array" },
+            { fieldName: "multiple", type: "boolean" },
           ],
         },
       ],
