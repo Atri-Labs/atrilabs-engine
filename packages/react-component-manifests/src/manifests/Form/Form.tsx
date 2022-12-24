@@ -45,15 +45,16 @@ export const Form = forwardRef<
           | "select";
         text: inputTypes;
         password: inputTypes;
-        color: inputTypes;
-        date: inputTypes;
-        datetimeLocal: inputTypes;
+        color: Pick<inputTypes, "id" | "label">;
+        date: Pick<inputTypes, "id" | "label">;
+        datetimeLocal: Pick<inputTypes, "id" | "label">;
         email: inputTypes;
         url: inputTypes;
         search: inputTypes;
         radio: {
+          label?: string;
           name?: string;
-          label?: string[];
+          labels?: string[];
           id?: string[];
           value?: string[];
         };
@@ -185,42 +186,126 @@ export const Form = forwardRef<
                 ))}
             </div>
           );
-        return <></>;
+        else if (element.selectedOption === "radio")
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <div>{element.radio ? element.radio.label : ""}</div>
+              {element.radio &&
+                element.radio.labels?.map((l, i) => (
+                  <div key={i}>
+                    <input
+                      type="radio"
+                      id={element.radio.id ? element.radio.id[i] : ""}
+                      value={element.radio.value ? element.radio.value[i] : ""}
+                      name={element.radio.name || ""}
+                    />
+                    <label
+                      htmlFor={element.radio.id ? element.radio.id[i] : ""}
+                      style={{ paddingLeft: "0.5em" }}
+                    >
+                      {l}
+                    </label>
+                  </div>
+                ))}
+            </div>
+          );
+        else if (
+          element.selectedOption === "color" ||
+          element.selectedOption === "time" ||
+          element.selectedOption === "date" ||
+          element.selectedOption === "datetimeLocal"
+        )
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label
+                htmlFor={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+              >
+                {element[element.selectedOption]
+                  ? element[element.selectedOption].label
+                  : ""}
+              </label>
+              <input
+                type={
+                  element.selectedOption === "datetimeLocal"
+                    ? "datetime-local"
+                    : element.selectedOption
+                }
+                id={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                style={{ padding: "0.5em" }}
+              />
+            </div>
+          );
+        else if (
+          element.selectedOption === "text" ||
+          element.selectedOption === "password" ||
+          element.selectedOption === "email" ||
+          element.selectedOption === "search" ||
+          element.selectedOption === "url"
+        )
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label
+                htmlFor={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+              >
+                {element[element.selectedOption]
+                  ? element[element.selectedOption].label
+                  : ""}
+              </label>
+              <input
+                type={element.selectedOption}
+                placeholder={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].placeholder
+                    : ""
+                }
+                id={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                style={{ padding: "0.5em" }}
+              />
+            </div>
+          );
+        return <div key={index}></div>;
       })}
-      {/* {props.custom.types.map((type, index) => {
-        const labelText =
-          props.custom.labels?.[index] !== undefined
-            ? props.custom.labels?.[index]
-            : "";
-        const id =
-          props.custom.ids?.[index] !== undefined
-            ? props.custom.ids?.[index]
-            : "";
-        const placeholderText =
-          props.custom.placeholders?.[index] !== undefined
-            ? props.custom.placeholders?.[index]
-            : "";
-
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              columnGap: "1em",
-              alignItems: "baseline",
-            }}
-            key={index}
-          >
-            <label htmlFor={id}>{labelText}</label>
-            <input
-              type={type}
-              placeholder={placeholderText}
-              id={id}
-              style={{ padding: "0.5em" }}
-            />
-          </div>
-        );
-      })} */}
       <div
         style={{
           display: "flex",
@@ -301,8 +386,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "radio",
           type: "map",
           attributes: [
+            { fieldName: "label", type: "text" },
             { fieldName: "name", type: "text" },
-            { fieldName: "label", type: "array" },
+            { fieldName: "labels", type: "array" },
             { fieldName: "id", type: "array" },
             { fieldName: "value", type: "array" },
           ],
@@ -323,7 +409,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
           attributes: [
             { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
-            { fieldName: "placeholder", type: "text" },
           ],
         },
         {
@@ -332,7 +417,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
           attributes: [
             { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
-            { fieldName: "placeholder", type: "text" },
           ],
         },
         {
@@ -341,7 +425,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
           attributes: [
             { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
-            { fieldName: "placeholder", type: "text" },
           ],
         },
         {
