@@ -9,6 +9,12 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
 
+type inputTypes = {
+  label?: string;
+  id?: string;
+  placeholder?: string;
+};
+
 export const Form = forwardRef<
   HTMLFormElement,
   {
@@ -27,18 +33,27 @@ export const Form = forwardRef<
       resetButtonColor?: string;
       form: {
         selectedOption: string;
+        text: inputTypes;
+        password: inputTypes;
+        color: inputTypes;
+        date: inputTypes;
+        datetimeLocal: inputTypes;
+        email: inputTypes;
+        url: inputTypes;
+        search: inputTypes;
         selectAttribute: {
           selectOptions?: string[];
           selectLabel?: string;
           selectIdentifier?: string;
           multiple?: boolean;
         };
-      };
+      }[];
     };
     onClick: (buttonClicked: "Submit" | "Reset") => void;
     className?: string;
   }
 >((props, ref) => {
+  console.log("Form", props.custom.form);
   return (
     <form
       ref={ref}
@@ -169,22 +184,22 @@ const customTreeOptions: CustomPropsTreeOptions = {
     submitButtonColor: { type: "color" },
     resetButtonBgColor: { type: "color" },
     resetButtonColor: { type: "color" },
+    // form: {
+    //   type: "typed_map",
+    //   attributes: [
+    //     {
+    //       fieldName: "select",
+    //       type: "map",
+    //       attributes: [
+    //         { fieldName: "selectLabel", type: "text" },
+    //         { fieldName: "selectIdentifier", type: "text" },
+    //         { fieldName: "selectOptions", type: "array" },
+    //         { fieldName: "multiple", type: "boolean" },
+    //       ],
+    //     },
+    //   ],
+    // },
     form: {
-      type: "typed_map",
-      attributes: [
-        {
-          fieldName: "select",
-          type: "map",
-          attributes: [
-            { fieldName: "selectLabel", type: "text" },
-            { fieldName: "selectIdentifier", type: "text" },
-            { fieldName: "selectOptions", type: "array" },
-            { fieldName: "multiple", type: "boolean" },
-          ],
-        },
-      ],
-    },
-    form1: {
       type: "array_typed_map",
       attributes: [
         {
@@ -219,7 +234,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "checkbox",
           type: "map",
           attributes: [
-            { fieldName: "name", type: "array" },
             { fieldName: "label", type: "array" },
             { fieldName: "id", type: "array" },
             { fieldName: "value", type: "array" },
@@ -244,7 +258,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
           ],
         },
         {
-          fieldName: "datetime-local",
+          fieldName: "datetimeLocal",
           type: "map",
           attributes: [
             { fieldName: "label", type: "text" },
@@ -267,7 +281,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
           attributes: [
             { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
-            { fieldName: "placeholder", type: "text" },
           ],
         },
         {
