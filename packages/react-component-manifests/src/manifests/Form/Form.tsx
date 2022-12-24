@@ -524,7 +524,24 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
-          form: [],
+          form: [
+            {
+              selectedOption: "text",
+              text: {
+                label: "Name:",
+                id: "name",
+                placeholder: "Enter your name",
+              },
+            },
+            {
+              selectedOption: "password",
+              password: {
+                label: "Password:",
+                id: "pwd",
+                placeholder: "Enter your password",
+              },
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
