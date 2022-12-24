@@ -41,7 +41,28 @@ export const Form = forwardRef<
         email: inputTypes;
         url: inputTypes;
         search: inputTypes;
-        selectAttribute: {
+        radio: {
+          name?: string;
+          label?: string[];
+          id?: string[];
+          value?: string[];
+        };
+        checkbox: {
+          label?: string[];
+          id?: string[];
+          value?: string[];
+        };
+        time: Pick<inputTypes, "id" | "label">;
+        file: Pick<inputTypes, "id" | "label"> & {
+          multiple?: boolean;
+        };
+        image: {
+          width?: number;
+          height?: number;
+          alt?: string;
+          src?: string;
+        };
+        select: {
           selectOptions?: string[];
           selectLabel?: string;
           selectIdentifier?: string;
