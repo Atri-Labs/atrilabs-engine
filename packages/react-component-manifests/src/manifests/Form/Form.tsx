@@ -216,6 +216,34 @@ const customTreeOptions: CustomPropsTreeOptions = {
           ],
         },
         {
+          fieldName: "checkbox",
+          type: "map",
+          attributes: [
+            { fieldName: "name", type: "array" },
+            { fieldName: "label", type: "array" },
+            { fieldName: "id", type: "array" },
+            { fieldName: "value", type: "array" },
+          ],
+        },
+        {
+          fieldName: "color",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "date",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
           fieldName: "select",
           type: "map",
           attributes: [
