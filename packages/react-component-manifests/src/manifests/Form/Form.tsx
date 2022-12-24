@@ -58,7 +58,8 @@ export const Form = forwardRef<
           value?: string[];
         };
         checkbox: {
-          label?: string[];
+          label?: string;
+          labels?: string[];
           id?: string[];
           value?: string[];
         };
@@ -149,6 +150,42 @@ export const Form = forwardRef<
               />
             </div>
           );
+        else if (element.selectedOption === "checkbox")
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <div>{element.checkbox ? element.checkbox.label : ""}</div>
+              {element.checkbox &&
+                element.checkbox.labels?.map((l, i) => (
+                  <div key={i}>
+                    <input
+                      type="checkbox"
+                      id={element.checkbox.id ? element.checkbox.id[i] : ""}
+                      value={
+                        element.checkbox.value ? element.checkbox.value[i] : ""
+                      }
+                    />
+                    <label
+                      htmlFor={
+                        element.checkbox.id ? element.checkbox.id[i] : ""
+                      }
+                      style={{ paddingLeft: "0.5em" }}
+                    >
+                      {l}
+                    </label>
+                  </div>
+                ))}
+            </div>
+          );
+        return <></>;
       })}
       {/* {props.custom.types.map((type, index) => {
         const labelText =
@@ -274,7 +311,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "checkbox",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "array" },
+            { fieldName: "label", type: "text" },
+            { fieldName: "labels", type: "array" },
             { fieldName: "id", type: "array" },
             { fieldName: "value", type: "array" },
           ],
