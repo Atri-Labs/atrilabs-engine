@@ -244,6 +244,51 @@ const customTreeOptions: CustomPropsTreeOptions = {
           ],
         },
         {
+          fieldName: "datetime-local",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "email",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "time",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "url",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "search",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
           fieldName: "select",
           type: "map",
           attributes: [
