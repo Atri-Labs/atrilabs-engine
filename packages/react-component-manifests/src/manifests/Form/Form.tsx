@@ -107,6 +107,9 @@ export const Form = forwardRef<
               <select
                 id={element.select ? element.select.selectIdentifier : ""}
                 style={{ padding: "0.5em" }}
+                multiple={
+                  element.select && element.select.multiple ? true : false
+                }
               >
                 {element.select ? (
                   element.select.selectOptions?.map((option, index) => {
