@@ -22,17 +22,28 @@ export const Form = forwardRef<
     custom: {
       target: string;
       autocomplete: string;
-      // types: string[];
-      // labels: string[];
-      // placeholders: string[];
-      // ids: string[];
       showResetButton: boolean;
       submitButtonBgColor?: string;
       submitButtonColor?: string;
       resetButtonBgColor?: string;
       resetButtonColor?: string;
       form: {
-        selectedOption: string;
+        selectedOption:
+          | "none"
+          | "text"
+          | "password"
+          | "color"
+          | "date"
+          | "datetimeLocal"
+          | "email"
+          | "url"
+          | "search"
+          | "radio"
+          | "checkbox"
+          | "time"
+          | "file"
+          | "image"
+          | "select";
         text: inputTypes;
         password: inputTypes;
         color: inputTypes;
@@ -196,30 +207,11 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["on", "off"],
     },
-    // types: { type: "array" },
-    // labels: { type: "array" },
-    // placeholders: { type: "array" },
-    // ids: { type: "array" },
     showResetButton: { type: "boolean" },
     submitButtonBgColor: { type: "color" },
     submitButtonColor: { type: "color" },
     resetButtonBgColor: { type: "color" },
     resetButtonColor: { type: "color" },
-    // form: {
-    //   type: "typed_map",
-    //   attributes: [
-    //     {
-    //       fieldName: "select",
-    //       type: "map",
-    //       attributes: [
-    //         { fieldName: "selectLabel", type: "text" },
-    //         { fieldName: "selectIdentifier", type: "text" },
-    //         { fieldName: "selectOptions", type: "array" },
-    //         { fieldName: "multiple", type: "boolean" },
-    //       ],
-    //     },
-    //   ],
-    // },
     form: {
       type: "array_typed_map",
       attributes: [
