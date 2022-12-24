@@ -14,6 +14,7 @@ export const Form = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
+      target: string;
       types: string[];
       labels: string[];
       placeholders: string[];
@@ -37,7 +38,12 @@ export const Form = forwardRef<
   }
 >((props, ref) => {
   return (
-    <form ref={ref} className={props.className} style={props.styles}>
+    <form
+      ref={ref}
+      className={props.className}
+      style={props.styles}
+      target={props.custom.target}
+    >
       {props.custom.types.map((type, index) => {
         const labelText =
           props.custom.labels?.[index] !== undefined
@@ -146,6 +152,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
     types: { type: "array" },
     labels: { type: "array" },
     placeholders: { type: "array" },
@@ -194,6 +201,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          target: "_self",
           types: ["text", "password"],
           labels: ["Enter your name:", "Password:"],
           placeholders: ["Enter your name", "Password"],
