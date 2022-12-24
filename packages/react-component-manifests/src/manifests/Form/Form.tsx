@@ -389,10 +389,7 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
-          form: {
-            selectedOption: "none",
-            selectAttribute: {},
-          },
+          form: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
