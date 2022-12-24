@@ -22,10 +22,10 @@ export const Form = forwardRef<
     custom: {
       target: string;
       autocomplete: string;
-      types: string[];
-      labels: string[];
-      placeholders: string[];
-      ids: string[];
+      // types: string[];
+      // labels: string[];
+      // placeholders: string[];
+      // ids: string[];
       showResetButton: boolean;
       submitButtonBgColor?: string;
       submitButtonColor?: string;
@@ -83,7 +83,7 @@ export const Form = forwardRef<
       target={props.custom.target}
       autoComplete={props.custom.autocomplete}
     >
-      {props.custom.types.map((type, index) => {
+      {/* {props.custom.types.map((type, index) => {
         const labelText =
           props.custom.labels?.[index] !== undefined
             ? props.custom.labels?.[index]
@@ -116,7 +116,7 @@ export const Form = forwardRef<
             />
           </div>
         );
-      })}
+      })} */}
       {/* {props.custom.form.selectedOption !== "none" && (
         <div
           style={{
@@ -196,10 +196,10 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["on", "off"],
     },
-    types: { type: "array" },
-    labels: { type: "array" },
-    placeholders: { type: "array" },
-    ids: { type: "array" },
+    // types: { type: "array" },
+    // labels: { type: "array" },
+    // placeholders: { type: "array" },
+    // ids: { type: "array" },
     showResetButton: { type: "boolean" },
     submitButtonBgColor: { type: "color" },
     submitButtonColor: { type: "color" },
