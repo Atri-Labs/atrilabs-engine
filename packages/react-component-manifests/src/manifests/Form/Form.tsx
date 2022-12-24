@@ -88,8 +88,43 @@ export const Form = forwardRef<
       autoComplete={props.custom.autocomplete}
     >
       {props.custom.form.map((element, index) => {
-        return (
-          element.selectedOption === "select" && (
+        if (element.selectedOption === "select")
+          return (
+            element.selectedOption === "select" && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                  columnGap: "1em",
+                  alignItems: "baseline",
+                }}
+                key={index}
+              >
+                <label
+                  htmlFor={
+                    element.select ? element.select.selectIdentifier : ""
+                  }
+                >
+                  {element.select ? element.select.selectLabel : ""}
+                </label>
+                <select
+                  id={element.select ? element.select.selectIdentifier : ""}
+                  style={{ padding: "0.5em" }}
+                  multiple={element.select ? element.select.multiple : false}
+                >
+                  {element.select ? (
+                    element.select.selectOptions?.map((option, index) => {
+                      return <option key={index}>{option}</option>;
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </select>
+              </div>
+            )
+          );
+        else if (element.selectedOption === "file")
+          return (
             <div
               style={{
                 display: "flex",
@@ -99,29 +134,21 @@ export const Form = forwardRef<
               }}
               key={index}
             >
-              <label
-                htmlFor={element.select ? element.select.selectIdentifier : ""}
-              >
-                {element.select ? element.select.selectLabel : ""}
+              <label htmlFor={element.file ? element.file.id : ""}>
+                {element.file ? element.file.label : ""}
               </label>
-              <select
-                id={element.select ? element.select.selectIdentifier : ""}
-                style={{ padding: "0.5em" }}
-                multiple={
-                  element.select && element.select.multiple ? true : false
-                }
-              >
-                {element.select ? (
-                  element.select.selectOptions?.map((option, index) => {
-                    return <option key={index}>{option}</option>;
-                  })
-                ) : (
-                  <></>
-                )}
-              </select>
+              <input
+                type="file"
+                multiple={element.file ? element.file.multiple : false}
+                id={element.file ? element.file.id : ""}
+                style={{
+                  padding: "0.5em",
+                  width: "95px",
+                  color: "transparent",
+                }}
+              />
             </div>
-          )
-        );
+          );
       })}
       {/* {props.custom.types.map((type, index) => {
         const labelText =
