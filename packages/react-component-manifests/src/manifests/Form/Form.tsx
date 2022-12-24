@@ -289,6 +289,25 @@ const customTreeOptions: CustomPropsTreeOptions = {
           ],
         },
         {
+          fieldName: "file",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "multiple", type: "boolean" },
+          ],
+        },
+        {
+          fieldName: "image",
+          type: "map",
+          attributes: [
+            { fieldName: "width", type: "number" },
+            { fieldName: "height", type: "number" },
+            { fieldName: "alt", type: "text" },
+            { fieldName: "src", type: "static_asset" },
+          ],
+        },
+        {
           fieldName: "select",
           type: "map",
           attributes: [
