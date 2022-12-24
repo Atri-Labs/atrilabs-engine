@@ -94,6 +94,39 @@ export const Form = forwardRef<
       target={props.custom.target}
       autoComplete={props.custom.autocomplete}
     >
+      {props.custom.form.map((element, index) => {
+        return (
+          element.selectedOption === "select" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label
+                htmlFor={element.select ? element.select.selectIdentifier : ""}
+              >
+                {element.select ? element.select.selectLabel : ""}
+              </label>
+              <select
+                id={element.select ? element.select.selectIdentifier : ""}
+                style={{ padding: "0.5em" }}
+              >
+                {element.select ? (
+                  element.select.selectOptions?.map((option, index) => {
+                    return <option key={index}>{option}</option>;
+                  })
+                ) : (
+                  <></>
+                )}
+              </select>
+            </div>
+          )
+        );
+      })}
       {/* {props.custom.types.map((type, index) => {
         const labelText =
           props.custom.labels?.[index] !== undefined
@@ -128,30 +161,6 @@ export const Form = forwardRef<
           </div>
         );
       })} */}
-      {/* {props.custom.form.selectedOption !== "none" && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            columnGap: "1em",
-            alignItems: "baseline",
-          }}
-        >
-          <label htmlFor={props.custom.form.selectAttribute.selectIdentifier}>
-            {props.custom.form.selectAttribute.selectLabel}
-          </label>
-          <select
-            id={props.custom.form.selectAttribute.selectIdentifier}
-            style={{ padding: "0.5em" }}
-          >
-            {props.custom.form.selectAttribute.selectOptions?.map(
-              (option, index) => {
-                return <option key={index}>{option}</option>;
-              }
-            )}
-          </select>
-        </div>
-      )} */}
       <div
         style={{
           display: "flex",
@@ -207,11 +216,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["on", "off"],
     },
-    showResetButton: { type: "boolean" },
-    submitButtonBgColor: { type: "color" },
-    submitButtonColor: { type: "color" },
-    resetButtonBgColor: { type: "color" },
-    resetButtonColor: { type: "color" },
     form: {
       type: "array_typed_map",
       attributes: [
@@ -345,6 +349,11 @@ const customTreeOptions: CustomPropsTreeOptions = {
         },
       ],
     },
+    showResetButton: { type: "boolean" },
+    submitButtonBgColor: { type: "color" },
+    submitButtonColor: { type: "color" },
+    resetButtonBgColor: { type: "color" },
+    resetButtonColor: { type: "color" },
   },
 };
 
