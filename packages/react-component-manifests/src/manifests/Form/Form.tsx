@@ -15,6 +15,7 @@ export const Form = forwardRef<
     styles: React.CSSProperties;
     custom: {
       target: string;
+      autocomplete: string;
       types: string[];
       labels: string[];
       placeholders: string[];
@@ -43,6 +44,7 @@ export const Form = forwardRef<
       className={props.className}
       style={props.styles}
       target={props.custom.target}
+      autoComplete={props.custom.autocomplete}
     >
       {props.custom.types.map((type, index) => {
         const labelText =
@@ -153,6 +155,10 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
+    autocomplete: {
+      type: "enum",
+      options: ["on", "off"],
+    },
     types: { type: "array" },
     labels: { type: "array" },
     placeholders: { type: "array" },
@@ -202,6 +208,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           target: "_self",
+          autocomplete: "off",
           types: ["text", "password"],
           labels: ["Enter your name:", "Password:"],
           placeholders: ["Enter your name", "Password"],
