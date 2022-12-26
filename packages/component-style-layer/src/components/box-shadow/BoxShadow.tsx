@@ -1,4 +1,5 @@
 import {
+  gray100,
   gray200,
   gray400,
   gray800,
@@ -51,6 +52,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "center",
   },
+  inputBox: {
+    ...smallText,
+    outline: "none",
+    color: gray100,
+    backgroundColor: gray800,
+    width: "57px",
+    height: "26px",
+    border: "none",
+    borderRadius: "2px",
+  },
+  select: {
+    textAlign: "left",
+  },
 };
 
 export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
@@ -71,7 +85,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
       <div
         style={
           showProperties
-            ? { display: "flex", rowGap: "2rem", flexDirection: "column" }
+            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
             : { display: "none" }
         }
       >
@@ -120,15 +134,34 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               defaultValue="0"
             />
           </div>
-          <div style={styles.gridInputContainer}>
-            <ColorComponent
-              name="Box Shadow Color"
-              styleItem="boxShadow"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              openPalette={props.openPalette}
-            />
+          <div style={styles.optionName}>
+            <div style={{ ...smallText, color: gray200 }}>shadow type</div>
           </div>
+          <div style={{ marginLeft: "-2px" }}>
+            <select
+              name="boxShadowType"
+              //   onChange={(e) => handleOutlineChange(e, "outlineStyle")}
+              style={styles.inputBox}
+              value={props.styles.outlineStyle || ""}
+            >
+              <option style={styles.select} value={""}></option>
+              <option style={styles.select} value="outset">
+                outset
+              </option>
+              <option style={styles.select} value="inset">
+                inset
+              </option>
+            </select>
+          </div>
+        </div>
+        <div style={styles.gridInputContainer}>
+          <ColorComponent
+            name="Box Shadow Color"
+            styleItem="boxShadow"
+            styles={props.styles}
+            patchCb={props.patchCb}
+            openPalette={props.openPalette}
+          />
         </div>
       </div>
     </div>
