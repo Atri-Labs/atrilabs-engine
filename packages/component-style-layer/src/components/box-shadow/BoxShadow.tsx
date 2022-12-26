@@ -9,8 +9,8 @@ import {
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { useState } from "react";
-import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
-import { ColorComponent } from "../commons/ColorComponent";
+import { ReactComponent as AddIcon } from "../../assets/add.svg";
+import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -67,27 +67,56 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+type boxShadowType = {
+  hOffset: number;
+  vOffset: number;
+  blur: number;
+  spread: number;
+  color: string;
+  shadowType: string;
+};
+
 export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+  const [boxShadows, setBoxShadows] = useState<boxShadowType[]>([]);
+
   props.patchCb({
     property: {
       styles: {
-        boxShadow: "1px 1px red",
+        boxShadow: "6px 4px red",
       },
     },
   });
+
   return (
     <div style={styles.container}>
-      <div style={styles.drop}>
-        <DropDownArrow
-          onClick={() => setShowProperties(!showProperties)}
-          style={
-            !showProperties
-              ? { transform: "rotate(-90deg)" }
-              : { transform: "rotate(0deg)" }
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={styles.drop}>
+          <DropDownArrow
+            onClick={() => setShowProperties(!showProperties)}
+            style={
+              !showProperties
+                ? { transform: "rotate(-90deg)" }
+                : { transform: "rotate(0deg)" }
+            }
+          />
+          <div style={styles.header}>Box Shadow</div>
+        </div>
+        <AddIcon
+          onClick={() =>
+            setBoxShadows((boxShadows: boxShadowType[]) => [
+              ...boxShadows,
+              {
+                hOffset: 0,
+                vOffset: 0,
+                blur: 0,
+                spread: 0,
+                color: "",
+                shadowType: "",
+              },
+            ])
           }
         />
-        <div style={styles.header}>Box Shadow</div>
       </div>
       <div
         style={
@@ -95,7 +124,11 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
             ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
             : { display: "none" }
         }
-      ></div>
+      >
+        {boxShadows.map((boxShadow, index) => {
+          return <div style={{ ...styles.header }}>Shadow {index + 1}</div>;
+        })}
+      </div>
     </div>
   );
 };
