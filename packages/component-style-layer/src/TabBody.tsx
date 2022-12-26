@@ -22,6 +22,7 @@ import { Css2Display } from "./components/css2display/Css2Display";
 import "./TabBody.css";
 import { getAliasList } from "./utils";
 import { CssSummary } from "./components/cssSummary/CssSummary";
+import { Tree } from "@atrilabs/forest";
 
 export type TabBodyProps = {
   alias: string;
@@ -38,6 +39,8 @@ export type TabBodyProps = {
   setColorValue: (color: string, index: number) => void;
   colorValueArraySetter: (colorValues: [string]) => void;
   initialAlias: string;
+  cssTree: Tree;
+  compTree: Tree;
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -110,7 +113,11 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       <div style={{ ...smallText, color: gray300, padding: "0.5rem" }}>
         {showDuplicateAliasMessage ? "Error: This alias/name is taken." : ""}
       </div>
-      <CssSummary compId={props.compId} />
+      <CssSummary
+        compId={props.compId}
+        cssTree={props.cssTree}
+        compTree={props.compTree}
+      />
       {props.treeOptions && props.treeOptions.css2DisplayOptions ? (
         <Css2Display
           styles={props.styles}

@@ -207,13 +207,74 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    cartesianGrid: { type: "map" },
+    cartesianGrid: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "text" },
+        { fieldName: "strokeDasharray", type: "text" },
+      ],
+    },
     data: { type: "array" },
-    options: { type: "array" },
-    toolTip: { type: "map" },
-    legend: { type: "map" },
-    xAxis: { type: "map" },
-    yAxis: { type: "map" },
+    options: {
+      type: "array_map",
+      attributes: [
+        { fieldName: "name", type: "text" },
+        { fieldName: "stroke", type: "text" },
+        { fieldName: "fill", type: "boolean" },
+        { fieldName: "type", type: "text" },
+        { fieldName: "animate", type: "boolean" },
+        { fieldName: "order", type: "number" },
+        {
+          fieldName: "shape",
+          type: "enum",
+          options: [
+            "circle",
+            "cross",
+            "diamond",
+            "square",
+            "star",
+            "triangle",
+            "wye",
+          ],
+        },
+      ],
+    },
+    toolTip: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    legend: {
+      type: "map",
+      attributes: [{ fieldName: "show", type: "boolean" }],
+    },
+    xAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+      ],
+    },
+    yAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+      ],
+    },
+    zAxis: {
+      type: "map",
+      attributes: [
+        { fieldName: "show", type: "boolean" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "name", type: "text" },
+        { fieldName: "unit", type: "text" },
+        { fieldName: "range", type: "number" },
+      ],
+    },
     chartHeight: { type: "number" },
     chartWidth: { type: "number" },
   },

@@ -2,13 +2,11 @@ import {
   api,
   BrowserForestManager,
   manifestRegistryController,
-  useTree,
 } from "@atrilabs/core";
 import React, { useCallback, useEffect, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import cssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { PatchEvent } from "@atrilabs/forest";
+import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import {
   getComponentProps,
@@ -18,9 +16,14 @@ import {
 } from "@atrilabs/canvas-runtime";
 import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
 
-export const useManageCSS = (id: string | null) => {
-  const compTree = useTree(ComponentTreeId);
-  const cssTree = useTree(cssTreeId);
+export const useManageCSS = (props: {
+  id: string | null;
+  compTree: Tree;
+  cssTree: Tree;
+}) => {
+  const id = props.id;
+  const compTree = props.compTree;
+  const cssTree = props.cssTree;
   const [styles, setStyles] = useState<React.CSSProperties>({});
   const [treeOptions, setTreeOptions] = useState<
     | ReactComponentManifestSchema["dev"]["attachProps"]["0"]["treeOptions"]
@@ -142,6 +145,8 @@ export const useManageCSS = (id: string | null) => {
                 updateComponentProps(id, { ...oldProps, ...props });
               }
             }
+
+            // TODO: update inherited styles (maybe inside a startTransition)
           }
         }
       });

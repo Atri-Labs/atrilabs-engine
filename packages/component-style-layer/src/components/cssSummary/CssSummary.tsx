@@ -1,7 +1,3 @@
-import { useTree } from "@atrilabs/core";
-import CssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
-// import { jssToCss } from "../../../../app-generator/src/react-app-template-manager/jssToCss";
 import { getAncestors, getStylesAlias } from "@atrilabs/canvas-runtime-utils";
 import {
   gray200,
@@ -13,6 +9,21 @@ import {
 } from "@atrilabs/design-system";
 import React, { useState } from "react";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
+import { Tree } from "@atrilabs/forest";
+
+interface CssSummaryProp {
+  compId: string;
+  cssTree: Tree;
+  compTree: Tree;
+}
+
+interface CssOfElementProp {
+  compId: string;
+  showAlias: boolean;
+  cssTree: Tree;
+  compTree: Tree;
+}
+
 // CSS
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -54,11 +65,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginRight: ".25rem",
   },
 };
-const CssOfElement: React.FC<CssOfElementProp> = ({ compId, showAlias }) => {
-  const cssTree = useTree(CssTreeId);
-  const tree = useTree(ComponentTreeId);
-  const { alias, cssStyles } = getStylesAlias(compId, tree, cssTree);
-  const css = Object.keys(cssStyles).map((ele, index) => {
+
+const CssOfElement: React.FC<CssOfElementProp> = ({
+  compId,
+  showAlias,
+  compTree,
+  cssTree,
+}) => {
+  const { alias, cssStyles } = getStylesAlias(compId, compTree, cssTree);
+  const CSS = Object.keys(cssStyles).map((ele, index) => {
     return (
       <div key={index + ele} style={styles.cssContainer}>
         <span style={styles.cssProperty}>{ele}: </span>
@@ -71,11 +86,15 @@ const CssOfElement: React.FC<CssOfElementProp> = ({ compId, showAlias }) => {
       {showAlias && (
         <h3 style={styles.cssParentAlias}>Inherited from {alias}</h3>
       )}
-      {css}
+      {CSS}
     </div>
   );
 };
-export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
+export const CssSummary: React.FC<CssSummaryProp> = ({
+  compId,
+  cssTree,
+  compTree,
+}) => {
   const [showProperties, setShowProperties] = useState<boolean>(false);
   const ancestorsId = getAncestors(compId);
   const CssSummary = ancestorsId.map((ele, index) => {
@@ -85,6 +104,8 @@ export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
         compId={ele}
         // show alias of only of the parents
         showAlias={index >= 1 ? true : false}
+        cssTree={cssTree}
+        compTree={compTree}
       />
     );
   });
@@ -113,11 +134,3 @@ export const CssSummary: React.FC<CssSummaryProp> = ({ compId }) => {
     </div>
   );
 };
-
-interface CssSummaryProp {
-  compId: string;
-}
-interface CssOfElementProp {
-  compId: string;
-  showAlias: boolean;
-}

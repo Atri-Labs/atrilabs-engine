@@ -201,9 +201,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 

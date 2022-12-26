@@ -1,5 +1,10 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  modulePathIgnorePatterns: ["createObject.ts"],
+  modulePathIgnorePatterns: [],
+  transform: {
+    "^.+\\.(ts|tsx)?$": "ts-jest",
+    "^.+\\.(js|jsx)$": "babel-jest",
+  },
+  testEnvironment: "jsdom",
 };

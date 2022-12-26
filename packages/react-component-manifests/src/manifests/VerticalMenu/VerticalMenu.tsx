@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
