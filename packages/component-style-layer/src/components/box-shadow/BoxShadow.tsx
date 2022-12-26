@@ -1,7 +1,15 @@
-import { gray200, gray800, h5Heading } from "@atrilabs/design-system";
+import {
+  gray200,
+  gray400,
+  gray800,
+  h5Heading,
+  smallText,
+} from "@atrilabs/design-system";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
 import { useState } from "react";
+import { SizeInputWithUnits } from "../commons/SizeInputWithUnits";
+import { ColorComponent } from "../commons/ColorComponent";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -26,6 +34,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "baseline",
     cursor: "pointer",
   },
+  gridContainer: {
+    ...smallText,
+    color: gray400,
+    display: "grid",
+    gridTemplateColumns: "15px 60px 15px 60px",
+    rowGap: "1rem",
+    textAlign: "center",
+    columnGap: "1rem",
+  },
+  optionName: {
+    ...smallText,
+    width: "1.5rem",
+    color: "white",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 };
 
 export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
@@ -49,7 +74,63 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
             ? { display: "flex", rowGap: "2rem", flexDirection: "column" }
             : { display: "none" }
         }
-      ></div>
+      >
+        <div style={styles.gridContainer}>
+          <div style={styles.optionName}>
+            <div style={{ ...smallText, color: gray200 }}>h-offset</div>
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="outlineOffset"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+          <div style={styles.optionName}>
+            <div style={{ ...smallText, color: gray200 }}>v-offset</div>
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="outlineOffset"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+          <div style={styles.optionName}>
+            <div style={{ ...smallText, color: gray200 }}>blur</div>
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="outlineOffset"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+          <div style={styles.optionName}>
+            <div style={{ ...smallText, color: gray200 }}>spread</div>
+          </div>
+          <div>
+            <SizeInputWithUnits
+              styleItem="outlineOffset"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              defaultValue="0"
+            />
+          </div>
+          <div style={styles.gridInputContainer}>
+            <ColorComponent
+              name="Box Shadow Color"
+              styleItem="boxShadow"
+              styles={props.styles}
+              patchCb={props.patchCb}
+              openPalette={props.openPalette}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
