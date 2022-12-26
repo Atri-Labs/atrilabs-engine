@@ -8,7 +8,7 @@ import {
 } from "@atrilabs/design-system";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ReactComponent as AddIcon } from "../../assets/add.svg";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
@@ -80,6 +80,15 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
   const [boxShadows, setBoxShadows] = useState<boxShadowType[]>([]);
 
+  const deleteValueCb = useCallback(
+    (index: number) => {
+      const updatedValue = [...boxShadows];
+      updatedValue.splice(index, 1);
+      setBoxShadows(updatedValue);
+    },
+    [boxShadows]
+  );
+
   props.patchCb({
     property: {
       styles: {
@@ -126,7 +135,22 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
         }
       >
         {boxShadows.map((boxShadow, index) => {
-          return <div style={{ ...styles.header }}>Shadow {index + 1}</div>;
+          return (
+            <div key={index}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  color: "#fff",
+                }}
+              >
+                <div style={styles.header}>Shadow {index + 1}</div>
+                <div onClick={() => deleteValueCb(index)}>
+                  <MinusIcon />
+                </div>
+              </div>
+            </div>
+          );
         })}
       </div>
     </div>
