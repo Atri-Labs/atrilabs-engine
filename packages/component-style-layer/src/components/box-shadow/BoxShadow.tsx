@@ -89,6 +89,17 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     [boxShadows]
   );
 
+  const updateHOffsetValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.hOffset = parseInt(e.target.value) || 0;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
   props.patchCb({
     property: {
       styles: {
@@ -173,7 +184,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div>h-offset</div>
                 <input
-                  // onChange={handleChange}
+                  onChange={(e) => updateHOffsetValueCb(e, index)}
                   type="text"
                   value={boxShadows[index].hOffset}
                   style={{
