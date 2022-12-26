@@ -136,18 +136,150 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
       >
         {boxShadows.map((boxShadow, index) => {
           return (
-            <div key={index}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                rowGap: "0.5em",
+                borderBottom: "1px solid #fff",
+              }}
+              key={index}
+            >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
+                  alignItems: "center",
                   color: "#fff",
                 }}
               >
                 <div style={styles.header}>Shadow {index + 1}</div>
-                <div onClick={() => deleteValueCb(index)}>
+                <div
+                  style={{ display: "flex" }}
+                  onClick={() => deleteValueCb(index)}
+                >
                   <MinusIcon />
                 </div>
+              </div>
+              <div
+                style={{
+                  ...h5Heading,
+                  color: gray200,
+                  display: "flex",
+                  paddingLeft: "0.5rem",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}
+              >
+                <div>h-offset</div>
+                <input
+                  // onChange={handleChange}
+                  type="text"
+                  value={boxShadows[index].hOffset}
+                  style={{
+                    ...smallText,
+                    outline: "none",
+                    color: gray100,
+                    backgroundColor: gray800,
+                    height: "26px",
+                    width: "25px",
+                    border: "none",
+                    borderRadius: "2px 0 0 2px",
+                    paddingLeft: "6px",
+                  }}
+                  placeholder="0"
+                  pattern="^[0-9]+$"
+                />
+              </div>
+              <div
+                style={{
+                  ...h5Heading,
+                  color: gray200,
+                  display: "flex",
+                  paddingLeft: "0.5rem",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}
+              >
+                <div>v-offset</div>
+                <input
+                  // onChange={handleChange}
+                  type="text"
+                  value={boxShadows[index].vOffset}
+                  style={{
+                    ...smallText,
+                    outline: "none",
+                    color: gray100,
+                    backgroundColor: gray800,
+                    height: "26px",
+                    width: "25px",
+                    border: "none",
+                    borderRadius: "2px 0 0 2px",
+                    paddingLeft: "6px",
+                  }}
+                  placeholder="0"
+                  pattern="^[0-9]+$"
+                />
+              </div>
+              <div
+                style={{
+                  ...h5Heading,
+                  color: gray200,
+                  display: "flex",
+                  paddingLeft: "0.5rem",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}
+              >
+                <div>spread</div>
+                <input
+                  // onChange={handleChange}
+                  type="text"
+                  value={boxShadows[index].spread}
+                  style={{
+                    ...smallText,
+                    outline: "none",
+                    color: gray100,
+                    backgroundColor: gray800,
+                    height: "26px",
+                    width: "25px",
+                    border: "none",
+                    borderRadius: "2px 0 0 2px",
+                    paddingLeft: "6px",
+                  }}
+                  placeholder="0"
+                  pattern="^[0-9]+$"
+                />
+              </div>
+              <div
+                style={{
+                  ...h5Heading,
+                  color: gray200,
+                  display: "flex",
+                  paddingLeft: "0.5rem",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}
+              >
+                <div>blur</div>
+                <input
+                  // onChange={handleChange}
+                  type="text"
+                  value={boxShadows[index].blur}
+                  style={{
+                    ...smallText,
+                    outline: "none",
+                    color: gray100,
+                    backgroundColor: gray800,
+                    height: "26px",
+                    width: "25px",
+                    border: "none",
+                    borderRadius: "2px 0 0 2px",
+                    paddingLeft: "6px",
+                  }}
+                  placeholder="0"
+                  pattern="^[0-9]+$"
+                />
               </div>
             </div>
           );
