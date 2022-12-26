@@ -69,6 +69,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
+  props.patchCb({
+    property: {
+      styles: {
+        boxShadow: "1px 1px red",
+      },
+    },
+  });
   return (
     <div style={styles.container}>
       <div style={styles.drop}>
@@ -88,82 +95,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
             ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
             : { display: "none" }
         }
-      >
-        <div style={styles.gridContainer}>
-          <div style={styles.optionName}>
-            <div style={{ ...smallText, color: gray200 }}>h-offset</div>
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="outlineOffset"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-          <div style={styles.optionName}>
-            <div style={{ ...smallText, color: gray200 }}>v-offset</div>
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="outlineOffset"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-          <div style={styles.optionName}>
-            <div style={{ ...smallText, color: gray200 }}>blur</div>
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="outlineOffset"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-          <div style={styles.optionName}>
-            <div style={{ ...smallText, color: gray200 }}>spread</div>
-          </div>
-          <div>
-            <SizeInputWithUnits
-              styleItem="outlineOffset"
-              styles={props.styles}
-              patchCb={props.patchCb}
-              defaultValue="0"
-            />
-          </div>
-          <div style={styles.optionName}>
-            <div style={{ ...smallText, color: gray200 }}>shadow type</div>
-          </div>
-          <div style={{ marginLeft: "-2px" }}>
-            <select
-              name="boxShadowType"
-              //   onChange={(e) => handleOutlineChange(e, "outlineStyle")}
-              style={styles.inputBox}
-              value={props.styles.outlineStyle || ""}
-            >
-              <option style={styles.select} value={""}></option>
-              <option style={styles.select} value="outset">
-                outset
-              </option>
-              <option style={styles.select} value="inset">
-                inset
-              </option>
-            </select>
-          </div>
-        </div>
-        <div style={styles.gridInputContainer}>
-          <ColorComponent
-            name="Box Shadow Color"
-            styleItem="boxShadow"
-            styles={props.styles}
-            patchCb={props.patchCb}
-            openPalette={props.openPalette}
-          />
-        </div>
-      </div>
+      ></div>
     </div>
   );
 };
