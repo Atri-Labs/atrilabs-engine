@@ -100,6 +100,39 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     setBoxShadows(updatedValue);
   };
 
+  const updateVOffsetValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.vOffset = parseInt(e.target.value) || 0;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
+  const updateSpreadValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.spread = parseInt(e.target.value) || 0;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
+  const updateBlurValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.blur = parseInt(e.target.value) || 0;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
   props.patchCb({
     property: {
       styles: {
@@ -214,7 +247,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div>v-offset</div>
                 <input
-                  // onChange={handleChange}
+                  onChange={(e) => updateVOffsetValueCb(e, index)}
                   type="text"
                   value={boxShadows[index].vOffset}
                   style={{
@@ -244,7 +277,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div>spread</div>
                 <input
-                  // onChange={handleChange}
+                  onChange={(e) => updateSpreadValueCb(e, index)}
                   type="text"
                   value={boxShadows[index].spread}
                   style={{
@@ -274,7 +307,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div>blur</div>
                 <input
-                  // onChange={handleChange}
+                  onChange={(e) => updateBlurValueCb(e, index)}
                   type="text"
                   value={boxShadows[index].blur}
                   style={{
