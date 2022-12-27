@@ -142,6 +142,28 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     setBoxShadows(updatedValue);
   };
 
+  const updateColorValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.color = e.target.value;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
+  const updateShadowTypeValueCb = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const oldValue = boxShadows[index];
+    oldValue.shadowType = e.target.value;
+    const updatedValue = [...boxShadows];
+    updatedValue.splice(index, 1, oldValue);
+    setBoxShadows(updatedValue);
+  };
+
   props.patchCb({
     property: {
       styles: {
@@ -256,6 +278,26 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
                   style={styles.inputBox}
                   placeholder="0"
                   pattern="^[0-9]+$"
+                />
+              </div>
+              <div style={styles.option}>
+                <div>color</div>
+                <input
+                  onChange={(e) => updateColorValueCb(e, index)}
+                  type="text"
+                  value={boxShadow.color}
+                  style={styles.inputBox}
+                  placeholder=""
+                />
+              </div>
+              <div style={{ ...styles.option, paddingBottom: "0.5em" }}>
+                <div>shadow-type</div>
+                <input
+                  onChange={(e) => updateShadowTypeValueCb(e, index)}
+                  type="text"
+                  value={boxShadow.shadowType}
+                  style={styles.inputBox}
+                  placeholder=""
                 />
               </div>
             </div>
