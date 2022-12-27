@@ -57,13 +57,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     outline: "none",
     color: gray100,
     backgroundColor: gray800,
-    width: "57px",
     height: "26px",
+    width: "25px",
     border: "none",
-    borderRadius: "2px",
+    borderRadius: "2px 0 0 2px",
+    paddingLeft: "6px",
   },
   select: {
     textAlign: "left",
+  },
+  option: {
+    ...h5Heading,
+    color: gray200,
+    display: "flex",
+    paddingLeft: "0.5rem",
+    justifyContent: "space-between",
+    alignItems: "baseline",
   },
 };
 
@@ -205,122 +214,46 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
                   <MinusIcon />
                 </div>
               </div>
-              <div
-                style={{
-                  ...h5Heading,
-                  color: gray200,
-                  display: "flex",
-                  paddingLeft: "0.5rem",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                }}
-              >
+              <div style={styles.option}>
                 <div>h-offset</div>
                 <input
                   onChange={(e) => updateHOffsetValueCb(e, index)}
                   type="text"
-                  value={boxShadows[index].hOffset}
-                  style={{
-                    ...smallText,
-                    outline: "none",
-                    color: gray100,
-                    backgroundColor: gray800,
-                    height: "26px",
-                    width: "25px",
-                    border: "none",
-                    borderRadius: "2px 0 0 2px",
-                    paddingLeft: "6px",
-                  }}
+                  value={boxShadow.hOffset}
+                  style={styles.inputBox}
                   placeholder="0"
                   pattern="^[0-9]+$"
                 />
               </div>
-              <div
-                style={{
-                  ...h5Heading,
-                  color: gray200,
-                  display: "flex",
-                  paddingLeft: "0.5rem",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                }}
-              >
+              <div style={styles.option}>
                 <div>v-offset</div>
                 <input
                   onChange={(e) => updateVOffsetValueCb(e, index)}
                   type="text"
-                  value={boxShadows[index].vOffset}
-                  style={{
-                    ...smallText,
-                    outline: "none",
-                    color: gray100,
-                    backgroundColor: gray800,
-                    height: "26px",
-                    width: "25px",
-                    border: "none",
-                    borderRadius: "2px 0 0 2px",
-                    paddingLeft: "6px",
-                  }}
+                  value={boxShadow.vOffset}
+                  style={styles.inputBox}
                   placeholder="0"
                   pattern="^[0-9]+$"
                 />
               </div>
-              <div
-                style={{
-                  ...h5Heading,
-                  color: gray200,
-                  display: "flex",
-                  paddingLeft: "0.5rem",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                }}
-              >
+              <div style={styles.option}>
                 <div>spread</div>
                 <input
                   onChange={(e) => updateSpreadValueCb(e, index)}
                   type="text"
-                  value={boxShadows[index].spread}
-                  style={{
-                    ...smallText,
-                    outline: "none",
-                    color: gray100,
-                    backgroundColor: gray800,
-                    height: "26px",
-                    width: "25px",
-                    border: "none",
-                    borderRadius: "2px 0 0 2px",
-                    paddingLeft: "6px",
-                  }}
+                  value={boxShadow.spread}
+                  style={styles.inputBox}
                   placeholder="0"
                   pattern="^[0-9]+$"
                 />
               </div>
-              <div
-                style={{
-                  ...h5Heading,
-                  color: gray200,
-                  display: "flex",
-                  paddingLeft: "0.5rem",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                }}
-              >
+              <div style={styles.option}>
                 <div>blur</div>
                 <input
                   onChange={(e) => updateBlurValueCb(e, index)}
                   type="text"
-                  value={boxShadows[index].blur}
-                  style={{
-                    ...smallText,
-                    outline: "none",
-                    color: gray100,
-                    backgroundColor: gray800,
-                    height: "26px",
-                    width: "25px",
-                    border: "none",
-                    borderRadius: "2px 0 0 2px",
-                    paddingLeft: "6px",
-                  }}
+                  value={boxShadow.blur}
+                  style={styles.inputBox}
                   placeholder="0"
                   pattern="^[0-9]+$"
                 />
