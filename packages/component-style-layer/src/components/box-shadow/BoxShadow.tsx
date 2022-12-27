@@ -8,7 +8,7 @@ import {
 } from "@atrilabs/design-system";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { CssProprtyComponentType } from "../../types";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ReactComponent as AddIcon } from "../../assets/add.svg";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
@@ -87,37 +87,58 @@ type boxShadowType = {
 
 export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
-  const [boxShadows, setBoxShadows] = useState<boxShadowType[]>([]);
+
+  const boxShadows = useMemo(() => {
+    const boxShadowArray = props.styles.boxShadow?.split(",") || [];
+    const boxShadows: boxShadowType[] = [];
+    for (let i = 0; i < boxShadowArray.length; i++) {
+      const boxShadowStr = boxShadowArray[i].trim().split(" ");
+      console.log("boxShadowStr", boxShadowStr);
+      let boxShadow: boxShadowType = {
+        hOffset: parseInt(boxShadowStr[0]),
+        vOffset: parseInt(boxShadowStr[1]),
+        blur: parseInt(boxShadowStr[2]),
+        spread: parseInt(boxShadowStr[3]),
+        color: boxShadowStr[4] || "",
+        shadowType: boxShadowStr[5] || "",
+      };
+
+      boxShadows[i] = boxShadow;
+    }
+    return boxShadows;
+  }, [props.styles.boxShadow]);
+
+  const updateBoxShadow = useCallback(
+    (boxShadows: boxShadowType[]) => {
+      let boxShadowStr = "";
+      for (let i = 0; i < boxShadows.length; i++) {
+        if (i > 0) boxShadowStr += ", ";
+        boxShadowStr += `${boxShadows[i].hOffset || 0}px `;
+        boxShadowStr += `${boxShadows[i].vOffset || 0}px `;
+        boxShadowStr += `${boxShadows[i].blur || 0}px `;
+        boxShadowStr += `${boxShadows[i].spread || 0}px `;
+        boxShadowStr += `${boxShadows[i].color || ""} `;
+        boxShadowStr += `${boxShadows[i].shadowType || ""}`;
+      }
+      props.patchCb({
+        property: {
+          styles: {
+            boxShadow: boxShadowStr,
+          },
+        },
+      });
+    },
+    [props]
+  );
 
   const deleteValueCb = useCallback(
     (index: number) => {
       const updatedValue = [...boxShadows];
       updatedValue.splice(index, 1);
-      setBoxShadows(updatedValue);
+      updateBoxShadow(updatedValue);
     },
-    [boxShadows]
+    [boxShadows, updateBoxShadow]
   );
-
-  const updateBoxShadow = useCallback(() => {
-    let boxShadowStr = "";
-    for (let i = 0; i < boxShadows.length; i++) {
-      if (i > 0) boxShadowStr += ", ";
-      boxShadowStr += `${boxShadows[i].hOffset || 0}px `;
-      boxShadowStr += `${boxShadows[i].vOffset || 0}px `;
-      boxShadowStr += `${boxShadows[i].blur || 0}px `;
-      boxShadowStr += `${boxShadows[i].spread || 0}px `;
-      boxShadowStr += `${boxShadows[i].color || ""} `;
-      boxShadowStr += `${boxShadows[i].shadowType || ""}`;
-    }
-    console.log("updateBoxShadow", boxShadowStr);
-    props.patchCb({
-      property: {
-        styles: {
-          boxShadow: boxShadowStr,
-        },
-      },
-    });
-  }, [boxShadows, props]);
 
   const updateHOffsetValueCb = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -127,8 +148,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.hOffset = parseInt(e.target.value) || 0;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
 
   const updateVOffsetValueCb = (
@@ -139,8 +159,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.vOffset = parseInt(e.target.value) || 0;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
 
   const updateSpreadValueCb = (
@@ -151,8 +170,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.spread = parseInt(e.target.value) || 0;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
 
   const updateBlurValueCb = (
@@ -163,8 +181,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.blur = parseInt(e.target.value) || 0;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
 
   const updateColorValueCb = (
@@ -175,8 +192,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.color = e.target.value;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
 
   const updateShadowTypeValueCb = (
@@ -187,17 +203,8 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     oldValue.shadowType = e.target.value;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
-    setBoxShadows(updatedValue);
-    updateBoxShadow();
+    updateBoxShadow(updatedValue);
   };
-
-  // props.patchCb({
-  //   property: {
-  //     styles: {
-  //       boxShadow: "6px 4px red",
-  //     },
-  //   },
-  // });
 
   console.log("Props", props.styles);
 
@@ -216,19 +223,19 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.header}>Box Shadow</div>
         </div>
         <AddIcon
-          onClick={() =>
-            setBoxShadows((boxShadows: boxShadowType[]) => [
-              ...boxShadows,
-              {
-                hOffset: 0,
-                vOffset: 0,
-                blur: 0,
-                spread: 0,
-                color: "",
-                shadowType: "",
-              },
-            ])
-          }
+        // onClick={() =>
+        //   // setBoxShadows((boxShadows: boxShadowType[]) => [
+        //   //   ...boxShadows,
+        //   //   {
+        //   //     hOffset: 0,
+        //   //     vOffset: 0,
+        //   //     blur: 0,
+        //   //     spread: 0,
+        //   //     color: "",
+        //   //     shadowType: "",
+        //   //   },
+        //   ])
+        // }
         />
       </div>
       <div
