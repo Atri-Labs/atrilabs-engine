@@ -98,6 +98,27 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     [boxShadows]
   );
 
+  const updateBoxShadow = useCallback(() => {
+    let boxShadowStr = "";
+    for (let i = 0; i < boxShadows.length; i++) {
+      if (i > 0) boxShadowStr += ", ";
+      boxShadowStr += `${boxShadows[i].hOffset || 0}px `;
+      boxShadowStr += `${boxShadows[i].vOffset || 0}px `;
+      boxShadowStr += `${boxShadows[i].blur || 0}px `;
+      boxShadowStr += `${boxShadows[i].spread || 0}px `;
+      boxShadowStr += `${boxShadows[i].color || ""} `;
+      boxShadowStr += `${boxShadows[i].shadowType || ""}`;
+    }
+    console.log("updateBoxShadow", boxShadowStr);
+    props.patchCb({
+      property: {
+        styles: {
+          boxShadow: boxShadowStr,
+        },
+      },
+    });
+  }, [boxShadows, props]);
+
   const updateHOffsetValueCb = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -107,6 +128,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
   const updateVOffsetValueCb = (
@@ -118,6 +140,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
   const updateSpreadValueCb = (
@@ -129,6 +152,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
   const updateBlurValueCb = (
@@ -140,6 +164,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
   const updateColorValueCb = (
@@ -151,6 +176,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
   const updateShadowTypeValueCb = (
@@ -162,15 +188,18 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     setBoxShadows(updatedValue);
+    updateBoxShadow();
   };
 
-  props.patchCb({
-    property: {
-      styles: {
-        boxShadow: "6px 4px red",
-      },
-    },
-  });
+  // props.patchCb({
+  //   property: {
+  //     styles: {
+  //       boxShadow: "6px 4px red",
+  //     },
+  //   },
+  // });
+
+  console.log("Props", props.styles);
 
   return (
     <div style={styles.container}>
