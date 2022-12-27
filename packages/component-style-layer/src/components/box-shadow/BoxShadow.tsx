@@ -211,7 +211,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   };
 
   const updateShadowTypeValueCb = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ) => {
     const oldValue = boxShadows[index];
@@ -329,13 +329,17 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               </div>
               <div style={{ ...styles.option, paddingBottom: "0.5em" }}>
                 <div>shadow-type</div>
-                <input
+                <select
+                  name="shadow-type"
                   onChange={(e) => updateShadowTypeValueCb(e, index)}
-                  type="text"
-                  value={boxShadow.shadowType}
-                  style={styles.inputBox}
-                  placeholder=""
-                />
+                  style={{ ...styles.inputBox, width: "77px" }}
+                  value={boxShadow.shadowType || ""}
+                >
+                  <option style={styles.select} value=""></option>
+                  <option style={styles.select} value="inset">
+                    inset
+                  </option>
+                </select>
               </div>
             </div>
           );
