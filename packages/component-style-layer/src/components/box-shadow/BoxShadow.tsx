@@ -131,6 +131,21 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     [props]
   );
 
+  const addBoxShadowsCb = useCallback(() => {
+    const updatedValue = [
+      ...boxShadows,
+      {
+        hOffset: 0,
+        vOffset: 0,
+        blur: 0,
+        spread: 0,
+        color: "",
+        shadowType: "",
+      },
+    ];
+    updateBoxShadow(updatedValue);
+  }, [boxShadows, updateBoxShadow]);
+
   const deleteValueCb = useCallback(
     (index: number) => {
       const updatedValue = [...boxShadows];
@@ -222,21 +237,7 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
           />
           <div style={styles.header}>Box Shadow</div>
         </div>
-        <AddIcon
-        // onClick={() =>
-        //   // setBoxShadows((boxShadows: boxShadowType[]) => [
-        //   //   ...boxShadows,
-        //   //   {
-        //   //     hOffset: 0,
-        //   //     vOffset: 0,
-        //   //     blur: 0,
-        //   //     spread: 0,
-        //   //     color: "",
-        //   //     shadowType: "",
-        //   //   },
-        //   ])
-        // }
-        />
+        <AddIcon onClick={() => addBoxShadowsCb()} />
       </div>
       <div
         style={
