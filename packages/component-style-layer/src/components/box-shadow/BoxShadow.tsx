@@ -11,6 +11,7 @@ import { CssProprtyComponentType } from "../../types";
 import { useCallback, useMemo, useState } from "react";
 import { ReactComponent as AddIcon } from "../../assets/add.svg";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
+import { ColorComponent } from "../commons/ColorComponent";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -199,12 +200,9 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     updateBoxShadow(updatedValue);
   };
 
-  const updateColorValueCb = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  const updateColorValueCb = (color: string, index: number) => {
     const oldValue = boxShadows[index];
-    oldValue.color = e.target.value;
+    oldValue.color = color;
     const updatedValue = [...boxShadows];
     updatedValue.splice(index, 1, oldValue);
     updateBoxShadow(updatedValue);
@@ -317,14 +315,16 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
                   pattern="^[0-9]+$"
                 />
               </div>
-              <div style={styles.option}>
-                <div>color</div>
-                <input
-                  onChange={(e) => updateColorValueCb(e, index)}
-                  type="text"
-                  value={boxShadow.color}
-                  style={styles.inputBox}
-                  placeholder=""
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ColorComponent
+                  name="Background Color"
+                  styleItem="boxShadow"
+                  index={index}
+                  currentColor={boxShadow.color}
+                  changeColor={updateColorValueCb}
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  openPalette={props.openPalette}
                 />
               </div>
               <div style={{ ...styles.option, paddingBottom: "0.5em" }}>

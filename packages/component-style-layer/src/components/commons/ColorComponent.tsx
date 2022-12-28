@@ -283,6 +283,9 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
           getOpacityValue={getOpacityValue}
           setOpacityValue={setOpacityValue}
           rgb2hex={rgb2hex}
+          changeColor={props.changeColor}
+          index={props.index}
+          currentColor={props.currentColor}
         />
       </div>
       <div style={{ width: "45px", marginRight: "10px" }}>
