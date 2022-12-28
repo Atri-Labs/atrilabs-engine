@@ -1,5 +1,5 @@
 import { gray100, gray800, gray400, smallText } from "@atrilabs/design-system";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ColorInput } from "./ColorInput";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
@@ -54,6 +54,9 @@ export type ColorComponentProps = {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   openPalette: (styleItem: keyof React.CSSProperties, name: string) => void;
+  changeColor?: (color: string, index: number) => void;
+  index?: number;
+  currentColor?: string;
 };
 
 export type Color = {
@@ -125,31 +128,34 @@ export const getOpacityValue = (hex: Color["hex"]) => {
 };
 
 export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
+  const styleItem = useMemo(() => {
+    if (props.changeColor) return props.currentColor;
+    return props.styles[props.styleItem];
+  }, [props.changeColor, props.currentColor, props.styleItem, props.styles]);
+
   const [opacityValue, setOpacityValue] = useState<string>(
-    props.styles[props.styleItem]
-      ? getOpacityValue(String(props.styles[props.styleItem]))
-      : "100"
+    styleItem ? getOpacityValue(String(styleItem)) : "100"
   );
 
   useEffect(() => {
-    setOpacityValue(
-      props.styles[props.styleItem]
-        ? getOpacityValue(String(props.styles[props.styleItem]))
-        : "100"
-    );
-  }, [props]);
+    setOpacityValue(styleItem ? getOpacityValue(String(styleItem)) : "100");
+  }, [props, styleItem]);
 
-  const toggleTransparencyChange = (styleItem: keyof React.CSSProperties) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]:
-            props.styles[props.styleItem] === "transparent"
-              ? ""
-              : "transparent",
+  const toggleTransparencyChange = (style: keyof React.CSSProperties) => {
+    if (props.changeColor) {
+      props.changeColor(
+        props.currentColor === "transparent" ? "" : "transparent",
+        props.index!
+      );
+    } else {
+      props.patchCb({
+        property: {
+          styles: {
+            [style]: styleItem === "transparent" ? "" : "transparent",
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   const handleOpacityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,28 +198,41 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   );
 
   const applyOpacity = () => {
-    if (opacityValue === "") {
+    if (opacityValue === "" && !props.changeColor) {
       props.patchCb({
         property: {
           styles: {
             [props.styleItem]: handleOpacityChange(
               String(opacityValue),
-              String(props.styles[props.styleItem])
+              String(styleItem)
             ),
           },
         },
       });
-    } else {
+    } else if (opacityValue === "" && props.changeColor) {
+      props.changeColor(
+        handleOpacityChange(String(opacityValue), String(styleItem)),
+        props.index!
+      );
+    } else if (opacityValue !== "" && !props.changeColor) {
       props.patchCb({
         property: {
           styles: {
             [props.styleItem]: handleOpacityChange(
               String(Number(opacityValue) / 100),
-              String(props.styles[props.styleItem])
+              String(styleItem)
             ),
           },
         },
       });
+    } else if (props.changeColor) {
+      props.changeColor(
+        handleOpacityChange(
+          String(Number(opacityValue) / 100),
+          String(styleItem)
+        ),
+        props.index!
+      );
     }
   };
 
@@ -224,14 +243,12 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
   };
 
   const [isOpacityDisabled, setIsOpacityDisabled] = useState<boolean>(
-    opacityDisabledHandler(String(props.styles[props.styleItem]))
+    opacityDisabledHandler(String(styleItem))
   );
 
   useEffect(() => {
-    setIsOpacityDisabled(
-      opacityDisabledHandler(String(props.styles[props.styleItem]))
-    );
-  }, [props]);
+    setIsOpacityDisabled(opacityDisabledHandler(String(styleItem)));
+  }, [props, styleItem]);
 
   return (
     <div style={styles.gridContainer}>
@@ -243,8 +260,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
       >
         <div
           style={
-            props.styles[props.styleItem] === undefined ||
-            props.styles[props.styleItem] === ""
+            styleItem === undefined || styleItem === ""
               ? {
                   height: "10px",
                   width: "10px",
@@ -253,7 +269,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
               : {
                   height: "10px",
                   width: "10px",
-                  backgroundColor: `${props.styles[props.styleItem]}`,
+                  backgroundColor: `${styleItem}`,
                 }
           }
         ></div>
@@ -294,7 +310,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
         }}
         onClick={(e) => toggleTransparencyChange(props.styleItem)}
       >
-        {props.styles[props.styleItem] === "transparent" ? <ET /> : <ENT />}
+        {styleItem === "transparent" ? <ET /> : <ENT />}
       </div>
     </div>
   );
