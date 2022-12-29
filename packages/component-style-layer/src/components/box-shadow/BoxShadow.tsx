@@ -90,11 +90,12 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState(true);
 
   const boxShadows = useMemo(() => {
-    const boxShadowArray = props.styles.boxShadow?.split(",") || [];
+    const boxShadowArray = props.styles.boxShadow
+      ? props.styles.boxShadow.split(",")
+      : [];
     const boxShadows: boxShadowType[] = [];
     for (let i = 0; i < boxShadowArray.length; i++) {
       const boxShadowStr = boxShadowArray[i].trim().split(" ");
-      console.log("boxShadowStr", boxShadowStr);
       let boxShadow: boxShadowType = {
         hOffset: parseInt(boxShadowStr[0]),
         vOffset: parseInt(boxShadowStr[1]),
@@ -265,7 +266,11 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div style={styles.header}>Shadow {index + 1}</div>
                 <div
-                  style={{ display: "flex" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
                   onClick={() => deleteValueCb(index)}
                 >
                   <MinusIcon />
