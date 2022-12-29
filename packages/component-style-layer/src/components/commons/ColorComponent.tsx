@@ -53,10 +53,17 @@ export type ColorComponentProps = {
   styleItem: keyof React.CSSProperties;
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
-  openPalette: (styleItem: keyof React.CSSProperties, name: string) => void;
+  openPalette: (
+    styleItem: keyof React.CSSProperties,
+    name: string,
+    changeColor?: (color: string, index: number) => void,
+    index?: number,
+    currentColor?: string
+  ) => void;
   changeColor?: (color: string, index: number) => void;
   index?: number;
   currentColor?: string;
+  referenceProperty?: any;
 };
 
 export type Color = {
@@ -255,7 +262,13 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
       <div
         style={styles.optionName}
         onClick={() => {
-          props.openPalette(props.styleItem, props.name);
+          props.openPalette(
+            props.styleItem,
+            props.name,
+            props.changeColor,
+            props.index,
+            props.referenceProperty
+          );
         }}
       >
         <div
