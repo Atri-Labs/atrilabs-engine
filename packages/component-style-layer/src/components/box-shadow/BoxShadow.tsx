@@ -317,10 +317,11 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
               </div>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <ColorComponent
-                  name="Background Color"
+                  name="Box Shadow"
                   styleItem="boxShadow"
                   index={index}
                   currentColor={boxShadow.color}
+                  referenceProperty={boxShadow}
                   changeColor={updateColorValueCb}
                   styles={props.styles}
                   patchCb={props.patchCb}
