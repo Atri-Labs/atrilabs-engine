@@ -134,6 +134,7 @@ export const DevPieChart: typeof PieChart = forwardRef((props, ref) => {
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,

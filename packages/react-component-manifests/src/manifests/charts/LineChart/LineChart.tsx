@@ -183,6 +183,7 @@ export const DevLineChart: typeof LineChart = forwardRef((props, ref) => {
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,

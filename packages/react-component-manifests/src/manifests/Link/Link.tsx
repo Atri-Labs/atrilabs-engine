@@ -57,6 +57,7 @@ export const DevLink = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,

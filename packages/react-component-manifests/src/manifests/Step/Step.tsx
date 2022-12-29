@@ -448,6 +448,7 @@ export const DevStep = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,

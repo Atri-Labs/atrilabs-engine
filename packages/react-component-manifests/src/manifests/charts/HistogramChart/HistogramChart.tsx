@@ -206,6 +206,7 @@ export const DevHistogramChart: typeof HistogramChart = forwardRef(
 );
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,
