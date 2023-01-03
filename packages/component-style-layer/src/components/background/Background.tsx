@@ -33,6 +33,7 @@ import { ReactComponent as BCO } from "../../assets/background/border-box-icon.s
 import PropertyRender from "../commons/PropertyRender";
 import MultiplePropertyRender from "../commons/MultiplePropertyRender";
 import { ColorComponent } from "../commons/ColorComponent";
+import { ReactComponent as AddButton } from "../../assets/add.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -128,6 +129,7 @@ export type backgroundTypeOptions = {
   origin: boolean;
   clip: boolean;
   color: boolean;
+  gradient: boolean;
 };
 export const solidBackgroundOptions: backgroundTypeOptions = {
   image: false,
@@ -137,6 +139,7 @@ export const solidBackgroundOptions: backgroundTypeOptions = {
   origin: true,
   clip: true,
   color: true,
+  gradient: false,
 };
 export const imageBackgroundOptions: backgroundTypeOptions = {
   image: true,
@@ -146,6 +149,7 @@ export const imageBackgroundOptions: backgroundTypeOptions = {
   origin: true,
   clip: true,
   color: false,
+  gradient: true,
 };
 const backgroundTypes = [solidBackgroundOptions, imageBackgroundOptions];
 const backgroundRepeatValues = [
@@ -365,6 +369,34 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               Text
             </div>
           </MultiplePropertyRender>
+        )}
+        {/* Background gradient */}
+        {backgroundTypes[selectedTypeIndex].gradient && (
+          <div
+            style={{ display: "flex", flexDirection: "column", rowGap: "1em" }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Gradient
+              </div>
+              <AddButton />
+            </div>
+            {/* <div
+              style={{
+                width: "200px",
+                height: "200px",
+                position: "absolute",
+                bottom: "0.2rem",
+                left: "-17rem",
+                backgroundColor: "red",
+              }}
+            ></div> */}
+          </div>
         )}
       </div>
     </div>
