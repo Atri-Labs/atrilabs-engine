@@ -190,25 +190,57 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showEyes, setShowEyes] = useState<boolean[]>([]);
   const [gradients, setGradients] = useState<string[]>([]);
 
-  const addGradient = () => {
+  const applyGradient = useCallback(() => {
+    let gradientsString = "";
+    for (let i = 0; i < gradients.length; i++) {
+      if (gradientsString !== "" && i > 0) gradientsString += ", ";
+      if (showEyes[i]) gradientsString += gradients[i];
+    }
+    props.patchCb({
+      property: {
+        styles: { backgroundImage: gradientsString },
+      },
+    });
+  }, [gradients, props, showEyes]);
+
+  const addGradient = useCallback(() => {
     setShowEyes([...showEyes, true]);
     setGradients([...gradients, "linear-gradient(45deg, black, transparent)"]);
-  };
+    applyGradient();
+  }, [applyGradient, gradients, showEyes]);
 
-  const removeGradient = (index: number) => {
-    const gradientValues = [...gradients];
-    gradientValues.splice(index, 1);
-    setGradients(gradientValues);
-    const showEyeValues = [...showEyes];
-    showEyeValues.splice(index, 1);
-    setShowEyes(showEyeValues);
-  };
+  const removeGradient = useCallback(
+    (index: number) => {
+      const gradientValues = [...gradients];
+      gradientValues.splice(index, 1);
+      setGradients(gradientValues);
+      const showEyeValues = [...showEyes];
+      showEyeValues.splice(index, 1);
+      setShowEyes(showEyeValues);
+      applyGradient();
+    },
+    [applyGradient, gradients, showEyes]
+  );
 
-  const toggleTransparencyChange = (index: number) => {
-    const values = [...showEyes];
-    values.splice(index, 1, !showEyes[index]);
-    setShowEyes(values);
-  };
+  const updateGradient = useCallback(
+    (index: number, gradient: string) => {
+      const gradientValues = [...gradients];
+      gradientValues.splice(index, 1, gradient);
+      setGradients(gradientValues);
+      applyGradient();
+    },
+    [applyGradient, gradients]
+  );
+
+  const toggleTransparencyChange = useCallback(
+    (index: number) => {
+      const values = [...showEyes];
+      values.splice(index, 1, !showEyes[index]);
+      setShowEyes(values);
+      applyGradient();
+    },
+    [applyGradient, showEyes]
+  );
 
   return (
     <div style={styles.container}>
@@ -414,7 +446,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               </div>
               <AddButton onClick={() => addGradient()} />
             </div>
-            {gradients.map((color, index) => (
+            {gradients.map((gradient, index) => (
               <div
                 key={index}
                 style={{ display: "flex", justifyContent: "space-between" }}
@@ -424,7 +456,10 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                     style={{ width: "1em", height: "1em", background: "red" }}
                   ></div>
                 </div>
-                <input />
+                <input
+                  value={gradient}
+                  onChange={(e) => updateGradient(index, e.target.value)}
+                />
                 {showEyes[index] ? (
                   <ENT onClick={() => toggleTransparencyChange(index)} />
                 ) : (
