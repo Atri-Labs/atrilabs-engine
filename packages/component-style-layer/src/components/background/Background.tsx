@@ -8,7 +8,7 @@ import {
   h5Heading,
   smallText,
 } from "@atrilabs/design-system";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CssProprtyComponentType } from "../../types";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
@@ -34,6 +34,9 @@ import PropertyRender from "../commons/PropertyRender";
 import MultiplePropertyRender from "../commons/MultiplePropertyRender";
 import { ColorComponent } from "../commons/ColorComponent";
 import { ReactComponent as AddButton } from "../../assets/add.svg";
+import { ReactComponent as MinusButton } from "../../assets/minus.svg";
+import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
+import { ReactComponent as ENT } from "../../assets/background/eye.svg";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -174,6 +177,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const onBackgroundImgeClickCb = useCallback(() => {
     props.openAssetManager(["select", "upload"], "backgroundImage");
   }, [props]);
+
   const onBackgroundImageClearClickCb = useCallback(() => {
     props.patchCb({
       property: {
@@ -181,7 +185,30 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   }, [props]);
+
   const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
+  const [showEyes, setShowEyes] = useState<boolean[]>([]);
+  const [gradients, setGradients] = useState<string[]>([]);
+
+  const addGradient = () => {
+    setShowEyes([...showEyes, true]);
+    setGradients([...gradients, "linear-gradient(45deg, black, transparent)"]);
+  };
+
+  const removeGradient = (index: number) => {
+    const gradientValues = [...gradients];
+    gradientValues.splice(index, 1);
+    setGradients(gradientValues);
+    const showEyeValues = [...showEyes];
+    showEyeValues.splice(index, 1);
+    setShowEyes(showEyeValues);
+  };
+
+  const toggleTransparencyChange = (index: number) => {
+    const values = [...showEyes];
+    values.splice(index, 1, !showEyes[index]);
+    setShowEyes(values);
+  };
 
   return (
     <div style={styles.container}>
@@ -379,23 +406,44 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
               <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
                 Gradient
               </div>
-              <AddButton />
+              <AddButton onClick={() => addGradient()} />
             </div>
-            {/* <div
-              style={{
-                width: "200px",
-                height: "200px",
-                position: "absolute",
-                bottom: "0.2rem",
-                left: "-17rem",
-                backgroundColor: "red",
-              }}
-            ></div> */}
+            {gradients.map((color, index) => (
+              <div
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{ width: "1em", height: "1em", background: "red" }}
+                  ></div>
+                </div>
+                <input />
+                {showEyes[index] ? (
+                  <ENT onClick={() => toggleTransparencyChange(index)} />
+                ) : (
+                  <ET onClick={() => toggleTransparencyChange(index)} />
+                )}
+                <div
+                  style={{
+                    color: gray200,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    userSelect: "none",
+                  }}
+                  onClick={() => removeGradient(index)}
+                >
+                  <MinusButton />
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
