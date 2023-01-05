@@ -14,9 +14,8 @@ export const Dropdown = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      values: string[];
       selectedValue?: string;
-      displayedValues?: string[];
+      dropdownItems: { displayed: string; value: string }[];
       disabled?: boolean;
     };
     onChange: (selectedValue: string) => void;
@@ -38,14 +37,10 @@ export const Dropdown = forwardRef<
       style={props.styles}
       ref={ref}
     >
-      {props.custom.values.map((value, index) => {
-        const displayedValue =
-          props.custom.displayedValues?.[index] !== undefined
-            ? props.custom.displayedValues?.[index]
-            : value;
+      {props.custom.dropdownItems.map((dropdownItem, index) => {
         return (
-          <option value={value} key={value}>
-            {displayedValue}
+          <option value={dropdownItem.value} key={index}>
+            {dropdownItem.displayed || dropdownItem.value}
           </option>
         );
       })}
@@ -72,9 +67,14 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    values: { type: "array" },
     selectedValue: { type: "text" },
-    displayedValues: { type: "array" },
+    dropdownItems: {
+      type: "array_map",
+      attributes: [
+        { fieldName: "displayed", type: "text" },
+        { fieldName: "value", type: "text" },
+      ],
+    },
   },
 };
 
@@ -97,6 +97,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           values: [],
+          dropdownItems: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

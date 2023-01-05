@@ -9,93 +9,303 @@ import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPr
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import { ReactComponent as Icon } from "./icon.svg";
 
+type inputTypes = {
+  label?: string;
+  id?: string;
+  placeholder?: string;
+};
+
 export const Form = forwardRef<
   HTMLFormElement,
   {
     styles: React.CSSProperties;
     custom: {
-      types: string[];
-      labels: string[];
-      placeholders: string[];
-      ids: string[];
+      target: string;
+      autocomplete: string;
       showResetButton: boolean;
       submitButtonBgColor?: string;
       submitButtonColor?: string;
       resetButtonBgColor?: string;
       resetButtonColor?: string;
       form: {
-        selectedOption: string;
-        selectAttribute: {
+        selectedOption:
+          | "none"
+          | "text"
+          | "password"
+          | "color"
+          | "date"
+          | "datetimeLocal"
+          | "email"
+          | "url"
+          | "search"
+          | "radio"
+          | "checkbox"
+          | "time"
+          | "file"
+          | "select";
+        text: inputTypes;
+        password: inputTypes;
+        color: Pick<inputTypes, "id" | "label">;
+        date: Pick<inputTypes, "id" | "label">;
+        datetimeLocal: Pick<inputTypes, "id" | "label">;
+        email: inputTypes;
+        url: inputTypes;
+        search: inputTypes;
+        radio: {
+          label?: string;
+          name?: string;
+          labels?: string[];
+          id?: string[];
+          value?: string[];
+        };
+        checkbox: {
+          label?: string;
+          labels?: string[];
+          id?: string[];
+          value?: string[];
+        };
+        time: Pick<inputTypes, "id" | "label">;
+        file: Pick<inputTypes, "id" | "label"> & {
+          multiple?: boolean;
+        };
+        select: {
           selectOptions?: string[];
           selectLabel?: string;
           selectIdentifier?: string;
+          multiple?: boolean;
         };
-      };
+      }[];
     };
     onClick: (buttonClicked: "Submit" | "Reset") => void;
     className?: string;
   }
 >((props, ref) => {
+  console.log("Form", props.custom.form);
   return (
-    <form ref={ref} className={props.className} style={props.styles}>
-      {props.custom.types.map((type, index) => {
-        const labelText =
-          props.custom.labels?.[index] !== undefined
-            ? props.custom.labels?.[index]
-            : "";
-        const id =
-          props.custom.ids?.[index] !== undefined
-            ? props.custom.ids?.[index]
-            : "";
-        const placeholderText =
-          props.custom.placeholders?.[index] !== undefined
-            ? props.custom.placeholders?.[index]
-            : "";
-
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              columnGap: "1em",
-              alignItems: "baseline",
-            }}
-            key={index}
-          >
-            <label htmlFor={id}>{labelText}</label>
-            <input
-              type={type}
-              placeholder={placeholderText}
-              id={id}
-              style={{ padding: "0.5em" }}
-            />
-          </div>
-        );
+    <form
+      ref={ref}
+      className={props.className}
+      style={props.styles}
+      target={props.custom.target}
+      autoComplete={props.custom.autocomplete}
+    >
+      {props.custom.form.map((element, index) => {
+        if (element.selectedOption === "select")
+          return (
+            element.selectedOption === "select" && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                  columnGap: "1em",
+                  alignItems: "baseline",
+                }}
+                key={index}
+              >
+                <label
+                  htmlFor={
+                    element.select ? element.select.selectIdentifier : ""
+                  }
+                >
+                  {element.select ? element.select.selectLabel : ""}
+                </label>
+                <select
+                  id={element.select ? element.select.selectIdentifier : ""}
+                  style={{ padding: "0.5em" }}
+                  multiple={element.select ? element.select.multiple : false}
+                >
+                  {element.select ? (
+                    element.select.selectOptions?.map((option, index) => {
+                      return <option key={index}>{option}</option>;
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </select>
+              </div>
+            )
+          );
+        else if (element.selectedOption === "file")
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label htmlFor={element.file ? element.file.id : ""}>
+                {element.file ? element.file.label : ""}
+              </label>
+              <input
+                type="file"
+                multiple={element.file ? element.file.multiple : false}
+                id={element.file ? element.file.id : ""}
+                style={{
+                  padding: "0.5em",
+                  width: "95px",
+                  color: "transparent",
+                }}
+              />
+            </div>
+          );
+        else if (element.selectedOption === "checkbox")
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <div>{element.checkbox ? element.checkbox.label : ""}</div>
+              {element.checkbox &&
+                element.checkbox.labels?.map((l, i) => (
+                  <div key={i}>
+                    <input
+                      type="checkbox"
+                      id={element.checkbox.id ? element.checkbox.id[i] : ""}
+                      value={
+                        element.checkbox.value ? element.checkbox.value[i] : ""
+                      }
+                    />
+                    <label
+                      htmlFor={
+                        element.checkbox.id ? element.checkbox.id[i] : ""
+                      }
+                      style={{ paddingLeft: "0.5em" }}
+                    >
+                      {l}
+                    </label>
+                  </div>
+                ))}
+            </div>
+          );
+        else if (element.selectedOption === "radio")
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <div>{element.radio ? element.radio.label : ""}</div>
+              {element.radio &&
+                element.radio.labels?.map((l, i) => (
+                  <div key={i}>
+                    <input
+                      type="radio"
+                      id={element.radio.id ? element.radio.id[i] : ""}
+                      value={element.radio.value ? element.radio.value[i] : ""}
+                      name={element.radio.name || ""}
+                    />
+                    <label
+                      htmlFor={element.radio.id ? element.radio.id[i] : ""}
+                      style={{ paddingLeft: "0.5em" }}
+                    >
+                      {l}
+                    </label>
+                  </div>
+                ))}
+            </div>
+          );
+        else if (
+          element.selectedOption === "color" ||
+          element.selectedOption === "time" ||
+          element.selectedOption === "date" ||
+          element.selectedOption === "datetimeLocal"
+        )
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label
+                htmlFor={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+              >
+                {element[element.selectedOption]
+                  ? element[element.selectedOption].label
+                  : ""}
+              </label>
+              <input
+                type={
+                  element.selectedOption === "datetimeLocal"
+                    ? "datetime-local"
+                    : element.selectedOption
+                }
+                id={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                style={{ padding: "0.5em" }}
+              />
+            </div>
+          );
+        else if (
+          element.selectedOption === "text" ||
+          element.selectedOption === "password" ||
+          element.selectedOption === "email" ||
+          element.selectedOption === "search" ||
+          element.selectedOption === "url"
+        )
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                columnGap: "1em",
+                alignItems: "baseline",
+              }}
+              key={index}
+            >
+              <label
+                htmlFor={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+              >
+                {element[element.selectedOption]
+                  ? element[element.selectedOption].label
+                  : ""}
+              </label>
+              <input
+                type={element.selectedOption}
+                placeholder={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].placeholder
+                    : ""
+                }
+                id={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                style={{ padding: "0.5em" }}
+              />
+            </div>
+          );
+        return <div key={index}></div>;
       })}
-      {props.custom.form.selectedOption !== "none" && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            columnGap: "1em",
-            alignItems: "baseline",
-          }}
-        >
-          <label htmlFor={props.custom.form.selectAttribute.selectIdentifier}>
-            {props.custom.form.selectAttribute.selectLabel}
-          </label>
-          <select
-            id={props.custom.form.selectAttribute.selectIdentifier}
-            style={{ padding: "0.5em" }}
-          >
-            {props.custom.form.selectAttribute.selectOptions?.map(
-              (option, index) => {
-                return <option key={index}>{option}</option>;
-              }
-            )}
-          </select>
-        </div>
-      )}
       <div
         style={{
           display: "flex",
@@ -146,29 +356,138 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    types: { type: "array" },
-    labels: { type: "array" },
-    placeholders: { type: "array" },
-    ids: { type: "array" },
-    showResetButton: { type: "boolean" },
-    submitButtonBgColor: { type: "color" },
-    submitButtonColor: { type: "color" },
-    resetButtonBgColor: { type: "color" },
-    resetButtonColor: { type: "color" },
+    target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
+    autocomplete: {
+      type: "enum",
+      options: ["on", "off"],
+    },
     form: {
-      type: "typed_map",
+      type: "array_typed_map",
       attributes: [
         {
-          fieldName: "selectAttribute",
+          fieldName: "text",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "password",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "radio",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "name", type: "text" },
+            { fieldName: "labels", type: "array" },
+            { fieldName: "id", type: "array" },
+            { fieldName: "value", type: "array" },
+          ],
+        },
+        {
+          fieldName: "checkbox",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "labels", type: "array" },
+            { fieldName: "id", type: "array" },
+            { fieldName: "value", type: "array" },
+          ],
+        },
+        {
+          fieldName: "color",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+          ],
+        },
+        {
+          fieldName: "date",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+          ],
+        },
+        {
+          fieldName: "datetimeLocal",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+          ],
+        },
+        {
+          fieldName: "email",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "time",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+          ],
+        },
+        {
+          fieldName: "url",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "search",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "file",
+          type: "map",
+          attributes: [
+            { fieldName: "label", type: "text" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "multiple", type: "boolean" },
+          ],
+        },
+        {
+          fieldName: "select",
           type: "map",
           attributes: [
             { fieldName: "selectLabel", type: "text" },
             { fieldName: "selectIdentifier", type: "text" },
             { fieldName: "selectOptions", type: "array" },
+            { fieldName: "multiple", type: "boolean" },
           ],
         },
       ],
     },
+    showResetButton: { type: "boolean" },
+    submitButtonBgColor: { type: "color" },
+    submitButtonColor: { type: "color" },
+    resetButtonBgColor: { type: "color" },
+    resetButtonColor: { type: "color" },
   },
 };
 
@@ -194,6 +513,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          target: "_self",
+          autocomplete: "off",
           types: ["text", "password"],
           labels: ["Enter your name:", "Password:"],
           placeholders: ["Enter your name", "Password"],
@@ -203,10 +524,24 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
-          form: {
-            selectedOption: "none",
-            selectAttribute: {},
-          },
+          form: [
+            {
+              selectedOption: "text",
+              text: {
+                label: "Name:",
+                id: "name",
+                placeholder: "Enter your name",
+              },
+            },
+            {
+              selectedOption: "password",
+              password: {
+                label: "Password:",
+                id: "pwd",
+                placeholder: "Enter your password",
+              },
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
