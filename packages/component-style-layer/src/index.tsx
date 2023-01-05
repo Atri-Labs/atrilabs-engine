@@ -35,6 +35,9 @@ export default function () {
   const {
     showColorPalette,
     linkColorPaletteToStyleItem,
+    linkColorPaletteToChangeColor,
+    linkColorPaletteToCurrentIndex,
+    linkColorPaletteToCurrentColor,
     title,
     openPalette,
     closePalette,
@@ -49,6 +52,7 @@ export default function () {
     openPaletteWithoutEffect,
     closePaletteWithoutEffect,
   } = useShowColorPaletteWithoutEffect();
+
   return (
     <>
       {showTab && id ? (
@@ -88,6 +92,9 @@ export default function () {
                     styles={styles}
                     patchCb={patchCb}
                     title={title}
+                    changeColor={linkColorPaletteToChangeColor}
+                    index={linkColorPaletteToCurrentIndex}
+                    currentColor={linkColorPaletteToCurrentColor}
                   />
                 </div>
               ) : null}

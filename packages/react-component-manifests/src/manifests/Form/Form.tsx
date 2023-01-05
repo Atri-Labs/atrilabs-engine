@@ -342,6 +342,7 @@ export const Form = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,

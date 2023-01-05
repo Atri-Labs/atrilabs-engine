@@ -53,6 +53,7 @@ const DevDropdown: typeof Dropdown = forwardRef((props, ref) => {
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,

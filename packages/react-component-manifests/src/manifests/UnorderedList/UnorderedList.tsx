@@ -93,6 +93,7 @@ export const UnorderedList = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   css2DisplayOptions: true,
   flexContainerOptions: true,
   flexChildOptions: true,
