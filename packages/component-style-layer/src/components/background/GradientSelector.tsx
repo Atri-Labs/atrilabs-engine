@@ -21,8 +21,10 @@ export const GradientColorSelector = () => {
     const divRect = divRef.current!.getBoundingClientRect();
     console.log("Gradient Type divReact", event);
     const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
-    setSelectedPosition(x);
-    setPositions(Array.from(new Set([...positions, x])));
+    if (x >= 0 && x <= 100) {
+      setSelectedPosition(x);
+      setPositions(Array.from(new Set([...positions, x])));
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
