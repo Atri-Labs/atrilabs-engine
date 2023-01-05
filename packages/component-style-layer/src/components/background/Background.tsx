@@ -172,6 +172,14 @@ const backgroundClipValues = [
   "text",
 ];
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
+  const gradients = useMemo(() => {
+    const gradientsString = (props.styles.background as string) || "";
+    const gradientsArray = gradientsString ? gradientsString.split("), ") : [];
+    return gradientsArray.map((gradientStr, index) =>
+      index === gradientsArray.length - 1 ? gradientStr : gradientStr + ")"
+    );
+  }, [props.styles.background]);
+
   const [showProperties, setShowProperties] = useState<boolean>(true);
 
   const onBackgroundImgeClickCb = useCallback(() => {
@@ -187,60 +195,46 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   }, [props]);
 
   const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
-  const [showEyes, setShowEyes] = useState<boolean[]>([]);
-  const [gradients, setGradients] = useState<string[]>([]);
 
-  const applyGradient = useCallback(() => {
-    let gradientsString = "";
-    for (let i = 0; i < gradients.length; i++) {
-      if (gradientsString !== "" && i > 0) gradientsString += ", ";
-      if (showEyes[i]) gradientsString += gradients[i];
-    }
-    props.patchCb({
-      property: {
-        styles: { backgroundImage: gradientsString },
-      },
-    });
-  }, [gradients, props, showEyes]);
+  const applyGradient = useCallback(
+    (gradients: string[]) => {
+      let gradientsString = "";
+      for (let i = 0; i < gradients.length; i++) {
+        if (gradientsString !== "" && i > 0) gradientsString += ", ";
+        gradientsString += gradients[i];
+      }
+      props.patchCb({
+        property: {
+          styles: { background: gradientsString },
+        },
+      });
+    },
+    [props]
+  );
 
   const addGradient = useCallback(() => {
-    setShowEyes([...showEyes, true]);
-    setGradients([...gradients, "linear-gradient(45deg, black, transparent)"]);
-    applyGradient();
-  }, [applyGradient, gradients, showEyes]);
+    applyGradient([...gradients, "linear-gradient(45deg, black, transparent)"]);
+  }, [applyGradient, gradients]);
 
   const removeGradient = useCallback(
     (index: number) => {
       const gradientValues = [...gradients];
       gradientValues.splice(index, 1);
-      setGradients(gradientValues);
-      const showEyeValues = [...showEyes];
-      showEyeValues.splice(index, 1);
-      setShowEyes(showEyeValues);
-      applyGradient();
+      applyGradient(gradientValues);
     },
-    [applyGradient, gradients, showEyes]
+    [applyGradient, gradients]
   );
 
   const updateGradient = useCallback(
     (index: number, gradient: string) => {
       const gradientValues = [...gradients];
       gradientValues.splice(index, 1, gradient);
-      setGradients(gradientValues);
-      applyGradient();
+      applyGradient(gradientValues);
     },
     [applyGradient, gradients]
   );
 
-  const toggleTransparencyChange = useCallback(
-    (index: number) => {
-      const values = [...showEyes];
-      values.splice(index, 1, !showEyes[index]);
-      setShowEyes(values);
-      applyGradient();
-    },
-    [applyGradient, showEyes]
-  );
+  console.log("Gradient", gradients);
 
   return (
     <div style={styles.container}>
@@ -453,18 +447,17 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <div
-                    style={{ width: "1em", height: "1em", background: "red" }}
+                    style={{
+                      width: "1em",
+                      height: "1em",
+                      backgroundImage: `${gradient}`,
+                    }}
                   ></div>
                 </div>
                 <input
                   value={gradient}
                   onChange={(e) => updateGradient(index, e.target.value)}
                 />
-                {showEyes[index] ? (
-                  <ENT onClick={() => toggleTransparencyChange(index)} />
-                ) : (
-                  <ET onClick={() => toggleTransparencyChange(index)} />
-                )}
                 <div
                   style={{
                     color: gray200,
