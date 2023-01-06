@@ -1,4 +1,4 @@
-import { smallText, gray100 } from "@atrilabs/design-system";
+import { smallText, gray100, gray800 } from "@atrilabs/design-system";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
 import { ColorPicker, toColor, Color } from "react-color-palette";
@@ -14,6 +14,43 @@ type Position = {
   color: Color;
 };
 
+const AngleSelector: React.FC<{ angle: string }> = (props) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "20px",
+        height: "20px",
+        borderRadius: "50%",
+        border: "2px solid #fff",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: "5px",
+          height: "18px",
+          transform: `translateZ(0px) rotate(${props.angle}deg)`,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "2px",
+            width: "5px",
+            height: "5px",
+            borderRadius: "50%",
+            backgroundColor: "#fff",
+          }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 export const GradientColorSelector = () => {
   const [gradientType, setGradientType] = useState<string>("linearGradient");
 
@@ -23,16 +60,19 @@ export const GradientColorSelector = () => {
   ]);
   const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
   const [color, setColor] = useState(positions ? positions[0].color.hex : "");
+  const [gradientAngle, setGradientAngle] = useState("0");
   const divRef = useRef<HTMLDivElement>(null);
 
   const gradient = useMemo(() => {
-    let linearGradientStr = "linear-gradient(45deg";
-    for (let i = 0; i < positions.length; i++) {
-      linearGradientStr += `, ${positions[i].color.hex} ${positions[i].stop}%`;
+    const tempPositions = [...positions];
+    tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
+    let linearGradientStr = `linear-gradient(${gradientAngle}deg`;
+    for (let i = 0; i < tempPositions.length; i++) {
+      linearGradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
     }
     linearGradientStr += ")";
     return linearGradientStr || "";
-  }, [positions]);
+  }, [gradientAngle, positions]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
@@ -52,12 +92,10 @@ export const GradientColorSelector = () => {
     }
     if (!stopPresent) {
       setSelectedPositionIdx(positions.length);
-      const tempPositions = [
+      setPositions([
         ...positions,
         { stop: x, color: toColor("hex", color || "") },
-      ];
-      tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
-      setPositions(tempPositions);
+      ]);
     }
   };
 
@@ -169,6 +207,43 @@ export const GradientColorSelector = () => {
           hideHSV
           dark
         />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingLeft: "1em",
+            paddingRight: "1em",
+          }}
+        >
+          <div
+            style={{
+              ...smallText,
+              color: gray100,
+              backgroundColor: "transparent",
+            }}
+          >
+            Angle
+          </div>
+          <div style={{ width: "55px" }}>
+            <input
+              style={{
+                ...smallText,
+                outline: "none",
+                color: gray100,
+                backgroundColor: gray800,
+                height: "26px",
+                width: "25px",
+                border: "none",
+                borderRadius: "2px 0 0 2px",
+                paddingLeft: "6px",
+              }}
+              value={gradientAngle}
+              onChange={(e) => setGradientAngle(e.target.value)}
+            />
+          </div>
+          <AngleSelector angle={gradientAngle} />
+        </div>
       </div>
     </>
   );
