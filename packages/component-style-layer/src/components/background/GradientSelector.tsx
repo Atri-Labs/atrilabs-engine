@@ -1,7 +1,7 @@
-import { smallText, gray100, gray800 } from "@atrilabs/design-system";
-import { useRef, useState } from "react";
+import { smallText, gray100 } from "@atrilabs/design-system";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
-import { ColorPicker, useColor, toColor, Color } from "react-color-palette";
+import { ColorPicker, toColor, Color } from "react-color-palette";
 
 type GradientColorSelectorTypes = {
   gradient: string;
@@ -25,6 +25,15 @@ export const GradientColorSelector = () => {
   const [color, setColor] = useState(positions ? positions[0].color.hex : "");
   const divRef = useRef<HTMLDivElement>(null);
 
+  const gradient = useMemo(() => {
+    let linearGradientStr = "linear-gradient(45deg";
+    for (let i = 0; i < positions.length; i++) {
+      linearGradientStr += `, ${positions[i].color.hex} ${positions[i].stop}%`;
+    }
+    linearGradientStr += ")";
+    return linearGradientStr || "";
+  }, [positions]);
+
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
     const divRect = divRef.current!.getBoundingClientRect();
@@ -43,10 +52,12 @@ export const GradientColorSelector = () => {
     }
     if (!stopPresent) {
       setSelectedPositionIdx(positions.length);
-      setPositions([
+      const tempPositions = [
         ...positions,
         { stop: x, color: toColor("hex", color || "") },
-      ]);
+      ];
+      tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
+      setPositions(tempPositions);
     }
   };
 
@@ -69,7 +80,6 @@ export const GradientColorSelector = () => {
     setColor(toColor("hex", color)["hex"]);
   };
 
-  console.log("Gradient Type", positions);
   return (
     <>
       <style>
@@ -123,6 +133,7 @@ export const GradientColorSelector = () => {
           onKeyDown={handleKeyDown}
           style={{
             backgroundColor: "rebeccapurple",
+            backgroundImage: `${gradient}`,
             height: "1em",
             width: "250px",
             position: "relative",
