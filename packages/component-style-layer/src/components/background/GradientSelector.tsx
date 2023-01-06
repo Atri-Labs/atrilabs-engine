@@ -1,6 +1,7 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
 import { useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
+import { ColorPicker, useColor, toColor } from "react-color-palette";
 
 type GradientColorSelectorTypes = {
   gradient: string;
@@ -10,11 +11,12 @@ type GradientColorSelectorTypes = {
 
 export const GradientColorSelector = () => {
   const [gradientType, setGradientType] = useState<string>("linearGradient");
-  const [gradientTypeHover, setGradientTypeHover] = useState<boolean>(false);
 
   const [positions, setPositions] = useState<number[]>([0, 100]);
   const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
   const divRef = useRef<HTMLDivElement>(null);
+
+  const [color, setColor] = useColor("hex", "");
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
@@ -42,7 +44,9 @@ export const GradientColorSelector = () => {
   console.log("Gradient Type", selectedPosition);
   return (
     <>
-      <style>{`#gradientBar:focus-visible {outline: none}`}</style>
+      <style>
+        {`#gradientBar:focus-visible {outline: none} #gradientType {border: none} #gradientType:hover {border: 1px solid #fff}`}
+      </style>
       <div
         style={{
           display: "flex",
@@ -57,6 +61,7 @@ export const GradientColorSelector = () => {
           <div>
             <select
               name="gradientType"
+              id="gradientType"
               style={{
                 ...smallText,
                 color: gray100,
@@ -64,7 +69,6 @@ export const GradientColorSelector = () => {
                 outline: "none",
                 height: "28px",
                 paddingLeft: "0.5em",
-                border: gradientTypeHover ? "1px solid #000" : "none",
                 borderRadius: "2px",
                 width: "145px",
                 WebkitAppearance: "none",
@@ -72,8 +76,6 @@ export const GradientColorSelector = () => {
               }}
               onChange={(e) => setGradientType(e.target.value)}
               value={gradientType}
-              onMouseEnter={() => setGradientTypeHover(true)}
-              onMouseLeave={() => setGradientTypeHover(false)}
             >
               <option value="linearGradient">Linear Gradient</option>
               <option value="radialGradient">Radial Gradient</option>
@@ -111,6 +113,15 @@ export const GradientColorSelector = () => {
             />
           ))}
         </div>
+        <ColorPicker
+          width={250}
+          height={200}
+          color={color}
+          onChange={(e) => setColor(toColor("hex", e.hex))}
+          onChangeComplete={(e) => setColor(toColor("hex", e.hex))}
+          hideHSV
+          dark
+        />
       </div>
     </>
   );
