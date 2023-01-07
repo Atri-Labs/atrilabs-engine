@@ -47,6 +47,9 @@ const AngleSelector: React.FC<{ angle: string }> = (props) => {
 
 export const GradientColorSelector = () => {
   const [gradientType, setGradientType] = useState<string>("linearGradient");
+  const [shapeType, setShapeType] = useState<string>("circle");
+  const [xAxis, setXAxis] = useState<number>(50);
+  const [yAxis, setYAxis] = useState<number>(50);
 
   const [positions, setPositions] = useState<Position[]>([
     { stop: 0, color: toColor("hex", "black") },
@@ -111,6 +114,8 @@ export const GradientColorSelector = () => {
     setPositions(values);
     setColor(toColor("hex", color)["hex"]);
   };
+
+  console.log("Gradient", shapeType, xAxis, yAxis);
 
   return (
     <>
@@ -245,6 +250,8 @@ export const GradientColorSelector = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingLeft: "1em",
+            paddingRight: "1em",
           }}
         >
           <div
@@ -261,8 +268,9 @@ export const GradientColorSelector = () => {
               type="range"
               min="0"
               max="125"
-              value="25"
+              value={xAxis}
               id="xAxis"
+              onChange={(e) => setXAxis(parseInt(e.target.value))}
               style={{ width: "120px" }}
             />
           </div>
@@ -272,6 +280,8 @@ export const GradientColorSelector = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingLeft: "1em",
+            paddingRight: "1em",
           }}
         >
           <div
@@ -286,12 +296,66 @@ export const GradientColorSelector = () => {
           <div style={{ width: "120px" }}>
             <input
               type="range"
+              onChange={(e) => setYAxis(parseInt(e.target.value))}
               min="0"
               max="125"
-              value="25"
-              id="xAxis"
+              value={yAxis}
+              id="yAxis"
               style={{ width: "120px" }}
             />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingLeft: "1em",
+            paddingRight: "1em",
+          }}
+        >
+          <div
+            style={{
+              ...smallText,
+              color: gray100,
+              backgroundColor: "transparent",
+            }}
+          >
+            Shape
+          </div>
+          <div>
+            <select
+              name="Select Shape"
+              onChange={(e) => setShapeType(e.target.value)}
+              style={{
+                ...smallText,
+                outline: "none",
+                color: gray100,
+                backgroundColor: gray800,
+                width: "57px",
+                height: "26px",
+                border: "none",
+                borderRadius: "2px",
+              }}
+              value={shapeType}
+            >
+              <option
+                style={{
+                  textAlign: "left",
+                }}
+                value="circle"
+              >
+                Circle
+              </option>
+              <option
+                style={{
+                  textAlign: "left",
+                }}
+                value="ellipse"
+              >
+                Ellipse
+              </option>
+            </select>
           </div>
         </div>
       </div>
