@@ -1,13 +1,7 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
 import { ColorPicker, toColor, Color } from "react-color-palette";
-
-type GradientColorSelectorTypes = {
-  gradient: string;
-  repeat: boolean;
-  updateGradient: (gradient: string) => void;
-};
 
 type Position = {
   stop: number;
@@ -207,13 +201,50 @@ export const GradientColorSelector = () => {
           hideHSV
           dark
         />
+        {gradientType === "linearGradient" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          >
+            <div
+              style={{
+                ...smallText,
+                color: gray100,
+                backgroundColor: "transparent",
+              }}
+            >
+              Angle
+            </div>
+            <div style={{ width: "55px" }}>
+              <input
+                style={{
+                  ...smallText,
+                  outline: "none",
+                  color: gray100,
+                  backgroundColor: gray800,
+                  height: "26px",
+                  width: "25px",
+                  border: "none",
+                  borderRadius: "2px 0 0 2px",
+                  paddingLeft: "6px",
+                }}
+                value={gradientAngle}
+                onChange={(e) => setGradientAngle(e.target.value)}
+              />
+            </div>
+            <AngleSelector angle={gradientAngle} />
+          </div>
+        )}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingLeft: "1em",
-            paddingRight: "1em",
           }}
         >
           <div
@@ -223,26 +254,45 @@ export const GradientColorSelector = () => {
               backgroundColor: "transparent",
             }}
           >
-            Angle
+            Center X-axis
           </div>
-          <div style={{ width: "55px" }}>
+          <div style={{ width: "120px" }}>
             <input
-              style={{
-                ...smallText,
-                outline: "none",
-                color: gray100,
-                backgroundColor: gray800,
-                height: "26px",
-                width: "25px",
-                border: "none",
-                borderRadius: "2px 0 0 2px",
-                paddingLeft: "6px",
-              }}
-              value={gradientAngle}
-              onChange={(e) => setGradientAngle(e.target.value)}
+              type="range"
+              min="0"
+              max="125"
+              value="25"
+              id="xAxis"
+              style={{ width: "120px" }}
             />
           </div>
-          <AngleSelector angle={gradientAngle} />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              ...smallText,
+              color: gray100,
+              backgroundColor: "transparent",
+            }}
+          >
+            Center Y-axis
+          </div>
+          <div style={{ width: "120px" }}>
+            <input
+              type="range"
+              min="0"
+              max="125"
+              value="25"
+              id="xAxis"
+              style={{ width: "120px" }}
+            />
+          </div>
         </div>
       </div>
     </>
