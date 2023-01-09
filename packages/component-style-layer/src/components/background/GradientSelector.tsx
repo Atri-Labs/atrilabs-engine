@@ -63,13 +63,19 @@ export const GradientColorSelector = () => {
   const gradient = useMemo(() => {
     const tempPositions = [...positions];
     tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
-    let linearGradientStr = `linear-gradient(${gradientAngle}deg`;
+    let gradientStr = "";
+    if (gradientType === "linearGradient")
+      gradientStr += `linear-gradient(${gradientAngle}deg`;
+    else if (gradientType === "radialGradient")
+      gradientStr += `radial-gradient(${shapeType} at ${xAxis}% ${yAxis}%`;
+    else if (gradientType === "conicGradient")
+      gradientStr += `conic-gradient(from ${gradientAngle}deg at ${xAxis}% ${yAxis}%`;
     for (let i = 0; i < tempPositions.length; i++) {
-      linearGradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
+      gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
     }
-    linearGradientStr += ")";
-    return linearGradientStr || "";
-  }, [gradientAngle, positions]);
+    gradientStr += ")";
+    return gradientStr || "";
+  }, [gradientAngle, gradientType, positions, shapeType, xAxis, yAxis]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
@@ -114,8 +120,6 @@ export const GradientColorSelector = () => {
     setPositions(values);
     setColor(toColor("hex", color)["hex"]);
   };
-
-  console.log("Gradient", shapeType, xAxis, yAxis);
 
   return (
     <>
@@ -206,7 +210,8 @@ export const GradientColorSelector = () => {
           hideHSV
           dark
         />
-        {gradientType === "linearGradient" && (
+        {(gradientType === "linearGradient" ||
+          gradientType === "conicGradient") && (
           <div
             style={{
               display: "flex",
@@ -245,119 +250,127 @@ export const GradientColorSelector = () => {
             <AngleSelector angle={gradientAngle} />
           </div>
         )}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: "1em",
-            paddingRight: "1em",
-          }}
-        >
+        {(gradientType === "radialGradient" ||
+          gradientType === "conicGradient") && (
           <div
             style={{
-              ...smallText,
-              color: gray100,
-              backgroundColor: "transparent",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "1em",
+              paddingRight: "1em",
             }}
           >
-            Center X-axis
-          </div>
-          <div style={{ width: "120px" }}>
-            <input
-              type="range"
-              min="0"
-              max="125"
-              value={xAxis}
-              id="xAxis"
-              onChange={(e) => setXAxis(parseInt(e.target.value))}
-              style={{ width: "120px" }}
-            />
-          </div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: "1em",
-            paddingRight: "1em",
-          }}
-        >
-          <div
-            style={{
-              ...smallText,
-              color: gray100,
-              backgroundColor: "transparent",
-            }}
-          >
-            Center Y-axis
-          </div>
-          <div style={{ width: "120px" }}>
-            <input
-              type="range"
-              onChange={(e) => setYAxis(parseInt(e.target.value))}
-              min="0"
-              max="125"
-              value={yAxis}
-              id="yAxis"
-              style={{ width: "120px" }}
-            />
-          </div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: "1em",
-            paddingRight: "1em",
-          }}
-        >
-          <div
-            style={{
-              ...smallText,
-              color: gray100,
-              backgroundColor: "transparent",
-            }}
-          >
-            Shape
-          </div>
-          <div>
-            <select
-              name="Select Shape"
-              onChange={(e) => setShapeType(e.target.value)}
+            <div
               style={{
                 ...smallText,
-                outline: "none",
                 color: gray100,
-                backgroundColor: gray800,
-                width: "57px",
-                height: "26px",
-                border: "none",
-                borderRadius: "2px",
+                backgroundColor: "transparent",
               }}
-              value={shapeType}
             >
-              <option
-                style={{
-                  textAlign: "left",
-                }}
-                value="circle"
-              >
-                Circle
-              </option>
-              <option
-                style={{
-                  textAlign: "left",
-                }}
-                value="ellipse"
-              >
-                Ellipse
-              </option>
-            </select>
+              Center X-axis
+            </div>
+            <div style={{ width: "120px" }}>
+              <input
+                type="range"
+                min="0"
+                max="125"
+                value={xAxis}
+                id="xAxis"
+                onChange={(e) => setXAxis(parseInt(e.target.value))}
+                style={{ width: "120px" }}
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {(gradientType === "radialGradient" ||
+          gradientType === "conicGradient") && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          >
+            <div
+              style={{
+                ...smallText,
+                color: gray100,
+                backgroundColor: "transparent",
+              }}
+            >
+              Center Y-axis
+            </div>
+            <div style={{ width: "120px" }}>
+              <input
+                type="range"
+                onChange={(e) => setYAxis(parseInt(e.target.value))}
+                min="0"
+                max="125"
+                value={yAxis}
+                id="yAxis"
+                style={{ width: "120px" }}
+              />
+            </div>
+          </div>
+        )}
+        {gradientType === "radialGradient" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          >
+            <div
+              style={{
+                ...smallText,
+                color: gray100,
+                backgroundColor: "transparent",
+              }}
+            >
+              Shape
+            </div>
+            <div>
+              <select
+                name="Select Shape"
+                onChange={(e) => setShapeType(e.target.value)}
+                style={{
+                  ...smallText,
+                  outline: "none",
+                  color: gray100,
+                  backgroundColor: gray800,
+                  width: "57px",
+                  height: "26px",
+                  border: "none",
+                  borderRadius: "2px",
+                }}
+                value={shapeType}
+              >
+                <option
+                  style={{
+                    textAlign: "left",
+                  }}
+                  value="circle"
+                >
+                  Circle
+                </option>
+                <option
+                  style={{
+                    textAlign: "left",
+                  }}
+                  value=""
+                >
+                  Ellipse
+                </option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
