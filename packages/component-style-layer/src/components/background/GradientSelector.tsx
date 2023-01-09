@@ -57,7 +57,16 @@ const AngleSelector: React.FC<{ angle: string }> = (props) => {
   );
 };
 
-export const GradientColorSelector = () => {
+type GradientSelectorType = {
+  gradient: string;
+  index: number;
+  updateGradient: (index: number, gradient: string) => void;
+  closeGradientSelector: () => void;
+};
+
+export const GradientColorSelector: React.FC<GradientSelectorType> = (
+  props
+) => {
   const [gradientType, setGradientType] = useState<string>("linearGradient");
   const [shapeType, setShapeType] = useState<string>("circle");
   const [xAxis, setXAxis] = useState<number>(50);
@@ -86,8 +95,9 @@ export const GradientColorSelector = () => {
       gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
     }
     gradientStr += ")";
+    props.updateGradient(props.index, gradientStr);
     return gradientStr || "";
-  }, [gradientAngle, gradientType, positions, shapeType, xAxis, yAxis]);
+  }, [gradientAngle, gradientType, positions, props, shapeType, xAxis, yAxis]);
 
   const selectStopOnClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
@@ -177,7 +187,9 @@ export const GradientColorSelector = () => {
               <option value="conicGradient">Conic Gradient</option>
             </select>
           </div>
-          <Cross />
+          <div onClick={props.closeGradientSelector}>
+            <Cross />
+          </div>
         </div>
         <div
           id="gradientBar"
