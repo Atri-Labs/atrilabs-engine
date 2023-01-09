@@ -8,6 +8,18 @@ type Position = {
   color: Color;
 };
 
+type GradientType = {
+  gradientType: "linearGradient" | "radialGradient" | "conicGradient";
+  shapeType: "circle" | "ellipse" | undefined;
+  xAxis: number;
+  yAxis: number;
+  positions: {
+    stop: number;
+    color: string;
+  }[];
+  gradientAngle: number;
+};
+
 const AngleSelector: React.FC<{ angle: string }> = (props) => {
   return (
     <div
@@ -77,7 +89,7 @@ export const GradientColorSelector = () => {
     return gradientStr || "";
   }, [gradientAngle, gradientType, positions, shapeType, xAxis, yAxis]);
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const selectStopOnClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = event;
     const divRect = divRef.current!.getBoundingClientRect();
     const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
@@ -102,7 +114,7 @@ export const GradientColorSelector = () => {
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const deleteStopOnKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (
       selectedPositionIdx !== null &&
       (event.key === "Backspace" || event.key === "Delete")
@@ -170,8 +182,8 @@ export const GradientColorSelector = () => {
         <div
           id="gradientBar"
           ref={divRef}
-          onClick={handleClick}
-          onKeyDown={handleKeyDown}
+          onClick={selectStopOnClick}
+          onKeyDown={deleteStopOnKeyDown}
           style={{
             backgroundColor: "rebeccapurple",
             backgroundImage: `${gradient}`,
