@@ -171,6 +171,14 @@ const backgroundClipValues = [
   "text",
 ];
 export const Background: React.FC<CssProprtyComponentType> = (props) => {
+  const [gradient, setGradient] = useState<
+    | {
+        gradientStr: string;
+        index: number;
+      }
+    | undefined
+  >(undefined);
+
   const gradients = useMemo(() => {
     const gradientsString = (props.styles.background as string) || "";
     const gradientsArray = gradientsString ? gradientsString.split("), ") : [];
@@ -233,19 +241,30 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     [applyGradient, gradients]
   );
 
+  const closeGradientSelector = useCallback(() => {
+    setGradient(undefined);
+  }, []);
+
   console.log("Gradient", gradients);
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          bottom: "0.2rem",
-          right: "15.2rem",
-        }}
-      >
-        <GradientColorSelector />
-      </div>
+      {gradient && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "0.2rem",
+            right: "15.2rem",
+          }}
+        >
+          <GradientColorSelector
+            gradient={gradient.gradientStr}
+            index={gradient.index}
+            updateGradient={updateGradient}
+            closeGradientSelector={closeGradientSelector}
+          />
+        </div>
+      )}
       <div style={styles.container}>
         <div style={styles.drop}>
           <DropDownArrow
@@ -460,7 +479,12 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                   key={index}
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center" }}
+                    onClick={() =>
+                      setGradient({ gradientStr: gradient, index })
+                    }
+                  >
                     <div
                       style={{
                         width: "1em",
