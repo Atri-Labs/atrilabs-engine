@@ -35,8 +35,7 @@ import MultiplePropertyRender from "../commons/MultiplePropertyRender";
 import { ColorComponent } from "../commons/ColorComponent";
 import { ReactComponent as AddButton } from "../../assets/add.svg";
 import { ReactComponent as MinusButton } from "../../assets/minus.svg";
-import { ReactComponent as ET } from "../../assets/background/eye-off.svg";
-import { ReactComponent as ENT } from "../../assets/background/eye.svg";
+import { GradientColorSelector } from "./GradientSelector";
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -237,244 +236,261 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   console.log("Gradient", gradients);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.drop}>
-        <DropDownArrow
-          onClick={() => setShowProperties(!showProperties)}
-          style={
-            !showProperties
-              ? { transform: "rotate(-90deg)" }
-              : { transform: "rotate(0deg)" }
-          }
-        />
-        <div style={styles.header}>Background</div>
-      </div>
+    <>
       <div
-        style={
-          showProperties
-            ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
-            : { display: "none" }
-        }
+        style={{
+          position: "absolute",
+          bottom: "0.2rem",
+          right: "15.2rem",
+        }}
       >
-        {/**Background Type */}
+        <GradientColorSelector />
+      </div>
+      <div style={styles.container}>
+        <div style={styles.drop}>
+          <DropDownArrow
+            onClick={() => setShowProperties(!showProperties)}
+            style={
+              !showProperties
+                ? { transform: "rotate(-90deg)" }
+                : { transform: "rotate(0deg)" }
+            }
+          />
+          <div style={styles.header}>Background</div>
+        </div>
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
+          style={
+            showProperties
+              ? { display: "flex", rowGap: "1rem", flexDirection: "column" }
+              : { display: "none" }
+          }
         >
-          <span style={styles.optionName}>Type</span>
+          {/**Background Type */}
           <div
             style={{
-              ...styles.typesContainer,
-              gridTemplateColumns: "1fr 1fr",
+              display: "flex",
+              alignItems: "center",
             }}
           >
+            <span style={styles.optionName}>Type</span>
             <div
-              style={
-                selectedTypeIndex === 0
-                  ? {
-                      ...styles.iconContainer,
-                      borderRight: `1px solid ${agastyaLine}`,
-                      background: gray800,
-                    }
-                  : {
-                      ...styles.iconContainer,
-                      borderRight: `1px solid ${agastyaLine}`,
-                      background: gray500,
-                    }
-              }
-              onClick={() => {
-                setSelectedTypeIndex(0);
+              style={{
+                ...styles.typesContainer,
+                gridTemplateColumns: "1fr 1fr",
               }}
             >
-              <SI />
-            </div>
-            <div
-              style={
-                selectedTypeIndex === 1
-                  ? {
-                      ...styles.iconContainer,
-                      background: gray800,
-                    }
-                  : {
-                      ...styles.iconContainer,
-                      background: gray500,
-                    }
-              }
-              onClick={() => {
-                setSelectedTypeIndex(1);
-              }}
-            >
-              <II />
+              <div
+                style={
+                  selectedTypeIndex === 0
+                    ? {
+                        ...styles.iconContainer,
+                        borderRight: `1px solid ${agastyaLine}`,
+                        background: gray800,
+                      }
+                    : {
+                        ...styles.iconContainer,
+                        borderRight: `1px solid ${agastyaLine}`,
+                        background: gray500,
+                      }
+                }
+                onClick={() => {
+                  setSelectedTypeIndex(0);
+                }}
+              >
+                <SI />
+              </div>
+              <div
+                style={
+                  selectedTypeIndex === 1
+                    ? {
+                        ...styles.iconContainer,
+                        background: gray800,
+                      }
+                    : {
+                        ...styles.iconContainer,
+                        background: gray500,
+                      }
+                }
+                onClick={() => {
+                  setSelectedTypeIndex(1);
+                }}
+              >
+                <II />
+              </div>
             </div>
           </div>
-        </div>
-        {/**Background Image */}
-        {backgroundTypes[selectedTypeIndex].image && (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={styles.optionName}>Image</span>
-            <AssetInputButton
-              onClick={onBackgroundImgeClickCb}
-              assetName={props.styles.backgroundImage || "Select Image"}
-              onClearClick={onBackgroundImageClearClickCb}
-            />
-          </div>
-        )}
-        {/**Background Color */}
-        {backgroundTypes[selectedTypeIndex].color && (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <ColorComponent
-              name="Background Color"
-              styleItem="backgroundColor"
-              styles={props.styles}
+          {/**Background Image */}
+          {backgroundTypes[selectedTypeIndex].image && (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <span style={styles.optionName}>Image</span>
+              <AssetInputButton
+                onClick={onBackgroundImgeClickCb}
+                assetName={props.styles.backgroundImage || "Select Image"}
+                onClearClick={onBackgroundImageClearClickCb}
+              />
+            </div>
+          )}
+          {/**Background Color */}
+          {backgroundTypes[selectedTypeIndex].color && (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <ColorComponent
+                name="Background Color"
+                styleItem="backgroundColor"
+                styles={props.styles}
+                patchCb={props.patchCb}
+                openPalette={props.openPalette}
+              />
+            </div>
+          )}
+          {/**Background Position */}
+          {backgroundTypes[selectedTypeIndex].position && (
+            <div style={styles.gridContainer}>
+              <div>&nbsp;</div>
+              <div>Top</div>
+              <div>Right</div>
+              <div style={styles.optionName}>Position</div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="backgroundPositionY"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="backgroundPositionX"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+            </div>
+          )}
+          {/**Background Repeat */}
+          {backgroundTypes[selectedTypeIndex].repeat && (
+            <PropertyRender
+              styleItem="backgroundRepeat"
+              styleText="Repeat"
+              styleArray={backgroundRepeatValues}
               patchCb={props.patchCb}
-              openPalette={props.openPalette}
-            />
-          </div>
-        )}
-        {/**Background Position */}
-        {backgroundTypes[selectedTypeIndex].position && (
-          <div style={styles.gridContainer}>
-            <div>&nbsp;</div>
-            <div>Top</div>
-            <div>Right</div>
-            <div style={styles.optionName}>Position</div>
-            <div>
-              <SizeInputWithUnits
-                styleItem="backgroundPositionY"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-              />
-            </div>
-            <div>
-              <SizeInputWithUnits
-                styleItem="backgroundPositionX"
-                styles={props.styles}
-                patchCb={props.patchCb}
-                defaultValue=""
-              />
-            </div>
-          </div>
-        )}
-        {/**Background Repeat */}
-        {backgroundTypes[selectedTypeIndex].repeat && (
-          <PropertyRender
-            styleItem="backgroundRepeat"
-            styleText="Repeat"
-            styleArray={backgroundRepeatValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-          >
-            <BRR />
-            <BRX />
-            <BRY />
-            <BRO />
-            <BRS />
-            <BRN />
-          </PropertyRender>
-        )}
-        {/**Background Attach */}
-        {backgroundTypes[selectedTypeIndex].attach && (
-          <PropertyRender
-            styleItem="backgroundAttachment"
-            styleText="Attach"
-            styleArray={backgroundAttachmentValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-            defaultCSSIndex={2}
-          >
-            <BAY />
-            <BAX />
-            <BAO />
-          </PropertyRender>
-        )}
-        {/**Background Origin */}
-        {backgroundTypes[selectedTypeIndex].origin && (
-          <PropertyRender
-            styleItem="backgroundOrigin"
-            styleText="Origin"
-            styleArray={backgroundOriginValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-            defaultCSSIndex={1}
-          >
-            <BOX />
-            <BOY />
-            <BOO />
-          </PropertyRender>
-        )}
-        {/**Background Clip */}
-        {backgroundTypes[selectedTypeIndex].clip && (
-          <MultiplePropertyRender
-            styleItems={["backgroundClip", "WebkitBackgroundClip"]}
-            styleText="Clip"
-            styleArray={backgroundClipValues}
-            patchCb={props.patchCb}
-            styles={props.styles}
-            defaultCSSIndex={2}
-          >
-            <BCY />
-            <BCX />
-            <BCO />
-            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
-              Text
-            </div>
-          </MultiplePropertyRender>
-        )}
-        {/* Background gradient */}
-        {backgroundTypes[selectedTypeIndex].gradient && (
-          <div
-            style={{ display: "flex", flexDirection: "column", rowGap: "1em" }}
-          >
+              styles={props.styles}
+            >
+              <BRR />
+              <BRX />
+              <BRY />
+              <BRO />
+              <BRS />
+              <BRN />
+            </PropertyRender>
+          )}
+          {/**Background Attach */}
+          {backgroundTypes[selectedTypeIndex].attach && (
+            <PropertyRender
+              styleItem="backgroundAttachment"
+              styleText="Attach"
+              styleArray={backgroundAttachmentValues}
+              patchCb={props.patchCb}
+              styles={props.styles}
+              defaultCSSIndex={2}
+            >
+              <BAY />
+              <BAX />
+              <BAO />
+            </PropertyRender>
+          )}
+          {/**Background Origin */}
+          {backgroundTypes[selectedTypeIndex].origin && (
+            <PropertyRender
+              styleItem="backgroundOrigin"
+              styleText="Origin"
+              styleArray={backgroundOriginValues}
+              patchCb={props.patchCb}
+              styles={props.styles}
+              defaultCSSIndex={1}
+            >
+              <BOX />
+              <BOY />
+              <BOO />
+            </PropertyRender>
+          )}
+          {/**Background Clip */}
+          {backgroundTypes[selectedTypeIndex].clip && (
+            <MultiplePropertyRender
+              styleItems={["backgroundClip", "WebkitBackgroundClip"]}
+              styleText="Clip"
+              styleArray={backgroundClipValues}
+              patchCb={props.patchCb}
+              styles={props.styles}
+              defaultCSSIndex={2}
+            >
+              <BCY />
+              <BCX />
+              <BCO />
+              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
+                Text
+              </div>
+            </MultiplePropertyRender>
+          )}
+          {/* Background gradient */}
+          {backgroundTypes[selectedTypeIndex].gradient && (
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                flexDirection: "column",
+                rowGap: "1em",
               }}
             >
-              <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
-                Gradient
-              </div>
-              <AddButton onClick={() => addGradient()} />
-            </div>
-            {gradients.map((gradient, index) => (
               <div
-                key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  style={{ ...smallText, color: gray200, cursor: "pointer" }}
+                >
+                  Gradient
+                </div>
+                <AddButton onClick={() => addGradient()} />
+              </div>
+              {gradients.map((gradient, index) => (
+                <div
+                  key={index}
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: "1em",
+                        height: "1em",
+                        backgroundImage: `${gradient}`,
+                      }}
+                    ></div>
+                  </div>
+                  <input
+                    value={gradient}
+                    onChange={(e) => updateGradient(index, e.target.value)}
+                  />
                   <div
                     style={{
-                      width: "1em",
-                      height: "1em",
-                      backgroundImage: `${gradient}`,
+                      color: gray200,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      userSelect: "none",
                     }}
-                  ></div>
+                    onClick={() => removeGradient(index)}
+                  >
+                    <MinusButton />
+                  </div>
                 </div>
-                <input
-                  value={gradient}
-                  onChange={(e) => updateGradient(index, e.target.value)}
-                />
-                <div
-                  style={{
-                    color: gray200,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    userSelect: "none",
-                  }}
-                  onClick={() => removeGradient(index)}
-                >
-                  <MinusButton />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
