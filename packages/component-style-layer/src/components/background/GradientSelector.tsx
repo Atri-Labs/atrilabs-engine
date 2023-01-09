@@ -1,5 +1,5 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
 import { ColorPicker, toColor, Color } from "react-color-palette";
 
@@ -8,16 +8,20 @@ type Position = {
   color: Color;
 };
 
+type GradientSelectorType = {
+  gradient: string;
+  index: number;
+  updateGradient: (index: number, gradient: string) => void;
+  closeGradientSelector: () => void;
+};
+
 type GradientType = {
-  gradientType: "linearGradient" | "radialGradient" | "conicGradient";
-  shapeType: "circle" | "ellipse" | undefined;
-  xAxis: number;
-  yAxis: number;
-  positions: {
-    stop: number;
-    color: string;
-  }[];
-  gradientAngle: number;
+  gradientType: string;
+  shapeType: string | undefined;
+  xAxis: number | undefined;
+  yAxis: number | undefined;
+  positions: Position[];
+  gradientAngle: number | undefined;
 };
 
 const AngleSelector: React.FC<{ angle: string }> = (props) => {
@@ -57,16 +61,50 @@ const AngleSelector: React.FC<{ angle: string }> = (props) => {
   );
 };
 
-type GradientSelectorType = {
-  gradient: string;
-  index: number;
-  updateGradient: (index: number, gradient: string) => void;
-  closeGradientSelector: () => void;
-};
-
 export const GradientColorSelector: React.FC<GradientSelectorType> = (
   props
 ) => {
+  const gradientProperty = useMemo(() => {
+    let prevGradient: GradientType = {
+      gradientType: "linearGradient",
+      shapeType: undefined,
+      xAxis: undefined,
+      yAxis: undefined,
+      positions: [],
+      gradientAngle: undefined,
+    };
+
+    let gradientStr = props.gradient;
+    gradientStr = gradientStr.replace("(", ",");
+    gradientStr = gradientStr.replace(")", "");
+
+    const [type, control, ...colors] = gradientStr.split(",");
+    prevGradient.gradientType = type.replace("-g", "G");
+
+    for (let i = 0; i < colors.length; i++) {
+      const [color, stop] = colors[i].trim().split(" ");
+      prevGradient.positions[i] = {
+        stop: parseInt(stop),
+        color: toColor("hex", color),
+      };
+    }
+
+    if (prevGradient.gradientType === "linearGradient") {
+      prevGradient.gradientAngle = parseInt(control);
+    } else if (prevGradient.gradientType === "radialGradient") {
+      const controls = control.split(" ");
+      prevGradient.shapeType = controls[0];
+      prevGradient.xAxis = parseInt(controls[2]);
+      prevGradient.yAxis = parseInt(controls[3]);
+    } else if (prevGradient.gradientType === "conicGradient") {
+      const controls = control.split(" ");
+      prevGradient.gradientAngle = parseInt(controls[1]);
+      prevGradient.xAxis = parseInt(controls[3]);
+      prevGradient.yAxis = parseInt(controls[4]);
+    }
+
+    return prevGradient;
+  }, [props.gradient]);
   const [gradientType, setGradientType] = useState<string>("linearGradient");
   const [shapeType, setShapeType] = useState<string>("circle");
   const [xAxis, setXAxis] = useState<number>(50);
@@ -81,7 +119,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
   const [gradientAngle, setGradientAngle] = useState("0");
   const divRef = useRef<HTMLDivElement>(null);
 
-  const gradient = useMemo(() => {
+  const gradientStr = useMemo(() => {
     const tempPositions = [...positions];
     tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
     let gradientStr = "";
@@ -95,53 +133,64 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
       gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
     }
     gradientStr += ")";
-    props.updateGradient(props.index, gradientStr);
     return gradientStr || "";
-  }, [gradientAngle, gradientType, positions, props, shapeType, xAxis, yAxis]);
+  }, [gradientAngle, gradientType, positions, shapeType, xAxis, yAxis]);
 
-  const selectStopOnClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX } = event;
-    const divRect = divRef.current!.getBoundingClientRect();
-    const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
-    let stopPresent = false;
-    for (let i = 0; i < positions.length; i++) {
-      if (
-        x === positions[i].stop ||
-        (Math.abs(x - positions[i].stop) >= 0 &&
-          Math.abs(x - positions[i].stop) <= 5)
-      ) {
-        stopPresent = true;
-        setSelectedPositionIdx(i);
-        break;
+  const selectStopOnClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const { clientX } = event;
+      const divRect = divRef.current!.getBoundingClientRect();
+      const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
+      let stopPresent = false;
+      for (let i = 0; i < positions.length; i++) {
+        if (
+          x === positions[i].stop ||
+          (Math.abs(x - positions[i].stop) >= 0 &&
+            Math.abs(x - positions[i].stop) <= 5)
+        ) {
+          stopPresent = true;
+          setSelectedPositionIdx(i);
+          break;
+        }
       }
-    }
-    if (!stopPresent) {
-      setSelectedPositionIdx(positions.length);
-      setPositions([
-        ...positions,
-        { stop: x, color: toColor("hex", color || "") },
-      ]);
-    }
-  };
+      if (!stopPresent) {
+        setSelectedPositionIdx(positions.length);
+        setPositions([
+          ...positions,
+          { stop: x, color: toColor("hex", color || "") },
+        ]);
+      }
+    },
+    [color, positions]
+  );
 
-  const deleteStopOnKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (
-      selectedPositionIdx !== null &&
-      (event.key === "Backspace" || event.key === "Delete")
-    ) {
-      setPositions(positions.filter((_, idx) => idx !== selectedPositionIdx));
-      setSelectedPositionIdx(0);
-    }
-  };
+  const deleteStopOnKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        selectedPositionIdx !== null &&
+        (event.key === "Backspace" || event.key === "Delete")
+      ) {
+        if (positions.length > 2)
+          setPositions(
+            positions.filter((_, idx) => idx !== selectedPositionIdx)
+          );
+        setSelectedPositionIdx(0);
+      }
+    },
+    [positions, selectedPositionIdx]
+  );
 
-  const changeColor = (index: number, color: string) => {
-    const value = positions[index];
-    value.color = toColor("hex", color);
-    const values = [...positions];
-    values.splice(index, 1, value);
-    setPositions(values);
-    setColor(toColor("hex", color)["hex"]);
-  };
+  const changeColor = useCallback(
+    (index: number, color: string) => {
+      const value = positions[index];
+      value.color = toColor("hex", color);
+      const values = [...positions];
+      values.splice(index, 1, value);
+      setPositions(values);
+      setColor(toColor("hex", color)["hex"]);
+    },
+    [positions]
+  );
 
   return (
     <>
@@ -187,7 +236,12 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
               <option value="conicGradient">Conic Gradient</option>
             </select>
           </div>
-          <div onClick={props.closeGradientSelector}>
+          <div
+            onClick={() => {
+              props.updateGradient(props.index, gradientStr);
+              props.closeGradientSelector();
+            }}
+          >
             <Cross />
           </div>
         </div>
@@ -198,7 +252,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           onKeyDown={deleteStopOnKeyDown}
           style={{
             backgroundColor: "rebeccapurple",
-            backgroundImage: `${gradient}`,
+            backgroundImage: `${gradientStr}`,
             height: "1em",
             width: "250px",
             position: "relative",
