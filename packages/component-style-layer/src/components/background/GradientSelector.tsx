@@ -17,14 +17,14 @@ type GradientSelectorType = {
 
 type GradientType = {
   gradientType: string;
-  shapeType: string | undefined;
-  xAxis: number | undefined;
-  yAxis: number | undefined;
+  shapeType: string;
+  xAxis: number;
+  yAxis: number;
   positions: Position[];
-  gradientAngle: number | undefined;
+  gradientAngle: number;
 };
 
-const AngleSelector: React.FC<{ angle: string }> = (props) => {
+const AngleSelector: React.FC<{ angle: number }> = (props) => {
   return (
     <div
       style={{
@@ -67,11 +67,11 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
   const gradientProperty = useMemo(() => {
     let prevGradient: GradientType = {
       gradientType: "linearGradient",
-      shapeType: undefined,
-      xAxis: undefined,
-      yAxis: undefined,
+      shapeType: "",
+      xAxis: 0,
+      yAxis: 0,
       positions: [],
-      gradientAngle: undefined,
+      gradientAngle: 0,
     };
 
     let gradientStr = props.gradient;
@@ -105,18 +105,24 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
 
     return prevGradient;
   }, [props.gradient]);
-  const [gradientType, setGradientType] = useState<string>("linearGradient");
-  const [shapeType, setShapeType] = useState<string>("circle");
-  const [xAxis, setXAxis] = useState<number>(50);
-  const [yAxis, setYAxis] = useState<number>(50);
 
-  const [positions, setPositions] = useState<Position[]>([
-    { stop: 0, color: toColor("hex", "black") },
-    { stop: 100, color: toColor("hex", "red") },
-  ]);
+  const [gradientType, setGradientType] = useState<string>(
+    gradientProperty.gradientType
+  );
+  const [shapeType, setShapeType] = useState<string>(
+    gradientProperty.shapeType
+  );
+  const [xAxis, setXAxis] = useState<number>(gradientProperty.xAxis);
+  const [yAxis, setYAxis] = useState<number>(gradientProperty.yAxis);
+
+  const [positions, setPositions] = useState<Position[]>(
+    gradientProperty.positions
+  );
   const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
   const [color, setColor] = useState(positions ? positions[0].color.hex : "");
-  const [gradientAngle, setGradientAngle] = useState("0");
+  const [gradientAngle, setGradientAngle] = useState(
+    gradientProperty.gradientAngle
+  );
   const divRef = useRef<HTMLDivElement>(null);
 
   const gradientStr = useMemo(() => {
@@ -322,7 +328,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                   paddingLeft: "6px",
                 }}
                 value={gradientAngle}
-                onChange={(e) => setGradientAngle(e.target.value)}
+                onChange={(e) => setGradientAngle(parseInt(e.target.value))}
               />
             </div>
             <AngleSelector angle={gradientAngle} />

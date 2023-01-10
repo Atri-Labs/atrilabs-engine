@@ -220,7 +220,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   );
 
   const addGradient = useCallback(() => {
-    applyGradient([...gradients, "linear-gradient(45deg, black, transparent)"]);
+    applyGradient([...gradients, "linear-gradient(45deg, white 0%, red 100%)"]);
   }, [applyGradient, gradients]);
 
   const removeGradient = useCallback(
