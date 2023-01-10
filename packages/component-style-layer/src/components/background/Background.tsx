@@ -480,7 +480,14 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <div
-                    style={{ display: "flex", alignItems: "center" }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      columnGap: "1em",
+                      border: "1px solid #fff",
+                      padding: "0.3em",
+                      width: "110px",
+                    }}
                     onClick={() =>
                       setGradient({ gradientStr: gradient, index })
                     }
@@ -492,11 +499,20 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                         backgroundImage: `${gradient}`,
                       }}
                     ></div>
+                    <div
+                      style={{
+                        ...smallText,
+                        color: gray200,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {gradient[0] === "l"
+                        ? "Linear Gradient"
+                        : gradient[0] === "r"
+                        ? "Radial Gradient"
+                        : "Conic Gradient"}
+                    </div>
                   </div>
-                  <input
-                    value={gradient}
-                    onChange={(e) => updateGradient(index, e.target.value)}
-                  />
                   <div
                     style={{
                       color: gray200,
