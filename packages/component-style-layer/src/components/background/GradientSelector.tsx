@@ -24,9 +24,26 @@ type GradientType = {
   gradientAngle: number;
 };
 
-const AngleSelector: React.FC<{ angle: number }> = (props) => {
+const AngleSelector: React.FC<{
+  angle: number;
+  setAngle: React.Dispatch<React.SetStateAction<number>>;
+}> = (props) => {
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const calculateAngle = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const { clientX, clientY } = event;
+      const { top, left } = divRef.current!.getBoundingClientRect();
+      const x = clientX - left - 10;
+      const y = clientY - top - 10;
+      const degrees = Math.trunc(Math.atan2(y, x) * (180 / Math.PI) + 90);
+      props.setAngle(degrees < 0 ? 360 + degrees : degrees);
+    },
+    [props]
+  );
   return (
     <div
+      ref={divRef}
       style={{
         display: "flex",
         alignItems: "center",
@@ -37,6 +54,7 @@ const AngleSelector: React.FC<{ angle: number }> = (props) => {
         border: "2px solid #fff",
         position: "relative",
       }}
+      onMouseMove={calculateAngle}
     >
       <div
         style={{
@@ -314,24 +332,25 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             >
               Angle
             </div>
-            <div style={{ width: "55px" }}>
-              <input
-                style={{
-                  ...smallText,
-                  outline: "none",
-                  color: gray100,
-                  backgroundColor: gray800,
-                  height: "26px",
-                  width: "25px",
-                  border: "none",
-                  borderRadius: "2px 0 0 2px",
-                  paddingLeft: "6px",
-                }}
-                value={gradientAngle}
-                onChange={(e) => setGradientAngle(parseInt(e.target.value))}
-              />
+            <AngleSelector angle={gradientAngle} setAngle={setGradientAngle} />
+            <div
+              style={{
+                ...smallText,
+                outline: "none",
+                color: gray100,
+                backgroundColor: gray800,
+                height: "26px",
+                width: "25px",
+                border: "none",
+                borderRadius: "2px 0 0 2px",
+                paddingLeft: "6px",
+                paddingRight: "6px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {gradientAngle}
             </div>
-            <AngleSelector angle={gradientAngle} />
           </div>
         )}
         {(gradientType === "radialGradient" ||
