@@ -16,6 +16,7 @@ type GradientSelectorType = {
 };
 
 type GradientType = {
+  repeat: boolean;
   gradientType: string;
   shapeType: string;
   xAxis: number;
@@ -84,6 +85,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
 ) => {
   const gradientProperty = useMemo(() => {
     let prevGradient: GradientType = {
+      repeat: false,
       gradientType: "linearGradient",
       shapeType: "",
       xAxis: 0,
@@ -97,7 +99,12 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
     gradientStr = gradientStr.replace(")", "");
 
     const [type, control, ...colors] = gradientStr.split(",");
-    prevGradient.gradientType = type.replace("-g", "G");
+    if (type[0] === "r" && type[1] === "e") {
+      prevGradient.repeat = true;
+    }
+    prevGradient.gradientType = type
+      .replace("repeating-", "")
+      .replace("-g", "G");
 
     for (let i = 0; i < colors.length; i++) {
       const [color, stop] = colors[i].trim().split(" ");
@@ -147,6 +154,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
     const tempPositions = [...positions];
     tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
     let gradientStr = "";
+    if (gradientProperty.repeat) gradientStr += "repeating-";
     if (gradientType === "linearGradient")
       gradientStr += `linear-gradient(${gradientAngle}deg`;
     else if (gradientType === "radialGradient")
@@ -158,7 +166,15 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
     }
     gradientStr += ")";
     return gradientStr || "";
-  }, [gradientAngle, gradientType, positions, shapeType, xAxis, yAxis]);
+  }, [
+    gradientAngle,
+    gradientProperty.repeat,
+    gradientType,
+    positions,
+    shapeType,
+    xAxis,
+    yAxis,
+  ]);
 
   const selectStopOnClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
