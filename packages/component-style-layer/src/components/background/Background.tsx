@@ -506,13 +506,57 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                         cursor: "pointer",
                       }}
                     >
-                      {gradient[0] === "l"
+                      {(gradient[0] === "r" && gradient[10] === "l") ||
+                      gradient[0] === "l"
                         ? "Linear Gradient"
-                        : gradient[0] === "r"
+                        : (gradient[0] === "r" && gradient[10] === "r") ||
+                          (gradient[0] === "r" && gradient[1] === "a")
                         ? "Radial Gradient"
                         : "Conic Gradient"}
                     </div>
                   </div>
+                  {gradient[0] === "r" && gradient[1] === "e" ? (
+                    <div
+                      style={{
+                        ...smallText,
+                        color: gray200,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid #fff",
+                        padding: "0.3em",
+                        width: "60px",
+                      }}
+                      onClick={() =>
+                        updateGradient(
+                          index,
+                          gradient.replace("repeating-", "")
+                        )
+                      }
+                    >
+                      Repeat
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        ...smallText,
+                        color: gray200,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid #fff",
+                        padding: "0.3em",
+                        width: "60px",
+                      }}
+                      onClick={() =>
+                        updateGradient(index, "repeating-" + gradient)
+                      }
+                    >
+                      No Repeat
+                    </div>
+                  )}
                   <div
                     style={{
                       color: gray200,
