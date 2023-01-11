@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useMemo } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -13,7 +13,11 @@ export const Step = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { color: string; current: number; title: []; description: [] };
+    custom: {
+      color: string;
+      current: number;
+      steps: { title: string; description: string }[];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
@@ -140,11 +144,11 @@ export const Step = forwardRef<
         onClick={onClick}
         className={`step-parent ${props.className}`}
       >
-        {props.custom.title.map((step, i) => (
+        {props.custom.steps.map((step, i) => (
           <div
             className="step-wrapper"
             key={i}
-            style={{ width: `${100 / props.custom.title.length}%` }}
+            style={{ width: `${100 / props.custom.steps.length}%` }}
           >
             {props.custom.current > i + 1 ? (
               <div>
@@ -173,8 +177,8 @@ export const Step = forwardRef<
                   </span>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : props.custom.current === i + 1 ? (
@@ -188,8 +192,8 @@ export const Step = forwardRef<
                   </div>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : (
@@ -198,13 +202,13 @@ export const Step = forwardRef<
                   <div className="step-icon-notreached">{i + 1}</div>
                 </div>
                 <div className="step-details-notreached">
-                  <h5>{step}</h5>
-                  <p>{props.custom.description[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             )}
             s
-            {i + 1 < props.custom.title.length &&
+            {i + 1 < props.custom.steps.length &&
             i + 1 < props.custom.current ? (
               <div className="progress-holder">
                 <div
@@ -212,7 +216,7 @@ export const Step = forwardRef<
                   style={{ backgroundColor: `${props.custom.color}` }}
                 ></div>
               </div>
-            ) : i + 1 < props.custom.title.length &&
+            ) : i + 1 < props.custom.steps.length &&
               i + 1 >= props.custom.current ? (
               <div className="progress-holder">
                 <div className="step-progress-notreached"></div>
@@ -229,7 +233,11 @@ export const DevStep = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { color: string; current: number; title: []; description: [] };
+    custom: {
+      color: string;
+      current: number;
+      steps: { title: string; description: string }[];
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
@@ -240,12 +248,11 @@ export const DevStep = forwardRef<
     [props]
   );
 
-  const modifiedTitleArray =
-    props.custom.title.length === 0 ? ["Title 1"] : props.custom.title;
-  const modifiedDescriptionArray =
-    props.custom.description.length === 0
-      ? ["Description"]
-      : props.custom.description;
+  const steps = useMemo(() => {
+    if (props.custom.steps.length === 0)
+      return [{ title: "Title1", description: "Description" }];
+    return props.custom.steps;
+  }, [props.custom.steps]);
 
   return (
     <>
@@ -362,11 +369,11 @@ export const DevStep = forwardRef<
         onClick={onClick}
         className="step-parent"
       >
-        {modifiedTitleArray.map((step, i) => (
+        {steps.map((step, i) => (
           <div
             className="step-wrapper"
             key={i}
-            style={{ width: `${100 / modifiedTitleArray.length}%` }}
+            style={{ width: `${100 / steps.length}%` }}
           >
             {props.custom.current > i + 1 ? (
               <div style={{ display: "flex" }}>
@@ -395,8 +402,8 @@ export const DevStep = forwardRef<
                   </span>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{modifiedDescriptionArray[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : props.custom.current === i + 1 ? (
@@ -410,8 +417,8 @@ export const DevStep = forwardRef<
                   </div>
                 </div>
                 <div className="step-details">
-                  <h5>{step}</h5>
-                  <p>{modifiedDescriptionArray[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             ) : (
@@ -420,22 +427,20 @@ export const DevStep = forwardRef<
                   <div className="step-icon-notreached">{i + 1}</div>
                 </div>
                 <div className="step-details-notreached">
-                  <h5>{step}</h5>
-                  <p>{modifiedDescriptionArray[i]}</p>
+                  <h5>{step.title}</h5>
+                  <p>{step.description}</p>
                 </div>
               </div>
             )}
 
-            {i + 1 < modifiedTitleArray.length &&
-            i + 1 < props.custom.current ? (
+            {i + 1 < steps.length && i + 1 < props.custom.current ? (
               <div className="progress-holder">
                 <div
                   className="step-progress"
                   style={{ backgroundColor: `${props.custom.color}` }}
                 ></div>
               </div>
-            ) : i + 1 < modifiedTitleArray.length &&
-              i + 1 >= props.custom.current ? (
+            ) : i + 1 < steps.length && i + 1 >= props.custom.current ? (
               <div className="progress-holder">
                 <div className="step-progress-notreached"></div>
               </div>
@@ -448,6 +453,7 @@ export const DevStep = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
@@ -464,8 +470,14 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     color: { type: "color" },
     current: { type: "number" },
-    title: { type: "array" },
-    description: { type: "array" },
+    steps: {
+      type: "array_map",
+      singleObjectName: "step",
+      attributes: [
+        { fieldName: "title", type: "text" },
+        { fieldName: "description", type: "text" },
+      ],
+    },
   },
 };
 
@@ -491,6 +503,7 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           color: "#336699",
           current: 1,
+          steps: [],
           title: [],
           description: [],
         },

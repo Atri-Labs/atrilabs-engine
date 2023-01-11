@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/undo-redo-layer",
-  "version": "0.0.89",
+  "version": "0.0.90",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
@@ -29,12 +29,12 @@
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime-utils": "^0.0.89",
-    "@atrilabs/core": "^0.0.89",
-    "@atrilabs/design-system": "^0.0.89",
-    "@atrilabs/layer-types": "^0.0.89",
-    "@atrilabs/scripts": "^0.0.89",
-    "eslint-plugin-atrilabs": "^0.0.89",
+    "@atrilabs/canvas-runtime-utils": "^0.0.90",
+    "@atrilabs/core": "^0.0.90",
+    "@atrilabs/design-system": "^0.0.90",
+    "@atrilabs/layer-types": "^0.0.90",
+    "@atrilabs/scripts": "^0.0.90",
+    "eslint-plugin-atrilabs": "^0.0.90",
     "typescript": "4.6.3"
   },
   "devDependencies": {

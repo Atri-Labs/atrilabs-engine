@@ -44,6 +44,7 @@ export const Radio = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,

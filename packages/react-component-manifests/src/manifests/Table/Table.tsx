@@ -85,6 +85,7 @@ export const DevDataTable: typeof DataTable = forwardRef((props, ref) => {
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,

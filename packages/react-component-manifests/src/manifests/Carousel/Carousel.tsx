@@ -1,4 +1,10 @@
-import React, { useState, useEffect, forwardRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useCallback,
+  useMemo,
+} from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -221,9 +227,8 @@ export const Carousel = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      items: [];
+      items: { text: string; image?: string }[];
       startTile: number;
-      imageItems: [];
       isIndicatorCircle: boolean;
       indicatorPosition: string;
     };
@@ -249,14 +254,14 @@ export const Carousel = forwardRef<
         isCircle={props.custom.isIndicatorCircle}
         indicatorPosition={props.custom.indicatorPosition}
       >
-        {props.custom.items.map((item, i) => (
+        {props.custom.items.map((item, index) => (
           <CarouselItem
             width="100%"
             height="100%"
-            key={i}
-            backgroundImage={props.custom.imageItems[i]}
+            key={index}
+            backgroundImage={item.image || ""}
           >
-            {item ? item : "Sample Text"}
+            {item.text ? item.text : "Sample Text"}
           </CarouselItem>
         ))}
       </CarouselWrapper>
@@ -269,9 +274,8 @@ export const DevCarousel = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      items: [];
+      items: { text: string; image?: string }[];
       startTile: number;
-      imageItems: [];
       isIndicatorCircle: boolean;
       indicatorPosition: string;
     };
@@ -279,8 +283,11 @@ export const DevCarousel = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const modifiedItemsArray =
-    props.custom.items.length === 0 ? ["Sample Text"] : props.custom.items;
+  const items = useMemo(() => {
+    if (props.custom.items.length === 0)
+      return [{ text: "Sample Text", image: "" }];
+    return props.custom.items;
+  }, [props.custom.items]);
 
   const onClick = useCallback(
     (e: React.MouseEvent) => {
@@ -300,14 +307,14 @@ export const DevCarousel = forwardRef<
         isCircle={props.custom.isIndicatorCircle}
         indicatorPosition={props.custom.indicatorPosition}
       >
-        {modifiedItemsArray.map((item, i) => (
+        {items.map((item, index) => (
           <CarouselItem
             width="100%"
             height="100%"
-            key={i}
-            backgroundImage={props.custom.imageItems[i]}
+            key={index}
+            backgroundImage={item.image || ""}
           >
-            {item ? item : "Sample Text"}
+            {item.text ? item.text : "Sample Text"}
           </CarouselItem>
         ))}
       </CarouselWrapper>
@@ -316,6 +323,7 @@ export const DevCarousel = forwardRef<
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
@@ -330,13 +338,19 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    items: { type: "array" },
     startTile: { type: "number" },
-    imageItems: { type: "array_static_asset" },
     isIndicatorCircle: { type: "boolean" },
     indicatorPosition: {
       type: "enum",
       options: ["", "Top", "Bottom", "Left", "Right"],
+    },
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "text", type: "text" },
+        { fieldName: "image", type: "static_asset" },
+      ],
     },
   },
 };
@@ -364,7 +378,6 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           items: [],
           startTile: 0,
-          imageItems: [],
           isIndicatorCircle: false,
         },
         treeOptions: customTreeOptions,

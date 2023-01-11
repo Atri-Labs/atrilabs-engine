@@ -4,6 +4,7 @@ import { ColorPicker, useColor, toColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
 import { Cross } from "../../icons/Cross";
 import { h5Heading } from "@atrilabs/design-system";
+import { useMemo } from "react";
 
 export type ColorPickerProps = {
   styleItem: keyof React.CSSProperties;
@@ -11,6 +12,9 @@ export type ColorPickerProps = {
   patchCb: CssProprtyComponentType["patchCb"];
   styles: CssProprtyComponentType["styles"];
   title: string;
+  changeColor?: (color: string, index: number) => void;
+  index?: number;
+  currentColor?: any;
 };
 
 export type Color = {
@@ -34,32 +38,36 @@ type ColorHSV = {
 };
 
 export const ColorPickerAsset: React.FC<ColorPickerProps> = (props) => {
+  const styleItem = useMemo(() => {
+    if (props.changeColor) return props.currentColor!.color;
+    return props.styles[props.styleItem] as string | undefined;
+  }, [props.changeColor, props.currentColor, props.styleItem, props.styles]);
+
   //Internal state is being used to record the last color dragged to in the palette.
   const [color, setColor] = useColor(
     "hex",
-    (props.styles[props.styleItem] as string | undefined) || ""
+    (styleItem as string | undefined) || ""
   );
 
   useEffect(() => {
-    setColor(
-      toColor(
-        "hex",
-        (props.styles[props.styleItem] as string | undefined) || ""
-      )
-    );
-  }, [props.styleItem, props.styles, setColor]);
+    setColor(toColor("hex", styleItem || ""));
+  }, [setColor, styleItem]);
 
   const handleChange = (
     color: string,
     styleItem: keyof React.CSSProperties
   ) => {
-    props.patchCb({
-      property: {
-        styles: {
-          [styleItem]: color,
+    if (props.changeColor) {
+      props.changeColor(color, props.index!);
+    } else {
+      props.patchCb({
+        property: {
+          styles: {
+            [styleItem]: color,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (

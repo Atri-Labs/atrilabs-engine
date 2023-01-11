@@ -189,6 +189,7 @@ export const DevTreemapChart: typeof TreemapChart = forwardRef((props, ref) => {
 });
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,

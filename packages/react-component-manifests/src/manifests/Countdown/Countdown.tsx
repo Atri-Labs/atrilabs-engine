@@ -311,6 +311,7 @@ export const DevCountdown = forwardRef<HTMLDivElement, CountdownProps>(
 );
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,

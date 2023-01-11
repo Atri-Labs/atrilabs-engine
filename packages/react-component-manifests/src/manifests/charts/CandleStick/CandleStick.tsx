@@ -203,6 +203,7 @@ export const DevCandleStickChart: typeof CandleStick = forwardRef(
 );
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,

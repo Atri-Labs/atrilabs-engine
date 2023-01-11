@@ -128,6 +128,7 @@ export const DevRadialbarChart: typeof RadialbarChart = forwardRef(
 );
 
 const cssTreeOptions: CSSTreeOptions = {
+  boxShadowOptions: true,
   flexContainerOptions: false,
   flexChildOptions: false,
   positionOptions: false,
