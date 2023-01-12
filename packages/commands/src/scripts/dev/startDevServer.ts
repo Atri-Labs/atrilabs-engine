@@ -1,15 +1,12 @@
-#!/usr/bin/env node
-
-import moduleFileExtensions from "../utils/moduleFileExtensions";
-import createConfig from "../configs/app.webpack.config";
-import { extractParams } from "../utils/extractParams";
-import createDevConfig from "../configs/dev.app.webpack.config";
+import { extractParams } from "../../utils";
+import createConfig from "../../configs/app.webpack.config";
+import createDevConfig from "../../configs/dev.app.webpack.config";
 import {
   checkBrowsers,
   choosePort,
   clearConsole,
   isInteractive,
-} from "../utils";
+} from "../../utils";
 import {
   createCompiler,
   prepareUrls,
@@ -20,15 +17,11 @@ import webpack from "webpack";
 import chalk from "chalk";
 import openBrowser from "react-dev-utils/openBrowser";
 import WebpackDevServer from "webpack-dev-server";
+import moduleFileExtensions from "../../utils/moduleFileExtensions";
 
-// Makes the script crash on unhandled rejections instead of silently
-// ignoring them. In the future, promise rejections that are not handled will
-// terminate the Node.js process with a non-zero exit code.
-process.on("unhandledRejection", (err) => {
-  throw err;
-});
-
-function main() {
+export default function startDevServer(
+  params: ReturnType<typeof extractParams>
+) {
   const {
     paths,
     isEnvDevelopment,
@@ -51,7 +44,7 @@ function main() {
     debugBuildTool,
     prepareConfig,
     applyPlugins,
-  } = extractParams();
+  } = params;
 
   checkBrowsers(paths.appPath, isInteractive())
     .then(() => {
@@ -170,5 +163,3 @@ function main() {
       process.exit(1);
     });
 }
-
-main();
