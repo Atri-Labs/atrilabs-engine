@@ -1,0 +1,37 @@
+{
+  "name": "@atrilabs/pwa-builder",
+  "version": "0.0.90",
+  "description": "Atri framework's visual builder.",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "dist/editor/index.js",
+  "directories": {
+    "lib": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-react-app": "^7.0.1",
+    "pkg": "^5.8.0",
+    "prettier": "^2.6.2"
+  }
+}
