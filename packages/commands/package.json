@@ -1,0 +1,32 @@
+{
+  "name": "@atrilabs/commands",
+  "version": "0.0.90",
+  "description": "Commands and related utilities for Atri framework.",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "bin": {},
+  "directories": {
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "typescript": "4.6.4"
+  },
+  "peerDependencies": {}
+}
