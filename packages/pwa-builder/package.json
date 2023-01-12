@@ -21,11 +21,14 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "create-atri-app": "create-atri-app"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/commands": "^0.0.90",
     "typescript": "^4.6.4"
   },
   "devDependencies": {

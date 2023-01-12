@@ -45,7 +45,11 @@ function createPackageJSON(
   },
   options: { dest: string }
 ) {
-  const str = JSON.stringify(data, null, 2);
+  const str = JSON.stringify(
+    { name: data.name, author: data.author, description: data.description },
+    null,
+    2
+  );
   const fullPath = path.resolve(options.dest, "package.json");
   if (fs.existsSync(fullPath)) {
     console.log(
@@ -83,6 +87,24 @@ function createPagesDirectory(options: {
   fs.writeFileSync(indexPagePath, createPageScaffold());
 }
 
+function createEslintRC(options: { dest: string }) {
+  fs.writeFileSync(
+    path.resolve(options.dest, ".eslintrc.json"),
+    JSON.stringify(
+      {
+        env: {
+          es6: true,
+        },
+        parserOptions: {
+          sourceType: "module",
+        },
+      },
+      null,
+      2
+    )
+  );
+}
+
 function main() {
   const args = processArgs();
   const dirname = args.name.startsWith("@")
@@ -98,6 +120,7 @@ function main() {
   createAppDirectory(dest);
   createPackageJSON(args, { dest });
   createPagesDirectory({ dest, useTypescript: args.typescript });
+  createEslintRC({ dest });
 }
 
 main();
