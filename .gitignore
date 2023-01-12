@@ -10,3 +10,4 @@ lib-cjs/
 .DS_Store
 coverage/
 .history
+dist/

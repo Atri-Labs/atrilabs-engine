@@ -6,7 +6,9 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "dist/index.js",
-  "bin": {},
+  "bin": {
+    "create-atri-app": "dist/scripts/create-atri-app.js"
+  },
   "directories": {
     "test": "__tests__"
   },
@@ -20,13 +22,19 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/yargs": "^17.0.19"
+  },
   "dependencies": {
-    "typescript": "4.6.4"
+    "chalk": "^5.2.0",
+    "typescript": "4.6.4",
+    "yargs": "^17.6.2"
   },
   "peerDependencies": {}
 }
