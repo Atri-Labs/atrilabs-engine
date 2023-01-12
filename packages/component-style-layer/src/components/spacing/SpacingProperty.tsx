@@ -180,6 +180,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     userSelect: "none",
     pointerEvents: "none",
   },
+  unitSelection: {
+    ...smallText,
+    position: "absolute",
+    left: "95px",
+    color: gray100,
+    backgroundColor: "transparent",
+    outline: "none",
+    border: "none",
+    borderRadius: "2px",
+    width: "18px",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+  },
 };
 
 //ACTIONS
@@ -652,6 +665,13 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
               placeholder={convertSizeWithUnitsToString(paddingLeftVal) || "0"}
               style={styles.paddingLeftPlaceHolder}
             />
+
+            <select style={styles.unitSelection}>
+              <option value="">px</option>
+              <option value="">em</option>
+              <option value="">rem</option>
+            </select>
+
             {/*Margin Label*/}
             <p style={styles.marginLabel}>Margin</p>
             {/* Padding Label */}
