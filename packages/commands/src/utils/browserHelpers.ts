@@ -6,7 +6,7 @@ import prompts from "prompts";
 import chalk from "chalk";
 import browserslist from "browserslist";
 import os from "os";
-import { pkgUp } from "pkg-up";
+import pkgUp from "pkg-up";
 import fs from "fs";
 
 export const defaultBrowsers = {
@@ -84,7 +84,7 @@ export function checkBrowsers(
     return (
       pkgUp({ cwd: dir })
         .then((filePath) => {
-          if (filePath === undefined) {
+          if (filePath === null) {
             return Promise.reject();
           }
           const pkg = JSON.parse(fs.readFileSync(filePath).toString());

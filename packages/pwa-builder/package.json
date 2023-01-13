@@ -22,7 +22,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "create-atri-app": "create-atri-app"
+    "create-atri-app": "create-atri-app",
+    "dev-atri-app": "dev-atri-app"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
@@ -36,5 +37,17 @@
     "eslint-config-react-app": "^7.0.1",
     "pkg": "^5.8.0",
     "prettier": "^2.6.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
