@@ -512,6 +512,57 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     }
   }, [state.context, state.value, props, unit]);
 
+  // Update all the margin and padding directions with the new unit if changed
+  const updateMarginAndPadding = useCallback(() => {
+    function patchStyle(cssProperty: string, cssPropertyVal: string) {
+      props.patchCb({
+        property: {
+          styles: {
+            [cssProperty]: convertSizeWithUnitsToStringWithUnits(
+              cssPropertyVal,
+              unit
+            ),
+          },
+        },
+      });
+    }
+    if (marginTopVal) {
+      patchStyle("marginTop", marginTopVal);
+    }
+    if (marginRightVal) {
+      patchStyle("marginRight", marginRightVal);
+    }
+    if (marginLeftVal) {
+      patchStyle("marginLeft", marginLeftVal);
+    }
+    if (marginBottomVal) {
+      patchStyle("marginBottom", marginBottomVal);
+    }
+    if (paddingTopVal) {
+      patchStyle("paddingTop", paddingTopVal);
+    }
+    if (paddingRightVal) {
+      patchStyle("paddingRight", paddingRightVal);
+    }
+    if (paddingBottomVal) {
+      patchStyle("paddingBottom", paddingBottomVal);
+    }
+    if (paddingLeftVal) {
+      patchStyle("paddingLeft", paddingLeftVal);
+    }
+  }, [
+    marginBottomVal,
+    marginLeftVal,
+    marginRightVal,
+    marginTopVal,
+    paddingBottomVal,
+    paddingLeftVal,
+    paddingRightVal,
+    paddingTopVal,
+    props,
+    unit,
+  ]);
+
   // show margin overlays when in draggin state
   const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay();
   useEffect(() => {
@@ -622,7 +673,17 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     });
   };
 
-  console.log("CSS units marginTopVal", marginTopVal, unit);
+  console.log(
+    "CSS units marginTopVal",
+    marginTopVal,
+    marginRightVal,
+    marginBottomVal,
+    marginLeftVal,
+    paddingTopVal,
+    paddingRightVal,
+    paddingBottomVal,
+    paddingLeftVal
+  );
 
   return (
     <div
@@ -716,55 +777,17 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
                 className="dropdown-content"
                 style={{ position: "absolute", left: "0", textAlign: "center" }}
               >
-                <p
-                  onClick={() => {
-                    setUnit("px");
-                  }}
-                >
-                  px
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("%");
-                  }}
-                >
-                  %
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("em");
-                  }}
-                >
-                  em
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("rem");
-                  }}
-                >
-                  rem
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("ch");
-                  }}
-                >
-                  ch
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("vw");
-                  }}
-                >
-                  vw
-                </p>
-                <p
-                  onClick={() => {
-                    setUnit("vh");
-                  }}
-                >
-                  vh
-                </p>
+                {["px", "%", "em", "rem", "ch", "vw", "vh"].map((unit, idx) => (
+                  <p
+                    onClick={() => {
+                      setUnit(unit);
+                      updateMarginAndPadding();
+                    }}
+                    key={unit + idx}
+                  >
+                    {unit}
+                  </p>
+                ))}
               </div>
             </div>
 
