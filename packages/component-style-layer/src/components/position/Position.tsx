@@ -232,6 +232,15 @@ const dragMachine = createMachine({
     },
   },
 });
+
+function convertSizeWithUnitsToString(size: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() : "0";
+}
+
+function convertSizeWithUnitsToStringWithUnits(size: string, unit: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + unit : "";
+}
+
 const positionValues = ["static", "relative", "absolute", "fixed", "sticky"];
 const floatValues = ["none", "left", "right"];
 const clearValues = ["none", "left", "right", "both"];
@@ -341,7 +350,10 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
         props.patchCb({
           property: {
             styles: {
-              [cssProperty]: cssPropertyVal + unit,
+              [cssProperty]: convertSizeWithUnitsToStringWithUnits(
+                cssPropertyVal,
+                unit
+              ),
             },
           },
         });
@@ -373,7 +385,9 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { top: parseInt(attrValue) } },
+      property: {
+        styles: { top: convertSizeWithUnitsToStringWithUnits(attrValue, unit) },
+      },
     });
   };
   const handleChangePositionRight = (
@@ -381,7 +395,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { right: parseInt(attrValue) } },
+      property: {
+        styles: {
+          right: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   const handleChangePositionLeft = (
@@ -389,7 +407,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { left: parseInt(attrValue) } },
+      property: {
+        styles: {
+          left: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   const handleChangePositionBottom = (
@@ -397,7 +419,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { bottom: parseInt(attrValue) } },
+      property: {
+        styles: {
+          bottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   return (
@@ -435,30 +461,30 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
               <input
-                value={positionTopVal || ""}
+                value={parseFloat(positionTopVal) || ""}
                 onChange={handleChangePositionTop}
-                placeholder={positionTopVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionTopVal)}
                 style={styles.positionTopPlaceHolder}
               />
 
               <input
-                value={positionRightVal || ""}
+                value={parseFloat(positionRightVal) || ""}
                 onChange={handleChangePositionRight}
-                placeholder={positionRightVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionRightVal)}
                 style={styles.positionRightPlaceHolder}
               />
 
               <input
-                value={positionBottomVal || ""}
+                value={parseFloat(positionBottomVal) || ""}
                 onChange={handleChangePositionBottom}
-                placeholder={positionBottomVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionBottomVal)}
                 style={styles.positionBottomPlaceHolder}
               />
 
               <input
-                value={positionLeftVal || ""}
+                value={parseFloat(positionLeftVal) || ""}
                 onChange={handleChangePositionLeft}
-                placeholder={positionLeftVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionLeftVal)}
                 style={styles.positionLeftPlaceHolder}
               />
 
