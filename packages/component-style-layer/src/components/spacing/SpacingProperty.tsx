@@ -513,55 +513,58 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   }, [state.context, state.value, props, unit]);
 
   // Update all the margin and padding directions with the new unit if changed
-  const updateMarginAndPadding = useCallback(() => {
-    function patchStyle(cssProperty: string, cssPropertyVal: string) {
-      props.patchCb({
-        property: {
-          styles: {
-            [cssProperty]: convertSizeWithUnitsToStringWithUnits(
-              cssPropertyVal,
-              unit
-            ),
+  const updateMarginAndPadding = useCallback(
+    (unit: string) => {
+      setUnit(unit);
+      function patchStyle(cssProperty: string, cssPropertyVal: string) {
+        props.patchCb({
+          property: {
+            styles: {
+              [cssProperty]: convertSizeWithUnitsToStringWithUnits(
+                cssPropertyVal,
+                unit
+              ),
+            },
           },
-        },
-      });
-    }
-    if (marginTopVal) {
-      patchStyle("marginTop", marginTopVal);
-    }
-    if (marginRightVal) {
-      patchStyle("marginRight", marginRightVal);
-    }
-    if (marginLeftVal) {
-      patchStyle("marginLeft", marginLeftVal);
-    }
-    if (marginBottomVal) {
-      patchStyle("marginBottom", marginBottomVal);
-    }
-    if (paddingTopVal) {
-      patchStyle("paddingTop", paddingTopVal);
-    }
-    if (paddingRightVal) {
-      patchStyle("paddingRight", paddingRightVal);
-    }
-    if (paddingBottomVal) {
-      patchStyle("paddingBottom", paddingBottomVal);
-    }
-    if (paddingLeftVal) {
-      patchStyle("paddingLeft", paddingLeftVal);
-    }
-  }, [
-    marginBottomVal,
-    marginLeftVal,
-    marginRightVal,
-    marginTopVal,
-    paddingBottomVal,
-    paddingLeftVal,
-    paddingRightVal,
-    paddingTopVal,
-    props,
-    unit,
-  ]);
+        });
+      }
+      if (marginTopVal) {
+        patchStyle("marginTop", marginTopVal);
+      }
+      if (marginRightVal) {
+        patchStyle("marginRight", marginRightVal);
+      }
+      if (marginLeftVal) {
+        patchStyle("marginLeft", marginLeftVal);
+      }
+      if (marginBottomVal) {
+        patchStyle("marginBottom", marginBottomVal);
+      }
+      if (paddingTopVal) {
+        patchStyle("paddingTop", paddingTopVal);
+      }
+      if (paddingRightVal) {
+        patchStyle("paddingRight", paddingRightVal);
+      }
+      if (paddingBottomVal) {
+        patchStyle("paddingBottom", paddingBottomVal);
+      }
+      if (paddingLeftVal) {
+        patchStyle("paddingLeft", paddingLeftVal);
+      }
+    },
+    [
+      marginBottomVal,
+      marginLeftVal,
+      marginRightVal,
+      marginTopVal,
+      paddingBottomVal,
+      paddingLeftVal,
+      paddingRightVal,
+      paddingTopVal,
+      props,
+    ]
+  );
 
   // show margin overlays when in draggin state
   const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay();
@@ -673,18 +676,6 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     });
   };
 
-  console.log(
-    "CSS units marginTopVal",
-    marginTopVal,
-    marginRightVal,
-    marginBottomVal,
-    marginLeftVal,
-    paddingTopVal,
-    paddingRightVal,
-    paddingBottomVal,
-    paddingLeftVal
-  );
-
   return (
     <div
       style={{
@@ -780,8 +771,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
                 {["px", "%", "em", "rem", "ch", "vw", "vh"].map((unit, idx) => (
                   <p
                     onClick={() => {
-                      setUnit(unit);
-                      updateMarginAndPadding();
+                      updateMarginAndPadding(unit);
                     }}
                     key={unit + idx}
                   >
