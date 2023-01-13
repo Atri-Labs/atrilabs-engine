@@ -97,7 +97,7 @@ function createPagesDirectory(options: {
   )}`;
   fs.writeFileSync(indexPagePath, createPageScaffold());
 
-  copyAppWrapper();
+  copyAppWrapper({ dest, useTypescript });
 }
 
 function createEslintRC(options: { dest: string }) {
@@ -111,6 +111,7 @@ function createEslintRC(options: { dest: string }) {
         parserOptions: {
           sourceType: "module",
         },
+        extends: ["plugin:import/react"],
       },
       null,
       2
