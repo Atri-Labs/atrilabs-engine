@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   gray200,
   gray800,
@@ -353,6 +353,36 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const paddingLeftVal = props.styles.paddingLeft?.toString() || "";
   const paddingBottomVal = props.styles.paddingBottom?.toString() || "";
 
+  const unit = useMemo(() => {
+    if (marginTopVal) {
+      return marginTopVal.replace(/[0-9]/g, "");
+    } else if (marginRightVal) {
+      marginRightVal.replace(/[0-9]/g, "");
+    } else if (marginLeftVal) {
+      marginLeftVal.replace(/[0-9]/g, "");
+    } else if (marginBottomVal) {
+      marginBottomVal.replace(/[0-9]/g, "");
+    } else if (paddingTopVal) {
+      paddingTopVal.replace(/[0-9]/g, "");
+    } else if (paddingRightVal) {
+      paddingRightVal.replace(/[0-9]/g, "");
+    } else if (paddingBottomVal) {
+      paddingBottomVal.replace(/[0-9]/g, "");
+    } else if (paddingLeftVal) {
+      paddingLeftVal.replace(/[0-9]/g, "");
+    }
+    return "px";
+  }, [
+    marginBottomVal,
+    marginLeftVal,
+    marginRightVal,
+    marginTopVal,
+    paddingBottomVal,
+    paddingLeftVal,
+    paddingRightVal,
+    paddingTopVal,
+  ]);
+
   // callbacks for different areas
   const onMouseDownPaddingTop = useCallback(
     (event: React.MouseEvent) => {
@@ -587,6 +617,8 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   };
+
+  console.log("CSS units marginTopVal", marginTopVal);
 
   return (
     <div
