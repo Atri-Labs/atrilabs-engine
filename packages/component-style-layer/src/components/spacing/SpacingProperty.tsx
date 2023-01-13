@@ -335,8 +335,8 @@ function convertSizeWithUnitsToString(size: string) {
   return !isNaN(parseFloat(size)) ? parseFloat(size).toString() : "";
 }
 
-function convertSizeWithUnitsToStringWithUnits(size: string) {
-  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + "px" : "";
+function convertSizeWithUnitsToStringWithUnits(size: string, unit: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + unit : "";
 }
 
 // SpacingProperty is a controlled component
@@ -353,7 +353,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const paddingLeftVal = props.styles.paddingLeft?.toString() || "";
   const paddingBottomVal = props.styles.paddingBottom?.toString() || "";
 
-  const unit = useMemo(() => {
+  const prevCSSUNnit = useMemo(() => {
     if (marginTopVal) {
       return marginTopVal.replace(/[0-9]/g, "");
     } else if (marginRightVal) {
@@ -382,6 +382,8 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     paddingRightVal,
     paddingTopVal,
   ]);
+
+  const [unit, setUnit] = useState<string>(prevCSSUNnit);
 
   // callbacks for different areas
   const onMouseDownPaddingTop = useCallback(
@@ -501,14 +503,14 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       props.styles[state.context["area"] as keyof React.CSSProperties];
     if (typeof oldValue === "string" && parseFloat(oldValue) !== newValue) {
       props.patchCb({
-        property: { styles: { [state.context["area"]]: newValue + "px" } },
+        property: { styles: { [state.context["area"]]: newValue + unit } },
       });
     } else if (oldValue !== newValue) {
       props.patchCb({
-        property: { styles: { [state.context["area"]]: newValue + "px" } },
+        property: { styles: { [state.context["area"]]: newValue + unit } },
       });
     }
-  }, [state.context, state.value, props]);
+  }, [state.context, state.value, props, unit]);
 
   // show margin overlays when in draggin state
   const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay();
@@ -529,7 +531,9 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     const attrValue = event.target.value;
     props.patchCb({
       property: {
-        styles: { marginTop: convertSizeWithUnitsToStringWithUnits(attrValue) },
+        styles: {
+          marginTop: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
       },
     });
   };
@@ -540,7 +544,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginRight: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -552,7 +556,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginLeft: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -564,7 +568,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginBottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -576,7 +580,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingTop: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingTop: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -588,7 +592,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingRight: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -600,7 +604,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingLeft: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -612,13 +616,13 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingBottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
   };
 
-  console.log("CSS units marginTopVal", marginTopVal);
+  console.log("CSS units marginTopVal", marginTopVal, unit);
 
   return (
     <div
@@ -698,11 +702,71 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
               style={styles.paddingLeftPlaceHolder}
             />
 
-            <select style={styles.unitSelection}>
-              <option value="">px</option>
-              <option value="">em</option>
-              <option value="">rem</option>
-            </select>
+            <div
+              className="dropdown"
+              style={{ position: "absolute", left: "95px", height: "19px" }}
+            >
+              <button
+                className="dropbtn"
+                style={{ height: "19px", backgroundColor: "transparent" }}
+              >
+                {unit}
+              </button>
+              <div
+                className="dropdown-content"
+                style={{ position: "absolute", left: "0", textAlign: "center" }}
+              >
+                <p
+                  onClick={() => {
+                    setUnit("px");
+                  }}
+                >
+                  px
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("%");
+                  }}
+                >
+                  %
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("em");
+                  }}
+                >
+                  em
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("rem");
+                  }}
+                >
+                  rem
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("ch");
+                  }}
+                >
+                  ch
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("vw");
+                  }}
+                >
+                  vw
+                </p>
+                <p
+                  onClick={() => {
+                    setUnit("vh");
+                  }}
+                >
+                  vh
+                </p>
+              </div>
+            </div>
 
             {/*Margin Label*/}
             <p style={styles.marginLabel}>Margin</p>
