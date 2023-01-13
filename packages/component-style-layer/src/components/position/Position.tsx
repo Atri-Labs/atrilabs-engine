@@ -258,6 +258,8 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
     return "px";
   }, [positionBottomVal, positionLeftVal, positionRightVal, positionTopVal]);
 
+  const [unit, setUnit] = useState<string>(prevCSSUNnit);
+
   const onMouseDownPositionTop = useCallback(
     (event: React.MouseEvent) => {
       send({
@@ -330,6 +332,41 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
         property: { styles: { [state.context["area"]]: newValue } },
       });
   }, [state.context, state.value, props]);
+
+  // Synchronise the position property with the new CSS unit
+  const updatePosition = useCallback(
+    (unit: string) => {
+      setUnit(unit);
+      function patchStyle(cssProperty: string, cssPropertyVal: string) {
+        props.patchCb({
+          property: {
+            styles: {
+              [cssProperty]: cssPropertyVal + unit,
+            },
+          },
+        });
+      }
+      if (positionTopVal) {
+        patchStyle("positionTop", positionTopVal);
+      }
+      if (positionRightVal) {
+        patchStyle("positionRight", positionRightVal);
+      }
+      if (positionLeftVal) {
+        patchStyle("positionLeft", positionLeftVal);
+      }
+      if (positionBottomVal) {
+        patchStyle("positionBottom", positionBottomVal);
+      }
+    },
+    [
+      positionBottomVal,
+      positionLeftVal,
+      positionRightVal,
+      positionTopVal,
+      props,
+    ]
+  );
 
   const handleChangePositionTop = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -424,6 +461,40 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
                 placeholder={positionLeftVal || "0"}
                 style={styles.positionLeftPlaceHolder}
               />
+
+              <div
+                className="dropdown"
+                style={{ position: "absolute", left: "95px", height: "19px" }}
+              >
+                <button
+                  className="dropbtn"
+                  style={{ height: "19px", backgroundColor: "transparent" }}
+                >
+                  {unit}
+                </button>
+                <div
+                  className="dropdown-content"
+                  style={{
+                    position: "absolute",
+                    left: "0",
+                    textAlign: "center",
+                  }}
+                >
+                  {["px", "%", "em", "rem", "ch", "vw", "vh"].map(
+                    (unit, idx) => (
+                      <p
+                        onClick={() => {
+                          updatePosition(unit);
+                        }}
+                        key={unit + idx}
+                      >
+                        {unit}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+
               <PositionTrapezoid
                 onMouseDownPositionTop={onMouseDownPositionTop}
                 onMouseDownPositionRight={onMouseDownPositionRight}
