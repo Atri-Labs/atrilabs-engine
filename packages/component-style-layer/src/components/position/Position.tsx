@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import PropertyRender from "../commons/PropertyRender";
 import {
   gray200,
@@ -244,6 +244,19 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const positionRightVal = props.styles.right?.toString() || "";
   const positionLeftVal = props.styles.left?.toString() || "";
   const positionBottomVal = props.styles.bottom?.toString() || "";
+
+  const prevCSSUNnit = useMemo(() => {
+    if (positionTopVal) {
+      return positionTopVal.replace(/[0-9]/g, "");
+    } else if (positionRightVal) {
+      positionRightVal.replace(/[0-9]/g, "");
+    } else if (positionLeftVal) {
+      positionLeftVal.replace(/[0-9]/g, "");
+    } else if (positionBottomVal) {
+      positionBottomVal.replace(/[0-9]/g, "");
+    }
+    return "px";
+  }, [positionBottomVal, positionLeftVal, positionRightVal, positionTopVal]);
 
   const onMouseDownPositionTop = useCallback(
     (event: React.MouseEvent) => {
