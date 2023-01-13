@@ -66,6 +66,17 @@ function createPageScaffold() {
   return [`export default function(){`, ``, `}`].join("\n");
 }
 
+function copyAppWrapper(options: { dest: string; useTypescript: boolean }) {
+  const moduleExtenstion = options.useTypescript ? ".tsx" : ".jsx";
+  const appWrapperPath = require.resolve(
+    "@atrilabs/atri-app-core/src/components/AppWrapper" + moduleExtenstion
+  );
+  fs.writeFileSync(
+    path.resolve(options.dest, "pages", "_app" + moduleExtenstion),
+    fs.readFileSync(appWrapperPath)
+  );
+}
+
 function createPagesDirectory(options: {
   dest: string;
   useTypescript: boolean;
@@ -85,6 +96,8 @@ function createPagesDirectory(options: {
     "index" + (useTypescript ? ".tsx" : ".jsx")
   )}`;
   fs.writeFileSync(indexPagePath, createPageScaffold());
+
+  copyAppWrapper();
 }
 
 function createEslintRC(options: { dest: string }) {
