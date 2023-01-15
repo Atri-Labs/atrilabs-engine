@@ -2,9 +2,9 @@ import { Router } from "@remix-run/router";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 
 export class AtriRouter {
-	private paths = new Set();
-	private routeObjects: RouteObject[] = [];
-	private router: Router | null = null;
+  private paths: Set<RouteObject["path"]> = new Set();
+  private routeObjects: RouteObject[] = [];
+  private router: Router | null = null;
 
 	addPage(routeObject: RouteObject) {
 		if (routeObject.path && !this.paths.has(routeObject.path)) {
