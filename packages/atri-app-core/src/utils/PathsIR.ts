@@ -10,15 +10,6 @@ export type DynamicSegment = { name: string; type: "dynamic" };
  */
 export type CatchAllSegment = { name: string; type: "catchall" };
 
-// Routes
-
-export type NormalRoute = (StaticSegment | DynamicSegment)[];
-export type CatchAllRoute = [
-  StaticSegment | DynamicSegment,
-  ...NormalRoute,
-  CatchAllSegment
-];
-
 // Intermediate Representation
-
-export type RoutesIR = (NormalRoute | CatchAllRoute)[];
+export type PathIR = (StaticSegment | DynamicSegment | CatchAllSegment)[];
+export type PathsIR = PathIR[];

@@ -2,7 +2,6 @@ import path from "path";
 import recursive from "recursive-readdir";
 import type { Stats } from "fs";
 import { toUnix } from "upath";
-import os from "os";
 
 export function readDirStructure(dir: string) {
   if (!path.isAbsolute(dir)) {
@@ -16,7 +15,6 @@ export function readDirStructure(dir: string) {
   const sanitizedDir = path.resolve(dir);
 
   function ignoreFunc(file: string, stats: Stats) {
-    console.log(file);
     return stats.isDirectory()
       ? false
       : file.match(/(.js|.jsx|.ts|.tsx)$/) === null;
