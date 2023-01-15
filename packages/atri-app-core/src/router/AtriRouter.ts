@@ -6,42 +6,42 @@ export class AtriRouter {
   private routeObjects: RouteObject[] = [];
   private router: Router | null = null;
 
-	addPage(routeObject: RouteObject) {
-		if (routeObject.path && !this.paths.has(routeObject.path)) {
-			this.paths.add(routeObject.path);
-			this.routeObjects.push(routeObject);
-			this.router = createBrowserRouter(this.routeObjects);
-			this.subs.forEach((cb) => cb());
-		}
-	}
+  addPage(routeObject: RouteObject) {
+    if (routeObject.path && !this.paths.has(routeObject.path)) {
+      this.paths.add(routeObject.path);
+      this.routeObjects.push(routeObject);
+      this.router = createBrowserRouter(this.routeObjects);
+      this.subs.forEach((cb) => cb());
+    }
+  }
 
-	removePage(path: string) {
-		this.routeObjects.filter((routeObject) => {
-			routeObject.path !== path;
-		});
-	}
+  removePage(path: string) {
+    this.routeObjects.filter((routeObject) => {
+      routeObject.path !== path;
+    });
+  }
 
-	getRouter() {
-		return this.router;
-	}
+  getRouter() {
+    return this.router;
+  }
 
-	private subs: (() => void)[] = [];
+  private subs: (() => void)[] = [];
 
-	subscribe(cb: () => void) {
-		this.subs.push(cb);
-		return () => {
-			const index = this.subs.findIndex((curr) => curr === cb);
-			if (index >= 0) {
-				this.subs.splice(index, 1);
-			}
-		};
-	}
+  subscribe(cb: () => void) {
+    this.subs.push(cb);
+    return () => {
+      const index = this.subs.findIndex((curr) => curr === cb);
+      if (index >= 0) {
+        this.subs.splice(index, 1);
+      }
+    };
+  }
 }
 
 declare global {
-	interface Window {
-		__atriRotuer: AtriRouter;
-	}
+  interface Window {
+    __atriRotuer: AtriRouter;
+  }
 }
 
 export const atriRouter = new AtriRouter();

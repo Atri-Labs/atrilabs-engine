@@ -6,5 +6,5 @@ import React from "react";
  * @returns
  */
 export default function AppWrapper(props: { children: React.ReactElement }) {
-	return <div>App wrapper is working {props.children}</div>;
+  return <div>App wrapper is working {props.children}</div>;
 }
