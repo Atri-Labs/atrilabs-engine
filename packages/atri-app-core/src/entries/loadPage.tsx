@@ -10,18 +10,12 @@ function FinalPageComponent(props: {
 }
 
 export default function loadPage(
-  urlPath: string,
+  reactRouterPath: string,
   PageWrapper: React.FC<any>,
   Page: React.FC<any>
 ) {
-  if (urlPath.startsWith("/blog")) {
-    urlPath = "blog";
-  }
-  if (urlPath.startsWith("/new")) {
-    urlPath = "new";
-  }
   atriRouter.addPage({
-    path: urlPath,
+    path: reactRouterPath,
     element: <FinalPageComponent Page={Page} PageWrapper={PageWrapper} />,
   });
 }
