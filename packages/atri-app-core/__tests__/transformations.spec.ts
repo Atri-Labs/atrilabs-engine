@@ -1,7 +1,7 @@
 import { PathsIR } from "../src/utils/PathsIR";
 import {
   dirStructureToIR,
-  pathsIRToReactRouter,
+  pathsIRToRouteObjectPaths,
 } from "../src/utils/transformations";
 
 test("dir structure is transformed to IR", () => {
@@ -25,7 +25,7 @@ test("IR transformed to react router paths", () => {
       { name: "id", type: "dynamic" },
     ],
   ];
-  const routerPaths = pathsIRToReactRouter(pathsIR);
+  const routerPaths = pathsIRToRouteObjectPaths(pathsIR);
   expect(routerPaths.length).toBe(3);
   expect(routerPaths[0]).toBe("/");
   expect(routerPaths[1]).toBe("/blogs");

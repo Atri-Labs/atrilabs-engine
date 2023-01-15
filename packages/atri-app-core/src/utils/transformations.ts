@@ -47,7 +47,7 @@ export function dirStructureToIR(unixFilepaths: string[]) {
   return ir;
 }
 
-export function pathIRToReactRouter(pathIR: PathIR) {
+export function pathIRToRouteObjectPath(pathIR: PathIR) {
   // exception for /index
   if (
     pathIR.length === 1 &&
@@ -71,8 +71,8 @@ export function pathIRToReactRouter(pathIR: PathIR) {
     .join("");
 }
 
-export function pathsIRToReactRouter(pathsIR: PathsIR) {
+export function pathsIRToRouteObjectPaths(pathsIR: PathsIR) {
   return pathsIR.map((ir) => {
-    return pathIRToReactRouter(ir);
+    return pathIRToRouteObjectPath(ir);
   });
 }
