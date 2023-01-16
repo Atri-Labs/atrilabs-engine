@@ -2,6 +2,9 @@
 import startDevServer from "./startDevServer";
 import { extractParams } from "../../utils/extractParams";
 import { Middlewares, PrepareConfig } from "../../utils/types";
+import { createEntry } from "./createEntry";
+import path from "path";
+import { handleRequest } from "./handleRequest";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -19,6 +22,25 @@ function main() {
       prepareConfig(config);
     }
     // TODO: insert the necessary logic for hot reload
+    config.entry = createEntry;
+    config.resolveLoader = {
+      alias: {
+        "atri-pages-client-loader": path.resolve(
+          __dirname,
+          "loaders",
+          "atri-pages-client-loader.js"
+        ),
+        "atri-app-loader": path.resolve(
+          __dirname,
+          "loaders",
+          "atri-app-loader.js"
+        ),
+      },
+    };
+    config.optimization = {
+      ...config.optimization,
+      runtimeChunk: "single",
+    };
   };
 
   const middlewares = params.middlewares;
@@ -27,6 +49,7 @@ function main() {
     if (middlewares) {
       middlewares(app, compiler, config);
     }
+    handleRequest(app, compiler);
   };
 
   startDevServer({

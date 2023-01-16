@@ -1,9 +1,10 @@
 import { Configuration as DevConfiguration } from "webpack-dev-server";
 import { Compiler, Configuration } from "webpack";
 import webpack from "webpack";
+import { Application } from "express";
 
 export type Middlewares = (
-  app: Express.Application,
+  app: Application,
   compiler: webpack.Compiler,
   config: webpack.Configuration
 ) => void;

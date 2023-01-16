@@ -29,6 +29,10 @@ You can also use `.env` file or `.env.${MODE}.local` files to specify environmen
 
 The `src/utils/extractParams.ts` has a function with the same name that helps extract the required information for a build process from different sources such as environment variables, command line arguments and `build.config.js`. All the scripts from `src/bin` call `extractParams()` to extract these necessary information.
 
+# Generate `index.html`
+
+Geneartes `index.html` when `generateIndexHtml` is set to `true`.
+
 # Features
 
 - Supports react refresh.
