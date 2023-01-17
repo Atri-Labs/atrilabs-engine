@@ -5,12 +5,13 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "directories": {
-    "lib": "src"
+    "lib": "dist"
   },
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,7 +22,8 @@
   },
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "build": "tsc"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

@@ -1,7 +1,7 @@
 import React from "react";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { matchRoutes, useNavigate } from "react-router-dom";
-import { atriRouter } from "../router/AtriRouter";
+import { RouterContext } from "../contexts/RouterContext";
 
 type LinkProps = {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ type LinkProps = {
 
 export default function Link(props: LinkProps) {
   const navigate = useNavigate();
+  const atriRouter = useContext(RouterContext);
   const onClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();

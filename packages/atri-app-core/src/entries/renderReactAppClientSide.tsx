@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "../../styles.scss";
 import { RouterContext } from "../contexts/RouterContext";
 import { AtriRouter } from "../router/AtriRouter";
 
