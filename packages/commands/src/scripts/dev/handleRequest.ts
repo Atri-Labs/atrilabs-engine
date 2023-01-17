@@ -2,6 +2,9 @@ import { Compiler } from "webpack";
 import { Application, Request } from "express";
 import { matchRoutes } from "react-router-dom";
 import { getRouteObjects } from "./routeObjects";
+import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+
+export const requestedRouteObjectPaths: Set<string> = new Set([]);
 
 /**
  * This request arrives when a page is requested
@@ -61,7 +64,15 @@ export function handleRequest(app: Application, _compiler: Compiler) {
       if (match === null) {
         // TODO: server error.tsx page
       } else {
-        // TODO: build html server side
+        const filepath = IRToUnixFilePath(
+          routeObjectPathToIR(match[0]!.route.path)
+        );
+        if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
+          // TODO: build html server side
+        } else {
+          // TODO: add to entry
+          requestedRouteObjectPaths.add(match[0]!.route.path);
+        }
       }
     }
     next();

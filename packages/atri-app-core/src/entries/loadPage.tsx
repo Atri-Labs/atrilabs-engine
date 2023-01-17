@@ -1,5 +1,5 @@
 import React from "react";
-import { atriRouter } from "../router/AtriRouter";
+import { AtriRouter } from "../router/AtriRouter";
 
 function FinalPageComponent(props: {
   PageWrapper: React.FC<any>;
@@ -10,6 +10,7 @@ function FinalPageComponent(props: {
 }
 
 export default function loadPage(
+  atriRouter: AtriRouter,
   reactRouterPath: string,
   PageWrapper: React.FC<any>,
   Page: React.FC<any>

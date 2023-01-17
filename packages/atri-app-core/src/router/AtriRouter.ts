@@ -1,16 +1,28 @@
 import { Router } from "@remix-run/router";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
+import type { createMemoryRouter } from "react-router-dom";
 
 export class AtriRouter {
   private paths: Set<RouteObject["path"]> = new Set();
   private routeObjects: RouteObject[] = [];
   private router: Router | null = null;
+  private createRouter: typeof createBrowserRouter | typeof createMemoryRouter =
+    createBrowserRouter;
 
-  addPage(routeObject: RouteObject) {
+  setRouterFactory(
+    factory: typeof createBrowserRouter | typeof createMemoryRouter
+  ) {
+    this.createRouter = factory;
+  }
+
+  addPage(
+    routeObject: RouteObject,
+    routerOpts?: { initialEntries: string[]; initialIndex: number }
+  ) {
     if (routeObject.path && !this.paths.has(routeObject.path)) {
       this.paths.add(routeObject.path);
       this.routeObjects.push(routeObject);
-      this.router = createBrowserRouter(this.routeObjects);
+      this.router = this.createRouter(this.routeObjects, routerOpts);
       this.subs.forEach((cb) => cb());
     }
   }
@@ -37,13 +49,3 @@ export class AtriRouter {
     };
   }
 }
-
-declare global {
-  interface Window {
-    __atriRotuer: AtriRouter;
-  }
-}
-
-export const atriRouter = new AtriRouter();
-
-window.__atriRotuer = atriRouter;

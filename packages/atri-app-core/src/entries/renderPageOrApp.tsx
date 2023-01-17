@@ -1,7 +1,8 @@
 import React from "react";
+import { AtriRouter } from "../router/AtriRouter";
 import App from "./App";
 import loadPage from "./loadPage";
-import renderReactApp from "./renderReactApp";
+import renderReactAppClientSide from "./renderReactAppClientSide";
 
 declare global {
   interface Window {
@@ -16,12 +17,13 @@ export default function renderPageOrApp(
   PageWrapper: React.FC<any>,
   PageComponent: React.FC<any>
 ) {
+  const atriRouter = new AtriRouter();
   if (window.__APP_STATUS === "loaded") {
-    loadPage(path, PageWrapper, PageComponent);
+    loadPage(atriRouter, path, PageWrapper, PageComponent);
   } else {
-    loadPage(path, PageWrapper, PageComponent);
+    loadPage(atriRouter, path, PageWrapper, PageComponent);
     window.__APP_STATUS = "loading";
-    renderReactApp(App);
+    renderReactAppClientSide(atriRouter, App);
     window.__APP_STATUS = "loaded";
   }
 }
