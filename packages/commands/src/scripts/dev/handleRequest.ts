@@ -2,7 +2,12 @@ import { Compiler } from "webpack";
 import { Application, Request } from "express";
 import { matchRoutes } from "react-router-dom";
 import { getRouteObjects } from "./routeObjects";
-import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import {
+  IRToUnixFilePath,
+  renderReactAppServerSide,
+  routeObjectPathToIR,
+} from "@atrilabs/atri-app-core";
+import { renderToString } from "react-dom/server";
 
 export const requestedRouteObjectPaths: Set<string> = new Set([]);
 
@@ -58,7 +63,7 @@ function matchUrlPath(originalUrl: string) {
 }
 
 export function handleRequest(app: Application, _compiler: Compiler) {
-  app.use((req, _res, next) => {
+  app.use((req, res, next) => {
     if (isPageRequest(req)) {
       const match = matchUrlPath(req.originalUrl);
       if (match === null) {
@@ -72,6 +77,14 @@ export function handleRequest(app: Application, _compiler: Compiler) {
         } else {
           // TODO: add to entry
           requestedRouteObjectPaths.add(match[0]!.route.path);
+          const PageComponent = require(filepath).default;
+          const el = renderReactAppServerSide(
+            { path: match[0]!.route.path },
+            PageComponent
+          );
+          const htmlString = renderToString(el);
+          res.send(htmlString);
+          res.setHeader("content-type", "text/html");
         }
       }
     }
