@@ -1,4 +1,4 @@
 export async function createEntry() {
-  // TODO:
-  return [];
+  // TODO: add pages when they are requested
+  return { app: { import: "atri-app-loader!" } };
 }

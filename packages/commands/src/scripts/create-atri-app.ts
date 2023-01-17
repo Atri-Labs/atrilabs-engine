@@ -46,7 +46,12 @@ function createPackageJSON(
   options: { dest: string }
 ) {
   const str = JSON.stringify(
-    { name: data.name, author: data.author, description: data.description },
+    {
+      name: data.name,
+      author: data.author,
+      description: data.description,
+      scripts: { dev: "dev-atri-app" },
+    },
     null,
     2
   );

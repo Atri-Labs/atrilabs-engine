@@ -45,8 +45,8 @@ export function pathIRToRouteObjectPath(pathIR: PathIR) {
   // exception for /index
   if (
     pathIR.length === 1 &&
-    pathIR[0].name === "index" &&
-    pathIR[0].type === "static"
+    pathIR[0]!.name === "index" &&
+    pathIR[0]!.type === "static"
   ) {
     return "/";
   }
