@@ -13,7 +13,7 @@ function atriPagesClientLoader() {
 	import PageWrapper from "./pages/_app";
 	import PageComponent from "${modulePath}";
 
-	import renderPageOrApp from "@atrilabs/atri-app-core";
+	import renderPageOrApp from "@atrilabs/atri-app-core/src/entries/renderPageOrApp";
 
 	renderPageOrApp("${routeObjectPath}", PageWrapper, PageComponent);
 	`;

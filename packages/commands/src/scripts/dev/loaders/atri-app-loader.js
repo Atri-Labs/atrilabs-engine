@@ -1,7 +1,7 @@
 function atriAppLoader() {
   return `
-	const PageWrapper = require("./pages/_app");
-	const renderPageOrApp = require("@atrilabs/atri-app-core");
+  	import PageWrapper from "./pages/_app";
+	import renderPageOrApp from "@atrilabs/atri-app-core/dist/entries/renderReactAppClientSide";
 
     module.exports = { PageWrapper, renderPageOrApp };
 	`;
