@@ -16,6 +16,8 @@ process.on("unhandledRejection", (err) => {
 function main() {
   const params = extractParams();
 
+  params.paths.appSrc = process.cwd();
+
   const prepareConfig = params.prepareConfig;
   const wrapPrepareConfig: PrepareConfig = (config) => {
     if (prepareConfig) {
