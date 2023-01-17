@@ -1,9 +1,0 @@
-{
-  "env": {
-    "es6": true
-  },
-  "parserOptions": {
-    "sourceType": "module"
-  },
-  "extends": ["plugin:import/react"]
-}

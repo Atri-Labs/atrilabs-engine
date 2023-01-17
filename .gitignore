@@ -11,4 +11,4 @@ lib-cjs/
 coverage/
 .history
 dist/
-packages/example_app/
+example-atri-app/
