@@ -8,6 +8,7 @@ import {
   routeObjectPathToIR,
 } from "@atrilabs/atri-app-core";
 import { renderToString } from "react-dom/server";
+import chalk from "chalk";
 
 export const requestedRouteObjectPaths: Set<string> = new Set([]);
 
@@ -47,7 +48,7 @@ export function isApiRequest(req: Request) {
 export function isJSRequest(req: Request) {
   return (
     req.method.toLowerCase() === "get" &&
-    req.originalUrl.startsWith("/static/js/pages")
+    req.originalUrl.startsWith("/static/js")
   );
 }
 
@@ -62,8 +63,30 @@ function matchUrlPath(originalUrl: string) {
   return matchRoutes(getRouteObjects(), originalUrl);
 }
 
+function getRequestType(req: Request) {
+  if (isPageRequest(req)) {
+    return "page";
+  }
+  if (isJSRequest(req)) {
+    return "js";
+  }
+  if (isApiRequest(req)) {
+    return "api";
+  }
+  if (isJSONRequest(req)) {
+    return "json";
+  }
+  return "unknown";
+}
+
+function printRequest(req: Request) {
+  const requestType = getRequestType(req);
+  console.log(chalk.green(`${requestType} ${req.originalUrl}`));
+}
+
 export function handleRequest(app: Application, _compiler: Compiler) {
   app.use((req, res, next) => {
+    printRequest(req);
     if (isPageRequest(req)) {
       const match = matchUrlPath(req.originalUrl);
       if (match === null) {

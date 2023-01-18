@@ -106,6 +106,7 @@
     "webpack": "^5.73.0",
     "webpack-dev-server": "^4.11.1",
     "webpack-manifest-plugin": "^5.0.0",
+    "webpack-sources": "^3.2.3",
     "workbox-webpack-plugin": "^6.5.4",
     "yargs": "^17.6.2"
   }
