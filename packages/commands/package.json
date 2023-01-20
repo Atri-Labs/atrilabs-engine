@@ -24,7 +24,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -n '../../node_modules'"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

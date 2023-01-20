@@ -57,6 +57,7 @@ export function createNodeConfig(options: {
     disableESLintPlugin?: boolean;
     emitErrorsAsWarnings?: boolean;
   };
+  additionalNodeModules?: string[];
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -70,11 +71,13 @@ export function createNodeConfig(options: {
     moduleFileExtensions,
     useTypeScript,
     eslint,
+    entry,
+    additionalNodeModules,
   } = options;
   return {
     target: "node",
     externalsPresets: { node: true },
-    externals: [nodeExternals()],
+    externals: [nodeExternals({ additionalModuleDirs: additionalNodeModules })],
     mode: isEnvProduction ? "production" : "development",
     stats: "errors-warnings",
     bail: isEnvProduction,
@@ -85,6 +88,7 @@ export function createNodeConfig(options: {
       : isEnvDevelopment
       ? "cheap-module-source-map"
       : false,
+    entry,
     output: {
       // The build folder.
       path: paths.outputDir,
