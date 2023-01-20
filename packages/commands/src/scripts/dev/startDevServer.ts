@@ -1,12 +1,13 @@
-import { extractParams } from "@atrilabs/commands-builder/src/utils";
-import createConfig from "@atrilabs/commands-builder/src/configs/app.webpack.config";
-import createDevConfig from "@atrilabs/commands-builder/src/configs/dev.app.webpack.config";
 import {
   checkBrowsers,
   choosePort,
   clearConsole,
   isInteractive,
-} from "@atrilabs/commands-builder/src/utils";
+  extractParams,
+  createConfig,
+  createDevConfig,
+  moduleFileExtensions,
+} from "@atrilabs/commands-builder";
 import {
   createCompiler,
   prepareUrls,
@@ -17,7 +18,6 @@ import webpack from "webpack";
 import chalk from "chalk";
 import openBrowser from "react-dev-utils/openBrowser";
 import WebpackDevServer from "webpack-dev-server";
-import moduleFileExtensions from "@atrilabs/commands-builder/src/utils/moduleFileExtensions";
 import Express from "express";
 
 export default function startDevServer(

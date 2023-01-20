@@ -5,7 +5,7 @@ import noopServiceWorkerMiddleware from "react-dev-utils/noopServiceWorkerMiddle
 import redirectServedPath from "react-dev-utils/redirectServedPathMiddleware";
 import Express from "express";
 
-export default function createDevConfig(
+export function createDevConfig(
   allowedHost: string,
   paths: { appPublic: string; publicUrlOrPath: string; appSrc: string },
   webSocketURL: { hostname?: string; pathname?: string; port?: string },

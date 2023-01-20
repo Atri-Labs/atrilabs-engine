@@ -37,7 +37,7 @@ const ForkTsCheckerWebpackPlugin =
 const resolve = require("resolve");
 const ESLintPlugin = require("eslint-webpack-plugin");
 
-export default function createConfig(options: {
+export function createConfig(options: {
   isEnvDevelopment: boolean;
   isEnvTest: boolean;
   isEnvProduction: boolean;
