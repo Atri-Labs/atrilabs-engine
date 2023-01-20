@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "bin": {
     "create-atri-app": "dist/scripts/create-atri-app.js",
-    "dev-atri-app": "dist/scripts/dev/dev-atri-app.js"
+    "dev-atri-app": "dist/dev.js"
   },
   "directories": {
     "test": "__tests__"
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -n '../../node_modules'"
+    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules'"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

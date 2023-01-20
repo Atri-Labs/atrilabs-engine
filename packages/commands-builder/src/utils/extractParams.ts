@@ -19,6 +19,12 @@ export function processArgs() {
       type: "string",
     })
     .option("o", { alias: "outputDir", type: "string", default: "./dist" })
+    .option("f", {
+      alias: "outputFilename",
+      type: "string",
+      default: "main",
+      description: "name of the output bundle file",
+    })
     .option("s", { alias: "appSrc", type: "string", default: "./src" })
     .option("h", {
       alias: "appHtml",
@@ -41,6 +47,7 @@ export function processArgs() {
     w: string;
     stats: boolean;
     n: string;
+    f: string;
   };
 }
 
@@ -145,6 +152,7 @@ export function extractParams() {
   const writeStats = args.stats;
   const appNodeModules = path.resolve(appPath, "node_modules");
   const additionalNodeModules = args.n !== "" ? args.n.split(":") : [];
+  const outputFilename = args.f;
 
   const useTypeScript = fs.existsSync(path.resolve(appPath, "tsconfig.json"));
 
@@ -216,6 +224,7 @@ export function extractParams() {
     useTypeScript,
     ...buildConfig,
     additionalNodeModules,
+    outputFilename,
   };
 }
 

@@ -58,6 +58,7 @@ export function createNodeConfig(options: {
     emitErrorsAsWarnings?: boolean;
   };
   additionalNodeModules?: string[];
+  outputFilename: string;
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -73,6 +74,7 @@ export function createNodeConfig(options: {
     eslint,
     entry,
     additionalNodeModules,
+    outputFilename,
   } = options;
   return {
     target: "node",
@@ -96,7 +98,7 @@ export function createNodeConfig(options: {
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: "[name].bundle.js",
+      filename: outputFilename,
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
         ? "static/js/[name].[contenthash:8].chunk.js"
