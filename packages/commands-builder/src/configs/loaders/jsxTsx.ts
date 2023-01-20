@@ -115,6 +115,7 @@ export default function setJsxTsxLoaders(options: {
 	isEnvDevelopment: boolean;
 	isEnvTest: boolean;
 	hasJsxRuntime: boolean;
+	removeReactRefresh?: boolean;
 }) {
 	const {
 		appSrc,
@@ -122,6 +123,7 @@ export default function setJsxTsxLoaders(options: {
 		isEnvDevelopment,
 		isEnvTest,
 		hasJsxRuntime,
+		removeReactRefresh,
 	} = options;
 	return [
 		{
@@ -135,7 +137,9 @@ export default function setJsxTsxLoaders(options: {
 				cacheCompression: false,
 				compact: isEnvProduction,
 				plugins: [
-					isEnvDevelopment && require.resolve("react-refresh/babel"),
+					isEnvDevelopment &&
+						!removeReactRefresh &&
+						require.resolve("react-refresh/babel"),
 				].filter(Boolean),
 				presets: [
 					[

@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import startDevServer from "./startDevServer";
-import { extractParams } from "../../utils/extractParams";
-import { Middlewares, PrepareConfig } from "../../utils/types";
+import { extractParams } from "@atrilabs/commands-builder/src/utils/extractParams";
+import {
+  Middlewares,
+  PrepareConfig,
+} from "@atrilabs/commands-builder/src/utils/types";
 import { createEntry } from "./createEntry";
 import path from "path";
 import { handleRequest } from "./handleRequest";
