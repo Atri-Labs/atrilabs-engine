@@ -14,7 +14,8 @@
     "test": "__tests__"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/scripts/dev/loaders"
   ],
   "publishConfig": {
     "access": "public"

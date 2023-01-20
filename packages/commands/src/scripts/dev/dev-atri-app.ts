@@ -6,8 +6,8 @@ import {
   extractParams,
 } from "@atrilabs/commands-builder";
 import { createEntry } from "./createEntry";
-import path from "path";
 import { handleRequest } from "./handleRequest";
+import path from "path";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -32,11 +32,19 @@ function main() {
       alias: {
         "atri-pages-client-loader": path.resolve(
           __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev",
           "loaders",
           "atri-pages-client-loader.js"
         ),
         "atri-app-loader": path.resolve(
           __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev",
           "loaders",
           "atri-app-loader.js"
         ),
