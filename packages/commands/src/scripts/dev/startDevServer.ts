@@ -84,7 +84,9 @@ export default function startDevServer(
         // @ts-ignore
         publicUrlOrPath.slice(0, -1)
       );
-      const appName = require(paths.appPackageJson).name;
+      const appName = JSON.parse(
+        fs.readFileSync(paths.appPackageJson).toString()
+      ).name;
       const useYarn = fs.existsSync(path.resolve(paths.appPath, "yarn.lock"));
 
       const compiler = createCompiler({
