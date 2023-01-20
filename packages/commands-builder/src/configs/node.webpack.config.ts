@@ -203,6 +203,7 @@ export function createNodeConfig(options: {
       ],
     },
     plugins: [
+      new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true }),
       new ModuleNotFoundPlugin(paths.appPath),
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       new webpack.NormalModuleReplacementPlugin(
