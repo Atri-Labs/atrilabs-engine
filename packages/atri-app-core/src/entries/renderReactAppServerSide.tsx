@@ -1,18 +1,22 @@
 import { RouterContext } from "../contexts/RouterContext";
 import App from "./App";
-import { AtriRouter } from "../router/AtriRouter";
-import { createMemoryRouter, RouteObject } from "react-router-dom";
+import { createMemoryRouter } from "react-router-dom";
+import { atriRouter } from "./atriRouter";
+import { AppEntryOptions } from "./AppEntryOptions";
 
-export function renderReactAppServerSide(
-  routeObject: RouteObject,
-  urlPath: string
-) {
-  const atriRouter = new AtriRouter();
+export function renderReactAppServerSide(options: AppEntryOptions) {
+  const { routeObjectPath, urlPath } = options;
+  if (urlPath === undefined) {
+    throw Error("Please check if you passed url path correctly!");
+  }
   atriRouter.setRouterFactory(createMemoryRouter);
-  atriRouter.addPage(routeObject, {
-    initialEntries: [urlPath],
-    initialIndex: 0,
-  });
+  atriRouter.addPage(
+    { path: routeObjectPath },
+    {
+      initialEntries: [urlPath],
+      initialIndex: 0,
+    }
+  );
 
   return (
     <RouterContext.Provider value={atriRouter}>

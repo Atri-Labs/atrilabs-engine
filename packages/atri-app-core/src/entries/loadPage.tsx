@@ -1,13 +1,6 @@
 import React from "react";
 import { AtriRouter } from "../router/AtriRouter";
-
-function FinalPageComponent(props: {
-  PageWrapper: React.FC<any>;
-  Page: React.FC<any>;
-}) {
-  const { PageWrapper, Page } = props;
-  return <PageWrapper Component={Page}></PageWrapper>;
-}
+import { FinalPageComponent } from "./FinalPageComponent";
 
 export default function loadPage(
   atriRouter: AtriRouter,

@@ -1,6 +1,7 @@
 import React from "react";
-import { AtriRouter } from "../router/AtriRouter";
 import App from "./App";
+import { AppEntryOptions } from "./AppEntryOptions";
+import { atriRouter } from "./atriRouter";
 import loadPage from "./loadPage";
 import renderReactAppClientSide from "./renderReactAppClientSide";
 
@@ -12,16 +13,12 @@ declare global {
 
 window.__APP_STATUS = "started";
 
-export default function renderPageOrApp(
-  path: string,
-  PageWrapper: React.FC<any>,
-  PageComponent: React.FC<any>
-) {
-  const atriRouter = new AtriRouter();
+export default function renderPageOrApp(options: AppEntryOptions) {
+  const { routeObjectPath, PageComponent, PageWrapper } = options;
   if (window.__APP_STATUS === "loaded") {
-    loadPage(atriRouter, path, PageWrapper, PageComponent);
+    loadPage(atriRouter, routeObjectPath, PageWrapper, PageComponent);
   } else {
-    loadPage(atriRouter, path, PageWrapper, PageComponent);
+    loadPage(atriRouter, routeObjectPath, PageWrapper, PageComponent);
     window.__APP_STATUS = "loading";
     renderReactAppClientSide(atriRouter, App);
     window.__APP_STATUS = "loaded";

@@ -1,2 +1,2 @@
 export * from "./utils";
-export * from "./entries/renderReactAppServerSide";
+export * from "./entries/universalRender";
