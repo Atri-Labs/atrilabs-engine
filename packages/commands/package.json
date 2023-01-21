@@ -54,6 +54,7 @@
     "html-webpack-plugin": "^5.5.0",
     "is-root": "^2.1.0",
     "prompts": "^2.4.2",
+    "querystring": "^0.2.1",
     "react-router-dom": "^6.6.2",
     "resolve": "^1.22.1",
     "typescript": "^4.9.4",

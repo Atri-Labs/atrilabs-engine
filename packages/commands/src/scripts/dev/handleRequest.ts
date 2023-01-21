@@ -2,12 +2,7 @@ import { Compiler } from "webpack";
 import { Application, Request } from "express";
 import { matchRoutes } from "react-router-dom";
 import { getRouteObjects } from "./routeObjects";
-import {
-  IRToUnixFilePath,
-  renderReactAppServerSide,
-  routeObjectPathToIR,
-} from "@atrilabs/atri-app-core";
-import { renderToString } from "react-dom/server";
+import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import chalk from "chalk";
 
 export const requestedRouteObjectPaths: Set<string> = new Set([]);
@@ -85,7 +80,7 @@ function printRequest(req: Request) {
 }
 
 export function handleRequest(app: Application, _compiler: Compiler) {
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     printRequest(req);
     if (isPageRequest(req)) {
       const match = matchUrlPath(req.originalUrl);
@@ -95,19 +90,11 @@ export function handleRequest(app: Application, _compiler: Compiler) {
         const filepath = IRToUnixFilePath(
           routeObjectPathToIR(match[0]!.route.path)
         );
+        console.log(filepath);
         if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
           // TODO: build html server side
         } else {
           // TODO: add to entry
-          requestedRouteObjectPaths.add(match[0]!.route.path);
-          const PageComponent = require(filepath).default;
-          const el = renderReactAppServerSide(
-            { path: match[0]!.route.path },
-            PageComponent
-          );
-          const htmlString = renderToString(el);
-          res.send(htmlString);
-          res.setHeader("content-type", "text/html");
         }
       }
     }

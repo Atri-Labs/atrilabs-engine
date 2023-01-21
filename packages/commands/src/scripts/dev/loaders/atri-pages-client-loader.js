@@ -2,7 +2,7 @@ function atriPagesClientLoader() {
   const options = this.getOptions();
   const { routeObjectPath, modulePath, urlPath } = options;
 
-  if (route === undefined || modulePath === undefined) {
+  if (routeObjectPath === undefined || modulePath === undefined) {
     const err = Error();
     err.name = "ValueError";
     err.message = `Expected defined value for route, modulePath. Got ${routeObjectPath}, ${modulePath} respectively.`;
@@ -13,13 +13,13 @@ function atriPagesClientLoader() {
 	import PageWrapper from "./pages/_app";
 	import PageComponent from "${modulePath}";
 
-	import { universalRender } from "@atrilabs/atri-app-core";
+	import universalRender from "@atrilabs/atri-app-core/dist/entries/universalRender";
 
   const options = {
-    routeObjectPath: ${routeObjectPath},
+    routeObjectPath: "${routeObjectPath}",
     PageWrapper,
     PageComponent,
-    urlPath: ${urlPath}
+    urlPath: "${urlPath}"
   };
 
 	universalRender(options);

@@ -5,11 +5,9 @@ let exportedFn: any = () => {
   return "If you are reading this text, please check universalRender.tsx";
 };
 
-try {
-  if (window) {
-    exportedFn = renderPageOrApp;
-  }
-} catch {
+if (typeof window !== undefined) {
+  exportedFn = renderPageOrApp;
+} else {
   exportedFn = renderReactAppServerSide;
 }
 
