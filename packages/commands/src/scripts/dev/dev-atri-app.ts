@@ -8,6 +8,7 @@ import {
 import { createEntry } from "./createEntry";
 import { handleRequest } from "./handleRequest";
 import path from "path";
+import { createAssetStore } from "./AssetStore";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -62,7 +63,8 @@ function main() {
     if (middlewares) {
       middlewares(app, compiler, config);
     }
-    handleRequest(app, compiler);
+    const assetStore = createAssetStore();
+    handleRequest(app, compiler, assetStore);
   };
 
   startDevServer({

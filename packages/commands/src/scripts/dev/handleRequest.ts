@@ -4,6 +4,7 @@ import { matchRoutes } from "react-router-dom";
 import { getRouteObjects } from "./routeObjects";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import chalk from "chalk";
+import { createAssetStore } from "./AssetStore";
 
 export const requestedRouteObjectPaths: Set<string> = new Set([]);
 
@@ -79,10 +80,17 @@ function printRequest(req: Request) {
   console.log(chalk.green(`${requestType} ${req.originalUrl}`));
 }
 
-export function handleRequest(app: Application, _compiler: Compiler) {
-  app.use((req, _res, next) => {
+export function handleRequest(
+  app: Application,
+  compiler: Compiler,
+  assetStore: ReturnType<typeof createAssetStore>
+) {
+  assetStore.attachHooks(compiler);
+
+  app.use((req, res, next) => {
     printRequest(req);
     if (isPageRequest(req)) {
+      res.send("ok");
       const match = matchUrlPath(req.originalUrl);
       if (match === null) {
         // TODO: server error.tsx page
@@ -90,14 +98,15 @@ export function handleRequest(app: Application, _compiler: Compiler) {
         const filepath = IRToUnixFilePath(
           routeObjectPathToIR(match[0]!.route.path)
         );
-        console.log(filepath);
+        console.log("Filepath", filepath);
         if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
           // TODO: build html server side
         } else {
           // TODO: add to entry
         }
       }
+    } else {
+      next();
     }
-    next();
   });
 }
