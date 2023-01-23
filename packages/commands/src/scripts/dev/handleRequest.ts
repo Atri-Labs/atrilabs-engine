@@ -90,15 +90,15 @@ export function handleRequest(
   app.use((req, res, next) => {
     printRequest(req);
     if (isPageRequest(req)) {
-      res.send("ok");
       const match = matchUrlPath(req.originalUrl);
       if (match === null) {
         // TODO: server error.tsx page
+        res.send("error: match not found");
       } else {
         const filepath = IRToUnixFilePath(
           routeObjectPathToIR(match[0]!.route.path)
         );
-        console.log("Filepath", filepath);
+        res.send(`success: will send ${filepath}`);
         if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
           // TODO: build html server side
         } else {
