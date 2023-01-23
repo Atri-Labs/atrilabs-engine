@@ -4,11 +4,14 @@ import {
   Middlewares,
   PrepareConfig,
   extractParams,
+  moduleFileExtensions,
 } from "@atrilabs/commands-builder";
 import { createEntry } from "./createEntry";
 import { handleRequest } from "./handleRequest";
 import path from "path";
 import { createAssetStore } from "./AssetStore";
+import startNodeLibWatcher from "./startNodeLibWatcher";
+import { createNodeEntry } from "./createNodeEntry";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -71,6 +74,16 @@ function main() {
     ...params,
     prepareConfig: wrapPrepareConfig,
     middlewares: wrapMiddlewares,
+  });
+
+  const serverPath = path.join(params.paths.outputDir, "server");
+  const paths = { ...params.paths, outputDir: serverPath };
+  startNodeLibWatcher({
+    ...params,
+    paths,
+    outputFilename: "[name].bundle.js",
+    moduleFileExtensions,
+    entry: createNodeEntry,
   });
 }
 
