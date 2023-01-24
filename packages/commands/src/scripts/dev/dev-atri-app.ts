@@ -10,6 +10,8 @@ import { createEntry } from "./createEntry";
 import path from "path";
 import startNodeLibWatcher from "./startNodeLibWatcher";
 import { createNodeEntry } from "./createNodeEntry";
+import { interpreter } from "./init";
+import { NETWORK_REQUEST } from "./serverMachine";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -64,6 +66,9 @@ function main() {
     if (middlewares) {
       middlewares(app, compiler, config);
     }
+    app.use((req, res, next) => {
+      interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
+    });
   };
 
   startDevServer({
