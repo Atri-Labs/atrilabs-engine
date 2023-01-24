@@ -26,7 +26,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules'"
+    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules'",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch --detectOpenHandles"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
@@ -36,10 +38,14 @@
     "@types/express": "^4.17.15",
     "@types/fs-extra": "^11.0.1",
     "@types/is-root": "^2.1.2",
+    "@types/jest": "^29.2.6",
     "@types/node": "^18.11.18",
     "@types/prompts": "^2.4.2",
     "@types/react": "^18.0.26",
-    "@types/yargs": "^17.0.19"
+    "@types/yargs": "^17.0.19",
+    "babel-jest": "^29.3.1",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.5"
   },
   "dependencies": {
     "@atrilabs/atri-app-core": "^0.0.90",

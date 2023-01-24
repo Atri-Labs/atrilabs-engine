@@ -1,4 +1,4 @@
-import { createMachine } from "xstate";
+import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
 import { isPageRequest, matchUrlPath, printRequest } from "./utils";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
@@ -17,7 +17,6 @@ export const LIB_SERVER_INVALIDATED = "LIB_SERVER_INVALIDATED" as const;
 export const APP_SERVER_INVALIDATED = "APP_SERVER_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
 export const FULLFILL_EXISTING_REQUESTS = "FULLFILL_EXISTING_REQUESTS" as const;
-export const FULLFILLED_REQUESTS = "FULLFILL_EXISTING_REQUESTS" as const;
 
 export type LIB_SERVER_DONE_EVENT = { type: typeof LIB_SERVER_DONE };
 export type APP_SERVER_DONE_EVENT = { type: typeof APP_SERVER_DONE };
@@ -38,7 +37,6 @@ export type FS_CHANGED_EVENT = { type: typeof FS_CHANGED };
 export type FULLFILL_EXISTING_REQUESTS_EVENT = {
   type: typeof FULLFILL_EXISTING_REQUESTS;
 };
-export type FULLFILLED_REQUESTS_EVENT = { type: typeof FULLFILLED_REQUESTS };
 export type SERVER_MACHINE_EVENT =
   | LIB_SERVER_DONE_EVENT
   | APP_SERVER_DONE_EVENT
@@ -47,8 +45,7 @@ export type SERVER_MACHINE_EVENT =
   | LIB_SERVER_INVALIDATED_EVENT
   | APP_SERVER_INVALIDATED_EVENT
   | FS_CHANGED_EVENT
-  | FULLFILL_EXISTING_REQUESTS_EVENT
-  | FULLFILLED_REQUESTS_EVENT;
+  | FULLFILL_EXISTING_REQUESTS_EVENT;
 
 export type SERVER_MACHINE_CONTEXT = {
   libServer: "processing" | "done";
@@ -77,42 +74,68 @@ function hasPendingRequests(context: SERVER_MACHINE_CONTEXT) {
   return context.requests.length > 0;
 }
 
+function onlyLibServerWasNotDone(context: SERVER_MACHINE_CONTEXT) {
+  return (
+    context.libServer === "processing" &&
+    context.appServer === "done" &&
+    context.watch === "done"
+  );
+}
+
+function onlyAppServerWasNotDone(context: SERVER_MACHINE_CONTEXT) {
+  return (
+    context.libServer === "done" &&
+    context.appServer === "processing" &&
+    context.watch === "done"
+  );
+}
+
+function onlyWatchWasNotDone(context: SERVER_MACHINE_CONTEXT) {
+  return (
+    context.libServer === "done" &&
+    context.appServer === "done" &&
+    context.watch === "processing"
+  );
+}
 // actions
 
 function _handleRequests(options: {
   requests: SERVER_MACHINE_CONTEXT["requests"];
   requestedRouteObjectPaths: Set<string>;
 }) {
-  const { requests, requestedRouteObjectPaths } = options;
-  let curr = 0;
-  while (curr < requests.length) {
-    const { req, res, next } = requests[curr]!;
-    // TODO: handle request
-    printRequest(req);
-    if (isPageRequest(req)) {
-      const match = matchUrlPath(req.originalUrl);
-      if (match === null) {
-        // TODO: server error.tsx page
-        res.send("error: match not found");
-      } else {
-        const filepath = IRToUnixFilePath(
-          routeObjectPathToIR(match[0]!.route.path)
-        );
-        res.send(`success: will send ${filepath}`);
-        if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
-          // TODO: build html server side
+  return new Promise<void>((resolve) => {
+    const { requests, requestedRouteObjectPaths } = options;
+    let curr = 0;
+    while (curr < requests.length) {
+      const { req, res, next } = requests[curr]!;
+      // TODO: handle request
+      printRequest(req);
+      if (isPageRequest(req)) {
+        const match = matchUrlPath(req.originalUrl);
+        if (match === null) {
+          // TODO: server error.tsx page
+          res.send("error: match not found");
         } else {
-          // TODO: add to entry
+          const filepath = IRToUnixFilePath(
+            routeObjectPathToIR(match[0]!.route.path)
+          );
+          res.send(`success: will send ${filepath}`);
+          if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
+            // TODO: build html server side
+          } else {
+            // TODO: add to entry
+          }
         }
+      } else {
+        next();
       }
-    } else {
-      next();
     }
-  }
+    resolve();
+  });
 }
 
 function handleRequests(context: SERVER_MACHINE_CONTEXT) {
-  _handleRequests({
+  return _handleRequests({
     requests: context.requests,
     requestedRouteObjectPaths: context.requestedRouteObjectPaths,
   });
@@ -161,113 +184,130 @@ function swapRequestReservoir(context: SERVER_MACHINE_CONTEXT) {
   context.requestReservoir = [];
 }
 
-export const serverMachine = createMachine(
-  {
-    id: "serverMachine",
-    initial: processing,
-    context: {
-      libServer: "processing",
-      appServer: "processing",
-      watch: "processing",
-      requests: [],
-      requestReservoir: [],
-      requestedRouteObjectPaths: new Set(),
-    } as SERVER_MACHINE_CONTEXT,
-    states: {
-      [processing]: {
-        on: {
-          [LIB_SERVER_DONE]: [
-            {
-              target: processing,
-              cond: inProcessing,
-              actions: ["setLibServerToDone"],
-            },
-            {
-              target: serving,
-              cond: notInProcessing,
-              actions: ["setLibServerToDone"],
-            },
-          ],
-          [APP_SERVER_DONE]: [
-            {
-              target: processing,
-              cond: inProcessing,
-              actions: ["setAppServerToDone"],
-            },
-            {
-              target: serving,
-              cond: notInProcessing,
-              actions: ["setAppServerToDone"],
-            },
-          ],
-          [ROUTE_OBJECTS_UPDATED]: [
-            {
-              target: processing,
-              cond: inProcessing,
-              actions: ["setWatchToDone"],
-            },
-            {
-              target: serving,
-              cond: notInProcessing,
-              actions: ["setWatchToDone"],
-            },
-          ],
+export function createServerMachine(id: string) {
+  return createMachine(
+    {
+      id: id,
+      initial: processing,
+      context: {
+        libServer: "processing",
+        appServer: "processing",
+        watch: "processing",
+        requests: [],
+        requestReservoir: [],
+        requestedRouteObjectPaths: new Set(),
+      } as SERVER_MACHINE_CONTEXT,
+      states: {
+        [processing]: {
+          on: {
+            [LIB_SERVER_DONE]: [
+              {
+                target: serving,
+                cond: onlyLibServerWasNotDone,
+                actions: ["setLibServerToDone"],
+              },
+              {
+                target: processing,
+                actions: ["setLibServerToDone"],
+              },
+            ],
+            [APP_SERVER_DONE]: [
+              {
+                target: serving,
+                cond: onlyAppServerWasNotDone,
+                actions: ["setAppServerToDone"],
+              },
+              {
+                target: processing,
+                actions: ["setAppServerToDone"],
+              },
+            ],
+            [ROUTE_OBJECTS_UPDATED]: [
+              {
+                target: serving,
+                cond: onlyWatchWasNotDone,
+                actions: ["setWatchToDone"],
+              },
+              {
+                target: processing,
+                actions: ["setWatchToDone"],
+              },
+            ],
+            [NETWORK_REQUEST]: [
+              { target: processing, actions: ["saveRequest"] },
+            ],
+          },
         },
-      },
-      [serving]: {
-        on: {
-          [FULLFILL_EXISTING_REQUESTS]: [
-            { target: handlingRequests, cond: hasPendingRequests },
-          ],
-          [NETWORK_REQUEST]: [
-            { target: handlingRequests, actions: ["saveRequest"] },
-          ],
-          [LIB_SERVER_INVALIDATED]: [
-            { target: processing, actions: ["setLibServerToProcessing"] },
-          ],
-          [APP_SERVER_INVALIDATED]: [
-            { target: processing, actions: ["setAppServerToProcessing"] },
-          ],
-          [FS_CHANGED]: [
-            { target: processing, actions: ["setWatchToProcessing"] },
-          ],
+        [serving]: {
+          on: {
+            [FULLFILL_EXISTING_REQUESTS]: [
+              { target: handlingRequests, cond: hasPendingRequests },
+            ],
+            [NETWORK_REQUEST]: [
+              { target: handlingRequests, actions: ["saveRequest"] },
+            ],
+            [LIB_SERVER_INVALIDATED]: [
+              { target: processing, actions: ["setLibServerToProcessing"] },
+            ],
+            [APP_SERVER_INVALIDATED]: [
+              { target: processing, actions: ["setAppServerToProcessing"] },
+            ],
+            [FS_CHANGED]: [
+              { target: processing, actions: ["setWatchToProcessing"] },
+            ],
+          },
         },
-      },
-      [handlingRequests]: {
-        on: {
-          [FULLFILLED_REQUESTS]: [
-            {
-              target: processing,
-              actions: ["swapRequestReservoir"],
-              cond: inProcessing,
-            },
-            {
-              target: serving,
-              actions: ["swapRequestReservoir"],
-              cond: notInProcessing,
-            },
-          ],
-          [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
-          [LIB_SERVER_INVALIDATED]: [{ actions: ["setLibServerToProcessing"] }],
-          [APP_SERVER_INVALIDATED]: [{ actions: ["setAppServerToProcessing"] }],
-          [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+        [handlingRequests]: {
+          invoke: {
+            id: "handleRequests",
+            src: handleRequests,
+            onDone: [
+              {
+                target: processing,
+                actions: ["swapRequestReservoir"],
+                cond: inProcessing,
+              },
+              {
+                target: serving,
+                actions: ["swapRequestReservoir"],
+                cond: notInProcessing,
+              },
+            ],
+            onError: {},
+          },
+          on: {
+            [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
+            [LIB_SERVER_INVALIDATED]: [
+              { actions: ["setLibServerToProcessing"] },
+            ],
+            [APP_SERVER_INVALIDATED]: [
+              { actions: ["setAppServerToProcessing"] },
+            ],
+            [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+          },
         },
-        entry: handleRequests,
       },
     },
-  },
-  {
-    actions: {
-      handleRequests,
-      saveRequest,
-      saveRequestToReservoir,
-      setLibServerToDone,
-      setAppServerToDone,
-      setWatchToDone,
-      setLibServerToProcessing,
-      setAppServerToProcessing,
-      setWatchToProcessing,
-      swapRequestReservoir,
-    },
-  }
-);
+    {
+      actions: {
+        saveRequest,
+        saveRequestToReservoir,
+        setLibServerToDone,
+        setAppServerToDone,
+        setWatchToDone,
+        setLibServerToProcessing,
+        setAppServerToProcessing,
+        setWatchToProcessing,
+        swapRequestReservoir,
+      },
+      services: {
+        handleRequests,
+      },
+    }
+  );
+}
+
+export function createServerMachineInterpreter(id: string) {
+  const machine = createServerMachine(id);
+  return interpret(machine);
+}
