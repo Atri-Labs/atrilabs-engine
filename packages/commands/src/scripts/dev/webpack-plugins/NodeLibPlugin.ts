@@ -8,7 +8,7 @@ export class NodeLibPlugin {
       interpreter.send({ type: LIB_SERVER_INVALIDATED });
     });
     compiler.hooks.done.tap("NodeLibPluginDoneHook", () => {
-      interpreter.send({ type: LIB_SERVER_DONE });
+      interpreter.send({ type: LIB_SERVER_DONE, compiler });
     });
   }
 }

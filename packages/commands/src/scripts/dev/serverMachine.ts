@@ -2,6 +2,7 @@ import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
 import { isPageRequest, matchUrlPath, printRequest } from "./utils";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import { Compiler } from "webpack";
 
 // states
 export const processing = "processing" as const;
@@ -17,8 +18,14 @@ export const LIB_SERVER_INVALIDATED = "LIB_SERVER_INVALIDATED" as const;
 export const APP_SERVER_INVALIDATED = "APP_SERVER_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
 
-export type LIB_SERVER_DONE_EVENT = { type: typeof LIB_SERVER_DONE };
-export type APP_SERVER_DONE_EVENT = { type: typeof APP_SERVER_DONE };
+export type LIB_SERVER_DONE_EVENT = {
+  type: typeof LIB_SERVER_DONE;
+  compiler: Compiler;
+};
+export type APP_SERVER_DONE_EVENT = {
+  type: typeof APP_SERVER_DONE;
+  compiler: Compiler;
+};
 export type ROUTE_OBJECTS_UPDATED_EVENT = {
   type: typeof ROUTE_OBJECTS_UPDATED;
   routeObjectPaths: string[];
@@ -52,6 +59,8 @@ export type SERVER_MACHINE_CONTEXT = {
   requestReservoir: { req: Request; res: Response; next: NextFunction }[];
   requestedRouteObjectPaths: Set<string>;
   routeObjectPaths: string[];
+  appCompiler?: Compiler;
+  libCompiler?: Compiler;
 };
 
 // conds
@@ -101,9 +110,17 @@ function _handleRequests(options: {
   routeObjectPaths: string[];
   requests: SERVER_MACHINE_CONTEXT["requests"];
   requestedRouteObjectPaths: Set<string>;
+  appCompiler: Compiler;
+  libCompiler: Compiler;
 }) {
   return new Promise<void>((resolve) => {
-    const { requests, requestedRouteObjectPaths, routeObjectPaths } = options;
+    const {
+      requests,
+      requestedRouteObjectPaths,
+      routeObjectPaths,
+      appCompiler,
+      libCompiler,
+    } = options;
     for (let i = 0; i < requests.length; i++) {
       const { req, res, next } = requests[i]!;
       // TODO: handle request
@@ -127,6 +144,9 @@ function _handleRequests(options: {
             // TODO: build html server side
           } else {
             // TODO: add to entry
+            requestedRouteObjectPaths.add(match[0]!.route.path);
+            appCompiler.watching.invalidate();
+            libCompiler.watching.invalidate();
           }
         }
       } else {
@@ -142,6 +162,8 @@ function handleRequests(context: SERVER_MACHINE_CONTEXT) {
     routeObjectPaths: context.routeObjectPaths,
     requests: context.requests,
     requestedRouteObjectPaths: context.requestedRouteObjectPaths,
+    libCompiler: context.libCompiler!,
+    appCompiler: context.appCompiler!,
   });
 }
 
@@ -159,12 +181,20 @@ function saveRequestToReservoir(
   context.requestReservoir.push(event.input);
 }
 
-function setLibServerToDone(context: SERVER_MACHINE_CONTEXT) {
+function setLibServerToDone(
+  context: SERVER_MACHINE_CONTEXT,
+  event: LIB_SERVER_DONE_EVENT
+) {
   context.libServer = "done";
+  context.libCompiler = event.compiler;
 }
 
-function setAppServerToDone(context: SERVER_MACHINE_CONTEXT) {
+function setAppServerToDone(
+  context: SERVER_MACHINE_CONTEXT,
+  event: APP_SERVER_DONE_EVENT
+) {
   context.appServer = "done";
+  context.appCompiler = event.compiler;
 }
 
 function setWatchToDone(context: SERVER_MACHINE_CONTEXT) {
@@ -305,24 +335,14 @@ export function createServerMachine(id: string) {
             onError: {},
           },
           on: {
-            [NETWORK_REQUEST]: [
-              { target: handlingRequests, actions: ["saveRequestToReservoir"] },
-            ],
+            [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
             [LIB_SERVER_INVALIDATED]: [
-              {
-                target: handlingRequests,
-                actions: ["setLibServerToProcessing"],
-              },
+              { actions: ["setLibServerToProcessing"] },
             ],
             [APP_SERVER_INVALIDATED]: [
-              {
-                target: handlingRequests,
-                actions: ["setAppServerToProcessing"],
-              },
+              { actions: ["setAppServerToProcessing"] },
             ],
-            [FS_CHANGED]: [
-              { target: handlingRequests, actions: ["setWatchToProcessing"] },
-            ],
+            [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
           },
         },
       },

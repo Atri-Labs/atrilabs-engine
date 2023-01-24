@@ -9,7 +9,7 @@ export class AppServerPlugin {
       interpreter.send({ type: APP_SERVER_INVALIDATED });
     });
     compiler.hooks.done.tap("AppServerPluginDoneHook", () => {
-      interpreter.send({ type: APP_SERVER_DONE });
+      interpreter.send({ type: APP_SERVER_DONE, compiler });
     });
   }
 }
