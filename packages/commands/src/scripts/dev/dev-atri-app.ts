@@ -12,6 +12,8 @@ import startNodeLibWatcher from "./startNodeLibWatcher";
 import { createNodeEntry } from "./createNodeEntry";
 import { interpreter } from "./init";
 import { NETWORK_REQUEST } from "./serverMachine";
+import { AppServerPlugin } from "./webpack-plugins/AppServerPlugin";
+import { NodeLibPlugin } from "./webpack-plugins/NodeLibPlugin";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -58,6 +60,9 @@ function main() {
       ...config.optimization,
       runtimeChunk: "single",
     };
+    const plugins = config.plugins || [];
+    plugins.push(new AppServerPlugin());
+    config.plugins = plugins;
   };
 
   const middlewares = params.middlewares;
@@ -85,6 +90,11 @@ function main() {
     outputFilename: "[name].bundle.js",
     moduleFileExtensions,
     entry: createNodeEntry,
+    prepareConfig: (config) => {
+      const plugins = config.plugins || [];
+      plugins.push(new NodeLibPlugin());
+      config.plugins = plugins;
+    },
   });
 }
 
