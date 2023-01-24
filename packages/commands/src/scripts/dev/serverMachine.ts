@@ -276,14 +276,24 @@ export function createServerMachine(id: string) {
             onError: {},
           },
           on: {
-            [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
+            [NETWORK_REQUEST]: [
+              { target: handlingRequests, actions: ["saveRequestToReservoir"] },
+            ],
             [LIB_SERVER_INVALIDATED]: [
-              { actions: ["setLibServerToProcessing"] },
+              {
+                target: handlingRequests,
+                actions: ["setLibServerToProcessing"],
+              },
             ],
             [APP_SERVER_INVALIDATED]: [
-              { actions: ["setAppServerToProcessing"] },
+              {
+                target: handlingRequests,
+                actions: ["setAppServerToProcessing"],
+              },
             ],
-            [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+            [FS_CHANGED]: [
+              { target: handlingRequests, actions: ["setWatchToProcessing"] },
+            ],
           },
         },
       },
