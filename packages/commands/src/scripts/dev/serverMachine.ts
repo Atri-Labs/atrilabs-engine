@@ -161,87 +161,113 @@ function swapRequestReservoir(context: SERVER_MACHINE_CONTEXT) {
   context.requestReservoir = [];
 }
 
-export const serverMachine = createMachine({
-  id: "serverMachine",
-  initial: processing,
-  context: {
-    libServer: "processing",
-    appServer: "processing",
-    watch: "processing",
-    requests: [],
-    requestReservoir: [],
-    requestedRouteObjectPaths: new Set(),
-  } as SERVER_MACHINE_CONTEXT,
-  states: {
-    [processing]: {
-      on: {
-        [LIB_SERVER_DONE]: [
-          {
-            target: processing,
-            cond: inProcessing,
-            actions: [setLibServerToDone],
-          },
-          {
-            target: serving,
-            cond: notInProcessing,
-            actions: [setLibServerToDone],
-          },
-        ],
-        [APP_SERVER_DONE]: [
-          {
-            target: processing,
-            cond: inProcessing,
-            actions: [setAppServerToDone],
-          },
-          {
-            target: serving,
-            cond: notInProcessing,
-            actions: [setAppServerToDone],
-          },
-        ],
-        [ROUTE_OBJECTS_UPDATED]: [
-          { target: processing, cond: inProcessing, actions: [setWatchToDone] },
-          { target: serving, cond: notInProcessing, actions: [setWatchToDone] },
-        ],
+export const serverMachine = createMachine(
+  {
+    id: "serverMachine",
+    initial: processing,
+    context: {
+      libServer: "processing",
+      appServer: "processing",
+      watch: "processing",
+      requests: [],
+      requestReservoir: [],
+      requestedRouteObjectPaths: new Set(),
+    } as SERVER_MACHINE_CONTEXT,
+    states: {
+      [processing]: {
+        on: {
+          [LIB_SERVER_DONE]: [
+            {
+              target: processing,
+              cond: inProcessing,
+              actions: ["setLibServerToDone"],
+            },
+            {
+              target: serving,
+              cond: notInProcessing,
+              actions: ["setLibServerToDone"],
+            },
+          ],
+          [APP_SERVER_DONE]: [
+            {
+              target: processing,
+              cond: inProcessing,
+              actions: ["setAppServerToDone"],
+            },
+            {
+              target: serving,
+              cond: notInProcessing,
+              actions: ["setAppServerToDone"],
+            },
+          ],
+          [ROUTE_OBJECTS_UPDATED]: [
+            {
+              target: processing,
+              cond: inProcessing,
+              actions: ["setWatchToDone"],
+            },
+            {
+              target: serving,
+              cond: notInProcessing,
+              actions: ["setWatchToDone"],
+            },
+          ],
+        },
       },
-    },
-    [serving]: {
-      on: {
-        [FULLFILL_EXISTING_REQUESTS]: [
-          { target: handlingRequests, cond: hasPendingRequests },
-        ],
-        [NETWORK_REQUEST]: [
-          { target: handlingRequests, actions: [saveRequest] },
-        ],
-        [LIB_SERVER_INVALIDATED]: [
-          { target: processing, actions: [setLibServerToProcessing] },
-        ],
-        [APP_SERVER_INVALIDATED]: [
-          { target: processing, actions: [setAppServerToProcessing] },
-        ],
-        [FS_CHANGED]: [{ target: processing, actions: [setWatchToProcessing] }],
+      [serving]: {
+        on: {
+          [FULLFILL_EXISTING_REQUESTS]: [
+            { target: handlingRequests, cond: hasPendingRequests },
+          ],
+          [NETWORK_REQUEST]: [
+            { target: handlingRequests, actions: ["saveRequest"] },
+          ],
+          [LIB_SERVER_INVALIDATED]: [
+            { target: processing, actions: ["setLibServerToProcessing"] },
+          ],
+          [APP_SERVER_INVALIDATED]: [
+            { target: processing, actions: ["setAppServerToProcessing"] },
+          ],
+          [FS_CHANGED]: [
+            { target: processing, actions: ["setWatchToProcessing"] },
+          ],
+        },
       },
-    },
-    [handlingRequests]: {
-      on: {
-        [FULLFILLED_REQUESTS]: [
-          {
-            target: processing,
-            actions: [swapRequestReservoir],
-            cond: inProcessing,
-          },
-          {
-            target: serving,
-            actions: [swapRequestReservoir],
-            cond: notInProcessing,
-          },
-        ],
-        [NETWORK_REQUEST]: [{ actions: [saveRequestToReservoir] }],
-        [LIB_SERVER_INVALIDATED]: [{ actions: [setLibServerToProcessing] }],
-        [APP_SERVER_INVALIDATED]: [{ actions: [setAppServerToProcessing] }],
-        [FS_CHANGED]: [{ actions: [setWatchToProcessing] }],
+      [handlingRequests]: {
+        on: {
+          [FULLFILLED_REQUESTS]: [
+            {
+              target: processing,
+              actions: ["swapRequestReservoir"],
+              cond: inProcessing,
+            },
+            {
+              target: serving,
+              actions: ["swapRequestReservoir"],
+              cond: notInProcessing,
+            },
+          ],
+          [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
+          [LIB_SERVER_INVALIDATED]: [{ actions: ["setLibServerToProcessing"] }],
+          [APP_SERVER_INVALIDATED]: [{ actions: ["setAppServerToProcessing"] }],
+          [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+        },
+        entry: handleRequests,
       },
-      entry: handleRequests,
     },
   },
-});
+  {
+    actions: {
+      handleRequests,
+      saveRequest,
+      saveRequestToReservoir,
+      setLibServerToDone,
+      setAppServerToDone,
+      setWatchToDone,
+      setLibServerToProcessing,
+      setAppServerToProcessing,
+      setWatchToProcessing,
+      swapRequestReservoir,
+    },
+  }
+);
