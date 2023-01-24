@@ -1,6 +1,5 @@
 import { Request } from "express";
 import { matchRoutes } from "react-router-dom";
-import { getRouteObjects } from "./routeObjects";
 import chalk from "chalk";
 
 /**
@@ -50,8 +49,11 @@ export function isJSONRequest(req: Request) {
   );
 }
 
-export function matchUrlPath(originalUrl: string) {
-  return matchRoutes(getRouteObjects(), originalUrl);
+export function matchUrlPath(
+  routeObjects: { path: string }[],
+  originalUrl: string
+) {
+  return matchRoutes(routeObjects, originalUrl);
 }
 
 export function getRequestType(req: Request) {

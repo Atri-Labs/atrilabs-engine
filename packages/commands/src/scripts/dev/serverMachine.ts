@@ -22,6 +22,7 @@ export type LIB_SERVER_DONE_EVENT = { type: typeof LIB_SERVER_DONE };
 export type APP_SERVER_DONE_EVENT = { type: typeof APP_SERVER_DONE };
 export type ROUTE_OBJECTS_UPDATED_EVENT = {
   type: typeof ROUTE_OBJECTS_UPDATED;
+  routeObjectPaths: string[];
 };
 export type NETWORK_REQUEST_EVENT = {
   type: typeof NETWORK_REQUEST;
@@ -54,6 +55,7 @@ export type SERVER_MACHINE_CONTEXT = {
   requests: { req: Request; res: Response; next: NextFunction }[];
   requestReservoir: { req: Request; res: Response; next: NextFunction }[];
   requestedRouteObjectPaths: Set<string>;
+  routeObjectPaths: string[];
 };
 
 // conds
@@ -100,18 +102,24 @@ function onlyWatchWasNotDone(context: SERVER_MACHINE_CONTEXT) {
 // actions
 
 function _handleRequests(options: {
+  routeObjectPaths: string[];
   requests: SERVER_MACHINE_CONTEXT["requests"];
   requestedRouteObjectPaths: Set<string>;
 }) {
   return new Promise<void>((resolve) => {
-    const { requests, requestedRouteObjectPaths } = options;
+    const { requests, requestedRouteObjectPaths, routeObjectPaths } = options;
     let curr = 0;
     while (curr < requests.length) {
       const { req, res, next } = requests[curr]!;
       // TODO: handle request
       printRequest(req);
       if (isPageRequest(req)) {
-        const match = matchUrlPath(req.originalUrl);
+        const match = matchUrlPath(
+          routeObjectPaths.map((p) => {
+            return { path: p };
+          }),
+          req.originalUrl
+        );
         if (match === null) {
           // TODO: server error.tsx page
           res.send("error: match not found");
@@ -136,6 +144,7 @@ function _handleRequests(options: {
 
 function handleRequests(context: SERVER_MACHINE_CONTEXT) {
   return _handleRequests({
+    routeObjectPaths: context.routeObjectPaths,
     requests: context.requests,
     requestedRouteObjectPaths: context.requestedRouteObjectPaths,
   });
@@ -184,6 +193,13 @@ function swapRequestReservoir(context: SERVER_MACHINE_CONTEXT) {
   context.requestReservoir = [];
 }
 
+function setRouteObjectPaths(
+  context: SERVER_MACHINE_CONTEXT,
+  event: ROUTE_OBJECTS_UPDATED_EVENT
+) {
+  context.routeObjectPaths = event.routeObjectPaths;
+}
+
 /**
  * Server is in ready state only after watchers have
  * loaded initial directory.
@@ -215,6 +231,7 @@ export function createServerMachine(id: string) {
         requests: [],
         requestReservoir: [],
         requestedRouteObjectPaths: new Set(),
+        routeObjectPaths: [],
       } as SERVER_MACHINE_CONTEXT,
       states: {
         [processing]: {
@@ -245,11 +262,11 @@ export function createServerMachine(id: string) {
               {
                 target: serving,
                 cond: onlyWatchWasNotDone,
-                actions: ["setWatchToDone"],
+                actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
               {
                 target: processing,
-                actions: ["setWatchToDone"],
+                actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
             ],
             [NETWORK_REQUEST]: [
@@ -328,6 +345,7 @@ export function createServerMachine(id: string) {
         setAppServerToProcessing,
         setWatchToProcessing,
         swapRequestReservoir,
+        setRouteObjectPaths,
       },
       services: {
         handleRequests,
