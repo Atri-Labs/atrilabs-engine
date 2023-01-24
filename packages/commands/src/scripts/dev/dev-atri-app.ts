@@ -7,9 +7,7 @@ import {
   moduleFileExtensions,
 } from "@atrilabs/commands-builder";
 import { createEntry } from "./createEntry";
-import { handleRequest } from "./handleRequest";
 import path from "path";
-import { createAssetStore } from "./AssetStore";
 import startNodeLibWatcher from "./startNodeLibWatcher";
 import { createNodeEntry } from "./createNodeEntry";
 
@@ -66,8 +64,6 @@ function main() {
     if (middlewares) {
       middlewares(app, compiler, config);
     }
-    const assetStore = createAssetStore();
-    handleRequest(app, compiler, assetStore);
   };
 
   startDevServer({
