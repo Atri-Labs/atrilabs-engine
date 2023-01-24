@@ -16,7 +16,6 @@ export const NETWORK_REQUEST = "NETWORK_REQUEST" as const;
 export const LIB_SERVER_INVALIDATED = "LIB_SERVER_INVALIDATED" as const;
 export const APP_SERVER_INVALIDATED = "APP_SERVER_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
-export const FULLFILL_EXISTING_REQUESTS = "FULLFILL_EXISTING_REQUESTS" as const;
 
 export type LIB_SERVER_DONE_EVENT = { type: typeof LIB_SERVER_DONE };
 export type APP_SERVER_DONE_EVENT = { type: typeof APP_SERVER_DONE };
@@ -35,9 +34,7 @@ export type APP_SERVER_INVALIDATED_EVENT = {
   type: typeof APP_SERVER_INVALIDATED;
 };
 export type FS_CHANGED_EVENT = { type: typeof FS_CHANGED };
-export type FULLFILL_EXISTING_REQUESTS_EVENT = {
-  type: typeof FULLFILL_EXISTING_REQUESTS;
-};
+
 export type SERVER_MACHINE_EVENT =
   | LIB_SERVER_DONE_EVENT
   | APP_SERVER_DONE_EVENT
@@ -45,8 +42,7 @@ export type SERVER_MACHINE_EVENT =
   | NETWORK_REQUEST_EVENT
   | LIB_SERVER_INVALIDATED_EVENT
   | APP_SERVER_INVALIDATED_EVENT
-  | FS_CHANGED_EVENT
-  | FULLFILL_EXISTING_REQUESTS_EVENT;
+  | FS_CHANGED_EVENT;
 
 export type SERVER_MACHINE_CONTEXT = {
   libServer: "processing" | "done";
@@ -275,10 +271,8 @@ export function createServerMachine(id: string) {
           },
         },
         [serving]: {
+          always: [{ target: handlingRequests, cond: hasPendingRequests }],
           on: {
-            [FULLFILL_EXISTING_REQUESTS]: [
-              { target: handlingRequests, cond: hasPendingRequests },
-            ],
             [NETWORK_REQUEST]: [
               { target: handlingRequests, actions: ["saveRequest"] },
             ],

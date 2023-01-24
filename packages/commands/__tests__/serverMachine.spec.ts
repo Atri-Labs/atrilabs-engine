@@ -3,7 +3,7 @@ import {
   APP_SERVER_DONE,
   APP_SERVER_INVALIDATED,
   createServerMachine,
-  FULLFILL_EXISTING_REQUESTS,
+  handlingRequests,
   LIB_SERVER_DONE,
   NETWORK_REQUEST,
   processing,
@@ -59,10 +59,9 @@ test("machine goes from processing to handlingRequests if requests.length > 0", 
       expect(state.value).toBe(processing);
     }
     if (event.type === ROUTE_OBJECTS_UPDATED) {
-      expect(state.value).toBe(serving);
+      expect(state.value).toBe(handlingRequests);
     }
     if (event.type === "done.invoke.handleRequests") {
-      expect(state.value).toBe(serving);
       interpreter.stop();
     }
   });
@@ -76,7 +75,6 @@ test("machine goes from processing to handlingRequests if requests.length > 0", 
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
-  interpreter.send({ type: FULLFILL_EXISTING_REQUESTS });
 });
 
 test("requests from reservoir are swapped", (done) => {
@@ -102,10 +100,10 @@ test("requests from reservoir are swapped", (done) => {
       expect(state.value).toBe(processing);
     }
     if (event.type === ROUTE_OBJECTS_UPDATED) {
-      expect(state.value).toBe(serving);
+      expect(state.value).toBe(handlingRequests);
     }
     if (event.type === "done.invoke.handleRequests") {
-      expect(state.value).toBe(serving);
+      expect(state.value).toBe(handlingRequests);
       expect(state.context.requests).toMatchObject(["expect_this_input"]);
       interpreter.stop();
     }
@@ -120,7 +118,6 @@ test("requests from reservoir are swapped", (done) => {
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
-  interpreter.send({ type: FULLFILL_EXISTING_REQUESTS });
   setTimeout(() => {
     interpreter.send({ type: NETWORK_REQUEST, input: "expect_this_input" });
   }, 10);
@@ -148,7 +145,7 @@ test("invalidate leads to processing from hanldingRequests", (done) => {
     }
     if (event.type === APP_SERVER_DONE) {
       if (firstAppDoneCalled) {
-        expect(state.value).toBe(serving);
+        expect(state.value).toBe(handlingRequests);
         interpreter.stop();
       }
     }
@@ -159,7 +156,7 @@ test("invalidate leads to processing from hanldingRequests", (done) => {
       }
     }
     if (event.type === ROUTE_OBJECTS_UPDATED) {
-      expect(state.value).toBe(serving);
+      expect(state.value).toBe(handlingRequests);
     }
     if (event.type === "done.invoke.handleRequests") {
       expect(state.value).toBe(processing);
@@ -176,7 +173,6 @@ test("invalidate leads to processing from hanldingRequests", (done) => {
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
-  interpreter.send({ type: FULLFILL_EXISTING_REQUESTS });
   setTimeout(() => {
     interpreter.send({ type: APP_SERVER_INVALIDATED });
     interpreter.send({ type: NETWORK_REQUEST, input: "expect_this_input" });
