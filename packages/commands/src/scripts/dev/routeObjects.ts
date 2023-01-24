@@ -7,7 +7,7 @@ import { PAGE_DIR } from "../../consts";
 import { FS_CHANGED, ROUTE_OBJECTS_UPDATED } from "./serverMachine";
 import { interpreter, pagesWatcher } from "./init";
 
-async function computeRouteObjects() {
+export async function computeRouteObjects() {
   interpreter.send({
     type: FS_CHANGED,
   });
@@ -20,5 +20,7 @@ async function computeRouteObjects() {
   });
 }
 
-pagesWatcher.on("add", computeRouteObjects);
-pagesWatcher.on("remove", computeRouteObjects);
+export function setFSWatchers() {
+  pagesWatcher.on("add", computeRouteObjects);
+  pagesWatcher.on("remove", computeRouteObjects);
+}

@@ -104,9 +104,8 @@ function _handleRequests(options: {
 }) {
   return new Promise<void>((resolve) => {
     const { requests, requestedRouteObjectPaths, routeObjectPaths } = options;
-    let curr = 0;
-    while (curr < requests.length) {
-      const { req, res, next } = requests[curr]!;
+    for (let i = 0; i < requests.length; i++) {
+      const { req, res, next } = requests[i]!;
       // TODO: handle request
       printRequest(req);
       if (isPageRequest(req)) {

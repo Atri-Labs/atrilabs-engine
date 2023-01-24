@@ -14,6 +14,7 @@ import { interpreter } from "./init";
 import { NETWORK_REQUEST } from "./serverMachine";
 import { AppServerPlugin } from "./webpack-plugins/AppServerPlugin";
 import { NodeLibPlugin } from "./webpack-plugins/NodeLibPlugin";
+import { computeRouteObjects, setFSWatchers } from "./routeObjects";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -23,6 +24,11 @@ process.on("unhandledRejection", (err) => {
 });
 
 function main() {
+  interpreter.start();
+
+  setFSWatchers();
+  computeRouteObjects();
+
   const params = extractParams();
 
   params.paths.appSrc = process.cwd();
