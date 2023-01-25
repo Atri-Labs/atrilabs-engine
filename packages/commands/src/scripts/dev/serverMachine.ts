@@ -1,6 +1,6 @@
 import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
-import { isPageRequest, matchUrlPath } from "./utils";
+import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
 // import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
 
@@ -111,8 +111,16 @@ async function _handleRequests(options: {
   requestedRouteObjectPaths: Set<string>;
   appCompiler: Compiler;
   libCompiler: Compiler;
+  requestReservoir: SERVER_MACHINE_CONTEXT["requestReservoir"];
 }) {
-  const { requests, routeObjectPaths, requestedRouteObjectPaths } = options;
+  const {
+    requests,
+    routeObjectPaths,
+    requestedRouteObjectPaths,
+    requestReservoir,
+    appCompiler,
+    libCompiler,
+  } = options;
   const routeObjects = routeObjectPaths.map((routeObjectPath) => {
     return { path: routeObjectPath };
   });
@@ -155,15 +163,21 @@ async function _handleRequests(options: {
       // add to requestedRouteObjectPaths
       requestedRouteObjectPaths.add(match![0]!.route.path);
       // move request to reservoir
-      pageRequest.res.send(`new request ${pageRequest.req.originalUrl}`);
+      requestReservoir.push(pageRequest);
     } else {
       // answer all non-new requests
-      pageRequest.res.send(`old request ${pageRequest.req.originalUrl}`);
+      // pageRequest.res.send(`old request ${pageRequest.req.originalUrl}`);
+      const routeObjectPath = match![0]!.route.path;
+      const splices = routeObjectPath.split("/").splice(1);
+      const htmlString = getPageHtml(["pages", ...splices]);
+      pageRequest.res.send(htmlString);
     }
   }
 
   if (newRouteObjectPaths.size > 0) {
     // call invalidate
+    appCompiler.watching.invalidate();
+    libCompiler.watching.invalidate();
   }
 }
 
@@ -174,6 +188,7 @@ function handleRequests(context: SERVER_MACHINE_CONTEXT) {
     requestedRouteObjectPaths: context.requestedRouteObjectPaths,
     libCompiler: context.libCompiler!,
     appCompiler: context.appCompiler!,
+    requestReservoir: context.requestReservoir,
   });
 }
 

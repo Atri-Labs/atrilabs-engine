@@ -1,6 +1,9 @@
 import { Request } from "express";
 import { matchRoutes } from "react-router-dom";
 import chalk from "chalk";
+import { renderToString } from "react-dom/server";
+import path from "path";
+import { SERVER_DIR } from "../../consts";
 
 /**
  * This request arrives when a page is requested
@@ -75,4 +78,11 @@ export function getRequestType(req: Request) {
 export function printRequest(req: Request) {
   const requestType = getRequestType(req);
   console.log(chalk.green(`${requestType} ${req.originalUrl}`));
+}
+
+export function getPageHtml(filepath: string[]) {
+  // @ts-ignore
+  const mod = __non_webpack_require__(path.resolve(SERVER_DIR, ...filepath));
+  const ComponentFn = mod.default;
+  return renderToString(<ComponentFn />);
 }

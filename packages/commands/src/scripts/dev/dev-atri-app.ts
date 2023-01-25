@@ -90,12 +90,12 @@ function main() {
     middlewares: wrapMiddlewares,
   });
 
-  const serverPath = path.join(params.paths.outputDir, "server");
+  const serverPath = path.join(params.paths.outputDir, "server", "pages");
   const paths = { ...params.paths, outputDir: serverPath };
   startNodeLibWatcher({
     ...params,
     paths,
-    outputFilename: "[name].bundle.js",
+    outputFilename: "[name].js",
     moduleFileExtensions,
     entry: createNodeEntry,
     prepareConfig: (config) => {
