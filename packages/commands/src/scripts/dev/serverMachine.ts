@@ -1,7 +1,7 @@
 import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
-import { isPageRequest, matchUrlPath, printRequest } from "./utils";
-import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import { isPageRequest, matchUrlPath } from "./utils";
+// import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
 
 // states
@@ -105,56 +105,66 @@ function onlyWatchWasNotDone(context: SERVER_MACHINE_CONTEXT) {
   );
 }
 // actions
-
-function _handleRequests(options: {
+async function _handleRequests(options: {
   routeObjectPaths: string[];
   requests: SERVER_MACHINE_CONTEXT["requests"];
   requestedRouteObjectPaths: Set<string>;
   appCompiler: Compiler;
   libCompiler: Compiler;
 }) {
-  return new Promise<void>((resolve) => {
-    const {
-      requests,
-      requestedRouteObjectPaths,
-      routeObjectPaths,
-      appCompiler,
-      libCompiler,
-    } = options;
-    for (let i = 0; i < requests.length; i++) {
-      const { req, res, next } = requests[i]!;
-      // TODO: handle request
-      printRequest(req);
-      if (isPageRequest(req)) {
-        const match = matchUrlPath(
-          routeObjectPaths.map((p) => {
-            return { path: p };
-          }),
-          req.originalUrl
-        );
-        if (match === null) {
-          // TODO: server error.tsx page
-          res.send("error: match not found");
-        } else {
-          const filepath = IRToUnixFilePath(
-            routeObjectPathToIR(match[0]!.route.path)
-          );
-          res.send(`success: will send ${filepath}`);
-          if (requestedRouteObjectPaths.has(match[0]!.route.path)) {
-            // TODO: build html server side
-          } else {
-            // TODO: add to entry
-            requestedRouteObjectPaths.add(match[0]!.route.path);
-            appCompiler.watching.invalidate();
-            libCompiler.watching.invalidate();
-          }
-        }
-      } else {
-        next();
-      }
-    }
-    resolve();
+  const { requests, routeObjectPaths, requestedRouteObjectPaths } = options;
+  const routeObjects = routeObjectPaths.map((routeObjectPath) => {
+    return { path: routeObjectPath };
   });
+
+  // TODO: Later we will handle JS/JSON requests here
+  const nonPageRequests = requests.filter((request) => {
+    return !isPageRequest(request.req);
+  });
+  nonPageRequests.forEach((nonPageRequest) => {
+    nonPageRequest.next();
+  });
+
+  const pageRequests = requests.filter((request) => {
+    return isPageRequest(request.req);
+  });
+  const matches = pageRequests.map((request) => {
+    return matchUrlPath(routeObjects, request.req.originalUrl);
+  });
+  const nonNullMatches = matches.filter((match) => match !== null);
+  const newRouteObjectPaths = new Set<string>();
+  nonNullMatches.forEach((nonNullMatch) => {
+    const newRouteObjectPath = nonNullMatch![0]!.route.path;
+    if (!requestedRouteObjectPaths.has(newRouteObjectPath)) {
+      newRouteObjectPaths.add(newRouteObjectPath);
+    }
+  });
+
+  // handle null matches
+  for (let i = 0; i < pageRequests.length; i++) {
+    const match = matches[i];
+    const pageRequest = pageRequests[i]!;
+    if (match === null) {
+      pageRequest.res.send(
+        `Error: Cannot find a route for url ${pageRequest.req.originalUrl}`
+      );
+    } else if (
+      match !== null &&
+      newRouteObjectPaths.has(match![0]!.route.path)
+    ) {
+      // add to requestedRouteObjectPaths
+      requestedRouteObjectPaths.add(match![0]!.route.path);
+      // move request to reservoir
+      pageRequest.res.send(`new request ${pageRequest.req.originalUrl}`);
+    } else {
+      // answer all non-new requests
+      pageRequest.res.send(`old request ${pageRequest.req.originalUrl}`);
+    }
+  }
+
+  if (newRouteObjectPaths.size > 0) {
+    // call invalidate
+  }
 }
 
 function handleRequests(context: SERVER_MACHINE_CONTEXT) {

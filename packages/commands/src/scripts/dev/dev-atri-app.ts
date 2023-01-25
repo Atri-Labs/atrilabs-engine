@@ -15,6 +15,7 @@ import { NETWORK_REQUEST } from "./serverMachine";
 import { AppServerPlugin } from "./webpack-plugins/AppServerPlugin";
 import { NodeLibPlugin } from "./webpack-plugins/NodeLibPlugin";
 import { computeRouteObjects, setFSWatchers } from "./routeObjects";
+import { printRequest } from "./utils";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -78,6 +79,7 @@ function main() {
       middlewares(app, compiler, config);
     }
     app.use((req, res, next) => {
+      printRequest(req);
       interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
     });
   };
