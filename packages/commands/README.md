@@ -46,3 +46,7 @@ Geneartes `index.html` when `generateIndexHtml` is set to `true`.
 - Proxy requests to your server (both HTTP/S & ws).
 - A webpack dev server behind a proxy can also be used.
 - Supports typescript and many other file types.
+
+# Notes
+
+- The `_document` is used only in server side to generate HTML.

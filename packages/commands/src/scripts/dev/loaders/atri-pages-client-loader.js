@@ -13,7 +13,7 @@ function atriPagesClientLoader() {
 	import PageWrapper from "./pages/_app";
 	import PageComponent from "${modulePath}";
 
-	import universalRender from "@atrilabs/atri-app-core/src/entries/universalRender";
+	import renderPageOrApp from "@atrilabs/atri-app-core/src/entries/renderPageOrApp";
 
   const options = {
     routeObjectPath: "${routeObjectPath}",
@@ -22,7 +22,7 @@ function atriPagesClientLoader() {
     urlPath: "${urlPath}"
   };
 
-	universalRender(options);
+	renderPageOrApp(options);
 	`;
 }
 

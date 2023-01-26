@@ -1,5 +1,5 @@
-import AtriScripts from "./AtriScripts";
-import Main from "./Main";
+import { AtriScripts } from "@atrilabs/atri-app-core";
+import { Main } from "@atrilabs/atri-app-core";
 
 export default function Document() {
   return (

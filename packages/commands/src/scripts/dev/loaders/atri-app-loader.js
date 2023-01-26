@@ -1,9 +1,9 @@
 function atriAppLoader() {
   return `
   	import PageWrapper from "./pages/_app";
-	import universalRender from "@atrilabs/atri-app-core/src/entries/universalRender";
+	import renderPageOrApp from "@atrilabs/atri-app-core/src/entries/renderPageOrApp";
 
-    module.exports = { PageWrapper, universalRender };
+    module.exports = { PageWrapper, renderPageOrApp };
 	`;
 }
 
