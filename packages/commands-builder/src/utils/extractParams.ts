@@ -38,6 +38,18 @@ export function processArgs() {
     })
     .option("w", { alias: "appPublic", type: "string", default: "public" })
     .option("n", { alias: "nodeModulesDirs", type: "string", default: "" })
+    .option("i", {
+      alias: "include",
+      type: "string",
+      default: "",
+      description: "include jsx/tsx files from",
+    })
+    .option("a", {
+      alias: "allowlist",
+      type: "string",
+      default: "",
+      description: "include packages in the node bundle",
+    })
     .boolean("stats").argv as {
     e: string;
     o: string;
@@ -48,6 +60,8 @@ export function processArgs() {
     stats: boolean;
     n: string;
     f: string;
+    i: string;
+    a: string;
   };
 }
 
@@ -152,6 +166,11 @@ export function extractParams() {
   const writeStats = args.stats;
   const appNodeModules = path.resolve(appPath, "node_modules");
   const additionalNodeModules = args.n !== "" ? args.n.split(":") : [];
+  const additionalInclude = args.i !== "" ? args.i.split(":") : [];
+  const resolvedInclude = additionalInclude.map((a) => {
+    return path.dirname(require.resolve(a));
+  });
+  const allowlist = args.a !== "" ? args.a.split(":") : [];
   const outputFilename = args.f;
 
   const useTypeScript = fs.existsSync(path.resolve(appPath, "tsconfig.json"));
@@ -225,6 +244,8 @@ export function extractParams() {
     ...buildConfig,
     additionalNodeModules,
     outputFilename,
+    additionalInclude: resolvedInclude,
+    allowlist,
   };
 }
 

@@ -29,6 +29,8 @@ function build(params: ReturnType<typeof extractParams>) {
     applyPlugins,
     additionalNodeModules,
     outputFilename,
+    allowlist,
+    additionalInclude,
   } = params;
 
   const webpackConfig = createNodeConfig({
@@ -44,6 +46,8 @@ function build(params: ReturnType<typeof extractParams>) {
     moduleFileExtensions,
     additionalNodeModules,
     outputFilename,
+    allowlist,
+    additionalInclude,
   });
 
   if (prepareConfig && typeof prepareConfig === "function") {

@@ -19,6 +19,12 @@ This package can be used at multiple levels, from low to high:
     1. `choosePort` - This helps you find a free port given a default port.
     2. `src/utils/consoleHelpers.ts` - Provides helper functions such as `clearConsole`.
 
+## Scripts
+
+- The `dev-atri-app` is used to start Atri's development server.
+
+- The `create-atri-app` is used to create a new Atri project.
+
 ## Add environment variables to client side code
 
 All the environment variables that needs to be embedded in the application (client side) must start with `ATRI_APP_`. Some environment variables are available to client side by default such as `NODE_ENV`.

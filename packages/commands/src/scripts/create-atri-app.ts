@@ -82,6 +82,17 @@ function copyAppWrapper(options: { dest: string; useTypescript: boolean }) {
   );
 }
 
+function copyDocument(options: { dest: string; useTypescript: boolean }) {
+  const moduleExtenstion = options.useTypescript ? ".tsx" : ".jsx";
+  const documentPath = require.resolve(
+    "@atrilabs/atri-app-core/src/components/Document" + moduleExtenstion
+  );
+  fs.writeFileSync(
+    path.resolve(options.dest, "pages", "_document" + moduleExtenstion),
+    fs.readFileSync(documentPath)
+  );
+}
+
 function createPagesDirectory(options: {
   dest: string;
   useTypescript: boolean;
@@ -140,6 +151,7 @@ function main() {
   createPackageJSON(args, { dest });
   createPagesDirectory({ dest, useTypescript: args.typescript });
   createEslintRC({ dest });
+  copyDocument({ dest, useTypescript: args.typescript });
 }
 
 main();

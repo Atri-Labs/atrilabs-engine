@@ -1,11 +1,11 @@
 # `@atrilabs/commands-builder`
 
-> TODO: description
+## Notes
+
+- Do not bundle this package inside a webpack bundle.
 
 ## Usage
 
-```
-const commandsBuilder = require('@atrilabs/commands-builder');
+- Import the `configs`, `utils` for use in a packages like `@atrilabs/commands`.
 
-// TODO: DEMONSTRATE API
-```
+- The `build-node-app` script is used to bundle a NodeJS app that have JSX/TSX inside it.

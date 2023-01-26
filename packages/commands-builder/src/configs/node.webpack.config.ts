@@ -59,6 +59,8 @@ export function createNodeConfig(options: {
   };
   additionalNodeModules?: string[];
   outputFilename: string;
+  additionalInclude?: string[];
+  allowlist?: string[];
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -75,11 +77,15 @@ export function createNodeConfig(options: {
     entry,
     additionalNodeModules,
     outputFilename,
+    additionalInclude,
+    allowlist,
   } = options;
   return {
     target: "node",
     externalsPresets: { node: true },
-    externals: [nodeExternals({ additionalModuleDirs: additionalNodeModules })],
+    externals: [
+      nodeExternals({ additionalModuleDirs: additionalNodeModules, allowlist }),
+    ],
     mode: isEnvProduction ? "production" : "development",
     stats: "errors-warnings",
     bail: isEnvProduction,
@@ -147,6 +153,7 @@ export function createNodeConfig(options: {
               isEnvTest,
               hasJsxRuntime: true,
               removeReactRefresh: true,
+              additionalInclude: additionalInclude || [],
             }),
             ...setJsxLoaders({
               isEnvDevelopment,

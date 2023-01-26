@@ -77,6 +77,7 @@ export function createConfig(options: {
   };
   useTypeScript: boolean;
   generateIndexHtml?: boolean;
+  additionalInclude?: string[];
 }): WebpackConfiguration {
   const {
     isEnvDevelopment,
@@ -95,6 +96,7 @@ export function createConfig(options: {
     publicUrlOrPath,
     useTypeScript,
     generateIndexHtml,
+    additionalInclude,
   } = options;
 
   return {
@@ -256,6 +258,7 @@ export function createConfig(options: {
               isEnvProduction,
               isEnvTest,
               hasJsxRuntime: true,
+              additionalInclude: additionalInclude || [],
             }),
             ...setJsxLoaders({
               isEnvDevelopment,
