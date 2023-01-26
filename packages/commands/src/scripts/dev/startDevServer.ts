@@ -47,6 +47,7 @@ export default function startDevServer(
     applyPlugins,
     additionalInclude,
     additionalNodeModules,
+    outputFilename,
   } = params;
 
   checkBrowsers(paths.appPath, isInteractive())
@@ -74,6 +75,7 @@ export default function startDevServer(
         useTypeScript,
         additionalInclude,
         additionalNodeModules,
+        outputFilename,
       });
 
       if (prepareConfig && typeof prepareConfig === "function") {

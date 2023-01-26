@@ -79,6 +79,7 @@ export function createConfig(options: {
   generateIndexHtml?: boolean;
   additionalInclude?: string[];
   additionalNodeModules?: string[];
+  outputFilename: string;
 }): WebpackConfiguration {
   const {
     isEnvDevelopment,
@@ -99,6 +100,7 @@ export function createConfig(options: {
     generateIndexHtml,
     additionalInclude,
     additionalNodeModules,
+    outputFilename,
   } = options;
 
   return {
@@ -121,9 +123,7 @@ export function createConfig(options: {
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? "static/js/[name].[contenthash:8].js"
-        : "static/js/[name].bundle.js",
+      filename: outputFilename,
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
         ? "static/js/[name].[contenthash:8].chunk.js"

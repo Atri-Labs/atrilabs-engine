@@ -3,5 +3,9 @@ export function FinalPageComponent(props: {
   Page: React.FC<any>;
 }) {
   const { PageWrapper, Page } = props;
-  return <PageWrapper Component={Page}></PageWrapper>;
+  return (
+    <PageWrapper>
+      <Page />
+    </PageWrapper>
+  );
 }

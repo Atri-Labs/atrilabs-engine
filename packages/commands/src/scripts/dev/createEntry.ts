@@ -1,15 +1,34 @@
+import { Entry } from "webpack";
+import { interpreter } from "./init";
 const { stringify } = require("querystring");
 
 export async function createEntry() {
   // TODO: add pages when they are requested
-  return {
-    app: { import: "atri-app-loader!" },
-    index: {
+  const requestedRouteObjectPaths = Array.from(
+    interpreter.machine.context.requestedRouteObjectPaths
+  );
+  const entry: Entry = {
+    app: { import: ["react", "react-dom"] },
+    _error: {
       import: `atri-pages-client-loader?${stringify({
         routeObjectPath: "/",
-        urlPath: "/",
-        modulePath: "./pages/index",
+        modulePath: "./pages/_error",
       })}!`,
+      dependOn: "app",
     },
   };
+  requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
+    let entryName = requestedRouteObjectPath;
+    if (requestedRouteObjectPath === "/") {
+      entryName = "index";
+    }
+    entry[entryName] = {
+      import: `atri-pages-client-loader?${stringify({
+        routeObjectPath: `${requestedRouteObjectPath}`,
+        modulePath: `./pages/${requestedRouteObjectPath}`,
+      })}!`,
+      dependOn: "app",
+    };
+  });
+  return entry;
 }

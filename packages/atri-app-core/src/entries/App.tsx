@@ -4,6 +4,5 @@ import { RouterContext } from "../contexts/RouterContext";
 
 export default function App() {
   const router = useContext(RouterContext).getRouter();
-
   return <>{router !== null ? <RouterProvider router={router} /> : null}</>;
 }

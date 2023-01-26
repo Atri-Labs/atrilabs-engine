@@ -8,6 +8,7 @@ export async function createNodeEntry() {
   );
   const entry: Entry = {
     _error: { import: "./pages/_error" },
+    _app: { import: "./pages/_app" },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
     let entryName = requestedRouteObjectPath;

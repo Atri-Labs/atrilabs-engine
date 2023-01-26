@@ -4,7 +4,11 @@ import chalk from "chalk";
 import { renderToString } from "react-dom/server";
 import path from "path";
 import { SERVER_DIR } from "../../consts";
-import { Document, MainAppContext } from "@atrilabs/atri-app-core";
+import {
+  Document,
+  MainAppContext,
+  AtriScriptsContext,
+} from "@atrilabs/atri-app-core";
 
 /**
  * This request arrives when a page is requested
@@ -20,7 +24,7 @@ export function isPageRequest(req: Request) {
       : true) &&
     !req.originalUrl.startsWith("/favicon.ico") &&
     !req.originalUrl.startsWith("/serviceWorker.js") &&
-    !req.originalUrl.startsWith("/static") &&
+    !req.originalUrl.startsWith("/atri") &&
     !req.originalUrl.match("hot-update") &&
     !req.originalUrl.match(".map")
   );
@@ -41,8 +45,7 @@ export function isApiRequest(req: Request) {
  */
 export function isJSRequest(req: Request) {
   return (
-    req.method.toLowerCase() === "get" &&
-    req.originalUrl.startsWith("/static/js")
+    req.method.toLowerCase() === "get" && req.originalUrl.startsWith("/atri/js")
   );
 }
 
@@ -83,11 +86,41 @@ export function printRequest(req: Request) {
 
 export function getPageHtml(filepath: string[]) {
   // @ts-ignore
+  delete __non_webpack_require__.cache[
+    // @ts-ignore
+    __non_webpack_require__.resolve(path.resolve(SERVER_DIR, ...filepath))
+  ];
+  // @ts-ignore
   const mod = __non_webpack_require__(path.resolve(SERVER_DIR, ...filepath));
   const ComponentFn = mod.default;
+  const scriptSrcs: string[] = [
+    `/atri/js/pages/runtime.js`,
+    `/atri/js/pages/app.js`,
+    `/atri/js/${filepath.join("/")}.js`,
+  ];
+  // @ts-ignore
+  delete __non_webpack_require__.cache[
+    // @ts-ignore
+    __non_webpack_require__.resolve(path.resolve(SERVER_DIR, "pages", "_app"))
+  ];
+  // @ts-ignore
+  const appMod = __non_webpack_require__(
+    path.resolve(SERVER_DIR, "pages", "_app")
+  );
+  const AppFn = appMod.default;
   return renderToString(
-    <MainAppContext.Provider value={{ App: <ComponentFn /> }}>
-      <Document />
-    </MainAppContext.Provider>
+    <AtriScriptsContext.Provider value={{ pages: scriptSrcs }}>
+      <MainAppContext.Provider
+        value={{
+          App: (
+            <AppFn>
+              <ComponentFn />
+            </AppFn>
+          ),
+        }}
+      >
+        <Document />
+      </MainAppContext.Provider>
+    </AtriScriptsContext.Provider>
   );
 }

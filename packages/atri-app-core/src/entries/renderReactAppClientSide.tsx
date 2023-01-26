@@ -13,7 +13,7 @@ export default function renderReactAppClientSide(
   App: React.FC
 ) {
   ReactDOM.hydrateRoot(
-    document.querySelector("__atri_app__")!,
+    document.getElementById("__atri_app__")!,
     <React.StrictMode>
       <RouterContext.Provider value={atriRouter}>
         <App />

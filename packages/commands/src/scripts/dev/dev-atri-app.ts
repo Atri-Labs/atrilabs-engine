@@ -95,6 +95,7 @@ function main() {
     ...params,
     prepareConfig: wrapPrepareConfig,
     middlewares: wrapMiddlewares,
+    outputFilename: "atri/js/pages/[name].js",
   });
 
   const serverPath = path.join(params.paths.outputDir, "server", "pages");

@@ -1,6 +1,6 @@
 function atriPagesClientLoader() {
   const options = this.getOptions();
-  const { routeObjectPath, modulePath, urlPath } = options;
+  const { routeObjectPath, modulePath } = options;
 
   if (routeObjectPath === undefined || modulePath === undefined) {
     const err = Error();
@@ -18,8 +18,7 @@ function atriPagesClientLoader() {
   const options = {
     routeObjectPath: "${routeObjectPath}",
     PageWrapper,
-    PageComponent,
-    urlPath: "${urlPath}"
+    PageComponent
   };
 
 	renderPageOrApp(options);
