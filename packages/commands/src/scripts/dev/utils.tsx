@@ -92,6 +92,9 @@ export function getPageHtml(filepath: string[]) {
   ];
   // @ts-ignore
   const mod = __non_webpack_require__(path.resolve(SERVER_DIR, ...filepath));
+  if (filepath[filepath.length - 1] === "") {
+    filepath[filepath.length - 1] = "index";
+  }
   const ComponentFn = mod.default;
   const scriptSrcs: string[] = [
     `/atri/js/pages/runtime.js`,

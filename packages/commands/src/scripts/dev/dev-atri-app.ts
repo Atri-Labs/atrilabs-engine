@@ -77,6 +77,10 @@ function main() {
     const plugins = config.plugins || [];
     plugins.push(new AppServerPlugin());
     config.plugins = plugins;
+    config.devServer = {
+      ...config.devServer,
+      hot: true,
+    };
   };
 
   const middlewares = params.middlewares;

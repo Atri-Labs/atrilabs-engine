@@ -18,7 +18,7 @@ export async function createEntry() {
     },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
-    let entryName = requestedRouteObjectPath;
+    let entryName = requestedRouteObjectPath.replace(/^\//, "");
     if (requestedRouteObjectPath === "/") {
       entryName = "index";
     }

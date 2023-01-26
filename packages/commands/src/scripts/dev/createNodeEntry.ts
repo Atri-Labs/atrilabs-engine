@@ -11,7 +11,7 @@ export async function createNodeEntry() {
     _app: { import: "./pages/_app" },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
-    let entryName = requestedRouteObjectPath;
+    let entryName = requestedRouteObjectPath.replace(/^\//, "");
     if (requestedRouteObjectPath === "/") {
       entryName = "index";
     }
