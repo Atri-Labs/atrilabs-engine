@@ -5,7 +5,6 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "dist/index.js",
   "bin": {
     "create-atri-app": "dist/scripts/create-atri-app.js",
     "dev-atri-app": "dist/dev.js"
@@ -25,8 +24,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc",
-    "build-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
+    "build": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles"
   },
