@@ -13,7 +13,7 @@ function atriPagesClientLoader() {
 	import PageWrapper from "./pages/_app";
 	import PageComponent from "${modulePath}";
 
-	import universalRender from "@atrilabs/atri-app-core/dist/entries/universalRender";
+	import universalRender from "@atrilabs/atri-app-core/src/entries/universalRender";
 
   const options = {
     routeObjectPath: "${routeObjectPath}",

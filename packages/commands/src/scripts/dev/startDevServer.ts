@@ -45,6 +45,8 @@ export default function startDevServer(
     debugBuildTool,
     prepareConfig,
     applyPlugins,
+    additionalInclude,
+    additionalNodeModules,
   } = params;
 
   checkBrowsers(paths.appPath, isInteractive())
@@ -70,6 +72,8 @@ export default function startDevServer(
         imageInlineSizeLimit: 10,
         shouldInlineRuntimeChunk: true,
         useTypeScript,
+        additionalInclude,
+        additionalNodeModules,
       });
 
       if (prepareConfig && typeof prepareConfig === "function") {

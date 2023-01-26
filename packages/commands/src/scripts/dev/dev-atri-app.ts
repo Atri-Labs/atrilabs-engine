@@ -32,6 +32,13 @@ function main() {
 
   const params = extractParams();
 
+  const additionalInclude = params.additionalInclude || [];
+  additionalInclude.push(
+    // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core"))
+  );
+  params.additionalInclude = additionalInclude;
+
   params.paths.appSrc = process.cwd();
 
   const prepareConfig = params.prepareConfig;
@@ -92,6 +99,8 @@ function main() {
 
   const serverPath = path.join(params.paths.outputDir, "server", "pages");
   const paths = { ...params.paths, outputDir: serverPath };
+  const allowlist = params.allowlist || [];
+  allowlist.push("@atrilabs/atri-app-core");
   startNodeLibWatcher({
     ...params,
     paths,
@@ -103,6 +112,7 @@ function main() {
       plugins.push(new NodeLibPlugin());
       config.plugins = plugins;
     },
+    allowlist,
   });
 }
 

@@ -124,7 +124,6 @@ export default function setJsxTsxLoaders(options: {
     removeReactRefresh,
     additionalInclude,
   } = options;
-  console.log(additionalInclude);
   return [
     {
       test: /\.(js|mjs|jsx|ts|tsx)$/,
