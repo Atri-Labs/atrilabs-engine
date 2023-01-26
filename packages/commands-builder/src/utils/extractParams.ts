@@ -37,18 +37,24 @@ export function processArgs() {
       default: "./node_modules/.cache/webpack",
     })
     .option("w", { alias: "appPublic", type: "string", default: "public" })
-    .option("n", { alias: "nodeModulesDirs", type: "string", default: "" })
+    .option("n", {
+      alias: "nodeModulesDirs",
+      type: "string",
+      default: "",
+      description: "used in webpack's resolve.module",
+    })
     .option("i", {
       alias: "include",
       type: "string",
       default: "",
-      description: "include jsx/tsx files from",
+      description: "used to include jsx/tsx in jsx/tsx webpack loader",
     })
     .option("a", {
       alias: "allowlist",
       type: "string",
       default: "",
-      description: "include packages in the node bundle",
+      description:
+        "used to include packages in the node bundle in nodeExternal's allowlist",
     })
     .boolean("stats").argv as {
     e: string;
