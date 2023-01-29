@@ -58,6 +58,7 @@
     "fs-extra": "^11.1.0",
     "html-webpack-plugin": "^5.5.0",
     "is-root": "^2.1.0",
+    "lodash": "^4.17.21",
     "prompts": "^2.4.2",
     "querystring": "^0.2.1",
     "react-router-dom": "^6.6.2",

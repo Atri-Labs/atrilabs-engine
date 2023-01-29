@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
 // import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
+import { intersection } from "lodash";
 
 // states
 export const processing = "processing" as const;
@@ -61,6 +62,7 @@ export type SERVER_MACHINE_CONTEXT = {
   routeObjectPaths: string[];
   appCompiler?: Compiler;
   libCompiler?: Compiler;
+  latestRouteObjectPaths: string[] | undefined;
 };
 
 // conds
@@ -243,13 +245,38 @@ function swapRequestReservoir(context: SERVER_MACHINE_CONTEXT) {
   context.requestReservoir = [];
 }
 
+function _removeDeletedPages(context: SERVER_MACHINE_CONTEXT) {
+  const remainingRequestedRouteObjectPaths = intersection(
+    Array.from(context.requestedRouteObjectPaths),
+    context.routeObjectPaths
+  );
+  context.requestedRouteObjectPaths = new Set(
+    remainingRequestedRouteObjectPaths
+  );
+}
+
 function setRouteObjectPaths(
   context: SERVER_MACHINE_CONTEXT,
   event: ROUTE_OBJECTS_UPDATED_EVENT
 ) {
   context.routeObjectPaths = event.routeObjectPaths;
+  _removeDeletedPages(context);
 }
 
+function setLatestRouteObjectPaths(
+  context: SERVER_MACHINE_CONTEXT,
+  event: ROUTE_OBJECTS_UPDATED_EVENT
+) {
+  context.latestRouteObjectPaths = event.routeObjectPaths;
+}
+
+function swapLatestRouteObjectPaths(context: SERVER_MACHINE_CONTEXT) {
+  if (context.latestRouteObjectPaths !== undefined) {
+    context.routeObjectPaths = context.latestRouteObjectPaths;
+    context.latestRouteObjectPaths = undefined;
+    _removeDeletedPages(context);
+  }
+}
 /**
  * Server is in ready state only after watchers have
  * loaded initial directory.
@@ -282,6 +309,7 @@ export function createServerMachine(id: string) {
         requestReservoir: [],
         requestedRouteObjectPaths: new Set(),
         routeObjectPaths: [],
+        latestRouteObjectPaths: undefined,
       } as SERVER_MACHINE_CONTEXT,
       states: {
         [processing]: {
@@ -348,12 +376,12 @@ export function createServerMachine(id: string) {
             onDone: [
               {
                 target: processing,
-                actions: ["swapRequestReservoir"],
+                actions: ["swapRequestReservoir", "swapLatestRouteObjectPaths"],
                 cond: inProcessing,
               },
               {
                 target: serving,
-                actions: ["swapRequestReservoir"],
+                actions: ["swapRequestReservoir", "swapLatestRouteObjectPaths"],
                 cond: notInProcessing,
               },
             ],
@@ -368,6 +396,17 @@ export function createServerMachine(id: string) {
               { actions: ["setAppServerToProcessing"] },
             ],
             [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+            /**
+             * It might happen that lib server is set to processing
+             * while in handlingRequest state and then it is set to
+             * done during the handlingRequest phase itself. Same goes
+             * for app server and fs changes.
+             */
+            [LIB_SERVER_DONE]: [{ actions: ["setLibServerToDone"] }],
+            [APP_SERVER_DONE]: [{ actions: ["setAppServerToDone"] }],
+            [ROUTE_OBJECTS_UPDATED]: [
+              { actions: ["setWatchToDone", "setLatestRouteObjectPaths"] },
+            ],
           },
         },
       },
@@ -384,6 +423,8 @@ export function createServerMachine(id: string) {
         setWatchToProcessing,
         swapRequestReservoir,
         setRouteObjectPaths,
+        setLatestRouteObjectPaths,
+        swapLatestRouteObjectPaths,
       },
       services: {
         handleRequests,
