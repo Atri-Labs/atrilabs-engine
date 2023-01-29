@@ -1,9 +1,9 @@
 import { Entry } from "webpack";
 import { interpreter } from "./init";
 const { stringify } = require("querystring");
+import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 
 export async function createEntry() {
-  // TODO: add pages when they are requested
   const requestedRouteObjectPaths = Array.from(
     interpreter.machine.context.requestedRouteObjectPaths
   );
@@ -18,14 +18,13 @@ export async function createEntry() {
     },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
-    let entryName = requestedRouteObjectPath.replace(/^\//, "");
-    if (requestedRouteObjectPath === "/") {
-      entryName = "index";
-    }
+    const ir = routeObjectPathToIR(requestedRouteObjectPath);
+    const filepath = IRToUnixFilePath(ir);
+    const entryName = filepath.replace(/^\//, "");
     entry[entryName] = {
       import: `atri-pages-client-loader?${stringify({
         routeObjectPath: `${requestedRouteObjectPath}`,
-        modulePath: `./pages/${requestedRouteObjectPath}`,
+        modulePath: `./pages${filepath}`,
       })}!`,
       dependOn: "app",
     };

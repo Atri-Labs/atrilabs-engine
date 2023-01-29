@@ -1,8 +1,8 @@
 import { Entry } from "webpack";
 import { interpreter } from "./init";
+import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 
 export async function createNodeEntry() {
-  // TODO: add pages when they are requested
   const requestedRouteObjectPaths = Array.from(
     interpreter.machine.context.requestedRouteObjectPaths
   );
@@ -11,12 +11,11 @@ export async function createNodeEntry() {
     _app: { import: "./pages/_app" },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
-    let entryName = requestedRouteObjectPath.replace(/^\//, "");
-    if (requestedRouteObjectPath === "/") {
-      entryName = "index";
-    }
+    const ir = routeObjectPathToIR(requestedRouteObjectPath);
+    const filepath = IRToUnixFilePath(ir);
+    const entryName = filepath.replace(/^\//, "");
     entry[entryName] = {
-      import: `./pages/${requestedRouteObjectPath}`,
+      import: `./pages${filepath}`,
     };
   });
   return entry;
