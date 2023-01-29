@@ -3,6 +3,7 @@ import chalk from "chalk";
 import yargs from "yargs";
 import path from "path";
 import fs from "fs";
+import * as ts from "typescript";
 
 process.on("unhandledRejection", (reason) => {
   console.log(chalk.red(`create-atri-app failed with reason\n ${reason}`));
@@ -71,14 +72,32 @@ function createPageScaffold() {
   return [`export default function(){`, ``, `}`].join("\n");
 }
 
+function convertTsxToJsX(filepath: string) {
+  if (!filepath.endsWith(".tsx")) {
+    throw Error("Only files ending with .tsx can be converted to .jsx");
+  }
+  const code = fs.readFileSync(filepath).toString();
+  return ts.transpileModule(code, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ESNext,
+      jsx: ts.JsxEmit.Preserve,
+    },
+  }).outputText;
+}
+
 function copyAppWrapper(options: { dest: string; useTypescript: boolean }) {
   const moduleExtenstion = options.useTypescript ? ".tsx" : ".jsx";
   const appWrapperPath = require.resolve(
     "@atrilabs/atri-app-core/src/components/AppWrapper" + moduleExtenstion
   );
+  const content =
+    moduleExtenstion === ".tsx"
+      ? fs.readFileSync(appWrapperPath)
+      : convertTsxToJsX(appWrapperPath);
   fs.writeFileSync(
     path.resolve(options.dest, "pages", "_app" + moduleExtenstion),
-    fs.readFileSync(appWrapperPath)
+    content
   );
 }
 
@@ -87,9 +106,13 @@ function copyDocument(options: { dest: string; useTypescript: boolean }) {
   const documentPath = require.resolve(
     "@atrilabs/atri-app-core/src/components/Document" + moduleExtenstion
   );
+  const content =
+    moduleExtenstion === ".tsx"
+      ? fs.readFileSync(documentPath)
+      : convertTsxToJsX(documentPath);
   fs.writeFileSync(
     path.resolve(options.dest, "pages", "_document" + moduleExtenstion),
-    fs.readFileSync(documentPath)
+    content
   );
 }
 
