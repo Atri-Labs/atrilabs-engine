@@ -1,7 +1,7 @@
 import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
 import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
-// import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
 import { intersection } from "lodash";
 
@@ -170,7 +170,8 @@ async function _handleRequests(options: {
       // answer all non-new requests
       // pageRequest.res.send(`old request ${pageRequest.req.originalUrl}`);
       const routeObjectPath = match![0]!.route.path;
-      const splices = routeObjectPath.split("/").splice(1);
+      const ir = routeObjectPathToIR(routeObjectPath);
+      const splices = IRToUnixFilePath(ir).split("/").splice(1);
       const htmlString = getPageHtml(["pages", ...splices]);
       pageRequest.res.send(htmlString);
     }

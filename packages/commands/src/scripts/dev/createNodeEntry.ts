@@ -1,6 +1,7 @@
 import { Entry } from "webpack";
 import { interpreter } from "./init";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+const { stringify } = require("querystring");
 
 export async function createNodeEntry() {
   const requestedRouteObjectPaths = Array.from(
@@ -8,14 +9,21 @@ export async function createNodeEntry() {
   );
   const entry: Entry = {
     _error: { import: "./pages/_error" },
-    _app: { import: "./pages/_app" },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
     const ir = routeObjectPathToIR(requestedRouteObjectPath);
     const filepath = IRToUnixFilePath(ir);
     const entryName = filepath.replace(/^\//, "");
+    const scriptSrcs: string[] = [
+      `/atri/js/pages/runtime.js`,
+      `/atri/js/pages/app.js`,
+      `/atri/js/pages${filepath}.js`,
+    ];
     entry[entryName] = {
-      import: `./pages${filepath}`,
+      import: `atri-pages-server-loader?${stringify({
+        filepath,
+        scriptSrcs,
+      })}!`,
     };
   });
   return entry;

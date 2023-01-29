@@ -59,15 +59,6 @@ function main() {
           "loaders",
           "atri-pages-client-loader.js"
         ),
-        "atri-app-loader": path.resolve(
-          __dirname,
-          "..",
-          "src",
-          "scripts",
-          "dev",
-          "loaders",
-          "atri-app-loader.js"
-        ),
       },
     };
     config.optimization = {
@@ -106,6 +97,7 @@ function main() {
   const paths = { ...params.paths, outputDir: serverPath };
   const allowlist = params.allowlist || [];
   allowlist.push("@atrilabs/atri-app-core");
+  allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");
   startNodeLibWatcher({
     ...params,
     paths,
@@ -116,6 +108,19 @@ function main() {
       const plugins = config.plugins || [];
       plugins.push(new NodeLibPlugin());
       config.plugins = plugins;
+      config.resolveLoader = {
+        alias: {
+          "atri-pages-server-loader": path.resolve(
+            __dirname,
+            "..",
+            "src",
+            "scripts",
+            "dev",
+            "loaders",
+            "atri-pages-server-loader.js"
+          ),
+        },
+      };
     },
     allowlist,
   });
