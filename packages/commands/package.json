@@ -5,7 +5,7 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "bin": {
     "create-atri-app": "dist/scripts/create-atri-app.js",
     "dev-atri-app": "dist/dev.js"
