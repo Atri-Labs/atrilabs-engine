@@ -3,7 +3,6 @@
   "version": "0.0.90",
   "description": "Atri framework's visual builder.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
-  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "dist/editor/index.js",
   "directories": {
@@ -22,8 +21,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "create-atri-app": "create-atri-app",
-    "dev-atri-app": "dev-atri-app"
+    "dev": "dev-editor"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

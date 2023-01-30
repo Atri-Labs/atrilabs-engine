@@ -1,4 +1,4 @@
-import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackConfiguration, RuleSetRule } from "webpack";
 import path from "path";
 import fs from "fs";
 import createEnvironmentHash from "./utils/createEnvironmentHash";
@@ -80,6 +80,7 @@ export function createConfig(options: {
   additionalInclude?: string[];
   additionalNodeModules?: string[];
   outputFilename: string;
+  customLoaders?: RuleSetRule[];
 }): WebpackConfiguration {
   const {
     isEnvDevelopment,
@@ -101,6 +102,7 @@ export function createConfig(options: {
     additionalInclude,
     additionalNodeModules,
     outputFilename,
+    customLoaders,
   } = options;
 
   return {
@@ -252,6 +254,7 @@ export function createConfig(options: {
         ...setNodeModuleSourceMapLoaders({ shouldUseSourceMap }),
         {
           oneOf: [
+            ...(customLoaders || []),
             ...setImageLoaders({ imageInlineSizeLimit }),
             ...setJsxTsxLoaders({
               appSrc: paths.appSrc,

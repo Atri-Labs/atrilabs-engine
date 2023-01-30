@@ -14,14 +14,17 @@ import {
 } from "react-dev-utils/WebpackDevServerUtils";
 import fs from "fs";
 import path from "path";
-import webpack from "webpack";
+import webpack, { RuleSetRule } from "webpack";
 import chalk from "chalk";
 import openBrowser from "react-dev-utils/openBrowser";
 import WebpackDevServer from "webpack-dev-server";
 import Express from "express";
 
 export default function startDevServer(
-  params: ReturnType<typeof extractParams>
+  params: ReturnType<typeof extractParams> & {
+    customLoaders?: RuleSetRule[];
+    generateIndexHtml?: boolean;
+  }
 ) {
   const {
     paths,
@@ -48,6 +51,8 @@ export default function startDevServer(
     additionalInclude,
     additionalNodeModules,
     outputFilename,
+    customLoaders,
+    generateIndexHtml,
   } = params;
 
   checkBrowsers(paths.appPath, isInteractive())
@@ -76,6 +81,8 @@ export default function startDevServer(
         additionalInclude,
         additionalNodeModules,
         outputFilename,
+        customLoaders,
+        generateIndexHtml,
       });
 
       if (prepareConfig && typeof prepareConfig === "function") {
