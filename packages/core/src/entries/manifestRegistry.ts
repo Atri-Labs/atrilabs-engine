@@ -1,4 +1,4 @@
-import { ManifestRegistry } from "./types";
+import { ManifestRegistry } from "../types";
 
 // The object will be filled during build time automatically
 // schema will be imported and mapped

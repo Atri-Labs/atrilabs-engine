@@ -1,6 +1,6 @@
 import { AnyEvent, EventMetaData } from "@atrilabs/forest";
 import { BrowserForestManager } from "./browserForestManager";
-import { BrowserClient } from "./types";
+import { BrowserClient } from "../types";
 
 /**
  * createAPI is responsible to keep BrowserForestManager & backend in sync.
