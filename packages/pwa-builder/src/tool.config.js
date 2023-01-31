@@ -29,11 +29,8 @@ const manifestSchema = [
   { pkg: "@atrilabs/react-component-manifest-schema" },
 ];
 
-const manifestDirs = [{ pkg: "@atrilabs/react-component-manifests" }];
-
 module.exports = {
   forests,
   clients,
   manifestSchema,
-  manifestDirs,
 };
