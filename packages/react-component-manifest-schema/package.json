@@ -5,11 +5,9 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "src/index.ts",
   "files": [
-    "lib"
+    "src"
   ],
   "publishConfig": {
     "access": "public"

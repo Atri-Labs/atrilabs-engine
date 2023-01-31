@@ -20,7 +20,19 @@ function main() {
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/core"))
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/core")),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve(
+        "@atrilabs/react-component-manifest-schema"
+      )
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve(
+        "@atrilabs/component-icon-manifest-schema"
+      )
+    )
   );
   params.additionalInclude = additionalInclude;
 
@@ -65,6 +77,16 @@ function main() {
           "loaders",
           "browser-forest-manager-entry-loader.js"
         ),
+
+        "manifest-registry-entry-loader": path.resolve(
+          __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev-editor",
+          "loaders",
+          "manifest-registry-entry-loader.js"
+        ),
       },
     };
   };
@@ -95,6 +117,15 @@ function main() {
         loader: "browser-forest-manager-entry-loader",
         options: {
           forests: toolConfig.forests,
+        },
+      },
+    },
+    {
+      test: corePkgInfo.manifestRegistryFile,
+      use: {
+        loader: "manifest-registry-entry-loader",
+        options: {
+          manifestSchema: toolConfig.manifestSchema,
         },
       },
     },

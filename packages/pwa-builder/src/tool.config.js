@@ -24,7 +24,16 @@ const clients = {
   },
 };
 
+const manifestSchema = [
+  { pkg: "@atrilabs/component-icon-manifest-schema" },
+  { pkg: "@atrilabs/react-component-manifest-schema" },
+];
+
+const manifestDirs = [{ pkg: "@atrilabs/react-component-manifests" }];
+
 module.exports = {
   forests,
   clients,
+  manifestSchema,
+  manifestDirs,
 };

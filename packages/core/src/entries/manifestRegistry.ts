@@ -3,7 +3,7 @@ import { ManifestRegistry } from "../types";
 // The object will be filled during build time automatically
 // schema will be imported and mapped
 // components will be left as empty array to be filled during runtime
-const manifestRegistry: ManifestRegistry = {};
+declare var manifestRegistry: ManifestRegistry;
 
 const manifestRegistrySubscribers: (() => void)[] = [];
 
