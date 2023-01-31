@@ -77,7 +77,6 @@ function main() {
           "loaders",
           "browser-forest-manager-entry-loader.js"
         ),
-
         "manifest-registry-entry-loader": path.resolve(
           __dirname,
           "..",
