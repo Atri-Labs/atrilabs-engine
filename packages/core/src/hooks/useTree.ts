@@ -1,6 +1,6 @@
 import { Tree } from "@atrilabs/forest";
 import { useEffect, useState } from "react";
-import { BrowserForestManager } from "../entries/browserForestManager";
+import { BrowserForestManager } from "../entries/BrowserForestManager";
 
 /**
  *

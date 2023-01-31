@@ -60,7 +60,7 @@ export function getCorePkgInfo(): CorePkgInfo {
   );
   const dir = path.dirname(corePackageJSON);
   const browserForestManagerFile = findFileWithoutExtension(
-    path.resolve(dir, "src", "entries", "browserForestManager")
+    path.resolve(dir, "src", "entries", "BrowserForestManager")
   );
   const manifestRegistryFile = findFileWithoutExtension(
     path.resolve(dir, "src", "entries", "manifestRegistry")

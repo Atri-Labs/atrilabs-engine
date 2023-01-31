@@ -56,6 +56,15 @@ function main() {
           "loaders",
           "api-entry-loader.js"
         ),
+        "browser-forest-manager-entry-loader": path.resolve(
+          __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev-editor",
+          "loaders",
+          "browser-forest-manager-entry-loader.js"
+        ),
       },
     };
   };
@@ -77,6 +86,15 @@ function main() {
         loader: "api-entry-loader",
         options: {
           eventClientModulePath: toolConfig.clients.eventClient.modulePath,
+        },
+      },
+    },
+    {
+      test: corePkgInfo.browserForestManagerFile,
+      use: {
+        loader: "browser-forest-manager-entry-loader",
+        options: {
+          forests: toolConfig.forests,
         },
       },
     },
