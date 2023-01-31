@@ -9,10 +9,10 @@ import { createEntry } from "./createEntry";
 import path from "path";
 import startDevServer from "../dev/startDevServer";
 import { RuleSetRule } from "webpack";
+import { getCorePkgInfo, readToolConfig } from "./utils";
 
 function main() {
   // TODO: copy public folder if not already exists
-
   const params = extractParams();
 
   const additionalInclude = params.additionalInclude || [];
@@ -45,6 +45,19 @@ function main() {
       ...config.devServer,
       hot: true,
     };
+    config.resolveLoader = {
+      alias: {
+        "api-entry-loader": path.resolve(
+          __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev-editor",
+          "loaders",
+          "api-entry-loader.js"
+        ),
+      },
+    };
   };
 
   const middlewares = params.middlewares;
@@ -55,7 +68,19 @@ function main() {
     }
   };
 
-  const customLoaders: RuleSetRule[] = [];
+  const corePkgInfo = getCorePkgInfo();
+  const toolConfig = readToolConfig();
+  const customLoaders: RuleSetRule[] = [
+    {
+      test: corePkgInfo.apiFile,
+      use: {
+        loader: "api-entry-loader",
+        options: {
+          eventClientModulePath: toolConfig.clients.eventClient.modulePath,
+        },
+      },
+    },
+  ];
 
   startDevServer({
     ...params,

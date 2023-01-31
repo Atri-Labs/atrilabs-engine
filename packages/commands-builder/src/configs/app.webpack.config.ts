@@ -254,7 +254,6 @@ export function createConfig(options: {
         ...setNodeModuleSourceMapLoaders({ shouldUseSourceMap }),
         {
           oneOf: [
-            ...(customLoaders || []),
             ...setImageLoaders({ imageInlineSizeLimit }),
             ...setJsxTsxLoaders({
               appSrc: paths.appSrc,
@@ -281,6 +280,7 @@ export function createConfig(options: {
             ...setAssetLoaders(),
           ],
         },
+        ...(customLoaders || []),
       ],
     },
     plugins: [

@@ -51,6 +51,7 @@
   "dependencies": {
     "@atrilabs/atri-app-core": "^0.0.90",
     "@atrilabs/commands-builder": "^0.0.90",
+    "@atrilabs/core": "^0.0.90",
     "@svgr/webpack": "^6.5.1",
     "bfj": "^7.0.2",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
