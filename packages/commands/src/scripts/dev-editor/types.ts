@@ -17,4 +17,6 @@ export type CorePkgInfo = {
   manifestRegistryFile: string;
   // file that exposes event API
   apiFile: string;
+  // file that exposes all the block names collected from layers
+  blockRegistryFile: string;
 };

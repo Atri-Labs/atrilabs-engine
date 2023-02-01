@@ -9,7 +9,7 @@ import { createEntry } from "./createEntry";
 import path from "path";
 import startDevServer from "../dev/startDevServer";
 import { RuleSetRule } from "webpack";
-import { getCorePkgInfo, readToolConfig } from "./utils";
+import { getCorePkgInfo, getExposedBlocks, readToolConfig } from "./utils";
 
 function main() {
   // TODO: copy public folder if not already exists
@@ -86,6 +86,15 @@ function main() {
           "loaders",
           "manifest-registry-entry-loader.js"
         ),
+        "block-registry-entry-loader": path.resolve(
+          __dirname,
+          "..",
+          "src",
+          "scripts",
+          "dev-editor",
+          "loaders",
+          "block-registry-entry-loader.js"
+        ),
       },
     };
   };
@@ -125,6 +134,15 @@ function main() {
         loader: "manifest-registry-entry-loader",
         options: {
           manifestSchema: toolConfig.manifestSchema,
+        },
+      },
+    },
+    {
+      test: corePkgInfo.blockRegistryFile,
+      use: {
+        loader: "block-registry-entry-loader",
+        options: {
+          exposedBlocks: getExposedBlocks(toolConfig),
         },
       },
     },

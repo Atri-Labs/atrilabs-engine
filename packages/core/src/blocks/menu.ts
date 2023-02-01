@@ -1,9 +1,13 @@
 import { MenuItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
-export const menuRegistry: {
+const menuRegistry: { [name: string]: { items: MenuItem[] } } = {};
+
+export function setMenuRegistry(registry: {
   [name: string]: { items: MenuItem[] };
-} = {};
+}) {
+  Object.assign(menuRegistry, registry);
+}
 
 /**
  *

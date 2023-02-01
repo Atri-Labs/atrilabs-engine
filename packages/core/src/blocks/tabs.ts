@@ -1,7 +1,13 @@
 import { TabItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
-export const tabsRegistry: { [name: string]: { items: TabItem[] } } = {};
+const tabsRegistry: { [name: string]: { items: TabItem[] } } = {};
+
+export function setTabRegistry(registry: {
+  [name: string]: { items: TabItem[] };
+}) {
+  Object.assign(tabsRegistry, registry);
+}
 
 /**
  *

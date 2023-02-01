@@ -2,9 +2,13 @@ import { ReactNode } from "react";
 import { ContainerItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
-export const containerRegistry: {
+const containerRegistry: { [name: string]: { items: ContainerItem[] } } = {};
+
+export function setContainerRegistry(registry: {
   [name: string]: { items: ContainerItem[] };
-} = {};
+}) {
+  Object.assign(containerRegistry, registry);
+}
 
 /**
  *

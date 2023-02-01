@@ -7,8 +7,17 @@ export async function createEntry() {
     manifestRegistry: {
       import: "@atrilabs/core/src/entries/manifestRegistry",
     },
-    registry: { import: "./src/registry" },
-    main: { import: "./src/index", dependOn: ["registry"] },
-    mainfests: { import: "./src/manifests", dependOn: ["registry"] },
+    blockRegistry: {
+      import: "@atrilabs/core/src/entries/blockRegistry",
+    },
+    main: {
+      import: "./src/index",
+      dependOn: [
+        "api",
+        "BrowserForestManager",
+        "manifestRegistry",
+        "blockRegistry",
+      ],
+    },
   };
 }

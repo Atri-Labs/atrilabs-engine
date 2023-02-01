@@ -1,5 +1,5 @@
 import fs from "fs";
-import type { ToolConfig } from "@atrilabs/core";
+import type { LayerConfig, ToolConfig } from "@atrilabs/core";
 import { CorePkgInfo, ToolPkgInfo } from "./types";
 import path from "path";
 
@@ -68,10 +68,14 @@ export function getCorePkgInfo(): CorePkgInfo {
   const apiFile = findFileWithoutExtension(
     path.resolve(dir, "src", "entries", "api")
   );
+  const blockRegistryFile = findFileWithoutExtension(
+    path.resolve(dir, "src", "entries", "blockRegistry")
+  );
   if (
     browserForestManagerFile === undefined ||
     manifestRegistryFile === undefined ||
-    apiFile === undefined
+    apiFile === undefined ||
+    blockRegistryFile === undefined
   ) {
     throw Error(`Missing a entryFile or indexFile in @atrilabs/core`);
   }
@@ -80,5 +84,73 @@ export function getCorePkgInfo(): CorePkgInfo {
     browserForestManagerFile,
     manifestRegistryFile,
     apiFile,
+    blockRegistryFile,
   };
+}
+
+function readLayerConfig(pkg: string) {
+  // @ts-ignore
+  const config = __non_webpack_require__(`${pkg}/src/layer.config.js`);
+  return config as LayerConfig;
+}
+
+export function getExposedBlocks(toolConfig: ToolConfig) {
+  const layerConfigs = toolConfig.layers.map(({ pkg }) => {
+    return readLayerConfig(pkg);
+  });
+  const exposingLayers = layerConfigs.filter(
+    (config) => config["exposes"] !== undefined
+  );
+  return exposingLayers.reduce((prev, curr) => {
+    const blockNames = Object.keys(curr.exposes!);
+    blockNames.forEach((blockName) => {
+      const blockEntries: Set<string> = new Set(
+        // @ts-ignore
+        Object.values(curr.exposes![blockName]!)
+      );
+      prev[blockName] = [
+        ...(prev[blockName] || []),
+        ...Array.from(blockEntries),
+      ];
+    });
+    return prev;
+  }, {} as { [blockName: string]: string[] });
+}
+
+/**
+ * The top level layers with no dependency on any runtime is
+ * put in the root otherwise in the runtime array.
+ * @param toolConfig
+ * @returns
+ */
+export function getLayerArrangment(toolConfig: ToolConfig) {
+  const layerConfigs = toolConfig.layers.map(({ pkg }) => {
+    return readLayerConfig(pkg);
+  });
+  const runtimes = toolConfig.runtimes.map(({ pkg }) => pkg);
+  const runtimeMap = runtimes.reduce(
+    (prev, curr) => {
+      prev[curr] = [];
+      return prev;
+    },
+    { root: [] } as { [runtimePkg: string]: string[] }
+  );
+  layerConfigs.forEach((layerConfig, index) => {
+    if (layerConfig.runtime?.pkg) {
+      if (runtimeMap[layerConfig.runtime.pkg]) {
+        runtimeMap[layerConfig.runtime.pkg]!.push(
+          toolConfig.layers[index]!.pkg
+        );
+      } else {
+        throw Error(
+          `The runtime ${layerConfig.runtime.pkg} from ${
+            toolConfig.layers[index]!.pkg
+          } is not an available runtime in tool.config.js.`
+        );
+      }
+    } else {
+      runtimeMap["root"]!.push(toolConfig.layers[index]!.pkg);
+    }
+  });
+  return runtimeMap;
 }
