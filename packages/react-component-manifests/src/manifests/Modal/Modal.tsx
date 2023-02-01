@@ -1,13 +1,12 @@
-import React, { forwardRef, useContext, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { GlobalContext, createPortal } from "@atrilabs/core/lib/reactUtilities";
 import { ReactComponent as Icon } from "./icon.svg";
 
 export const Modal = forwardRef<
@@ -31,8 +30,6 @@ export const Modal = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const globalContext = useContext(GlobalContext);
-
   const [open, setOpen] = useState<boolean>(props.custom.open);
   useEffect(() => {
     setOpen(props.custom.open);
@@ -46,7 +43,7 @@ export const Modal = forwardRef<
     }
   }, [props.custom.closeModalAfter, open]);
 
-  return createPortal(
+  return (
     <div
       ref={ref}
       className={props.className}
@@ -116,7 +113,10 @@ export const Modal = forwardRef<
           </button>
         </div>
         <div className="atri-modal-body" style={{ padding: "16px 24px" }}>
-          <p>{props.custom.body}</p>
+          <p>
+            {props.custom.body ||
+              "This component is a work in progress. This component needs React Portal"}
+          </p>
         </div>
         <div
           className="atri-modal-footer"
@@ -154,10 +154,7 @@ export const Modal = forwardRef<
           </button>
         </div>
       </div>
-    </div>,
-    globalContext.window,
-    "body",
-    globalContext.portals
+    </div>
   );
 });
 

@@ -1,22 +1,21 @@
-import React, { forwardRef, useContext, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
   ReactComponentManifestSchema,
-} from "@atrilabs/react-component-manifest-schema/lib/types";
+} from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { GlobalContext, createPortal } from "@atrilabs/core/lib/reactUtilities";
 import {
   flexRowSort,
   flexColSort,
   flexRowReverseSort,
   flexColReverseSort,
-} from "@atrilabs/react-component-manifest-schema/lib/utils";
+} from "@atrilabs/react-component-manifest-schema";
 import { ReactComponent as Icon } from "./icon.svg";
 
 export const Overlay = forwardRef<
@@ -31,8 +30,6 @@ export const Overlay = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const globalContext = useContext(GlobalContext);
-
   const [open, setOpen] = useState<boolean>(props.custom.open);
   useEffect(() => {
     setOpen(props.custom.open);
@@ -46,7 +43,7 @@ export const Overlay = forwardRef<
     }
   }, [props.custom.closeOverlayAfter, open]);
 
-  return createPortal(
+  return (
     <div
       ref={ref}
       className={props.className}
@@ -57,11 +54,10 @@ export const Overlay = forwardRef<
         ...props.styles,
       }}
     >
+      This component is a work in progress! This component needs to put a React
+      portal.
       {props.children}
-    </div>,
-    globalContext.window,
-    "body",
-    globalContext.portals
+    </div>
   );
 });
 

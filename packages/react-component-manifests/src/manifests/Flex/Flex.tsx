@@ -3,13 +3,13 @@ import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type {
   AcceptsChildFunction,
   ReactComponentManifestSchema,
-} from "@atrilabs/react-component-manifest-schema/lib/types";
+} from "@atrilabs/react-component-manifest-schema";
 import {
   flexRowSort,
   flexColSort,
   flexRowReverseSort,
   flexColReverseSort,
-} from "@atrilabs/react-component-manifest-schema/lib/utils";
+} from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";

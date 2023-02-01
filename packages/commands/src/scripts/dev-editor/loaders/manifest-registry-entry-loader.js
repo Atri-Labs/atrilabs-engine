@@ -1,3 +1,5 @@
+const generateModuleId = require("./utils/generateModuleId");
+
 /**
  *
  * @param {string} source
@@ -22,7 +24,7 @@ function manifestRegistryEntryLoader(source) {
         ${manifestSchema
           .map((val, index) => {
             return `
-            "${val.pkg}": {
+            "${generateModuleId(val.pkg)}": {
                 schema: man_${index}(),
                 components: []
             }`;

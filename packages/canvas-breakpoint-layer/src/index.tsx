@@ -2,7 +2,7 @@ import { Menu } from "@atrilabs/core";
 import { CanvasController } from "@atrilabs/canvas-runtime";
 import React, { useCallback, useEffect, useState } from "react";
 import { gray800, IconMenu } from "@atrilabs/design-system";
-import { Breakpoint } from "@atrilabs/canvas-runtime/lib/types";
+import { Breakpoint } from "@atrilabs/canvas-runtime";
 import { ReactComponent as Desktop } from "./assets/desktop.svg";
 import { ReactComponent as Tab } from "./assets/tab.svg";
 import { ReactComponent as Landscape } from "./assets/landscape.svg";

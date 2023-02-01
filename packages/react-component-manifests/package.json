@@ -5,6 +5,7 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
+  "main": "src/manifest.config.js",
   "directories": {
     "lib": "src"
   },

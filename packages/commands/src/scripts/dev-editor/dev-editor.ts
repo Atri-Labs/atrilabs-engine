@@ -15,6 +15,8 @@ function main() {
   // TODO: copy public folder if not already exists
   const params = extractParams();
 
+  const toolConfig = readToolConfig();
+
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -33,14 +35,30 @@ function main() {
         "@atrilabs/component-icon-manifest-schema"
       )
     ),
-    path.dirname(
-      // @ts-ignore
-      __non_webpack_require__.resolve("@atrilabs/base-layer")
-    ),
-    path.dirname(
-      // @ts-ignore
-      __non_webpack_require__.resolve("@atrilabs/app-design-layer")
-    )
+    ...toolConfig.layers.map(({ pkg }) => {
+      return path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(pkg)
+      );
+    }),
+    ...toolConfig.runtimes.map(({ pkg }) => {
+      return path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(pkg)
+      );
+    }),
+    ...toolConfig.manifestDirs.map(({ pkg }) => {
+      return path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(pkg)
+      );
+    }),
+    ...toolConfig.manifestSchema.map(({ pkg }) => {
+      return path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(pkg)
+      );
+    })
   );
   params.additionalInclude = additionalInclude;
 
@@ -116,7 +134,6 @@ function main() {
   };
 
   const corePkgInfo = getCorePkgInfo();
-  const toolConfig = readToolConfig();
   const customLoaders: RuleSetRule[] = [
     {
       test: corePkgInfo.apiFile,

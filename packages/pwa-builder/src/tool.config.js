@@ -51,9 +51,15 @@ const layers = [
   { pkg: "@atrilabs/services-status-layer" },
 ];
 
+const runtimes = [{ pkg: "@atrilabs/canvas-runtime" }];
+
+const manifestDirs = [{ pkg: "@atrilabs/react-component-manifests" }];
+
 module.exports = {
   forests,
   clients,
   manifestSchema,
   layers,
+  runtimes,
+  manifestDirs,
 };
