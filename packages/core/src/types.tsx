@@ -383,3 +383,12 @@ export type Portals = {
   node: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   selector: string;
 }[];
+
+export type ManifestIR = {
+  // path to component file
+  component: string;
+  // path to optional devComponent file
+  devComponent?: string;
+  // path to manifest file
+  manifest: string;
+};

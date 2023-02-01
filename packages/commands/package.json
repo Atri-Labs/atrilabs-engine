@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
-    "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules'",
+    "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles"
   },

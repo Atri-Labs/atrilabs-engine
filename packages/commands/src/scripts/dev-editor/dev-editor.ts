@@ -10,12 +10,31 @@ import path from "path";
 import startDevServer from "../dev/startDevServer";
 import { RuleSetRule } from "webpack";
 import { getCorePkgInfo, getExposedBlocks, readToolConfig } from "./utils";
+import { watchManifestDirs } from "./machine/watchManifestDirs";
+import { editorServerMachineInterpreter } from "./machine/init";
+import { NETWORK_REQUEST } from "../dev/serverMachine";
+import { computeFSAndSend } from "./machine/computeManifestIR";
 
 function main() {
   // TODO: copy public folder if not already exists
   const params = extractParams();
 
   const toolConfig = readToolConfig();
+
+  watchManifestDirs(
+    toolConfig.manifestDirs.map(({ pkg }) =>
+      // @ts-ignore
+      path.dirname(__non_webpack_require__.resolve(pkg))
+    )
+  );
+
+  computeFSAndSend(
+    editorServerMachineInterpreter,
+    toolConfig.manifestDirs.map(({ pkg }) =>
+      // @ts-ignore
+      path.dirname(__non_webpack_require__.resolve(pkg))
+    )
+  );
 
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
@@ -132,6 +151,12 @@ function main() {
     if (middlewares) {
       middlewares(app, compiler, config);
     }
+    app.use((req, res, next) => {
+      editorServerMachineInterpreter.send({
+        type: NETWORK_REQUEST,
+        input: { req, res, next },
+      });
+    });
   };
 
   const corePkgInfo = getCorePkgInfo();
