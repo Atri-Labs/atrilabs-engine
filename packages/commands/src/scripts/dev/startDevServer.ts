@@ -152,7 +152,7 @@ export default function startDevServer(
       );
       devServer.startCallback(() => {
         if (isInteractive()) {
-          clearConsole();
+          // clearConsole();
         }
 
         console.log(chalk.cyan("Starting the development server...\n"));

@@ -61,6 +61,7 @@ function main() {
     })
   );
   params.additionalInclude = additionalInclude;
+  console.log(params.additionalInclude);
 
   params.paths.appSrc = process.cwd();
 

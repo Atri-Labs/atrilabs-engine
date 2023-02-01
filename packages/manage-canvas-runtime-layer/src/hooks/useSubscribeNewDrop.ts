@@ -11,7 +11,7 @@ import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 
 export const useSubscribeNewDrop = () => {
   const tree = useTree(ComponentTreeId);

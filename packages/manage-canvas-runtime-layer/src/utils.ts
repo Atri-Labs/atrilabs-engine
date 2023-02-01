@@ -9,7 +9,7 @@ import {
 import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 import { ManifestRegistry } from "@atrilabs/core";
 import { Tree } from "@atrilabs/forest";
-import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 
 function computeFactoredIndex(index: number, parentId: string) {
