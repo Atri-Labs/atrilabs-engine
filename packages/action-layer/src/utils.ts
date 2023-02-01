@@ -1,5 +1,5 @@
 import { manifestRegistryController } from "@atrilabs/core";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 
 export function getFileUploadManifests() {

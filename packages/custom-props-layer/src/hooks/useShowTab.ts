@@ -3,7 +3,7 @@ import { useTree, manifestRegistryController } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 
 export const useShowTab = () => {
   const [showTab, setShowTab] = useState<boolean>(false);
