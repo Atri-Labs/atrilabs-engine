@@ -114,6 +114,9 @@ export default function setJsxTsxLoaders(options: {
   hasJsxRuntime: boolean;
   removeReactRefresh?: boolean;
   additionalInclude: string[];
+  babel?: {
+    plugins?: [string, any][];
+  };
 }) {
   const {
     appSrc,
@@ -123,6 +126,7 @@ export default function setJsxTsxLoaders(options: {
     hasJsxRuntime,
     removeReactRefresh,
     additionalInclude,
+    babel,
   } = options;
   return [
     {
@@ -139,6 +143,7 @@ export default function setJsxTsxLoaders(options: {
           isEnvDevelopment &&
             !removeReactRefresh &&
             require.resolve("react-refresh/babel"),
+          ...(babel?.plugins || []),
         ].filter(Boolean),
         presets: [
           [

@@ -24,6 +24,9 @@ export default function startDevServer(
   params: ReturnType<typeof extractParams> & {
     customLoaders?: RuleSetRule[];
     generateIndexHtml?: boolean;
+    babel?: {
+      plugins?: [string, any][];
+    };
   }
 ) {
   const {
@@ -53,6 +56,7 @@ export default function startDevServer(
     outputFilename,
     customLoaders,
     generateIndexHtml,
+    babel,
   } = params;
 
   checkBrowsers(paths.appPath, isInteractive())
@@ -83,6 +87,7 @@ export default function startDevServer(
         outputFilename,
         customLoaders,
         generateIndexHtml,
+        babel,
       });
 
       if (prepareConfig && typeof prepareConfig === "function") {

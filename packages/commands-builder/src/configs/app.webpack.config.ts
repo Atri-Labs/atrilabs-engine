@@ -81,6 +81,9 @@ export function createConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   customLoaders?: RuleSetRule[];
+  babel?: {
+    plugins?: [string, any][];
+  };
 }): WebpackConfiguration {
   const {
     isEnvDevelopment,
@@ -103,6 +106,7 @@ export function createConfig(options: {
     additionalNodeModules,
     outputFilename,
     customLoaders,
+    babel,
   } = options;
 
   return {
@@ -262,6 +266,7 @@ export function createConfig(options: {
               isEnvTest,
               hasJsxRuntime: true,
               additionalInclude: additionalInclude || [],
+              babel,
             }),
             ...setJsxLoaders({
               isEnvDevelopment,

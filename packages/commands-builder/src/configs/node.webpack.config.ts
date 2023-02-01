@@ -61,6 +61,9 @@ export function createNodeConfig(options: {
   outputFilename: string;
   additionalInclude?: string[];
   allowlist?: string[];
+  babel?: {
+    plugins?: [string, any][];
+  };
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -79,6 +82,7 @@ export function createNodeConfig(options: {
     outputFilename,
     additionalInclude,
     allowlist,
+    babel,
   } = options;
   return {
     target: "node",
@@ -154,6 +158,7 @@ export function createNodeConfig(options: {
               hasJsxRuntime: true,
               removeReactRefresh: true,
               additionalInclude: additionalInclude || [],
+              babel,
             }),
             ...setJsxLoaders({
               isEnvDevelopment,

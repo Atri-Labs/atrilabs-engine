@@ -1,3 +1,4 @@
+import { ReactNode, useEffect } from "react";
 import { MenuItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
@@ -75,3 +76,32 @@ export function menu(name: string) {
 
   return { register, listen, items, unregister };
 }
+
+export type MenuProps = {
+  children: ReactNode | ReactNode[];
+  name: string;
+  order: number;
+};
+
+export const Menu: React.FC<MenuProps> = (props) => {
+  useEffect(() => {
+    const namedMenu = menu(props.name);
+    if (Array.isArray(props.children)) {
+      props.children.forEach((child) => {
+        namedMenu?.register({ nodes: child, order: props.order });
+      });
+    } else {
+      namedMenu?.register({ nodes: props.children, order: props.order });
+    }
+    return () => {
+      if (Array.isArray(props.children)) {
+        props.children.forEach((child) => {
+          namedMenu?.unregister(child);
+        });
+      } else {
+        namedMenu?.unregister(props.children);
+      }
+    };
+  }, [props]);
+  return <></>;
+};

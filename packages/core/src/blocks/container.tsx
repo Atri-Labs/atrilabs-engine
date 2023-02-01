@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ContainerItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
@@ -89,3 +89,35 @@ export function container(name: string) {
 
   return { register, listen, items, unregister, pop };
 }
+
+export type ContainerProps = {
+  children: ReactNode;
+  name: string;
+  onClose: () => void;
+};
+
+export const Container: React.FC<ContainerProps> = (props) => {
+  useEffect(() => {
+    const namedContainer = container(props.name);
+    if (Array.isArray(props.children)) {
+      props.children.forEach((child) => {
+        namedContainer?.register({ node: child, onClose: props.onClose });
+      });
+    } else {
+      namedContainer?.register({
+        node: props.children,
+        onClose: props.onClose,
+      });
+    }
+    return () => {
+      if (Array.isArray(props.children)) {
+        props.children.forEach((child) => {
+          namedContainer?.unregister(child);
+        });
+      } else {
+        namedContainer?.unregister(props.children);
+      }
+    };
+  }, [props]);
+  return <></>;
+};

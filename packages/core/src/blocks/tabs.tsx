@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { TabItem } from "../types";
 import { SubscribeEvent, subscribers } from "./subscribers";
 
@@ -70,3 +71,18 @@ export function tab(name: string) {
 
   return { register, listen, items, unregister };
 }
+
+export type TabProps = {
+  name: string;
+} & TabItem;
+
+export const Tab: React.FC<TabProps> = (props) => {
+  useEffect(() => {
+    const namedTab = tab(props.name);
+    namedTab?.register(props);
+    return () => {
+      namedTab?.unregister(props);
+    };
+  }, [props]);
+  return <></>;
+};

@@ -32,6 +32,14 @@ function main() {
       __non_webpack_require__.resolve(
         "@atrilabs/component-icon-manifest-schema"
       )
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/base-layer")
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-layer")
     )
   );
   params.additionalInclude = additionalInclude;
@@ -155,6 +163,22 @@ function main() {
     outputFilename: "editor/js/pages/[name].js",
     customLoaders,
     generateIndexHtml: true,
+    babel: {
+      plugins: [
+        [
+          path.resolve(
+            __dirname,
+            "..",
+            "src",
+            "scripts",
+            "dev-editor",
+            "babel-plugins",
+            "replace-import-with-id.js"
+          ),
+          {},
+        ],
+      ],
+    },
   });
 }
 
