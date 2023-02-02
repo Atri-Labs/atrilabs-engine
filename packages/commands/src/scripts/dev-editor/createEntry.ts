@@ -4,9 +4,6 @@ export async function createEntry() {
     BrowserForestManager: {
       import: "@atrilabs/core/src/entries/BrowserForestManager",
     },
-    manifestRegistry: {
-      import: "@atrilabs/core/src/entries/manifestRegistry",
-    },
     blockRegistry: {
       import: "@atrilabs/core/src/entries/blockRegistry",
     },

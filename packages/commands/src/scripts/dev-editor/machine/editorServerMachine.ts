@@ -10,14 +10,20 @@ export const handlingRequests = "handlingRequests" as const;
 
 // event types
 export const EDITOR_APP_SERVER_DONE = "EDITOR_APP_SERVER_DONE" as const;
+export const MANIFEST_LIB_DONE = "MANIFEST_LIB_DONE" as const;
 export const MANIFEST_OBJECTS_UPDATED = "MANIFEST_OBJECTS_UPDATED" as const;
 export const NETWORK_REQUEST = "NETWORK_REQUEST" as const;
 export const EDITOR_APP_SERVER_INVALIDATED =
   "EDITOR_APP_SERVER_INVALIDATED" as const;
+export const MANIFEST_LIB_INVALIDATED = "MANIFEST_LIB_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
 
 export type EDITOR_APP_SERVER_DONE_EVENT = {
   type: typeof EDITOR_APP_SERVER_DONE;
+  compiler: Compiler;
+};
+export type MANIFEST_LIB_DONE_EVENT = {
+  type: typeof MANIFEST_LIB_DONE;
   compiler: Compiler;
 };
 export type MANIFEST_OBJECTS_UPDATED_EVENT = {
@@ -31,6 +37,9 @@ export type NETWORK_REQUEST_EVENT = {
 export type EDITOR_APP_SERVER_INVALIDATED_EVENT = {
   type: typeof EDITOR_APP_SERVER_INVALIDATED;
 };
+export type MANIFEST_LIB_INVALIDATED_EVENT = {
+  type: typeof MANIFEST_LIB_INVALIDATED;
+};
 export type FS_CHANGED_EVENT = { type: typeof FS_CHANGED };
 
 export type SERVER_MACHINE_EVENT =
@@ -38,15 +47,19 @@ export type SERVER_MACHINE_EVENT =
   | MANIFEST_OBJECTS_UPDATED_EVENT
   | NETWORK_REQUEST_EVENT
   | EDITOR_APP_SERVER_INVALIDATED_EVENT
-  | FS_CHANGED_EVENT;
+  | FS_CHANGED_EVENT
+  | MANIFEST_LIB_INVALIDATED_EVENT
+  | MANIFEST_LIB_DONE_EVENT;
 
 export type EDITOR_SERVER_MACHINE_CONTEXT = {
   editorAppServer: "processing" | "done";
+  manifestLib: "processing" | "done";
   watch: "processing" | "done";
   requests: { req: Request; res: Response; next: NextFunction }[];
   requestReservoir: { req: Request; res: Response; next: NextFunction }[];
   manifests: ManifestIR[];
   editorAppCompiler?: Compiler;
+  manifestLibCompiler?: Compiler;
   latestManifests: ManifestIR[] | undefined;
 };
 
@@ -54,7 +67,9 @@ export type EDITOR_SERVER_MACHINE_CONTEXT = {
 
 function inProcessing(context: EDITOR_SERVER_MACHINE_CONTEXT) {
   return (
-    context.editorAppServer === "processing" || context.watch === "processing"
+    context.editorAppServer === "processing" ||
+    context.watch === "processing" ||
+    context.manifestLib === "processing"
   );
 }
 
@@ -63,11 +78,27 @@ function notInProcessing(context: EDITOR_SERVER_MACHINE_CONTEXT) {
 }
 
 function onlyEditorServerWasNotDone(context: EDITOR_SERVER_MACHINE_CONTEXT) {
-  return context.editorAppServer === "processing" && context.watch === "done";
+  return (
+    context.editorAppServer === "processing" &&
+    context.watch === "done" &&
+    context.manifestLib === "done"
+  );
 }
 
 function onlyWatchWasNotDone(context: EDITOR_SERVER_MACHINE_CONTEXT) {
-  return context.editorAppServer === "done" && context.watch === "processing";
+  return (
+    context.editorAppServer === "done" &&
+    context.watch === "processing" &&
+    context.manifestLib === "done"
+  );
+}
+
+function onlyManifestLibNotDone(context: EDITOR_SERVER_MACHINE_CONTEXT) {
+  return (
+    context.editorAppServer === "done" &&
+    context.watch === "done" &&
+    context.manifestLib === "processing"
+  );
 }
 
 function hasPendingRequests(context: EDITOR_SERVER_MACHINE_CONTEXT) {
@@ -98,6 +129,14 @@ function setEditorAppServerToDone(
   context.editorAppCompiler = event.compiler;
 }
 
+function setManifestLibToDone(
+  context: EDITOR_SERVER_MACHINE_CONTEXT,
+  event: MANIFEST_LIB_DONE_EVENT
+) {
+  context.manifestLib = "done";
+  context.manifestLibCompiler = event.compiler;
+}
+
 function setWatchToDone(context: EDITOR_SERVER_MACHINE_CONTEXT) {
   context.watch = "done";
 }
@@ -106,6 +145,10 @@ function setEditorAppServerToProcessing(
   context: EDITOR_SERVER_MACHINE_CONTEXT
 ) {
   context.editorAppServer = "processing";
+}
+
+function setManifestLibToProcessing(context: EDITOR_SERVER_MACHINE_CONTEXT) {
+  context.manifestLib = "processing";
 }
 
 function setWatchToProcessing(context: EDITOR_SERVER_MACHINE_CONTEXT) {
@@ -151,6 +194,7 @@ export function createEditorServerMachine(id: string) {
       initial: processing,
       context: {
         editorAppServer: "processing",
+        manifestLib: "processing",
         watch: "processing",
         requests: [],
         requestReservoir: [],
@@ -169,6 +213,17 @@ export function createEditorServerMachine(id: string) {
               {
                 target: processing,
                 actions: ["setEditorAppServerToDone"],
+              },
+            ],
+            [MANIFEST_LIB_DONE]: [
+              {
+                target: serving,
+                cond: onlyManifestLibNotDone,
+                actions: ["setManifestLibToDone"],
+              },
+              {
+                target: processing,
+                actions: ["setManifestLibToDone"],
               },
             ],
             [MANIFEST_OBJECTS_UPDATED]: [
@@ -199,6 +254,12 @@ export function createEditorServerMachine(id: string) {
                 actions: ["setEditorAppServerToProcessing"],
               },
             ],
+            [MANIFEST_LIB_INVALIDATED]: [
+              {
+                target: processing,
+                actions: ["setManifestLibToProcessing"],
+              },
+            ],
             [FS_CHANGED]: [
               { target: processing, actions: ["setWatchToProcessing"] },
             ],
@@ -225,7 +286,10 @@ export function createEditorServerMachine(id: string) {
           on: {
             [NETWORK_REQUEST]: [{ actions: ["saveRequestToReservoir"] }],
             [EDITOR_APP_SERVER_INVALIDATED]: [
-              { actions: ["setEditorAppServerToDone"] },
+              { actions: ["setEditorAppServerToProcessing"] },
+            ],
+            [MANIFEST_LIB_INVALIDATED]: [
+              { actions: ["setManifestLibToProcessing"] },
             ],
             [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
             /**
@@ -237,6 +301,7 @@ export function createEditorServerMachine(id: string) {
             [EDITOR_APP_SERVER_DONE]: [
               { actions: ["setEditorAppServerToDone"] },
             ],
+            [MANIFEST_LIB_DONE]: [{ actions: ["setManifestLibToDone"] }],
             [MANIFEST_OBJECTS_UPDATED]: [
               { actions: ["setWatchToDone", "setLatestManifests"] },
             ],
@@ -256,6 +321,8 @@ export function createEditorServerMachine(id: string) {
         setManifests,
         setLatestManifests,
         swapLatestManifests,
+        setManifestLibToDone,
+        setManifestLibToProcessing,
       },
       services: {
         handleRequests,

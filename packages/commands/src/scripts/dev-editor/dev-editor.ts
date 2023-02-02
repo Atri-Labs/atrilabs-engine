@@ -15,6 +15,7 @@ import { editorServerMachineInterpreter } from "./machine/init";
 import { NETWORK_REQUEST } from "../dev/serverMachine";
 import { computeFSAndSend } from "./machine/computeManifestIR";
 import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
+import startManifestRegistryLibDevServer from "./startManifestRegistryLibDevServer";
 
 function main() {
   // TODO: copy public folder if not already exists
@@ -84,16 +85,18 @@ function main() {
 
   params.paths.appSrc = process.cwd();
 
+  const externals = {
+    react: "React",
+    "react-dom": "ReactDOM",
+  };
+
   const prepareConfig = params.prepareConfig;
   const wrapPrepareConfig: PrepareConfig = (config) => {
     if (prepareConfig) {
       prepareConfig(config);
     }
     config.entry = createEntry;
-    config.externals = {
-      react: "React",
-      "react-dom": "ReactDOM",
-    };
+    config.externals = externals;
     config.optimization = {
       ...config.optimization,
       runtimeChunk: "single",
@@ -122,15 +125,6 @@ function main() {
           "dev-editor",
           "loaders",
           "browser-forest-manager-entry-loader.js"
-        ),
-        "manifest-registry-entry-loader": path.resolve(
-          __dirname,
-          "..",
-          "src",
-          "scripts",
-          "dev-editor",
-          "loaders",
-          "manifest-registry-entry-loader.js"
         ),
         "block-registry-entry-loader": path.resolve(
           __dirname,
@@ -183,15 +177,6 @@ function main() {
       },
     },
     {
-      test: corePkgInfo.manifestRegistryFile,
-      use: {
-        loader: "manifest-registry-entry-loader",
-        options: {
-          manifestSchema: toolConfig.manifestSchema,
-        },
-      },
-    },
-    {
       test: corePkgInfo.blockRegistryFile,
       use: {
         loader: "block-registry-entry-loader",
@@ -225,6 +210,29 @@ function main() {
         ],
       ],
     },
+  });
+
+  startManifestRegistryLibDevServer({
+    ...params,
+    babel: {
+      plugins: [
+        [
+          path.resolve(
+            __dirname,
+            "..",
+            "src",
+            "scripts",
+            "dev-editor",
+            "babel-plugins",
+            "replace-import-with-id.js"
+          ),
+          {},
+        ],
+      ],
+    },
+    externals,
+    toolConfig,
+    corePkgInfo,
   });
 }
 
