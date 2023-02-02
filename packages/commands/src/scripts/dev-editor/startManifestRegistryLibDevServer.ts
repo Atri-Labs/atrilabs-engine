@@ -109,7 +109,7 @@ export default function startManifestRegistryLibDevServer(
 
   webpackConfig.output = {
     filename: outputFilename,
-    path: path.resolve("node_modules/.cache/atri-editor"),
+    path: path.resolve("public/dist/atri-editor"),
     globalObject: "this",
     library: {
       name: "__atri_manifest_registry__",

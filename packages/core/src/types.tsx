@@ -152,10 +152,6 @@ export type ManifestSchemaConfig = {
   libs: "react"[];
 };
 
-export type ManifestSchema = {
-  validate: (manifest: any) => boolean;
-};
-
 // type for manifest.config.js
 export type ManifestConfig = {
   // all the modules will be searched in dir
@@ -166,15 +162,6 @@ export type ManifestConfig = {
   manifestSchema: { pkg: string }[];
   componentMap: {
     [key: string]: { modulePath: string; exportedVarName: string };
-  };
-};
-
-export type ManifestRegistry = {
-  // manifestId of the package containing manifest schema
-  // mapped to array of manifests (added after validation)
-  [manifestId: string]: {
-    schema: ManifestSchema;
-    components: { pkg: string; component: any }[];
   };
 };
 

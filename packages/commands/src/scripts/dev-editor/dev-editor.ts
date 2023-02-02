@@ -40,6 +40,10 @@ function main() {
 
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/manifest-registry")
+    ),
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
@@ -96,7 +100,10 @@ function main() {
       prepareConfig(config);
     }
     config.entry = createEntry;
-    config.externals = externals;
+    config.externals = {
+      ...externals,
+      "@atrilabs/manifest-registry": "__atri_manifest_registry__",
+    };
     config.optimization = {
       ...config.optimization,
       runtimeChunk: "single",

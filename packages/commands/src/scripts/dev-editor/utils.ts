@@ -62,20 +62,26 @@ export function getCorePkgInfo(): CorePkgInfo {
   const browserForestManagerFile = findFileWithoutExtension(
     path.resolve(dir, "src", "entries", "BrowserForestManager")
   );
-  const manifestRegistryFile = findFileWithoutExtension(
-    path.resolve(dir, "src", "entries", "manifestRegistry")
-  );
   const apiFile = findFileWithoutExtension(
     path.resolve(dir, "src", "entries", "api")
   );
   const blockRegistryFile = findFileWithoutExtension(
     path.resolve(dir, "src", "entries", "blockRegistry")
   );
+  // @ts-ignore
+  const manifestPackageJSON = __non_webpack_require__.resolve(
+    "@atrilabs/manifest-registry/package.json"
+  );
+  const manifestDir = path.dirname(manifestPackageJSON);
+  const manifestRegistryFile = findFileWithoutExtension(
+    path.resolve(manifestDir, "src", "index")
+  );
   if (
     browserForestManagerFile === undefined ||
     manifestRegistryFile === undefined ||
     apiFile === undefined ||
-    blockRegistryFile === undefined
+    blockRegistryFile === undefined ||
+    manifestRegistryFile === undefined
   ) {
     throw Error(`Missing a entryFile or indexFile in @atrilabs/core`);
   }
