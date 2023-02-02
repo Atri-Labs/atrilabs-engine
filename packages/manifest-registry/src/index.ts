@@ -1,4 +1,4 @@
-import type { ManifestRegistry } from "./types";
+import type { ManifestRegistry, ManifestRegistryController } from "./types";
 export * from "./types";
 
 // The object will be filled during build time automatically
@@ -40,7 +40,7 @@ function writeComponents(
   manifestRegistrySubscribers.forEach((cb) => cb());
 }
 
-export const manifestRegistryController = {
+export const manifestRegistryController: ManifestRegistryController = {
   readManifestRegistry,
   writeComponents,
   subscribe,
