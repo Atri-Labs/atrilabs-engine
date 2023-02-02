@@ -9,12 +9,7 @@ export async function createEntry() {
     },
     main: {
       import: "./src/index",
-      dependOn: [
-        "api",
-        "BrowserForestManager",
-        "manifestRegistry",
-        "blockRegistry",
-      ],
+      dependOn: ["api", "BrowserForestManager", "blockRegistry"],
     },
   };
 }
