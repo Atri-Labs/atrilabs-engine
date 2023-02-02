@@ -14,6 +14,7 @@ import { watchManifestDirs } from "./machine/watchManifestDirs";
 import { editorServerMachineInterpreter } from "./machine/init";
 import { NETWORK_REQUEST } from "../dev/serverMachine";
 import { computeFSAndSend } from "./machine/computeManifestIR";
+import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
 
 function main() {
   // TODO: copy public folder if not already exists
@@ -80,7 +81,6 @@ function main() {
     })
   );
   params.additionalInclude = additionalInclude;
-  console.log(params.additionalInclude);
 
   params.paths.appSrc = process.cwd();
 
@@ -143,6 +143,9 @@ function main() {
         ),
       },
     };
+    const plugins = config.plugins || [];
+    plugins.push(new EditorAppServerPlugin());
+    config.plugins = plugins;
   };
 
   const middlewares = params.middlewares;
