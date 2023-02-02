@@ -44,5 +44,3 @@ export const manifestRegistryController = {
   writeComponents,
   subscribe,
 };
-
-export default manifestRegistryController;

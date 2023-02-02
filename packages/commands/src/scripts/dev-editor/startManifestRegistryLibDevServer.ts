@@ -105,6 +105,8 @@ export default function startManifestRegistryLibDevServer(
     new ManifestRegistryLibPlugin(),
   ];
 
+  webpackConfig.target = undefined;
+
   webpackConfig.output = {
     filename: outputFilename,
     path: path.resolve("node_modules/.cache/atri-editor"),
