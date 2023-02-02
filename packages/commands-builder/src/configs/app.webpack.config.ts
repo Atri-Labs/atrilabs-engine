@@ -1,4 +1,4 @@
-import { Configuration as WebpackConfiguration, RuleSetRule } from "webpack";
+import { Configuration as WebpackConfiguration } from "webpack";
 import path from "path";
 import fs from "fs";
 import createEnvironmentHash from "./utils/createEnvironmentHash";
@@ -29,6 +29,7 @@ import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import CaseSensitivePathsPlugin from "case-sensitive-paths-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { WebpackManifestPlugin } from "webpack-manifest-plugin";
+import { AppConfigOptions } from "./config-options-types";
 const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
 const ForkTsCheckerWebpackPlugin =
   process.env["TSC_COMPILE_ON_ERROR"] === "true"
@@ -37,54 +38,7 @@ const ForkTsCheckerWebpackPlugin =
 const resolve = require("resolve");
 const ESLintPlugin = require("eslint-webpack-plugin");
 
-export function createConfig(options: {
-  isEnvDevelopment: boolean;
-  isEnvTest: boolean;
-  isEnvProduction: boolean;
-  isEnvProductionProfile: boolean;
-  clientEnv: {
-    raw: { [key: string]: any };
-    stringified: { [key: string]: any };
-  };
-  shouldUseSourceMap: boolean;
-  entry: WebpackConfiguration["entry"];
-  paths: {
-    outputDir: string;
-    appSrc: string;
-    appWebpackCache: string;
-    appTsConfig: string;
-    appJsConfig: string;
-    appNodeModules: string;
-    appPackageJson: string;
-    appHtml: string;
-    // appPath is set as cwd for eslint plugin
-    appPath: string;
-    // service worker src path
-    swSrc: string;
-    appTsBuildInfoFile?: string;
-  };
-  publicUrlOrPath: string;
-  moduleFileExtensions: string[];
-  modules?: {
-    additionalModulePaths?: string[];
-    webpackAliases?: any;
-  };
-  imageInlineSizeLimit: number;
-  shouldInlineRuntimeChunk: boolean;
-  eslint?: {
-    disableESLintPlugin?: boolean;
-    emitErrorsAsWarnings?: boolean;
-  };
-  useTypeScript: boolean;
-  generateIndexHtml?: boolean;
-  additionalInclude?: string[];
-  additionalNodeModules?: string[];
-  outputFilename: string;
-  customLoaders?: RuleSetRule[];
-  babel?: {
-    plugins?: [string, any][];
-  };
-}): WebpackConfiguration {
+export function createConfig(options: AppConfigOptions): WebpackConfiguration {
   const {
     isEnvDevelopment,
     isEnvTest,
