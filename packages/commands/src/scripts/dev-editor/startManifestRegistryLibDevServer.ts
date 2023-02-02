@@ -108,6 +108,11 @@ export default function startManifestRegistryLibDevServer(
   webpackConfig.output = {
     filename: outputFilename,
     path: "node_modules/.cache/atri-editor",
+    globalObject: "this",
+    library: {
+      name: "__atri_manifest_registry__",
+      type: "umd",
+    },
   };
 
   const compiler = webpack(webpackConfig);
