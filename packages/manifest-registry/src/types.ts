@@ -23,4 +23,14 @@ export type ManifestRegistryController = {
     manifests: ManifestRegistry["0"]["manifests"]
   ) => void;
   subscribe: (cb: () => void) => () => void;
+  writeManifestsFromDefaultExport: (exports: {
+    manifestModule: {
+      manifests: {
+        [manifestId: string]: any;
+      };
+    };
+    component: React.FC<any>;
+    devComponent: React.FC<any>;
+    pkg: string;
+  }) => void;
 };

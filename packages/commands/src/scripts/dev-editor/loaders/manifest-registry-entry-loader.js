@@ -26,7 +26,7 @@ function manifestRegistryEntryLoader(source) {
             return `
             "${generateModuleId(val.pkg)}": {
                 schema: man_${index}(),
-                components: []
+                manifests: []
             }`;
           })
           .join(",")}

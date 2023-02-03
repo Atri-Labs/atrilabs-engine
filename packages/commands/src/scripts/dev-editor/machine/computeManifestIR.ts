@@ -6,6 +6,7 @@ import {
   MANIFEST_OBJECTS_UPDATED,
 } from "./editorServerMachine";
 import pkgUp from "pkg-up";
+import path from "path";
 
 function searchDevComponent(
   dirStructureSet: Set<string>,
@@ -80,7 +81,15 @@ async function computeManifestIRs(dir: string) {
   const manifestIRs: ManifestIR[] = [];
   manifestFiles.forEach((manifestFile) => {
     const manifestIR = computeManifestIR(manifestFile, dirStructureSet, pkg);
-    if (manifestIR) manifestIRs.push(manifestIR);
+    if (manifestIR)
+      manifestIRs.push({
+        pkg: manifestIR.pkg,
+        component: path.join(dir, manifestIR.component),
+        devComponent: manifestIR.devComponent
+          ? path.join(dir, manifestIR.devComponent)
+          : undefined,
+        manifest: path.join(dir, manifestIR.manifest),
+      });
   });
   return manifestIRs;
 }

@@ -1,6 +1,5 @@
 import type { ManifestRegistry, ManifestRegistryController } from "./types";
 export * from "./types";
-export * from "./utils";
 
 // The object will be filled during build time automatically
 // schema will be imported and mapped
@@ -37,12 +36,41 @@ function writeManifests(
   manifestId: string,
   manifests: ManifestRegistry["0"]["manifests"]
 ) {
-  manifestRegistry[manifestId].manifests = manifests;
+  manifestRegistry[manifestId].manifests = [
+    ...manifestRegistry[manifestId].manifests,
+    ...manifests,
+  ];
   manifestRegistrySubscribers.forEach((cb) => cb());
+}
+
+function writeManifestsFromDefaultExport(exports: {
+  manifestModule: {
+    manifests: {
+      [manifestId: string]: any;
+    };
+  };
+  component: React.FC<any>;
+  devComponent: React.FC<any>;
+  pkg: string;
+}) {
+  const { manifestModule, component, devComponent, pkg } = exports;
+  const manifestIds = Object.keys(manifestModule.manifests);
+  manifestIds.forEach((manifestId) => {
+    const manfiests: ManifestRegistry["0"]["manifests"] = [
+      {
+        pkg,
+        component,
+        devComponent,
+        manifest: manifestModule.manifests[manifestId],
+      },
+    ];
+    writeManifests(manifestId, manfiests);
+  });
 }
 
 export const manifestRegistryController: ManifestRegistryController = {
   readManifestRegistry,
   writeManifests,
   subscribe,
+  writeManifestsFromDefaultExport,
 };

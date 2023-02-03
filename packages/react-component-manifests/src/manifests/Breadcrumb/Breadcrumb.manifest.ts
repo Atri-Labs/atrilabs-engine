@@ -1,11 +1,11 @@
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
+import { CommonIcon } from "../CommonIcon";
+import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CommonIcon } from "../CommonIcon";
 import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { ReactComponent as Icon } from "./icon.svg";
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -21,23 +21,30 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
-
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    divider: {
+      type: "text",
+    },
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        { fieldName: "title", type: "text" },
-        { fieldName: "description", type: "text" },
-        { fieldName: "open", type: "boolean" },
+        {
+          fieldName: "name",
+          type: "text",
+        },
+        {
+          fieldName: "link",
+          type: "text",
+        },
       ],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Accordion", category: "Basics" },
+  meta: { key: "Breadcrumb", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -50,30 +57,46 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [],
-          title: [],
-          description: [],
-          open: [],
+          divider: ">",
+          items: [
+            {
+              name: "Home",
+              link: "",
+            },
+            {
+              name: "Application Center",
+              link: "",
+            },
+            {
+              name: "Application List",
+              link: "",
+            },
+            {
+              name: "Application One",
+              link: "",
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onClick: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {},
+    defaultCallbackHandlers: {
+      onClick: [{ sendEventData: true }],
+    },
   },
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Accordion", svg: Icon } },
+  panel: { comp: CommonIcon, props: { name: "Breadcrumb", svg: Icon } },
   drag: {
     comp: CommonIcon,
     props: {
-      name: "Accordion",
-      containerStyle: { padding: "1rem" },
-      svg: Icon,
+      name: "Breadcrumb",
+      containerStyle: { padding: "1rem", svg: Icon },
     },
   },
   renderSchema: compManifest,

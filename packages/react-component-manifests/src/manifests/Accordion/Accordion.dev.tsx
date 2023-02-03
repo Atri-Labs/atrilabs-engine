@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from "react";
 import Accordion from "./Accordion";
 
-export const DevAccordian = forwardRef<
+const DevAccordian = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -34,3 +34,5 @@ export const DevAccordian = forwardRef<
     />
   );
 });
+
+export default DevAccordian;
