@@ -7,23 +7,20 @@ export type ManifestRegistry = {
   // mapped to array of manifests (added after validation)
   [manifestId: string]: {
     schema: ManifestSchema;
-    components: { pkg: string; component: any }[];
+    manifests: {
+      pkg: string;
+      manifest: any;
+      component: React.FC<any> | null;
+      devComponent: React.FC<any> | null;
+    }[];
   };
 };
 
 export type ManifestRegistryController = {
-  readManifestRegistry: () => {
-    [x: string]: {
-      schema: ManifestSchema;
-      components: {
-        pkg: string;
-        component: any;
-      }[];
-    };
-  };
-  writeComponents: (
+  readManifestRegistry: () => ManifestRegistry;
+  writeManifests: (
     manifestId: string,
-    components: ManifestRegistry["0"]["components"]
+    manifests: ManifestRegistry["0"]["manifests"]
   ) => void;
   subscribe: (cb: () => void) => () => void;
 };

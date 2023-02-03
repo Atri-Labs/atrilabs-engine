@@ -79,18 +79,18 @@ export function getComponentIndex(
   const parentManifestSchemaId = parentMeta.manifestSchemaId;
   if (parentManifestSchemaId === ReactComponentManifestSchemaId) {
   }
-  const parentManifest = manifestRegistry[
+  const parentFullManifest = manifestRegistry[
     parentManifestSchemaId
-  ].components.find((curr) => {
-    return curr.pkg === parentPkg && curr.component.meta.key === parentKey;
+  ].manifests.find((curr) => {
+    return curr.pkg === parentPkg && curr.manifest.meta.key === parentKey;
   });
-  const parentComponent = parentManifest!.component;
-  if (!parentComponent.dev.acceptsChild) {
+  const parentManifest = parentFullManifest!.manifest;
+  if (!parentManifest.dev.acceptsChild) {
     console.error(
       "Parent manifest component must have a dev.acceptsChild field."
     );
   }
-  const acceptsChild: AcceptsChildFunction = parentComponent.dev.acceptsChild;
+  const acceptsChild: AcceptsChildFunction = parentManifest.dev.acceptsChild;
   const coords = getOwnCoords(caughtBy);
   const childrenId = getComponentChildrenId(caughtBy);
   const childCoordinates: ComponentCoordsWM[] = [];

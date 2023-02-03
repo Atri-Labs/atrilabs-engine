@@ -19,7 +19,7 @@ export type CategoryListProps = {
   categorizedComponents: {
     [category: string]: {
       pkg: string;
-      component: any;
+      manifest: any;
     }[];
   };
   categoryName: string;
@@ -51,10 +51,10 @@ export const CategoryList: React.FC<CategoryListProps> = (props) => {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      startDragCb(comp.component.drag, {
+                      startDragCb(comp.manifest.drag, {
                         type: "component",
                         data: {
-                          key: comp.component.renderSchema.meta.key,
+                          key: comp.manifest.renderSchema.meta.key,
                           pkg: comp.pkg,
                           manifestSchema: ReactComponentManifestSchemaId,
                           id: getId(),
@@ -62,9 +62,7 @@ export const CategoryList: React.FC<CategoryListProps> = (props) => {
                       });
                     }}
                   >
-                    <comp.component.panel.comp
-                      {...comp.component.panel.props}
-                    />
+                    <comp.manifest.panel.comp {...comp.manifest.panel.props} />
                   </div>
                 );
               }

@@ -5,6 +5,7 @@ import {
   FS_CHANGED,
   MANIFEST_OBJECTS_UPDATED,
 } from "./editorServerMachine";
+import pkgUp from "pkg-up";
 
 function searchDevComponent(
   dirStructureSet: Set<string>,
@@ -29,7 +30,11 @@ function computeComponentName(manifestFile: string) {
   return manifestFile.replace(/(.manifest.(ts|tsx|js|jsx))$/, "");
 }
 
-function computeManifestIR(manifestFile: string, dirStructureSet: Set<string>) {
+function computeManifestIR(
+  manifestFile: string,
+  dirStructureSet: Set<string>,
+  pkg: string
+) {
   const componentName = computeComponentName(manifestFile);
 
   const devComponentFile = searchDevComponent(dirStructureSet, componentName);
@@ -52,12 +57,15 @@ function computeManifestIR(manifestFile: string, dirStructureSet: Set<string>) {
       manifest: manifestFile,
       component: componentFilename,
       devComponent: devComponentFile,
+      pkg,
     };
   }
   return undefined;
 }
 
 async function computeManifestIRs(dir: string) {
+  // @ts-ignore
+  const pkg = __non_webpack_require__(pkgUp.sync(dir))["name"];
   const dirStructure = await readDirStructure(dir);
   const manifestFiles = dirStructure.filter((filename) => {
     return (
@@ -71,13 +79,13 @@ async function computeManifestIRs(dir: string) {
   const dirStructureSet = new Set(dirStructure);
   const manifestIRs: ManifestIR[] = [];
   manifestFiles.forEach((manifestFile) => {
-    const manifestIR = computeManifestIR(manifestFile, dirStructureSet);
+    const manifestIR = computeManifestIR(manifestFile, dirStructureSet, pkg);
     if (manifestIR) manifestIRs.push(manifestIR);
   });
   return manifestIRs;
 }
 
-export async function computeManifestIRsAndSendSignal(dirs: string[]) {
+export async function computeManifestIRsForDirs(dirs: string[]) {
   const manifestIRsDoubleArray = await Promise.all(
     dirs.map((dir) => computeManifestIRs(dir))
   );
@@ -91,7 +99,7 @@ export async function computeFSAndSend(
   dirs: string[]
 ) {
   editorServerMachineInterpreter.send({ type: FS_CHANGED });
-  const irs = await computeManifestIRsAndSendSignal(dirs);
+  const irs = await computeManifestIRsForDirs(dirs);
   editorServerMachineInterpreter.send({
     type: MANIFEST_OBJECTS_UPDATED,
     manifests: irs,

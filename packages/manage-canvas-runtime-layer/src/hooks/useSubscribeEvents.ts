@@ -27,9 +27,7 @@ import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
 function tryUntilManifestRegistryHasReactComponentManifestSchemaId() {
   return new Promise<void>((res) => {
     const manifestRegistry = manifestRegistryController.readManifestRegistry();
-    if (
-      manifestRegistry[ReactComponentManifestSchemaId].components.length > 0
-    ) {
+    if (manifestRegistry[ReactComponentManifestSchemaId].manifests.length > 0) {
       res();
       return;
     }
@@ -37,7 +35,7 @@ function tryUntilManifestRegistryHasReactComponentManifestSchemaId() {
       const manifestRegistry =
         manifestRegistryController.readManifestRegistry();
       if (
-        manifestRegistry[ReactComponentManifestSchemaId].components.length > 0
+        manifestRegistry[ReactComponentManifestSchemaId].manifests.length > 0
       ) {
         res();
         clearInterval(timer);
@@ -94,26 +92,28 @@ function createComponentFromNode(node: TreeNode) {
   if (manifestSchemaId === ReactComponentManifestSchemaId) {
     // find manifest from manifest registry
     const manifestRegistry = manifestRegistryController.readManifestRegistry();
-    const manifest = manifestRegistry[manifestSchemaId].components.find(
+    const fullManifest = manifestRegistry[manifestSchemaId].manifests.find(
       (curr) => {
-        return curr.pkg === pkg && curr.component.meta.key === key;
+        return curr.pkg === pkg && curr.manifest.meta.key === key;
       }
     );
     // use CanvasAPI to create component
-    if (manifest) {
-      const manifestComponent = manifest.component;
-      const props = createPropsFromManifestComponent(id, manifestComponent);
-      const component =
-        manifestComponent.dev.comp || manifestComponent.render.comp;
-      const acceptsChild = manifestComponent.dev.acceptsChild;
+    if (fullManifest) {
+      const manifest = fullManifest.manifest as ReactComponentManifestSchema;
+      const props = createPropsFromManifestComponent(id, manifest);
+      const component = fullManifest.devComponent || fullManifest.component;
+      if (component === null) {
+        throw Error("Component is null! Check manifest registry.");
+      }
+      const acceptsChild = manifest.dev.acceptsChild;
       const catchers: Catcher[] = [];
       const callbacks =
-        manifestComponent.dev["attachCallbacks"] &&
-        typeof manifestComponent.dev["attachCallbacks"] === "object" &&
-        !Array.isArray(manifestComponent.dev["attachCallbacks"])
-          ? manifestComponent.dev["attachCallbacks"]
+        manifest.dev["attachCallbacks"] &&
+        typeof manifest.dev["attachCallbacks"] === "object" &&
+        !Array.isArray(manifest.dev["attachCallbacks"])
+          ? manifest.dev["attachCallbacks"]
           : {};
-      if (manifestComponent.dev.acceptsChild) {
+      if (manifest.dev.acceptsChild) {
         // add catchers
         // accept child catcher
         const componentCatcher: Catcher = (dragData, _loc) => {
@@ -136,7 +136,7 @@ function createComponentFromNode(node: TreeNode) {
         // TODO: get decorators from manifest
         [],
         catchers,
-        acceptsChild,
+        typeof acceptsChild === "function",
         callbacks
       );
     }
@@ -186,19 +186,19 @@ export const useSubscribeEvents = () => {
             // find manifest from manifest registry
             const manifestRegistry =
               manifestRegistryController.readManifestRegistry();
-            const manifest = manifestRegistry[manifestSchemaId].components.find(
-              (curr) => {
-                return curr.pkg === pkg && curr.component.meta.key === key;
-              }
-            );
+            const fullManifest = manifestRegistry[
+              manifestSchemaId
+            ].manifests.find((curr) => {
+              return curr.pkg === pkg && curr.manifest.meta.key === key;
+            });
             // use CanvasAPI to create component
-            if (manifest) {
-              const component =
-                manifest.component as ReactComponentManifestSchema;
-              const propsKeys = Object.keys(component.dev.attachProps);
+            if (fullManifest) {
+              const manfiest =
+                fullManifest.manifest as ReactComponentManifestSchema;
+              const propsKeys = Object.keys(manfiest.dev.attachProps);
               // only process a link event if the tree is present in attachProps
               const foundPropKey = propsKeys.find(
-                (key) => component.dev.attachProps[key].treeId !== treeId
+                (key) => manfiest.dev.attachProps[key].treeId !== treeId
               );
               if (foundPropKey) {
                 const tree = BrowserForestManager.getForest(

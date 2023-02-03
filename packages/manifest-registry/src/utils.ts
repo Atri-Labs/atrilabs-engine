@@ -26,21 +26,16 @@ export function defaultImportsToRegistry(defaultImports: any[]) {
 }
 
 export function registerComponents(options: {
-  registry: {
-    [manifestId: string]: {
-      components: ManifestRegistry["0"]["components"]["0"]["component"][];
-    };
-  };
-  pkg: string;
+  registry: ManifestRegistry;
   manifestRegistryController: ManifestRegistryController;
 }) {
-  const { registry, pkg, manifestRegistryController } = options;
+  const { registry, manifestRegistryController } = options;
   const manifestIds = Object.keys(registry);
   manifestIds.forEach((manifestId) => {
-    const components = registry[manifestId]!.components.map((component) => {
-      return { component, pkg };
-    });
-    manifestRegistryController.writeComponents(manifestId, components);
+    manifestRegistryController.writeManifests(
+      manifestId,
+      registry[manifestId].manifests
+    );
     console.log(manifestRegistryController.readManifestRegistry());
   });
 }

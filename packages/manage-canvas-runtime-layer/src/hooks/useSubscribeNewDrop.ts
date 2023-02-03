@@ -39,11 +39,11 @@ export const useSubscribeNewDrop = () => {
         const manifestSchemaId = args.dragData.data.manifestSchema;
 
         if (manifestSchemaId === ReactComponentManifestSchemaId) {
-          const manifest = manifestRegistry[manifestSchemaId].components.find(
-            (curr) => {
-              return curr.pkg === pkg && curr.component.meta.key === key;
-            }
-          );
+          const fullManifest = manifestRegistry[
+            manifestSchemaId
+          ].manifests.find((curr) => {
+            return curr.pkg === pkg && curr.manifest.meta.key === key;
+          });
 
           /**
            * First create the props for the component because the component
@@ -54,14 +54,15 @@ export const useSubscribeNewDrop = () => {
            */
           // 1. Create Props
           const events: AnyEvent[] = [];
-          if (manifest) {
-            const component = manifest.component;
-            const propsKeys = Object.keys(component.dev.attachProps);
+          if (fullManifest) {
+            const manifest =
+              fullManifest.manifest as ReactComponentManifestSchema;
+            const propsKeys = Object.keys(manifest.dev.attachProps);
             for (let i = 0; i < propsKeys.length; i++) {
               const propKey = propsKeys[i];
-              const treeId = component.dev.attachProps[propKey].treeId;
+              const treeId = manifest.dev.attachProps[propKey].treeId;
               const initialValue =
-                component.dev.attachProps[propKey].initialValue;
+                manifest.dev.attachProps[propKey].initialValue;
               const propCompId = getId();
               const createEvent: CreateEvent = {
                 id: propCompId,
@@ -85,10 +86,10 @@ export const useSubscribeNewDrop = () => {
           }
 
           // 2. Create Callback Handlers
-          if (manifest) {
-            const component =
-              manifest.component as ReactComponentManifestSchema;
-            const defaultCallbacks = component.dev.defaultCallbackHandlers;
+          if (fullManifest) {
+            const manifest =
+              fullManifest.manifest as ReactComponentManifestSchema;
+            const defaultCallbacks = manifest.dev.defaultCallbackHandlers;
             const callbackCompId = getId();
             const createEvent: CreateEvent = {
               id: callbackCompId,

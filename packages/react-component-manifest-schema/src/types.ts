@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import React from "react";
 
 export type ComponentCoordsWM = {
   top: number;
@@ -87,11 +88,7 @@ export type IoType<T extends IoProp> = T["type"] extends "files"
 
 export type ReactComponentManifestSchema = {
   meta: { key: string; category: string };
-  render: {
-    comp: FC<any>;
-  };
   dev: {
-    comp?: FC<any>;
     decorators: FC<any>[];
     attachProps: {
       [key: string]: {

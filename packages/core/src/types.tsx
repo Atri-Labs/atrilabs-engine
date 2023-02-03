@@ -378,4 +378,5 @@ export type ManifestIR = {
   devComponent?: string;
   // path to manifest file
   manifest: string;
+  pkg: string;
 };
