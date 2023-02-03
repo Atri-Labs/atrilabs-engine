@@ -98,7 +98,7 @@ const iconManifest = {
 
 export default {
   manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
+    [reactSchemaId]: compManifest,
+    [iconSchemaId]: iconManifest,
   },
 };

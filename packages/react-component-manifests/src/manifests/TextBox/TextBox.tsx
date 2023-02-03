@@ -43,3 +43,5 @@ export const TextBox = forwardRef<
     </div>
   );
 });
+
+export default TextBox;
