@@ -3,7 +3,7 @@ import { computeFSAndSend } from "./computeManifestIR";
 import { editorServerMachineInterpreter } from "./init";
 
 export function watchManifestDirs(dirs: string[]) {
-  const watcher = chokidar.watch(dirs);
+  const watcher = chokidar.watch(dirs, { ignoreInitial: true });
   watcher.on("add", () => {
     computeFSAndSend(editorServerMachineInterpreter, dirs);
   });
