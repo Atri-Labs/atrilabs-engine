@@ -35,7 +35,9 @@ function main() {
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core"))
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
+    // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/canvas-zone"))
   );
   params.additionalInclude = additionalInclude;
 
@@ -97,6 +99,7 @@ function main() {
   const paths = { ...params.paths, outputDir: serverPath };
   const allowlist = params.allowlist || [];
   allowlist.push("@atrilabs/atri-app-core");
+  allowlist.push("@atrilabs/canvas-zone");
   allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");
   startNodeLibWatcher({
     ...params,

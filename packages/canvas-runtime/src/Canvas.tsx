@@ -42,6 +42,9 @@ export const Canvas: React.FC = React.memo(() => {
   }, [iframeRef, iframeRef?.contentWindow]);
   const hintOverlays = useHintOverlays();
   useBindEvents(iframeRef);
+  // Without doing this console.log, DecoratorRenderer will be an unsed import
+  // This will throw error that CanvasActivityDecorator is being accessed befor defined.
+  console.log(DecoratorRenderer);
   return (
     <>
       <div
@@ -79,42 +82,15 @@ export const Canvas: React.FC = React.memo(() => {
                 }}
               >
                 <iframe
+                  src="http://localhost:3000"
                   title="canvas"
-                  ref={setIframeRef}
                   style={{
                     width: "100%",
                     height: "100%",
                     border: "none",
                     boxSizing: "border-box",
                   }}
-                >
-                  {iframeRef && iframeRef.contentDocument
-                    ? ReactDOM.createPortal(
-                        <>
-                          <style
-                            dangerouslySetInnerHTML={{
-                              __html: `* {padding: 0; margin: 0;}`,
-                            }}
-                          ></style>
-                          <DecoratorRenderer compId="body" decoratorIndex={0} />
-                          {canvasOverlay ? (
-                            <div style={canvasOverlay.style}>
-                              <canvasOverlay.comp {...canvasOverlay.props} />
-                            </div>
-                          ) : null}
-                          {stylesheets}
-                          {/*
-                          hint overlays are sibling of body because they need to be scroll along with
-                          the component they are overlayed with respect to.
-                          */}
-                          {hintOverlays.map((hint) => {
-                            return hint;
-                          })}
-                        </>,
-                        iframeRef.contentDocument.body
-                      )
-                    : null}
-                </iframe>
+                ></iframe>
               </div>
             ) : null}
           </div>

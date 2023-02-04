@@ -52,6 +52,14 @@ function createPackageJSON(
       author: data.author,
       description: data.description,
       scripts: { dev: "dev-atri-app" },
+      // Update these versions on every release
+      dependencies: {
+        "@atrilabs/atri-app-core": "^0.0.90",
+        "@atrilabs/canvas-zone": "^0.0.90",
+        "@atrilabs/commands": "^0.0.90",
+        "@atrilabs/commands-builder": "^0.0.90",
+        "node-noop": "^1.0.0",
+      },
     },
     null,
     2

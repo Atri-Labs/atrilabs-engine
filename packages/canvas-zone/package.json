@@ -1,0 +1,32 @@
+{
+  "name": "@atrilabs/canvas-zone",
+  "version": "0.0.90",
+  "description": "It provides CanvasZone component to external apps",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "src/index.tsx",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.33",
+    "@types/react": "18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
+    "eslint-config-react-app": "^7.0.1",
+    "prettier": "^2.6.2"
+  }
+}
