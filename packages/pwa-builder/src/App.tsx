@@ -23,26 +23,26 @@ export default function App() {
   return (
     <>
       <BaseLayer />
-      <LoadForestDataLayer />
+      {/* <LoadForestDataLayer /> */}
       <AppDesignLayer />
       <AtriIconLayer />
       <AppPageLayer />
-      <CanvasBreakPointLayer />
+      {/* <CanvasBreakPointLayer /> */}
       <ComponentListLayer />
-      <ComponentStyleLayer />
-      <PublishAppLayer />
-      <CustomPropsLayer />
-      <AssetManagerLayer />
+      {/* <ComponentStyleLayer /> */}
+      {/* <PublishAppLayer /> */}
+      {/* <CustomPropsLayer /> */}
+      {/* <AssetManagerLayer /> */}
       {/* <AppTemplateLayer /> */}
-      <ActionLayer />
-      <ResourceProcessLayer />
-      <UndoRedoLayer />
-      <ServicesStatusLayer />
-      <CanvasRuntime>
+      {/* <ActionLayer /> */}
+      {/* <ResourceProcessLayer /> */}
+      {/* <UndoRedoLayer /> */}
+      {/* <ServicesStatusLayer /> */}
+      {/* <CanvasRuntime>
         <ManageCanvasRuntimeLayer />
         <OverlayHintsLayer />
         <ComponentNavigatorLayer />
-      </CanvasRuntime>
+      </CanvasRuntime> */}
     </>
   );
 }
