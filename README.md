@@ -16,7 +16,7 @@
     <span> | </span>
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
-    <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w">Community Slack</a>
+    <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1otyguhy8-P4OQQRWFWcMUsKk7yp0FHQ">Community Slack</a>
     <span> | </span>
     <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">YouTube</a>
     <span> | </span>
