@@ -21,14 +21,17 @@ const io = new Server<
 
 io.on("connection", (socket) => {
   socket.on("getProjectInfo", (cb) => {
+    console.log("getProjectInfo");
     const projectInfo = getProjectInfo();
     cb(projectInfo);
   });
   socket.on("getAppInfo", (cb) => {
+    console.log("getAppInfo");
     const appInfo = getAppInfo();
     cb(appInfo);
   });
   socket.on("getPagesInfo", async (cb) => {
+    console.log("getPagesInfo");
     const pagesInfo = await getPagesInfo();
     cb(pagesInfo);
   });

@@ -64,9 +64,24 @@ type EDITOR_APP_CONTEXT = {
 
 // conds
 
-function isBootupComplete(context: EDITOR_APP_CONTEXT) {
+function onlyProjectInfoNotDone(context: EDITOR_APP_CONTEXT) {
   return (
     context.appInfo !== null &&
+    context.projectInfo === null &&
+    context.pagesInfo !== null
+  );
+}
+function onlyPagesInfoNotDone(context: EDITOR_APP_CONTEXT) {
+  return (
+    context.appInfo !== null &&
+    context.projectInfo !== null &&
+    context.pagesInfo === null
+  );
+}
+
+function onlyAppInfoNotDone(context: EDITOR_APP_CONTEXT) {
+  return (
+    context.appInfo === null &&
     context.projectInfo !== null &&
     context.pagesInfo !== null
   );
@@ -168,23 +183,46 @@ export function createEditorAppMachine(id: string) {
       states: {
         [booting]: {
           on: {
-            [APP_INFO_FETCHED]: {
-              target: loading_app,
-              actions: ["setAppInfo"],
-              cond: isBootupComplete,
-            },
-            [PROJECT_INFO_FETCHED]: {
-              target: loading_app,
-              actions: ["setProjectInfo"],
-              cond: isBootupComplete,
-            },
-            [APP_INFO_FETCHED]: {
-              target: loading_app,
-              actions: ["setPagesInfo"],
-              cond: isBootupComplete,
-            },
+            [APP_INFO_FETCHED]: [
+              {
+                target: loading_app,
+                actions: ["setAppInfo"],
+                cond: onlyAppInfoNotDone,
+              },
+              {
+                actions: ["setAppInfo"],
+              },
+            ],
+            [PROJECT_INFO_FETCHED]: [
+              {
+                target: loading_app,
+                actions: ["setProjectInfo"],
+                cond: onlyProjectInfoNotDone,
+              },
+              {
+                actions: ["setProjectInfo"],
+              },
+            ],
+            [PAGES_INFO_FETCHED]: [
+              {
+                target: loading_app,
+                actions: ["setPagesInfo"],
+                cond: onlyPagesInfoNotDone,
+              },
+              {
+                actions: ["setPagesInfo"],
+              },
+            ],
           },
-          exit: (context) => {
+          exit: (context, event) => {
+            // The if-else block is due to bug in xstate (exit action is called before event action)
+            if (event.type === "PAGES_INFO_FETCHED") {
+              context.pagesInfo = event.info;
+            } else if (event.type === "APP_INFO_FETCHED") {
+              context.appInfo = event.info;
+            } else if (event.type === "PROJECT_INFO_FETCHED") {
+              context.projectInfo = event.info;
+            }
             callSubscribers("afterbootup", context);
           },
         },

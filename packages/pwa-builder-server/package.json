@@ -17,8 +17,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
-    "start": "APP_HOSTNAME='http://localhost:3000' node dist/dev.js"
+    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

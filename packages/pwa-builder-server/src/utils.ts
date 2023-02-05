@@ -14,7 +14,7 @@ export function getProjectInfo() {
   ) {
     throw Error("project id not found in package.json");
   }
-  return pkgJSON["atriConfig"]["id"];
+  return { id: pkgJSON["atriConfig"]["id"] };
 }
 
 export function getAppInfo() {

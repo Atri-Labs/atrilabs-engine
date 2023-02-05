@@ -3,17 +3,12 @@ import {
   editorAppMachineInterpreter,
   subscribeEditorMachine,
 } from "@atrilabs/pwa-builder-manager";
+import { PageInfo } from "../types";
 
 export function useGetPageInfo() {
-  const [pagesInfo, setPagesInfo] = useState<
-    | {
-        routeObjectPath: string;
-        unixFilepath: string;
-      }[]
-    | null
-  >();
+  const [pagesInfo, setPagesInfo] = useState<PageInfo | null>(null);
 
-  const [currentPageUnixFilepath] = useState<string>("/index");
+  const [selectedPageRouteObjectPath] = useState<string>("/");
 
   useEffect(() => {
     if (editorAppMachineInterpreter.getSnapshot().value !== "booting") {
@@ -25,5 +20,5 @@ export function useGetPageInfo() {
       });
     }
   }, []);
-  return { pagesInfo, currentPageUnixFilepath };
+  return { pagesInfo, selectedPageRouteObjectPath };
 }

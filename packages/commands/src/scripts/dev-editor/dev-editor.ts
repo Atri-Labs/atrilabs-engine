@@ -209,6 +209,9 @@ function main() {
       outputFilename: "editor/js/pages/[name].js",
       customLoaders,
       generateIndexHtml: true,
+      proxy: {
+        "/socket.io": "http://localhost:4000/socket.io",
+      },
       babel: {
         plugins: [
           [

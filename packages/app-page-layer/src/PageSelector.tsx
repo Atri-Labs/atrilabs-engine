@@ -1,10 +1,10 @@
 import { Container } from "@atrilabs/core";
 import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
-import { useGetPageTableData } from "./old-hooks/useGetPageTableData";
 import { ArrowDown } from "./icons/ArrowDown";
-import { PageEditor } from "./PageEditor";
 import "./stylesheets/formfield.module.css";
+import { useGetPageInfo } from "./hooks/useGetPageInfo";
+import { PageTree } from "./PageTree";
 interface PageSelectorProps {}
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -39,8 +39,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
     setShowPageEditor(false);
   }, []);
 
-  const { selectedPage, pageTableData, loadData, changePageCb } =
-    useGetPageTableData();
+  const { pagesInfo, selectedPageRouteObjectPath } = useGetPageInfo();
 
   return (
     <div
@@ -52,18 +51,18 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       className="tool-tip"
     >
       <div>Page:</div>
-      <div style={styles.p}>{selectedPage ? selectedPage.name : null}</div>
+      <div style={styles.p}>{selectedPageRouteObjectPath}</div>
       <span style={styles.span}>
         <ArrowDown />
       </span>
-      {showPageEditor && selectedPage ? (
+      {showPageEditor && pagesInfo ? (
         <Container name="Drop" onClose={closePageEditor}>
-          <PageEditor
-            close={closePageEditor}
-            pageTableData={pageTableData}
-            loadData={loadData}
-            selectedPage={selectedPage}
-            changePageCb={changePageCb}
+          <PageTree
+            onCloseClicked={() => {
+              setShowPageEditor(false);
+            }}
+            pagesInfo={pagesInfo}
+            selectedPageRouteObjectPath={selectedPageRouteObjectPath}
           />
         </Container>
       ) : null}
