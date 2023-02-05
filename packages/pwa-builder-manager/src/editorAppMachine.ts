@@ -3,6 +3,7 @@ import { createMachine, interpret } from "xstate";
 // events
 const APP_INFO_FETCHED = "APP_INFO_FETCHED" as const;
 const PROJECT_INFO_FETCHED = "PROJECT_INFO_FETCHED" as const;
+const PAGES_INFO_FETCHED = "PAGES_INFO_FETCHED" as const;
 const PAGE_EVENTS_FETCHED = "PAGE_EVENTS_FETCHED" as const;
 const CANVAS_IFRAME_LOADED = "CANVAS_IFRAME_LOADED" as const;
 const NAVIGATE_PAGE = "NAVIGATE_PAGE" as const;
@@ -15,6 +16,15 @@ type PROJECT_INFO_FETCHED_EVENT = {
   type: typeof PROJECT_INFO_FETCHED;
   info: { id: string };
 };
+type PAGES_INFO_FETCHED_EVENT = {
+  type: typeof PAGES_INFO_FETCHED;
+  info:
+    | {
+        routeObjectPath: string;
+        unixFilepath: string;
+      }[]
+    | null;
+};
 type PAGE_EVENTS_FETCHED_EVENT = {
   type: typeof PAGE_EVENTS_FETCHED;
   urlPath: string;
@@ -26,6 +36,7 @@ type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE };
 type EDITOR_APP_EVENTS =
   | APP_INFO_FETCHED_EVENT
   | PROJECT_INFO_FETCHED_EVENT
+  | PAGES_INFO_FETCHED_EVENT
   | PAGE_EVENTS_FETCHED_EVENT
   | CANVAS_IFRAME_LOADED_EVENT
   | NAVIGATE_PAGE_EVENT;
@@ -39,6 +50,12 @@ const ready = "ready" as const; // ready for drag-drop events
 type EDITOR_APP_CONTEXT = {
   projectInfo: { id: string } | null;
   appInfo: { hostname: string } | null;
+  pagesInfo:
+    | {
+        routeObjectPath: string;
+        unixFilepath: string;
+      }[]
+    | null;
   currentRouteObjectPath: string;
   currentUrlPath: string;
   events: { [urlPath: string]: { [canvasZoneId: string]: any[] } };
@@ -48,7 +65,11 @@ type EDITOR_APP_CONTEXT = {
 // conds
 
 function isBootupComplete(context: EDITOR_APP_CONTEXT) {
-  return context.appInfo !== null && context.projectInfo !== null;
+  return (
+    context.appInfo !== null &&
+    context.projectInfo !== null &&
+    context.pagesInfo !== null
+  );
 }
 
 function isLoadingAppComplete(context: EDITOR_APP_CONTEXT) {
@@ -72,6 +93,13 @@ function setProjectInfo(
   event: PROJECT_INFO_FETCHED_EVENT
 ) {
   context.projectInfo = event.info;
+}
+
+function setPagesInfo(
+  context: EDITOR_APP_CONTEXT,
+  event: PAGES_INFO_FETCHED_EVENT
+) {
+  context.pagesInfo = event.info;
 }
 
 function setPageEvents(
@@ -102,6 +130,12 @@ export function createEditorAppMachine(id: string) {
       case "afterbootup":
         subscribers[state].push(cb);
     }
+    return () => {
+      const foundIndex = subscribers[state].findIndex((curr) => curr === cb);
+      if (foundIndex >= 0) {
+        subscribers[state].splice(foundIndex, 1);
+      }
+    };
   }
 
   function callSubscribers(
@@ -120,9 +154,11 @@ export function createEditorAppMachine(id: string) {
   const editorAppMachine = createMachine<EDITOR_APP_CONTEXT, EDITOR_APP_EVENTS>(
     {
       id: id,
+      predictableActionArguments: true,
       context: {
         projectInfo: null,
         appInfo: null,
+        pagesInfo: null,
         currentRouteObjectPath: "/",
         currentUrlPath: "/",
         events: {},
@@ -140,6 +176,11 @@ export function createEditorAppMachine(id: string) {
             [PROJECT_INFO_FETCHED]: {
               target: loading_app,
               actions: ["setProjectInfo"],
+              cond: isBootupComplete,
+            },
+            [APP_INFO_FETCHED]: {
+              target: loading_app,
+              actions: ["setPagesInfo"],
               cond: isBootupComplete,
             },
           },
@@ -174,6 +215,7 @@ export function createEditorAppMachine(id: string) {
         setProjectInfo,
         setPageEvents,
         setIframeStatusToDone,
+        setPagesInfo,
       },
     }
   );

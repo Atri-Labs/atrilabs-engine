@@ -380,3 +380,25 @@ export type ManifestIR = {
   manifest: string;
   pkg: string;
 };
+
+export interface ServerToClientEvents {
+  newEvent: (urlPath: string, event: AnyEvent) => void;
+}
+
+export interface ClientToServerEvents {
+  getProjectInfo: (callback: (info: { id: string }) => void) => void;
+  getAppInfo: (callback: (info: { hostname: string }) => void) => void;
+  getPagesInfo: (
+    callback: (
+      info: { routeObjectPath: string; unixFilepath: string }[]
+    ) => void
+  ) => void;
+  fetchEvents: (
+    urlPath: string,
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+}
+
+export interface InterServerEvents {}
+
+export interface SocketData {}

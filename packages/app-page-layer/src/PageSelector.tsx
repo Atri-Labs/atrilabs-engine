@@ -1,7 +1,7 @@
 import { Container } from "@atrilabs/core";
 import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
-import { useGetPageTableData } from "./hooks/useGetPageTableData";
+import { useGetPageTableData } from "./old-hooks/useGetPageTableData";
 import { ArrowDown } from "./icons/ArrowDown";
 import { PageEditor } from "./PageEditor";
 import "./stylesheets/formfield.module.css";

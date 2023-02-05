@@ -21,7 +21,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "dev": "dev-editor -i '@atrilabs/shared-layer-lib:@atrilabs/canvas-runtime-utils'"
+    "dev": "dev-editor -i '@atrilabs/shared-layer-lib:@atrilabs/canvas-runtime-utils:@atrilabs/pwa-builder-manager'"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
@@ -44,6 +44,7 @@
     "@atrilabs/manage-canvas-runtime-layer": "^0.0.90",
     "@atrilabs/overlay-hints-layer": "^0.0.90",
     "@atrilabs/publish-app-layer": "^0.0.90",
+    "@atrilabs/pwa-builder-manager": "^0.0.90",
     "@atrilabs/resource-processor-layer": "^0.0.90",
     "@atrilabs/services-status-layer": "^0.0.90",
     "@atrilabs/undo-redo-layer": "^0.0.90",

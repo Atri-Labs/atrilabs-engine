@@ -2,7 +2,6 @@ import { mergeWith } from "lodash";
 import { createTree } from "./tree";
 import {
   CreateEvent,
-  ForestDef,
   LinkEvent,
   PatchEvent,
   UnlinkEvent,
@@ -15,6 +14,7 @@ import {
   EventMetaData,
   TreeNode,
   HardPatchEvent,
+  TreeDef,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -24,7 +24,7 @@ function mergeStateCustomizer(obj: any, src: any) {
   }
 }
 
-export function createForest(def: ForestDef): Forest {
+export function createForest(def: { trees: TreeDef[] }): Forest {
   const treeDefs = def.trees;
 
   if (treeDefs.length === 0) {

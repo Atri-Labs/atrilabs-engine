@@ -13,7 +13,7 @@ import {
 } from "@atrilabs/design-system";
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
-import { useSocketApi } from "../hooks/useCreateFolder";
+import { useSocketApi } from "../old-hooks/useCreateFolder";
 import { PageTableData } from "../types";
 
 const styles: { [key: string]: React.CSSProperties } = {
