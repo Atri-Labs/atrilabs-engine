@@ -16,16 +16,6 @@ socket.on("connect", () => {
   });
 });
 
-window.addEventListener("message", (ev) => {
-  if (
-    ev.origin === editorAppMachineInterpreter.machine.context.appInfo?.hostname
-  ) {
-    if (ev.data === "ready") {
-      editorAppMachineInterpreter.send({ type: "CANVAS_IFRAME_LOADED" });
-    }
-  }
-});
-
 subscribeEditorMachine("before_app_load", (context) => {
   // fetch only if not already fetched
   if (context.events[context.currentUrlPath] === undefined) {
@@ -39,10 +29,4 @@ subscribeEditorMachine("before_app_load", (context) => {
   }
 });
 
-function navigatePage(urlPath: string) {
-  editorAppMachineInterpreter.send({ type: "NAVIGATE_PAGE", urlPath });
-}
-
-export const api = {
-  navigatePage,
-};
+export const api = {};

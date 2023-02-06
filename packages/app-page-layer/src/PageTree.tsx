@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { PageInfo } from "./types";
-import { api } from "@atrilabs/pwa-builder-manager";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
 
 export const PageTree: React.FC<{
   pagesInfo: PageInfo;
@@ -8,7 +8,7 @@ export const PageTree: React.FC<{
   onCloseClicked: () => void;
 }> = (props) => {
   const onPageClicked = useCallback((urlPath: string) => {
-    api.navigatePage(urlPath);
+    canvasApi.navigatePage(urlPath);
   }, []);
   return (
     <div>
