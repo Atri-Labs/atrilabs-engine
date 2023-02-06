@@ -38,3 +38,11 @@ subscribeEditorMachine("before_app_load", (context) => {
     });
   }
 });
+
+function navigatePage(urlPath: string) {
+  editorAppMachineInterpreter.send({ type: "NAVIGATE_PAGE", urlPath });
+}
+
+export const api = {
+  navigatePage,
+};

@@ -132,6 +132,14 @@ function setIframeStatusToDone(context: EDITOR_APP_CONTEXT) {
   context.iframeLoadStatus = "done";
 }
 
+function setCurrentUrlPath(
+  context: EDITOR_APP_CONTEXT,
+  event: NAVIGATE_PAGE_EVENT
+) {
+  context.currentUrlPath = event.urlPath;
+  context.currentRouteObjectPath = event.urlPath;
+}
+
 export function createEditorAppMachine(id: string) {
   type SUBSCRIPTION_STATES = "afterbootup" | "before_app_load" | "ready";
 
@@ -255,7 +263,10 @@ export function createEditorAppMachine(id: string) {
         },
         [ready]: {
           on: {
-            [NAVIGATE_PAGE]: { target: loading_app },
+            [NAVIGATE_PAGE]: {
+              target: loading_app,
+              actions: ["setCurrentUrlPath"],
+            },
           },
           entry: (context) => {
             callSubscribers("ready", context);
@@ -270,6 +281,7 @@ export function createEditorAppMachine(id: string) {
         setPageEvents,
         setIframeStatusToDone,
         setPagesInfo,
+        setCurrentUrlPath,
       },
     }
   );
