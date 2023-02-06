@@ -34,3 +34,15 @@ export async function getPagesInfo() {
     return { routeObjectPath, unixFilepath: filePaths[index] };
   });
 }
+
+function getEventsJSONFilename(unixFilepath: string) {
+  return unixFilepath.replace(/(\.js)|(\.jsx)|(\.ts)|(\.tsx)/, ".json");
+}
+
+export function loadEventsForPage(unixFilepath: string) {
+  const filename = getEventsJSONFilename(unixFilepath);
+  if (fs.existsSync(filename)) {
+    return fs.readFileSync(unixFilepath);
+  }
+  return Buffer.from(JSON.stringify({}));
+}

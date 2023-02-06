@@ -32,6 +32,10 @@ io.on("connection", (socket) => {
     const pagesInfo = await getPagesInfo();
     cb(pagesInfo);
   });
+  socket.on("fetchEvents", (urlPath, cb) => {
+    // TODO: call loadEventsForPage
+    cb([]);
+  });
 });
 
 const port = process.env["PORT"] ? parseInt(process.env["PORT"]) : 4000;

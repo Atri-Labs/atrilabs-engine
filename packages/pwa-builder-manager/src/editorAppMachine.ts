@@ -31,7 +31,7 @@ type PAGE_EVENTS_FETCHED_EVENT = {
   events: { [canvasZoneId: string]: any[] };
 };
 type CANVAS_IFRAME_LOADED_EVENT = { type: typeof CANVAS_IFRAME_LOADED };
-type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE };
+type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE; urlPath: string };
 
 type EDITOR_APP_EVENTS =
   | APP_INFO_FETCHED_EVENT
