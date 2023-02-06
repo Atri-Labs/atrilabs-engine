@@ -3,6 +3,7 @@ import { matchRoutes } from "react-router-dom";
 import chalk from "chalk";
 import path from "path";
 import { SERVER_DIR } from "../../consts";
+import { interpreter } from "./init";
 
 /**
  * This request arrives when a page is requested
@@ -75,7 +76,13 @@ export function getRequestType(req: Request) {
 
 export function printRequest(req: Request) {
   const requestType = getRequestType(req);
-  console.log(chalk.green(`${requestType} ${req.originalUrl}`));
+  console.log(
+    chalk.green(
+      `${requestType} ${req.originalUrl} while ${
+        interpreter.getSnapshot().value
+      }`
+    )
+  );
 }
 
 /**

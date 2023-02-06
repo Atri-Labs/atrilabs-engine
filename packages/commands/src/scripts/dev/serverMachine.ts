@@ -322,7 +322,6 @@ export function createServerMachine(id: string) {
                 actions: ["setLibServerToDone"],
               },
               {
-                target: processing,
                 actions: ["setLibServerToDone"],
               },
             ],
@@ -333,7 +332,6 @@ export function createServerMachine(id: string) {
                 actions: ["setAppServerToDone"],
               },
               {
-                target: processing,
                 actions: ["setAppServerToDone"],
               },
             ],
@@ -344,13 +342,10 @@ export function createServerMachine(id: string) {
                 actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
               {
-                target: processing,
                 actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
             ],
-            [NETWORK_REQUEST]: [
-              { target: processing, actions: ["saveRequest"] },
-            ],
+            [NETWORK_REQUEST]: [{ actions: ["saveRequest"] }],
           },
         },
         [serving]: {
