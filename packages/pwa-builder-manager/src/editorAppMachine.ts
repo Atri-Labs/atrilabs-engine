@@ -255,6 +255,10 @@ export function createEditorAppMachine(id: string) {
               },
               { actions: ["setIframeStatusToDone"] },
             ],
+            [NAVIGATE_PAGE]: {
+              target: loading_app,
+              actions: ["setCurrentUrlPath"],
+            },
           },
           entry: (context) => {
             context.iframeLoadStatus = "progress";
