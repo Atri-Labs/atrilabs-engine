@@ -49,6 +49,7 @@ const layers = [
   { pkg: "@atrilabs/undo-redo-layer" },
   { pkg: "@atrilabs/component-navigator" },
   { pkg: "@atrilabs/services-status-layer" },
+  { pkg: "@atrilabs/pwa-canvas-layer" },
 ];
 
 const runtimes = [{ pkg: "@atrilabs/canvas-runtime" }];

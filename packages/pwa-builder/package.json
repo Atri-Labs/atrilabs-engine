@@ -45,6 +45,7 @@
     "@atrilabs/overlay-hints-layer": "^0.0.90",
     "@atrilabs/publish-app-layer": "^0.0.90",
     "@atrilabs/pwa-builder-manager": "^0.0.90",
+    "@atrilabs/pwa-canvas-layer": "^0.0.90",
     "@atrilabs/resource-processor-layer": "^0.0.90",
     "@atrilabs/services-status-layer": "^0.0.90",
     "@atrilabs/undo-redo-layer": "^0.0.90",
