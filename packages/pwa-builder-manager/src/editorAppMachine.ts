@@ -87,10 +87,14 @@ function onlyAppInfoNotDone(context: EDITOR_APP_CONTEXT) {
   );
 }
 
-function isLoadingAppComplete(context: EDITOR_APP_CONTEXT) {
+function onlyFetchingEventNotDone(context: EDITOR_APP_CONTEXT) {
+  return context.iframeLoadStatus === "done";
+}
+
+function onlyIframeLoadWasNotDone(context: EDITOR_APP_CONTEXT) {
   return (
-    context.iframeLoadStatus === "done" &&
-    context.events[context.currentUrlPath] !== undefined
+    context.events[context.currentUrlPath] !== undefined &&
+    context.iframeLoadStatus !== "done"
   );
 }
 
@@ -129,22 +133,21 @@ function setIframeStatusToDone(context: EDITOR_APP_CONTEXT) {
 }
 
 export function createEditorAppMachine(id: string) {
-  type SUBSCRIPTION_STATES = "afterbootup";
+  type SUBSCRIPTION_STATES = "afterbootup" | "before_app_load" | "ready";
 
   const subscribers: {
     [key in SUBSCRIPTION_STATES]: ((context: EDITOR_APP_CONTEXT) => void)[];
   } = {
     afterbootup: [],
+    before_app_load: [],
+    ready: [],
   };
 
   function subscribeEditorMachine(
     state: SUBSCRIPTION_STATES,
     cb: (context: EDITOR_APP_CONTEXT) => void
   ) {
-    switch (state) {
-      case "afterbootup":
-        subscribers[state].push(cb);
-    }
+    subscribers[state].push(cb);
     return () => {
       const foundIndex = subscribers[state].findIndex((curr) => curr === cb);
       if (foundIndex >= 0) {
@@ -228,21 +231,34 @@ export function createEditorAppMachine(id: string) {
         },
         [loading_app]: {
           on: {
-            [PAGE_EVENTS_FETCHED]: {
-              target: ready,
-              actions: ["setPageEvents"],
-              cond: isLoadingAppComplete,
-            },
-            [CANVAS_IFRAME_LOADED]: {
-              target: ready,
-              actions: ["setIframeStatusToDone"],
-              cond: isLoadingAppComplete,
-            },
+            [PAGE_EVENTS_FETCHED]: [
+              {
+                target: ready,
+                actions: ["setPageEvents"],
+                cond: onlyFetchingEventNotDone,
+              },
+              { actions: ["setPageEvents"] },
+            ],
+            [CANVAS_IFRAME_LOADED]: [
+              {
+                target: ready,
+                actions: ["setIframeStatusToDone"],
+                cond: onlyIframeLoadWasNotDone,
+              },
+              { actions: ["setIframeStatusToDone"] },
+            ],
+          },
+          entry: (context) => {
+            context.iframeLoadStatus = "progress";
+            callSubscribers("before_app_load", context);
           },
         },
         [ready]: {
           on: {
             [NAVIGATE_PAGE]: { target: loading_app },
+          },
+          entry: (context) => {
+            callSubscribers("ready", context);
           },
         },
       },

@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
   });
   socket.on("fetchEvents", (urlPath, cb) => {
     // TODO: call loadEventsForPage
-    cb([]);
+    cb({});
   });
 });
 

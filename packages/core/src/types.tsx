@@ -395,7 +395,7 @@ export interface ClientToServerEvents {
   ) => void;
   fetchEvents: (
     urlPath: string,
-    callback: (events: AnyEvent[]) => void
+    callback: (events: { [canvasZoneId: string]: AnyEvent[] }) => void
   ) => void;
 }
 
