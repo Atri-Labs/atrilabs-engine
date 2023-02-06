@@ -8,7 +8,8 @@ import { PageInfo } from "../types";
 export function useGetPageInfo() {
   const [pagesInfo, setPagesInfo] = useState<PageInfo | null>(null);
 
-  const [selectedPageRouteObjectPath] = useState<string>("/");
+  const [selectedPageRouteObjectPath, setSelectedPageRouteObjectPath] =
+    useState<string>("/");
 
   useEffect(() => {
     if (editorAppMachineInterpreter.getSnapshot().value !== "booting") {
@@ -19,6 +20,11 @@ export function useGetPageInfo() {
         setPagesInfo(context.pagesInfo);
       });
     }
+  }, []);
+  useEffect(() => {
+    return subscribeEditorMachine("before_app_load", (context) => {
+      setSelectedPageRouteObjectPath(context.currentRouteObjectPath);
+    });
   }, []);
   return { pagesInfo, selectedPageRouteObjectPath };
 }

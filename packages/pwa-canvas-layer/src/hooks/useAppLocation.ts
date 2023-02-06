@@ -5,8 +5,7 @@ export function useAppLocation() {
   const [currentRouteObjectPath, setCurrentRouteObjectPath] =
     useState<string>("/");
   useEffect(() => {
-    subscribeEditorMachine("before_app_load", (context) => {
-      console.log(context);
+    return subscribeEditorMachine("before_app_load", (context) => {
       setCurrentRouteObjectPath(context.currentRouteObjectPath);
     });
   }, []);
