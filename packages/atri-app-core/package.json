@@ -26,7 +26,8 @@
   "dependencies": {
     "react-router-dom": "^6.6.2",
     "recursive-readdir": "^2.2.3",
-    "upath": "^2.0.1"
+    "upath": "^2.0.1",
+    "xstate": "^4.35.4"
   },
   "devDependencies": {
     "@types/jest": "^29.2.3",
