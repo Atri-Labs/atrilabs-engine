@@ -6,7 +6,7 @@ export async function createEntry() {
   console.log("irs", irs);
   console.log("s", stringify({ irs: JSON.stringify(irs) }));
   return {
-    api: { import: "@atrilabs/core/src/entries/api" },
+    // api: { import: "@atrilabs/core/src/entries/api" },
     BrowserForestManager: {
       import: "@atrilabs/core/src/entries/BrowserForestManager",
     },
@@ -20,7 +20,7 @@ export async function createEntry() {
     },
     main: {
       import: "./src/index",
-      dependOn: ["api", "BrowserForestManager", "blockRegistry"],
+      dependOn: ["BrowserForestManager", "blockRegistry"],
     },
   };
 }

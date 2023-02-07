@@ -3,16 +3,16 @@ const appForestPkgId = "@atrilabs/app-design-forest";
 const forests = {
   [appForestPkgId]: [
     {
-      modulePath: "@atrilabs/app-design-forest/lib/componentTree.js",
+      modulePath: "@atrilabs/app-design-forest/src/componentTree.ts",
     },
     {
-      modulePath: "@atrilabs/app-design-forest/lib/cssTree.js",
+      modulePath: "@atrilabs/app-design-forest/src/cssTree.ts",
     },
     {
-      modulePath: "@atrilabs/app-design-forest/lib/customPropsTree.js",
+      modulePath: "@atrilabs/app-design-forest/src/customPropsTree.ts",
     },
     {
-      modulePath: "@atrilabs/app-design-forest/lib/callbackHandlerTree.js",
+      modulePath: "@atrilabs/app-design-forest/src/callbackHandlerTree.ts",
     },
   ],
 };

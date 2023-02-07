@@ -1,7 +1,4 @@
-import {
-  ArrayMapCustomProp,
-  MapCustomProp,
-} from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { ArrayMapCustomProp, MapCustomProp } from "@atrilabs/app-design-forest";
 import React from "react";
 import { useMemo } from "react";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
