@@ -5,7 +5,7 @@ import { useDragListener } from "./hooks/useDragListener";
 
 export default function () {
   const onClose = useCallback(() => {}, []);
-  const { DragComp } = useDragListener();
+  const { DragComp, overlayStyle } = useDragListener();
   return (
     <>
       <Container name="Canvas" onClose={onClose}>
@@ -13,7 +13,9 @@ export default function () {
       </Container>
       {DragComp ? (
         <Container name="PlaygroundOverlayContainer" onClose={() => {}}>
-          <DragComp.Comp {...DragComp.props} />
+          <div style={overlayStyle}>
+            <DragComp.Comp {...DragComp.props} />
+          </div>
         </Container>
       ) : null}
     </>

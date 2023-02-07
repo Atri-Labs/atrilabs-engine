@@ -231,6 +231,8 @@ export function createEditorAppMachine(id: string) {
     | "before_app_load"
     | "ready"
     | "drag_started"
+    | "drag_in_progress"
+    | "mouse_move_during_drag"
     | "drag_failed"
     | "component_created";
 
@@ -244,6 +246,8 @@ export function createEditorAppMachine(id: string) {
     before_app_load: [],
     ready: [],
     drag_started: [],
+    drag_in_progress: [],
+    mouse_move_during_drag: [],
     drag_failed: [],
     component_created: [],
   };
@@ -273,6 +277,13 @@ export function createEditorAppMachine(id: string) {
         console.error(`Failed to run a subscriber upon ${state}`);
       }
     });
+  }
+
+  function emitMouseMoveDuringDrag(
+    context: EDITOR_APP_CONTEXT,
+    event: MOUSE_MOVE_EVENT
+  ) {
+    callSubscribers("mouse_move_during_drag", context, event);
   }
 
   const editorAppMachine = createMachine<EDITOR_APP_CONTEXT, EDITOR_APP_EVENTS>(
@@ -402,13 +413,18 @@ export function createEditorAppMachine(id: string) {
             },
             [drag_in_progress]: {
               on: {
-                [MOUSE_MOVE]: { actions: ["setMousePosition"] },
+                [MOUSE_MOVE]: {
+                  actions: ["setMousePosition", "emitMouseMoveDuringDrag"],
+                },
                 [MOUSE_UP]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
                 [OUTSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
                 [DROPZONE_CREATED]: { actions: ["setDropzone"] },
                 [COMPONENT_CREATED]: { target: `#${id}.${ready}` },
                 [DRAG_FAILED]: { target: `#${id}.${ready}` },
+              },
+              entry: (context, event) => {
+                callSubscribers("drag_in_progress", context, event);
               },
             },
           },
@@ -421,7 +437,7 @@ export function createEditorAppMachine(id: string) {
             if (event.type === "COMPONENT_CREATED") {
               callSubscribers("component_created", context, event);
             }
-            if (event.type === "DRAG_FAILED") {
+            if (event.type === "DRAG_FAILED" || event.type === "MOUSE_UP") {
               callSubscribers("drag_failed", context, event);
             }
           },
@@ -440,6 +456,7 @@ export function createEditorAppMachine(id: string) {
         setMousePosition,
         setCanvasMousePosition,
         setDropzone,
+        emitMouseMoveDuringDrag,
       },
     }
   );
