@@ -19,7 +19,12 @@ function startDrag(dragComp: DragComp, dragData: DragData) {
   editorAppMachineInterpreter.send({ type: "START_DRAG", dragData, dragComp });
 }
 
+function mouseUpInPlayground(event: { pageX: number; pageY: number }) {
+  editorAppMachineInterpreter.send({ type: "MOUSE_UP", event });
+}
+
 export const canvasApi = {
   navigatePage,
   startDrag,
+  mouseUpInPlayground,
 };

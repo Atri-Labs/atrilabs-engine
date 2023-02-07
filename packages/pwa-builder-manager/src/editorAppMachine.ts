@@ -10,6 +10,7 @@ const CANVAS_IFRAME_LOADED = "CANVAS_IFRAME_LOADED" as const;
 const NAVIGATE_PAGE = "NAVIGATE_PAGE" as const;
 const START_DRAG = "START_DRAG" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
+const MOUSE_UP = "MOUSE_UP" as const;
 const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const DROPZONE_CREATED = "DROPZONE_CREATED" as const;
@@ -49,6 +50,10 @@ type MOUSE_MOVE_EVENT = {
   type: typeof MOUSE_MOVE;
   event: { pageX: number; pageY: number };
 };
+type MOUSE_UP_EVENT = {
+  type: typeof MOUSE_UP;
+  event: { pageX: number; pageY: number };
+};
 type INSIDE_CANVAS_EVENT = {
   type: typeof INSIDE_CANVAS;
   event: { canvasPageX: number; canvasPageY: number };
@@ -77,6 +82,7 @@ type EDITOR_APP_EVENTS =
   | NAVIGATE_PAGE_EVENT
   | START_DRAG_EVENT
   | MOUSE_MOVE_EVENT
+  | MOUSE_UP_EVENT
   | INSIDE_CANVAS_EVENT
   | OUTSIDE_CANVAS_EVENT
   | DROPZONE_CREATED_EVENT
@@ -224,6 +230,7 @@ export function createEditorAppMachine(id: string) {
     | "afterbootup"
     | "before_app_load"
     | "ready"
+    | "drag_started"
     | "drag_failed"
     | "component_created";
 
@@ -236,6 +243,7 @@ export function createEditorAppMachine(id: string) {
     afterbootup: [],
     before_app_load: [],
     ready: [],
+    drag_started: [],
     drag_failed: [],
     component_created: [],
   };
@@ -384,16 +392,23 @@ export function createEditorAppMachine(id: string) {
                   target: drag_in_progress,
                   actions: ["setMousePosition"],
                 },
+                [MOUSE_UP]: {
+                  target: `#${id}.${ready}`,
+                },
+              },
+              entry: (context, event) => {
+                callSubscribers("drag_started", context, event);
               },
             },
             [drag_in_progress]: {
               on: {
                 [MOUSE_MOVE]: { actions: ["setMousePosition"] },
+                [MOUSE_UP]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
                 [OUTSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
                 [DROPZONE_CREATED]: { actions: ["setDropzone"] },
-                [COMPONENT_CREATED]: { target: `..${ready}` },
-                [DRAG_FAILED]: { target: `..${ready}` },
+                [COMPONENT_CREATED]: { target: `#${id}.${ready}` },
+                [DRAG_FAILED]: { target: `#${id}.${ready}` },
               },
             },
           },

@@ -54,15 +54,24 @@ export const CategoryList: React.FC<CategoryListProps> = (props) => {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      startDragCb(comp.manifest.drag, {
-                        type: "component",
-                        data: {
-                          key: comp.manifest.renderSchema.meta.key,
-                          pkg: comp.pkg,
-                          manifestSchema: ReactComponentManifestSchemaId,
-                          id: getId(),
+                      startDragCb(
+                        {
+                          comp: comp.manifest.drag.comp,
+                          props: {
+                            ...comp.manifest.drag.props,
+                            svg: comp.icon,
+                          },
                         },
-                      });
+                        {
+                          type: "component",
+                          data: {
+                            key: comp.manifest.renderSchema.meta.key,
+                            pkg: comp.pkg,
+                            manifestSchema: ReactComponentManifestSchemaId,
+                            id: getId(),
+                          },
+                        }
+                      );
                     }}
                   >
                     {comp.manifest.panel.comp === "CommonIcon" ? (
