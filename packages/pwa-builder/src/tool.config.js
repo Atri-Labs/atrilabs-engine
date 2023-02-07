@@ -1,4 +1,4 @@
-const appForestPkgId = "@atrilabs/app-design-forest";
+const appForestPkgId = "@atrilabs/app-design-forest/src/index.ts";
 
 const forests = {
   [appForestPkgId]: [

@@ -4,7 +4,7 @@ import {
   manifestRegistryController,
 } from "@atrilabs/core";
 import React, { useCallback, useEffect, useState } from "react";
-import cssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import cssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";

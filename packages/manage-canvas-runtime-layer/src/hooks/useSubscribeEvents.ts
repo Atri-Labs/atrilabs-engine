@@ -16,7 +16,7 @@ import {
   updateComponentProps,
 } from "@atrilabs/canvas-runtime";
 import type { LinkUpdate, TreeNode, WireUpdate } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
 

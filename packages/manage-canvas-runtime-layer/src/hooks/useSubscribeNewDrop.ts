@@ -8,7 +8,7 @@ import {
   manifestRegistryController,
 } from "@atrilabs/core";
 import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";

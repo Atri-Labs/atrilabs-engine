@@ -9,7 +9,7 @@ import {
 } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {

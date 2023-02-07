@@ -5,7 +5,7 @@ import {
 } from "@atrilabs/canvas-runtime";
 import { api, BrowserForestManager } from "@atrilabs/core";
 import { useEffect } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { DeleteEvent } from "@atrilabs/forest";
 
 export const useDeleteKey = () => {

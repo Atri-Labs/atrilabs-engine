@@ -1,9 +1,9 @@
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CommonIcon } from "../CommonIcon";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import { ReactComponent as Icon } from "./icon.svg";
