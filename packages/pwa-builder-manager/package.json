@@ -21,6 +21,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/atri-app-core": "^0.0.90",
     "@atrilabs/core": "^0.0.90",
     "xstate": "^4.35.4"
   }

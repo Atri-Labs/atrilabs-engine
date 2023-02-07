@@ -1,3 +1,4 @@
+import type { DragData } from "@atrilabs/atri-app-core";
 import { createMachine, interpret } from "xstate";
 
 // events
@@ -7,6 +8,10 @@ const PAGES_INFO_FETCHED = "PAGES_INFO_FETCHED" as const;
 const PAGE_EVENTS_FETCHED = "PAGE_EVENTS_FETCHED" as const;
 const CANVAS_IFRAME_LOADED = "CANVAS_IFRAME_LOADED" as const;
 const NAVIGATE_PAGE = "NAVIGATE_PAGE" as const;
+const START_DRAG = "START_DRAG" as const;
+const MOUSE_MOVE = "MOUSE_MOVE" as const;
+const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
+const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 
 type APP_INFO_FETCHED_EVENT = {
   type: typeof APP_INFO_FETCHED;
@@ -32,6 +37,19 @@ type PAGE_EVENTS_FETCHED_EVENT = {
 };
 type CANVAS_IFRAME_LOADED_EVENT = { type: typeof CANVAS_IFRAME_LOADED };
 type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE; urlPath: string };
+type START_DRAG_EVENT = { type: typeof START_DRAG; dragData: DragData };
+type MOUSE_MOVE_EVENT = {
+  type: typeof MOUSE_MOVE;
+  event: { pageX: number; pageY: number };
+};
+type INSIDE_CANVAS_EVENT = {
+  type: typeof INSIDE_CANVAS;
+  event: { pageX: number; pageY: number };
+};
+type OUTSIDE_CANVAS_EVENT = {
+  type: typeof OUTSIDE_CANVAS;
+  event: { pageX: number; pageY: number };
+};
 
 type EDITOR_APP_EVENTS =
   | APP_INFO_FETCHED_EVENT
@@ -39,12 +57,19 @@ type EDITOR_APP_EVENTS =
   | PAGES_INFO_FETCHED_EVENT
   | PAGE_EVENTS_FETCHED_EVENT
   | CANVAS_IFRAME_LOADED_EVENT
-  | NAVIGATE_PAGE_EVENT;
+  | NAVIGATE_PAGE_EVENT
+  | START_DRAG_EVENT
+  | MOUSE_MOVE_EVENT
+  | INSIDE_CANVAS_EVENT
+  | OUTSIDE_CANVAS_EVENT;
 
 // states
 const booting = "booting" as const; // initial data fetching is done
 const loading_app = "loading_app" as const; // the app in the canvas is
 const ready = "ready" as const; // ready for drag-drop events
+const drag_drop = "drag_drop" as const; // drag-drop related states
+const drag_started = "drag_started" as const;
+const drag_in_progress = "drag_in_progress" as const;
 
 // context
 type EDITOR_APP_CONTEXT = {
@@ -60,6 +85,8 @@ type EDITOR_APP_CONTEXT = {
   currentUrlPath: string;
   events: { [urlPath: string]: { [canvasZoneId: string]: any[] } };
   iframeLoadStatus: "done" | "progress";
+  dragData: DragData | null;
+  mousePosition: { pageX: number; pageY: number } | null;
 };
 
 // conds
@@ -140,6 +167,17 @@ function setCurrentUrlPath(
   context.currentRouteObjectPath = event.urlPath;
 }
 
+function setDragData(context: EDITOR_APP_CONTEXT, event: START_DRAG_EVENT) {
+  context.dragData = event.dragData;
+}
+
+function setMousePosition(
+  context: EDITOR_APP_CONTEXT,
+  event: MOUSE_MOVE_EVENT
+) {
+  context.mousePosition = event.event;
+}
+
 export function createEditorAppMachine(id: string) {
   type SUBSCRIPTION_STATES = "afterbootup" | "before_app_load" | "ready";
 
@@ -189,6 +227,8 @@ export function createEditorAppMachine(id: string) {
         currentUrlPath: "/",
         events: {},
         iframeLoadStatus: "progress",
+        dragData: null,
+        mousePosition: null,
       },
       initial: booting,
       states: {
@@ -271,9 +311,35 @@ export function createEditorAppMachine(id: string) {
               target: loading_app,
               actions: ["setCurrentUrlPath"],
             },
+            [START_DRAG]: {
+              target: drag_drop,
+              actions: ["setDragData"],
+            },
           },
           entry: (context) => {
             callSubscribers("ready", context);
+          },
+        },
+        [drag_drop]: {
+          initial: drag_started,
+          states: {
+            [drag_started]: {
+              on: {
+                [MOUSE_MOVE]: {
+                  target: drag_in_progress,
+                  actions: ["setMousePosition"],
+                },
+              },
+            },
+            [drag_in_progress]: {
+              on: {
+                [MOUSE_MOVE]: { actions: ["setMousePosition"] },
+              },
+            },
+          },
+          exit: (context) => {
+            context.dragData = null;
+            context.mousePosition = null;
           },
         },
       },
@@ -286,6 +352,8 @@ export function createEditorAppMachine(id: string) {
         setIframeStatusToDone,
         setPagesInfo,
         setCurrentUrlPath,
+        setDragData,
+        setMousePosition,
       },
     }
   );
