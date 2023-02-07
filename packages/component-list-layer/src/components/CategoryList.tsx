@@ -3,6 +3,8 @@ import { getId } from "@atrilabs/core";
 import { gray300, gray900, smallText } from "@atrilabs/design-system";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
+import { DragComp, DragData } from "@atrilabs/atri-app-core";
+import { CommonIcon } from "@atrilabs/atri-app-core/src/editor-components/CommonIcon";
 
 const styles: { [key: string]: React.CSSProperties } = {
   mainContainer: {
@@ -20,18 +22,16 @@ export type CategoryListProps = {
     [category: string]: {
       pkg: string;
       manifest: any;
+      icon: React.FC<any> | null;
     }[];
   };
   categoryName: string;
 };
 
 export const CategoryList: React.FC<CategoryListProps> = (props) => {
-  const startDragCb = useCallback(
-    (...args: Parameters<typeof canvasApi.startDrag>) => {
-      canvasApi.startDrag(...args);
-    },
-    []
-  );
+  const startDragCb = useCallback((dragComp: DragComp, dragData: DragData) => {
+    canvasApi.startDrag(dragComp, dragData);
+  }, []);
 
   return (
     <>
@@ -65,7 +65,14 @@ export const CategoryList: React.FC<CategoryListProps> = (props) => {
                       });
                     }}
                   >
-                    <comp.manifest.panel.comp {...comp.manifest.panel.props} />
+                    {comp.manifest.panel.comp === "CommonIcon" ? (
+                      <CommonIcon
+                        {...comp.manifest.panel.props}
+                        svg={comp.icon}
+                      />
+                    ) : (
+                      "Invalid Icon"
+                    )}
                   </div>
                 );
               }

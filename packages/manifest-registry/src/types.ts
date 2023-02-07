@@ -12,6 +12,7 @@ export type ManifestRegistry = {
       manifest: any;
       component: React.FC<any> | null;
       devComponent: React.FC<any> | null;
+      icon: React.FC<any> | null;
     }[];
   };
 };
@@ -32,5 +33,6 @@ export type ManifestRegistryController = {
     component: React.FC<any>;
     devComponent: React.FC<any>;
     pkg: string;
+    icon: React.FC<any>;
   }) => void;
 };

@@ -3,7 +3,6 @@ function registerComponentLoader() {
    * @type {import("@atrilabs/core").ManifestIR[]}
    */
   const irs = JSON.parse(this.getOptions().irs);
-  console.log("fromload", irs);
   return `
   import { manifestRegistryController } from "@atrilabs/core";
   ${irs
@@ -11,6 +10,11 @@ function registerComponentLoader() {
       return `
     import man_${index} from "${ir.manifest}";
     import comp_${index} from "${ir.component}";
+    import {ReactComponent as icon_${index}} from "${
+        ir.icon
+          ? ir.icon
+          : "@atrilabs/atri-app-core/src/editor-components/MissingIcon"
+      }";
     ${
       ir.devComponent
         ? `import devComp_${index} from "${ir.devComponent}"`
@@ -20,7 +24,8 @@ function registerComponentLoader() {
       manifestModule: man_${index},
       component: comp_${index},
       devComponent: devComp_${index},
-      pkg: "${ir.pkg}"
+      pkg: "${ir.pkg}",
+      icon: icon_${index}
     });
     `;
     })

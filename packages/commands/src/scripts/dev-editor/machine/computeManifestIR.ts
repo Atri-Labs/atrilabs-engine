@@ -7,6 +7,7 @@ import {
 } from "./editorServerMachine";
 import pkgUp from "pkg-up";
 import path from "path";
+import fs from "fs";
 
 function searchDevComponent(
   dirStructureSet: Set<string>,
@@ -31,14 +32,25 @@ function computeComponentName(manifestFile: string) {
   return manifestFile.replace(/(.manifest.(ts|tsx|js|jsx))$/, "");
 }
 
+function searchIconFile(dir: string, componentName: string) {
+  const iconFileName = path.join(dir, path.dirname(componentName), "icon.svg");
+  if (fs.existsSync(iconFileName)) {
+    return iconFileName;
+  }
+  return undefined;
+}
+
 function computeManifestIR(
   manifestFile: string,
   dirStructureSet: Set<string>,
-  pkg: string
-) {
+  pkg: string,
+  dir: string
+): ManifestIR | undefined {
   const componentName = computeComponentName(manifestFile);
 
   const devComponentFile = searchDevComponent(dirStructureSet, componentName);
+
+  const iconFile = searchIconFile(dir, componentName);
 
   let componentFilename: string | undefined = undefined;
   if (dirStructureSet.has(componentName + ".js")) {
@@ -59,6 +71,7 @@ function computeManifestIR(
       component: componentFilename,
       devComponent: devComponentFile,
       pkg,
+      icon: iconFile,
     };
   }
   return undefined;
@@ -80,7 +93,12 @@ async function computeManifestIRs(dir: string) {
   const dirStructureSet = new Set(dirStructure);
   const manifestIRs: ManifestIR[] = [];
   manifestFiles.forEach((manifestFile) => {
-    const manifestIR = computeManifestIR(manifestFile, dirStructureSet, pkg);
+    const manifestIR = computeManifestIR(
+      manifestFile,
+      dirStructureSet,
+      pkg,
+      dir
+    );
     if (manifestIR)
       manifestIRs.push({
         pkg: manifestIR.pkg,
@@ -89,6 +107,7 @@ async function computeManifestIRs(dir: string) {
           ? path.join(dir, manifestIR.devComponent)
           : undefined,
         manifest: path.join(dir, manifestIR.manifest),
+        icon: manifestIR.icon,
       });
   });
   return manifestIRs;

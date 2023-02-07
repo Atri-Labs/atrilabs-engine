@@ -52,8 +52,9 @@ function writeManifestsFromDefaultExport(exports: {
   component: React.FC<any>;
   devComponent: React.FC<any>;
   pkg: string;
+  icon: React.FC<any>;
 }) {
-  const { manifestModule, component, devComponent, pkg } = exports;
+  const { manifestModule, component, devComponent, pkg, icon } = exports;
   const manifestIds = Object.keys(manifestModule.manifests);
   manifestIds.forEach((manifestId) => {
     const manfiests: ManifestRegistry["0"]["manifests"] = [
@@ -62,6 +63,7 @@ function writeManifestsFromDefaultExport(exports: {
         component,
         devComponent,
         manifest: manifestModule.manifests[manifestId],
+        icon,
       },
     ];
     writeManifests(manifestId, manfiests);

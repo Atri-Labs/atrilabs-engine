@@ -23,14 +23,21 @@ export const useManifestRegistry = () => {
       [category: string]: {
         pkg: string;
         manifest: any;
+        icon: React.FC<any> | null;
       }[];
     } = {};
-    fullManifests.forEach(({ pkg, manifest }) => {
+    fullManifests.forEach(({ pkg, manifest, icon }) => {
       const reactComp = manifest.renderSchema;
       if (categorizedComponents[reactComp.meta.category]) {
-        categorizedComponents[reactComp.meta.category].push({ pkg, manifest });
+        categorizedComponents[reactComp.meta.category].push({
+          pkg,
+          manifest,
+          icon,
+        });
       } else {
-        categorizedComponents[reactComp.meta.category] = [{ pkg, manifest }];
+        categorizedComponents[reactComp.meta.category] = [
+          { pkg, manifest, icon },
+        ];
       }
     });
     // sort components in every category

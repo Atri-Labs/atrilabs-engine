@@ -378,7 +378,10 @@ export type ManifestIR = {
   devComponent?: string;
   // path to manifest file
   manifest: string;
+  // the package in which this manifest & component is located
   pkg: string;
+  // path to icon
+  icon?: string;
 };
 
 export interface ServerToClientEvents {

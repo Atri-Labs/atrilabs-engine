@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
-import { MissingIcon } from "./MissingIcon";
+import { ReactComponent as MissingIcon } from "./MissingIcon";
 import { gray200, gray700, smallText } from "@atrilabs/design-system";
-import "./styles.css";
 
 export type CommonIconsProps = {
   name: string;

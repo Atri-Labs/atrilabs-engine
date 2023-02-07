@@ -1,4 +1,4 @@
-import type { DragData } from "@atrilabs/atri-app-core";
+import type { DragComp, DragData } from "@atrilabs/atri-app-core";
 import { createMachine, interpret } from "xstate";
 
 // events
@@ -40,7 +40,11 @@ type PAGE_EVENTS_FETCHED_EVENT = {
 };
 type CANVAS_IFRAME_LOADED_EVENT = { type: typeof CANVAS_IFRAME_LOADED };
 type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE; urlPath: string };
-type START_DRAG_EVENT = { type: typeof START_DRAG; dragData: DragData };
+type START_DRAG_EVENT = {
+  type: typeof START_DRAG;
+  dragData: DragData;
+  dragComp: DragComp;
+};
 type MOUSE_MOVE_EVENT = {
   type: typeof MOUSE_MOVE;
   event: { pageX: number; pageY: number };
@@ -102,6 +106,7 @@ type EDITOR_APP_CONTEXT = {
   events: { [urlPath: string]: { [canvasZoneId: string]: any[] } };
   iframeLoadStatus: "done" | "progress";
   dragData: DragData | null;
+  dragComp: DragComp | null;
   mousePosition: { pageX: number; pageY: number } | null;
   canvasMousePosition: { pageX: number; pageY: number } | null;
   dropzone: { parent: { id: string; index: number } } | null;
@@ -187,6 +192,7 @@ function setCurrentUrlPath(
 
 function setDragData(context: EDITOR_APP_CONTEXT, event: START_DRAG_EVENT) {
   context.dragData = event.dragData;
+  context.dragComp = event.dragComp;
 }
 
 function setMousePosition(
@@ -277,6 +283,7 @@ export function createEditorAppMachine(id: string) {
         mousePosition: null,
         canvasMousePosition: null,
         dropzone: null,
+        dragComp: null,
       },
       initial: booting,
       states: {
@@ -395,6 +402,7 @@ export function createEditorAppMachine(id: string) {
             context.mousePosition = null;
             context.canvasMousePosition = null;
             context.dropzone = null;
+            context.dragComp = null;
             if (event.type === "COMPONENT_CREATED") {
               callSubscribers("component_created", context, event);
             }

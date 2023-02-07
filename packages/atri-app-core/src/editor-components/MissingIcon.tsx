@@ -1,6 +1,6 @@
 import React from "react";
 
-export const MissingIcon = () => {
+const MissingIcon = () => {
   return (
     <svg
       width="25"
@@ -21,3 +21,5 @@ export const MissingIcon = () => {
     </svg>
   );
 };
+
+export const ReactComponent = MissingIcon;

@@ -26,8 +26,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
-    "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core' -a '@atrilabs/atri-app-core'",
+    "build": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
+    "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles"
   },
@@ -52,6 +52,7 @@
     "@atrilabs/atri-app-core": "^0.0.90",
     "@atrilabs/commands-builder": "^0.0.90",
     "@atrilabs/core": "^0.0.90",
+    "@atrilabs/design-system": "^0.0.90",
     "@svgr/webpack": "^6.5.1",
     "bfj": "^7.0.2",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
