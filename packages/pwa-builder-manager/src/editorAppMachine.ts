@@ -12,6 +12,9 @@ const START_DRAG = "START_DRAG" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
+const DROPZONE_CREATED = "DROPZONE_CREATED" as const;
+const COMPONENT_CREATED = "COMPONENT_CREATED" as const;
+const DRAG_FAILED = "DRAG_FAILED" as const;
 
 type APP_INFO_FETCHED_EVENT = {
   type: typeof APP_INFO_FETCHED;
@@ -44,11 +47,21 @@ type MOUSE_MOVE_EVENT = {
 };
 type INSIDE_CANVAS_EVENT = {
   type: typeof INSIDE_CANVAS;
-  event: { pageX: number; pageY: number };
+  event: { canvasPageX: number; canvasPageY: number };
 };
 type OUTSIDE_CANVAS_EVENT = {
   type: typeof OUTSIDE_CANVAS;
-  event: { pageX: number; pageY: number };
+  event: { canvasPageX: number; canvasPageY: number };
+};
+type DROPZONE_CREATED_EVENT = {
+  type: typeof DROPZONE_CREATED;
+  parent: { id: string; index: number };
+};
+type COMPONENT_CREATED_EVENT = {
+  type: typeof COMPONENT_CREATED;
+};
+type DRAG_FAILED_EVENT = {
+  type: typeof DRAG_FAILED;
 };
 
 type EDITOR_APP_EVENTS =
@@ -61,7 +74,10 @@ type EDITOR_APP_EVENTS =
   | START_DRAG_EVENT
   | MOUSE_MOVE_EVENT
   | INSIDE_CANVAS_EVENT
-  | OUTSIDE_CANVAS_EVENT;
+  | OUTSIDE_CANVAS_EVENT
+  | DROPZONE_CREATED_EVENT
+  | COMPONENT_CREATED_EVENT
+  | DRAG_FAILED_EVENT;
 
 // states
 const booting = "booting" as const; // initial data fetching is done
@@ -87,6 +103,8 @@ type EDITOR_APP_CONTEXT = {
   iframeLoadStatus: "done" | "progress";
   dragData: DragData | null;
   mousePosition: { pageX: number; pageY: number } | null;
+  canvasMousePosition: { pageX: number; pageY: number } | null;
+  dropzone: { parent: { id: string; index: number } } | null;
 };
 
 // conds
@@ -178,20 +196,47 @@ function setMousePosition(
   context.mousePosition = event.event;
 }
 
+function setCanvasMousePosition(
+  context: EDITOR_APP_CONTEXT,
+  event: INSIDE_CANVAS_EVENT | OUTSIDE_CANVAS_EVENT
+) {
+  context.canvasMousePosition = {
+    pageX: event.event.canvasPageX,
+    pageY: event.event.canvasPageY,
+  };
+}
+
+function setDropzone(
+  context: EDITOR_APP_CONTEXT,
+  event: DROPZONE_CREATED_EVENT
+) {
+  context.dropzone = { parent: event.parent };
+}
+
 export function createEditorAppMachine(id: string) {
-  type SUBSCRIPTION_STATES = "afterbootup" | "before_app_load" | "ready";
+  type SUBSCRIPTION_STATES =
+    | "afterbootup"
+    | "before_app_load"
+    | "ready"
+    | "drag_failed"
+    | "component_created";
 
   const subscribers: {
-    [key in SUBSCRIPTION_STATES]: ((context: EDITOR_APP_CONTEXT) => void)[];
+    [key in SUBSCRIPTION_STATES]: ((
+      context: EDITOR_APP_CONTEXT,
+      event: EDITOR_APP_EVENTS
+    ) => void)[];
   } = {
     afterbootup: [],
     before_app_load: [],
     ready: [],
+    drag_failed: [],
+    component_created: [],
   };
 
   function subscribeEditorMachine(
     state: SUBSCRIPTION_STATES,
-    cb: (context: EDITOR_APP_CONTEXT) => void
+    cb: (context: EDITOR_APP_CONTEXT, event: EDITOR_APP_EVENTS) => void
   ) {
     subscribers[state].push(cb);
     return () => {
@@ -204,11 +249,12 @@ export function createEditorAppMachine(id: string) {
 
   function callSubscribers(
     state: SUBSCRIPTION_STATES,
-    context: EDITOR_APP_CONTEXT
+    context: EDITOR_APP_CONTEXT,
+    event: EDITOR_APP_EVENTS
   ) {
     subscribers[state].forEach((cb) => {
       try {
-        cb(context);
+        cb(context, event);
       } catch (err) {
         console.error(`Failed to run a subscriber upon ${state}`);
       }
@@ -229,6 +275,8 @@ export function createEditorAppMachine(id: string) {
         iframeLoadStatus: "progress",
         dragData: null,
         mousePosition: null,
+        canvasMousePosition: null,
+        dropzone: null,
       },
       initial: booting,
       states: {
@@ -274,7 +322,7 @@ export function createEditorAppMachine(id: string) {
             } else if (event.type === "PROJECT_INFO_FETCHED") {
               context.projectInfo = event.info;
             }
-            callSubscribers("afterbootup", context);
+            callSubscribers("afterbootup", context, event);
           },
         },
         [loading_app]: {
@@ -300,9 +348,9 @@ export function createEditorAppMachine(id: string) {
               actions: ["setCurrentUrlPath"],
             },
           },
-          entry: (context) => {
+          entry: (context, event) => {
             context.iframeLoadStatus = "progress";
-            callSubscribers("before_app_load", context);
+            callSubscribers("before_app_load", context, event);
           },
         },
         [ready]: {
@@ -316,8 +364,8 @@ export function createEditorAppMachine(id: string) {
               actions: ["setDragData"],
             },
           },
-          entry: (context) => {
-            callSubscribers("ready", context);
+          entry: (context, event) => {
+            callSubscribers("ready", context, event);
           },
         },
         [drag_drop]: {
@@ -334,12 +382,25 @@ export function createEditorAppMachine(id: string) {
             [drag_in_progress]: {
               on: {
                 [MOUSE_MOVE]: { actions: ["setMousePosition"] },
+                [INSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
+                [OUTSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
+                [DROPZONE_CREATED]: { actions: ["setDropzone"] },
+                [COMPONENT_CREATED]: { target: `..${ready}` },
+                [DRAG_FAILED]: { target: `..${ready}` },
               },
             },
           },
-          exit: (context) => {
+          exit: (context, event) => {
             context.dragData = null;
             context.mousePosition = null;
+            context.canvasMousePosition = null;
+            context.dropzone = null;
+            if (event.type === "COMPONENT_CREATED") {
+              callSubscribers("component_created", context, event);
+            }
+            if (event.type === "DRAG_FAILED") {
+              callSubscribers("drag_failed", context, event);
+            }
           },
         },
       },
@@ -354,6 +415,8 @@ export function createEditorAppMachine(id: string) {
         setCurrentUrlPath,
         setDragData,
         setMousePosition,
+        setCanvasMousePosition,
+        setDropzone,
       },
     }
   );
