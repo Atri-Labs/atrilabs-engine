@@ -1,10 +1,9 @@
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -102,9 +101,9 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Cascader" } },
+  panel: { comp: "CommonIcon", props: { name: "Cascader" } },
   drag: {
-    comp: CommonIcon,
+    comp: "CommonIcon",
     props: { name: "Cascader", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,

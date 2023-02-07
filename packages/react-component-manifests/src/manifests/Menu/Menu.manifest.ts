@@ -5,12 +5,10 @@ import type {
 } from "@atrilabs/react-component-manifest-schema";
 import { flexColSort } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { ReactComponent as Icon } from "./icon.svg";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -76,10 +74,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Menu", svg: Icon } },
+  panel: { comp: "CommonIcon", props: { name: "Menu" } },
   drag: {
-    comp: CommonIcon,
-    props: { name: "Menu", containerStyle: { padding: "1rem" }, svg: Icon },
+    comp: "CommonIcon",
+    props: { name: "Menu", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

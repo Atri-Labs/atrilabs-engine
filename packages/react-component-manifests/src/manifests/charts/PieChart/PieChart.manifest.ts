@@ -1,12 +1,10 @@
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../../CommonIcon";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { ReactComponent as Icon } from "./icon.svg";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -84,10 +82,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Pie", svg: Icon } },
+  panel: { comp: "CommonIcon", props: { name: "Pie" } },
   drag: {
-    comp: CommonIcon,
-    props: { name: "Pie", containerStyle: { padding: "1rem" }, svg: Icon },
+    comp: "CommonIcon",
+    props: { name: "Pie", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

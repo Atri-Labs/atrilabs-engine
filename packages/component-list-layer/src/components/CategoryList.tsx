@@ -1,4 +1,4 @@
-import { startDrag } from "@atrilabs/canvas-runtime";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
 import { getId } from "@atrilabs/core";
 import { gray300, gray900, smallText } from "@atrilabs/design-system";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
@@ -26,9 +26,12 @@ export type CategoryListProps = {
 };
 
 export const CategoryList: React.FC<CategoryListProps> = (props) => {
-  const startDragCb = useCallback((...args: Parameters<typeof startDrag>) => {
-    startDrag(...args);
-  }, []);
+  const startDragCb = useCallback(
+    (...args: Parameters<typeof canvasApi.startDrag>) => {
+      canvasApi.startDrag(...args);
+    },
+    []
+  );
 
   return (
     <>

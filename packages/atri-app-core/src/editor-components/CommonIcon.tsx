@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { MissingIcon } from "./assets/MissingIcon";
+import { MissingIcon } from "./MissingIcon";
 import { gray200, gray700, smallText } from "@atrilabs/design-system";
 import "./styles.css";
 

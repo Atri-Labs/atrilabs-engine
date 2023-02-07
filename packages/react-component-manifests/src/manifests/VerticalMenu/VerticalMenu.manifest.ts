@@ -5,12 +5,10 @@ import {
   ReactComponentManifestSchema,
 } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import { ReactComponent as Icon } from "./icon.svg";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -99,13 +97,12 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "VerticalMenu", svg: Icon } },
+  panel: { comp: "CommonIcon", props: { name: "VerticalMenu" } },
   drag: {
-    comp: CommonIcon,
+    comp: "CommonIcon",
     props: {
       name: "VerticalMenu",
       containerStyle: { padding: "1rem" },
-      svg: Icon,
     },
   },
   renderSchema: compManifest,

@@ -8,9 +8,8 @@ import {
   flexColSort,
 } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -69,13 +68,12 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Div", svg: CommonIcon } },
+  panel: { comp: "CommonIcon", props: { name: "Div" } },
   drag: {
-    comp: CommonIcon,
+    comp: "CommonIcon",
     props: {
       name: "Div",
       containerStyle: { padding: "1rem" },
-      svg: CommonIcon,
     },
   },
   renderSchema: compManifest,

@@ -10,10 +10,8 @@ import {
   flexColReverseSort,
 } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { ReactComponent as Icon } from "./icon.svg";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -74,10 +72,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Flex", svg: Icon } },
+  panel: { comp: "CommonIcon", props: { name: "Flex" } },
   drag: {
-    comp: CommonIcon,
-    props: { name: "Flex", containerStyle: { padding: "1rem" }, svg: Icon },
+    comp: "CommonIcon",
+    props: { name: "Flex", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
