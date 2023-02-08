@@ -39,7 +39,10 @@ type PAGE_EVENTS_FETCHED_EVENT = {
   urlPath: string;
   events: { [canvasZoneId: string]: any[] };
 };
-type CANVAS_IFRAME_LOADED_EVENT = { type: typeof CANVAS_IFRAME_LOADED };
+type CANVAS_IFRAME_LOADED_EVENT = {
+  type: typeof CANVAS_IFRAME_LOADED;
+  canvasWindow: MessageEventSource;
+};
 type NAVIGATE_PAGE_EVENT = { type: typeof NAVIGATE_PAGE; urlPath: string };
 type START_DRAG_EVENT = {
   type: typeof START_DRAG;
@@ -101,6 +104,7 @@ const drag_in_progress = "drag_in_progress" as const;
 type EDITOR_APP_CONTEXT = {
   projectInfo: { id: string } | null;
   appInfo: { hostname: string } | null;
+  canvasWindow: MessageEventSource | null;
   pagesInfo:
     | {
         routeObjectPath: string;
@@ -184,8 +188,12 @@ function setPageEvents(
   context.events[event.urlPath] = event.events;
 }
 
-function setIframeStatusToDone(context: EDITOR_APP_CONTEXT) {
+function setIframeStatusToDone(
+  context: EDITOR_APP_CONTEXT,
+  event: CANVAS_IFRAME_LOADED_EVENT
+) {
   context.iframeLoadStatus = "done";
+  context.canvasWindow = event.canvasWindow;
 }
 
 function setCurrentUrlPath(
@@ -294,6 +302,7 @@ export function createEditorAppMachine(id: string) {
         projectInfo: null,
         appInfo: null,
         pagesInfo: null,
+        canvasWindow: null,
         currentRouteObjectPath: "/",
         currentUrlPath: "/",
         events: {},

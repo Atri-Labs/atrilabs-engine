@@ -5,10 +5,21 @@ window.addEventListener("message", (ev) => {
   if (
     ev.origin === editorAppMachineInterpreter.machine.context.appInfo?.hostname
   ) {
-    if (ev.data === "ready") {
-      editorAppMachineInterpreter.send({ type: "CANVAS_IFRAME_LOADED" });
+    if (ev.data === "ready" && ev.source !== null) {
+      editorAppMachineInterpreter.send({
+        type: "CANVAS_IFRAME_LOADED",
+        canvasWindow: ev.source,
+      });
     }
   }
+});
+
+subscribeEditorMachine("drag_started", (context) => {
+  context.canvasWindow?.postMessage(
+    JSON.stringify({ type: "drag_started" }),
+    // @ts-ignore
+    "*"
+  );
 });
 
 function navigatePage(urlPath: string) {

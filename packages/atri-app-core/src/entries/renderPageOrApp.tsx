@@ -25,6 +25,9 @@ export default function renderPageOrApp(options: AppEntryOptions) {
     subscribeCanvasMachine("ready", () => {
       window.parent.postMessage("ready", "*");
     });
+    window.addEventListener("message", (ev) => {
+      console.log(ev);
+    });
     if (window.location !== window.parent.location) {
       canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
     } else {
