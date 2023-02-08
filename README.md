@@ -1,4 +1,4 @@
-![banner](readme-assets/github_python.png)
+![banner](readme-assets/github_python_desc.png)
 
 <div align="center">
 
