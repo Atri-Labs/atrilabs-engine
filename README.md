@@ -59,14 +59,17 @@ If you like our project, please support us by giving us **a star ⭐!**
 
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
 
-### Websites built using Atri framework
+<div align="center">
 
-- [Ecommerce app](https://atri-apps.github.io/full_stack_ecommerce_website)
-- [Restaurant ordering app](https://atri-apps.github.io/restaurant_website)
-- [Personal blog](https://atri-apps.github.io/personal_blog/)
-- [Data app](https://atri-apps.github.io/review_tabular_data/)
+  [![Watch the video](https://img.youtube.com/vi/YWNe9S7khEU/0.jpg)](https://youtu.be/YWNe9S7khEU)
+  
+</div>
 
-Find more example websites and apps at [Atri-Apps](https://github.com/orgs/Atri-Apps/repositories). 
+The static instances of the web apps created using Atri have been deployed at the below URLs: 
+
+[Restaurant website](https://atri-apps.github.io/restaurant_website) | [Sportswear website](https://github.com/Atri-Apps/travel_website) | [Personal website](https://github.com/Atri-Apps/portfolio-templates) | [Ecommerce app](https://atri-apps.github.io/full_stack_ecommerce_website) | [Personal blog](https://atri-apps.github.io/personal_blog/) | [Data app](https://atri-apps.github.io/review_tabular_data) | [Custom background (ML) app](https://atri-apps.github.io/custom_background/)
+
+Find more examples at Atri-Apps (https://github.com/orgs/Atri-Apps/repositories).
 
 ## How is Atri framework different from other web development frameworks?
 
