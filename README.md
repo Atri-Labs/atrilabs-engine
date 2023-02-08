@@ -39,11 +39,11 @@
 
 > **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
-Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
+Atri framework is a full-stack web development framework for Python developers. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
-- Frontend development: Write React code or use our visual editor to increase your productivity
-- Backend development: Currently, we support Python for backend development. We are planning to add support for NodeJS soon. 
-- Deployment support: Our CLI provides rich support for easy deployment at your platform of choice such as GitHub Pages, AWS, etc. 
+- Frontend development: Use our powerful visual builder to create frontend or write React code
+- Backend development: Write backend using our Python API that is inspired from Unity's game engine
+- Deployment support: Use our CLI to deploy at your platform of choice such as AWS, GitHub Pages, etc. or Atri cloud
 
 ## Watch the 1 min introduction video to Atri framework 👇
 
