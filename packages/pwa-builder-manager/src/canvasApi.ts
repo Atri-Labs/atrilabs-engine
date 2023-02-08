@@ -5,21 +5,41 @@ window.addEventListener("message", (ev) => {
   if (
     ev.origin === editorAppMachineInterpreter.machine.context.appInfo?.hostname
   ) {
-    if (ev.data === "ready" && ev.source !== null) {
+    if (ev.data?.type === "ready" && ev.source !== null) {
       editorAppMachineInterpreter.send({
         type: "CANVAS_IFRAME_LOADED",
         canvasWindow: ev.source,
       });
     }
+    if (ev.data?.type === "INSIDE_CANVAS" && ev.source !== null) {
+      editorAppMachineInterpreter.send({
+        type: "INSIDE_CANVAS",
+        event: ev.data?.event,
+      });
+    }
+    if (ev.data?.type === "OUTSIDE_CANVAS" && ev.source !== null) {
+      editorAppMachineInterpreter.send({
+        type: "OUTSIDE_CANVAS",
+        event: ev.data?.event,
+      });
+    }
+    if (ev.data?.type === "DRAG_FAILED" && ev.source !== null) {
+      editorAppMachineInterpreter.send({ type: "DRAG_FAILED" });
+    }
   }
 });
 
-subscribeEditorMachine("drag_started", (context) => {
+subscribeEditorMachine("drag_in_progress", (context) => {
   context.canvasWindow?.postMessage(
-    JSON.stringify({ type: "drag_started" }),
+    { type: "drag_in_progress" },
     // @ts-ignore
     "*"
   );
+});
+
+subscribeEditorMachine("drag_failed", (context) => {
+  // @ts-ignore
+  context.canvasWindow?.postMessage({ type: "drag_stopped" }, "*");
 });
 
 function navigatePage(urlPath: string) {
