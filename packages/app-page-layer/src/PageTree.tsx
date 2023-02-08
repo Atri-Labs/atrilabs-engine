@@ -64,50 +64,17 @@ export const PageTree: React.FC<{
   }, [createTreeNodes, props.pagesInfo]);
 
   const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
-    console.log("Trigger Select", keys, info);
-  };
-
-  const onExpand: DirectoryTreeProps["onExpand"] = (keys, info) => {
-    const node =
-      info.node.children!.length > 0
-        ? (info.node.children![0].key as string)
-        : "";
+    if (info.node.children) return;
+    const node = info.node.key as string;
     if (node !== "") canvasApi.navigatePage(node);
   };
-
-  // const onPageClicked = useCallback((urlPath: string) => {
-  //   canvasApi.navigatePage(urlPath);
-  // }, []);
 
   console.log("Page", treeNodes);
 
   return (
     <div>
       <div onClick={props.onCloseClicked}>Close Page Tree</div>
-      {/* {props.pagesInfo.map((pageInfo) => {
-        console.log("pageInfo", pageInfo);
-        return (
-          <div
-            style={{
-              background:
-                props.selectedPageRouteObjectPath === pageInfo.routeObjectPath
-                  ? "cyan"
-                  : undefined,
-            }}
-            key={pageInfo.routeObjectPath}
-            onClick={() => {
-              onPageClicked(pageInfo.routeObjectPath);
-            }}
-          >
-            {pageInfo.routeObjectPath}
-          </div>
-        );
-      })} */}
-      <DirectoryTree
-        onSelect={onSelect}
-        onExpand={onExpand}
-        treeData={treeNodes}
-      />
+      <DirectoryTree onSelect={onSelect} treeData={treeNodes} />
     </div>
   );
 };
