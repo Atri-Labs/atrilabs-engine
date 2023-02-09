@@ -242,7 +242,9 @@ export function createEditorAppMachine(id: string) {
     | "drag_in_progress"
     | "mouse_move_during_drag"
     | "drag_failed"
-    | "component_created";
+    | "component_created"
+    | "INSIDE_CANVAS"
+    | "OUTSIDE_CANVAS";
 
   const subscribers: {
     [key in SUBSCRIPTION_STATES]: ((
@@ -258,6 +260,8 @@ export function createEditorAppMachine(id: string) {
     mouse_move_during_drag: [],
     drag_failed: [],
     component_created: [],
+    INSIDE_CANVAS: [],
+    OUTSIDE_CANVAS: [],
   };
 
   function subscribeEditorMachine(
@@ -292,6 +296,20 @@ export function createEditorAppMachine(id: string) {
     event: MOUSE_MOVE_EVENT
   ) {
     callSubscribers("mouse_move_during_drag", context, event);
+  }
+
+  function emitInsideCanvas(
+    context: EDITOR_APP_CONTEXT,
+    event: INSIDE_CANVAS_EVENT
+  ) {
+    callSubscribers("INSIDE_CANVAS", context, event);
+  }
+
+  function emitOutsideCanvas(
+    context: EDITOR_APP_CONTEXT,
+    event: OUTSIDE_CANVAS_EVENT
+  ) {
+    callSubscribers("OUTSIDE_CANVAS", context, event);
   }
 
   const editorAppMachine = createMachine<EDITOR_APP_CONTEXT, EDITOR_APP_EVENTS>(
@@ -426,8 +444,12 @@ export function createEditorAppMachine(id: string) {
                   actions: ["setMousePosition", "emitMouseMoveDuringDrag"],
                 },
                 [MOUSE_UP]: { target: `#${id}.${ready}` },
-                [INSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
-                [OUTSIDE_CANVAS]: { actions: ["setCanvasMousePosition"] },
+                [INSIDE_CANVAS]: {
+                  actions: ["setCanvasMousePosition", "emitInsideCanvas"],
+                },
+                [OUTSIDE_CANVAS]: {
+                  actions: ["setCanvasMousePosition", "emitOutsideCanvas"],
+                },
                 [DROPZONE_CREATED]: { actions: ["setDropzone"] },
                 [COMPONENT_CREATED]: { target: `#${id}.${ready}` },
                 [DRAG_FAILED]: { target: `#${id}.${ready}` },
@@ -466,6 +488,8 @@ export function createEditorAppMachine(id: string) {
         setCanvasMousePosition,
         setDropzone,
         emitMouseMoveDuringDrag,
+        emitInsideCanvas,
+        emitOutsideCanvas,
       },
     }
   );
