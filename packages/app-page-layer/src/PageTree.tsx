@@ -1,11 +1,15 @@
 import { useCallback, useMemo } from "react";
 import { PageInfo } from "./types";
 import { canvasApi } from "@atrilabs/pwa-builder-manager";
-import { Tree } from "antd";
-import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
 import { gray400, gray700 } from "@atrilabs/design-system";
+import { DirectoryTree } from "./components/DirectoryTree";
 
-const { DirectoryTree } = Tree;
+type DataNode = {
+  title: string;
+  key: string;
+  isLeaf: boolean;
+  children?: DataNode[];
+};
 
 export const PageTree: React.FC<{
   pagesInfo: PageInfo;
@@ -28,6 +32,7 @@ export const PageTree: React.FC<{
         return {
           title,
           children: [],
+          isLeaf: false,
           key,
         };
       }
@@ -82,20 +87,20 @@ export const PageTree: React.FC<{
     return treeNodes;
   }, [createTreeNodes, props.pagesInfo]);
 
-  const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
-    if (info.node.children) return;
-    const node = info.node.key as string;
-    if (node !== "") canvasApi.navigatePage(node);
-  };
+  // const onSelect: DirectoryTreeProps["onSelect"] = (keys, info) => {
+  //   if (info.node.children) return;
+  //   const node = info.node.key as string;
+  //   if (node !== "") canvasApi.navigatePage(node);
+  // };
 
   console.log("Page", treeNodes);
 
   return (
     <DirectoryTree
-      defaultExpandAll
-      onSelect={onSelect}
-      treeData={treeNodes}
-      style={{ backgroundColor: gray700, color: gray400 }}
+    // defaultExpandAll
+    // onSelect={onSelect}
+    // treeData={treeNodes}
+    // style={{ backgroundColor: gray700, color: gray400 }}
     />
   );
 };
