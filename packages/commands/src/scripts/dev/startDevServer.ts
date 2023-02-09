@@ -132,6 +132,27 @@ export default function startDevServer(
 
       function wrapMiddleware(app: Express.Application) {
         if (middlewares) middlewares(app, compiler, webpackConfig);
+        app.use(Express.static(paths.appPublic));
+        app.get(
+          "/pwa-builder/public/dist/atri-editor/manifestRegistry.js",
+          (_req, res) => {
+            // @ts-ignore
+            const absManifestRegistryPath = __non_webpack_require__.resolve(
+              "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js"
+            );
+            res.sendFile(absManifestRegistryPath);
+          }
+        );
+        app.get(
+          "/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map",
+          (_req, res) => {
+            // @ts-ignore
+            const absManifestRegistryPath = __non_webpack_require__.resolve(
+              "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map"
+            );
+            res.sendFile(absManifestRegistryPath);
+          }
+        );
       }
 
       const devWebpackConfig = createDevConfig(

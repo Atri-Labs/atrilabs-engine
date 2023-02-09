@@ -173,7 +173,7 @@ async function _handleRequests(options: {
       const ir = routeObjectPathToIR(routeObjectPath);
       const splices = IRToUnixFilePath(ir).split("/").splice(1);
       const htmlString = getPageHtml(["pages", ...splices]);
-      pageRequest.res.send(htmlString);
+      pageRequest.res.send(`<!DOCTYPE html>\n${htmlString}`);
     }
   }
 

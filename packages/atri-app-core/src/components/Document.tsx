@@ -4,10 +4,11 @@ import { Main } from "@atrilabs/atri-app-core";
 export default function Document() {
   return (
     <html>
-      <head></head>
+      <head>
+        <AtriScripts />
+      </head>
       <body>
         <Main />
-        <AtriScripts />
       </body>
     </html>
   );

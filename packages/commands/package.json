@@ -73,6 +73,7 @@
     "react-router-dom": "^6.6.2",
     "resolve": "^1.22.1",
     "typescript": "^4.9.4",
+    "upath": "^2.0.1",
     "webpack": "^5.73.0",
     "webpack-dev-server": "^4.11.1",
     "webpack-manifest-plugin": "^5.0.0",
