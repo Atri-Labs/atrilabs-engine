@@ -114,15 +114,6 @@ function main() {
       };
       config.resolveLoader = {
         alias: {
-          // "api-entry-loader": path.resolve(
-          //   __dirname,
-          //   "..",
-          //   "src",
-          //   "scripts",
-          //   "dev-editor",
-          //   "loaders",
-          //   "api-entry-loader.js"
-          // ),
           "browser-forest-manager-entry-loader": path.resolve(
             __dirname,
             "..",
@@ -173,15 +164,6 @@ function main() {
 
     const corePkgInfo = getCorePkgInfo();
     const customLoaders: RuleSetRule[] = [
-      // {
-      //   test: corePkgInfo.apiFile,
-      //   use: {
-      //     loader: "api-entry-loader",
-      //     options: {
-      //       eventClientModulePath: toolConfig.clients.eventClient.modulePath,
-      //     },
-      //   },
-      // },
       {
         test: corePkgInfo.browserForestManagerFile,
         use: {
