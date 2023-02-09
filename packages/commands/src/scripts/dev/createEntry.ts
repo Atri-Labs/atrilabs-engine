@@ -8,13 +8,11 @@ export async function createEntry() {
     interpreter.machine.context.requestedRouteObjectPaths
   );
   const entry: Entry = {
-    app: { import: ["react", "react-dom"] },
     _error: {
       import: `atri-pages-client-loader?${stringify({
         routeObjectPath: "/",
         modulePath: "./pages/_error",
       })}!`,
-      dependOn: "app",
     },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
@@ -26,7 +24,6 @@ export async function createEntry() {
         routeObjectPath: `${requestedRouteObjectPath}`,
         modulePath: `./pages${filepath}`,
       })}!`,
-      dependOn: "app",
     };
   });
   return entry;

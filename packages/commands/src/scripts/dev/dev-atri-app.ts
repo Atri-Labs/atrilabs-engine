@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import startDevServer from "./startDevServer";
+import startDevServer from "../../commons/startDevServer";
 import {
   Middlewares,
   PrepareConfig,
@@ -16,6 +16,7 @@ import { AppServerPlugin } from "./webpack-plugins/AppServerPlugin";
 import { NodeLibPlugin } from "./webpack-plugins/NodeLibPlugin";
 import { computeRouteObjects, setFSWatchers } from "./routeObjects";
 import { printRequest } from "./utils";
+import express from "express";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -45,6 +46,11 @@ function main() {
 
   params.paths.appSrc = process.cwd();
 
+  const externals = {
+    react: "React",
+    "react-dom": "ReactDOM",
+  };
+
   const prepareConfig = params.prepareConfig;
   const wrapPrepareConfig: PrepareConfig = (config) => {
     if (prepareConfig) {
@@ -52,6 +58,10 @@ function main() {
     }
     // TODO: insert the necessary logic for hot reload
     config.entry = createEntry;
+    config.externals = {
+      ...externals,
+      "@atrilabs/manifest-registry": "__atri_manifest_registry__",
+    };
     config.resolveLoader = {
       alias: {
         "atri-pages-client-loader": path.resolve(
@@ -88,6 +98,27 @@ function main() {
       printRequest(req);
       interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
     });
+    app.get(
+      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js",
+      (_req, res) => {
+        // @ts-ignore
+        const absManifestRegistryPath = __non_webpack_require__.resolve(
+          "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js"
+        );
+        res.sendFile(absManifestRegistryPath);
+      }
+    );
+    app.get(
+      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map",
+      (_req, res) => {
+        // @ts-ignore
+        const absManifestRegistryPath = __non_webpack_require__.resolve(
+          "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map"
+        );
+        res.sendFile(absManifestRegistryPath);
+      }
+    );
+    app.use(express.static(paths.appPublic));
   };
 
   startDevServer({

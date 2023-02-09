@@ -7,7 +7,7 @@ import {
 } from "@atrilabs/commands-builder";
 import { createEntry } from "./createEntry";
 import path from "path";
-import startDevServer from "../dev/startDevServer";
+import startDevServer from "../../commons/startDevServer";
 import { RuleSetRule } from "webpack";
 import { getCorePkgInfo, getExposedBlocks, readToolConfig } from "./utils";
 import { watchManifestDirs } from "./machine/watchManifestDirs";
