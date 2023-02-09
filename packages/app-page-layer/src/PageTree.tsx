@@ -9,7 +9,6 @@ const { DirectoryTree } = Tree;
 export const PageTree: React.FC<{
   pagesInfo: PageInfo;
   selectedPageRouteObjectPath: string;
-  onCloseClicked: () => void;
 }> = (props) => {
   const createTreeNodes = useCallback(
     (
@@ -92,7 +91,6 @@ export const PageTree: React.FC<{
 
   return (
     <div>
-      <div onClick={props.onCloseClicked}>Close Page Tree</div>
       <DirectoryTree onSelect={onSelect} treeData={treeNodes} />
     </div>
   );

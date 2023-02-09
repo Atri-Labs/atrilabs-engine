@@ -11,6 +11,7 @@ import { ArrowDown } from "./icons/ArrowDown";
 import "./stylesheets/formfield.module.css";
 import { useGetPageInfo } from "./hooks/useGetPageInfo";
 import { PageTree } from "./PageTree";
+import { Cross } from "./icons/Cross";
 interface PageSelectorProps {}
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -51,7 +52,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
     <div
       style={styles.page}
       onClick={() => {
-        setShowPageEditor(true);
+        setShowPageEditor(!showPageEditor);
       }}
       data-tooltip="Page Manager"
       className="tool-tip"
@@ -59,7 +60,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       <div>Page:</div>
       <div style={styles.p}>{selectedPageRouteObjectPath}</div>
       <span style={styles.span}>
-        <ArrowDown />
+        {showPageEditor ? <Cross /> : <ArrowDown />}
       </span>
       {showPageEditor && pagesInfo ? (
         <Container name="Drop" onClose={closePageEditor}>
@@ -67,13 +68,10 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
             style={{
               backgroundColor: gray700,
               height: "100%",
-              paddingRight: "1em",
+              paddingRight: "1.2em",
             }}
           >
             <PageTree
-              onCloseClicked={() => {
-                setShowPageEditor(false);
-              }}
               pagesInfo={pagesInfo}
               selectedPageRouteObjectPath={selectedPageRouteObjectPath}
             />
