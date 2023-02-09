@@ -30,8 +30,17 @@ window.addEventListener("message", (ev) => {
 });
 
 subscribeEditorMachine("drag_in_progress", (context) => {
+  const dragCompSerializable = {
+    comp: context.dragComp?.comp,
+    props: context.dragComp?.props,
+  };
+  delete dragCompSerializable.props["svg"];
   context.canvasWindow?.postMessage(
-    { type: "drag_in_progress" },
+    {
+      type: "drag_in_progress",
+      dragData: context.dragData,
+      dragComp: dragCompSerializable,
+    },
     // @ts-ignore
     "*"
   );

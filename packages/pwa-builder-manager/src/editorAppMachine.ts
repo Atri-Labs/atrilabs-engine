@@ -286,7 +286,7 @@ export function createEditorAppMachine(id: string) {
       try {
         cb(context, event);
       } catch (err) {
-        console.error(`Failed to run a subscriber upon ${state}`);
+        console.error(`Failed to run a subscriber upon ${state}`, err);
       }
     });
   }

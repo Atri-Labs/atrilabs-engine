@@ -113,6 +113,12 @@ export function createCanvasMachine(id: string) {
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
+    return () => {
+      const foundIndex = subscribers[state].findIndex((curr) => curr === cb);
+      if (foundIndex >= 0) {
+        subscribers[state].splice(foundIndex, 1);
+      }
+    };
   }
   function callSubscribers(
     state: SubscribeStates,
