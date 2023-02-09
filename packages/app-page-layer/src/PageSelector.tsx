@@ -68,7 +68,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
             style={{
               backgroundColor: gray700,
               height: "100%",
-              width: "129px",
+              minWidth: "129px",
             }}
           >
             <PageTree

@@ -61,14 +61,14 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
       style={{
         display: "flex",
         columnGap: "0.5em",
-        paddingTop: "0.35em",
+        paddingTop: "0.75em",
         paddingLeft: "0.35em",
         justifyContent: "flex-start",
         color: gray400,
       }}
     >
       <span style={{ display: "flex" }}>{svgIcon}</span>
-      <p style={{ margin: "0" }}>{props.name}</p>
+      <div style={{ margin: "0" }}>{props.name}</div>
     </div>
   );
 };
