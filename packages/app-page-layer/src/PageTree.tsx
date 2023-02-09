@@ -18,35 +18,54 @@ export const PageTree: React.FC<{
       route: string,
       treeNodes: DataNode[]
     ) => {
-      const node = {
-        title:
-          pathArr[pathArrLen - 1] !== "" ? pathArr[pathArrLen - 1] : "index",
-        isLeaf: true,
-        key: route,
-      };
-      if (pathArrLen === 1) treeNodes.push(node);
-      else {
-        let tempTreeNode: DataNode[] = treeNodes;
-        for (let i = 0; i < pathArrLen - 1; i++) {
-          const path = pathArr[i];
-          let j;
-          for (j = 0; j < treeNodes.length; j++) {
-            if (treeNodes[j].title === path) {
-              tempTreeNode = treeNodes[j].children || [];
-              break;
-            }
-          }
-          if (j === treeNodes.length) {
-            treeNodes.push({
-              title: path !== "" ? path : "index",
-              key: route + " " + pathArrLen,
-              children: [],
-            });
-            tempTreeNode = treeNodes[treeNodes.length - 1].children || [];
+      function createTreeNode(title: string, key: string, leafNode: boolean) {
+        if (leafNode)
+          return {
+            title,
+            isLeaf: true,
+            key,
+          };
+        return {
+          title,
+          children: [],
+          key,
+        };
+      }
+
+      const node: DataNode = createTreeNode(
+        pathArr[pathArrLen - 1] !== "" ? pathArr[pathArrLen - 1] : "index",
+        route,
+        true
+      );
+
+      let tempTreeNode: DataNode[] = treeNodes;
+
+      for (let i = 0; i < pathArrLen - 1; i++) {
+        const path = pathArr[i];
+
+        const lenBeforeUpdate = tempTreeNode.length;
+        let j;
+
+        for (j = 0; j < tempTreeNode.length; j++) {
+          if (tempTreeNode[j].title === path) {
+            tempTreeNode = tempTreeNode[j].children || [];
+            break;
           }
         }
-        tempTreeNode.push(node);
+
+        if (lenBeforeUpdate === j) {
+          tempTreeNode.push(
+            createTreeNode(
+              path !== "" ? path : "index",
+              path + " " + pathArrLen,
+              false
+            )
+          );
+          tempTreeNode = tempTreeNode[tempTreeNode.length - 1].children || [];
+        }
       }
+
+      tempTreeNode.push(node);
     },
     []
   );
