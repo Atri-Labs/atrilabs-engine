@@ -3,6 +3,7 @@ import { PageInfo } from "./types";
 import { canvasApi } from "@atrilabs/pwa-builder-manager";
 import { Tree } from "antd";
 import type { DataNode, DirectoryTreeProps } from "antd/es/tree";
+import { gray400, gray700 } from "@atrilabs/design-system";
 
 const { DirectoryTree } = Tree;
 
@@ -90,8 +91,11 @@ export const PageTree: React.FC<{
   console.log("Page", treeNodes);
 
   return (
-    <div>
-      <DirectoryTree onSelect={onSelect} treeData={treeNodes} />
-    </div>
+    <DirectoryTree
+      defaultExpandAll
+      onSelect={onSelect}
+      treeData={treeNodes}
+      style={{ backgroundColor: gray700, color: gray400 }}
+    />
   );
 };
