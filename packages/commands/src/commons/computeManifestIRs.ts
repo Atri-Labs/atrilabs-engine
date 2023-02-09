@@ -1,10 +1,5 @@
 import { readDirStructure } from "@atrilabs/atri-app-core";
 import { ManifestIR } from "@atrilabs/core";
-import {
-  createServerMachineInterpreter,
-  FS_CHANGED,
-  MANIFEST_OBJECTS_UPDATED,
-} from "./editorServerMachine";
 import pkgUp from "pkg-up";
 import path from "path";
 import fs from "fs";
@@ -118,18 +113,4 @@ export async function computeManifestIRsForDirs(dirs: string[]) {
     dirs.map((dir) => computeManifestIRs(dir))
   );
   return manifestIRsDoubleArray.flat();
-}
-
-export async function computeFSAndSend(
-  editorServerMachineInterpreter: ReturnType<
-    typeof createServerMachineInterpreter
-  >,
-  dirs: string[]
-) {
-  editorServerMachineInterpreter.send({ type: FS_CHANGED });
-  const irs = await computeManifestIRsForDirs(dirs);
-  editorServerMachineInterpreter.send({
-    type: MANIFEST_OBJECTS_UPDATED,
-    manifests: irs,
-  });
 }

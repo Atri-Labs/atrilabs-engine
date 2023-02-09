@@ -4,6 +4,7 @@ import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
 import { intersection } from "lodash";
+import { ManifestIR } from "@atrilabs/core";
 
 // states
 export const processing = "processing" as const;
@@ -18,6 +19,8 @@ export const NETWORK_REQUEST = "NETWORK_REQUEST" as const;
 export const LIB_SERVER_INVALIDATED = "LIB_SERVER_INVALIDATED" as const;
 export const APP_SERVER_INVALIDATED = "APP_SERVER_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
+export const MANIFESTS_FS_CHANGED = "MANIFESTS_FS_CHANGED" as const;
+export const MANIFEST_OBJECTS_UPDATED = "MANIFEST_OBJECTS_UPDATED" as const;
 
 export type LIB_SERVER_DONE_EVENT = {
   type: typeof LIB_SERVER_DONE;
@@ -42,6 +45,11 @@ export type APP_SERVER_INVALIDATED_EVENT = {
   type: typeof APP_SERVER_INVALIDATED;
 };
 export type FS_CHANGED_EVENT = { type: typeof FS_CHANGED };
+export type MANIFESTS_FS_CHANGED_EVENT = { type: typeof MANIFESTS_FS_CHANGED };
+export type MANIFEST_OBJECTS_UPDATED_EVENT = {
+  type: typeof MANIFEST_OBJECTS_UPDATED;
+  manifests: ManifestIR[];
+};
 
 export type SERVER_MACHINE_EVENT =
   | LIB_SERVER_DONE_EVENT
@@ -50,7 +58,9 @@ export type SERVER_MACHINE_EVENT =
   | NETWORK_REQUEST_EVENT
   | LIB_SERVER_INVALIDATED_EVENT
   | APP_SERVER_INVALIDATED_EVENT
-  | FS_CHANGED_EVENT;
+  | FS_CHANGED_EVENT
+  | MANIFESTS_FS_CHANGED_EVENT
+  | MANIFEST_OBJECTS_UPDATED_EVENT;
 
 export type SERVER_MACHINE_CONTEXT = {
   libServer: "processing" | "done";
@@ -63,6 +73,9 @@ export type SERVER_MACHINE_CONTEXT = {
   appCompiler?: Compiler;
   libCompiler?: Compiler;
   latestRouteObjectPaths: string[] | undefined;
+  manifests: ManifestIR[];
+  latestManifests: ManifestIR[] | undefined;
+  manifestsComputed: "processing" | "done";
 };
 
 // conds
@@ -278,6 +291,14 @@ function swapLatestRouteObjectPaths(context: SERVER_MACHINE_CONTEXT) {
     _removeDeletedPages(context);
   }
 }
+
+function setManifestsComputedToDone(context: SERVER_MACHINE_CONTEXT) {
+  context.manifestsComputed = "done";
+}
+
+function setManifestsComputedToProcessing(context: SERVER_MACHINE_CONTEXT) {
+  context.manifestsComputed = "processing";
+}
 /**
  * Server is in ready state only after watchers have
  * loaded initial directory.
@@ -311,6 +332,9 @@ export function createServerMachine(id: string) {
         requestedRouteObjectPaths: new Set(),
         routeObjectPaths: [],
         latestRouteObjectPaths: undefined,
+        manifests: [],
+        latestManifests: undefined,
+        manifestsComputed: "processing",
       } as SERVER_MACHINE_CONTEXT,
       states: {
         [processing]: {
@@ -346,6 +370,17 @@ export function createServerMachine(id: string) {
               },
             ],
             [NETWORK_REQUEST]: [{ actions: ["saveRequest"] }],
+            [MANIFEST_OBJECTS_UPDATED]: [
+              {
+                target: serving,
+                cond: ,
+                actions: ["setManifestsComputedToDone", "setManifests"],
+              },
+              {
+                target: processing,
+                actions: ["setManifestsComputedToDone", "setManifests"],
+              },
+            ],
           },
         },
         [serving]: {
@@ -421,6 +456,8 @@ export function createServerMachine(id: string) {
         setRouteObjectPaths,
         setLatestRouteObjectPaths,
         swapLatestRouteObjectPaths,
+        setManifestsComputedToDone,
+        setManifestsComputedToProcessing,
       },
       services: {
         handleRequests,

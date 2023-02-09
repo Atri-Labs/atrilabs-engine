@@ -13,7 +13,7 @@ import { getCorePkgInfo, getExposedBlocks, readToolConfig } from "./utils";
 import { watchManifestDirs } from "./machine/watchManifestDirs";
 import { editorServerMachineInterpreter } from "./machine/init";
 import { NETWORK_REQUEST } from "../dev/serverMachine";
-import { computeFSAndSend } from "./machine/computeManifestIR";
+import { computeFSAndSend } from "./machine/computeFSAndSend";
 import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
 import startManifestRegistryLibDevServer from "./startManifestRegistryLibDevServer";
 
