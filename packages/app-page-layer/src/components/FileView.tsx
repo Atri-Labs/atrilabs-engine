@@ -3,6 +3,7 @@ import { useMemo } from "react";
 
 type FileViewTypes = {
   name: string;
+  route: string;
   isFolder: boolean;
   isOpen?: boolean;
 };
