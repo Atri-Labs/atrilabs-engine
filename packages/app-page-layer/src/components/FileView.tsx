@@ -1,11 +1,12 @@
 import { gray400 } from "@atrilabs/design-system";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 type FileViewTypes = {
   name: string;
   route: string;
   isFolder: boolean;
   isOpen?: boolean;
+  onSelect: (route: string) => void;
 };
 
 const folderOpenSvg = (
@@ -62,10 +63,16 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
       style={{
         display: "flex",
         columnGap: "0.5em",
-        paddingTop: "0.75em",
+        paddingTop: "0.35em",
         paddingLeft: "0.35em",
+        paddingBottom: "0.35em",
         justifyContent: "flex-start",
         color: gray400,
+      }}
+      onClick={() => {
+        if (!props.isFolder) {
+          props.onSelect(props.route);
+        }
       }}
     >
       <span style={{ display: "flex" }}>{svgIcon}</span>
