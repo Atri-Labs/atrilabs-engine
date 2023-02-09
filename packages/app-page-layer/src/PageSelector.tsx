@@ -1,5 +1,11 @@
 import { Container } from "@atrilabs/core";
-import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
+import {
+  gray300,
+  gray400,
+  gray700,
+  gray800,
+  h4Heading,
+} from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
 import { ArrowDown } from "./icons/ArrowDown";
 import "./stylesheets/formfield.module.css";
@@ -57,13 +63,21 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
       </span>
       {showPageEditor && pagesInfo ? (
         <Container name="Drop" onClose={closePageEditor}>
-          <PageTree
-            onCloseClicked={() => {
-              setShowPageEditor(false);
+          <div
+            style={{
+              backgroundColor: gray700,
+              height: "100%",
+              paddingRight: "1em",
             }}
-            pagesInfo={pagesInfo}
-            selectedPageRouteObjectPath={selectedPageRouteObjectPath}
-          />
+          >
+            <PageTree
+              onCloseClicked={() => {
+                setShowPageEditor(false);
+              }}
+              pagesInfo={pagesInfo}
+              selectedPageRouteObjectPath={selectedPageRouteObjectPath}
+            />
+          </div>
         </Container>
       ) : null}
     </div>
