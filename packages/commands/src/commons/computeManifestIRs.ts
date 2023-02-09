@@ -74,7 +74,7 @@ function computeManifestIR(
 
 async function computeManifestIRs(dir: string) {
   // @ts-ignore
-  const pkg = __non_webpack_require__(pkgUp.sync(dir))["name"];
+  const pkg = __non_webpack_require__(pkgUp.sync({ cwd: dir }))["name"];
   const dirStructure = await readDirStructure(dir);
   const manifestFiles = dirStructure.filter((filename) => {
     return (
