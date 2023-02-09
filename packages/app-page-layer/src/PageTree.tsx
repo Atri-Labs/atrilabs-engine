@@ -60,11 +60,7 @@ export const PageTree: React.FC<{
 
         if (lenBeforeUpdate === j) {
           tempTreeNode.push(
-            createTreeNode(
-              path !== "" ? path : "index",
-              path + " " + pathArrLen,
-              false
-            )
+            createTreeNode(path !== "" ? path : "index", path, false)
           );
           tempTreeNode = tempTreeNode[tempTreeNode.length - 1].children || [];
         }

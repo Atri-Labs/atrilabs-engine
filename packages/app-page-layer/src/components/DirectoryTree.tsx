@@ -25,7 +25,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                 style={{ paddingLeft: `${props.padding}em` }}
               >
                 <FileView
-                  name={node.title}
+                  name={node.route}
                   route={node.route}
                   isFolder={!node.isLeaf}
                   isOpen={false}

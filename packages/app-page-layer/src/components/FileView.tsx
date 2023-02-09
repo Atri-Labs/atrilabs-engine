@@ -1,5 +1,5 @@
-import { gray400 } from "@atrilabs/design-system";
-import { useMemo, useState } from "react";
+import { gray400, smallText } from "@atrilabs/design-system";
+import { useMemo } from "react";
 
 type FileViewTypes = {
   name: string;
@@ -67,6 +67,7 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
         paddingLeft: "0.35em",
         paddingBottom: "0.35em",
         justifyContent: "flex-start",
+        ...smallText,
         color: gray400,
       }}
       onClick={() => {
