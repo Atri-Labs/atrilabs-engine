@@ -6,13 +6,16 @@ export function AtriScripts() {
   const BaseScripts = base.map((page) => {
     return <script defer src={page} key={page}></script>;
   });
+  const ManifetScripts = manifestRegistry.map((src) => {
+    return <script defer src={src} key={src}></script>;
+  });
   const PagesScripts = pages.map((page) => {
     return <script defer src={page} key={page}></script>;
   });
   return (
     <>
       {BaseScripts}
-      <script defer src={manifestRegistry}></script>
+      {ManifetScripts}
       {PagesScripts}
     </>
   );

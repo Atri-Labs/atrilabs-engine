@@ -3,19 +3,19 @@ import { renderToString } from "react-dom/server";
 
 export function renderPageServerSide(options: {
   scriptSrcs: string[];
-  manifestRegistrySrc: string;
+  manifestRegistrySrcs: string[];
   baseSrcs: string[];
   PageFn: React.FC;
   AppFn: React.FC<any>;
   DocFn: React.FC;
 }) {
-  const { manifestRegistrySrc, scriptSrcs, AppFn, PageFn, DocFn, baseSrcs } =
+  const { manifestRegistrySrcs, scriptSrcs, AppFn, PageFn, DocFn, baseSrcs } =
     options;
   return renderToString(
     <AtriScriptsContext.Provider
       value={{
         pages: scriptSrcs,
-        manifestRegistry: manifestRegistrySrc,
+        manifestRegistry: manifestRegistrySrcs,
         base: baseSrcs,
       }}
     >

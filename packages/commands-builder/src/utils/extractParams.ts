@@ -56,7 +56,14 @@ export function processArgs() {
       description:
         "used to include packages in the node bundle in nodeExternal's allowlist",
     })
-    .boolean("stats").argv as {
+    .option("d", {
+      alias: "manifestDirs",
+      type: "string",
+      default: "",
+      description: "List of manifest directories in #pkg:dir format",
+    })
+    .boolean("stats")
+    .help().argv as {
     e: string;
     o: string;
     s: string;
@@ -68,6 +75,7 @@ export function processArgs() {
     f: string;
     i: string;
     a: string;
+    d: string;
   };
 }
 
@@ -178,6 +186,7 @@ export function extractParams() {
   });
   const allowlist = args.a !== "" ? args.a.split(":") : [];
   const outputFilename = args.f;
+  const manifestDirs: string[] = args.d !== "" ? args.d.split(":") : [];
 
   const useTypeScript = fs.existsSync(path.resolve(appPath, "tsconfig.json"));
 
@@ -252,6 +261,7 @@ export function extractParams() {
     outputFilename,
     additionalInclude: resolvedInclude,
     allowlist,
+    manifestDirs,
   };
 }
 

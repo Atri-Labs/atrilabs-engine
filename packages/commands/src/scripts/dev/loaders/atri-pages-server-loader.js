@@ -29,7 +29,7 @@ function atriPagesServerLoader() {
   function renderPage(){
     return renderPageServerSide({PageFn, AppFn, DocFn, scriptSrcs: ${JSON.stringify(
       scriptSrcs
-    )}, manifestRegistrySrc: "${manifestRegistryUrlPath}", baseSrcs: ${JSON.stringify(
+    )}, manifestRegistrySrcs: ["${manifestRegistryUrlPath}", "/atri/js/pages/registerComponents.js"], baseSrcs: ${JSON.stringify(
     baseSrcs
   )}})
   }
