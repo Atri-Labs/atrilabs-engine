@@ -16,6 +16,7 @@ const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
+const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -44,6 +45,12 @@ type MOUSE_UP_EVENT = {
   type: typeof MOUSE_UP;
   event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
+type COMPONENT_CREATED_EVENT = {
+  type: typeof COMPONENT_CREATED;
+  compId: string;
+  canvasZoneId: string;
+  parentId: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -54,7 +61,8 @@ type CanvasMachineEvent =
   | INSIDE_CANVAS_EVENT
   | OUTSIDE_CANVAS_EVENT
   | MOUSE_MOVE_EVENT
-  | MOUSE_UP_EVENT;
+  | MOUSE_UP_EVENT
+  | COMPONENT_CREATED_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -105,7 +113,8 @@ type SubscribeStates =
   | "moveWhileDrag"
   | "upWhileDrag"
   | typeof INSIDE_CANVAS
-  | typeof OUTSIDE_CANVAS;
+  | typeof OUTSIDE_CANVAS
+  | typeof COMPONENT_CREATED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -114,6 +123,7 @@ export function createCanvasMachine(id: string) {
     upWhileDrag: [],
     [INSIDE_CANVAS]: [],
     [OUTSIDE_CANVAS]: [],
+    [COMPONENT_CREATED]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -174,6 +184,9 @@ export function createCanvasMachine(id: string) {
               target: drag_in_progress,
               actions: ["setDragData"],
             },
+            [COMPONENT_CREATED]: {
+              actions: ["emitComponentCreated"],
+            },
           },
         },
         [drag_in_progress]: {
@@ -217,6 +230,7 @@ export function createCanvasMachine(id: string) {
         emitOutsideCanvas: callSubscribersFromAction("OUTSIDE_CANVAS"),
         emitInsideCanvas: callSubscribersFromAction("INSIDE_CANVAS"),
         emitReady: callSubscribersFromAction("ready"),
+        emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
       },
     }
   );

@@ -22,6 +22,17 @@ export type CanvasComponentStore = {
   };
 };
 
-export type ComponentRendererProps = { id: string };
+export type ComponentReverseMap = {
+  [compId: string]: {
+    canvasZoneId: string;
+    parentCompId: string;
+  };
+};
+
+export type CanvasZoneRendererProps = { canvasZoneId: string };
+
+export type ParentComponentRendererProps = { id: string };
+
+export type NormalComponentRendererProps = { id: string };
 
 export type DecoratorData = { id: string };

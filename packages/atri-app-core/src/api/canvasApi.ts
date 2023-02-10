@@ -1,5 +1,7 @@
 import { canvasMachineInterpreter, subscribeCanvasMachine } from "./init";
 import { manifestRegistryController } from "@atrilabs/manifest-registry";
+import { componentStoreApi } from "./componentStoreApi";
+import { CANVAS_ZONE_ROOT_ID } from "./consts";
 
 canvasMachineInterpreter.start();
 
@@ -39,25 +41,42 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     const canvasZone = (context.mousePosition.target as HTMLElement).closest(
       "[data-canvas-id]"
     );
-    console.log(canvasZone);
-    if (canvasZone) {
-      // send success
-      if (context.dragData) {
-        const registry = manifestRegistryController.readManifestRegistry();
-        const fullManifest = registry[
-          context.dragData.data.manifestSchema
-        ].manifests.find((curr) => {
-          return (
-            curr.pkg === context.dragData?.data.pkg &&
-            curr.manifest.meta.key === context.dragData?.data.key
-          );
-        });
-        console.log(fullManifest);
+    if (canvasZone && context.dragData) {
+      const registry = manifestRegistryController.readManifestRegistry();
+      const fullManifest = registry[
+        context.dragData.data.manifestSchema
+      ].manifests.find((curr) => {
+        return (
+          curr.pkg === context.dragData?.data.pkg &&
+          curr.manifest.meta.key === context.dragData?.data.key
+        );
+      });
+      if (fullManifest) {
+        componentStoreApi.createComponent(
+          {
+            manifestSchema: context.dragData.data.manifestSchema,
+            pkg: fullManifest.pkg,
+            key: fullManifest.manifest.meta.key,
+          },
+          {
+            canvasZoneId: canvasZone.id,
+            id: context.dragData.data.id,
+            props: {},
+            parent: { id: CANVAS_ZONE_ROOT_ID, index: 0 },
+          }
+        );
+        window.parent.postMessage(
+          {
+            type: "DRAG_SUCCESS",
+          },
+          "*"
+        );
+        // return is stopper for running code outside
+        return;
       }
-    } else {
-      // send failed
     }
   }
+  // send failed if something is not right
   window.parent.postMessage(
     {
       type: "DRAG_FAILED",
@@ -65,6 +84,14 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     "*"
   );
 });
+subscribeCanvasMachine("COMPONENT_CREATED", (_context, event) => {
+  if (event.type === "COMPONENT_CREATED") {
+    const { parentId, compId, canvasZoneId } = event;
+    if (parentId === CANVAS_ZONE_ROOT_ID) {
+    }
+  }
+});
+
 window.addEventListener("message", (ev) => {
   if (ev.data?.type === "drag_in_progress") {
     canvasMachineInterpreter.send({
