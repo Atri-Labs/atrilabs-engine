@@ -1,4 +1,5 @@
 import { canvasMachineInterpreter, subscribeCanvasMachine } from "./init";
+import { manifestRegistryController } from "@atrilabs/manifest-registry";
 
 canvasMachineInterpreter.start();
 
@@ -32,8 +33,31 @@ subscribeCanvasMachine("INSIDE_CANVAS", (_context, event) => {
 subscribeCanvasMachine("moveWhileDrag", () => {
   // TODO: detect catcher & call canvas overlay api
 });
-subscribeCanvasMachine("upWhileDrag", () => {
+subscribeCanvasMachine("upWhileDrag", (context) => {
   // TODO: detect catcher & send failed or success
+  if (context.mousePosition?.target) {
+    const canvasZone = (context.mousePosition.target as HTMLElement).closest(
+      "[data-canvas-id]"
+    );
+    console.log(canvasZone);
+    if (canvasZone) {
+      // send success
+      if (context.dragData) {
+        const registry = manifestRegistryController.readManifestRegistry();
+        const fullManifest = registry[
+          context.dragData.data.manifestSchema
+        ].manifests.find((curr) => {
+          return (
+            curr.pkg === context.dragData?.data.pkg &&
+            curr.manifest.meta.key === context.dragData?.data.key
+          );
+        });
+        console.log(fullManifest);
+      }
+    } else {
+      // send failed
+    }
+  }
   window.parent.postMessage(
     {
       type: "DRAG_FAILED",
@@ -70,13 +94,13 @@ window.document.addEventListener("mouseleave", (ev) => {
 window.addEventListener("mousemove", (ev) => {
   canvasMachineInterpreter.send({
     type: "MOUSE_MOVE",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
+    event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
   });
 });
 window.addEventListener("mouseup", (ev) => {
   canvasMachineInterpreter.send({
     type: "MOUSE_UP",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
+    event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
   });
 });
 if (window.location !== window.parent.location) {

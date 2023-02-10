@@ -38,11 +38,11 @@ type OUTSIDE_CANVAS_EVENT = {
 };
 type MOUSE_MOVE_EVENT = {
   type: typeof MOUSE_MOVE;
-  event: { pageX: number; pageY: number };
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
 type MOUSE_UP_EVENT = {
   type: typeof MOUSE_UP;
-  event: { pageX: number; pageY: number };
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
 
 type CanvasMachineEvent =
@@ -72,7 +72,11 @@ type CanvasMachineContext = {
   insideTopWindow: boolean;
   dragData: DragData | null;
   dragComp: DragComp | null;
-  mousePosition: { pageX: number; pageY: number } | null;
+  mousePosition: {
+    pageX: number;
+    pageY: number;
+    target: MouseEvent["target"];
+  } | null;
 };
 
 // actions
