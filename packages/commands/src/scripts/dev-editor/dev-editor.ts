@@ -7,13 +7,13 @@ import {
 } from "@atrilabs/commands-builder";
 import { createEntry } from "./createEntry";
 import path from "path";
-import startDevServer from "../dev/startDevServer";
+import startDevServer from "../../commons/startDevServer";
 import { RuleSetRule } from "webpack";
 import { getCorePkgInfo, getExposedBlocks, readToolConfig } from "./utils";
 import { watchManifestDirs } from "./machine/watchManifestDirs";
 import { editorServerMachineInterpreter } from "./machine/init";
 import { NETWORK_REQUEST } from "../dev/serverMachine";
-import { computeFSAndSend } from "./machine/computeManifestIR";
+import { computeFSAndSend } from "./machine/computeFSAndSend";
 import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
 import startManifestRegistryLibDevServer from "./startManifestRegistryLibDevServer";
 
@@ -114,15 +114,6 @@ function main() {
       };
       config.resolveLoader = {
         alias: {
-          // "api-entry-loader": path.resolve(
-          //   __dirname,
-          //   "..",
-          //   "src",
-          //   "scripts",
-          //   "dev-editor",
-          //   "loaders",
-          //   "api-entry-loader.js"
-          // ),
           "browser-forest-manager-entry-loader": path.resolve(
             __dirname,
             "..",
@@ -173,15 +164,6 @@ function main() {
 
     const corePkgInfo = getCorePkgInfo();
     const customLoaders: RuleSetRule[] = [
-      // {
-      //   test: corePkgInfo.apiFile,
-      //   use: {
-      //     loader: "api-entry-loader",
-      //     options: {
-      //       eventClientModulePath: toolConfig.clients.eventClient.modulePath,
-      //     },
-      //   },
-      // },
       {
         test: corePkgInfo.browserForestManagerFile,
         use: {

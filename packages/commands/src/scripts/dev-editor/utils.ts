@@ -1,6 +1,6 @@
 import fs from "fs";
 import type { LayerConfig, ToolConfig } from "@atrilabs/core";
-import { CorePkgInfo, ToolPkgInfo } from "./types";
+import { CorePkgInfo, ToolPkgInfo } from "../../commons/types";
 import path from "path";
 
 export function getToolPkgInfo(): ToolPkgInfo {

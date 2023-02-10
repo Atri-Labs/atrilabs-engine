@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import startDevServer from "./startDevServer";
+import startDevServer from "../../commons/startDevServer";
 import {
   Middlewares,
   PrepareConfig,
@@ -16,6 +16,11 @@ import { AppServerPlugin } from "./webpack-plugins/AppServerPlugin";
 import { NodeLibPlugin } from "./webpack-plugins/NodeLibPlugin";
 import { computeRouteObjects, setFSWatchers } from "./routeObjects";
 import { printRequest } from "./utils";
+import express from "express";
+import { watchManifestDirs } from "./machine/watchManifestDirs";
+import fs from "fs";
+import { computeFSAndSend } from "./machine/computeFSAndSend";
+import { processManifestDirsString } from "./machine/processManifestDirsString";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -24,13 +29,22 @@ process.on("unhandledRejection", (err) => {
   throw err;
 });
 
-function main() {
+async function main() {
   interpreter.start();
 
-  setFSWatchers();
-  computeRouteObjects();
-
   const params = extractParams();
+
+  setFSWatchers();
+  const manifestDirs = processManifestDirsString(params.manifestDirs);
+  if (fs.existsSync("manifests")) {
+    manifestDirs.push("manifests");
+  }
+  watchManifestDirs(manifestDirs);
+
+  await Promise.all([
+    computeRouteObjects(),
+    computeFSAndSend(interpreter, manifestDirs),
+  ]);
 
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
@@ -39,11 +53,33 @@ function main() {
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system")),
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/canvas-zone"))
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/canvas-zone")),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve(
+        "@atrilabs/react-component-manifest-schema"
+      )
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve(
+        "@atrilabs/component-icon-manifest-schema"
+      )
+    ),
+    ...manifestDirs
   );
   params.additionalInclude = additionalInclude;
 
   params.paths.appSrc = process.cwd();
+
+  const externals = {
+    react: "React",
+    "react-dom": "ReactDOM",
+  };
 
   const prepareConfig = params.prepareConfig;
   const wrapPrepareConfig: PrepareConfig = (config) => {
@@ -52,6 +88,10 @@ function main() {
     }
     // TODO: insert the necessary logic for hot reload
     config.entry = createEntry;
+    config.externals = {
+      ...externals,
+      "@atrilabs/manifest-registry": "__atri_manifest_registry__",
+    };
     config.resolveLoader = {
       alias: {
         "atri-pages-client-loader": path.resolve(
@@ -62,6 +102,14 @@ function main() {
           "dev",
           "loaders",
           "atri-pages-client-loader.js"
+        ),
+        "register-components-loader": path.resolve(
+          __dirname,
+          "..",
+          "src",
+          "commons",
+          "loaders",
+          "register-components-loader.js"
         ),
       },
     };
@@ -88,6 +136,27 @@ function main() {
       printRequest(req);
       interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
     });
+    app.get(
+      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js",
+      (_req, res) => {
+        // @ts-ignore
+        const absManifestRegistryPath = __non_webpack_require__.resolve(
+          "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js"
+        );
+        res.sendFile(absManifestRegistryPath);
+      }
+    );
+    app.get(
+      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map",
+      (_req, res) => {
+        // @ts-ignore
+        const absManifestRegistryPath = __non_webpack_require__.resolve(
+          "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map"
+        );
+        res.sendFile(absManifestRegistryPath);
+      }
+    );
+    app.use(express.static(paths.appPublic));
   };
 
   startDevServer({
@@ -95,6 +164,22 @@ function main() {
     prepareConfig: wrapPrepareConfig,
     middlewares: wrapMiddlewares,
     outputFilename: "atri/js/pages/[name].js",
+    babel: {
+      plugins: [
+        [
+          path.resolve(
+            __dirname,
+            "..",
+            "src",
+            "scripts",
+            "dev-editor",
+            "babel-plugins",
+            "replace-import-with-id.js"
+          ),
+          {},
+        ],
+      ],
+    },
   });
 
   const serverPath = path.join(params.paths.outputDir, "server", "pages");
@@ -132,4 +217,6 @@ function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  console.log(err);
+});

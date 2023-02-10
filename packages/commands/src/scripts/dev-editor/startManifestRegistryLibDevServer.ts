@@ -1,14 +1,8 @@
-import {
-  extractParams,
-  createLibConfig,
-  moduleFileExtensions,
-} from "@atrilabs/commands-builder";
+import { extractParams } from "@atrilabs/commands-builder";
 import { ToolConfig } from "@atrilabs/core";
-import path from "path";
-
 import webpack, { Configuration, RuleSetRule } from "webpack";
-import { createManifestRegistryLibEntry } from "./createManifestRegistryLibEntry";
-import { CorePkgInfo } from "./types";
+import createManifestRegistryConfig from "../../commons/manifest-registry.webpack.config";
+import { CorePkgInfo } from "../../commons/types";
 import { ManifestRegistryLibPlugin } from "./webpack-plugins/ManifestRegistryLibPlugin";
 
 export default function startManifestRegistryLibDevServer(
@@ -24,98 +18,14 @@ export default function startManifestRegistryLibDevServer(
     corePkgInfo: CorePkgInfo;
   }
 ) {
-  const {
-    paths,
-    isEnvDevelopment,
-    isEnvProduction,
-    isEnvTest,
-    isEnvProductionProfile,
-    clientEnv,
-    shouldUseSourceMap,
-    publicUrlOrPath,
-    entry,
-    useTypeScript,
-    additionalInclude,
-    additionalNodeModules,
-    customLoaders,
-    generateIndexHtml,
-    babel,
-    externals,
-    toolConfig,
-    corePkgInfo,
-  } = params;
-
-  const outputFilename = "manifestRegistry.js";
-
-  const webpackConfig = createLibConfig({
-    isEnvDevelopment,
-    isEnvProduction,
-    isEnvTest,
-    isEnvProductionProfile,
-    clientEnv,
-    shouldUseSourceMap,
-    entry,
-    paths,
-    publicUrlOrPath,
-    moduleFileExtensions,
-    imageInlineSizeLimit: 10,
-    shouldInlineRuntimeChunk: true,
-    useTypeScript,
-    additionalInclude,
-    additionalNodeModules,
-    outputFilename,
-    customLoaders: [
-      ...(customLoaders || []),
-      {
-        test: corePkgInfo.manifestRegistryFile,
-        use: {
-          loader: "manifest-registry-entry-loader",
-          options: {
-            manifestSchema: toolConfig.manifestSchema,
-          },
-        },
-      },
-    ],
-    generateIndexHtml,
-    babel,
-  });
-
-  webpackConfig.entry = createManifestRegistryLibEntry;
+  const webpackConfig = createManifestRegistryConfig(params);
 
   webpackConfig.watch = true;
-
-  webpackConfig.externals = externals;
-
-  webpackConfig.resolveLoader = {
-    alias: {
-      "manifest-registry-entry-loader": path.resolve(
-        __dirname,
-        "..",
-        "src",
-        "scripts",
-        "dev-editor",
-        "loaders",
-        "manifest-registry-entry-loader.js"
-      ),
-    },
-  };
 
   webpackConfig.plugins = [
     ...(webpackConfig.plugins || []),
     new ManifestRegistryLibPlugin(),
   ];
-
-  webpackConfig.target = undefined;
-
-  webpackConfig.output = {
-    filename: outputFilename,
-    path: path.resolve("public/dist/atri-editor"),
-    globalObject: "this",
-    library: {
-      name: "__atri_manifest_registry__",
-      type: "umd",
-    },
-  };
 
   const compiler = webpack(webpackConfig);
 

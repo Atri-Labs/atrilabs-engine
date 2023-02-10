@@ -23,19 +23,25 @@ export function useDragListener() {
   );
 
   useEffect(() => {
-    return subscribeEditorMachine("drag_in_progress", (context) => {
+    const unsubDrag = subscribeEditorMachine("drag_in_progress", (context) => {
       if (context.dragComp?.comp === "CommonIcon") {
         setDragComp({ Comp: CommonIcon, props: context.dragComp.props });
         setOverlayStyleCb(context.mousePosition!);
       }
     });
+    return () => {
+      unsubDrag();
+    };
   }, [setOverlayStyleCb]);
 
   useEffect(() => {
     return subscribeEditorMachine("mouse_move_during_drag", (context) => {
+      if (DragComp === null && context.dragComp) {
+        setDragComp({ Comp: CommonIcon, props: context.dragComp.props });
+      }
       setOverlayStyleCb(context.mousePosition!);
     });
-  }, [setOverlayStyleCb]);
+  }, [setOverlayStyleCb, DragComp]);
 
   useEffect(() => {
     const handleDragEnd = () => {
@@ -51,6 +57,9 @@ export function useDragListener() {
         handleDragEnd();
       }
     );
+    subscribeEditorMachine("OUTSIDE_CANVAS", () => {
+      handleDragEnd();
+    });
     return () => {
       unsubDragFailed();
       unsubComponentCreated();

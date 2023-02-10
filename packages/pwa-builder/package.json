@@ -21,7 +21,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "dev": "dev-editor -i '@atrilabs/shared-layer-lib:@atrilabs/canvas-runtime-utils:@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest'"
+    "dev": "dev-editor -i '@atrilabs/shared-layer-lib:@atrilabs/canvas-runtime-utils:@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest'",
+    "build-manifest-registry": "build-manifest-registry"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

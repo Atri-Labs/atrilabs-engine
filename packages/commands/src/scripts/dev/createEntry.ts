@@ -7,14 +7,18 @@ export async function createEntry() {
   const requestedRouteObjectPaths = Array.from(
     interpreter.machine.context.requestedRouteObjectPaths
   );
+  const irs = interpreter.machine.context.manifests;
   const entry: Entry = {
-    app: { import: ["react", "react-dom"] },
     _error: {
       import: `atri-pages-client-loader?${stringify({
         routeObjectPath: "/",
         modulePath: "./pages/_error",
       })}!`,
-      dependOn: "app",
+    },
+    registerComponents: {
+      import: `register-components-loader?${stringify({
+        irs: JSON.stringify(irs),
+      })}!`,
     },
   };
   requestedRouteObjectPaths.forEach((requestedRouteObjectPath) => {
@@ -26,7 +30,6 @@ export async function createEntry() {
         routeObjectPath: `${requestedRouteObjectPath}`,
         modulePath: `./pages${filepath}`,
       })}!`,
-      dependOn: "app",
     };
   });
   return entry;

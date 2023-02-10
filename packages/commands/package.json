@@ -9,7 +9,8 @@
   "bin": {
     "create-atri-app": "dist/scripts/create-atri-app.js",
     "dev-atri-app": "dist/dev.js",
-    "dev-editor": "dist/dev-editor.js"
+    "dev-editor": "dist/dev-editor.js",
+    "build-manifest-registry": "dist/build-manifest-registry.js"
   },
   "directories": {
     "test": "__tests__"
@@ -26,8 +27,10 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
+    "build-app-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
     "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
+    "build-manifest-registry": "build-node-app -e ./src/scripts/build-manifest-registry/build-manifest-registry.ts -f build-manifest-registry.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
+    "build": "yarn build-app-dev && yarn build-editor && yarn build-manifest-registry",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles"
   },
@@ -70,6 +73,7 @@
     "react-router-dom": "^6.6.2",
     "resolve": "^1.22.1",
     "typescript": "^4.9.4",
+    "upath": "^2.0.1",
     "webpack": "^5.73.0",
     "webpack-dev-server": "^4.11.1",
     "webpack-manifest-plugin": "^5.0.0",

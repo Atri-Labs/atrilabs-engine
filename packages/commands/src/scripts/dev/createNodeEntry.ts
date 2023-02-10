@@ -16,7 +16,6 @@ export async function createNodeEntry() {
     const entryName = filepath.replace(/^\//, "");
     const scriptSrcs: string[] = [
       `/atri/js/pages/runtime.js`,
-      `/atri/js/pages/app.js`,
       `/atri/js/pages${filepath}.js`,
     ];
     entry[entryName] = {
