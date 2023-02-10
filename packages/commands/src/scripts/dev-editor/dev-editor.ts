@@ -192,7 +192,11 @@ function main() {
       customLoaders,
       generateIndexHtml: true,
       proxy: {
-        "/socket.io": "http://localhost:4000/socket.io",
+        "/socket.io": {
+          target: "http://localhost:4000/socket.io",
+          proxyTimeout: 1000 * 60 * 10,
+          timeout: 1000 * 60 * 10,
+        },
       },
       babel: {
         plugins: [
