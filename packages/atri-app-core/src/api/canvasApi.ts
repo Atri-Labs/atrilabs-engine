@@ -60,7 +60,7 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
             key: fullManifest.manifest.meta.key,
           },
           {
-            canvasZoneId: canvasZone.id,
+            canvasZoneId: canvasZone.getAttribute("data-canvas-id")!,
             id: context.dragData.data.id,
             props: {},
             parent: { id: CANVAS_ZONE_ROOT_ID, index: 0 },
@@ -68,7 +68,7 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
         );
         window.parent.postMessage(
           {
-            type: "DRAG_SUCCESS",
+            type: "COMPONENT_CREATED",
           },
           "*"
         );
@@ -97,15 +97,12 @@ const canvasZoneEventSubscribers: {
 subscribeCanvasMachine("COMPONENT_CREATED", (_context, event) => {
   if (event.type === "COMPONENT_CREATED") {
     const { parentId, canvasZoneId } = event;
-    if (
-      parentId === CANVAS_ZONE_ROOT_ID &&
-      canvasZoneEventSubscribers.new_component[canvasZoneId]
-    ) {
-      canvasZoneEventSubscribers.new_component[canvasZoneId].forEach((cb) =>
+    if (parentId === CANVAS_ZONE_ROOT_ID) {
+      canvasZoneEventSubscribers.new_component[canvasZoneId]?.forEach((cb) =>
         cb()
       );
     } else {
-      componentEventSubscribers.new_component[parentId].forEach((cb) => cb());
+      componentEventSubscribers.new_component[parentId]?.forEach((cb) => cb());
     }
   }
 });
@@ -121,7 +118,7 @@ function subscribeCanvasZoneEvent(
     const foundIndex = canvasZoneEventSubscribers[event][
       canvasZoneId
     ].findIndex((curr) => {
-      curr === cb;
+      return curr === cb;
     });
     if (foundIndex >= 0) {
       canvasZoneEventSubscribers[event][canvasZoneId].splice(foundIndex, 1);
@@ -139,7 +136,7 @@ function subscribeComponentEvent(
   return () => {
     const foundIndex = componentEventSubscribers[event][compId].findIndex(
       (curr) => {
-        curr === cb;
+        return curr === cb;
       }
     );
     if (foundIndex >= 0) {

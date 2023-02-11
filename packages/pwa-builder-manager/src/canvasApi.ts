@@ -26,6 +26,9 @@ window.addEventListener("message", (ev) => {
     if (ev.data?.type === "DRAG_FAILED" && ev.source !== null) {
       editorAppMachineInterpreter.send({ type: "DRAG_FAILED" });
     }
+    if (ev.data?.type === "COMPONENT_CREATED" && ev.source !== null) {
+      editorAppMachineInterpreter.send({ type: "COMPONENT_CREATED" });
+    }
   }
 });
 

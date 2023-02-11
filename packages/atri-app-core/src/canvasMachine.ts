@@ -142,8 +142,11 @@ export function createCanvasMachine(id: string) {
     subscribers[state].forEach((cb) => {
       try {
         cb(context, event);
-      } catch {
-        console.log(`Error while running callback for state ${state}`);
+      } catch (err) {
+        console.log(
+          `Error while running callback for state ${state} with`,
+          err
+        );
       }
     });
   }

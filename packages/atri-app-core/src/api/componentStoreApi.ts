@@ -68,6 +68,8 @@ function createComponent(
     };
     // update reverse map
     if (parent.id !== CANVAS_ZONE_ROOT_ID) {
+      componentReverseMap[parent.id] = componentReverseMap[parent.id] ?? [];
+
       componentReverseMap[parent.id] = [
         ...componentReverseMap[parent.id],
         id,
@@ -75,8 +77,11 @@ function createComponent(
         return componentStore[a].parent.index - componentStore[b].parent.index;
       });
     } else {
-      canvasZoneReverseMap[parent.id] = [
-        ...canvasZoneReverseMap[parent.id],
+      canvasZoneReverseMap[canvasZoneId] =
+        canvasZoneReverseMap[canvasZoneId] ?? [];
+
+      canvasZoneReverseMap[canvasZoneId] = [
+        ...canvasZoneReverseMap[canvasZoneId],
         id,
       ].sort((a, b) => {
         return componentStore[a].parent.index - componentStore[b].parent.index;
