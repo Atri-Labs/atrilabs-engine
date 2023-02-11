@@ -1,11 +1,18 @@
 import { manifestRegistryController } from "@atrilabs/manifest-registry";
-import { CanvasComponentStore, ComponentReverseMap } from "../types";
+import {
+  CanvasComponent,
+  CanvasComponentStore,
+  CanvasZoneReverseMap,
+  ComponentReverseMap,
+} from "../types";
 import React from "react";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { canvasMachineInterpreter } from "./init";
+import { CANVAS_ZONE_ROOT_ID } from "./consts";
 
 const componentStore: CanvasComponentStore = {};
 const componentReverseMap: ComponentReverseMap = {};
+const canvasZoneReverseMap: CanvasZoneReverseMap = {};
 
 function searchComponentFromManifestRegistry(manifestData: {
   manifestSchema: string;
@@ -49,24 +56,32 @@ function createComponent(
       fullManifest.manifest
     );
     // update component store
-    componentStore[canvasZoneId] = {
-      ...componentStore[canvasZoneId],
-      [id]: {
-        id,
-        ref: React.createRef(),
-        comp: devComponent ?? component!,
-        props,
-        parent,
-        decorators,
-        acceptsChild,
-        callbacks,
-      },
+    componentStore[id] = {
+      id,
+      ref: React.createRef(),
+      comp: devComponent ?? component!,
+      props,
+      parent: { ...parent, canvasZoneId },
+      decorators,
+      acceptsChild,
+      callbacks,
     };
     // update reverse map
-    componentReverseMap[id] = {
-      canvasZoneId,
-      parentCompId: parent.id,
-    };
+    if (parent.id !== CANVAS_ZONE_ROOT_ID) {
+      componentReverseMap[parent.id] = [
+        ...componentReverseMap[parent.id],
+        id,
+      ].sort((a, b) => {
+        return componentStore[a].parent.index - componentStore[b].parent.index;
+      });
+    } else {
+      canvasZoneReverseMap[parent.id] = [
+        ...canvasZoneReverseMap[parent.id],
+        id,
+      ].sort((a, b) => {
+        return componentStore[a].parent.index - componentStore[b].parent.index;
+      });
+    }
     // inform the canvas machine
     canvasMachineInterpreter.send({
       type: "COMPONENT_CREATED",
@@ -81,6 +96,21 @@ function createComponent(
   }
 }
 
+function getCanvasZoneChildrenId(canvasZoneId: string) {
+  return canvasZoneReverseMap[canvasZoneId];
+}
+
+function getComponentChildrendId(parentId: string) {
+  return componentReverseMap[parentId];
+}
+
+function getComponent(compId: string): CanvasComponent | undefined {
+  return componentStore[compId];
+}
+
 export const componentStoreApi = {
   createComponent,
+  getComponent,
+  getCanvasZoneChildrenId,
+  getComponentChildrendId,
 };

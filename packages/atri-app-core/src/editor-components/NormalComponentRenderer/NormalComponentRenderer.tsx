@@ -1,4 +1,4 @@
-import { NormalComponentRendererProps } from "../types";
+import { NormalComponentRendererProps } from "../../types";
 
 export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   return <></>;
