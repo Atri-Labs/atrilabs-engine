@@ -405,3 +405,9 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
+
+export type Breakpoint = {
+  min: number;
+  max: number;
+  isReferencePoint: boolean; // desktop size is the reference point to apply styles
+};
