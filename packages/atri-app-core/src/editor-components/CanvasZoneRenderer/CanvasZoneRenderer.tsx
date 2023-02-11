@@ -8,7 +8,7 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
     canvasZoneId: props.canvasZoneId,
   });
   const styles = useMemo(() => {
-    if (childCompIds && childCompIds.length === 0) {
+    if (childCompIds === undefined || childCompIds.length === 0) {
       return {
         ...props.styles,
         height: "200px",

@@ -148,52 +148,54 @@ function subscribeComponentEvent(
   };
 }
 
-window.addEventListener("message", (ev) => {
-  if (ev.data?.type === "drag_in_progress") {
+if (typeof window !== "undefined") {
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type === "drag_in_progress") {
+      canvasMachineInterpreter.send({
+        type: "_DRAG_IN_PROGRESS",
+        dragComp: ev.data.dragComp,
+        dragData: ev.data.dragData,
+      });
+    }
+    if (ev.data?.type === "drag_stopped") {
+      canvasMachineInterpreter.send({
+        type: "_DRAG_STOPPED",
+      });
+    }
+  });
+  window.document.addEventListener("mouseenter", (ev) => {
     canvasMachineInterpreter.send({
-      type: "_DRAG_IN_PROGRESS",
-      dragComp: ev.data.dragComp,
-      dragData: ev.data.dragData,
+      type: "INSIDE_CANVAS",
+      event: { pageX: ev.pageX, pageY: ev.pageY },
     });
-  }
-  if (ev.data?.type === "drag_stopped") {
+  });
+  window.document.addEventListener("mouseleave", (ev) => {
     canvasMachineInterpreter.send({
-      type: "_DRAG_STOPPED",
+      type: "OUTSIDE_CANVAS",
+      event: { pageX: ev.pageX, pageY: ev.pageY },
     });
+  });
+  window.addEventListener("mousemove", (ev) => {
+    canvasMachineInterpreter.send({
+      type: "MOUSE_MOVE",
+      event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
+    });
+  });
+  window.addEventListener("mouseup", (ev) => {
+    canvasMachineInterpreter.send({
+      type: "MOUSE_UP",
+      event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
+    });
+  });
+  if (window.location !== window.parent.location) {
+    canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
+  } else {
+    canvasMachineInterpreter.send({ type: "TOP_WINDOW_DETECTED" });
   }
-});
-window.document.addEventListener("mouseenter", (ev) => {
-  canvasMachineInterpreter.send({
-    type: "INSIDE_CANVAS",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
+  window.addEventListener("load", () => {
+    canvasMachineInterpreter.send({ type: "WINDOW_LOADED" });
   });
-});
-window.document.addEventListener("mouseleave", (ev) => {
-  canvasMachineInterpreter.send({
-    type: "OUTSIDE_CANVAS",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
-  });
-});
-window.addEventListener("mousemove", (ev) => {
-  canvasMachineInterpreter.send({
-    type: "MOUSE_MOVE",
-    event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
-  });
-});
-window.addEventListener("mouseup", (ev) => {
-  canvasMachineInterpreter.send({
-    type: "MOUSE_UP",
-    event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
-  });
-});
-if (window.location !== window.parent.location) {
-  canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
-} else {
-  canvasMachineInterpreter.send({ type: "TOP_WINDOW_DETECTED" });
 }
-window.addEventListener("load", () => {
-  canvasMachineInterpreter.send({ type: "WINDOW_LOADED" });
-});
 
 export const canvasApi = {
   subscribeCanvasZoneEvent,
