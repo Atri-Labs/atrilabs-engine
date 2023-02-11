@@ -102,11 +102,11 @@ function createComponent(
 }
 
 function getCanvasZoneChildrenId(canvasZoneId: string) {
-  return canvasZoneReverseMap[canvasZoneId];
+  return canvasZoneReverseMap[canvasZoneId] || [];
 }
 
 function getComponentChildrendId(parentId: string) {
-  return componentReverseMap[parentId];
+  return componentReverseMap[parentId] || [];
 }
 
 function getComponent(compId: string): CanvasComponent | undefined {

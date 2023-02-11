@@ -2,6 +2,9 @@ import { useMemo } from "react";
 import { gray500 } from "@atrilabs/design-system";
 import { CanvasZoneRendererProps } from "../../types";
 import { useCanvasZoneEventSubscriber } from "./hooks/useCanvasZoneEventSubscriber";
+import { componentStoreApi } from "../../api";
+import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
+import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
 
 export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
   const { childCompIds } = useCanvasZoneEventSubscriber({
@@ -18,7 +21,14 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
   }, [props.styles, childCompIds]);
   return (
     <div style={styles} data-canvas-id={props.canvasZoneId}>
-      {childCompIds}
+      {childCompIds.map((childCompId) => {
+        const { acceptsChild } = componentStoreApi.getComponent(childCompId)!;
+        return acceptsChild ? (
+          <NormalComponentRenderer id={childCompId} />
+        ) : (
+          <ParentComponentRenderer id={childCompId} />
+        );
+      })}
     </div>
   );
 }
