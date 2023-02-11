@@ -385,7 +385,7 @@ export type ManifestIR = {
 };
 
 export interface ServerToClientEvents {
-  newEvent: (urlPath: string, event: AnyEvent) => void;
+  loadEvent: (forestPkgId: string, urlPath: string, event: AnyEvent) => void;
 }
 
 export interface ClientToServerEvents {
@@ -398,7 +398,13 @@ export interface ClientToServerEvents {
   ) => void;
   fetchEvents: (
     urlPath: string,
-    callback: (events: { [canvasZoneId: string]: AnyEvent[] }) => void
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+  saveEvent: (
+    forestPkgId: string,
+    urlPath: string,
+    event: AnyEvent,
+    callback: (success: boolean) => void
   ) => void;
 }
 
@@ -409,5 +415,5 @@ export interface SocketData {}
 export type Breakpoint = {
   min: number;
   max: number;
-  isReferencePoint: boolean; // desktop size is the reference point to apply styles
+  isReferencePoint?: boolean; // desktop size is the reference point to apply styles
 };

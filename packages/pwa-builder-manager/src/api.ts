@@ -1,6 +1,11 @@
 import { io, Socket } from "socket.io-client";
-import { ClientToServerEvents, ServerToClientEvents } from "@atrilabs/core";
+import {
+  BrowserForestManager,
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "@atrilabs/core";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
+import { AnyEvent, EventMetaData } from "@atrilabs/forest";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
@@ -29,4 +34,35 @@ subscribeEditorMachine("before_app_load", (context) => {
   }
 });
 
-export const api = {};
+function postNewEvents(
+  forestPkgId: string,
+  routeObjectPath: string,
+  data: {
+    name: string;
+    events: AnyEvent[];
+    meta: EventMetaData;
+  }
+) {
+  const forest = BrowserForestManager.getForest(forestPkgId, routeObjectPath);
+  if (forest) {
+    forest.handleEvents(data);
+    const { events } = data;
+    events.forEach((event) => {
+      socket.emit(
+        "saveEvent",
+        forestPkgId,
+        routeObjectPath,
+        event,
+        (success) => {
+          if (!success) {
+            console.log("Failed to send event to backend");
+          }
+        }
+      );
+    });
+  }
+}
+
+export const api = {
+  postNewEvents,
+};

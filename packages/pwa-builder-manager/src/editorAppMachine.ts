@@ -1,4 +1,5 @@
 import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import { AnyEvent } from "@atrilabs/forest";
 import { createMachine, interpret } from "xstate";
 
 // events
@@ -37,7 +38,7 @@ type PAGES_INFO_FETCHED_EVENT = {
 type PAGE_EVENTS_FETCHED_EVENT = {
   type: typeof PAGE_EVENTS_FETCHED;
   urlPath: string;
-  events: { [canvasZoneId: string]: any[] };
+  events: AnyEvent[];
 };
 type CANVAS_IFRAME_LOADED_EVENT = {
   type: typeof CANVAS_IFRAME_LOADED;
@@ -113,7 +114,7 @@ type EDITOR_APP_CONTEXT = {
     | null;
   currentRouteObjectPath: string;
   currentUrlPath: string;
-  events: { [urlPath: string]: { [canvasZoneId: string]: any[] } };
+  events: { [urlPath: string]: AnyEvent[] };
   iframeLoadStatus: "done" | "progress";
   dragData: DragData | null;
   dragComp: DragComp | null;

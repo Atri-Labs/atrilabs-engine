@@ -1,13 +1,17 @@
-import { Menu } from "@atrilabs/core";
-import { CanvasController } from "@atrilabs/canvas-runtime";
-import React, { useCallback, useEffect, useState } from "react";
+import { Breakpoint, Menu } from "@atrilabs/core";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from "react";
 import { gray800, IconMenu } from "@atrilabs/design-system";
-import { Breakpoint } from "@atrilabs/canvas-runtime";
 import { ReactComponent as Desktop } from "./assets/desktop.svg";
 import { ReactComponent as Tab } from "./assets/tab.svg";
 import { ReactComponent as Landscape } from "./assets/landscape.svg";
 import { ReactComponent as Portrait } from "./assets/portrait.svg";
 import "./styles.css";
+import { breakpointApi } from "@atrilabs/pwa-builder-manager";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -16,7 +20,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 const breakpoints = {
-  desktop: null,
+  desktop: { min: 900, max: 1200 },
   tablet: { min: 800, max: 991 },
   landscape: { min: 550, max: 767 },
   portrait: { min: 300, max: 478 },
@@ -25,28 +29,39 @@ const breakpoints = {
 export default function () {
   console.log("canvas-breakpoint-layer loaded");
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>(breakpoints.desktop);
 
-  // set initial breakpoint at Desktop
+  useLayoutEffect(() => {
+    breakpointApi.addBreakpoints([
+      breakpoints.desktop,
+      breakpoints.tablet,
+      breakpoints.landscape,
+      breakpoints.portrait,
+    ]);
+    breakpointApi.setReferenceBreakpoint(0);
+    breakpointApi.activateBreakpoint(0);
+  }, []);
+
   useEffect(() => {
-    setBreakpoint(breakpoints.desktop);
+    return breakpointApi.subscribeBreakpointChange(() => {
+      setBreakpoint(breakpointApi.getActiveBreakpoint());
+    });
   }, []);
 
   const setDesktop = useCallback(() => {
-    setBreakpoint(breakpoints.desktop);
+    breakpointApi.activateBreakpoint(0);
   }, []);
   const setTab = useCallback(() => {
-    setBreakpoint(breakpoints.tablet);
+    breakpointApi.activateBreakpoint(1);
   }, []);
   const setLandscape = useCallback(() => {
-    setBreakpoint(breakpoints.landscape);
+    breakpointApi.activateBreakpoint(2);
   }, []);
   const setProtrait = useCallback(() => {
-    setBreakpoint(breakpoints.portrait);
+    breakpointApi.activateBreakpoint(3);
   }, []);
   return (
     <>
-      <CanvasController breakpoint={breakpoint} />
       <Menu name="CanvasMenu" order={0}>
         <div
           style={styles.iconContainer}

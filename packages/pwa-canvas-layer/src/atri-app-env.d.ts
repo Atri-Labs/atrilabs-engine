@@ -1,1 +1,1 @@
-/// <reference types="@atrilabs/runtime-types" />
+/// <reference types="@atrilabs/layer-types" />
