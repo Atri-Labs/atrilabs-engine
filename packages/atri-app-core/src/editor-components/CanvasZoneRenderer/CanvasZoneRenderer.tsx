@@ -24,9 +24,9 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
       {childCompIds.map((childCompId) => {
         const { acceptsChild } = componentStoreApi.getComponent(childCompId)!;
         return acceptsChild ? (
-          <NormalComponentRenderer id={childCompId} />
+          <ParentComponentRenderer id={childCompId} key={childCompId} />
         ) : (
-          <ParentComponentRenderer id={childCompId} />
+          <NormalComponentRenderer id={childCompId} key={childCompId} />
         );
       })}
     </div>

@@ -15,9 +15,9 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
       {children.map((childId) => {
         const { acceptsChild } = componentStoreApi.getComponent(childId)!;
         return acceptsChild ? (
-          <ParentComponentRenderer id={childId} />
+          <ParentComponentRenderer id={childId} key={childId} />
         ) : (
-          <NormalComponentRenderer id={childId} />
+          <NormalComponentRenderer id={childId} key={childId} />
         );
       })}
     </Comp>

@@ -1,5 +1,4 @@
 import { canvasMachineInterpreter, subscribeCanvasMachine } from "./init";
-import { manifestRegistryController } from "@atrilabs/manifest-registry";
 import { componentStoreApi } from "./componentStoreApi";
 import { CANVAS_ZONE_ROOT_ID } from "./consts";
 import { CanvasZoneEvent, ComponentEvent } from "../types";
@@ -133,6 +132,29 @@ if (typeof window !== "undefined") {
     if (ev.data?.type === "drag_stopped") {
       canvasMachineInterpreter.send({
         type: "_DRAG_STOPPED",
+      });
+    }
+    if (ev.data?.type === "CREATE_COMPONENT") {
+      const payload = ev.data.payload as {
+        id: string;
+        props: {
+          [key: string]: any;
+        };
+        parent: {
+          id: string;
+          index: number;
+          canvasZoneId: string;
+        };
+        acceptsChild: boolean;
+        callbacks: {
+          [key: string]: any[];
+        };
+        meta: { key: string; pkg: string; manifestSchemaId: string };
+      };
+      componentStoreApi.createComponent(payload.meta, {
+        id: payload.id,
+        props: payload.props,
+        parent: payload.parent,
       });
     }
   });

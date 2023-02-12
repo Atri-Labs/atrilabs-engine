@@ -126,7 +126,6 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         pkg,
         key,
       });
-      console.log(events);
       const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
       const forestId = BrowserForestManager.currentForest.forestId;
       api.postNewEvents(forestPkgId, forestId, {

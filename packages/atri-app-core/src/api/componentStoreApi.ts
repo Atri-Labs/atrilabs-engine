@@ -15,13 +15,13 @@ const componentReverseMap: ComponentReverseMap = {};
 const canvasZoneReverseMap: CanvasZoneReverseMap = {};
 
 function searchComponentFromManifestRegistry(manifestData: {
-  manifestSchema: string;
+  manifestSchemaId: string;
   pkg: string;
   key: string;
 }) {
-  const { manifestSchema, pkg, key } = manifestData;
+  const { manifestSchemaId, pkg, key } = manifestData;
   const registry = manifestRegistryController.readManifestRegistry();
-  const fullManifest = registry[manifestSchema].manifests.find((curr) => {
+  const fullManifest = registry[manifestSchemaId].manifests.find((curr) => {
     return curr.pkg === pkg && curr.manifest.meta.key === key;
   });
   return fullManifest;
@@ -40,17 +40,16 @@ function processManifest(manifest: ReactComponentManifestSchema) {
 }
 
 function createComponent(
-  manifestData: { manifestSchema: string; pkg: string; key: string },
+  manifestData: { manifestSchemaId: string; pkg: string; key: string },
   componentData: {
-    canvasZoneId: string;
     id: string;
     props: any;
-    parent: { id: string; index: number };
+    parent: { id: string; index: number; canvasZoneId: string };
   }
 ) {
   const fullManifest = searchComponentFromManifestRegistry(manifestData);
   if (fullManifest) {
-    const { id, canvasZoneId, props, parent } = componentData;
+    const { id, props, parent } = componentData;
     const { devComponent, component } = fullManifest;
     const { decorators, acceptsChild, callbacks } = processManifest(
       fullManifest.manifest
@@ -61,7 +60,7 @@ function createComponent(
       ref: React.createRef(),
       comp: devComponent ?? component!,
       props,
-      parent: { ...parent, canvasZoneId },
+      parent,
       decorators,
       acceptsChild,
       callbacks,
@@ -77,11 +76,11 @@ function createComponent(
         return componentStore[a].parent.index - componentStore[b].parent.index;
       });
     } else {
-      canvasZoneReverseMap[canvasZoneId] =
-        canvasZoneReverseMap[canvasZoneId] ?? [];
+      canvasZoneReverseMap[parent.canvasZoneId] =
+        canvasZoneReverseMap[parent.canvasZoneId] ?? [];
 
-      canvasZoneReverseMap[canvasZoneId] = [
-        ...canvasZoneReverseMap[canvasZoneId],
+      canvasZoneReverseMap[parent.canvasZoneId] = [
+        ...canvasZoneReverseMap[parent.canvasZoneId],
         id,
       ].sort((a, b) => {
         return componentStore[a].parent.index - componentStore[b].parent.index;
@@ -91,12 +90,12 @@ function createComponent(
     canvasMachineInterpreter.send({
       type: "COMPONENT_CREATED",
       compId: id,
-      canvasZoneId,
+      canvasZoneId: parent.canvasZoneId,
       parentId: parent.id,
     });
   } else {
     throw Error(
-      `Could not find the manifest for pkg=${manifestData.pkg} key=${manifestData.key} in manifestSchmea=${manifestData.manifestSchema}`
+      `Could not find the manifest for pkg=${manifestData.pkg} key=${manifestData.key} in manifestSchmea=${manifestData.manifestSchemaId}`
     );
   }
 }

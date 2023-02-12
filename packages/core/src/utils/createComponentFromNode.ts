@@ -9,14 +9,14 @@ import { getEffectiveStyle } from "./getEffectiveStyle";
 
 function createPropsFromManifestComponent(
   compId: string,
-  manifetComponent: any,
+  manifet: any,
   breakpoint: Breakpoint
 ) {
-  const propsKeys = Object.keys(manifetComponent.dev.attachProps);
+  const propsKeys = Object.keys(manifet.dev.attachProps);
   const props: { [key: string]: any } = {};
   for (let i = 0; i < propsKeys.length; i++) {
     const propKey = propsKeys[i];
-    const treeId = manifetComponent.dev.attachProps[propKey].treeId;
+    const treeId = manifet.dev.attachProps[propKey].treeId;
     const tree = BrowserForestManager.currentForest.tree(treeId);
     if (tree) {
       if (tree.links[compId] && tree.links[compId].childId) {
@@ -53,7 +53,11 @@ export function createComponentFromNode(
   const manifestSchemaId = meta.manifestSchemaId;
   const pkg = meta.pkg;
   const key = meta.key;
-  const parent = node.state.parent;
+  const parent = {
+    id: node.state.parent.id,
+    index: node.state.parent.index,
+    canvasZoneId: node.state.parent.zoneId,
+  };
   // find manifest from manifest registry
   const manifestRegistry = manifestRegistryController.readManifestRegistry();
   const fullManifest = manifestRegistry[manifestSchemaId].manifests.find(
@@ -65,10 +69,6 @@ export function createComponentFromNode(
   if (fullManifest) {
     const manifest = fullManifest.manifest as ReactComponentManifestSchema;
     const props = createPropsFromManifestComponent(id, manifest, breakpoint);
-    const component = fullManifest.devComponent || fullManifest.component;
-    if (component === null) {
-      throw Error("Component is null! Check manifest registry.");
-    }
     const callbacks =
       manifest.dev["attachCallbacks"] &&
       typeof manifest.dev["attachCallbacks"] === "object" &&
@@ -77,11 +77,11 @@ export function createComponentFromNode(
         : {};
     return {
       id,
-      component,
       props,
       parent,
-      acceptsChild: manifest.dev.acceptsChild,
+      acceptsChild: typeof manifest.dev.acceptsChild === "function",
       callbacks,
+      meta: node.meta,
     };
   }
 }
