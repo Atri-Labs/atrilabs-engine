@@ -38,3 +38,16 @@ export type DecoratorData = { id: string };
 export type CanvasZoneEvent = "new_component";
 
 export type ComponentEvent = "new_component";
+
+export type ComponentCoordsWM = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  topWM: number;
+  leftWM: number;
+  rightWM: number;
+  bottomWM: number;
+};
+
+export type Location = { pageX: number; pageY: number };

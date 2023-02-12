@@ -1,6 +1,8 @@
 import { ParentComponentRendererProps } from "../../types";
 import { componentStoreApi } from "../../api";
 import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
+import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
+import { useAssignComponentId } from "../hooks/useAssignComponentId";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
@@ -9,7 +11,9 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
     ref,
     callbacks,
   } = componentStoreApi.getComponent(props.id)!;
-  const children = componentStoreApi.getComponentChildrendId(props.id);
+  const children = componentStoreApi.getComponentChildrenId(props.id);
+  useAssignParentMarker({ id: props.id });
+  useAssignComponentId({ id: props.id });
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {

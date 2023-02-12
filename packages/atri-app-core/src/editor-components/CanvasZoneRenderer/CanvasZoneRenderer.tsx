@@ -20,7 +20,7 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
     }
   }, [props.styles, childCompIds]);
   return (
-    <div style={styles} data-canvas-id={props.canvasZoneId}>
+    <div style={styles} data-atri-canvas-id={props.canvasZoneId}>
       {childCompIds.map((childCompId) => {
         const { acceptsChild } = componentStoreApi.getComponent(childCompId)!;
         return acceptsChild ? (

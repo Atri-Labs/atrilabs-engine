@@ -104,7 +104,7 @@ function getCanvasZoneChildrenId(canvasZoneId: string) {
   return canvasZoneReverseMap[canvasZoneId] || [];
 }
 
-function getComponentChildrendId(parentId: string) {
+function getComponentChildrenId(parentId: string) {
   return componentReverseMap[parentId] || [];
 }
 
@@ -112,9 +112,24 @@ function getComponent(compId: string): CanvasComponent | undefined {
   return componentStore[compId];
 }
 
+function getComponentParent(compId: string) {
+  return componentStore[compId].parent;
+}
+
+function getCanvasZoneComponent(canvasZoneId: string) {
+  return document.querySelector(`[data-atri-canvas-id]='${canvasZoneId}'`);
+}
+
+function getComponentRef(compId: string) {
+  return componentStore[compId].ref;
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
   getCanvasZoneChildrenId,
-  getComponentChildrendId,
+  getComponentChildrenId,
+  getComponentParent,
+  getCanvasZoneComponent,
+  getComponentRef,
 };

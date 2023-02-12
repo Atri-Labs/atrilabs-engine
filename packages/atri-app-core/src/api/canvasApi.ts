@@ -37,16 +37,23 @@ subscribeCanvasMachine("moveWhileDrag", () => {
 });
 subscribeCanvasMachine("upWhileDrag", (context) => {
   const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
-    "[data-canvas-id]"
+    "[data-atri-canvas-id]"
+  );
+  const parentEl = (context.mousePosition!.target as HTMLElement).closest(
+    "[data-atri-parent]"
   );
   if (canvasZone) {
+    let id = CANVAS_ZONE_ROOT_ID;
+    if (parentEl) {
+      id = parentEl.getAttribute("[data-atri-comp-id]")!;
+    }
     window.parent.postMessage(
       {
         type: "DRAG_SUCCESS",
         parent: {
-          id: CANVAS_ZONE_ROOT_ID,
+          id: id,
           index: 0,
-          canvasZoneId: canvasZone.getAttribute("data-canvas-id"),
+          canvasZoneId: canvasZone.getAttribute("data-atri-canvas-id"),
         },
       },
       "*"
