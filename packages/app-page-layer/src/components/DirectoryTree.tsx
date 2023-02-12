@@ -4,7 +4,7 @@ import { FileView } from "./FileView";
 type DirectoryTreeTypes = {
   treeData: DataNode[];
   padding: number;
-  onSelect: (route: string) => void;
+  onSelect: (route: string, isFolder: boolean, path: number[]) => void;
 };
 
 export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
@@ -13,6 +13,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
       <style>
         {`.file-view:hover {
             outline: 1px solid #000;
+            // background-color: #4D5A68;
           }
         `}
       </style>
@@ -28,7 +29,8 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                   name={node.route}
                   route={node.route}
                   isFolder={!node.isLeaf}
-                  isOpen={false}
+                  isOpen={node.isFolderOpen}
+                  path={node.path}
                   onSelect={props.onSelect}
                 />
               </div>

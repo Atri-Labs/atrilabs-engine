@@ -7,6 +7,7 @@ export type DataNode = {
   title: string;
   route: string;
   isLeaf: boolean;
+  path: number[];
   isFolderOpen?: boolean;
   children?: DataNode[];
 };
@@ -16,38 +17,45 @@ const fileTreeNodes: DataNode[] = [
     title: "index.jsx",
     route: "/",
     isLeaf: true,
+    path: [0],
   },
   {
     title: "test1.jsx",
     route: "/test1",
     isLeaf: true,
+    path: [1],
   },
   {
     title: "test2.jsx",
     route: "/test2",
     isLeaf: true,
+    path: [2],
   },
   {
     title: "countries",
     route: "/countries",
     isLeaf: false,
+    path: [3],
     isFolderOpen: false,
     children: [
       {
         title: "europe",
         route: "/countries/europe",
         isLeaf: false,
+        path: [3, 0],
         isFolderOpen: false,
         children: [
           {
             title: "france.jsx",
             route: "/countries/europe/france",
             isLeaf: true,
+            path: [3, 0, 0],
           },
           {
             title: "switzerland.jsx",
             route: "/countries/europe/switzerland",
             isLeaf: true,
+            path: [3, 0, 1],
           },
         ],
       },
@@ -56,16 +64,70 @@ const fileTreeNodes: DataNode[] = [
         route: "/countries/asia",
         isLeaf: false,
         isFolderOpen: false,
+        path: [3, 1],
         children: [
           {
             title: "india.jsx",
             route: "/countries/asia/india",
             isLeaf: true,
+            path: [3, 1, 0],
           },
           {
             title: "russia.jsx",
             route: "/countries/asia/russia",
             isLeaf: true,
+            path: [3, 1, 1],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "countries",
+    route: "/countries",
+    isLeaf: false,
+    path: [4],
+    isFolderOpen: false,
+    children: [
+      {
+        title: "europe",
+        route: "/countries/europe",
+        isLeaf: false,
+        path: [4, 0],
+        isFolderOpen: false,
+        children: [
+          {
+            title: "france.jsx",
+            route: "/countries/europe/france",
+            isLeaf: true,
+            path: [4, 0, 0],
+          },
+          {
+            title: "switzerland.jsx",
+            route: "/countries/europe/switzerland",
+            isLeaf: true,
+            path: [4, 0, 1],
+          },
+        ],
+      },
+      {
+        title: "asia",
+        route: "/countries/asia",
+        isLeaf: false,
+        isFolderOpen: false,
+        path: [4, 1],
+        children: [
+          {
+            title: "india.jsx",
+            route: "/countries/asia/india",
+            isLeaf: true,
+            path: [4, 1, 0],
+          },
+          {
+            title: "russia.jsx",
+            route: "/countries/asia/russia",
+            isLeaf: true,
+            path: [4, 1, 1],
           },
         ],
       },
@@ -158,10 +220,13 @@ export const PageTree: React.FC<{
 
   const [treeNodesList, setTreeNodesList] = useState(fileTreeNodes);
 
-  const onSelect = (route: string) => {
-    canvasApi.navigatePage(route);
-    const prevTreeNodesList = [...treeNodesList];
-    setTreeNodesList(toggleFile([3], prevTreeNodesList));
+  const onSelect = (route: string, isFolder: boolean, path: number[]) => {
+    if (!isFolder) {
+      canvasApi.navigatePage(route);
+    } else {
+      const prevTreeNodesList = [...treeNodesList];
+      setTreeNodesList(toggleFile(path, prevTreeNodesList));
+    }
   };
 
   console.log(treeNodesList);
