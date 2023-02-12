@@ -90,4 +90,6 @@ export function createEventsFromManifest(options: {
     },
   };
   events.push(event);
+
+  return events;
 }

@@ -37,53 +37,29 @@ subscribeCanvasMachine("moveWhileDrag", () => {
   // TODO: detect catcher & call canvas overlay api
 });
 subscribeCanvasMachine("upWhileDrag", (context) => {
-  // TODO: detect catcher & send failed or success
-  if (context.mousePosition?.target) {
-    const canvasZone = (context.mousePosition.target as HTMLElement).closest(
-      "[data-canvas-id]"
-    );
-    if (canvasZone && context.dragData) {
-      const registry = manifestRegistryController.readManifestRegistry();
-      const fullManifest = registry[
-        context.dragData.data.manifestSchema
-      ].manifests.find((curr) => {
-        return (
-          curr.pkg === context.dragData?.data.pkg &&
-          curr.manifest.meta.key === context.dragData?.data.key
-        );
-      });
-      if (fullManifest) {
-        componentStoreApi.createComponent(
-          {
-            manifestSchema: context.dragData.data.manifestSchema,
-            pkg: fullManifest.pkg,
-            key: fullManifest.manifest.meta.key,
-          },
-          {
-            canvasZoneId: canvasZone.getAttribute("data-canvas-id")!,
-            id: context.dragData.data.id,
-            props: {},
-            parent: { id: CANVAS_ZONE_ROOT_ID, index: 0 },
-          }
-        );
-        window.parent.postMessage(
-          {
-            type: "COMPONENT_CREATED",
-          },
-          "*"
-        );
-        // return is stopper for running code outside
-        return;
-      }
-    }
-  }
-  // send failed if something is not right
-  window.parent.postMessage(
-    {
-      type: "DRAG_FAILED",
-    },
-    "*"
+  const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
+    "[data-canvas-id]"
   );
+  if (canvasZone) {
+    window.parent.postMessage(
+      {
+        type: "DRAG_SUCCESS",
+        parent: {
+          id: CANVAS_ZONE_ROOT_ID,
+          index: 0,
+          canvasZoneId: canvasZone.getAttribute("data-canvas-id"),
+        },
+      },
+      "*"
+    );
+  } else {
+    window.parent.postMessage(
+      {
+        type: "DRAG_FAILED",
+      },
+      "*"
+    );
+  }
 });
 
 const componentEventSubscribers: {
