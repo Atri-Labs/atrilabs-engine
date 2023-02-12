@@ -26,7 +26,6 @@ function mergeStateCustomizer(obj: any, src: any) {
 
 export function createForest(def: { trees: TreeDef[] }): Forest {
   const treeDefs = def.trees;
-  console.log(treeDefs);
 
   if (treeDefs.length === 0) {
     throw Error("Atleast one tree definition is required");
