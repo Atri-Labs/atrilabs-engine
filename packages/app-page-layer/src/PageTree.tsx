@@ -219,6 +219,7 @@ export const PageTree: React.FC<{
   // }, [createTreeNodes, props.pagesInfo]);
 
   const [treeNodesList, setTreeNodesList] = useState(fileTreeNodes);
+  const [currSelectedPath, setCurrSelectedPath] = useState<number[]>([]);
 
   const onSelect = (route: string, isFolder: boolean, path: number[]) => {
     if (!isFolder) {
@@ -227,11 +228,17 @@ export const PageTree: React.FC<{
       const prevTreeNodesList = [...treeNodesList];
       setTreeNodesList(toggleFile(path, prevTreeNodesList));
     }
+    setCurrSelectedPath(path);
   };
 
   console.log(treeNodesList);
 
   return (
-    <DirectoryTree onSelect={onSelect} treeData={treeNodesList} padding={0} />
+    <DirectoryTree
+      onSelect={onSelect}
+      treeData={treeNodesList}
+      padding={0}
+      currSelectedPath={currSelectedPath}
+    />
   );
 };

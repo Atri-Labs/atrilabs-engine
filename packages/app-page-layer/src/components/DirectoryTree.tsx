@@ -4,6 +4,7 @@ import { FileView } from "./FileView";
 type DirectoryTreeTypes = {
   treeData: DataNode[];
   padding: number;
+  currSelectedPath: number[];
   onSelect: (route: string, isFolder: boolean, path: number[]) => void;
 };
 
@@ -22,7 +23,11 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
             <div key={index}>
               <div
                 className="file-view"
-                style={{ paddingLeft: `${props.padding}em` }}
+                style={{
+                  paddingLeft: `${props.padding}em`,
+                  backgroundColor:
+                    node.path === props.currSelectedPath ? "#6B7E9E" : "",
+                }}
               >
                 <FileView
                   name={node.route}
@@ -30,6 +35,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                   isFolder={!node.isLeaf}
                   isOpen={node.isFolderOpen}
                   path={node.path}
+                  currSelectedPath={props.currSelectedPath}
                   onSelect={props.onSelect}
                 />
               </div>
@@ -39,6 +45,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                     padding={props.padding + 1}
                     treeData={node.children}
                     onSelect={props.onSelect}
+                    currSelectedPath={props.currSelectedPath}
                   />
                 </div>
               )}
