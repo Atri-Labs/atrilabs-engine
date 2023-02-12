@@ -10,7 +10,7 @@ function atriPagesServerLoader() {
     err.message = `Expected defined value for scriptSrc. Got ${routeObjectPath}, ${modulePath} respectively.`;
     throw err;
   }
-  const baseSrcs = ["react.development.js", "react-dom.development.js"];
+  const baseSrcs = ["/react.development.js", "/react-dom.development.js"];
   const absManifestRegistryPath = require.resolve(
     "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js"
   );
@@ -18,7 +18,7 @@ function atriPagesServerLoader() {
     path.join(process.cwd(), "public"),
     absManifestRegistryPath
   );
-  const manifestRegistryUrlPath = upath.toUnix(relManifestRegistryPath);
+  const manifestRegistryUrlPath = "/" + upath.toUnix(relManifestRegistryPath);
 
   return `
   import DocFn from "./pages/_document";
