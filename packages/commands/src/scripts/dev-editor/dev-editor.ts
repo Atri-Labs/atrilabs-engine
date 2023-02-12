@@ -194,8 +194,7 @@ function main() {
       proxy: {
         "/socket.io": {
           target: "http://localhost:4000/socket.io",
-          proxyTimeout: 1000 * 60 * 10,
-          timeout: 1000 * 60 * 10,
+          ws: true,
         },
       },
       babel: {
