@@ -8,7 +8,9 @@ export type TreeNode = {
   /**
    * contains state of the element
    */
-  state: { [key: string]: any } & { parent: { id: string; index: number } };
+  state: { [key: string]: any } & {
+    parent: { id: string; index: number; zoneId: string };
+  };
 };
 
 export type TreeLink = {

@@ -1,5 +1,11 @@
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
 import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import {
+  BrowserForestManager,
+  createEventsFromManifest,
+  getReactManifest,
+} from "@atrilabs/core";
+import { api } from "./api";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -26,6 +32,16 @@ window.addEventListener("message", (ev) => {
     if (ev.data?.type === "DRAG_FAILED" && ev.source !== null) {
       editorAppMachineInterpreter.send({ type: "DRAG_FAILED" });
     }
+    if (
+      ev.data?.type === "DRAG_SUCCESS" &&
+      ev.source !== null &&
+      ev.data.parent
+    ) {
+      editorAppMachineInterpreter.send({
+        type: "DRAG_SUCCESS",
+        parent: ev.data.parent,
+      });
+    }
   }
 });
 
@@ -46,9 +62,16 @@ subscribeEditorMachine("drag_in_progress", (context) => {
   );
 });
 
-subscribeEditorMachine("drag_failed", (context) => {
+subscribeEditorMachine("DRAG_FAILED", (context) => {
   // @ts-ignore
   context.canvasWindow?.postMessage({ type: "drag_stopped" }, "*");
+});
+
+subscribeEditorMachine("before_app_load", (context) => {
+  BrowserForestManager.setCurrentForest(
+    BrowserForestManager.currentForest.forestPkgId,
+    context.currentRouteObjectPath
+  );
 });
 
 function navigatePage(urlPath: string) {
@@ -84,12 +107,34 @@ function startDrag(dragComp: DragComp, dragData: DragData) {
   editorAppMachineInterpreter.send({ type: "START_DRAG", dragData, dragComp });
 }
 
-subscribeEditorMachine("drag_failed", () => {
+subscribeEditorMachine("DRAG_FAILED", () => {
   removeMouseListeners();
 });
 
-subscribeEditorMachine("component_created", () => {
+subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
   removeMouseListeners();
+  if (event.type === "DRAG_SUCCESS") {
+    const { pkg, key, id, manifestSchema } = context.dragData!.data;
+    const { parent } = event;
+    const fullManifest = getReactManifest({ pkg, key });
+    if (fullManifest) {
+      const events = createEventsFromManifest({
+        manifest: fullManifest.manifest,
+        manifestSchema,
+        compId: id,
+        parent,
+        pkg,
+        key,
+      });
+      const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+      const forestId = BrowserForestManager.currentForest.forestId;
+      api.postNewEvents(forestPkgId, forestId, {
+        events,
+        name: "NEW_DROP",
+        meta: { agent: "browser" },
+      });
+    }
+  }
 });
 
 function mouseUpInPlayground(event: { pageX: number; pageY: number }) {

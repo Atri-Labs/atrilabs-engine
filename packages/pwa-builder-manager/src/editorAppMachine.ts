@@ -1,4 +1,5 @@
 import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import { AnyEvent } from "@atrilabs/forest";
 import { createMachine, interpret } from "xstate";
 
 // events
@@ -14,7 +15,7 @@ const MOUSE_UP = "MOUSE_UP" as const;
 const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const DROPZONE_CREATED = "DROPZONE_CREATED" as const;
-const COMPONENT_CREATED = "COMPONENT_CREATED" as const;
+const DRAG_SUCCESS = "DRAG_SUCCESS" as const;
 const DRAG_FAILED = "DRAG_FAILED" as const;
 
 type APP_INFO_FETCHED_EVENT = {
@@ -37,7 +38,7 @@ type PAGES_INFO_FETCHED_EVENT = {
 type PAGE_EVENTS_FETCHED_EVENT = {
   type: typeof PAGE_EVENTS_FETCHED;
   urlPath: string;
-  events: { [canvasZoneId: string]: any[] };
+  events: AnyEvent[];
 };
 type CANVAS_IFRAME_LOADED_EVENT = {
   type: typeof CANVAS_IFRAME_LOADED;
@@ -69,8 +70,9 @@ type DROPZONE_CREATED_EVENT = {
   type: typeof DROPZONE_CREATED;
   parent: { id: string; index: number };
 };
-type COMPONENT_CREATED_EVENT = {
-  type: typeof COMPONENT_CREATED;
+type DRAG_SUCCESS_EVENT = {
+  type: typeof DRAG_SUCCESS;
+  parent: { id: string; index: number; canvasZoneId: string };
 };
 type DRAG_FAILED_EVENT = {
   type: typeof DRAG_FAILED;
@@ -89,7 +91,7 @@ type EDITOR_APP_EVENTS =
   | INSIDE_CANVAS_EVENT
   | OUTSIDE_CANVAS_EVENT
   | DROPZONE_CREATED_EVENT
-  | COMPONENT_CREATED_EVENT
+  | DRAG_SUCCESS_EVENT
   | DRAG_FAILED_EVENT;
 
 // states
@@ -113,7 +115,7 @@ type EDITOR_APP_CONTEXT = {
     | null;
   currentRouteObjectPath: string;
   currentUrlPath: string;
-  events: { [urlPath: string]: { [canvasZoneId: string]: any[] } };
+  events: { [urlPath: string]: AnyEvent[] };
   iframeLoadStatus: "done" | "progress";
   dragData: DragData | null;
   dragComp: DragComp | null;
@@ -237,14 +239,14 @@ export function createEditorAppMachine(id: string) {
   type SUBSCRIPTION_STATES =
     | "afterbootup"
     | "before_app_load"
-    | "ready"
+    | typeof ready
     | "drag_started"
     | "drag_in_progress"
     | "mouse_move_during_drag"
-    | "drag_failed"
-    | "component_created"
-    | "INSIDE_CANVAS"
-    | "OUTSIDE_CANVAS";
+    | typeof DRAG_SUCCESS
+    | typeof DRAG_FAILED
+    | typeof INSIDE_CANVAS
+    | typeof OUTSIDE_CANVAS;
 
   const subscribers: {
     [key in SUBSCRIPTION_STATES]: ((
@@ -258,8 +260,8 @@ export function createEditorAppMachine(id: string) {
     drag_started: [],
     drag_in_progress: [],
     mouse_move_during_drag: [],
-    drag_failed: [],
-    component_created: [],
+    DRAG_SUCCESS: [],
+    DRAG_FAILED: [],
     INSIDE_CANVAS: [],
     OUTSIDE_CANVAS: [],
   };
@@ -284,7 +286,7 @@ export function createEditorAppMachine(id: string) {
   ) {
     subscribers[state].forEach((cb) => {
       try {
-        cb(context, event);
+        cb({ ...context }, event);
       } catch (err) {
         console.error(`Failed to run a subscriber upon ${state}`, err);
       }
@@ -451,7 +453,7 @@ export function createEditorAppMachine(id: string) {
                   actions: ["setCanvasMousePosition", "emitOutsideCanvas"],
                 },
                 [DROPZONE_CREATED]: { actions: ["setDropzone"] },
-                [COMPONENT_CREATED]: { target: `#${id}.${ready}` },
+                [DRAG_SUCCESS]: { target: `#${id}.${ready}` },
                 [DRAG_FAILED]: { target: `#${id}.${ready}` },
               },
               entry: (context, event) => {
@@ -460,17 +462,17 @@ export function createEditorAppMachine(id: string) {
             },
           },
           exit: (context, event) => {
+            if (event.type === "DRAG_SUCCESS") {
+              callSubscribers("DRAG_SUCCESS", context, event);
+            }
+            if (event.type === "DRAG_FAILED" || event.type === "MOUSE_UP") {
+              callSubscribers("DRAG_FAILED", context, event);
+            }
             context.dragData = null;
             context.mousePosition = null;
             context.canvasMousePosition = null;
             context.dropzone = null;
             context.dragComp = null;
-            if (event.type === "COMPONENT_CREATED") {
-              callSubscribers("component_created", context, event);
-            }
-            if (event.type === "DRAG_FAILED" || event.type === "MOUSE_UP") {
-              callSubscribers("drag_failed", context, event);
-            }
           },
         },
       },

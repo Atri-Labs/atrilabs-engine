@@ -1,15 +1,15 @@
-import { useEffect } from "react";
-
-export default function CanvasZone(props: {
+import { CanvasZoneRenderer } from "@atrilabs/atri-app-core/src/editor-components";
+/**
+ * CanvasZone component is only used during development.
+ * In production build, a different CanvasZone will be used that
+ * does not modifies the styles when there are no elements in the
+ * canvas zone.
+ * @param props
+ * @returns
+ */
+export function CanvasZone(props: {
   id: string;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
 }) {
-  useEffect(() => {
-    // canvas zone active
-    // canvas zone unregistered
-    // mouse in
-    // mouse out
-    // mouse up
-  }, []);
-  return <div style={props.styles}>Canvas Zone</div>;
+  return <CanvasZoneRenderer canvasZoneId={props.id} styles={props.styles} />;
 }

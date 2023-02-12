@@ -24,6 +24,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
+    "@atrilabs/react-component-manifest-schema": "^0.0.90",
     "react-router-dom": "^6.6.2",
     "recursive-readdir": "^2.2.3",
     "upath": "^2.0.1",

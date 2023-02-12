@@ -186,11 +186,20 @@ async function main() {
   const paths = { ...params.paths, outputDir: serverPath };
   const allowlist = params.allowlist || [];
   allowlist.push("@atrilabs/atri-app-core");
+  allowlist.push("@atrilabs/atri-app-core/src/editor-components");
   allowlist.push("@atrilabs/design-system");
   allowlist.push("@atrilabs/canvas-zone");
   allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");
+  allowlist.push("@atrilabs/manifest-registry");
   startNodeLibWatcher({
     ...params,
+    additionalInclude: [
+      ...params.additionalInclude,
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve("@atrilabs/manifest-registry")
+      ),
+    ],
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,
