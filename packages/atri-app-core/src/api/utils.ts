@@ -1,5 +1,10 @@
 import { ComponentCoordsWM, Location } from "../types";
 import { componentStoreApi } from "./componentStoreApi";
+import {
+  ReactComponentManifestSchema,
+  AcceptsChildFunction,
+} from "@atrilabs/react-component-manifest-schema";
+import { manifestRegistryController } from "@atrilabs/manifest-registry";
 
 export function getCSSBoxCoords(elem: Element): ComponentCoordsWM {
   // crossbrowser version
@@ -154,6 +159,59 @@ export function getComponentIndexInsideCanvasZone(
       coords,
       childCoordinates,
       loc,
+    });
+    return computeFactoredIndex(index, siblingsId);
+  } else {
+    console.error(
+      `coords & relativePointerLoc were expected to be defined. Please report this error to Atri Labs.`
+    );
+    return 0;
+  }
+}
+
+export function getComponentIndexInsideParentComponent(
+  parentCompId: string,
+  loc: Location
+) {
+  const {
+    pkg: parentPkg,
+    key: parentKey,
+    manifestSchemaId: parentManifestSchemaId,
+  } = componentStoreApi.getComponent(parentCompId)!.meta;
+
+  const parentEl = componentStoreApi.getComponentRef(parentCompId).current!;
+
+  const parentFullManifest = manifestRegistryController
+    .readManifestRegistry()
+    [parentManifestSchemaId].manifests.find((curr) => {
+      return curr.pkg === parentPkg && curr.manifest.meta.key === parentKey;
+    });
+  const parentManifest = parentFullManifest!
+    .manifest as ReactComponentManifestSchema;
+  if (!parentManifest.dev.acceptsChild) {
+    console.error(
+      "Parent manifest component must have a dev.acceptsChild field."
+    );
+  }
+  const acceptsChild: AcceptsChildFunction = parentManifest.dev.acceptsChild!;
+  const coords = getCSSBoxCoords(parentEl);
+  const siblingsId = componentStoreApi.getComponentChildrenId(parentCompId);
+  const childCoordinates: ComponentCoordsWM[] = [];
+  for (let i = 0; i < siblingsId.length; i++) {
+    const coords = getCSSBoxCoords(
+      componentStoreApi.getComponentRef(siblingsId[i]).current!
+    );
+    if (coords) {
+      childCoordinates.push(coords!);
+    }
+  } // TODO: send original props of parent
+  const props = componentStoreApi.getComponentProps(parentCompId);
+  if (coords) {
+    const index = acceptsChild({
+      coords,
+      childCoordinates,
+      loc,
+      props,
     });
     return computeFactoredIndex(index, siblingsId);
   } else {

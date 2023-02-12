@@ -14,6 +14,7 @@ export type CanvasComponent = {
   decorators: React.FC<any>[];
   acceptsChild: boolean;
   callbacks: { [callbackName: string]: any };
+  meta: { manifestSchemaId: string; pkg: string; key: string };
 };
 
 export type CanvasComponentStore = { [compId: string]: CanvasComponent };

@@ -2,6 +2,10 @@ import { canvasMachineInterpreter, subscribeCanvasMachine } from "./init";
 import { componentStoreApi } from "./componentStoreApi";
 import { CANVAS_ZONE_ROOT_ID } from "./consts";
 import { CanvasZoneEvent, ComponentEvent } from "../types";
+import {
+  getComponentIndexInsideCanvasZone,
+  getComponentIndexInsideParentComponent,
+} from "./utils";
 
 canvasMachineInterpreter.start();
 
@@ -52,7 +56,16 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
         type: "DRAG_SUCCESS",
         parent: {
           id: id,
-          index: 0,
+          index:
+            id === CANVAS_ZONE_ROOT_ID
+              ? getComponentIndexInsideCanvasZone(
+                  canvasZone.getAttribute("data-atri-canvas-id")!,
+                  context.mousePosition!
+                )
+              : getComponentIndexInsideParentComponent(
+                  id,
+                  context.mousePosition!
+                ),
           canvasZoneId: canvasZone.getAttribute("data-atri-canvas-id"),
         },
       },
