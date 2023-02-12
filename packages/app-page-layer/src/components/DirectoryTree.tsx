@@ -32,7 +32,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                   onSelect={props.onSelect}
                 />
               </div>
-              {node.children && (
+              {node.children && node.isFolderOpen && (
                 <div key={index + " " + index}>
                   <DirectoryTree
                     padding={props.padding + 1}

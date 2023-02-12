@@ -71,9 +71,7 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
         color: gray400,
       }}
       onClick={() => {
-        if (!props.isFolder) {
-          props.onSelect(props.route);
-        }
+        props.onSelect(props.route);
       }}
     >
       <span style={{ display: "flex" }}>{svgIcon}</span>
