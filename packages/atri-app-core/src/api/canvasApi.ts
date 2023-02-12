@@ -45,7 +45,7 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
   if (canvasZone) {
     let id = CANVAS_ZONE_ROOT_ID;
     if (parentEl) {
-      id = parentEl.getAttribute("[data-atri-comp-id]")!;
+      id = parentEl.getAttribute("data-atri-comp-id")!;
     }
     window.parent.postMessage(
       {
