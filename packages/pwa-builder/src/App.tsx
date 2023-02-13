@@ -3,7 +3,7 @@ import BaseLayer from "@atrilabs/base-layer";
 import AppDesignLayer from "@atrilabs/app-design-layer";
 import AtriIconLayer from "@atrilabs/atri-icon-layer";
 import AppPageLayer from "@atrilabs/app-page-layer";
-// import CanvasBreakPointLayer from "@atrilabs/canvas-breakpoint-layer";
+import CanvasBreakPointLayer from "@atrilabs/canvas-breakpoint-layer";
 import ComponentListLayer from "@atrilabs/component-list-layer";
 // import CanvasRuntime from "@atrilabs/canvas-runtime";
 // import ManageCanvasRuntimeLayer from "@atrilabs/manage-canvas-runtime-layer";
@@ -28,7 +28,7 @@ export default function App() {
       <AppDesignLayer />
       <AtriIconLayer />
       <AppPageLayer />
-      {/* <CanvasBreakPointLayer /> */}
+      <CanvasBreakPointLayer />
       <ComponentListLayer />
       {/* <ComponentStyleLayer /> */}
       {/* <PublishAppLayer /> */}

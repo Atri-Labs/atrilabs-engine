@@ -16,6 +16,7 @@ const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
+const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -38,11 +39,17 @@ type OUTSIDE_CANVAS_EVENT = {
 };
 type MOUSE_MOVE_EVENT = {
   type: typeof MOUSE_MOVE;
-  event: { pageX: number; pageY: number };
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
 type MOUSE_UP_EVENT = {
   type: typeof MOUSE_UP;
-  event: { pageX: number; pageY: number };
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
+};
+type COMPONENT_CREATED_EVENT = {
+  type: typeof COMPONENT_CREATED;
+  compId: string;
+  canvasZoneId: string;
+  parentId: string;
 };
 
 type CanvasMachineEvent =
@@ -54,7 +61,8 @@ type CanvasMachineEvent =
   | INSIDE_CANVAS_EVENT
   | OUTSIDE_CANVAS_EVENT
   | MOUSE_MOVE_EVENT
-  | MOUSE_UP_EVENT;
+  | MOUSE_UP_EVENT
+  | COMPONENT_CREATED_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -72,7 +80,11 @@ type CanvasMachineContext = {
   insideTopWindow: boolean;
   dragData: DragData | null;
   dragComp: DragComp | null;
-  mousePosition: { pageX: number; pageY: number } | null;
+  mousePosition: {
+    pageX: number;
+    pageY: number;
+    target: MouseEvent["target"];
+  } | null;
 };
 
 // actions
@@ -101,7 +113,8 @@ type SubscribeStates =
   | "moveWhileDrag"
   | "upWhileDrag"
   | typeof INSIDE_CANVAS
-  | typeof OUTSIDE_CANVAS;
+  | typeof OUTSIDE_CANVAS
+  | typeof COMPONENT_CREATED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -110,6 +123,7 @@ export function createCanvasMachine(id: string) {
     upWhileDrag: [],
     [INSIDE_CANVAS]: [],
     [OUTSIDE_CANVAS]: [],
+    [COMPONENT_CREATED]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -128,8 +142,11 @@ export function createCanvasMachine(id: string) {
     subscribers[state].forEach((cb) => {
       try {
         cb(context, event);
-      } catch {
-        console.log(`Error while running callback for state ${state}`);
+      } catch (err) {
+        console.log(
+          `Error while running callback for state ${state} with`,
+          err
+        );
       }
     });
   }
@@ -169,6 +186,9 @@ export function createCanvasMachine(id: string) {
             [DRAG_IN_PROGRESS]: {
               target: drag_in_progress,
               actions: ["setDragData"],
+            },
+            [COMPONENT_CREATED]: {
+              actions: ["emitComponentCreated"],
             },
           },
         },
@@ -213,6 +233,7 @@ export function createCanvasMachine(id: string) {
         emitOutsideCanvas: callSubscribersFromAction("OUTSIDE_CANVAS"),
         emitInsideCanvas: callSubscribersFromAction("INSIDE_CANVAS"),
         emitReady: callSubscribersFromAction("ready"),
+        emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
       },
     }
   );

@@ -48,15 +48,12 @@ export function useDragListener() {
       setDragComp(null);
       setOverlayStyle({});
     };
-    const unsubDragFailed = subscribeEditorMachine("drag_failed", () => {
+    const unsubDragFailed = subscribeEditorMachine("DRAG_FAILED", () => {
       handleDragEnd();
     });
-    const unsubComponentCreated = subscribeEditorMachine(
-      "component_created",
-      () => {
-        handleDragEnd();
-      }
-    );
+    const unsubComponentCreated = subscribeEditorMachine("DRAG_SUCCESS", () => {
+      handleDragEnd();
+    });
     subscribeEditorMachine("OUTSIDE_CANVAS", () => {
       handleDragEnd();
     });

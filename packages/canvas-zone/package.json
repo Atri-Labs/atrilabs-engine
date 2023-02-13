@@ -28,5 +28,8 @@
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
     "prettier": "^2.6.2"
+  },
+  "dependencies": {
+    "@atrilabs/atri-app-core": "^0.0.90"
   }
 }
