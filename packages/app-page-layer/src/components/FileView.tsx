@@ -2,7 +2,6 @@ import { gray400, smallText } from "@atrilabs/design-system";
 import { useMemo } from "react";
 
 type FileViewTypes = {
-  name: string;
   route: string;
   isFolder: boolean;
   path: number[];
@@ -60,6 +59,13 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
     else if (!props.isFolder) return fileSvg;
   }, [props.isFolder, props.isOpen]);
 
+  const name = useMemo(() => {
+    const routeArr = props.route.split("/");
+    return routeArr[routeArr.length - 1] !== ""
+      ? routeArr[routeArr.length - 1]
+      : "index";
+  }, [props.route]);
+
   return (
     <div
       style={{
@@ -77,7 +83,7 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
       }}
     >
       <span style={{ display: "flex" }}>{svgIcon}</span>
-      <div style={{ margin: "0" }}>{props.name}</div>
+      <div style={{ margin: "0" }}>{name}</div>
     </div>
   );
 };

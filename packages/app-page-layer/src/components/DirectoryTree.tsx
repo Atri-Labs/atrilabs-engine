@@ -30,7 +30,6 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
                 }}
               >
                 <FileView
-                  name={node.route}
                   route={node.route}
                   isFolder={!node.isLeaf}
                   isOpen={node.isFolderOpen}
