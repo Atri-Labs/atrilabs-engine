@@ -5,8 +5,10 @@ type FileViewTypes = {
   name: string;
   route: string;
   isFolder: boolean;
+  path: number[];
+  currSelectedPath: number[];
   isOpen?: boolean;
-  onSelect: (route: string) => void;
+  onSelect: (route: string, isFolder: boolean, path: number[]) => void;
 };
 
 const folderOpenSvg = (
@@ -68,12 +70,10 @@ export const FileView: React.FC<FileViewTypes> = (props) => {
         paddingBottom: "0.35em",
         justifyContent: "flex-start",
         ...smallText,
-        color: gray400,
+        color: props.path === props.currSelectedPath ? "#fff" : gray400,
       }}
       onClick={() => {
-        if (!props.isFolder) {
-          props.onSelect(props.route);
-        }
+        props.onSelect(props.route, props.isFolder, props.path);
       }}
     >
       <span style={{ display: "flex" }}>{svgIcon}</span>
