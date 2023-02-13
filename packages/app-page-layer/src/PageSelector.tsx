@@ -68,7 +68,7 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
             style={{
               backgroundColor: gray700,
               height: "100%",
-              width: "170px",
+              minWidth: "170px",
               paddingTop: "1em",
               paddingLeft: "1em",
               paddingRight: "1em",
