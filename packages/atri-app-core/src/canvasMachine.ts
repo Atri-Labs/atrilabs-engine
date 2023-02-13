@@ -119,7 +119,7 @@ function setHoverComponent(
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const comp = (target.closest as any)("[data-atri-comp-id]");
+    const comp = (target as any).closest("[data-atri-comp-id]");
     if (comp !== null) {
       const compId = comp.getAttribute("data-atri-comp-id");
       context.hovered = compId;
@@ -135,7 +135,7 @@ function insideComponent(
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const comp = (target.closest as any)("[data-atri-comp-id]");
+    const comp = (target as any).closest("[data-atri-comp-id]");
     if (comp !== null) {
       return true;
     }
@@ -149,7 +149,7 @@ function hoveringOverDifferentComponent(
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const comp = (target.closest as any)("[data-atri-comp-id]");
+    const comp = (target as any).closest("[data-atri-comp-id]");
     if (comp !== null) {
       const compId = comp.getAttribute("data-atri-comp-id");
       return compId !== context.hovered;
@@ -241,6 +241,7 @@ export function createCanvasMachine(id: string) {
           },
         },
         [ready]: {
+          initial: idle,
           states: {
             [idle]: {
               on: {
