@@ -102,6 +102,7 @@ export const PageTree: React.FC<{
     for (let i = 0; i < props.pagesInfo.length; i++) {
       const path = props.pagesInfo[i].unixFilepath;
       const route = props.pagesInfo[i].routeObjectPath;
+      if (route === "/_document") continue;
       const pathArr = path.split("/").slice(1);
       let pathArrLen = pathArr.length;
       createTreeNodes(pathArr, pathArrLen, route, treeNodes);
@@ -121,8 +122,6 @@ export const PageTree: React.FC<{
     }
     setCurrSelectedPath(path);
   };
-
-  console.log(treeNodesList);
 
   return (
     <DirectoryTree
