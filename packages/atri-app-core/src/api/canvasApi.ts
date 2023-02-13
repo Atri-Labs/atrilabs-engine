@@ -218,6 +218,9 @@ if (typeof window !== "undefined") {
     },
     true
   );
+  window.addEventListener("scroll", () => {
+    canvasMachineInterpreter.send({ type: "SCROLL" });
+  });
   if (window.location !== window.parent.location) {
     canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
   } else {
