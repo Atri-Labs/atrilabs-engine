@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { raiseHoverEvent } from "@atrilabs/canvas-runtime";
 import { useTree } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 
 export const useManualHover = () => {
   const compTree = useTree(ComponentTreeId);

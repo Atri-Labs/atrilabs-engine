@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterContext } from "../contexts/RouterContext";
+import { CanvasOverlay } from "../editor-components/CanvasOverlay/CanvasOverlay";
 import { AtriRouter } from "../router/AtriRouter";
 
 /**
@@ -18,6 +19,7 @@ export default function renderReactAppClientSide(
       <RouterContext.Provider value={atriRouter}>
         <App />
       </RouterContext.Provider>
+      <CanvasOverlay />
     </React.StrictMode>
   );
 }

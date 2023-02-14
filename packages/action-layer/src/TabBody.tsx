@@ -10,7 +10,7 @@ import {
 import {
   CallbackHandler,
   NavigationCallbackHandler,
-} from "@atrilabs/react-component-manifest-schema/lib/types";
+} from "@atrilabs/react-component-manifest-schema";
 import { useCallback, useEffect, useMemo } from "react";
 import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { useFileUploadAliases } from "./hooks/useFileUploadAliases";

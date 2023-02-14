@@ -1,6 +1,6 @@
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import { useEffect } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { PatchEvent } from "@atrilabs/forest";
 import {
   api,

@@ -9,6 +9,7 @@ import { useCanvasContainer } from "./hooks/useCanvasContainer";
 import { usePropertiesTab } from "./hooks/usePropertiesTab";
 import { attachRef } from "@atrilabs/core";
 import { usePlaygroundContainer } from "./hooks/usePlaygroundOverlayContainer";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
 
 const styles: { [key: string]: React.CSSProperties } = {
   outerDiv: {
@@ -101,6 +102,13 @@ export const BaseContainer: React.FC = () => {
   const propertyTabItems = usePropertiesTab();
   const dragZoneRef = useRef<HTMLDivElement>(null);
   attachRef("Dragzone", dragZoneRef);
+  useEffect(() => {
+    if (dragZoneRef.current) {
+      dragZoneRef.current.addEventListener("mouseup", (ev) => {
+        canvasApi.mouseUpInPlayground({ pageX: ev.pageX, pageY: ev.pageY });
+      });
+    }
+  }, [dragZoneRef]);
   const playgroundContainerItem = usePlaygroundContainer();
   useEffect(() => {
     if (propertyTabItems.length < selectedTab) {

@@ -16,8 +16,8 @@ import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { PageTableData } from "../types";
-import { useSocketApi } from "../hooks/useUpdatePage";
-import { useSocketApi as useDeletePageApi } from "../hooks/useDeletePage";
+import { useSocketApi } from "../old-hooks/useUpdatePage";
+import { useSocketApi as useDeletePageApi } from "../old-hooks/useDeletePage";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { Container } from "@atrilabs/core";
 

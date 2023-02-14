@@ -152,10 +152,6 @@ export type ManifestSchemaConfig = {
   libs: "react"[];
 };
 
-export type ManifestSchema = {
-  validate: (manifest: any) => boolean;
-};
-
 // type for manifest.config.js
 export type ManifestConfig = {
   // all the modules will be searched in dir
@@ -166,15 +162,6 @@ export type ManifestConfig = {
   manifestSchema: { pkg: string }[];
   componentMap: {
     [key: string]: { modulePath: string; exportedVarName: string };
-  };
-};
-
-export type ManifestRegistry = {
-  // manifestId of the package containing manifest schema
-  // mapped to array of manifests (added after validation)
-  [manifestId: string]: {
-    schema: ManifestSchema;
-    components: { pkg: string; component: any }[];
   };
 };
 
@@ -383,3 +370,50 @@ export type Portals = {
   node: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
   selector: string;
 }[];
+
+export type ManifestIR = {
+  // path to component file
+  component: string;
+  // path to optional devComponent file
+  devComponent?: string;
+  // path to manifest file
+  manifest: string;
+  // the package in which this manifest & component is located
+  pkg: string;
+  // path to icon
+  icon?: string;
+};
+
+export interface ServerToClientEvents {
+  loadEvent: (forestPkgId: string, urlPath: string, event: AnyEvent) => void;
+}
+
+export interface ClientToServerEvents {
+  getProjectInfo: (callback: (info: { id: string }) => void) => void;
+  getAppInfo: (callback: (info: { hostname: string }) => void) => void;
+  getPagesInfo: (
+    callback: (
+      info: { routeObjectPath: string; unixFilepath: string }[]
+    ) => void
+  ) => void;
+  fetchEvents: (
+    urlPath: string,
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+  saveEvent: (
+    forestPkgId: string,
+    urlPath: string,
+    event: AnyEvent,
+    callback: (success: boolean) => void
+  ) => void;
+}
+
+export interface InterServerEvents {}
+
+export interface SocketData {}
+
+export type Breakpoint = {
+  min: number;
+  max: number;
+  isReferencePoint?: boolean; // desktop size is the reference point to apply styles
+};

@@ -4,6 +4,8 @@ import { AppEntryOptions } from "./AppEntryOptions";
 import { atriRouter } from "./atriRouter";
 import loadPage from "./loadPage";
 import renderReactAppClientSide from "./renderReactAppClientSide";
+import "../api/init";
+import "../api/canvasApi";
 
 declare global {
   interface Window {

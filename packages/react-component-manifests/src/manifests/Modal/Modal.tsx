@@ -1,16 +1,6 @@
-import React, { forwardRef, useContext, useEffect, useState } from "react";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { GlobalContext, createPortal } from "@atrilabs/core/lib/reactUtilities";
-import { ReactComponent as Icon } from "./icon.svg";
+import React, { forwardRef, useEffect, useState } from "react";
 
-export const Modal = forwardRef<
+const Modal = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -31,8 +21,6 @@ export const Modal = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const globalContext = useContext(GlobalContext);
-
   const [open, setOpen] = useState<boolean>(props.custom.open);
   useEffect(() => {
     setOpen(props.custom.open);
@@ -46,7 +34,7 @@ export const Modal = forwardRef<
     }
   }, [props.custom.closeModalAfter, open]);
 
-  return createPortal(
+  return (
     <div
       ref={ref}
       className={props.className}
@@ -116,7 +104,10 @@ export const Modal = forwardRef<
           </button>
         </div>
         <div className="atri-modal-body" style={{ padding: "16px 24px" }}>
-          <p>{props.custom.body}</p>
+          <p>
+            {props.custom.body ||
+              "This component is a work in progress. This component needs React Portal"}
+          </p>
         </div>
         <div
           className="atri-modal-footer"
@@ -154,96 +145,8 @@ export const Modal = forwardRef<
           </button>
         </div>
       </div>
-    </div>,
-    globalContext.window,
-    "body",
-    globalContext.portals
+    </div>
   );
 });
 
-const cssTreeOptions: CSSTreeOptions = {
-  boxShadowOptions: true,
-  flexContainerOptions: true,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  outlineOptions: true,
-  backgroundOptions: true,
-  miscellaneousOptions: true,
-};
-
-const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    modalSize: { type: "text" },
-    okButtonColor: { type: "color" },
-    okButtonBgColor: { type: "color" },
-    okButtonBorderColor: { type: "color" },
-    cancelButtonColor: { type: "color" },
-    cancelButtonBgColor: { type: "color" },
-    cancelButtonBorderColor: { type: "color" },
-    closeModalAfter: { type: "number" },
-    open: { type: "boolean" },
-    body: { type: "large_text" },
-    title: { type: "text" },
-  },
-};
-
-const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Modal", category: "Basics" },
-  render: {
-    comp: Modal,
-  },
-  dev: {
-    decorators: [],
-    attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {},
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
-      custom: {
-        treeId: CustomTreeId,
-        initialValue: {
-          modalSize: "50%",
-          okButtonColor: "#fff",
-          okButtonBgColor: "#1890ff",
-          okButtonBorderColor: "#1890ff",
-          cancelButtonColor: "#000",
-          cancelButtonBgColor: "#fff",
-          cancelButtonBorderColor: "#d9d9d9",
-          open: true,
-          body: "Type something here!",
-          title: "Some Title",
-        },
-        treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
-      },
-    },
-    attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
-    },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
-  },
-};
-
-const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Modal", svg: Icon } },
-  drag: {
-    comp: CommonIcon,
-    props: { name: "Modal", containerStyle: { padding: "1rem" }, svg: Icon },
-  },
-  renderSchema: compManifest,
-};
-
-export default {
-  manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
-  },
-};
+export default Modal;

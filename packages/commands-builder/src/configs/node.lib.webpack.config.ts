@@ -37,6 +37,9 @@ export function createNodeLibConfig(options: {
   outputFilename: string;
   additionalInclude?: string[];
   allowlist?: string[];
+  babel?: {
+    plugins?: [string, any][];
+  };
 }) {
   const baseConfig = createNodeConfig(options);
 

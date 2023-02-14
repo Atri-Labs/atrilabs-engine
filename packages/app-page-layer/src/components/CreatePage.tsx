@@ -15,7 +15,7 @@ import {
 import { LinkIcon } from "../icons/LinkIcon";
 import { Cross } from "../icons/Cross";
 import { PageTableData } from "../types";
-import { useSocketApi } from "../hooks/useCreatePage";
+import { useSocketApi } from "../old-hooks/useCreatePage";
 
 const styles: { [key: string]: React.CSSProperties } = {
   createPage: {

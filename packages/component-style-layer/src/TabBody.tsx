@@ -9,7 +9,7 @@ import { Size } from "./components/size/Size";
 import { Border } from "./components/border/Border";
 import { Layout } from "./components/layout/Layout";
 import { FlexChild } from "./components/flexchild/FlexChild";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import SpacingProperty from "./components/spacing/SpacingProperty";
 import { Typography } from "./components/typography/Typography";
 import Position from "./components/position/Position";

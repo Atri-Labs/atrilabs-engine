@@ -4,6 +4,7 @@ import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
 import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
 import { Compiler } from "webpack";
 import { intersection } from "lodash";
+import { ManifestIR } from "@atrilabs/core";
 
 // states
 export const processing = "processing" as const;
@@ -18,6 +19,8 @@ export const NETWORK_REQUEST = "NETWORK_REQUEST" as const;
 export const LIB_SERVER_INVALIDATED = "LIB_SERVER_INVALIDATED" as const;
 export const APP_SERVER_INVALIDATED = "APP_SERVER_INVALIDATED" as const;
 export const FS_CHANGED = "FS_CHANGED" as const;
+export const MANIFESTS_FS_CHANGED = "MANIFESTS_FS_CHANGED" as const;
+export const MANIFEST_OBJECTS_UPDATED = "MANIFEST_OBJECTS_UPDATED" as const;
 
 export type LIB_SERVER_DONE_EVENT = {
   type: typeof LIB_SERVER_DONE;
@@ -42,6 +45,11 @@ export type APP_SERVER_INVALIDATED_EVENT = {
   type: typeof APP_SERVER_INVALIDATED;
 };
 export type FS_CHANGED_EVENT = { type: typeof FS_CHANGED };
+export type MANIFESTS_FS_CHANGED_EVENT = { type: typeof MANIFESTS_FS_CHANGED };
+export type MANIFEST_OBJECTS_UPDATED_EVENT = {
+  type: typeof MANIFEST_OBJECTS_UPDATED;
+  manifests: ManifestIR[];
+};
 
 export type SERVER_MACHINE_EVENT =
   | LIB_SERVER_DONE_EVENT
@@ -50,7 +58,9 @@ export type SERVER_MACHINE_EVENT =
   | NETWORK_REQUEST_EVENT
   | LIB_SERVER_INVALIDATED_EVENT
   | APP_SERVER_INVALIDATED_EVENT
-  | FS_CHANGED_EVENT;
+  | FS_CHANGED_EVENT
+  | MANIFESTS_FS_CHANGED_EVENT
+  | MANIFEST_OBJECTS_UPDATED_EVENT;
 
 export type SERVER_MACHINE_CONTEXT = {
   libServer: "processing" | "done";
@@ -63,6 +73,9 @@ export type SERVER_MACHINE_CONTEXT = {
   appCompiler?: Compiler;
   libCompiler?: Compiler;
   latestRouteObjectPaths: string[] | undefined;
+  manifests: ManifestIR[];
+  latestManifests: ManifestIR[] | undefined;
+  manifestsComputed: "processing" | "done";
 };
 
 // conds
@@ -87,7 +100,8 @@ function onlyLibServerWasNotDone(context: SERVER_MACHINE_CONTEXT) {
   return (
     context.libServer === "processing" &&
     context.appServer === "done" &&
-    context.watch === "done"
+    context.watch === "done" &&
+    context.manifestsComputed === "done"
   );
 }
 
@@ -95,7 +109,8 @@ function onlyAppServerWasNotDone(context: SERVER_MACHINE_CONTEXT) {
   return (
     context.libServer === "done" &&
     context.appServer === "processing" &&
-    context.watch === "done"
+    context.watch === "done" &&
+    context.manifestsComputed === "done"
   );
 }
 
@@ -103,9 +118,20 @@ function onlyWatchWasNotDone(context: SERVER_MACHINE_CONTEXT) {
   return (
     context.libServer === "done" &&
     context.appServer === "done" &&
-    context.watch === "processing"
+    context.watch === "processing" &&
+    context.manifestsComputed === "done"
   );
 }
+
+function onlyManifestesComputedNodeDone(context: SERVER_MACHINE_CONTEXT) {
+  return (
+    context.libServer === "done" &&
+    context.appServer === "done" &&
+    context.watch === "done" &&
+    context.manifestsComputed === "processing"
+  );
+}
+
 // actions
 async function _handleRequests(options: {
   routeObjectPaths: string[];
@@ -173,7 +199,7 @@ async function _handleRequests(options: {
       const ir = routeObjectPathToIR(routeObjectPath);
       const splices = IRToUnixFilePath(ir).split("/").splice(1);
       const htmlString = getPageHtml(["pages", ...splices]);
-      pageRequest.res.send(htmlString);
+      pageRequest.res.send(`<!DOCTYPE html>\n${htmlString}`);
     }
   }
 
@@ -278,6 +304,35 @@ function swapLatestRouteObjectPaths(context: SERVER_MACHINE_CONTEXT) {
     _removeDeletedPages(context);
   }
 }
+
+function setManifestsComputedToDone(context: SERVER_MACHINE_CONTEXT) {
+  context.manifestsComputed = "done";
+}
+
+function setManifestsComputedToProcessing(context: SERVER_MACHINE_CONTEXT) {
+  context.manifestsComputed = "processing";
+}
+
+function setManifests(
+  context: SERVER_MACHINE_CONTEXT,
+  event: MANIFEST_OBJECTS_UPDATED_EVENT
+) {
+  context.manifests = event.manifests;
+}
+
+function setLatestManifests(
+  context: SERVER_MACHINE_CONTEXT,
+  event: MANIFEST_OBJECTS_UPDATED_EVENT
+) {
+  context.latestManifests = event.manifests;
+}
+
+function swapLatestManifests(context: SERVER_MACHINE_CONTEXT) {
+  if (context.latestManifests) {
+    context.manifests = context.latestManifests;
+    context.latestManifests = [];
+  }
+}
 /**
  * Server is in ready state only after watchers have
  * loaded initial directory.
@@ -311,6 +366,9 @@ export function createServerMachine(id: string) {
         requestedRouteObjectPaths: new Set(),
         routeObjectPaths: [],
         latestRouteObjectPaths: undefined,
+        manifests: [],
+        latestManifests: undefined,
+        manifestsComputed: "processing",
       } as SERVER_MACHINE_CONTEXT,
       states: {
         [processing]: {
@@ -322,7 +380,6 @@ export function createServerMachine(id: string) {
                 actions: ["setLibServerToDone"],
               },
               {
-                target: processing,
                 actions: ["setLibServerToDone"],
               },
             ],
@@ -333,7 +390,6 @@ export function createServerMachine(id: string) {
                 actions: ["setAppServerToDone"],
               },
               {
-                target: processing,
                 actions: ["setAppServerToDone"],
               },
             ],
@@ -344,12 +400,32 @@ export function createServerMachine(id: string) {
                 actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
               {
-                target: processing,
                 actions: ["setWatchToDone", "setRouteObjectPaths"],
               },
             ],
-            [NETWORK_REQUEST]: [
-              { target: processing, actions: ["saveRequest"] },
+            [NETWORK_REQUEST]: [{ actions: ["saveRequest"] }],
+            [MANIFEST_OBJECTS_UPDATED]: [
+              {
+                target: serving,
+                cond: onlyManifestesComputedNodeDone,
+                actions: ["setManifestsComputedToDone", "setManifests"],
+              },
+              {
+                target: processing,
+                actions: ["setManifestsComputedToDone", "setManifests"],
+              },
+            ],
+            [LIB_SERVER_INVALIDATED]: [
+              { actions: ["setLibServerToProcessing"] },
+            ],
+            [APP_SERVER_INVALIDATED]: [
+              { actions: ["setAppServerToProcessing"] },
+            ],
+            [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+            [MANIFESTS_FS_CHANGED]: [
+              {
+                actions: ["setManifestsComputedToProcessing"],
+              },
             ],
           },
         },
@@ -367,6 +443,12 @@ export function createServerMachine(id: string) {
             ],
             [FS_CHANGED]: [
               { target: processing, actions: ["setWatchToProcessing"] },
+            ],
+            [MANIFESTS_FS_CHANGED]: [
+              {
+                target: processing,
+                actions: ["setManifestsComputedToProcessing"],
+              },
             ],
           },
         },
@@ -397,6 +479,9 @@ export function createServerMachine(id: string) {
               { actions: ["setAppServerToProcessing"] },
             ],
             [FS_CHANGED]: [{ actions: ["setWatchToProcessing"] }],
+            [MANIFESTS_FS_CHANGED]: [
+              { actions: ["setManifestsComputedToProcessing"] },
+            ],
             /**
              * It might happen that lib server is set to processing
              * while in handlingRequest state and then it is set to
@@ -407,6 +492,9 @@ export function createServerMachine(id: string) {
             [APP_SERVER_DONE]: [{ actions: ["setAppServerToDone"] }],
             [ROUTE_OBJECTS_UPDATED]: [
               { actions: ["setWatchToDone", "setLatestRouteObjectPaths"] },
+            ],
+            [MANIFEST_OBJECTS_UPDATED]: [
+              { actions: ["setManifestsComputedToDone", "setManifests"] },
             ],
           },
         },
@@ -426,6 +514,11 @@ export function createServerMachine(id: string) {
         setRouteObjectPaths,
         setLatestRouteObjectPaths,
         swapLatestRouteObjectPaths,
+        setManifestsComputedToDone,
+        setManifestsComputedToProcessing,
+        setManifests,
+        setLatestManifests,
+        swapLatestManifests,
       },
       services: {
         handleRequests,

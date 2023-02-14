@@ -1,19 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useCallback,
-  useMemo,
-} from "react";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { ReactComponent as Icon } from "./icon.svg";
+import React, { useState, useEffect, forwardRef, useCallback } from "react";
 
 export type CarouselItemTypes = {
   children: string;
@@ -222,7 +207,7 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
   );
 };
 
-export const Carousel = forwardRef<
+const Carousel = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -269,142 +254,4 @@ export const Carousel = forwardRef<
   );
 });
 
-export const DevCarousel = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: {
-      items: { text: string; image?: string }[];
-      startTile: number;
-      isIndicatorCircle: boolean;
-      indicatorPosition: string;
-    };
-    onClick: (event: { pageX: number; pageY: number }) => void;
-    className?: string;
-  }
->((props, ref) => {
-  const items = useMemo(() => {
-    if (props.custom.items.length === 0)
-      return [{ text: "Sample Text", image: "" }];
-    return props.custom.items;
-  }, [props.custom.items]);
-
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
-  return (
-    <div
-      ref={ref}
-      style={props.styles}
-      onClick={onClick}
-      className={props.className}
-    >
-      <CarouselWrapper
-        startTile={props.custom.startTile}
-        isCircle={props.custom.isIndicatorCircle}
-        indicatorPosition={props.custom.indicatorPosition}
-      >
-        {items.map((item, index) => (
-          <CarouselItem
-            width="100%"
-            height="100%"
-            key={index}
-            backgroundImage={item.image || ""}
-          >
-            {item.text ? item.text : "Sample Text"}
-          </CarouselItem>
-        ))}
-      </CarouselWrapper>
-    </div>
-  );
-});
-
-const cssTreeOptions: CSSTreeOptions = {
-  boxShadowOptions: true,
-  flexContainerOptions: false,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  outlineOptions: true,
-  backgroundOptions: true,
-  miscellaneousOptions: true,
-};
-
-const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    startTile: { type: "number" },
-    isIndicatorCircle: { type: "boolean" },
-    indicatorPosition: {
-      type: "enum",
-      options: ["", "Top", "Bottom", "Left", "Right"],
-    },
-    items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        { fieldName: "text", type: "text" },
-        { fieldName: "image", type: "static_asset" },
-      ],
-    },
-  },
-};
-
-const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Carousel", category: "Basics" },
-  render: {
-    comp: Carousel,
-  },
-  dev: {
-    comp: DevCarousel,
-    decorators: [],
-    attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {
-          height: "300px",
-          width: "400px",
-        },
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
-      custom: {
-        treeId: CustomTreeId,
-        initialValue: {
-          items: [],
-          startTile: 0,
-          isIndicatorCircle: false,
-        },
-        treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
-      },
-    },
-    attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
-    },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
-  },
-};
-
-const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Carousel", svg: Icon } },
-  drag: {
-    comp: CommonIcon,
-    props: { name: "Carousel", containerStyle: { padding: "1rem" }, svg: Icon },
-  },
-  renderSchema: compManifest,
-};
-
-export default {
-  manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
-  },
-};
+export default Carousel;

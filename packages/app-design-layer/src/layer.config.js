@@ -19,6 +19,7 @@ module.exports = {
     containers: {
       Canvas: "Canvas",
       Drop: "Drop",
+      PlaygroundOverlayContainer: "PlaygroundOverlayContainer",
     },
     tabs: { PropertiesTab: "PropertiesTab" },
   },

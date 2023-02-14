@@ -5,13 +5,9 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
+  "main": "src/index.tsx",
   "files": [
-    "lib"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -32,6 +28,7 @@
     "@atrilabs/app-design-forest": "^0.0.90",
     "@atrilabs/core": "^0.0.90",
     "@atrilabs/design-system": "^0.0.90",
+    "@atrilabs/pwa-builder-manager": "^0.0.90",
     "@atrilabs/scripts": "^0.0.90",
     "eslint-plugin-atrilabs": "^0.0.90",
     "typescript": "^4.6.3"

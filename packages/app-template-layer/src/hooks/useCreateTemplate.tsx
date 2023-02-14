@@ -4,7 +4,7 @@ import {
   manifestRegistryController,
   useTree,
 } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
 import {
@@ -14,7 +14,7 @@ import {
   TreeLink,
   TreeNode,
 } from "@atrilabs/forest";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
 
 export const useCreateTemplate = () => {
@@ -35,7 +35,7 @@ export const useCreateTemplate = () => {
         const { pkg, key } = compNode.meta;
         if (pkg && key) {
           const registry = manifestRegistryController.readManifestRegistry();
-          const manifest = registry[ReactManifestSchemaId].components.find(
+          const manifest = registry[ReactManifestSchemaId].manifests.find(
             (curr) => curr.pkg === pkg
           );
           return manifest;
@@ -49,13 +49,13 @@ export const useCreateTemplate = () => {
           propTreeId: string;
           link: TreeLink;
         }[] = [];
-        const manifest = getComponentManifest(nodeId);
-        if (manifest) {
-          const manifestComponent =
-            manifest.component as ReactComponentManifestSchema;
-          const propNames = Object.keys(manifestComponent.dev.attachProps);
+        const fullManifest = getComponentManifest(nodeId);
+        if (fullManifest) {
+          const manifest =
+            fullManifest.manifest as ReactComponentManifestSchema;
+          const propNames = Object.keys(manifest.dev.attachProps);
           propNames.forEach((propName) => {
-            const prop = manifestComponent.dev.attachProps[propName];
+            const prop = manifest.dev.attachProps[propName];
             const treeId = prop.treeId;
             const propTree = BrowserForestManager.currentForest.tree(treeId);
             if (propTree) {
@@ -156,8 +156,9 @@ export const useCreateTemplate = () => {
           if (currNodeId === "body") {
             return;
           }
-          const manifest = getComponentManifest(currNodeId)!;
-          const component = manifest.component as ReactComponentManifestSchema;
+          const fullManifest = getComponentManifest(currNodeId)!;
+          const component =
+            fullManifest.manifest as ReactComponentManifestSchema;
           const defaultCallbacks = component.dev.defaultCallbackHandlers;
           const callbackCompId = getId();
           const callbackCreateEvent: CreateEvent = {

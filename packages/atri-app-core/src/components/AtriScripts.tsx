@@ -2,9 +2,21 @@ import { useContext } from "react";
 import { AtriScriptsContext } from "../contexts/AtriScriptsContext";
 
 export function AtriScripts() {
-  const { pages } = useContext(AtriScriptsContext);
-  const Scripts = pages.map((page) => {
-    return <script src={page}></script>;
+  const { pages, manifestRegistry, base } = useContext(AtriScriptsContext);
+  const BaseScripts = base.map((page) => {
+    return <script defer src={page} key={page}></script>;
   });
-  return <>{Scripts}</>;
+  const ManifetScripts = manifestRegistry.map((src) => {
+    return <script defer src={src} key={src}></script>;
+  });
+  const PagesScripts = pages.map((page) => {
+    return <script defer src={page} key={page}></script>;
+  });
+  return (
+    <>
+      {BaseScripts}
+      {ManifetScripts}
+      {PagesScripts}
+    </>
+  );
 }
