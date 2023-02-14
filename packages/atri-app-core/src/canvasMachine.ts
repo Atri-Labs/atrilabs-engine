@@ -17,6 +17,7 @@ const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
+const SCROLL = "SCROLL" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -51,6 +52,9 @@ type COMPONENT_CREATED_EVENT = {
   canvasZoneId: string;
   parentId: string;
 };
+type SCROLL_EVENT = {
+  type: typeof SCROLL;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -62,7 +66,8 @@ type CanvasMachineEvent =
   | OUTSIDE_CANVAS_EVENT
   | MOUSE_MOVE_EVENT
   | MOUSE_UP_EVENT
-  | COMPONENT_CREATED_EVENT;
+  | COMPONENT_CREATED_EVENT
+  | SCROLL_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -72,6 +77,9 @@ const noop = "noop" as const; // the machine needs to do no work as it's not in 
 const drag_in_progress = "drag_in_progress" as const;
 const drag_in_progress_idle = "drag_in_progress_idle" as const;
 const drag_in_progress_active = "drag_in_progress_active" as const;
+// inside ready
+const idle = "idle" as const;
+const hover = "hover" as const;
 
 // context
 
@@ -85,6 +93,7 @@ type CanvasMachineContext = {
     pageY: number;
     target: MouseEvent["target"];
   } | null;
+  hovered: string | null;
 };
 
 // actions
@@ -104,6 +113,51 @@ function setMousePosition(
   context.mousePosition = event.event;
 }
 
+function setHoverComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      context.hovered = compId;
+    }
+  }
+}
+
+// conds
+
+function insideComponent(
+  _context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function hoveringOverDifferentComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      return compId !== context.hovered;
+    }
+  }
+  return false;
+}
+
 type Callback = (
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -114,7 +168,9 @@ type SubscribeStates =
   | "upWhileDrag"
   | typeof INSIDE_CANVAS
   | typeof OUTSIDE_CANVAS
-  | typeof COMPONENT_CREATED;
+  | typeof COMPONENT_CREATED
+  | "hover"
+  | "hoverEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -124,6 +180,8 @@ export function createCanvasMachine(id: string) {
     [INSIDE_CANVAS]: [],
     [OUTSIDE_CANVAS]: [],
     [COMPONENT_CREATED]: [],
+    hover: [],
+    hoverEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -168,6 +226,7 @@ export function createCanvasMachine(id: string) {
         dragComp: null,
         dragData: null,
         mousePosition: null,
+        hovered: null,
       },
       states: {
         [initial]: {
@@ -182,6 +241,40 @@ export function createCanvasMachine(id: string) {
           },
         },
         [ready]: {
+          initial: idle,
+          states: {
+            [idle]: {
+              on: {
+                [MOUSE_MOVE]: {
+                  target: hover,
+                  cond: insideComponent,
+                  actions: ["setHoverComponent"],
+                },
+              },
+            },
+            [hover]: {
+              on: {
+                [MOUSE_MOVE]: {
+                  target: hover,
+                  cond: hoveringOverDifferentComponent,
+                  actions: ["setHoverComponent"],
+                },
+                [SCROLL]: {
+                  target: idle,
+                },
+                [OUTSIDE_CANVAS]: {
+                  target: idle,
+                },
+              },
+              entry: (context, event) => {
+                callSubscribers("hover", context, event);
+              },
+              exit: (context, event) => {
+                context.hovered = null;
+                callSubscribers("hoverEnd", context, event);
+              },
+            },
+          },
           on: {
             [DRAG_IN_PROGRESS]: {
               target: drag_in_progress,
@@ -234,6 +327,7 @@ export function createCanvasMachine(id: string) {
         emitInsideCanvas: callSubscribersFromAction("INSIDE_CANVAS"),
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
+        setHoverComponent,
       },
     }
   );
