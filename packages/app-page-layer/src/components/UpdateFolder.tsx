@@ -16,8 +16,8 @@ import { Cross } from "../icons/Cross";
 import { ReactComponent as Trash } from "../icons/trash.svg";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { PageTableData } from "../types";
-import { useSocketApi } from "../hooks/useUpdateFolder";
-import { useSocketApi as useDeleteFolderApi } from "../hooks/useDeleteFolder";
+import { useSocketApi } from "../old-hooks/useUpdateFolder";
+import { useSocketApi as useDeleteFolderApi } from "../old-hooks/useDeleteFolder";
 import { Container } from "@atrilabs/core";
 
 const styles: { [key: string]: React.CSSProperties } = {

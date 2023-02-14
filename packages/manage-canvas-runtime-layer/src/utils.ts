@@ -9,7 +9,10 @@ import {
 import { computeBodyChildIndex } from "@atrilabs/canvas-runtime-utils";
 import { ManifestRegistry } from "@atrilabs/core";
 import { Tree } from "@atrilabs/forest";
-import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema/lib/types";
+import {
+  AcceptsChildFunction,
+  ReactComponentManifestSchema,
+} from "@atrilabs/react-component-manifest-schema";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 
 function computeFactoredIndex(index: number, parentId: string) {
@@ -79,18 +82,19 @@ export function getComponentIndex(
   const parentManifestSchemaId = parentMeta.manifestSchemaId;
   if (parentManifestSchemaId === ReactComponentManifestSchemaId) {
   }
-  const parentManifest = manifestRegistry[
+  const parentFullManifest = manifestRegistry[
     parentManifestSchemaId
-  ].components.find((curr) => {
-    return curr.pkg === parentPkg && curr.component.meta.key === parentKey;
+  ].manifests.find((curr) => {
+    return curr.pkg === parentPkg && curr.manifest.meta.key === parentKey;
   });
-  const parentComponent = parentManifest!.component;
-  if (!parentComponent.dev.acceptsChild) {
+  const parentManifest = parentFullManifest!
+    .manifest as ReactComponentManifestSchema;
+  if (!parentManifest.dev.acceptsChild) {
     console.error(
       "Parent manifest component must have a dev.acceptsChild field."
     );
   }
-  const acceptsChild: AcceptsChildFunction = parentComponent.dev.acceptsChild;
+  const acceptsChild: AcceptsChildFunction = parentManifest.dev.acceptsChild!;
   const coords = getOwnCoords(caughtBy);
   const childrenId = getComponentChildrenId(caughtBy);
   const childCoordinates: ComponentCoordsWM[] = [];

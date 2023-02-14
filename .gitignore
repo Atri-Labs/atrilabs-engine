@@ -10,3 +10,6 @@ lib-cjs/
 .DS_Store
 coverage/
 .history
+dist/
+example-atri-app/
+tsconfig.tsbuildinfo

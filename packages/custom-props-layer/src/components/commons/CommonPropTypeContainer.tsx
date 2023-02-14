@@ -15,7 +15,7 @@ import { Color } from "../color/Color";
 import { InternalLink } from "../internal-link/InternalLink";
 import { ComponentSelector } from "../component-selector/ComponentSelector";
 import { ExternalLink } from "../external-link/ExternalLink";
-import { EnumCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { EnumCustomProp } from "@atrilabs/app-design-forest";
 import { Enum } from "../enum/Enum";
 import { EnumList } from "../enum-list/EnumList";
 

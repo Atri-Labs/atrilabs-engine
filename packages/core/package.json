@@ -5,7 +5,7 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "src/index.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@atrilabs/forest": "^0.0.90",
+    "@atrilabs/manifest-registry": "^0.0.90",
     "cheerio": "^1.0.0-rc.12",
     "uuid": "^8.3.2"
   }

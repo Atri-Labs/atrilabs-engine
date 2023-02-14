@@ -7,7 +7,7 @@ import {
 } from "@atrilabs/core";
 import { useEffect } from "react";
 import { getComponentIndex, getComponentIndexInsideBody } from "../utils";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { postTemplateEvents } from "@atrilabs/canvas-runtime-utils";
 
 export const useSubscribeTemplateDrop = () => {

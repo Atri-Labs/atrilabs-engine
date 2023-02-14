@@ -4,7 +4,7 @@ import { TabBodyProps } from "./types";
 import {
   ArrayTypedMapCustomProp,
   TypedMapCustomProp,
-} from "@atrilabs/app-design-forest/lib/customPropsTree";
+} from "@atrilabs/app-design-forest";
 import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
 import { usePageRoutes } from "./hooks/usePageRoutes";
 import { TypedMap } from "./components/typed-map/TypedMap";

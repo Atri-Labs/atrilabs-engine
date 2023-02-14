@@ -5,7 +5,7 @@ import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
-import { ArrayTypedMapCustomProp } from "@atrilabs/app-design-forest/lib/customPropsTree";
+import { ArrayTypedMapCustomProp } from "@atrilabs/app-design-forest";
 import { MapContainer } from "../commons/MapContainer";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
@@ -18,14 +18,16 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
   }, [props]);
 
   const options = useMemo(() => {
-    const options = props.attributes!.map((attribute) => attribute.fieldName);
+    const options = props.attributes!.map(
+      (attribute: any) => attribute.fieldName
+    );
     options.push("none");
     return options;
   }, [props.attributes]);
 
   const attributesMap = useMemo(() => {
     const attributesMap: Map<string, AttributeType> = new Map(
-      props.attributes!.map((obj) => {
+      props.attributes!.map((obj: any) => {
         return [obj.fieldName, obj];
       })
     );

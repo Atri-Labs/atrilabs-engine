@@ -1,14 +1,5 @@
-import React, { useRef, forwardRef, useMemo } from "react";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
+import React, { useRef, forwardRef } from "react";
 import Chevron from "./Chevron";
-import { ReactComponent as Icon } from "./icon.svg";
 
 export type AccordionComponentTypes = {
   title: string;
@@ -18,7 +9,7 @@ export type AccordionComponentTypes = {
   className?: string;
 };
 
-export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
+const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   title,
   description,
   open,
@@ -108,7 +99,7 @@ export const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   );
 };
 
-export const Accordion = forwardRef<
+const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -139,118 +130,4 @@ export const Accordion = forwardRef<
   );
 });
 
-export const DevAccordian = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: {
-      items: { title: string; description?: string; open: boolean }[];
-    };
-    onTitleClick: (open: boolean) => void;
-    className?: string;
-  }
->((props, ref) => {
-  const items = useMemo(() => {
-    if (props.custom.items.length === 0)
-      return [
-        {
-          title: "Title",
-          description: "Description will appear here.",
-          open: false,
-        },
-      ];
-    return props.custom.items;
-  }, [props.custom.items]);
-
-  return (
-    <Accordion
-      {...props}
-      custom={{
-        items: items,
-      }}
-      ref={ref}
-    />
-  );
-});
-
-const cssTreeOptions: CSSTreeOptions = {
-  boxShadowOptions: true,
-  flexContainerOptions: false,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  outlineOptions: true,
-  backgroundOptions: true,
-  miscellaneousOptions: true,
-};
-
-const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        { fieldName: "title", type: "text" },
-        { fieldName: "description", type: "text" },
-        { fieldName: "open", type: "boolean" },
-      ],
-    },
-  },
-};
-
-const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Accordion", category: "Basics" },
-  render: {
-    comp: Accordion,
-  },
-  dev: {
-    comp: DevAccordian,
-    decorators: [],
-    attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {},
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
-      custom: {
-        treeId: CustomTreeId,
-        initialValue: {
-          items: [],
-          title: [],
-          description: [],
-          open: [],
-        },
-        treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
-      },
-    },
-    attachCallbacks: {
-      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
-    },
-    defaultCallbackHandlers: {},
-  },
-};
-
-const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Accordion", svg: Icon } },
-  drag: {
-    comp: CommonIcon,
-    props: {
-      name: "Accordion",
-      containerStyle: { padding: "1rem" },
-      svg: Icon,
-    },
-  },
-  renderSchema: compManifest,
-};
-
-export default {
-  manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
-  },
-};
+export default Accordion;

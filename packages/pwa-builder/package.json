@@ -1,0 +1,73 @@
+{
+  "name": "@atrilabs/pwa-builder",
+  "version": "0.0.90",
+  "description": "Atri framework's visual builder.",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "license": "ISC",
+  "main": "dist/editor/index.js",
+  "directories": {
+    "lib": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "dev": "dev-editor -i '@atrilabs/shared-layer-lib:@atrilabs/canvas-runtime-utils:@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest'",
+    "build-manifest-registry": "build-manifest-registry"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/action-layer": "^0.0.90",
+    "@atrilabs/app-design-layer": "^0.0.90",
+    "@atrilabs/app-page-layer": "^0.0.90",
+    "@atrilabs/app-template-layer": "^0.0.90",
+    "@atrilabs/asset-manager-layer": "^0.0.90",
+    "@atrilabs/base-layer": "^0.0.90",
+    "@atrilabs/canvas-breakpoint-layer": "^0.0.90",
+    "@atrilabs/canvas-runtime": "^0.0.90",
+    "@atrilabs/commands": "^0.0.90",
+    "@atrilabs/component-list-layer": "^0.0.90",
+    "@atrilabs/component-navigator": "^0.0.90",
+    "@atrilabs/component-style-layer": "^0.0.90",
+    "@atrilabs/custom-props-layer": "^0.0.90",
+    "@atrilabs/load-forest-data-layer": "^0.0.90",
+    "@atrilabs/manage-canvas-runtime-layer": "^0.0.90",
+    "@atrilabs/overlay-hints-layer": "^0.0.90",
+    "@atrilabs/publish-app-layer": "^0.0.90",
+    "@atrilabs/pwa-builder-manager": "^0.0.90",
+    "@atrilabs/pwa-canvas-layer": "^0.0.90",
+    "@atrilabs/resource-processor-layer": "^0.0.90",
+    "@atrilabs/services-status-layer": "^0.0.90",
+    "@atrilabs/undo-redo-layer": "^0.0.90",
+    "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-react-app": "^7.0.1",
+    "pkg": "^5.8.0",
+    "prettier": "^2.6.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

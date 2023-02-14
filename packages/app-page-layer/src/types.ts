@@ -3,3 +3,8 @@ export type PageTableData = {
   folder: { id: string; name: string; parentId: string };
   pages: { id: string; name: string; route: string }[];
 }[];
+
+export type PageInfo = {
+  routeObjectPath: string;
+  unixFilepath: string;
+}[];

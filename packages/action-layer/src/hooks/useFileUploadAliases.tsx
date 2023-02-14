@@ -1,6 +1,6 @@
 import { manifestRegistryController, useTree } from "@atrilabs/core";
 import { useEffect, useMemo, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { getComponentManifest, getFileUploadManifests } from "../utils";
 import ReactManifestId from "@atrilabs/react-component-manifests?id";
 

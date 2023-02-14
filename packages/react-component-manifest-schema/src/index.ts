@@ -1,5 +1,7 @@
 import Joi from "joi";
 import { ManifestSchema } from "@atrilabs/core";
+export * from "./types";
+export * from "./utils";
 
 const schema = Joi.object({
   meta: Joi.object({ key: Joi.string() }),
@@ -24,5 +26,3 @@ export default function (): ManifestSchema {
   }
   return { validate };
 }
-
-export * from "./GlobalContext";

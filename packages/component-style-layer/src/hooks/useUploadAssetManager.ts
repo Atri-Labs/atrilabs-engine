@@ -1,5 +1,5 @@
 import { UploadMode } from "@atrilabs/shared-layer-lib";
-import { UploadContainerProps } from "@atrilabs/shared-layer-lib/lib/components/upload-container/UploadContainer";
+import { UploadContainerProps } from "@atrilabs/shared-layer-lib";
 import React, { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../types";
 

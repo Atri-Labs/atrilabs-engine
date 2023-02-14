@@ -8,7 +8,7 @@ import {
   HardPatchEvent,
 } from "@atrilabs/forest";
 import { useCallback, useEffect } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import {
   createReverseMap,
   getAllNodeIdsFromReverseMap,

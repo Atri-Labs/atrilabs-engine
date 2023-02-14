@@ -1,8 +1,10 @@
-import { startDrag } from "@atrilabs/canvas-runtime";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
 import { getId } from "@atrilabs/core";
 import { gray300, gray900, smallText } from "@atrilabs/design-system";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
+import { DragComp, DragData } from "@atrilabs/atri-app-core";
+import { CommonIcon } from "@atrilabs/atri-app-core/src/editor-components/CommonIcon";
 
 const styles: { [key: string]: React.CSSProperties } = {
   mainContainer: {
@@ -19,15 +21,16 @@ export type CategoryListProps = {
   categorizedComponents: {
     [category: string]: {
       pkg: string;
-      component: any;
+      manifest: any;
+      icon: React.FC<any> | null;
     }[];
   };
   categoryName: string;
 };
 
 export const CategoryList: React.FC<CategoryListProps> = (props) => {
-  const startDragCb = useCallback((...args: Parameters<typeof startDrag>) => {
-    startDrag(...args);
+  const startDragCb = useCallback((dragComp: DragComp, dragData: DragData) => {
+    canvasApi.startDrag(dragComp, dragData);
   }, []);
 
   return (
@@ -51,20 +54,34 @@ export const CategoryList: React.FC<CategoryListProps> = (props) => {
                     style={styles.compContainer}
                     key={comp.pkg + index}
                     onMouseDown={() => {
-                      startDragCb(comp.component.drag, {
-                        type: "component",
-                        data: {
-                          key: comp.component.renderSchema.meta.key,
-                          pkg: comp.pkg,
-                          manifestSchema: ReactComponentManifestSchemaId,
-                          id: getId(),
+                      startDragCb(
+                        {
+                          comp: comp.manifest.drag.comp,
+                          props: {
+                            ...comp.manifest.drag.props,
+                            svg: comp.icon,
+                          },
                         },
-                      });
+                        {
+                          type: "component",
+                          data: {
+                            key: comp.manifest.renderSchema.meta.key,
+                            pkg: comp.pkg,
+                            manifestSchema: ReactComponentManifestSchemaId,
+                            id: getId(),
+                          },
+                        }
+                      );
                     }}
                   >
-                    <comp.component.panel.comp
-                      {...comp.component.panel.props}
-                    />
+                    {comp.manifest.panel.comp === "CommonIcon" ? (
+                      <CommonIcon
+                        {...comp.manifest.panel.props}
+                        svg={comp.icon}
+                      />
+                    ) : (
+                      "Invalid Icon"
+                    )}
                   </div>
                 );
               }

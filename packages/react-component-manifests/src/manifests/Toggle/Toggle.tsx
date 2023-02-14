@@ -1,13 +1,4 @@
 import React, { forwardRef, useCallback } from "react";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
-import { ReactComponent as Icon } from "./icon.svg";
 
 export type ToggleComponentTypes = {
   isOn: boolean;
@@ -92,7 +83,7 @@ export const ToggleHelper: React.FC<ToggleComponentTypes> = ({
   );
 };
 
-export const Toggle = forwardRef<
+const Toggle = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -123,77 +114,4 @@ export const Toggle = forwardRef<
   );
 });
 
-const cssTreeOptions: CSSTreeOptions = {
-  boxShadowOptions: true,
-  flexContainerOptions: false,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  outlineOptions: true,
-  backgroundOptions: true,
-  miscellaneousOptions: true,
-};
-
-const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    active: { type: "boolean" },
-    activeColor: { type: "color" },
-    inactiveColor: { type: "color" },
-  },
-};
-
-const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Toggle", category: "Basics" },
-  render: {
-    comp: Toggle,
-  },
-  dev: {
-    decorators: [],
-    attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {
-          width: "100px",
-          height: "50px",
-        },
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
-      custom: {
-        treeId: CustomTreeId,
-        initialValue: {
-          activeColor: "#2196f3",
-          active: false,
-          inactiveColor: "#CCCCCC",
-        },
-        treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
-      },
-    },
-    attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "active"] }],
-    },
-    defaultCallbackHandlers: {
-      onChange: [{ sendEventData: true }],
-    },
-  },
-};
-
-const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Toggle", svg: Icon } },
-  drag: {
-    comp: CommonIcon,
-    props: { name: "Toggle", containerStyle: { padding: "1rem" }, svg: Icon },
-  },
-  renderSchema: compManifest,
-};
-
-export default {
-  manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
-  },
-};
+export default Toggle;

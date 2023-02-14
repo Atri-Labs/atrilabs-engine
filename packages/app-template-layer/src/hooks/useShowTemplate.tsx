@@ -1,7 +1,7 @@
 import { api, TemplateDetail } from "@atrilabs/core";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { getReactComponentManifest } from "@atrilabs/canvas-runtime-utils";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";

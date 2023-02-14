@@ -7,7 +7,7 @@ import {
   SimpleCustomProp,
   TypedMapCustomProp,
   VariableKeyMapCustomProp,
-} from "@atrilabs/app-design-forest/lib/customPropsTree";
+} from "@atrilabs/app-design-forest";
 import {
   ColorPickerDialogProps,
   OpenAssetManagerCallabck,

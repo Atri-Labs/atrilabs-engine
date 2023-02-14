@@ -47,15 +47,15 @@ function _transformTreeToComponentNode(
     if (currentChildIds) {
       currentChildIds.forEach((childId, index) => {
         const node = tree.nodes[childId]!;
-        const manifest = manifestRegistry[
+        const fullManifest = manifestRegistry[
           node.meta.manifestSchemaId
-        ].components.find((curr) => {
+        ].manifests.find((curr) => {
           return (
             curr.pkg === node.meta.pkg &&
-            curr.component.meta.key === node.meta.key
+            curr.manifest.meta.key === node.meta.key
           );
         });
-        const acceptsChild = manifest?.component?.dev?.acceptsChild
+        const acceptsChild = fullManifest?.manifest?.dev?.acceptsChild
           ? "acceptsChild"
           : "normal";
         // this can happen when a new component is added to the canvas

@@ -1,0 +1,40 @@
+{
+  "name": "@atrilabs/atri-app-core",
+  "version": "0.0.90",
+  "description": "utility code for atri-app",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/react-component-manifest-schema": "^0.0.90",
+    "react-router-dom": "^6.6.2",
+    "recursive-readdir": "^2.2.3",
+    "upath": "^2.0.1",
+    "xstate": "^4.35.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.3",
+    "@types/recursive-readdir": "^2.2.1",
+    "babel-jest": "^29.3.1",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3"
+  }
+}

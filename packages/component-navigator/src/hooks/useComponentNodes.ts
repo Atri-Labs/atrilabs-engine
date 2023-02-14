@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useReducer } from "react";
 import { api, BrowserForestManager, useTree } from "@atrilabs/core";
 import { PatchEvent } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { NavigatorNode } from "../types";
 import {
   flattenRootNavigatorNode,

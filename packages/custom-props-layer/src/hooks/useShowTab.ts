@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTree, manifestRegistryController } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
-import ComponentTreeId from "@atrilabs/app-design-forest/lib/componentTree?id";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 
 export const useShowTab = () => {
   const [showTab, setShowTab] = useState<boolean>(false);
@@ -24,17 +24,15 @@ export const useShowTab = () => {
         const key = compTree.nodes[id].meta.key;
         const manifestRegistry =
           manifestRegistryController.readManifestRegistry();
-        const manifest = manifestRegistry[
+        const fullManifest = manifestRegistry[
           ReactManifestSchemaId
-        ].components.find((curr) => {
-          return curr.pkg === pkg && curr.component.meta.key === key;
+        ].manifests.find((curr) => {
+          return curr.pkg === pkg && curr.manifest.meta.key === key;
         });
-        if (manifest) {
-          const manifestComponent: ReactComponentManifestSchema =
-            manifest.component;
-          if (manifestComponent.dev.attachProps["custom"]) {
-            const treeOptions =
-              manifestComponent.dev.attachProps["custom"].treeOptions;
+        if (fullManifest) {
+          const manifest: ReactComponentManifestSchema = fullManifest.manifest;
+          if (manifest.dev.attachProps["custom"]) {
+            const treeOptions = manifest.dev.attachProps["custom"].treeOptions;
             setId(id);
             setShowTab(true);
             setTreeOptions(treeOptions);

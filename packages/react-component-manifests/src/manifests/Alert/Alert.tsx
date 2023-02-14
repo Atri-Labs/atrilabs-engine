@@ -1,21 +1,12 @@
 import React, { forwardRef, useCallback, useMemo } from "react";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import { CommonIcon } from "../CommonIcon";
-import CSSTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/lib/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/lib/customPropsTree";
-import CustomTreeId from "@atrilabs/app-design-forest/lib/customPropsTree?id";
 import AlertStyles from "./AlertStyles";
 import closeIcon from "./close.svg";
 import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
-import { ReactComponent as Icon } from "./icon.svg";
 
-export const Alert = forwardRef<
+const Alert = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
@@ -134,90 +125,4 @@ export const Alert = forwardRef<
   );
 });
 
-const cssTreeOptions: CSSTreeOptions = {
-  boxShadowOptions: true,
-  flexContainerOptions: true,
-  flexChildOptions: true,
-  positionOptions: true,
-  typographyOptions: true,
-  spacingOptions: true,
-  sizeOptions: true,
-  borderOptions: true,
-  outlineOptions: true,
-  backgroundOptions: true,
-  miscellaneousOptions: true,
-};
-
-const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {
-    alertType: {
-      type: "enum",
-      options: ["success", "info", "warning", "error"],
-    },
-    title: { type: "text" },
-    description: { type: "text" },
-    successIcon: { type: "static_asset" },
-    infoIcon: { type: "static_asset" },
-    warningIcon: { type: "static_asset" },
-    errorIcon: { type: "static_asset" },
-    isClosable: { type: "boolean" },
-  },
-};
-
-const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Alert", category: "Basics" },
-  render: {
-    comp: Alert,
-  },
-  dev: {
-    decorators: [],
-    attachProps: {
-      styles: {
-        treeId: CSSTreeId,
-        initialValue: {
-          paddingTop: "15px",
-          paddingLeft: "24px",
-          paddingBottom: "15px",
-          paddingRight: "15px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          columnGap: "10px",
-          justifyContent: "space-between",
-        },
-        treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
-      },
-      custom: {
-        treeId: CustomTreeId,
-        initialValue: {
-          title: "Alert Title",
-          description: "Alert Description",
-          isClosable: true,
-        },
-        treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
-      },
-    },
-    attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
-    },
-    defaultCallbackHandlers: {},
-  },
-};
-
-const iconManifest = {
-  panel: { comp: CommonIcon, props: { name: "Alert", svg: Icon } },
-  drag: {
-    comp: CommonIcon,
-    props: { name: "Alert", containerStyle: { padding: "1rem", svg: Icon } },
-  },
-  renderSchema: compManifest,
-};
-
-export default {
-  manifests: {
-    [reactSchemaId]: [compManifest],
-    [iconSchemaId]: [iconManifest],
-  },
-};
+export default Alert;

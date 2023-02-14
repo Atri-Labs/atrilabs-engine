@@ -1,10 +1,17 @@
 import { Container } from "@atrilabs/core";
-import { gray300, gray400, gray800, h4Heading } from "@atrilabs/design-system";
+import {
+  gray300,
+  gray400,
+  gray700,
+  gray800,
+  h4Heading,
+} from "@atrilabs/design-system";
 import React, { useCallback, useState } from "react";
-import { useGetPageTableData } from "./hooks/useGetPageTableData";
 import { ArrowDown } from "./icons/ArrowDown";
-import { PageEditor } from "./PageEditor";
 import "./stylesheets/formfield.module.css";
+import { useGetPageInfo } from "./hooks/useGetPageInfo";
+import { PageTree } from "./PageTree";
+import { Cross } from "./icons/Cross";
 interface PageSelectorProps {}
 
 const styles: { [key: string]: React.CSSProperties } = {
@@ -39,32 +46,39 @@ export const PageSelector: React.FC<PageSelectorProps> = () => {
     setShowPageEditor(false);
   }, []);
 
-  const { selectedPage, pageTableData, loadData, changePageCb } =
-    useGetPageTableData();
+  const { pagesInfo, selectedPageRouteObjectPath } = useGetPageInfo();
 
   return (
     <div
       style={styles.page}
       onClick={() => {
-        setShowPageEditor(true);
+        setShowPageEditor(!showPageEditor);
       }}
       data-tooltip="Page Manager"
       className="tool-tip"
     >
       <div>Page:</div>
-      <div style={styles.p}>{selectedPage ? selectedPage.name : null}</div>
+      <div style={styles.p}>{selectedPageRouteObjectPath}</div>
       <span style={styles.span}>
-        <ArrowDown />
+        {showPageEditor ? <Cross /> : <ArrowDown />}
       </span>
-      {showPageEditor && selectedPage ? (
+      {showPageEditor && pagesInfo ? (
         <Container name="Drop" onClose={closePageEditor}>
-          <PageEditor
-            close={closePageEditor}
-            pageTableData={pageTableData}
-            loadData={loadData}
-            selectedPage={selectedPage}
-            changePageCb={changePageCb}
-          />
+          <div
+            style={{
+              backgroundColor: gray700,
+              height: "100%",
+              minWidth: "170px",
+              paddingTop: "1em",
+              paddingLeft: "1em",
+              paddingRight: "1em",
+            }}
+          >
+            <PageTree
+              pagesInfo={pagesInfo}
+              selectedPageRouteObjectPath={selectedPageRouteObjectPath}
+            />
+          </div>
         </Container>
       ) : null}
     </div>

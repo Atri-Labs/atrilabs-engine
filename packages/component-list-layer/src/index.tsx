@@ -10,7 +10,6 @@ import {
 import { ReactComponent as Insert } from "./assets/insert.svg";
 import { Cross } from "./assets/Cross";
 import { useManifestRegistry } from "./hooks/useManifestRegistry";
-import "./utils/manifests";
 import { CategoryList } from "./components/CategoryList";
 import "./index.css";
 
@@ -69,7 +68,11 @@ export default function () {
   return (
     <>
       <Menu name="PageMenu" order={0}>
-        <div style={styles.iconContainer} data-tooltip="Component Manager" className="tool-tip">
+        <div
+          style={styles.iconContainer}
+          data-tooltip="Component Manager"
+          className="tool-tip"
+        >
           <IconMenu onClick={onClick} active={false}>
             <Insert />
           </IconMenu>

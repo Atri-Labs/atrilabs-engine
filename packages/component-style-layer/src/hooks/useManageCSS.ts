@@ -4,10 +4,10 @@ import {
   manifestRegistryController,
 } from "@atrilabs/core";
 import React, { useCallback, useEffect, useState } from "react";
-import cssTreeId from "@atrilabs/app-design-forest/lib/cssTree?id";
+import cssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent, Tree } from "@atrilabs/forest";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema/lib/types";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import {
   getComponentProps,
   updateComponentProps,
@@ -183,17 +183,15 @@ export const useManageCSS = (props: {
       const key = compTree.nodes[id].meta.key;
       const manifestRegistry =
         manifestRegistryController.readManifestRegistry();
-      const manifest = manifestRegistry[ReactManifestSchemaId].components.find(
-        (curr) => {
-          return curr.pkg === pkg && curr.component.meta.key === key;
-        }
-      );
-      if (manifest) {
-        const manifestComponent: ReactComponentManifestSchema =
-          manifest.component;
-        if (manifestComponent.dev.attachProps["styles"]) {
-          const treeOptions =
-            manifestComponent.dev.attachProps["styles"].treeOptions;
+      const fullManifest = manifestRegistry[
+        ReactManifestSchemaId
+      ].manifests.find((curr) => {
+        return curr.pkg === pkg && curr.manifest.meta.key === key;
+      });
+      if (fullManifest) {
+        const manifest: ReactComponentManifestSchema = fullManifest.manifest;
+        if (manifest.dev.attachProps["styles"]) {
+          const treeOptions = manifest.dev.attachProps["styles"].treeOptions;
           setTreeOptions(treeOptions);
         } else {
           setTreeOptions(null);
