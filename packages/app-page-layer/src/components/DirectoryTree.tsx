@@ -14,6 +14,7 @@ export const DirectoryTree: React.FC<DirectoryTreeTypes> = (props) => {
       <style>
         {`.file-view:hover {
             background-color: #4D5A68;
+            cursor: pointer;
           }
         `}
       </style>
