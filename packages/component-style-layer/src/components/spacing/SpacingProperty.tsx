@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   gray200,
   gray800,
@@ -180,6 +180,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     userSelect: "none",
     pointerEvents: "none",
   },
+  unitSelection: {
+    ...smallText,
+    position: "absolute",
+    left: "95px",
+    color: gray100,
+    backgroundColor: "transparent",
+    outline: "none",
+    border: "none",
+    borderRadius: "2px",
+    width: "18px",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+  },
 };
 
 //ACTIONS
@@ -322,8 +335,8 @@ function convertSizeWithUnitsToString(size: string) {
   return !isNaN(parseFloat(size)) ? parseFloat(size).toString() : "";
 }
 
-function convertSizeWithUnitsToStringWithUnits(size: string) {
-  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + "px" : "";
+function convertSizeWithUnitsToStringWithUnits(size: string, unit: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + unit : "";
 }
 
 // SpacingProperty is a controlled component
@@ -339,6 +352,38 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
   const paddingRightVal = props.styles.paddingRight?.toString() || "";
   const paddingLeftVal = props.styles.paddingLeft?.toString() || "";
   const paddingBottomVal = props.styles.paddingBottom?.toString() || "";
+
+  const prevCSSUNnit = useMemo(() => {
+    if (marginTopVal) {
+      return marginTopVal.replace(/[0-9]/g, "");
+    } else if (marginRightVal) {
+      marginRightVal.replace(/[0-9]/g, "");
+    } else if (marginLeftVal) {
+      marginLeftVal.replace(/[0-9]/g, "");
+    } else if (marginBottomVal) {
+      marginBottomVal.replace(/[0-9]/g, "");
+    } else if (paddingTopVal) {
+      paddingTopVal.replace(/[0-9]/g, "");
+    } else if (paddingRightVal) {
+      paddingRightVal.replace(/[0-9]/g, "");
+    } else if (paddingBottomVal) {
+      paddingBottomVal.replace(/[0-9]/g, "");
+    } else if (paddingLeftVal) {
+      paddingLeftVal.replace(/[0-9]/g, "");
+    }
+    return "px";
+  }, [
+    marginBottomVal,
+    marginLeftVal,
+    marginRightVal,
+    marginTopVal,
+    paddingBottomVal,
+    paddingLeftVal,
+    paddingRightVal,
+    paddingTopVal,
+  ]);
+
+  const [unit, setUnit] = useState<string>(prevCSSUNnit);
 
   // callbacks for different areas
   const onMouseDownPaddingTop = useCallback(
@@ -458,14 +503,68 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
       props.styles[state.context["area"] as keyof React.CSSProperties];
     if (typeof oldValue === "string" && parseFloat(oldValue) !== newValue) {
       props.patchCb({
-        property: { styles: { [state.context["area"]]: newValue + "px" } },
+        property: { styles: { [state.context["area"]]: newValue + unit } },
       });
     } else if (oldValue !== newValue) {
       props.patchCb({
-        property: { styles: { [state.context["area"]]: newValue + "px" } },
+        property: { styles: { [state.context["area"]]: newValue + unit } },
       });
     }
-  }, [state.context, state.value, props]);
+  }, [state.context, state.value, props, unit]);
+
+  // Update all the margin and padding directions with the new unit if changed
+  const updateMarginAndPadding = useCallback(
+    (unit: string) => {
+      setUnit(unit);
+      function patchStyle(cssProperty: string, cssPropertyVal: string) {
+        props.patchCb({
+          property: {
+            styles: {
+              [cssProperty]: convertSizeWithUnitsToStringWithUnits(
+                cssPropertyVal,
+                unit
+              ),
+            },
+          },
+        });
+      }
+      if (marginTopVal) {
+        patchStyle("marginTop", marginTopVal);
+      }
+      if (marginRightVal) {
+        patchStyle("marginRight", marginRightVal);
+      }
+      if (marginLeftVal) {
+        patchStyle("marginLeft", marginLeftVal);
+      }
+      if (marginBottomVal) {
+        patchStyle("marginBottom", marginBottomVal);
+      }
+      if (paddingTopVal) {
+        patchStyle("paddingTop", paddingTopVal);
+      }
+      if (paddingRightVal) {
+        patchStyle("paddingRight", paddingRightVal);
+      }
+      if (paddingBottomVal) {
+        patchStyle("paddingBottom", paddingBottomVal);
+      }
+      if (paddingLeftVal) {
+        patchStyle("paddingLeft", paddingLeftVal);
+      }
+    },
+    [
+      marginBottomVal,
+      marginLeftVal,
+      marginRightVal,
+      marginTopVal,
+      paddingBottomVal,
+      paddingLeftVal,
+      paddingRightVal,
+      paddingTopVal,
+      props,
+    ]
+  );
 
   // show margin overlays when in draggin state
   const { createMarginOverlay, removeMarginOverlay } = useMarginOverlay();
@@ -486,7 +585,9 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     const attrValue = event.target.value;
     props.patchCb({
       property: {
-        styles: { marginTop: convertSizeWithUnitsToStringWithUnits(attrValue) },
+        styles: {
+          marginTop: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
       },
     });
   };
@@ -497,7 +598,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginRight: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -509,7 +610,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginLeft: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -521,7 +622,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          marginBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+          marginBottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -533,7 +634,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingTop: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingTop: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -545,7 +646,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingRight: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingRight: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -557,7 +658,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingLeft: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingLeft: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -569,7 +670,7 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
     props.patchCb({
       property: {
         styles: {
-          paddingBottom: convertSizeWithUnitsToStringWithUnits(attrValue),
+          paddingBottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
         },
       },
     });
@@ -652,6 +753,34 @@ const SpacingProperty: React.FC<CssProprtyComponentType> = (props) => {
               placeholder={convertSizeWithUnitsToString(paddingLeftVal) || "0"}
               style={styles.paddingLeftPlaceHolder}
             />
+
+            <div
+              className="dropdown"
+              style={{ position: "absolute", left: "95px", height: "19px" }}
+            >
+              <button
+                className="dropbtn"
+                style={{ height: "19px", backgroundColor: "transparent" }}
+              >
+                {unit}
+              </button>
+              <div
+                className="dropdown-content"
+                style={{ position: "absolute", left: "0", textAlign: "center" }}
+              >
+                {["px", "%", "em", "rem", "ch", "vw", "vh"].map((unit, idx) => (
+                  <p
+                    onClick={() => {
+                      updateMarginAndPadding(unit);
+                    }}
+                    key={unit + idx}
+                  >
+                    {unit}
+                  </p>
+                ))}
+              </div>
+            </div>
+
             {/*Margin Label*/}
             <p style={styles.marginLabel}>Margin</p>
             {/* Padding Label */}

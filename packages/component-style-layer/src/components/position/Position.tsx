@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import PropertyRender from "../commons/PropertyRender";
 import {
   gray200,
@@ -232,6 +232,15 @@ const dragMachine = createMachine({
     },
   },
 });
+
+function convertSizeWithUnitsToString(size: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() : "0";
+}
+
+function convertSizeWithUnitsToStringWithUnits(size: string, unit: string) {
+  return !isNaN(parseFloat(size)) ? parseFloat(size).toString() + unit : "";
+}
+
 const positionValues = ["static", "relative", "absolute", "fixed", "sticky"];
 const floatValues = ["none", "left", "right"];
 const clearValues = ["none", "left", "right", "both"];
@@ -244,6 +253,21 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const positionRightVal = props.styles.right?.toString() || "";
   const positionLeftVal = props.styles.left?.toString() || "";
   const positionBottomVal = props.styles.bottom?.toString() || "";
+
+  const prevCSSUNnit = useMemo(() => {
+    if (positionTopVal) {
+      return positionTopVal.replace(/[0-9]/g, "");
+    } else if (positionRightVal) {
+      positionRightVal.replace(/[0-9]/g, "");
+    } else if (positionLeftVal) {
+      positionLeftVal.replace(/[0-9]/g, "");
+    } else if (positionBottomVal) {
+      positionBottomVal.replace(/[0-9]/g, "");
+    }
+    return "px";
+  }, [positionBottomVal, positionLeftVal, positionRightVal, positionTopVal]);
+
+  const [unit, setUnit] = useState<string>(prevCSSUNnit);
 
   const onMouseDownPositionTop = useCallback(
     (event: React.MouseEvent) => {
@@ -318,12 +342,52 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
       });
   }, [state.context, state.value, props]);
 
+  // Synchronise the position property with the new CSS unit
+  const updatePosition = useCallback(
+    (unit: string) => {
+      setUnit(unit);
+      function patchStyle(cssProperty: string, cssPropertyVal: string) {
+        props.patchCb({
+          property: {
+            styles: {
+              [cssProperty]: convertSizeWithUnitsToStringWithUnits(
+                cssPropertyVal,
+                unit
+              ),
+            },
+          },
+        });
+      }
+      if (positionTopVal) {
+        patchStyle("positionTop", positionTopVal);
+      }
+      if (positionRightVal) {
+        patchStyle("positionRight", positionRightVal);
+      }
+      if (positionLeftVal) {
+        patchStyle("positionLeft", positionLeftVal);
+      }
+      if (positionBottomVal) {
+        patchStyle("positionBottom", positionBottomVal);
+      }
+    },
+    [
+      positionBottomVal,
+      positionLeftVal,
+      positionRightVal,
+      positionTopVal,
+      props,
+    ]
+  );
+
   const handleChangePositionTop = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { top: parseInt(attrValue) } },
+      property: {
+        styles: { top: convertSizeWithUnitsToStringWithUnits(attrValue, unit) },
+      },
     });
   };
   const handleChangePositionRight = (
@@ -331,7 +395,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { right: parseInt(attrValue) } },
+      property: {
+        styles: {
+          right: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   const handleChangePositionLeft = (
@@ -339,7 +407,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { left: parseInt(attrValue) } },
+      property: {
+        styles: {
+          left: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   const handleChangePositionBottom = (
@@ -347,7 +419,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   ) => {
     let attrValue = event.target.value;
     props.patchCb({
-      property: { styles: { bottom: parseInt(attrValue) } },
+      property: {
+        styles: {
+          bottom: convertSizeWithUnitsToStringWithUnits(attrValue, unit),
+        },
+      },
     });
   };
   return (
@@ -385,32 +461,66 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
               <input
-                value={positionTopVal || ""}
+                value={parseFloat(positionTopVal) || ""}
                 onChange={handleChangePositionTop}
-                placeholder={positionTopVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionTopVal)}
                 style={styles.positionTopPlaceHolder}
               />
 
               <input
-                value={positionRightVal || ""}
+                value={parseFloat(positionRightVal) || ""}
                 onChange={handleChangePositionRight}
-                placeholder={positionRightVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionRightVal)}
                 style={styles.positionRightPlaceHolder}
               />
 
               <input
-                value={positionBottomVal || ""}
+                value={parseFloat(positionBottomVal) || ""}
                 onChange={handleChangePositionBottom}
-                placeholder={positionBottomVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionBottomVal)}
                 style={styles.positionBottomPlaceHolder}
               />
 
               <input
-                value={positionLeftVal || ""}
+                value={parseFloat(positionLeftVal) || ""}
                 onChange={handleChangePositionLeft}
-                placeholder={positionLeftVal || "0"}
+                placeholder={convertSizeWithUnitsToString(positionLeftVal)}
                 style={styles.positionLeftPlaceHolder}
               />
+
+              <div
+                className="dropdown"
+                style={{ position: "absolute", left: "95px", height: "19px" }}
+              >
+                <button
+                  className="dropbtn"
+                  style={{ height: "19px", backgroundColor: "transparent" }}
+                >
+                  {unit}
+                </button>
+                <div
+                  className="dropdown-content"
+                  style={{
+                    position: "absolute",
+                    left: "0",
+                    textAlign: "center",
+                  }}
+                >
+                  {["px", "%", "em", "rem", "ch", "vw", "vh"].map(
+                    (unit, idx) => (
+                      <p
+                        onClick={() => {
+                          updatePosition(unit);
+                        }}
+                        key={unit + idx}
+                      >
+                        {unit}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+
               <PositionTrapezoid
                 onMouseDownPositionTop={onMouseDownPositionTop}
                 onMouseDownPositionRight={onMouseDownPositionRight}

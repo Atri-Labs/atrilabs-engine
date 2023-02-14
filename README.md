@@ -1,4 +1,4 @@
-![banner](readme-assets/github_beta.png)
+![banner](readme-assets/github_python_desc.png)
 
 <div align="center">
 
@@ -16,17 +16,13 @@
     <span> | </span>
     <a href="https://docs.atrilabs.com/">Docs</a>
     <span> | </span>
-    <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1e756m1at-bZBxngvw7KWWO0riI4pc0w">Community Slack</a>
+    <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1otyguhy8-P4OQQRWFWcMUsKk7yp0FHQ">Community Slack</a>
     <span> | </span>
     <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">YouTube</a>
     <span> | </span>
     <a href="https://www.linkedin.com/company/atri-labs">LinkedIn</a>
     <span> | </span>
     <a href="https://twitter.com/atrilabs">Twitter</a>
-    <span> | </span>
-    <a href="https://github.com/Atri-Labs/atrilabs-engine/discussions">Discussions</a>
-    <span> | </span>
-    <a href="https://github.com/Atri-Labs/atrilabs-engine#how-to-contribute">Contribute</a>
   </h3>
   
 </div>
@@ -39,11 +35,11 @@
 
 > **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
-Atri framework is a full-stack web development framework to build Progressive Web Apps. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
+Atri framework is a full-stack web development framework for Python developers. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
-- Frontend development: Write React code or use our visual editor to increase your productivity
-- Backend development: Currently, we support Python for backend development. We are planning to add support for NodeJS soon. 
-- Deployment support: Our CLI provides rich support for easy deployment at your platform of choice such as GitHub Pages, AWS, etc. 
+- Frontend development: Use our powerful visual builder to create frontend or write React code
+- Backend development: Write backend using our Python API that is inspired from Unity's game engine
+- Deployment support: Use our CLI to deploy at your platform of choice such as AWS, GitHub Pages, etc. or Atri cloud
 
 ## Watch the 1 min introduction video to Atri framework 👇
 
@@ -59,14 +55,17 @@ If you like our project, please support us by giving us **a star ⭐!**
 
 Atri is a general purpose framework that can be used to build everything from e-commerce websites to internal apps. 
 
-### Websites built using Atri framework
+<div align="center">
 
-- [Ecommerce app](https://atri-apps.github.io/full_stack_ecommerce_website)
-- [Restaurant ordering app](https://atri-apps.github.io/restaurant_website)
-- [Personal blog](https://atri-apps.github.io/personal_blog/)
-- [Data app](https://atri-apps.github.io/review_tabular_data/)
+  [![Watch the video](https://img.youtube.com/vi/YWNe9S7khEU/0.jpg)](https://youtu.be/YWNe9S7khEU)
+  
+</div>
 
-Find more example websites and apps at [Atri-Apps](https://github.com/orgs/Atri-Apps/repositories). 
+The static instances of the web apps created using Atri have been deployed at the below URLs: 
+
+[Restaurant website](https://atri-apps.github.io/restaurant_website) | [Sportswear website](https://github.com/Atri-Apps/travel_website) | [Personal website](https://github.com/Atri-Apps/portfolio-templates) | [Ecommerce app](https://atri-apps.github.io/full_stack_ecommerce_website) | [Personal blog](https://atri-apps.github.io/personal_blog/) | [Data app](https://atri-apps.github.io/review_tabular_data) | [Custom background (ML) app](https://atri-apps.github.io/custom_background/)
+
+Find more examples at Atri-Apps (https://github.com/orgs/Atri-Apps/repositories).
 
 ## How is Atri framework different from other web development frameworks?
 
