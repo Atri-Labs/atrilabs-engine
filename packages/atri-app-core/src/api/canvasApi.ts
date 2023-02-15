@@ -231,6 +231,9 @@ if (typeof window !== "undefined") {
   window.addEventListener("scroll", () => {
     canvasMachineInterpreter.send({ type: "SCROLL" });
   });
+  window.addEventListener("blur", () => {
+    canvasMachineInterpreter.send({ type: "BLUR" });
+  });
   if (window.location !== window.parent.location) {
     canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
   } else {

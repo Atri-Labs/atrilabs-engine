@@ -19,6 +19,7 @@ const MOUSE_UP = "MOUSE_UP" as const;
 const MOUSE_DOWN = "MOUSE_DOWN" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
+const BLUR = "BLUR" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -60,6 +61,9 @@ type COMPONENT_CREATED_EVENT = {
 type SCROLL_EVENT = {
   type: typeof SCROLL;
 };
+type BLUR_EVENT = {
+  type: typeof BLUR;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -73,7 +77,8 @@ type CanvasMachineEvent =
   | MOUSE_UP_EVENT
   | MOUSE_DOWN_EVENT
   | COMPONENT_CREATED_EVENT
-  | SCROLL_EVENT;
+  | SCROLL_EVENT
+  | BLUR_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -88,6 +93,8 @@ const idle = "idle" as const;
 const hover = "hover" as const;
 const pressed = "pressed" as const;
 const selected = "selected" as const;
+const focused = "focused" as const;
+const unfocused = "unfocused" as const;
 
 // context
 
@@ -366,6 +373,34 @@ export function createCanvasMachine(id: string) {
                 [MOUSE_DOWN]: {
                   target: pressed,
                   cond: selectedDifferentComponent,
+                },
+              },
+              type: "parallel",
+              states: {
+                focusstates: {
+                  initial: focused,
+                  states: {
+                    [focused]: {
+                      entry: (context, event) => {},
+                      exit: () => {
+                        console.log("Exited Selected focused State", id);
+                      },
+                      on: {
+                        [BLUR]: {
+                          target: unfocused,
+                        },
+                      },
+                    },
+                    [unfocused]: {
+                      entry: () => {
+                        console.log("Entered Selected unfocused State", id);
+                      },
+                      exit: () => {
+                        console.log("Exited Selected unfocused State", id);
+                      },
+                      type: "final",
+                    },
+                  },
                 },
               },
             },
