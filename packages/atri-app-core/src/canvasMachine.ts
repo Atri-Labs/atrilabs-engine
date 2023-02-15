@@ -215,7 +215,9 @@ type SubscribeStates =
   | typeof OUTSIDE_CANVAS
   | typeof COMPONENT_CREATED
   | "hover"
-  | "hoverEnd";
+  | "hoverEnd"
+  | "focus"
+  | "focusEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -227,6 +229,8 @@ export function createCanvasMachine(id: string) {
     [COMPONENT_CREATED]: [],
     hover: [],
     hoverEnd: [],
+    focus: [],
+    focusEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);

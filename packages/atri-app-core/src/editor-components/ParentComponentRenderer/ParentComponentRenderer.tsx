@@ -4,6 +4,7 @@ import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalCompon
 import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useHandleNewChild } from "./hooks/useHandleNewChild";
+import { useFocusComponent } from "../hooks/useFocusComponent";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
@@ -15,6 +16,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const { children } = useHandleNewChild(props);
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
+  useFocusComponent({ id: props.id });
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {
