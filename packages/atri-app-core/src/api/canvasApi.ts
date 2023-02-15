@@ -218,6 +218,16 @@ if (typeof window !== "undefined") {
     },
     true
   );
+  window.addEventListener(
+    "mousedown",
+    (ev) => {
+      canvasMachineInterpreter.send({
+        type: "MOUSE_DOWN",
+        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
+      });
+    },
+    true
+  );
   window.addEventListener("scroll", () => {
     canvasMachineInterpreter.send({ type: "SCROLL" });
   });

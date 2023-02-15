@@ -16,6 +16,7 @@ const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
+const MOUSE_DOWN = "MOUSE_DOWN" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
 
@@ -46,6 +47,10 @@ type MOUSE_UP_EVENT = {
   type: typeof MOUSE_UP;
   event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
+type MOUSE_DOWN_EVENT = {
+  type: typeof MOUSE_DOWN;
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
+};
 type COMPONENT_CREATED_EVENT = {
   type: typeof COMPONENT_CREATED;
   compId: string;
@@ -66,6 +71,7 @@ type CanvasMachineEvent =
   | OUTSIDE_CANVAS_EVENT
   | MOUSE_MOVE_EVENT
   | MOUSE_UP_EVENT
+  | MOUSE_DOWN_EVENT
   | COMPONENT_CREATED_EVENT
   | SCROLL_EVENT;
 
@@ -80,6 +86,8 @@ const drag_in_progress_active = "drag_in_progress_active" as const;
 // inside ready
 const idle = "idle" as const;
 const hover = "hover" as const;
+const pressed = "pressed" as const;
+const selected = "selected" as const;
 
 // context
 
@@ -94,6 +102,7 @@ type CanvasMachineContext = {
     target: MouseEvent["target"];
   } | null;
   hovered: string | null;
+  selected: string | null;
 };
 
 // actions
@@ -108,7 +117,7 @@ function setDragData(
 
 function setMousePosition(
   context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT | MOUSE_UP_EVENT
+  event: MOUSE_MOVE_EVENT | MOUSE_UP_EVENT | MOUSE_DOWN_EVENT
 ) {
   context.mousePosition = event.event;
 }
@@ -127,11 +136,25 @@ function setHoverComponent(
   }
 }
 
+function setSelectedComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_DOWN_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      context.selected = compId;
+    }
+  }
+}
+
 // conds
 
 function insideComponent(
   _context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT
+  event: MOUSE_MOVE_EVENT | MOUSE_DOWN_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
@@ -153,6 +176,21 @@ function hoveringOverDifferentComponent(
     if (comp !== null) {
       const compId = comp.getAttribute("data-atri-comp-id");
       return compId !== context.hovered;
+    }
+  }
+  return false;
+}
+
+function selectedDifferentComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_DOWN_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      return compId !== context.selected;
     }
   }
   return false;
@@ -192,6 +230,7 @@ export function createCanvasMachine(id: string) {
       }
     };
   }
+
   function callSubscribers(
     state: SubscribeStates,
     context: CanvasMachineContext,
@@ -215,6 +254,7 @@ export function createCanvasMachine(id: string) {
       callSubscribers(state, context, event);
     };
   }
+
   const canvasMachine = createMachine<CanvasMachineContext, CanvasMachineEvent>(
     {
       id,
@@ -227,23 +267,48 @@ export function createCanvasMachine(id: string) {
         dragData: null,
         mousePosition: null,
         hovered: null,
+        selected: null,
       },
       states: {
         [initial]: {
+          entry: () => {
+            console.log("Entered Initial State", id);
+          },
+          exit: () => {
+            console.log("Exited Initial State", id);
+          },
           on: {
             [IFRAME_DETECTED]: { target: checks_completed },
             [TOP_WINDOW_DETECTED]: { target: noop },
           },
         },
         [checks_completed]: {
+          entry: () => {
+            console.log("Entered Checks Completed State", id);
+          },
+          exit: () => {
+            console.log("Exited Checks Completed State", id);
+          },
           on: {
             [WINDOW_LOADED]: { target: ready, actions: ["emitReady"] },
           },
         },
         [ready]: {
+          entry: () => {
+            console.log("Entered Ready State", id);
+          },
+          exit: () => {
+            console.log("Exited Ready State", id);
+          },
           initial: idle,
           states: {
             [idle]: {
+              entry: () => {
+                console.log("Entered Ready Idle State", id);
+              },
+              exit: () => {
+                console.log("Exited Ready Idle State", id);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
@@ -253,11 +318,20 @@ export function createCanvasMachine(id: string) {
               },
             },
             [hover]: {
+              entry: () => {
+                console.log("Entered Ready Hover State", id);
+              },
+              exit: () => {
+                console.log("Exited Ready Hover State", id);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
                   cond: hoveringOverDifferentComponent,
                   actions: ["setHoverComponent"],
+                },
+                [MOUSE_DOWN]: {
+                  target: pressed,
                 },
                 [SCROLL]: {
                   target: idle,
@@ -266,12 +340,33 @@ export function createCanvasMachine(id: string) {
                   target: idle,
                 },
               },
-              entry: (context, event) => {
-                callSubscribers("hover", context, event);
+            },
+            [pressed]: {
+              entry: () => {
+                console.log("Entered Pressed State", id);
               },
-              exit: (context, event) => {
-                context.hovered = null;
-                callSubscribers("hoverEnd", context, event);
+              exit: () => {
+                console.log("Exited Pressed State", id);
+              },
+              on: {
+                [MOUSE_UP]: {
+                  target: selected,
+                  actions: ["setSelectedComponent"],
+                },
+              },
+            },
+            [selected]: {
+              entry: () => {
+                console.log("Entered Selected State", id);
+              },
+              exit: () => {
+                console.log("Exited Selected State", id);
+              },
+              on: {
+                [MOUSE_DOWN]: {
+                  target: pressed,
+                  cond: selectedDifferentComponent,
+                },
               },
             },
           },
@@ -286,9 +381,21 @@ export function createCanvasMachine(id: string) {
           },
         },
         [drag_in_progress]: {
+          entry: () => {
+            console.log("Entered Drag In Progress State", id);
+          },
+          exit: () => {
+            console.log("Exited Drag In Progress State", id);
+          },
           initial: drag_in_progress_idle,
           states: {
             [drag_in_progress_idle]: {
+              entry: () => {
+                console.log("Entered Drag In Progress Idle State", id);
+              },
+              exit: () => {
+                console.log("Exited Drag In Progress Idle State", id);
+              },
               on: {
                 [DRAG_STOPPED]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: {
@@ -298,6 +405,12 @@ export function createCanvasMachine(id: string) {
               },
             },
             [drag_in_progress_active]: {
+              entry: () => {
+                console.log("Entered Drag In Progress Active State", id);
+              },
+              exit: () => {
+                console.log("Exited Drag In Progress Active State", id);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   actions: ["setMousePosition", "emitMoveWhileDrag"],
@@ -328,6 +441,7 @@ export function createCanvasMachine(id: string) {
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
         setHoverComponent,
+        setSelectedComponent,
       },
     }
   );
