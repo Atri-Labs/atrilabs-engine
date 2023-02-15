@@ -260,3 +260,38 @@ test("hard patch with selector replaces selected state", () => {
     compTree!.nodes["comp1"]!.state["breakpoints"]["991"]["styles"]["height"]
   ).toBe("20px");
 });
+
+test("unset event", () => {
+  const forest = createForest(forestDef);
+  const compTree = forest.tree(componentTreeDef.modulePath);
+  forest.handleEvents({
+    name: "TEST_EVENTS",
+    events: [
+      {
+        type: `CREATE$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        meta: {},
+        state: {
+          parent: { id: "body", index: 0 },
+        },
+      },
+      {
+        type: `PATCH$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        slice: {
+          alias: "comp1Alias",
+        },
+      },
+      {
+        type: `UNSET$$${componentTreeDef.modulePath}`,
+        id: "comp1",
+        selector: ["parent", "id"],
+      },
+    ],
+    meta: { agent: "server-sent" },
+  });
+  expect(compTree?.nodes).toBeDefined();
+  expect(compTree!.nodes["comp1"]!.state).toHaveProperty("parent");
+  expect(compTree!.nodes["comp1"]!.state.parent).toHaveProperty("index");
+  expect(compTree!.nodes["comp1"]!.state.parent).not.toHaveProperty("id");
+});
