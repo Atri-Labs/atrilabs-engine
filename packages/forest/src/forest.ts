@@ -15,6 +15,7 @@ import {
   TreeNode,
   HardPatchEvent,
   TreeDef,
+  UnsetEvent,
 } from "./types";
 
 function mergeStateCustomizer(obj: any, src: any) {
@@ -317,6 +318,31 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
           );
         });
       }
+    }
+    if (event.type.startsWith("UNSET")) {
+      const unsetEvent = event as UnsetEvent;
+      const treeId = unsetEvent.type.slice("UNSET$$".length);
+      const tree = treeMap[treeId]!;
+      const selector = unsetEvent.selector;
+      // store old state
+      const oldState = JSON.parse(
+        JSON.stringify(tree.nodes[unsetEvent.id]!.state)
+      );
+      let curr = tree.nodes[unsetEvent.id]!.state;
+      for (let i = 0; i < selector.length; i++) {
+        if (i === selector.length - 1) {
+          delete curr[selector[i]!];
+          break;
+        }
+        curr = curr[selector[i]!];
+      }
+      // emit change event
+      forestUpdateSubscribers.forEach((cb) => {
+        cb(
+          { type: "change", id: unsetEvent.id, treeId, oldState },
+          { name, meta }
+        );
+      });
     }
   }
 

@@ -77,13 +77,19 @@ export type HardPatchEvent = {
   selector?: string[];
 } & EventDto;
 
+export type UnsetEvent = {
+  id: string;
+  selector: string[];
+} & EventDto;
+
 export type AnyEvent =
   | CreateEvent
   | PatchEvent
   | DeleteEvent
   | LinkEvent
   | UnlinkEvent
-  | HardPatchEvent;
+  | HardPatchEvent
+  | UnsetEvent;
 
 export type TreeDefReturnType = {
   validateCreate: (event: CreateEvent) => boolean;
