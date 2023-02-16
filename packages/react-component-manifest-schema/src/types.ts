@@ -72,6 +72,7 @@ export type AcceptsChildFunction = (info: {
   childCoordinates: ComponentCoordsWM[];
   loc: { pageX: number; pageY: number };
   props: any;
+  ref: React.RefObject<HTMLElement>;
 }) => number;
 
 export type IoProp = {
@@ -110,5 +111,6 @@ export type ReactComponentManifestSchema = {
     ioProps?: {
       [propName: string]: { [key: string]: IoProp };
     };
+    isRepeating?: boolean;
   };
 };
