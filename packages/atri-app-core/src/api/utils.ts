@@ -212,6 +212,7 @@ export function getComponentIndexInsideParentComponent(
       childCoordinates,
       loc,
       props,
+      ref: componentStoreApi.getComponentRef(parentCompId),
     });
     return computeFactoredIndex(index, siblingsId);
   } else {
