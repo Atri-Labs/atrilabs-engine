@@ -5,6 +5,7 @@ import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useHandleNewChild } from "./hooks/useHandleNewChild";
 import { useFocusComponent } from "../hooks/useFocusComponent";
+import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
@@ -17,6 +18,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
+  useHasComponentRendered({ id: props.id });
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {
