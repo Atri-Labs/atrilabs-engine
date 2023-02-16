@@ -385,8 +385,11 @@ export function createCanvasMachine(id: string) {
                   initial: focused,
                   states: {
                     [focused]: {
-                      entry: (context, event) => {},
-                      exit: () => {
+                      entry: (context, event) => {
+                        callSubscribers("focus", context, event);
+                      },
+                      exit: (context, event) => {
+                        callSubscribers("focusEnd", context, event);
                         console.log("Exited Selected focused State", id);
                       },
                       on: {
