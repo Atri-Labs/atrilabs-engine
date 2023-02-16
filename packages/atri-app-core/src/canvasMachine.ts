@@ -401,6 +401,7 @@ export function createCanvasMachine(id: string) {
                         callSubscribers("focusEnd", context, event);
                         console.log("Exited Selected focused State", id);
                       },
+
                       on: {
                         [BLUR]: {
                           target: unfocused,
