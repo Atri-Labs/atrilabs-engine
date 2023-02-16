@@ -34,6 +34,8 @@ export type ParentComponentRendererProps = { id: string };
 
 export type NormalComponentRendererProps = { id: string };
 
+export type RepeatingComponentRendererProps = { id: string };
+
 export type DecoratorData = { id: string };
 
 export type CanvasZoneEvent = "new_component";
