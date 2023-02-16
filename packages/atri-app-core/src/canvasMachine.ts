@@ -17,6 +17,7 @@ const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
 const MOUSE_DOWN = "MOUSE_DOWN" as const;
+const MOUSE_OVER = "MOUSE_OVER" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
 const BLUR = "BLUR" as const;
@@ -52,6 +53,10 @@ type MOUSE_DOWN_EVENT = {
   type: typeof MOUSE_DOWN;
   event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
+type MOUSE_OVER_EVENT = {
+  type: typeof MOUSE_OVER;
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
+};
 type COMPONENT_CREATED_EVENT = {
   type: typeof COMPONENT_CREATED;
   compId: string;
@@ -76,6 +81,7 @@ type CanvasMachineEvent =
   | MOUSE_MOVE_EVENT
   | MOUSE_UP_EVENT
   | MOUSE_DOWN_EVENT
+  | MOUSE_OVER_EVENT
   | COMPONENT_CREATED_EVENT
   | SCROLL_EVENT
   | BLUR_EVENT;
@@ -95,6 +101,8 @@ const pressed = "pressed" as const;
 const selected = "selected" as const;
 const focused = "focused" as const;
 const unfocused = "unfocused" as const;
+const selectIdle = "selectIdle" as const;
+const hoverWhileSelected = "hoverWhileSelected" as const;
 
 // context
 
@@ -190,7 +198,7 @@ function hoveringOverDifferentComponent(
 
 function selectedDifferentComponent(
   context: CanvasMachineContext,
-  event: MOUSE_DOWN_EVENT
+  event: MOUSE_DOWN_EVENT | MOUSE_OVER_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
@@ -387,6 +395,7 @@ export function createCanvasMachine(id: string) {
                     [focused]: {
                       entry: (context, event) => {
                         callSubscribers("focus", context, event);
+                        console.log("Entered Selected focused State", id);
                       },
                       exit: (context, event) => {
                         callSubscribers("focusEnd", context, event);
@@ -406,6 +415,47 @@ export function createCanvasMachine(id: string) {
                         console.log("Exited Selected unfocused State", id);
                       },
                       type: "final",
+                    },
+                  },
+                },
+                hoverstates: {
+                  initial: selectIdle,
+                  states: {
+                    [selectIdle]: {
+                      entry: () => {
+                        console.log("Entered Selected selectIdle State", id);
+                      },
+                      exit: () => {
+                        console.log("Exited Selected selectIdle State", id);
+                      },
+                      on: {
+                        [MOUSE_OVER]: {
+                          target: hoverWhileSelected,
+                          cond: selectedDifferentComponent,
+                        },
+                      },
+                    },
+                    [hoverWhileSelected]: {
+                      entry: () => {
+                        console.log(
+                          "Entered Selected hoverWhileSelected State",
+                          id
+                        );
+                      },
+                      exit: () => {
+                        console.log(
+                          "Exited Selected hoverWhileSelected State",
+                          id
+                        );
+                      },
+                      on: {
+                        [MOUSE_OVER]: {
+                          target: hoverWhileSelected,
+                          cond: selectedDifferentComponent,
+                        },
+                        [SCROLL]: { target: selectIdle },
+                        [OUTSIDE_CANVAS]: { target: selectIdle },
+                      },
                     },
                   },
                 },
