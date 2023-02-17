@@ -90,7 +90,7 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: "Repeating", props: { name: "Repeating" } },
+  panel: { comp: "CommonIcon", props: { name: "Repeating" } },
   drag: {
     comp: "CommonIcon",
     props: {

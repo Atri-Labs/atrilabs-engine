@@ -6,6 +6,7 @@ import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useHandleNewChild } from "./hooks/useHandleNewChild";
 import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
+import { RepeatingComponentRenderer } from "../RepeatingComponentRenderer/RepeatingComponentRenderer";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
@@ -22,9 +23,14 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {
-        const { acceptsChild } = componentStoreApi.getComponent(childId)!;
+        const { acceptsChild, isRepeating } =
+          componentStoreApi.getComponent(childId)!;
         return acceptsChild ? (
-          <ParentComponentRenderer id={childId} key={childId} />
+          isRepeating ? (
+            <RepeatingComponentRenderer id={childId} key={childId} />
+          ) : (
+            <ParentComponentRenderer id={childId} key={childId} />
+          )
         ) : (
           <NormalComponentRenderer id={childId} key={childId} />
         );

@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 
 const Repeating = forwardRef<
-  HTMLInputElement,
+  HTMLUListElement,
   {
     styles: React.CSSProperties;
     custom: { start: number; end: number };
@@ -10,13 +10,13 @@ const Repeating = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div style={props.styles} ref={ref} className={props.className}>
+    <ul style={{ ...props.styles }} ref={ref} className={props.className}>
       {props.children
         .slice(props.custom.start, props.custom.end)
-        .map((child) => {
-          return child;
+        .map((child, index) => {
+          return <li key={index - props.custom.start}>{child}</li>;
         })}
-    </div>
+    </ul>
   );
 });
 

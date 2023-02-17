@@ -29,12 +29,13 @@ function searchComponentFromManifestRegistry(manifestData: {
 
 function processManifest(manifest: ReactComponentManifestSchema) {
   const acceptsChild = manifest.dev.acceptsChild;
+  const isRepeating = manifest.dev.isRepeating ?? false;
   const callbacks: { [callbackName: string]: any } = {};
   Object.keys(manifest.dev.attachCallbacks).forEach((callbackName) => {
     callbacks[callbackName] = () => {};
   });
   const decorators: React.FC<any>[] = [];
-  return { acceptsChild, callbacks, decorators };
+  return { acceptsChild, callbacks, decorators, isRepeating };
 }
 
 function createComponent(
@@ -49,9 +50,8 @@ function createComponent(
   if (fullManifest) {
     const { id, props, parent } = componentData;
     const { devComponent, component } = fullManifest;
-    const { decorators, acceptsChild, callbacks } = processManifest(
-      fullManifest.manifest
-    );
+    const { decorators, acceptsChild, callbacks, isRepeating } =
+      processManifest(fullManifest.manifest);
     // update component store
     componentStore[id] = {
       id,
@@ -63,6 +63,7 @@ function createComponent(
       acceptsChild,
       callbacks,
       meta: manifestData,
+      isRepeating,
     };
     // update reverse map
     if (parent.id !== CANVAS_ZONE_ROOT_ID) {

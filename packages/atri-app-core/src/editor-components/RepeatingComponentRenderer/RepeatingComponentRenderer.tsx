@@ -1,30 +1,17 @@
-import { canvasApi, componentStoreApi } from "../../api";
-import { CanvasComponent, RepeatingComponentRendererProps } from "../../types";
-import { useMemo, useEffect, useState } from "react";
-import { RepeatingComponentNormalRenderer } from "./childFC/RepeatingComponentNormalRenderer";
-import { RepeatingComponentParentRenderer } from "./childFC/RepeatingComponentParentRenderer";
+import { componentStoreApi } from "../../api";
+import { RepeatingComponentRendererProps } from "../../types";
+import { useState } from "react";
+import { useHandleNewChild } from "../ParentComponentRenderer/hooks/useHandleNewChild";
+import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
+import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
+import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
+import { useAssignComponentId } from "../hooks/useAssignComponentId";
+import { useFocusComponent } from "../hooks/useFocusComponent";
+import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  // create custom data for all children
-  const data = () => {
-    const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
-    const num = end - start;
-    const descs = componentStoreApi.getAllDescendants(props.id);
-    const descsProps = descs.reduce((curr, desc) => {
-      const { props, callbacks, ref, id } =
-        componentStoreApi.getComponent(desc)!;
-      curr[desc] = { props, callbacks, ref, id };
-      return curr;
-    }, {} as { [id: string]: Pick<CanvasComponent, "callbacks" | "props" | "ref" | "id"> });
-    const data = Array.from(Array(num).keys()).map(() => {
-      return descsProps;
-    });
-    // listen for events for all the child here??
-  };
-  // create RepeatingComponentParentRenderer <- This will be the children FC
-  // create RepeatingComponentNormalRenderer <- This will be the children FC
   const {
     comp: Comp,
     props: compProps,
@@ -32,23 +19,37 @@ export function RepeatingComponentRenderer(
     callbacks,
   } = componentStoreApi.getComponent(props.id)!;
 
-  const [topLevelChildId, setTopLevelChild] = useState<string | null>(null);
-  const [topLevelChildAcceptsChild, setTopLevelChildAcceptsChild] = useState<
-    boolean | undefined
-  >(undefined);
-  useEffect(() => {
-    canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
-      const topLevelChildId =
-        componentStoreApi.getComponentChildrenId(props.id)[0] || null;
-      let topLevelChildAcceptsChild: boolean | undefined = false;
-      if (topLevelChildId) {
-        topLevelChildAcceptsChild =
-          componentStoreApi.getComponent(topLevelChildId)?.acceptsChild;
-      }
-      setTopLevelChild(topLevelChildId);
-      setTopLevelChildAcceptsChild(topLevelChildAcceptsChild);
+  const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
+  const [num, setNum] = useState<number>(end - start);
+  const { children } = useHandleNewChild({ id: props.id });
+  useAssignParentMarker({ id: props.id });
+  useAssignComponentId({ id: props.id });
+  useFocusComponent({ id: props.id });
+  useHasComponentRendered({ id: props.id });
+  let childrenNodes: React.ReactNode[] | null = null;
+  if (children.length === 1) {
+    childrenNodes = Array.from(Array(num).keys()).map(() => {
+      const childId = children[0];
+      const { acceptsChild, isRepeating } =
+        componentStoreApi.getComponent(childId)!;
+      return acceptsChild ? (
+        isRepeating ? (
+          <RepeatingComponentRenderer id={childId} key={childId} />
+        ) : (
+          <ParentComponentRenderer id={childId} key={childId} />
+        )
+      ) : (
+        <NormalComponentRenderer id={childId} key={childId} />
+      );
     });
-  }, []);
+  }
 
-  return <Comp {...compProps} ref={ref} {...callbacks}></Comp>;
+  return (
+    <Comp
+      {...compProps}
+      ref={ref}
+      {...callbacks}
+      children={childrenNodes || []}
+    ></Comp>
+  );
 }

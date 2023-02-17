@@ -17,6 +17,7 @@ export type CanvasComponent = {
   acceptsChild: AcceptsChildFunction | undefined;
   callbacks: { [callbackName: string]: any };
   meta: { manifestSchemaId: string; pkg: string; key: string };
+  isRepeating: boolean;
 };
 
 export type CanvasComponentStore = { [compId: string]: CanvasComponent };
