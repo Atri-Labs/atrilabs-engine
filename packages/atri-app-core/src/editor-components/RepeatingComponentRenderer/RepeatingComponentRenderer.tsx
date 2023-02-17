@@ -1,6 +1,7 @@
-import { componentStoreApi } from "../../api";
+import { canvasApi, componentStoreApi } from "../../api";
 import { RepeatingComponentRendererProps } from "../../types";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { RepeatingComponentNormalRenderer } from "./childFC/RepeatingComponentNormalRenderer";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
@@ -21,5 +22,30 @@ export function RepeatingComponentRenderer(
   }, [componentStoreApi.getComponentProps(props.id).custom, props.id]);
   // create RepeatingComponentParentRenderer <- This will be the children FC
   // create RepeatingComponentNormalRenderer <- This will be the children FC
-  return;
+  const {
+    comp: Comp,
+    props: compProps,
+    ref,
+    callbacks,
+  } = componentStoreApi.getComponent(props.id)!;
+  useEffect(() => {
+    canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
+      const topLevelChildId =
+        componentStoreApi.getComponentChildrenId(props.id)[0] ?? null;
+      let topLevelChildAcceptsChild: boolean | undefined = false;
+      if (topLevelChildId) {
+        topLevelChildAcceptsChild =
+          componentStoreApi.getComponent(topLevelChildId)?.acceptsChild;
+      }
+    });
+  }, []);
+
+  return (
+    <Comp
+      {...compProps}
+      ref={ref}
+      {...callbacks}
+      ChildFC={RepeatingComponentNormalRenderer}
+    />
+  );
 }

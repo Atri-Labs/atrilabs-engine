@@ -6,7 +6,7 @@ const Repeating = forwardRef<
     styles: React.CSSProperties;
     custom: { start: number; end: number; data: any[] };
     className?: string;
-    children: React.FC<{ data: any }>;
+    ChildFC: React.FC<{ data: any }>;
   }
 >((props, ref) => {
   return (
@@ -14,7 +14,7 @@ const Repeating = forwardRef<
       {props.custom.data
         .slice(props.custom.start, props.custom.end)
         .map((dataI) => {
-          return <props.children data={dataI} />;
+          return <props.ChildFC data={dataI} />;
         })}
     </div>
   );
