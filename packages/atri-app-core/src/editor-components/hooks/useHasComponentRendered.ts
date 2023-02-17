@@ -1,10 +1,12 @@
 import { DecoratorData } from "../../types";
 import { useEffect, useState } from "react";
+import { canvasMachineInterpreter } from "../../api";
 
 export function useHasComponentRendered(props: DecoratorData) {
-  const [hasComponentRendered, setHasComponentRendered] = useState(false);
   useEffect(() => {
-    setHasComponentRendered(true);
+    canvasMachineInterpreter.send({
+      type: "COMPONENT_RENDERED",
+      compId: props.id,
+    });
   }, [props.id]);
-  return hasComponentRendered;
 }

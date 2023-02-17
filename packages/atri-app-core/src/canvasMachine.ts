@@ -21,6 +21,7 @@ const MOUSE_OVER = "MOUSE_OVER" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
 const BLUR = "BLUR" as const;
+const COMPONENT_RENDERED = "COMPONENT_RENDERED" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -69,6 +70,10 @@ type SCROLL_EVENT = {
 type BLUR_EVENT = {
   type: typeof BLUR;
 };
+type COMPONENT_RENDERED_EVENT = {
+  type: typeof COMPONENT_RENDERED;
+  compId: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -84,7 +89,8 @@ type CanvasMachineEvent =
   | MOUSE_OVER_EVENT
   | COMPONENT_CREATED_EVENT
   | SCROLL_EVENT
-  | BLUR_EVENT;
+  | BLUR_EVENT
+  | COMPONENT_RENDERED_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -118,6 +124,7 @@ type CanvasMachineContext = {
   } | null;
   hovered: string | null;
   selected: string | null;
+  lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
 };
 
 // actions
@@ -163,6 +170,18 @@ function setSelectedComponent(
       context.selected = compId;
     }
   }
+}
+
+function setLastDropped(
+  context: CanvasMachineContext,
+  event: COMPONENT_CREATED_EVENT
+) {
+  context.lastDropped = event.compId;
+}
+
+function handleComponentRendered(context: CanvasMachineContext) {
+  context.selected = context.lastDropped;
+  context.lastDropped = null;
 }
 
 // conds
@@ -211,6 +230,13 @@ function selectedDifferentComponent(
   return false;
 }
 
+function isLastDroppedComponent(
+  context: CanvasMachineContext,
+  event: COMPONENT_RENDERED_EVENT
+) {
+  return context.lastDropped === event.compId;
+}
+
 type Callback = (
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -225,7 +251,8 @@ type SubscribeStates =
   | "hover"
   | "hoverEnd"
   | "focus"
-  | "focusEnd";
+  | "focusEnd"
+  | typeof COMPONENT_RENDERED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -239,6 +266,7 @@ export function createCanvasMachine(id: string) {
     hoverEnd: [],
     focus: [],
     focusEnd: [],
+    COMPONENT_RENDERED: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -287,6 +315,7 @@ export function createCanvasMachine(id: string) {
         mousePosition: null,
         hovered: null,
         selected: null,
+        lastDropped: null,
       },
       states: {
         [initial]: {
@@ -334,11 +363,17 @@ export function createCanvasMachine(id: string) {
                   cond: insideComponent,
                   actions: ["setHoverComponent"],
                 },
+                [COMPONENT_RENDERED]: {
+                  target: selected,
+                  cond: isLastDroppedComponent,
+                  actions: ["handleComponentRendered"],
+                },
               },
             },
             [hover]: {
-              entry: () => {
+              entry: (context, event) => {
                 console.log("Entered Ready Hover State", id);
+                callSubscribers("hover", context, event);
               },
               exit: () => {
                 console.log("Exited Ready Hover State", id);
@@ -378,8 +413,9 @@ export function createCanvasMachine(id: string) {
               entry: () => {
                 console.log("Entered Selected State", id);
               },
-              exit: () => {
+              exit: (context) => {
                 console.log("Exited Selected State", id);
+                context.selected = null;
               },
               on: {
                 [MOUSE_DOWN]: {
@@ -469,7 +505,7 @@ export function createCanvasMachine(id: string) {
               actions: ["setDragData"],
             },
             [COMPONENT_CREATED]: {
-              actions: ["emitComponentCreated"],
+              actions: ["emitComponentCreated", "setLastDropped"],
             },
           },
         },
@@ -535,6 +571,8 @@ export function createCanvasMachine(id: string) {
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
         setHoverComponent,
         setSelectedComponent,
+        setLastDropped,
+        handleComponentRendered,
       },
     }
   );
