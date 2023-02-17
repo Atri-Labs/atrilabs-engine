@@ -1,12 +1,22 @@
-import React, { useRef, forwardRef } from "react";
+import React, { useRef, forwardRef, useState } from "react";
 import Chevron from "./Chevron";
+
+
+export enum ExpandIconPosition {
+  LEFT = "left",
+  RIGHT = "right", 
+}
 
 export type AccordionComponentTypes = {
   title: string;
   description: string;
   open: boolean;
+  disabled?: boolean;
+  showIcon?: boolean;
   onTitleClick: () => void;
   className?: string;
+  arrowIcon?: string;
+  expandIconPosition?:ExpandIconPosition
 };
 
 const AccordionComponent: React.FC<AccordionComponentTypes> = ({
@@ -15,6 +25,10 @@ const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   open,
   onTitleClick,
   className,
+  disabled,
+  showIcon,
+  arrowIcon,
+  expandIconPosition,
 }) => {
   const content = useRef<HTMLDivElement>(null);
 
@@ -36,6 +50,14 @@ const AccordionComponent: React.FC<AccordionComponentTypes> = ({
             border: none;
             outline: none;
             transition: background-color 0.6s ease;
+          }
+
+          .accordion-section .accordion.arrowRight .accordion-title {
+            margin: 0 !important;
+          }
+          .accordion-section .accordion.arrowRight .accordion-icon {
+            order: 1;
+            margin-left: auto;
           }
 
           .accordion:hover,
@@ -68,19 +90,47 @@ const AccordionComponent: React.FC<AccordionComponentTypes> = ({
             font-size: 14px;
             padding: 18px;
           }
+
+          .accordion-section.disabled .accordion{
+            cursor: not-allowed !important;
+          }
+          .accordion-section.disabled .accordion-title,
+          .accordion-section.disabled svg.accordion-icon path{
+            color :rgba(0,0,0,.25);
+            fill :rgba(0,0,0,.25);
+          }
         `}
       </style>
-      <div className={`${className ? className : ""} accordion-section`}>
-        <button
-          className={`accordion ${open ? "active" : ""}`}
+
+      <div
+        className={
+          disabled
+            ? "accordion-section disabled"
+            : `${className ? className : ""} accordion-section`
+        }
+      >
+        <button //arrowRight
+          className={ (expandIconPosition ===ExpandIconPosition.LEFT) ? `accordion ${open ? "active " : ""}` : `accordion ${open ? "active " : ""}arrowRight`}
           onClick={() => {
             onTitleClick();
           }}
         >
-          <Chevron
-            className={`${open ? "accordion-icon rotate" : "accordion-icon"}`}
-            fill={"#777"}
-          />
+          {(showIcon === true || showIcon === undefined) &&
+          arrowIcon === undefined ? (
+            <Chevron
+              className={`${open ? "accordion-icon rotate" : "accordion-icon"}`}
+              fill={"#777"}
+            />
+          ) : (
+            (showIcon === true || showIcon === undefined) && (
+              <img 
+              className="accordion-icon"
+                src={arrowIcon}
+                alt="ArrowIcon"
+                style={{ transform: open ? "" : "rotate(270deg)" }}
+              />
+            )
+          )}
           <p className="accordion-title" style={{ marginLeft: "1rem" }}>
             {title}
           </p>
@@ -99,31 +149,62 @@ const AccordionComponent: React.FC<AccordionComponentTypes> = ({
   );
 };
 
+type ItemDataType = {
+  title: string;
+  description?: string;
+  open?: boolean;
+  disabled?: boolean;
+  showIcon?: boolean;
+};
+
 const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      items: { title: string; description?: string; open?: boolean }[];
+      items: ItemDataType[];
+      collapse?: boolean;
+      arrowIcon?: string;
+      expandIconPosition?:ExpandIconPosition
     };
-    onTitleClick: (open: boolean) => void;
+    onTitleClick: (open: boolean, index: number) => void;
     className?: string;
   }
 >((props, ref) => {
+  const [itemClone, setItemClone] = useState(props.custom.items);
+
+  const onTitleClickHandler = (item: ItemDataType, index: number) => {
+    // if the item is disabled, return
+    if (item.disabled) return;
+
+    const itemsCopy = [...itemClone];
+
+    if (props.custom.collapse) {
+      // if the mode is collapse, so multiple div can be expanded at a time
+      itemsCopy[index].open = !itemsCopy[index].open;
+    } else {
+      itemsCopy.forEach(
+        (_item, _index) => (_item.open = _index === index && !_item.open)
+      );
+    }
+    setItemClone(itemsCopy);
+    props.onTitleClick(itemsCopy[index].open || false, index);
+  };
+
   return (
     <div ref={ref} style={props.styles}>
-      {props.custom.items.map((item, index) => (
+      {itemClone.map((item, index) => (
         <AccordionComponent
           className={props.className}
           key={index}
           title={item.title}
           description={item.description || ""}
-          onTitleClick={() => {
-            const open = item.open || false;
-            item.open = !item.open;
-            props.onTitleClick(open);
-          }}
+          arrowIcon={props.custom.arrowIcon}
+          onTitleClick={() => onTitleClickHandler(item, index)}
           open={item.open || false}
+          disabled={item.disabled}
+          showIcon={item.showIcon}
+          expandIconPosition={props.custom.expandIconPosition}
         />
       ))}
     </div>

@@ -1,7 +1,18 @@
-import React, { forwardRef, useCallback, useMemo, useRef } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 function isStringANumber(value: string) {
   return value.match(/^[0-9]+$/) === null ? false : true;
+}
+
+export enum ThumbVariant {
+  FILLED = "filled",
+  OUTLINED = "outlined", 
 }
 
 const Slider = forwardRef<
@@ -17,80 +28,31 @@ const Slider = forwardRef<
       trackColor?: string;
       thumbColor?: string;
       selectColor?: string;
+      thumbVariant?: ThumbVariant;
     };
     onChange?: (value: number) => void;
     onFinish?: (value: number) => void;
     className?: string;
   }
 >((props, ref) => {
+  const {
+    maxValue = 100,
+    minValue = 0,
+    thickness = "4px",
+    radius = "5px",
+    trackColor = "#CCC",
+    thumbColor = "#91d5ff",
+    selectColor = "#91d5ff",
+    thumbVariant = ThumbVariant.FILLED,
+   } = props.custom;
+
   const trackRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
-
-  const maxValue = useMemo(() => {
-    if (props.custom.maxValue === undefined) {
-      return 100;
-    }
-    return props.custom.maxValue;
-  }, [props.custom]);
-
-  const minValue = useMemo(() => {
-    if (props.custom.minValue === undefined) {
-      return 0;
-    }
-    return props.custom.minValue;
-  }, [props.custom]);
+  const [value, setValue] = useState(props.custom.value || 100);
 
   const valueRange = useMemo(() => {
     return maxValue - minValue;
   }, [minValue, maxValue]);
-
-  const value = useMemo(() => {
-    if (props.custom.value === undefined) {
-      return 50;
-    }
-    return props.custom.value;
-  }, [props.custom]);
-
-  const trackColor = useMemo(() => {
-    if (props.custom.trackColor === undefined) {
-      return "#CCC";
-    }
-    return props.custom.trackColor;
-  }, [props.custom]);
-
-  const thumbColor = useMemo(() => {
-    if (props.custom.thumbColor === undefined) {
-      return "#91d5ff";
-    }
-    return props.custom.thumbColor;
-  }, [props.custom]);
-
-  const selectColor = useMemo(() => {
-    if (props.custom.selectColor === undefined) {
-      return "#91d5ff";
-    }
-    return props.custom.selectColor;
-  }, [props.custom]);
-
-  const thickness = useMemo(() => {
-    if (props.custom.thickness === undefined) {
-      return "4px";
-    }
-    if (isStringANumber(props.custom.thickness)) {
-      return `${parseFloat(props.custom.thickness)}px`;
-    }
-    return props.custom.thickness;
-  }, [props.custom]);
-
-  const radius = useMemo(() => {
-    if (props.custom.radius === undefined) {
-      return "8px";
-    }
-    if (isStringANumber(props.custom.radius)) {
-      return `${parseFloat(props.custom.radius)}px`;
-    }
-    return props.custom.radius;
-  }, [props.custom]);
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -106,13 +68,16 @@ const Slider = forwardRef<
         const onMouseMove = (e: MouseEvent) => {
           if (startPostion) {
             if (e.pageX >= upperLimit) {
+              setValue(maxValue);
               props.onChange?.(maxValue);
             } else if (e.pageX <= lowerLimit) {
+              setValue(minValue);
               props.onChange?.(minValue);
             } else {
               const delta = e.pageX - startPostion.x;
               const finalValue = initialValue + delta * scale;
               if (finalValue <= maxValue && finalValue >= minValue) {
+                setValue(finalValue);
                 props.onChange?.(finalValue);
               }
             }
@@ -134,27 +99,9 @@ const Slider = forwardRef<
     [value, props, maxValue, minValue, valueRange]
   );
 
-  const thumbPosition = useMemo(() => {
-    const thumbRadius = thumbRef.current?.getBoundingClientRect().width || 0;
-    const scale =
-      valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
-    console.log(
-      thumbRadius,
-      scale,
-      valueRange,
-      trackRef.current?.getBoundingClientRect().width || 1
-    );
-    // stop initial back display of image
-    if (value - minValue <= thumbRadius * scale) {
-      console.log("setting 0px", minValue, value);
-      return `0px`;
-    }
-    return `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`;
-  }, [value, minValue, valueRange, radius]);
-
   const onTrackClicked = useCallback(
     (e: React.MouseEvent) => {
-      console.log("onTack");
+      console.log("onTrack");
       const scale =
         valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
       const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
@@ -168,36 +115,23 @@ const Slider = forwardRef<
   return (
     <>
       <style>
-        {`.slider-parent {
-            width: 400px;
-            margin: 20px;
-            position: relative;
-          }
-          
-          .slider-rail {
-            width: 105%;
-            height: 5px;
-            border-radius: 8px;
-            background: #f5f5f5;
-          }
-          .slider-progress {
+        {`
+          .slide-thumb .thumb-value {
+            opacity: 0;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 70%;
-            height: 5px;
-            border-radius: 8px;
-            background-color: #91d5ff;
+            top: -32px;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background: white;
+            border: 1px solid #91d5ff;
+            padding: 3px;
+            border-radius: 5px;
+            user-select: none;
+            transition: all 0.3s;
           }
-          .slider-thumb {
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background-color: white;
-            position: absolute;
-            top: -8px;
-            border: 2px solid #91d5ff;
-            box-shadow: 1px 1px 10px #91d5ff, 0px 0px 20px #91d5ff;
+          .slide-thumb:hover .thumb-value, 
+          .slide-thumb:active .thumb-value {
+            opacity: 1;
           }
           `}
       </style>
@@ -209,6 +143,7 @@ const Slider = forwardRef<
           position: "relative",
           display: "inline-block",
           height: `calc(2 * ${radius})`,
+          marginLeft: "20px",
         }}
       >
         {/** track */}
@@ -221,7 +156,7 @@ const Slider = forwardRef<
             transform: "translate(0px, -50%)",
             // center of thumb should match the starting point of track
             width: `calc(100% - 2 * ${radius})`,
-            left: radius,
+            left: 0,
           }}
           ref={trackRef}
           onClick={onTrackClicked}
@@ -235,29 +170,48 @@ const Slider = forwardRef<
             top: "50%",
             transform: "translate(0px, -50%)",
             // center of thumb should match the starting point of track
-            width: thumbPosition,
-            left: radius,
+            width: `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`,
+            left: 0,
           }}
           onClick={onTrackClicked}
         ></div>
         {/** thumb */}
         <div
+          className="slide-thumb outline"
           ref={thumbRef}
           style={{
             position: "absolute",
-            left: thumbPosition,
+            left: `calc(${((value - minValue) / valueRange) * 100}% - 2 * ${radius})`,
             height: `calc(2 * ${radius})`,
             width: `calc(2 * ${radius})`,
-            backgroundColor: thumbColor,
+            backgroundColor:((thumbVariant === ThumbVariant.OUTLINED) ? '#fff' : thumbColor),
             top: "50%",
             transform: `translate(0px, -50%)`,
             borderRadius: "50%",
+            // Outline :
+            border: `3px solid ${thumbColor}`,
           }}
           onMouseDown={onMouseDown}
-        ></div>
+        >
+          <span className="thumb-value">{Math.round(value)}</span>
+        </div>
       </div>
     </>
   );
 });
 
 export default Slider;
+
+
+// Slider.defaultProps = {
+//   custom: {
+//     value: 50,
+//     maxValue: 100,
+//     minValue: 0,
+//     thickness: "4px",
+//     radius: "8px",
+//     trackColor: "#CCC",
+//     thumbColor: "#91d5ff",
+//     selectColor: "#91d5ff",
+//   },
+// };

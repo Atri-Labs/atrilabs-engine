@@ -31,6 +31,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
         { fieldName: "open", type: "boolean" },
       ],
     },
+    
   },
 };
 
@@ -49,9 +50,6 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           items: [],
-          title: [],
-          description: [],
-          open: [],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
