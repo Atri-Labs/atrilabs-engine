@@ -252,7 +252,9 @@ type SubscribeStates =
   | "hoverEnd"
   | "focus"
   | "focusEnd"
-  | typeof COMPONENT_RENDERED;
+  | typeof COMPONENT_RENDERED
+  | "select"
+  | "selectEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -267,6 +269,8 @@ export function createCanvasMachine(id: string) {
     focus: [],
     focusEnd: [],
     COMPONENT_RENDERED: [],
+    select: [],
+    selectEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -380,7 +384,11 @@ export function createCanvasMachine(id: string) {
               },
             },
             [selected]: {
-              exit: (context) => {
+              entry: (context, event) => {
+                callSubscribers("select", context, event);
+              },
+              exit: (context, event) => {
+                callSubscribers("selectEnd", context, event);
                 context.selected = null;
               },
               on: {
