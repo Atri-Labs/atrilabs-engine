@@ -4,17 +4,17 @@ const Repeating = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { start: number; end: number; data: any[] };
+    custom: { start: number; end: number };
     className?: string;
-    ChildFC: React.FC<{ data: any }>;
+    children: React.ReactNode[];
   }
 >((props, ref) => {
   return (
     <div style={props.styles} ref={ref} className={props.className}>
-      {props.custom.data
+      {props.children
         .slice(props.custom.start, props.custom.end)
-        .map((dataI) => {
-          return <props.ChildFC data={dataI} />;
+        .map((child) => {
+          return child;
         })}
     </div>
   );

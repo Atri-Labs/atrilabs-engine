@@ -1,3 +1,1 @@
-export function RepeatingComponentParentRenderer() {
-  return <></>;
-}
+export function RepeatingComponentParentRenderer(props: { id: string }) {}
