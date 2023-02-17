@@ -109,6 +109,8 @@ const focused = "focused" as const;
 const unfocused = "unfocused" as const;
 const selectIdle = "selectIdle" as const;
 const hoverWhileSelected = "hoverWhileSelected" as const;
+const repositionIdle = "repositionIdle" as const;
+const repositionActive = "repositionActive" as const;
 
 // context
 
@@ -323,12 +325,24 @@ export function createCanvasMachine(id: string) {
       },
       states: {
         [initial]: {
+          entry: (context) => {
+            console.log("Entered Initial State", context);
+          },
+          exit: (context) => {
+            console.log("Exited Initial State", context);
+          },
           on: {
             [IFRAME_DETECTED]: { target: checks_completed },
             [TOP_WINDOW_DETECTED]: { target: noop },
           },
         },
         [checks_completed]: {
+          entry: (context) => {
+            console.log("Entered checks_completed State", context);
+          },
+          exit: (context) => {
+            console.log("Exited checks_completed State", context);
+          },
           on: {
             [WINDOW_LOADED]: { target: ready, actions: ["emitReady"] },
           },
@@ -337,6 +351,12 @@ export function createCanvasMachine(id: string) {
           initial: idle,
           states: {
             [idle]: {
+              entry: (context) => {
+                console.log("Entered Ready Idle State", context);
+              },
+              exit: (context) => {
+                console.log("Exited Ready Idle State", context);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
@@ -353,10 +373,12 @@ export function createCanvasMachine(id: string) {
             [hover]: {
               entry: (context, event) => {
                 callSubscribers("hover", context, event);
+                console.log("Entered Ready Hover State", context);
               },
               exit: (context, event) => {
                 context.hovered = null;
                 callSubscribers("hoverEnd", context, event);
+                console.log("Exited Ready Hover State", context);
               },
               on: {
                 [MOUSE_MOVE]: {
@@ -376,6 +398,12 @@ export function createCanvasMachine(id: string) {
               },
             },
             [pressed]: {
+              entry: (context) => {
+                console.log("Entered Ready Pressed State", context);
+              },
+              exit: (context) => {
+                console.log("Exited Ready Pressed State", context);
+              },
               on: {
                 [MOUSE_UP]: {
                   target: selected,
@@ -390,6 +418,7 @@ export function createCanvasMachine(id: string) {
               exit: (context, event) => {
                 callSubscribers("selectEnd", context, event);
                 context.selected = null;
+                console.log("Exited Ready Selected State", context);
               },
               on: {
                 [MOUSE_DOWN]: {
@@ -405,9 +434,11 @@ export function createCanvasMachine(id: string) {
                     [focused]: {
                       entry: (context, event) => {
                         callSubscribers("focus", context, event);
+                        console.log("Entered focusstates Focused", context);
                       },
                       exit: (context, event) => {
                         callSubscribers("focusEnd", context, event);
+                        console.log("Exited focusstates Focused", context);
                       },
                       on: {
                         [BLUR]: {
@@ -424,6 +455,18 @@ export function createCanvasMachine(id: string) {
                   initial: selectIdle,
                   states: {
                     [selectIdle]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered hoverstates selectIdle State",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited hoverstates selectIdle State",
+                          context
+                        );
+                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -432,6 +475,18 @@ export function createCanvasMachine(id: string) {
                       },
                     },
                     [hoverWhileSelected]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered hoverstates hoverWhileSelected State",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited hoverstates hoverWhileSelected State",
+                          context
+                        );
+                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -439,6 +494,39 @@ export function createCanvasMachine(id: string) {
                         },
                         [SCROLL]: { target: selectIdle },
                         [OUTSIDE_CANVAS]: { target: selectIdle },
+                      },
+                    },
+                  },
+                },
+                repositionstates: {
+                  initial: repositionIdle,
+                  states: {
+                    [repositionIdle]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered repositionstates repositionIdle",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited repositionstates repositionIdle",
+                          repositionIdle
+                        );
+                      },
+                    },
+                    [repositionActive]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered repositionstates repositionActive",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited repositionstates repositionActive",
+                          repositionIdle
+                        );
                       },
                     },
                   },
@@ -460,6 +548,12 @@ export function createCanvasMachine(id: string) {
           initial: drag_in_progress_idle,
           states: {
             [drag_in_progress_idle]: {
+              entry: (context) => {
+                console.log("Entered drag_in_progress_idle State", context);
+              },
+              exit: (context) => {
+                console.log("Exited drag_in_progress_idle State", context);
+              },
               on: {
                 [DRAG_STOPPED]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: {
@@ -469,6 +563,12 @@ export function createCanvasMachine(id: string) {
               },
             },
             [drag_in_progress_active]: {
+              entry: (context) => {
+                console.log("Entered drag_in_progress_active State", context);
+              },
+              exit: (context) => {
+                console.log("Exited drag_in_progress_active State", context);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   actions: ["setMousePosition", "emitMoveWhileDrag"],
