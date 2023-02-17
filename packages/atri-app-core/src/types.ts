@@ -1,3 +1,5 @@
+import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
+
 export type DragData = {
   type: "component";
   data: { pkg: string; key: string; manifestSchema: string; id: string };
@@ -12,7 +14,7 @@ export type CanvasComponent = {
   props: any;
   parent: { id: string; index: number; canvasZoneId: string };
   decorators: React.FC<any>[];
-  acceptsChild: boolean;
+  acceptsChild: AcceptsChildFunction | undefined;
   callbacks: { [callbackName: string]: any };
   meta: { manifestSchemaId: string; pkg: string; key: string };
 };

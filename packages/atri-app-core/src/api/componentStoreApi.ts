@@ -28,14 +28,12 @@ function searchComponentFromManifestRegistry(manifestData: {
 }
 
 function processManifest(manifest: ReactComponentManifestSchema) {
-  const acceptsChild = typeof manifest.dev.acceptsChild === "function";
+  const acceptsChild = manifest.dev.acceptsChild;
   const callbacks: { [callbackName: string]: any } = {};
   Object.keys(manifest.dev.attachCallbacks).forEach((callbackName) => {
     callbacks[callbackName] = () => {};
   });
   const decorators: React.FC<any>[] = [];
-  if (acceptsChild) {
-  }
   return { acceptsChild, callbacks, decorators };
 }
 
