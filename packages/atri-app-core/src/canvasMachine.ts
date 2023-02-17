@@ -366,7 +366,7 @@ export function createCanvasMachine(id: string) {
                 [COMPONENT_RENDERED]: {
                   target: selected,
                   cond: isLastDroppedComponent,
-                  actions: ["handleComponentRendered"],
+                  actions: ["handleComponentRendered", "emitComponentRendered"],
                 },
               },
             },
@@ -375,8 +375,10 @@ export function createCanvasMachine(id: string) {
                 console.log("Entered Ready Hover State", id);
                 callSubscribers("hover", context, event);
               },
-              exit: () => {
+              exit: (context, event) => {
                 console.log("Exited Ready Hover State", id);
+                context.hovered = null;
+                callSubscribers("hoverEnd", context, event);
               },
               on: {
                 [MOUSE_MOVE]: {
@@ -569,6 +571,7 @@ export function createCanvasMachine(id: string) {
         emitInsideCanvas: callSubscribersFromAction("INSIDE_CANVAS"),
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
+        emitComponentRendered: callSubscribersFromAction("COMPONENT_RENDERED"),
         setHoverComponent,
         setSelectedComponent,
         setLastDropped,
