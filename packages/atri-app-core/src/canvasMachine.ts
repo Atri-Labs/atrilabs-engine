@@ -319,44 +319,20 @@ export function createCanvasMachine(id: string) {
       },
       states: {
         [initial]: {
-          entry: () => {
-            console.log("Entered Initial State", id);
-          },
-          exit: () => {
-            console.log("Exited Initial State", id);
-          },
           on: {
             [IFRAME_DETECTED]: { target: checks_completed },
             [TOP_WINDOW_DETECTED]: { target: noop },
           },
         },
         [checks_completed]: {
-          entry: () => {
-            console.log("Entered Checks Completed State", id);
-          },
-          exit: () => {
-            console.log("Exited Checks Completed State", id);
-          },
           on: {
             [WINDOW_LOADED]: { target: ready, actions: ["emitReady"] },
           },
         },
         [ready]: {
-          entry: () => {
-            console.log("Entered Ready State", id);
-          },
-          exit: () => {
-            console.log("Exited Ready State", id);
-          },
           initial: idle,
           states: {
             [idle]: {
-              entry: () => {
-                console.log("Entered Ready Idle State", id);
-              },
-              exit: () => {
-                console.log("Exited Ready Idle State", id);
-              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
@@ -372,11 +348,9 @@ export function createCanvasMachine(id: string) {
             },
             [hover]: {
               entry: (context, event) => {
-                console.log("Entered Ready Hover State", id);
                 callSubscribers("hover", context, event);
               },
               exit: (context, event) => {
-                console.log("Exited Ready Hover State", id);
                 context.hovered = null;
                 callSubscribers("hoverEnd", context, event);
               },
@@ -398,12 +372,6 @@ export function createCanvasMachine(id: string) {
               },
             },
             [pressed]: {
-              entry: () => {
-                console.log("Entered Pressed State", id);
-              },
-              exit: () => {
-                console.log("Exited Pressed State", id);
-              },
               on: {
                 [MOUSE_UP]: {
                   target: selected,
@@ -412,11 +380,7 @@ export function createCanvasMachine(id: string) {
               },
             },
             [selected]: {
-              entry: () => {
-                console.log("Entered Selected State", id);
-              },
               exit: (context) => {
-                console.log("Exited Selected State", id);
                 context.selected = null;
               },
               on: {
@@ -433,13 +397,10 @@ export function createCanvasMachine(id: string) {
                     [focused]: {
                       entry: (context, event) => {
                         callSubscribers("focus", context, event);
-                        console.log("Entered Selected focused State", id);
                       },
                       exit: (context, event) => {
                         callSubscribers("focusEnd", context, event);
-                        console.log("Exited Selected focused State", id);
                       },
-
                       on: {
                         [BLUR]: {
                           target: unfocused,
@@ -447,12 +408,6 @@ export function createCanvasMachine(id: string) {
                       },
                     },
                     [unfocused]: {
-                      entry: () => {
-                        console.log("Entered Selected unfocused State", id);
-                      },
-                      exit: () => {
-                        console.log("Exited Selected unfocused State", id);
-                      },
                       type: "final",
                     },
                   },
@@ -461,12 +416,6 @@ export function createCanvasMachine(id: string) {
                   initial: selectIdle,
                   states: {
                     [selectIdle]: {
-                      entry: () => {
-                        console.log("Entered Selected selectIdle State", id);
-                      },
-                      exit: () => {
-                        console.log("Exited Selected selectIdle State", id);
-                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -475,18 +424,6 @@ export function createCanvasMachine(id: string) {
                       },
                     },
                     [hoverWhileSelected]: {
-                      entry: () => {
-                        console.log(
-                          "Entered Selected hoverWhileSelected State",
-                          id
-                        );
-                      },
-                      exit: () => {
-                        console.log(
-                          "Exited Selected hoverWhileSelected State",
-                          id
-                        );
-                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -512,21 +449,9 @@ export function createCanvasMachine(id: string) {
           },
         },
         [drag_in_progress]: {
-          entry: () => {
-            console.log("Entered Drag In Progress State", id);
-          },
-          exit: () => {
-            console.log("Exited Drag In Progress State", id);
-          },
           initial: drag_in_progress_idle,
           states: {
             [drag_in_progress_idle]: {
-              entry: () => {
-                console.log("Entered Drag In Progress Idle State", id);
-              },
-              exit: () => {
-                console.log("Exited Drag In Progress Idle State", id);
-              },
               on: {
                 [DRAG_STOPPED]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: {
@@ -536,12 +461,6 @@ export function createCanvasMachine(id: string) {
               },
             },
             [drag_in_progress_active]: {
-              entry: () => {
-                console.log("Entered Drag In Progress Active State", id);
-              },
-              exit: () => {
-                console.log("Exited Drag In Progress Active State", id);
-              },
               on: {
                 [MOUSE_MOVE]: {
                   actions: ["setMousePosition", "emitMoveWhileDrag"],

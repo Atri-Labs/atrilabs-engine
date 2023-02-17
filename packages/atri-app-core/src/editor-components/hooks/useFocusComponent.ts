@@ -11,7 +11,6 @@ export function useFocusComponent(props: DecoratorData) {
         if (ref.current) {
           ref.current.tabIndex = 0;
           ref.current.focus();
-          console.log("Running ENter");
         }
       }
     });
