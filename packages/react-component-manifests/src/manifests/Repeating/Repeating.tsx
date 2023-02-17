@@ -1,22 +1,22 @@
 import React, { forwardRef } from "react";
 
 const Repeating = forwardRef<
-  HTMLInputElement,
+  HTMLUListElement,
   {
     styles: React.CSSProperties;
-    custom: { start: number; end: number; data: any[] };
+    custom: { start: number; end: number };
     className?: string;
-    ChildFC: React.FC<{ data: any }>;
+    children: React.ReactNode[];
   }
 >((props, ref) => {
   return (
-    <div style={props.styles} ref={ref} className={props.className}>
-      {props.custom.data
+    <ul style={{ ...props.styles }} ref={ref} className={props.className}>
+      {props.children
         .slice(props.custom.start, props.custom.end)
-        .map((dataI) => {
-          return <props.ChildFC data={dataI} />;
+        .map((child, index) => {
+          return <li key={index - props.custom.start}>{child}</li>;
         })}
-    </div>
+    </ul>
   );
 });
 

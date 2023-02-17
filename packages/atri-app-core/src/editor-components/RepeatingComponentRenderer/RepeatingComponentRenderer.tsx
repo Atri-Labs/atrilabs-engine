@@ -1,51 +1,55 @@
-import { canvasApi, componentStoreApi } from "../../api";
+import { componentStoreApi } from "../../api";
 import { RepeatingComponentRendererProps } from "../../types";
-import { useMemo, useEffect } from "react";
-import { RepeatingComponentNormalRenderer } from "./childFC/RepeatingComponentNormalRenderer";
+import { useState } from "react";
+import { useHandleNewChild } from "../ParentComponentRenderer/hooks/useHandleNewChild";
+import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
+import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
+import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
+import { useAssignComponentId } from "../hooks/useAssignComponentId";
+import { useFocusComponent } from "../hooks/useFocusComponent";
+import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  // create custom data for all children
-  const data = useMemo(() => {
-    const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
-    const num = end - start;
-    const descs = componentStoreApi.getAllDescendants(props.id);
-    const descsProps = descs.map((desc) => {
-      const { props, callbacks, ref, id } =
-        componentStoreApi.getComponent(desc)!;
-      return { props, callbacks, ref, id };
-    });
-    return Array.from(Array(num).keys()).map(() => {
-      return descsProps;
-    });
-  }, [componentStoreApi.getComponentProps(props.id).custom, props.id]);
-  // create RepeatingComponentParentRenderer <- This will be the children FC
-  // create RepeatingComponentNormalRenderer <- This will be the children FC
   const {
     comp: Comp,
     props: compProps,
     ref,
     callbacks,
   } = componentStoreApi.getComponent(props.id)!;
-  useEffect(() => {
-    canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
-      const topLevelChildId =
-        componentStoreApi.getComponentChildrenId(props.id)[0] ?? null;
-      let topLevelChildAcceptsChild: boolean | undefined = false;
-      if (topLevelChildId) {
-        topLevelChildAcceptsChild =
-          componentStoreApi.getComponent(topLevelChildId)?.acceptsChild;
-      }
+
+  const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
+  const [num, setNum] = useState<number>(end - start);
+  const { children } = useHandleNewChild({ id: props.id });
+  useAssignParentMarker({ id: props.id });
+  useAssignComponentId({ id: props.id });
+  useFocusComponent({ id: props.id });
+  useHasComponentRendered({ id: props.id });
+  let childrenNodes: React.ReactNode[] | null = null;
+  if (children.length === 1) {
+    childrenNodes = Array.from(Array(num).keys()).map(() => {
+      const childId = children[0];
+      const { acceptsChild, isRepeating } =
+        componentStoreApi.getComponent(childId)!;
+      return acceptsChild ? (
+        isRepeating ? (
+          <RepeatingComponentRenderer id={childId} key={childId} />
+        ) : (
+          <ParentComponentRenderer id={childId} key={childId} />
+        )
+      ) : (
+        <NormalComponentRenderer id={childId} key={childId} />
+      );
     });
-  }, []);
+  }
 
   return (
     <Comp
       {...compProps}
       ref={ref}
       {...callbacks}
-      ChildFC={RepeatingComponentNormalRenderer}
-    />
+      children={childrenNodes || []}
+    ></Comp>
   );
 }

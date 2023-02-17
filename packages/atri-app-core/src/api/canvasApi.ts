@@ -80,6 +80,12 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     );
   }
 });
+subscribeCanvasMachine("select", (context) => {
+  window.parent?.postMessage({ type: "select", id: context.selected }, "*");
+});
+subscribeCanvasMachine("selectEnd", (context) => {
+  window.parent?.postMessage({ type: "selectEnd", id: context.selected }, "*");
+});
 
 const componentEventSubscribers: {
   [key in ComponentEvent]: { [compId: string]: (() => void)[] };

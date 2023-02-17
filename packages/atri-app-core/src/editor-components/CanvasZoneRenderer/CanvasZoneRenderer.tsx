@@ -5,6 +5,7 @@ import { useCanvasZoneEventSubscriber } from "./hooks/useCanvasZoneEventSubscrib
 import { componentStoreApi } from "../../api";
 import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
 import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
+import { RepeatingComponentRenderer } from "../RepeatingComponentRenderer/RepeatingComponentRenderer";
 
 export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
   const { childCompIds } = useCanvasZoneEventSubscriber({
@@ -22,9 +23,14 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
   return (
     <div style={styles} data-atri-canvas-id={props.canvasZoneId}>
       {childCompIds.map((childCompId) => {
-        const { acceptsChild } = componentStoreApi.getComponent(childCompId)!;
+        const { acceptsChild, isRepeating } =
+          componentStoreApi.getComponent(childCompId)!;
         return acceptsChild ? (
-          <ParentComponentRenderer id={childCompId} key={childCompId} />
+          isRepeating ? (
+            <RepeatingComponentRenderer id={childCompId} key={childCompId} />
+          ) : (
+            <ParentComponentRenderer id={childCompId} key={childCompId} />
+          )
         ) : (
           <NormalComponentRenderer id={childCompId} key={childCompId} />
         );
