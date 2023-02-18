@@ -5,6 +5,7 @@ import path from "path";
 test("generate python classes", () => {
   const classFile = createComponentClassFile({
     compKey: "Button",
+    nodePkg: "@atrilabs/react-component-manifests",
     callbacks: ["onClick"],
     customProps: ["text"],
   });

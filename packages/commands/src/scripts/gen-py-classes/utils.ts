@@ -30,12 +30,18 @@ function createCustomClass(compKey: string, props: string[]) {
       .join(",")}\n\t\t\t}`;
 }
 
-function createComponentClass(compKey: string, callbacks: string[]) {
+function createComponentClass(
+  compKey: string,
+  nodePkg: string,
+  callbacks: string[]
+) {
   return `
 class ${compKey}(AtriComponent):
 	def __init__(self, state: Union[Any, None]):
 		super().__init__(state)
 		self._setter_access_tracker = {}
+		self.compKey = "${compKey}"
+		self.nodePkg = "${nodePkg}"
 		${callbacks.map((callback) => {
       return `self.${callback} = False`;
     })}
@@ -61,11 +67,16 @@ class ${compKey}(AtriComponent):
 
 export function createComponentClassFile(options: {
   compKey: string;
+  nodePkg: string;
   callbacks: string[];
   customProps: string[];
 }) {
   return `${imports}\n\n${createCustomClass(
     options.compKey,
     options.customProps
-  )}\n\n${createComponentClass(options.compKey, options.callbacks)}`;
+  )}\n\n${createComponentClass(
+    options.compKey,
+    options.nodePkg,
+    options.callbacks
+  )}`;
 }

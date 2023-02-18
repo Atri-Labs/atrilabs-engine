@@ -1,5 +1,5 @@
 from typing import Union, Any
-from Button import Button
+from atri_components.Button import Button
 
 class Page:
 	def __init__(self, state: Union[Any, None]):

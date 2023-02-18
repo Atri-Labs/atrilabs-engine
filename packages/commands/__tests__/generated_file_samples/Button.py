@@ -27,6 +27,8 @@ class Button(AtriComponent):
 	def __init__(self, state: Union[Any, None]):
 		super().__init__(state)
 		self._setter_access_tracker = {}
+		self.compKey = "Button"
+		self.nodePkg = "@atrilabs/react-component-manifests"
 		self.onClick = False
 		self.custom = state["custom"] if state != None and "custom" in state else None
 		self._setter_access_tracker = {}

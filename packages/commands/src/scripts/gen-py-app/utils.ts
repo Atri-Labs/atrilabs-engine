@@ -1,13 +1,12 @@
 export function generatePage(
-  compAlias: { alias: string; compKey: string; compPkg: string }[]
+  compAlias: { alias: string; compKey: string; pythonPkg: string }[]
 ) {
   const importSets = new Set<string>();
-  compAlias.forEach(({ compKey, compPkg }) => {
-    importSets.add(`from ${compPkg} import ${compKey}`);
+  compAlias.forEach(({ compKey, pythonPkg }) => {
+    importSets.add(`from ${pythonPkg} import ${compKey}`);
   });
 
-  return `
-from typing import Union, Any
+  return `from typing import Union, Any
 ${Array.from(importSets).join("\n")}
 
 class Page:
@@ -29,8 +28,7 @@ class Page:
 		setattr(comp, callback_name, True)
 
 	${compAlias.map(({ alias, compKey }) => {
-    return `
-	@property
+    return `@property
 	def ${alias}(self):
 		self._getter_access_tracker["${alias}"] = {}
 		return self._${alias}
@@ -39,7 +37,6 @@ class Page:
 		self._setter_access_tracker["${alias}"] = {}
 		self._${alias} = ${compKey}(new_state)`;
   })}
-
 
 	def _to_json_fields(self):
 		return {
