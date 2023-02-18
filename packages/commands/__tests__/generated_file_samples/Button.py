@@ -1,5 +1,5 @@
 from typing import Any, Union
-from AtriComponent import AtriComponent
+from atri_core.AtriComponent import AtriComponent
 
 class ButtonCustomClass:
 	def __init__(self, state: Union[Any, None]):
@@ -16,10 +16,10 @@ class ButtonCustomClass:
 	def text(self, state):
 		self._setter_access_tracker["text"] = {}
 		self._text = state
-		
+
 	def _to_json_fields(self):
 		return {
-			"text": self._text,
+			"text": self._text
 			}
 
 

@@ -12,29 +12,27 @@ function createCustomClass(compKey: string, props: string[]) {
 		self._getter_access_tracker = {}
 
 	${props.map((prop) => {
-    return `
-			@property
-			def ${prop}(self):
-				self._getter_access_tracker["${prop}"] = {}
-				return self._${prop}
-			@text.setter
-			def text(self, state):
-				self._setter_access_tracker["${prop}"] = {}
-				self._${prop} = state`;
+    return `@property
+	def ${prop}(self):
+		self._getter_access_tracker["${prop}"] = {}
+		return self._${prop}
+	@text.setter
+	def text(self, state):
+		self._setter_access_tracker["${prop}"] = {}
+		self._${prop} = state`;
   })}
-	
+
 	def _to_json_fields(self):
-		return {${props
+		return {\n${props
       .map((prop) => {
-        return `"${prop}": self._${prop}`;
+        return `\t\t\t"${prop}": self._${prop}`;
       })
-      .join(",")}}
-`;
+      .join(",")}\n\t\t\t}`;
 }
 
 function createComponentClass(compKey: string, callbacks: string[]) {
   return `
-	class ${compKey}(AtriComponent):
+class ${compKey}(AtriComponent):
 	def __init__(self, state: Union[Any, None]):
 		super().__init__(state)
 		self._setter_access_tracker = {}
@@ -58,8 +56,7 @@ function createComponentClass(compKey: string, callbacks: string[]) {
 		return {
 			"styles": self._styles,
 			"custom": self._custom,
-			}	
-`;
+			}`;
 }
 
 export function createComponentClassFile(options: {

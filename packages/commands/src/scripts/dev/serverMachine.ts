@@ -1,7 +1,10 @@
 import { createMachine, interpret } from "xstate";
 import { NextFunction, Request, Response } from "express";
 import { getPageHtml, isPageRequest, matchUrlPath } from "./utils";
-import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import {
+  IRToUnixFilePath,
+  routeObjectPathToIR,
+} from "@atrilabs/atri-app-core/src/utils";
 import { Compiler } from "webpack";
 import { intersection } from "lodash";
 import { ManifestIR } from "@atrilabs/core";
@@ -357,6 +360,7 @@ export function createServerMachine(id: string) {
     {
       id: id,
       initial: processing,
+      predictableActionArguments: true,
       context: {
         libServer: "processing",
         appServer: "processing",

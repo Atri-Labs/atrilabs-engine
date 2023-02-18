@@ -5,6 +5,7 @@ import {
   createServerMachine,
   handlingRequests,
   LIB_SERVER_DONE,
+  MANIFEST_OBJECTS_UPDATED,
   NETWORK_REQUEST,
   processing,
   ROUTE_OBJECTS_UPDATED,
@@ -35,6 +36,7 @@ test("server machine goes to serving on all dev servers done", (done) => {
   interpreter.start();
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
+  interpreter.send({ type: MANIFEST_OBJECTS_UPDATED, manifests: [] });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
 });
 
@@ -74,6 +76,7 @@ test("machine goes from processing to handlingRequests if requests.length > 0", 
   interpreter.send({ type: NETWORK_REQUEST });
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
+  interpreter.send({ type: MANIFEST_OBJECTS_UPDATED, manifests: [] });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
 });
 
@@ -117,6 +120,7 @@ test("requests from reservoir are swapped", (done) => {
   interpreter.send({ type: NETWORK_REQUEST, input: "initial_input" });
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
+  interpreter.send({ type: MANIFEST_OBJECTS_UPDATED, manifests: [] });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
   setTimeout(() => {
     interpreter.send({ type: NETWORK_REQUEST, input: "expect_this_input" });
@@ -172,6 +176,7 @@ test("invalidate leads to processing from hanldingRequests", (done) => {
   interpreter.send({ type: NETWORK_REQUEST, input: "initial_input" });
   interpreter.send({ type: LIB_SERVER_DONE });
   interpreter.send({ type: APP_SERVER_DONE });
+  interpreter.send({ type: MANIFEST_OBJECTS_UPDATED, manifests: [] });
   interpreter.send({ type: ROUTE_OBJECTS_UPDATED });
   setTimeout(() => {
     interpreter.send({ type: APP_SERVER_INVALIDATED });
