@@ -45,8 +45,8 @@ Atri framework is a full-stack web development framework for Python developers. 
 
 <div align="center">
 
-  [![Watch the video](https://img.youtube.com/vi/w2NYAlIyM8Y/0.jpg)](https://youtu.be/w2NYAlIyM8Y)
-  
+  [![Watch the video](https://img.youtube.com/vi/YokMeI23_iw/0.jpg)](https://youtu.be/YokMeI23_iw)
+    
 </div>
 
 If you like our project, please support us by giving us **a star ⭐!**
