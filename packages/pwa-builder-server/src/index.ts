@@ -13,6 +13,7 @@ import {
   getPagesInfo,
   getProjectInfo,
   loadEventsForPage,
+  resolvePages,
   saveEventsForPage,
 } from "./utils";
 
@@ -42,14 +43,14 @@ io.on("connection", (socket) => {
   socket.on("fetchEvents", async (urlPath, cb) => {
     const pageInfo = await getMatchedPageInfo(urlPath);
     if (pageInfo) {
-      const events = loadEventsForPage(pageInfo.unixFilepath);
+      const events = loadEventsForPage(resolvePages(pageInfo.unixFilepath));
       cb(JSON.parse(events.toString()));
     }
   });
   socket.on("saveEvent", async (urlPath, event, cb) => {
     const pageInfo = await getMatchedPageInfo(urlPath);
     if (pageInfo) {
-      saveEventsForPage(pageInfo.unixFilepath, event);
+      saveEventsForPage(resolvePages(pageInfo.unixFilepath), event);
       cb(true);
     } else {
       cb(false);

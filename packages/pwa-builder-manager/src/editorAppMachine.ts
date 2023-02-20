@@ -239,6 +239,7 @@ export function createEditorAppMachine(id: string) {
   type SUBSCRIPTION_STATES =
     | "afterbootup"
     | "before_app_load"
+    | "after_app_load"
     | typeof ready
     | "drag_started"
     | "drag_in_progress"
@@ -256,6 +257,7 @@ export function createEditorAppMachine(id: string) {
   } = {
     afterbootup: [],
     before_app_load: [],
+    after_app_load: [],
     ready: [],
     drag_started: [],
     drag_in_progress: [],
@@ -406,6 +408,22 @@ export function createEditorAppMachine(id: string) {
           entry: (context, event) => {
             context.iframeLoadStatus = "progress";
             callSubscribers("before_app_load", context, event);
+          },
+          exit: (context, event) => {
+            /**
+             * The xstate machine fires exit callback before
+             * the action attached to a transition.
+             */
+            if (event.type === "CANVAS_IFRAME_LOADED") {
+              setIframeStatusToDone(context, event);
+            }
+            if (event.type === "PAGE_EVENTS_FETCHED") {
+              setPageEvents(context, event);
+            }
+            if (event.type === "NAVIGATE_PAGE") {
+              setCurrentUrlPath(context, event);
+            }
+            callSubscribers("after_app_load", context, event);
           },
         },
         [ready]: {

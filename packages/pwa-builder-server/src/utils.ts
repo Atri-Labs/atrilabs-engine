@@ -37,8 +37,13 @@ export async function getPagesInfo() {
   });
 }
 
+export function resolvePages(pathWithLeadingSlash: string) {
+  const withoutSlash = pathWithLeadingSlash.replace(/^(\/)/, "");
+  return path.resolve("pages", withoutSlash);
+}
+
 function getEventsJSONFilename(unixFilepath: string) {
-  return unixFilepath.replace(/(\.js)|(\.jsx)|(\.ts)|(\.tsx)/, ".json");
+  return unixFilepath.replace(/((\.js)|(\.ts))x?/, ".events.json");
 }
 
 function matchUrlPath(routeObjects: { path: string }[], originalUrl: string) {
