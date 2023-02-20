@@ -7,7 +7,14 @@ import type {
   InterServerEvents,
   SocketData,
 } from "@atrilabs/core";
-import { getAppInfo, getPagesInfo, getProjectInfo } from "./utils";
+import {
+  getAppInfo,
+  getMatchedPageInfo,
+  getPagesInfo,
+  getProjectInfo,
+  loadEventsForPage,
+  saveEventsForPage,
+} from "./utils";
 
 const app = express();
 const server = http.createServer(app);
@@ -32,9 +39,21 @@ io.on("connection", (socket) => {
     const pagesInfo = await getPagesInfo();
     cb(pagesInfo);
   });
-  socket.on("fetchEvents", (urlPath, cb) => {
-    // TODO: call loadEventsForPage
-    cb([]);
+  socket.on("fetchEvents", async (urlPath, cb) => {
+    const pageInfo = await getMatchedPageInfo(urlPath);
+    if (pageInfo) {
+      const events = loadEventsForPage(pageInfo.unixFilepath);
+      cb(JSON.parse(events.toString()));
+    }
+  });
+  socket.on("saveEvent", async (urlPath, event, cb) => {
+    const pageInfo = await getMatchedPageInfo(urlPath);
+    if (pageInfo) {
+      saveEventsForPage(pageInfo.unixFilepath, event);
+      cb(true);
+    } else {
+      cb(false);
+    }
   });
 });
 

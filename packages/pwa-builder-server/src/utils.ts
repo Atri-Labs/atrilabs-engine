@@ -5,6 +5,8 @@ import {
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
 } from "@atrilabs/atri-app-core";
+import { matchRoutes } from "react-router-dom";
+import { AnyEvent } from "@atrilabs/forest";
 
 export function getProjectInfo() {
   const pkgJSON = JSON.parse(fs.readFileSync("package.json").toString());
@@ -39,10 +41,39 @@ function getEventsJSONFilename(unixFilepath: string) {
   return unixFilepath.replace(/(\.js)|(\.jsx)|(\.ts)|(\.tsx)/, ".json");
 }
 
+function matchUrlPath(routeObjects: { path: string }[], originalUrl: string) {
+  return matchRoutes(routeObjects, originalUrl);
+}
+
+export async function getMatchedPageInfo(urlPath: string) {
+  const pagesInfo = await getPagesInfo();
+  const routeObjects = pagesInfo.map(({ routeObjectPath }) => {
+    return { path: routeObjectPath };
+  });
+  const matched = matchUrlPath(routeObjects, urlPath);
+  if (matched && matched[0]) {
+    const foundIndex = routeObjects.findIndex(
+      (curr) => curr === matched[0].route
+    );
+    return pagesInfo[foundIndex];
+  }
+}
+
 export function loadEventsForPage(unixFilepath: string) {
   const filename = getEventsJSONFilename(unixFilepath);
   if (fs.existsSync(filename)) {
-    return fs.readFileSync(unixFilepath);
+    return fs.readFileSync(filename);
   }
-  return Buffer.from(JSON.stringify({}));
+  return Buffer.from(JSON.stringify([]));
+}
+
+export function saveEventsForPage(unixFilepath: string, event: AnyEvent) {
+  const filename = getEventsJSONFilename(unixFilepath);
+  if (fs.existsSync(filename)) {
+    const parsed = JSON.parse(fs.readFileSync(filename).toString());
+    parsed.push(event);
+    fs.writeFileSync(filename, JSON.stringify(parsed, null, 2));
+  } else {
+    fs.writeFileSync(filename, JSON.stringify([event], null, 2));
+  }
 }
