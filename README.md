@@ -11,6 +11,7 @@
   <a href="https://www.youtube.com/channel/UC1uR2Q5x_8olWS_Y4PdK1Bw">
   <img src="https://img.shields.io/youtube/channel/views/UC1uR2Q5x_8olWS_Y4PdK1Bw?label=YouTube&style=social" alt="Watch on YouTube">
  </a>
+ <a href="https://www.ycombinator.com/companies/atri-labs"><img src="https://img.shields.io/website?color=%23f26522&down_message=Y%20Combinator&label=Backed&logo=ycombinator&style=flat-square&up_message=Y%20Combinator&url=https%3A%2F%2Fwww.ycombinator.com"></a>
   <h3 align="center">
     <a href="https://atrilabs.com">Website</a>
     <span> | </span>
