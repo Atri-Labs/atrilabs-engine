@@ -190,6 +190,7 @@ function changeComponentLoc(
       const canvasZoneId = canvasZone?.getAttribute("data-atri-canvas-id");
       context.newParent = parentCompId;
       context.newCanvasZone = canvasZoneId!;
+      context.mousePosition = event.event;
     }
   }
 }
@@ -197,6 +198,7 @@ function changeComponentLoc(
 function setRepositionDataToNull(context: CanvasMachineContext) {
   context.newParent = null;
   context.newCanvasZone = null;
+  context.mousePosition = null;
 }
 
 function setLastDropped(
