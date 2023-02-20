@@ -5,7 +5,7 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "src/manifest.config.js",
+  "main": "./src/manifest.config.js",
   "directories": {
     "lib": "src"
   },
@@ -19,11 +19,15 @@
     "type": "git",
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
+  "scripts": {
+    "build": "gen-py-classes -n ../../node_modules"
+  },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
     "@atrilabs/app-design-forest": "^0.0.90",
+    "@atrilabs/commands": "^0.0.90",
     "@atrilabs/component-icon-manifest-schema": "^0.0.90",
     "@atrilabs/design-system": "^0.0.90",
     "@atrilabs/layer-types": "^0.0.90",
