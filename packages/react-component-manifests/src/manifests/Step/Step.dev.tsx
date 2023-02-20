@@ -21,7 +21,7 @@ const DevStep = forwardRef<
 
   const steps = useMemo(() => {
     if (props.custom.steps.length === 0)
-      return [{ title: "Title1", description: "Description" }];
+      return [{ title: "Title1", description: "Description" },{ title: "Title2", description: "Description" },{ title: "Title3", description: "Description" }];
     return props.custom.steps;
   }, [props.custom.steps]);
 
@@ -63,10 +63,14 @@ const DevStep = forwardRef<
           width: 40px;
           display: flex;
           color: #8f9598;
-          border: 1px solid #8f9598;
+          border: 2px solid #8f9598;
           font-size: 16px;
           align-items: center;
           justify-content: center;
+        }
+        .step-block:hover .step-icon-notreached {
+          color: #336699; 
+          border: 2px solid #336699;
         }
         .step-details {
           display: flex;
@@ -79,7 +83,10 @@ const DevStep = forwardRef<
           flex-direction: column;
           justify-content: flex-start;
           padding: 15px;
-          color: #8f9598;
+          color: #8f9598;   
+        }
+        .step-block:hover .step-details-notreached {
+          color: #336699;   
         }
         .progress-holder {
           height: 100%;
@@ -114,7 +121,6 @@ const DevStep = forwardRef<
           height: 40px;
           border-radius: 50%;
         }
-
         .step-icon-done-stem {
           position: absolute;
           width: 1px;
@@ -123,7 +129,6 @@ const DevStep = forwardRef<
           left: 24px;
           top: 8px;
         }
-
         .step-icon-done-kick {
           position: absolute;
           width: 10px;
@@ -178,7 +183,7 @@ const DevStep = forwardRef<
                 </div>
               </div>
             ) : props.custom.current === i + 1 ? (
-              <div style={{ display: "flex" }}>
+              <div className="step-block" style={{ display: "flex" }}>
                 <div className="icon-holder">
                   <div
                     className="step-icon"
@@ -193,7 +198,7 @@ const DevStep = forwardRef<
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", width: "80%" }}>
+              <div className="step-block"  style={{ display: "flex", width: "80%" }}>
                 <div className="icon-holder">
                   <div className="step-icon-notreached">{i + 1}</div>
                 </div>

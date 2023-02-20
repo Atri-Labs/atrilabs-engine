@@ -1,32 +1,49 @@
-import React, { useState, useEffect, forwardRef, useCallback } from "react";
+import React from "react";
+import { useState, useEffect, forwardRef, useCallback } from "react";
+
+export enum TransitionEffect {
+  SCROLLX = "scrollx",
+  FADE = "fade",
+}
+
+export enum ScrollingOption {
+  AUTOMATIC = "automatic",
+  MANUAL = "manual",
+}
 
 export type CarouselItemTypes = {
   children: string;
-  width: string;
-  height: string;
-  backgroundImage: string;
+  width?: string;
+  opacity?: string;
+  height?: string;
+  effect?: TransitionEffect;
+  backgroundImage?: string;
 };
 
 export type CarouseWrapperTypes = {
   children: any;
-  startTile: number;
-  isCircle: boolean;
-  indicatorPosition: string;
+  startTile?: number;
+  isCircle?: boolean;
+  indicatorPosition?: string;
+  scrollingOption?: ScrollingOption;
 };
 
 export const CarouselItem: React.FC<CarouselItemTypes> = ({
   children,
   width,
   height,
+  effect,
+  opacity,
   backgroundImage,
 }) => {
   return (
     <div
       style={{
         width: width,
+        opacity: effect === TransitionEffect.FADE ? opacity : "",
         backgroundImage: `url(
           ${backgroundImage}
-        )`,
+          )`,
         backgroundSize: "cover",
         display: "inline-flex",
         alignItems: "center",
@@ -34,6 +51,8 @@ export const CarouselItem: React.FC<CarouselItemTypes> = ({
         height: height,
         backgroundColor: "#364d79",
         color: "#fff",
+        transition:
+          effect === TransitionEffect.FADE ? "opacity 0.3s ease-in" : "none",
       }}
     >
       {children}
@@ -46,8 +65,11 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
   startTile,
   isCircle,
   indicatorPosition,
+  scrollingOption,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(startTile - 1);
+  const [activeIndex, setActiveIndex] = useState(
+    (startTile && startTile > 0) ? startTile - 1 : 0
+  );
   const [paused, setPaused] = useState(false);
 
   const updateIndex = (newIndex: number) => {
@@ -58,8 +80,9 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
     }
     setActiveIndex(newIndex);
   };
-
+console.log("activeIndex",activeIndex)
   useEffect(() => {
+    if (scrollingOption === ScrollingOption.MANUAL) return;
     const interval = setInterval(() => {
       if (!paused) {
         updateIndex(activeIndex + 1);
@@ -83,11 +106,18 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
         style={{
           transform: `translateX(-${activeIndex * 100}%)`,
           whiteSpace: "nowrap",
-          transition: "transform 0.3s",
+          height: "100%",
         }}
       >
-        {React.Children.map(children, (child) => {
-          return React.cloneElement(child, { width: "100%", height: "100%" });
+        {React.Children.map(children, (child, index) => {
+          return React.cloneElement(child, {
+            width: "100%",
+            height: "100%",
+            opacity: `${activeIndex === index ? 1 : 0}`,
+            className: `${
+              activeIndex === index ? "carousel-active-slide" : ""
+            }`,
+          });
         })}
       </div>
       {!isCircle && (
@@ -138,26 +168,28 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
                     ? {
                         margin: "5px",
                         border: "none",
-                        width: "30px",
+                        width: "40px",
                         position: "relative",
                         zIndex: "1",
-                        height: "1px",
+                        height: "3px",
                         transition: "width 0.3s ease-in",
+                        cursor: "pointer",
+                        borderRadius: "1px",
                       }
                     : {
                         margin: "5px",
                         border: "none",
-                        width: "40px",
+                        width: "20px",
                         position: "relative",
                         zIndex: "1",
-                        height: "1px",
+                        height: "3px",
                         transition: "width 0.3s ease-in",
-                        color: "#fff",
+                        backgroundColor: "#687FAB",
+                        cursor: "pointer",
+                        borderRadius: "1px",
                       }
                 }
-                onClick={() => {
-                  updateIndex(index);
-                }}
+                onClick={() => updateIndex(index)}
               ></button>
             );
           })}
@@ -174,25 +206,27 @@ export const CarouselWrapper: React.FC<CarouseWrapperTypes> = ({
                         margin: "5px",
                         border: "none",
                         width: "12px",
-                        marginTop: "-15px",
+                        marginTop: "-20px",
                         position: "relative",
                         zIndex: "1",
                         height: "12px",
                         transition: "width 0.3s ease-in",
                         borderRadius: "50%",
                         backgroundColor: "#222",
+                        cursor: "pointer",
                       }
                     : {
                         margin: "5px",
                         border: "none",
                         width: "12px",
-                        marginTop: "-15px",
+                        marginTop: "-20px",
                         position: "relative",
                         zIndex: "1",
                         height: "12px",
                         transition: "width 0.3s ease-in",
                         borderRadius: "50%",
                         backgroundColor: "#fff",
+                        cursor: "pointer",
                       }
                 }
                 onClick={() => {
@@ -238,6 +272,7 @@ const Carousel = forwardRef<
         startTile={props.custom.startTile}
         isCircle={props.custom.isIndicatorCircle}
         indicatorPosition={props.custom.indicatorPosition}
+      //  scrollingOption={ScrollingOption.MANUAL}
       >
         {props.custom.items.map((item, index) => (
           <CarouselItem
@@ -245,6 +280,7 @@ const Carousel = forwardRef<
             height="100%"
             key={index}
             backgroundImage={item.image || ""}
+            effect={TransitionEffect.FADE}
           >
             {item.text ? item.text : "Sample Text"}
           </CarouselItem>
@@ -253,5 +289,4 @@ const Carousel = forwardRef<
     </div>
   );
 });
-
 export default Carousel;

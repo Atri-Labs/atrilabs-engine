@@ -14,7 +14,7 @@ const Step = forwardRef<
   }
 >((props, ref) => {
   const onClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: React.MouseEvent) => {  
       props.onClick({ pageX: e.pageX, pageY: e.pageY });
     },
     [props]
@@ -142,7 +142,7 @@ const Step = forwardRef<
             style={{ width: `${100 / props.custom.steps.length}%` }}
           >
             {props.custom.current > i + 1 ? (
-              <div>
+              <div >
                 <div className="icon-holder">
                   <span className="step-icon-done">
                     <div
@@ -151,7 +151,7 @@ const Step = forwardRef<
                         borderStyle: "solid",
                         borderColor: `${props.custom.color}`,
                       }}
-                      className="step-icon-done-circle"
+                      className="step-icon-done-circle" 
                     ></div>
                     <div
                       style={{

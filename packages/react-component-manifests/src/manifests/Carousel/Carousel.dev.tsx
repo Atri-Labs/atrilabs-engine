@@ -1,5 +1,7 @@
-import { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, useCallback, useMemo } from "react";
 import { CarouselItem, CarouselWrapper } from "./Carousel";
+import { TransitionEffect } from "./Carousel";
+import { ScrollingOption } from "./Carousel";
 
 export const DevCarousel = forwardRef<
   HTMLDivElement,
@@ -17,7 +19,12 @@ export const DevCarousel = forwardRef<
 >((props, ref) => {
   const items = useMemo(() => {
     if (props.custom.items.length === 0)
-      return [{ text: "Sample Text", image: "" }];
+      return [
+        { text: "1", image: "" },
+        { text: "2", image: "" },
+        { text: "3", image: "" },
+        { text: "4", image: "" },
+      ];
     return props.custom.items;
   }, [props.custom.items]);
 
@@ -38,6 +45,7 @@ export const DevCarousel = forwardRef<
         startTile={props.custom.startTile}
         isCircle={props.custom.isIndicatorCircle}
         indicatorPosition={props.custom.indicatorPosition}
+        scrollingOption ={ScrollingOption.MANUAL}
       >
         {items.map((item, index) => (
           <CarouselItem
@@ -45,6 +53,7 @@ export const DevCarousel = forwardRef<
             height="100%"
             key={index}
             backgroundImage={item.image || ""}
+            effect= {TransitionEffect.FADE}
           >
             {item.text ? item.text : "Sample Text"}
           </CarouselItem>

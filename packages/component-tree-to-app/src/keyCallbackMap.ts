@@ -182,4 +182,5 @@ export const keyCallbackMap: {
       actions: [{ type: "do_nothing" }],
     },
   },
+  Tabs: {},
 };

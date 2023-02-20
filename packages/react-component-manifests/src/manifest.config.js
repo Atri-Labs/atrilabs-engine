@@ -169,5 +169,9 @@ module.exports = {
       modulePath: "./src/manifests/Cascader/Cascader.tsx",
       exportedVarName: "Cascader",
     },
+    Tabs: {
+      modulePath: "./src/manifests/Tabs/Tabs.tsx",
+      exportedVarName: "Tabs",
+    },
   },
 };
