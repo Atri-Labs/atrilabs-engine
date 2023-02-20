@@ -179,7 +179,7 @@ function setSelectedComponent(
 
 function changeComponentLoc(
   context: CanvasMachineContext,
-  event: MOUSE_UP_EVENT
+  event: MOUSE_MOVE_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
@@ -192,6 +192,11 @@ function changeComponentLoc(
       context.newCanvasZone = canvasZoneId!;
     }
   }
+}
+
+function setRepositionDataToNull(context: CanvasMachineContext) {
+  context.newParent = null;
+  context.newCanvasZone = null;
 }
 
 function setLastDropped(
@@ -259,7 +264,7 @@ function isLastDroppedComponent(
   return context.lastDropped === event.compId;
 }
 
-function selectedNotNull(context: CanvasMachineContext, event: MOUSE_UP_EVENT) {
+function selectedNotNull(context: CanvasMachineContext) {
   return context.selected !== null;
 }
 
@@ -567,11 +572,15 @@ export function createCanvasMachine(id: string) {
                       on: {
                         [MOUSE_UP]: {
                           target: repositionIdle,
-                          cond: selectedNotNull,
                           actions: [
-                            "changeComponentLoc",
                             "emitRepositionEnded",
+                            "setRepositionDataToNull",
                           ],
+                        },
+                        [MOUSE_MOVE]: {
+                          target: repositionActive,
+                          cond: selectedNotNull,
+                          actions: ["changeComponentLoc"],
                         },
                       },
                     },
@@ -652,6 +661,7 @@ export function createCanvasMachine(id: string) {
         setLastDropped,
         handleComponentRendered,
         changeComponentLoc,
+        setRepositionDataToNull,
       },
     }
   );
