@@ -101,7 +101,6 @@ const Slider = forwardRef<
 
   const onTrackClicked = useCallback(
     (e: React.MouseEvent) => {
-      console.log("onTrack");
       const scale =
         valueRange / (trackRef.current?.getBoundingClientRect().width || 1);
       const lowerLimit = trackRef.current?.getBoundingClientRect().left || 0;
@@ -201,17 +200,3 @@ const Slider = forwardRef<
 });
 
 export default Slider;
-
-
-// Slider.defaultProps = {
-//   custom: {
-//     value: 50,
-//     maxValue: 100,
-//     minValue: 0,
-//     thickness: "4px",
-//     radius: "8px",
-//     trackColor: "#CCC",
-//     thumbColor: "#91d5ff",
-//     selectColor: "#91d5ff",
-//   },
-// };

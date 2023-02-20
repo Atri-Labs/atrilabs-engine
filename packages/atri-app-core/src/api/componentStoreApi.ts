@@ -28,15 +28,14 @@ function searchComponentFromManifestRegistry(manifestData: {
 }
 
 function processManifest(manifest: ReactComponentManifestSchema) {
-  const acceptsChild = typeof manifest.dev.acceptsChild === "function";
+  const acceptsChild = manifest.dev.acceptsChild;
+  const isRepeating = manifest.dev.isRepeating ?? false;
   const callbacks: { [callbackName: string]: any } = {};
   Object.keys(manifest.dev.attachCallbacks).forEach((callbackName) => {
     callbacks[callbackName] = () => {};
   });
   const decorators: React.FC<any>[] = [];
-  if (acceptsChild) {
-  }
-  return { acceptsChild, callbacks, decorators };
+  return { acceptsChild, callbacks, decorators, isRepeating };
 }
 
 function createComponent(
@@ -51,9 +50,8 @@ function createComponent(
   if (fullManifest) {
     const { id, props, parent } = componentData;
     const { devComponent, component } = fullManifest;
-    const { decorators, acceptsChild, callbacks } = processManifest(
-      fullManifest.manifest
-    );
+    const { decorators, acceptsChild, callbacks, isRepeating } =
+      processManifest(fullManifest.manifest);
     // update component store
     componentStore[id] = {
       id,
@@ -65,6 +63,7 @@ function createComponent(
       acceptsChild,
       callbacks,
       meta: manifestData,
+      isRepeating,
     };
     // update reverse map
     if (parent.id !== CANVAS_ZONE_ROOT_ID) {
@@ -129,6 +128,20 @@ function getComponentProps(compId: string) {
   return { ...componentStore[compId].props };
 }
 
+function _getAllDescendants(compId: string) {
+  const descendants: string[] = [];
+  const childrenId = componentReverseMap[compId] || [];
+  descendants.push(...childrenId);
+  for (let i = 0; i < childrenId.length; i++) {
+    descendants.concat(_getAllDescendants(childrenId[i]));
+  }
+  return descendants;
+}
+
+function getAllDescendants(compId: string) {
+  return _getAllDescendants(compId);
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -138,4 +151,5 @@ export const componentStoreApi = {
   getCanvasZoneComponent,
   getComponentRef,
   getComponentProps,
+  getAllDescendants,
 };

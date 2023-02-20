@@ -1,3 +1,5 @@
+import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
+
 export type DragData = {
   type: "component";
   data: { pkg: string; key: string; manifestSchema: string; id: string };
@@ -12,9 +14,10 @@ export type CanvasComponent = {
   props: any;
   parent: { id: string; index: number; canvasZoneId: string };
   decorators: React.FC<any>[];
-  acceptsChild: boolean;
+  acceptsChild: AcceptsChildFunction | undefined;
   callbacks: { [callbackName: string]: any };
   meta: { manifestSchemaId: string; pkg: string; key: string };
+  isRepeating: boolean;
 };
 
 export type CanvasComponentStore = { [compId: string]: CanvasComponent };
@@ -33,6 +36,8 @@ export type CanvasZoneRendererProps = {
 export type ParentComponentRendererProps = { id: string };
 
 export type NormalComponentRendererProps = { id: string };
+
+export type RepeatingComponentRendererProps = { id: string };
 
 export type DecoratorData = { id: string };
 

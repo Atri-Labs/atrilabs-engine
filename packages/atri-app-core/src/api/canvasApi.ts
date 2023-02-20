@@ -80,6 +80,12 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     );
   }
 });
+subscribeCanvasMachine("select", (context) => {
+  window.parent?.postMessage({ type: "select", id: context.selected }, "*");
+});
+subscribeCanvasMachine("selectEnd", (context) => {
+  window.parent?.postMessage({ type: "selectEnd", id: context.selected }, "*");
+});
 
 const componentEventSubscribers: {
   [key in ComponentEvent]: { [compId: string]: (() => void)[] };
@@ -218,9 +224,39 @@ if (typeof window !== "undefined") {
     },
     true
   );
+  window.addEventListener(
+    "mousedown",
+    (ev) => {
+      canvasMachineInterpreter.send({
+        type: "MOUSE_DOWN",
+        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
+      });
+    },
+    true
+  );
+  window.addEventListener(
+    "mouseover",
+    (ev) => {
+      canvasMachineInterpreter.send({
+        type: "MOUSE_OVER",
+        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
+      });
+    },
+    true
+  );
   window.addEventListener("scroll", () => {
     canvasMachineInterpreter.send({ type: "SCROLL" });
   });
+  window.addEventListener(
+    "blur",
+    () => {
+      canvasMachineInterpreter.send({
+        type: "BLUR",
+      });
+    },
+    true
+  );
+
   if (window.location !== window.parent.location) {
     canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
   } else {

@@ -16,8 +16,12 @@ const INSIDE_CANVAS = "INSIDE_CANVAS" as const;
 const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
+const MOUSE_DOWN = "MOUSE_DOWN" as const;
+const MOUSE_OVER = "MOUSE_OVER" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
+const BLUR = "BLUR" as const;
+const COMPONENT_RENDERED = "COMPONENT_RENDERED" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -46,6 +50,14 @@ type MOUSE_UP_EVENT = {
   type: typeof MOUSE_UP;
   event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
+type MOUSE_DOWN_EVENT = {
+  type: typeof MOUSE_DOWN;
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
+};
+type MOUSE_OVER_EVENT = {
+  type: typeof MOUSE_OVER;
+  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
+};
 type COMPONENT_CREATED_EVENT = {
   type: typeof COMPONENT_CREATED;
   compId: string;
@@ -54,6 +66,13 @@ type COMPONENT_CREATED_EVENT = {
 };
 type SCROLL_EVENT = {
   type: typeof SCROLL;
+};
+type BLUR_EVENT = {
+  type: typeof BLUR;
+};
+type COMPONENT_RENDERED_EVENT = {
+  type: typeof COMPONENT_RENDERED;
+  compId: string;
 };
 
 type CanvasMachineEvent =
@@ -66,8 +85,12 @@ type CanvasMachineEvent =
   | OUTSIDE_CANVAS_EVENT
   | MOUSE_MOVE_EVENT
   | MOUSE_UP_EVENT
+  | MOUSE_DOWN_EVENT
+  | MOUSE_OVER_EVENT
   | COMPONENT_CREATED_EVENT
-  | SCROLL_EVENT;
+  | SCROLL_EVENT
+  | BLUR_EVENT
+  | COMPONENT_RENDERED_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -80,6 +103,12 @@ const drag_in_progress_active = "drag_in_progress_active" as const;
 // inside ready
 const idle = "idle" as const;
 const hover = "hover" as const;
+const pressed = "pressed" as const;
+const selected = "selected" as const;
+const focused = "focused" as const;
+const unfocused = "unfocused" as const;
+const selectIdle = "selectIdle" as const;
+const hoverWhileSelected = "hoverWhileSelected" as const;
 
 // context
 
@@ -94,6 +123,8 @@ type CanvasMachineContext = {
     target: MouseEvent["target"];
   } | null;
   hovered: string | null;
+  selected: string | null;
+  lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
 };
 
 // actions
@@ -108,7 +139,7 @@ function setDragData(
 
 function setMousePosition(
   context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT | MOUSE_UP_EVENT
+  event: MOUSE_MOVE_EVENT | MOUSE_UP_EVENT | MOUSE_DOWN_EVENT
 ) {
   context.mousePosition = event.event;
 }
@@ -127,11 +158,37 @@ function setHoverComponent(
   }
 }
 
+function setSelectedComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_DOWN_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      context.selected = compId;
+    }
+  }
+}
+
+function setLastDropped(
+  context: CanvasMachineContext,
+  event: COMPONENT_CREATED_EVENT
+) {
+  context.lastDropped = event.compId;
+}
+
+function handleComponentRendered(context: CanvasMachineContext) {
+  context.selected = context.lastDropped;
+  context.lastDropped = null;
+}
+
 // conds
 
 function insideComponent(
   _context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT
+  event: MOUSE_MOVE_EVENT | MOUSE_DOWN_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
@@ -158,6 +215,28 @@ function hoveringOverDifferentComponent(
   return false;
 }
 
+function selectedDifferentComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_DOWN_EVENT | MOUSE_OVER_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      return compId !== context.selected;
+    }
+  }
+  return false;
+}
+
+function isLastDroppedComponent(
+  context: CanvasMachineContext,
+  event: COMPONENT_RENDERED_EVENT
+) {
+  return context.lastDropped === event.compId;
+}
+
 type Callback = (
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -170,7 +249,12 @@ type SubscribeStates =
   | typeof OUTSIDE_CANVAS
   | typeof COMPONENT_CREATED
   | "hover"
-  | "hoverEnd";
+  | "hoverEnd"
+  | "focus"
+  | "focusEnd"
+  | typeof COMPONENT_RENDERED
+  | "select"
+  | "selectEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -182,6 +266,11 @@ export function createCanvasMachine(id: string) {
     [COMPONENT_CREATED]: [],
     hover: [],
     hoverEnd: [],
+    focus: [],
+    focusEnd: [],
+    COMPONENT_RENDERED: [],
+    select: [],
+    selectEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -192,6 +281,7 @@ export function createCanvasMachine(id: string) {
       }
     };
   }
+
   function callSubscribers(
     state: SubscribeStates,
     context: CanvasMachineContext,
@@ -215,6 +305,7 @@ export function createCanvasMachine(id: string) {
       callSubscribers(state, context, event);
     };
   }
+
   const canvasMachine = createMachine<CanvasMachineContext, CanvasMachineEvent>(
     {
       id,
@@ -227,6 +318,8 @@ export function createCanvasMachine(id: string) {
         dragData: null,
         mousePosition: null,
         hovered: null,
+        selected: null,
+        lastDropped: null,
       },
       states: {
         [initial]: {
@@ -250,14 +343,29 @@ export function createCanvasMachine(id: string) {
                   cond: insideComponent,
                   actions: ["setHoverComponent"],
                 },
+                [COMPONENT_RENDERED]: {
+                  target: selected,
+                  cond: isLastDroppedComponent,
+                  actions: ["handleComponentRendered", "emitComponentRendered"],
+                },
               },
             },
             [hover]: {
+              entry: (context, event) => {
+                callSubscribers("hover", context, event);
+              },
+              exit: (context, event) => {
+                context.hovered = null;
+                callSubscribers("hoverEnd", context, event);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
                   cond: hoveringOverDifferentComponent,
                   actions: ["setHoverComponent"],
+                },
+                [MOUSE_DOWN]: {
+                  target: pressed,
                 },
                 [SCROLL]: {
                   target: idle,
@@ -266,12 +374,75 @@ export function createCanvasMachine(id: string) {
                   target: idle,
                 },
               },
+            },
+            [pressed]: {
+              on: {
+                [MOUSE_UP]: {
+                  target: selected,
+                  actions: ["setSelectedComponent"],
+                },
+              },
+            },
+            [selected]: {
               entry: (context, event) => {
-                callSubscribers("hover", context, event);
+                callSubscribers("select", context, event);
               },
               exit: (context, event) => {
-                context.hovered = null;
-                callSubscribers("hoverEnd", context, event);
+                callSubscribers("selectEnd", context, event);
+                context.selected = null;
+              },
+              on: {
+                [MOUSE_DOWN]: {
+                  target: pressed,
+                  cond: selectedDifferentComponent,
+                },
+              },
+              type: "parallel",
+              states: {
+                focusstates: {
+                  initial: focused,
+                  states: {
+                    [focused]: {
+                      entry: (context, event) => {
+                        callSubscribers("focus", context, event);
+                      },
+                      exit: (context, event) => {
+                        callSubscribers("focusEnd", context, event);
+                      },
+                      on: {
+                        [BLUR]: {
+                          target: unfocused,
+                        },
+                      },
+                    },
+                    [unfocused]: {
+                      type: "final",
+                    },
+                  },
+                },
+                hoverstates: {
+                  initial: selectIdle,
+                  states: {
+                    [selectIdle]: {
+                      on: {
+                        [MOUSE_OVER]: {
+                          target: hoverWhileSelected,
+                          cond: selectedDifferentComponent,
+                        },
+                      },
+                    },
+                    [hoverWhileSelected]: {
+                      on: {
+                        [MOUSE_OVER]: {
+                          target: hoverWhileSelected,
+                          cond: selectedDifferentComponent,
+                        },
+                        [SCROLL]: { target: selectIdle },
+                        [OUTSIDE_CANVAS]: { target: selectIdle },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -281,7 +452,7 @@ export function createCanvasMachine(id: string) {
               actions: ["setDragData"],
             },
             [COMPONENT_CREATED]: {
-              actions: ["emitComponentCreated"],
+              actions: ["emitComponentCreated", "setLastDropped"],
             },
           },
         },
@@ -327,7 +498,11 @@ export function createCanvasMachine(id: string) {
         emitInsideCanvas: callSubscribersFromAction("INSIDE_CANVAS"),
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
+        emitComponentRendered: callSubscribersFromAction("COMPONENT_RENDERED"),
         setHoverComponent,
+        setSelectedComponent,
+        setLastDropped,
+        handleComponentRendered,
       },
     }
   );
