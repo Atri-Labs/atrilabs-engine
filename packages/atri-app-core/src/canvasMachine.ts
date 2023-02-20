@@ -127,6 +127,7 @@ type CanvasMachineContext = {
   hovered: string | null;
   selected: string | null;
   lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
+  newParent: string | null; // Only used for repositioning
 };
 
 // actions
@@ -175,15 +176,15 @@ function setSelectedComponent(
 }
 
 function changeComponentLoc(
-  _context: CanvasMachineContext,
+  context: CanvasMachineContext,
   event: MOUSE_UP_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-parent]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      console.log("State: changeComponentLoc", compId);
+    const parentComp = (target as any).closest("[data-atri-parent]");
+    if (parentComp !== null) {
+      const parentCompId = parentComp.getAttribute("data-atri-comp-id");
+      context.newParent = parentCompId;
     }
   }
 }
@@ -340,6 +341,7 @@ export function createCanvasMachine(id: string) {
         hovered: null,
         selected: null,
         lastDropped: null,
+        newParent: null,
       },
       states: {
         [initial]: {
