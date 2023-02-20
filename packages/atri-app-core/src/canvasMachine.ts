@@ -174,6 +174,20 @@ function setSelectedComponent(
   }
 }
 
+function changeComponentLoc(
+  _context: CanvasMachineContext,
+  event: MOUSE_UP_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-parent]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      console.log("State: changeComponentLoc", compId);
+    }
+  }
+}
+
 function setLastDropped(
   context: CanvasMachineContext,
   event: COMPONENT_CREATED_EVENT
@@ -237,6 +251,10 @@ function isLastDroppedComponent(
   event: COMPONENT_RENDERED_EVENT
 ) {
   return context.lastDropped === event.compId;
+}
+
+function selectedNotNull(context: CanvasMachineContext, event: MOUSE_UP_EVENT) {
+  return context.selected !== null;
 }
 
 type Callback = (
@@ -511,8 +529,13 @@ export function createCanvasMachine(id: string) {
                       exit: (context) => {
                         console.log(
                           "Exited repositionstates repositionIdle",
-                          repositionIdle
+                          context
                         );
+                      },
+                      on: {
+                        [MOUSE_DOWN]: {
+                          target: repositionActive,
+                        },
                       },
                     },
                     [repositionActive]: {
@@ -525,8 +548,15 @@ export function createCanvasMachine(id: string) {
                       exit: (context) => {
                         console.log(
                           "Exited repositionstates repositionActive",
-                          repositionIdle
+                          context
                         );
+                      },
+                      on: {
+                        [MOUSE_UP]: {
+                          target: repositionIdle,
+                          cond: selectedNotNull,
+                          actions: ["changeComponentLoc"],
+                        },
                       },
                     },
                   },
@@ -603,6 +633,7 @@ export function createCanvasMachine(id: string) {
         setSelectedComponent,
         setLastDropped,
         handleComponentRendered,
+        changeComponentLoc,
       },
     }
   );
