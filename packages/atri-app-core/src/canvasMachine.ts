@@ -127,7 +127,9 @@ type CanvasMachineContext = {
   hovered: string | null;
   selected: string | null;
   lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
-  newParent: string | null; // Only used for repositioning
+  // Only used for repositioning
+  newParent: string | null;
+  newCanvasZone: string | null;
 };
 
 // actions
@@ -181,10 +183,13 @@ function changeComponentLoc(
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const parentComp = (target as any).closest("[data-atri-parent]");
+    const parentComp = (target as HTMLElement).closest("[data-atri-parent]");
+    const canvasZone = (target as HTMLElement).closest("[data-atri-canvas-id]");
     if (parentComp !== null) {
       const parentCompId = parentComp.getAttribute("data-atri-comp-id");
+      const canvasZoneId = canvasZone?.getAttribute("data-atri-canvas-id");
       context.newParent = parentCompId;
+      context.newCanvasZone = canvasZoneId!;
     }
   }
 }
@@ -275,7 +280,9 @@ type SubscribeStates =
   | "focusEnd"
   | typeof COMPONENT_RENDERED
   | "select"
-  | "selectEnd";
+  | "selectEnd"
+  | "reposition"
+  | "repositionEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -292,6 +299,8 @@ export function createCanvasMachine(id: string) {
     COMPONENT_RENDERED: [],
     select: [],
     selectEnd: [],
+    reposition: [],
+    repositionEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -342,6 +351,7 @@ export function createCanvasMachine(id: string) {
         selected: null,
         lastDropped: null,
         newParent: null,
+        newCanvasZone: null,
       },
       states: {
         [initial]: {
@@ -537,6 +547,7 @@ export function createCanvasMachine(id: string) {
                       on: {
                         [MOUSE_DOWN]: {
                           target: repositionActive,
+                          actions: ["emitRepositionStarted"],
                         },
                       },
                     },
@@ -557,7 +568,10 @@ export function createCanvasMachine(id: string) {
                         [MOUSE_UP]: {
                           target: repositionIdle,
                           cond: selectedNotNull,
-                          actions: ["changeComponentLoc"],
+                          actions: [
+                            "changeComponentLoc",
+                            "emitRepositionEnded",
+                          ],
                         },
                       },
                     },
@@ -631,6 +645,8 @@ export function createCanvasMachine(id: string) {
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
         emitComponentRendered: callSubscribersFromAction("COMPONENT_RENDERED"),
+        emitRepositionStarted: callSubscribersFromAction("reposition"),
+        emitRepositionEnded: callSubscribersFromAction("repositionEnd"),
         setHoverComponent,
         setSelectedComponent,
         setLastDropped,
