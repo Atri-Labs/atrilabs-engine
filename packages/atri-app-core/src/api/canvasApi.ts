@@ -6,6 +6,24 @@ import {
   getComponentIndexInsideCanvasZone,
   getComponentIndexInsideParentComponent,
 } from "./utils";
+import type { DewireUpdate, RewireUpdate } from "@atrilabs/forest";
+
+type ComponentPayload = {
+  id: string;
+  props: {
+    [key: string]: any;
+  };
+  parent: {
+    id: string;
+    index: number;
+    canvasZoneId: string;
+  };
+  acceptsChild: boolean;
+  callbacks: {
+    [key: string]: any[];
+  };
+  meta: { key: string; pkg: string; manifestSchemaId: string };
+};
 
 canvasMachineInterpreter.start();
 
@@ -161,27 +179,21 @@ if (typeof window !== "undefined") {
       });
     }
     if (ev.data?.type === "CREATE_COMPONENT") {
-      const payload = ev.data.payload as {
-        id: string;
-        props: {
-          [key: string]: any;
-        };
-        parent: {
-          id: string;
-          index: number;
-          canvasZoneId: string;
-        };
-        acceptsChild: boolean;
-        callbacks: {
-          [key: string]: any[];
-        };
-        meta: { key: string; pkg: string; manifestSchemaId: string };
-      };
+      const payload = ev.data.payload as ComponentPayload;
       componentStoreApi.createComponent(payload.meta, {
         id: payload.id,
         props: payload.props,
         parent: payload.parent,
       });
+    }
+    if (ev.data?.type === "UPDATE_PROPS") {
+      const payload = ev.data.payload as ComponentPayload;
+    }
+    if (ev.data?.type === "DELETE_COMPONENT") {
+      const payload = ev.data.payload as DewireUpdate;
+    }
+    if (ev.data?.type === "REWIRE_COMPONENT") {
+      const payload = ev.data.payload as RewireUpdate;
     }
   });
   window.document.addEventListener(
