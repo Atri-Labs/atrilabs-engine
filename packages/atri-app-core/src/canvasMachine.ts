@@ -473,6 +473,7 @@ export function createCanvasMachine(id: string) {
                 },
                 [MOUSE_DOWN]: {
                   target: pressed,
+                  actions: ["setMousePosition"],
                 },
                 [SCROLL]: {
                   target: idle,
@@ -492,7 +493,7 @@ export function createCanvasMachine(id: string) {
               on: {
                 [MOUSE_UP]: {
                   target: selected,
-                  actions: ["setSelectedComponent", "setMousePosition"],
+                  actions: ["setSelectedComponent"],
                 },
                 [MOUSE_MOVE]: {
                   target: reposition,
@@ -550,6 +551,7 @@ export function createCanvasMachine(id: string) {
                 [MOUSE_DOWN]: {
                   target: pressed,
                   cond: selectedDifferentComponent,
+                  actions: ["setMousePosition"],
                 },
               },
               type: "parallel",
