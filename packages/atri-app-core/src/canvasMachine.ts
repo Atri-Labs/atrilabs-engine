@@ -260,8 +260,34 @@ function isLastDroppedComponent(
   return context.lastDropped === event.compId;
 }
 
-function selectedNotNull(context: CanvasMachineContext) {
-  return context.selected !== null;
+function isInTheSameParent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-parent]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      return compId === context.selected;
+    }
+  }
+  return false;
+}
+
+function isNotInTheSameParent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-parent]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      return compId === context.selected;
+    }
+  }
+  return true;
 }
 
 type Callback = (
@@ -437,6 +463,48 @@ export function createCanvasMachine(id: string) {
                 [MOUSE_UP]: {
                   target: selected,
                   actions: ["setSelectedComponent"],
+                },
+                [MOUSE_MOVE]: {
+                  target: reposition,
+                },
+              },
+            },
+
+            [reposition]: {
+              initial: repositionIdle,
+              on: {
+                [MOUSE_UP]: {
+                  target: selected,
+                },
+              },
+              states: {
+                [repositionIdle]: {
+                  entry: () => {
+                    console.log("Entered Reposition Idle State");
+                  },
+                  exit: () => {
+                    console.log("Exited Reposition Idle State");
+                  },
+                  on: {
+                    [MOUSE_MOVE]: {
+                      target: repositionActive,
+                      cond: isNotInTheSameParent,
+                    },
+                  },
+                },
+                [repositionActive]: {
+                  entry: () => {
+                    console.log("Entered Reposition Active State");
+                  },
+                  exit: () => {
+                    console.log("Exited Reposition Active State");
+                  },
+                  on: {
+                    [MOUSE_MOVE]: {
+                      target: repositionIdle,
+                      cond: isInTheSameParent,
+                    },
+                  },
                 },
               },
             },
