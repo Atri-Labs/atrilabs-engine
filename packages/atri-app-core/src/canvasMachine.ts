@@ -127,9 +127,6 @@ type CanvasMachineContext = {
   hovered: string | null;
   selected: string | null;
   lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
-  // Only used for repositioning
-  newParent: string | null;
-  newCanvasZone: string | null;
 };
 
 // actions
@@ -188,16 +185,12 @@ function changeComponentLoc(
     if (parentComp !== null) {
       const parentCompId = parentComp.getAttribute("data-atri-comp-id");
       const canvasZoneId = canvasZone?.getAttribute("data-atri-canvas-id");
-      context.newParent = parentCompId;
-      context.newCanvasZone = canvasZoneId!;
       context.mousePosition = event.event;
     }
   }
 }
 
 function setRepositionDataToNull(context: CanvasMachineContext) {
-  context.newParent = null;
-  context.newCanvasZone = null;
   context.mousePosition = null;
 }
 
@@ -357,8 +350,6 @@ export function createCanvasMachine(id: string) {
         hovered: null,
         selected: null,
         lastDropped: null,
-        newParent: null,
-        newCanvasZone: null,
       },
       states: {
         [initial]: {
