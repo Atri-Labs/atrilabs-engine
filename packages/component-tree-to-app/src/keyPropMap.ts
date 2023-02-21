@@ -370,4 +370,7 @@ export const keyPropMap: any = {
   Cascader: {},
   Breadcrumb: {},
   Alert: {},
+  Tabs: {},
+  Textarea:{},
+  Search:{},
 };

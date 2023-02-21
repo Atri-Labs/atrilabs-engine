@@ -169,5 +169,17 @@ module.exports = {
       modulePath: "./src/manifests/Cascader/Cascader.tsx",
       exportedVarName: "Cascader",
     },
+    Tabs: {
+      modulePath: "./src/manifests/Tabs/Tabs.tsx",
+      exportedVarName: "Tabs",
+    },
+    Textarea: {
+      modulePath: "./src/manifests/Textarea/Textarea.tsx",
+      exportedVarName: "Textarea",
+    },
+    Search: {
+      modulePath: "./src/manifests/Search/Search.tsx",
+      exportedVarName: "Search",
+    },
   },
 };

@@ -29,7 +29,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Input", category: "Basics" },
+  meta: { key: "Textarea", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -74,10 +74,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Input" } },
+  panel: { comp: "CommonIcon", props: { name: "Textarea" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Input", containerStyle: { padding: "1rem" } },
+    props: { name: "Textarea", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
