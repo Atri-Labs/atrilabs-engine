@@ -109,6 +109,7 @@ const focused = "focused" as const;
 const unfocused = "unfocused" as const;
 const selectIdle = "selectIdle" as const;
 const hoverWhileSelected = "hoverWhileSelected" as const;
+const reposition = "reposition" as const;
 const repositionIdle = "repositionIdle" as const;
 const repositionActive = "repositionActive" as const;
 
@@ -522,59 +523,6 @@ export function createCanvasMachine(id: string) {
                         },
                         [SCROLL]: { target: selectIdle },
                         [OUTSIDE_CANVAS]: { target: selectIdle },
-                      },
-                    },
-                  },
-                },
-                repositionstates: {
-                  initial: repositionIdle,
-                  states: {
-                    [repositionIdle]: {
-                      entry: (context) => {
-                        console.log(
-                          "Entered repositionstates repositionIdle",
-                          context
-                        );
-                      },
-                      exit: (context) => {
-                        console.log(
-                          "Exited repositionstates repositionIdle",
-                          context
-                        );
-                      },
-                      on: {
-                        [MOUSE_DOWN]: {
-                          target: repositionActive,
-                          actions: ["emitRepositionStarted"],
-                        },
-                      },
-                    },
-                    [repositionActive]: {
-                      entry: (context) => {
-                        console.log(
-                          "Entered repositionstates repositionActive",
-                          context
-                        );
-                      },
-                      exit: (context) => {
-                        console.log(
-                          "Exited repositionstates repositionActive",
-                          context
-                        );
-                      },
-                      on: {
-                        [MOUSE_UP]: {
-                          target: repositionIdle,
-                          actions: [
-                            "emitRepositionEnded",
-                            "setRepositionDataToNull",
-                          ],
-                        },
-                        [MOUSE_MOVE]: {
-                          target: repositionActive,
-                          cond: selectedNotNull,
-                          actions: ["changeComponentLoc"],
-                        },
                       },
                     },
                   },
