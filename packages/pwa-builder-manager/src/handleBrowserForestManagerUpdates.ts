@@ -41,7 +41,6 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
     if (linkUpdate.rootTreeId === ComponentTreeId) {
       const treeId = linkUpdate.treeId;
       const compId = linkUpdate.refId;
-      const propId = linkUpdate.childId;
       const node = compTree.nodes[compId]!;
       /**
        * It might happen that the component has not been created yet in cases such as:
@@ -74,19 +73,17 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
             (key) => manfiest.dev.attachProps[key].treeId !== treeId
           );
           if (foundPropKey) {
-            const tree = BrowserForestManager.getForest(
-              currentForest.forestPkgId,
-              currentForest.forestId
-            )?.tree(treeId);
-            // update prop from the tree whose link update we received
-            if (tree) {
-              if (tree.links[compId] && tree.links[compId].childId === propId) {
-                const props = tree.nodes[propId].state.property;
-                if (props) {
-                  // const oldProps = getComponentProps(compId);
-                  // updateComponentProps(compId, { ...oldProps, ...props });
-                }
-              }
+            const node = compTree.nodes[compId]!;
+            const componentData = createComponentFromNode(
+              node,
+              breakpointApi.getActiveBreakpoint()
+            );
+            if (componentData?.props) {
+              editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+                { type: "UPDATE_PROPS", payload: componentData },
+                // @ts-ignore
+                "*"
+              );
             }
           }
         }
@@ -95,14 +92,19 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
   }
 
   if (update.type === "rewire") {
-    // updateComponentParent(update.childId, {
-    //   id: update.newParentId,
-    //   index: update.newIndex,
-    // });
+    editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+      { type: "REWIRE_COMPONENT", payload: update },
+      // @ts-ignore
+      "*"
+    );
   }
 
   if (update.type === "dewire") {
-    // deleteComponent(update.childId);
+    editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+      { type: "DELETE_COMPONENT", payload: update },
+      // @ts-ignore
+      "*"
+    );
   }
 
   if (update.type === "change") {
@@ -121,12 +123,17 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
         return;
       }
       const compId = link.refId;
-      const cssNode = updatedTree.nodes[update.id];
-      // tranform it into props
-      const props = cssNode.state.property;
-      if (props) {
-        // const oldProps = getComponentProps(compId);
-        // updateComponentProps(compId, { ...oldProps, ...props });
+      const node = compTree.nodes[compId]!;
+      const componentData = createComponentFromNode(
+        node,
+        breakpointApi.getActiveBreakpoint()
+      );
+      if (componentData?.props) {
+        editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+          { type: "UPDATE_PROPS", payload: componentData },
+          // @ts-ignore
+          "*"
+        );
       }
     }
   }
