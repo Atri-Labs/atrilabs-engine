@@ -519,6 +519,7 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       target: repositionActive,
                       cond: isNotInTheSameParent,
+                      actions: ["emitRepositionStarted"],
                     },
                   },
                 },
@@ -533,6 +534,7 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       target: repositionIdle,
                       cond: isInTheSameParent,
+                      actions: ["emitRepositionEnded"],
                     },
                   },
                 },
