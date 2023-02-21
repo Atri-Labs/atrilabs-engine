@@ -264,12 +264,27 @@ function isInTheSameParent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-parent]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      return compId === context.selected;
+  const newTarget = event.event.target;
+  const currTarget = context.mousePosition?.target;
+  if (
+    newTarget !== null &&
+    "closest" in newTarget &&
+    currTarget !== null &&
+    "closest" in currTarget!
+  ) {
+    const newParent = (newTarget as HTMLElement).closest("[data-atri-parent]");
+    const currParent = (currTarget as HTMLElement).closest(
+      "[data-atri-parent]"
+    );
+    if (newParent !== null && currParent !== null) {
+      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
+      const currParentCompId = currParent.getAttribute("data-atri-comp-id");
+      console.log(
+        "Reposition isNotInTheSameParent",
+        newParentCompId,
+        currParentCompId
+      );
+      return newParentCompId === currParentCompId;
     }
   }
   return false;
