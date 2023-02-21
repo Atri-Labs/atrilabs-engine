@@ -106,7 +106,6 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
       "*"
     );
   }
-
   if (update.type === "change") {
     const updatedTree = BrowserForestManager.getForest(
       currentForest.forestPkgId,

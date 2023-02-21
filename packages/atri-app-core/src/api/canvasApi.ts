@@ -109,10 +109,12 @@ const componentEventSubscribers: {
   [key in ComponentEvent]: { [compId: string]: (() => void)[] };
 } = {
   new_component: {},
+  props_updated: {},
+  children_updated: {},
 };
 const canvasZoneEventSubscribers: {
   [key in CanvasZoneEvent]: { [canvasZoneId: string]: (() => void)[] };
-} = { new_component: {} };
+} = { new_component: {}, children_updated: {} };
 subscribeCanvasMachine("COMPONENT_CREATED", (_context, event) => {
   if (event.type === "COMPONENT_CREATED") {
     const { parentId, canvasZoneId } = event;
@@ -123,6 +125,50 @@ subscribeCanvasMachine("COMPONENT_CREATED", (_context, event) => {
     } else {
       componentEventSubscribers.new_component[parentId]?.forEach((cb) => cb());
     }
+  }
+});
+subscribeCanvasMachine("COMPONENT_DELETED", (_context, event) => {
+  if (event.type === "COMPONENT_DELETED") {
+    const comp = event.comp;
+    if (comp.parent.id === CANVAS_ZONE_ROOT_ID) {
+      canvasZoneEventSubscribers.children_updated[
+        comp.parent.canvasZoneId
+      ]?.forEach((cb) => cb());
+    } else {
+      componentEventSubscribers.children_updated[comp.parent.id]?.forEach(
+        (cb) => cb()
+      );
+    }
+  }
+});
+subscribeCanvasMachine("COMPONENT_REWIRED", (_context, event) => {
+  if (event.type === "COMPONENT_REWIRED") {
+    const { oldParent, newParent } = event;
+    if (oldParent.id === CANVAS_ZONE_ROOT_ID) {
+      canvasZoneEventSubscribers.children_updated[
+        oldParent.canvasZoneId
+      ]?.forEach((cb) => cb());
+    } else {
+      componentEventSubscribers.children_updated[oldParent.id]?.forEach((cb) =>
+        cb()
+      );
+    }
+    if (newParent.id === CANVAS_ZONE_ROOT_ID) {
+      canvasZoneEventSubscribers.children_updated[
+        newParent.canvasZoneId
+      ]?.forEach((cb) => cb());
+    } else {
+      componentEventSubscribers.children_updated[newParent.id]?.forEach((cb) =>
+        cb()
+      );
+    }
+  }
+});
+subscribeCanvasMachine("PROPS_UPDATED", (_context, event) => {
+  if (event.type === "PROPS_UPDATED") {
+    componentEventSubscribers.props_updated[event.compId]?.forEach((cb) =>
+      cb()
+    );
   }
 });
 function subscribeCanvasZoneEvent(
@@ -188,12 +234,21 @@ if (typeof window !== "undefined") {
     }
     if (ev.data?.type === "UPDATE_PROPS") {
       const payload = ev.data.payload as ComponentPayload;
+      componentStoreApi.updateProps(payload.id, payload.props);
     }
     if (ev.data?.type === "DELETE_COMPONENT") {
       const payload = ev.data.payload as DewireUpdate;
+      componentStoreApi.deleteComponent(payload.childId);
     }
     if (ev.data?.type === "REWIRE_COMPONENT") {
       const payload = ev.data.payload as RewireUpdate;
+      const newParent = {
+        ...payload.newParent,
+        canvasZoneId:
+          (payload.newParent as any).zoneId ||
+          (payload.newParent as any).canvasZoneId,
+      };
+      componentStoreApi.rewireComponent(payload.compId, { ...newParent });
     }
   });
   window.document.addEventListener(

@@ -7,7 +7,6 @@ import CssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 
 export default function () {
   const { selectedId } = useListenSelect();
-  console.log(selectedId);
   return (
     <>
       <Tab
@@ -27,8 +26,10 @@ export default function () {
                   type: `PATCH$$${CssTreeId}`,
                   id: cssNodeId,
                   slice: {
-                    styles: {
-                      height,
+                    property: {
+                      styles: {
+                        height,
+                      },
                     },
                   },
                 };

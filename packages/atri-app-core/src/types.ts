@@ -41,9 +41,12 @@ export type RepeatingComponentRendererProps = { id: string };
 
 export type DecoratorData = { id: string };
 
-export type CanvasZoneEvent = "new_component";
+export type CanvasZoneEvent = "new_component" | "children_updated";
 
-export type ComponentEvent = "new_component";
+export type ComponentEvent =
+  | "new_component"
+  | "props_updated"
+  | "children_updated";
 
 export type ComponentCoordsWM = {
   top: number;
