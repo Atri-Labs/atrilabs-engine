@@ -40,6 +40,19 @@ const createMapObject = (attributes: { fieldName: string; type: string }[]) => {
   return obj;
 };
 
+/*
+  array_map custom prop is used in cases where a component needs an array of object datatype
+  Example: Array of people with attributes fName, lName and age.
+  people: {
+    type: "array_map",
+    attributes: [
+      { fieldName: "fName", type: "text" },
+      { fieldName: "lName", type: "text" },
+      { fieldName: "age", type: "number" },
+    ],
+  }
+*/
+
 export const MapList: React.FC<ComponentProps> = (props) => {
   const selector: (string | number)[] = useMemo(() => {
     return props.selector || [];
