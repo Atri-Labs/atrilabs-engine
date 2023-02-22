@@ -6,6 +6,13 @@ import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { Checkbox } from "../commons/Checkbox";
 import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";
 
+/*
+  Boolean list custom prop is used in cases where a component needs a boolean array.
+  Currently not used anywhere in the codebase.
+  Example: 
+    names: {type: "array_boolean"}
+*/
+
 export const BooleanList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
