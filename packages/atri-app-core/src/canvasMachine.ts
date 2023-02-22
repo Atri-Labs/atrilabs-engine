@@ -300,7 +300,10 @@ function isNotInTheSameParent(
     const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
     if (newParent !== null) {
       const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      return newParentCompId !== context.repositionComponent;
+      return (
+        newParentCompId !== context.repositionComponent &&
+        (newTarget as HTMLElement).closest("[data-atri-parent]") !== null
+      );
     }
   }
   return false;
