@@ -5,6 +5,18 @@ import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
+/*
+  Enum custom prop is used in cases where a component needs a single value out of predefined values.
+  Example: Selecting how a link will open.
+
+    autocomplete: {
+      type: "enum",
+      options: ["on", "off"],
+    },
+
+    The user can select either "on" or "off"
+*/
+
 export const Enum: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
