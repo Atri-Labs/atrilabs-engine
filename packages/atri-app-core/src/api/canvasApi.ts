@@ -98,6 +98,51 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     );
   }
 });
+
+subscribeCanvasMachine("repositionSuccess", (context) => {
+  console.log("Reposition atri-app-core: ", context.repositionTarget);
+  const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
+    "[data-atri-canvas-id]"
+  );
+  const parentEl = (context.repositionTarget!.target as HTMLElement).closest(
+    "[data-atri-parent]"
+  );
+  if (canvasZone) {
+    let id = CANVAS_ZONE_ROOT_ID;
+    if (parentEl) {
+      id = parentEl.getAttribute("data-atri-comp-id")!;
+    }
+    window.parent.postMessage(
+      {
+        type: "REDROP_SUCCESSFUL",
+        parent: {
+          id: id,
+          index:
+            id === CANVAS_ZONE_ROOT_ID
+              ? getComponentIndexInsideCanvasZone(
+                  canvasZone.getAttribute("data-atri-canvas-id")!,
+                  context.repositionTarget!
+                )
+              : getComponentIndexInsideParentComponent(
+                  id,
+                  context.repositionTarget!
+                ),
+          canvasZoneId: canvasZone.getAttribute("data-atri-canvas-id"),
+        },
+        repositionComponent: context.repositionComponent,
+      },
+      "*"
+    );
+  } else {
+    window.parent.postMessage(
+      {
+        type: "REDROP_FAILED",
+      },
+      "*"
+    );
+  }
+});
+
 subscribeCanvasMachine("select", (context) => {
   window.parent?.postMessage({ type: "select", id: context.selected }, "*");
 });
