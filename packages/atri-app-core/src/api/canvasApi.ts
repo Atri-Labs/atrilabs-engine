@@ -81,7 +81,7 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
   }
 });
 
-subscribeCanvasMachine("repositionActive", (context) => {
+subscribeCanvasMachine("repositionSuccess", (context) => {
   console.log("Reposition atri-app-core: ", context.repositionTarget);
   const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"

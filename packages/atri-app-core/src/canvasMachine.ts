@@ -330,7 +330,8 @@ type SubscribeStates =
   | "reposition"
   | "repositionIdle"
   | "repositionActive"
-  | "repositionEnd";
+  | "repositionFailed"
+  | "repositionSuccess";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -350,7 +351,8 @@ export function createCanvasMachine(id: string) {
     reposition: [],
     repositionIdle: [],
     repositionActive: [],
-    repositionEnd: [],
+    repositionFailed: [],
+    repositionSuccess: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -501,14 +503,6 @@ export function createCanvasMachine(id: string) {
               entry: (context, event) => {
                 callSubscribers("reposition", context, event);
               },
-              exit: (context, event) => {
-                callSubscribers("repositionEnd", context, event);
-              },
-              on: {
-                [MOUSE_UP]: {
-                  target: selected,
-                },
-              },
               states: {
                 [repositionIdle]: {
                   entry: (context) => {
@@ -523,6 +517,10 @@ export function createCanvasMachine(id: string) {
                       target: repositionActive,
                       cond: isNotInTheSameParent,
                       actions: ["setRepositionTarget", "emitRepositionActive"],
+                    },
+                    [MOUSE_UP]: {
+                      target: `#${id}.${ready}`,
+                      actions: ["emitRepositionFailed"],
                     },
                   },
                 },
@@ -542,6 +540,10 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       cond: isNotInTheSameParent,
                       actions: ["setRepositionTarget", "emitRepositionActive"],
+                    },
+                    [MOUSE_UP]: {
+                      target: `#${id}.${ready}`,
+                      actions: ["emitRepositionSuccess"],
                     },
                   },
                 },
@@ -711,6 +713,8 @@ export function createCanvasMachine(id: string) {
         handleComponentRendered,
         setRepositionTarget,
         setRepositionComponent,
+        emitRepositionFailed: callSubscribersFromAction("repositionFailed"),
+        emitRepositionSuccess: callSubscribersFromAction("repositionSuccess"),
       },
     }
   );
