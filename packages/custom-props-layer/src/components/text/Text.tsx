@@ -5,6 +5,12 @@ import { PropertyContainer } from "../commons/PropertyContainer";
 import { TextInput } from "../commons/TextInput";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
+/*
+  text custom prop is used in cases where a component needs a small string.
+  Example: The name of a person
+           name: { type: "text" }
+*/
+
 export const Text: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
