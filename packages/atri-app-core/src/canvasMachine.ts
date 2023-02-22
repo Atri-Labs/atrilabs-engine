@@ -549,7 +549,6 @@ export function createCanvasMachine(id: string) {
               on: {
                 [MOUSE_DOWN]: {
                   target: pressed,
-                  cond: selectedDifferentComponent,
                   actions: ["setMousePosition"],
                 },
               },

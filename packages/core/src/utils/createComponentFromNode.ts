@@ -56,7 +56,7 @@ export function createComponentFromNode(
   const parent = {
     id: node.state.parent.id,
     index: node.state.parent.index,
-    canvasZoneId: node.state.parent.zoneId,
+    canvasZoneId: node.state.parent.canvasZoneId,
   };
   // find manifest from manifest registry
   const manifestRegistry = manifestRegistryController.readManifestRegistry();

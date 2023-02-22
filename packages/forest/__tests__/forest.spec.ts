@@ -1,5 +1,7 @@
 import { createForest } from "../src/forest";
 import { componentTreeDef, cssTreeDef, forestDef } from "./forestDefExample";
+import fs from "fs";
+import path from "path";
 
 test("createForest fn returns a forest with trees", () => {
   const forest = createForest(forestDef);
@@ -294,4 +296,27 @@ test("unset event", () => {
   expect(compTree!.nodes["comp1"]!.state).toHaveProperty("parent");
   expect(compTree!.nodes["comp1"]!.state.parent).toHaveProperty("index");
   expect(compTree!.nodes["comp1"]!.state.parent).not.toHaveProperty("id");
+});
+
+test("patch event with canvas zone", () => {
+  const events = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "events", "test_1.json")).toString()
+  );
+  const forest = createForest(forestDef);
+  const compTree = forest.tree(componentTreeDef.modulePath);
+  forest.handleEvents({ name: "", events, meta: { agent: "server-sent" } });
+  expect(compTree?.nodes).toBeDefined();
+  expect(
+    compTree!.nodes["9d85fe5f-52ae-4b96-a133-0bd9298a8d36"]!.state
+  ).toHaveProperty("parent");
+  expect(
+    compTree!.nodes["9d85fe5f-52ae-4b96-a133-0bd9298a8d36"]!.state.parent
+  ).toHaveProperty("index");
+  expect(
+    compTree!.nodes["9d85fe5f-52ae-4b96-a133-0bd9298a8d36"]!.state.parent
+  ).toHaveProperty("canvasZoneId");
+  expect(
+    compTree!.nodes["9d85fe5f-52ae-4b96-a133-0bd9298a8d36"]!.state.parent.id
+  ).toBe("8e50f6d3-332d-4faa-85fe-d6eb17424147");
+  expect(events).toBeDefined();
 });
