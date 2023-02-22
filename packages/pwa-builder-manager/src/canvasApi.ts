@@ -53,6 +53,7 @@ window.addEventListener("message", (ev) => {
       editorAppMachineInterpreter.send({
         type: "REDROP_SUCCESSFUL",
         parent: ev.data.parent,
+        repositionComponent: ev.data.repositionComponent,
       });
     }
   }

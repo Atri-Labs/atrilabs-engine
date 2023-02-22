@@ -111,6 +111,7 @@ subscribeCanvasMachine("reposition", (context) => {
                 ),
           canvasZoneId: canvasZone.getAttribute("data-atri-canvas-id"),
         },
+        repositionComponent: context.repositionComponent,
       },
       "*"
     );

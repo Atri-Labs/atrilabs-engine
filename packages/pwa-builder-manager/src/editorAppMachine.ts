@@ -82,6 +82,7 @@ type DRAG_FAILED_EVENT = {
 type REDROP_SUCCESSFUL_EVENT = {
   type: typeof REDROP_SUCCESSFUL;
   parent: { id: string; index: number; canvasZoneId: string };
+  repositionComponent: string;
 };
 type REDROP_FAILED_EVENT = {
   type: typeof REDROP_FAILED;
