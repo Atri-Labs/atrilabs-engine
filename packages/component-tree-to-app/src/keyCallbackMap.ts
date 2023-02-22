@@ -185,4 +185,5 @@ export const keyCallbackMap: {
   Tabs: {},
   Textarea:{},
   Search:{},
+  Select:{}
 };

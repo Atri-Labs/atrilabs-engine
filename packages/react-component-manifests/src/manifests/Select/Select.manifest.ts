@@ -8,13 +8,13 @@ import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: false,
+  flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
-  typographyOptions: false,
+  typographyOptions: true,
   spacingOptions: true,
   sizeOptions: true,
-  borderOptions: false,
+  borderOptions: true,
   outlineOptions: true,
   backgroundOptions: true,
   miscellaneousOptions: true,
@@ -22,24 +22,34 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    name: { type: "text" },
+    label: { type: "text" },
     checked: { type: "boolean" },
+    radius: { type: "number" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Checkbox", category: "Basics" },
+  meta: { key: "Select", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          cursor: "pointer",
+          display: "inline-flex",
+          columnGap: "10px",
+          alignItems: "center",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          name: "",
+          label: "Select",
           checked: false,
         },
         treeOptions: customTreeOptions,
@@ -49,15 +59,17 @@ const compManifest: ReactComponentManifestSchema = {
     attachCallbacks: {
       onChange: [{ type: "controlled", selector: ["custom", "checked"] }],
     },
-    defaultCallbackHandlers: {},
+    defaultCallbackHandlers: {
+      onChange: [{ sendEventData: true }],
+    },
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Checkbox" } },
+  panel: { comp: "CommonIcon", props: { name: "Select" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Checkbox", containerStyle: { padding: "1rem" } },
+    props: { name: "Select", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

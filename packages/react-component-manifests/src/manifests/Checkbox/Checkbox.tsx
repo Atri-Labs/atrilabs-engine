@@ -1,10 +1,11 @@
 import React, { forwardRef, useCallback } from "react";
+import { Checkbox as AntdCheckbox, Form } from "antd";
 
 const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { checked: boolean };
+    custom: { checked: boolean; options?: any; label: string[] };
     onChange: (checked: boolean) => void;
     className?: string;
   }
@@ -16,14 +17,20 @@ const Checkbox = forwardRef<
     [props]
   );
   return (
-    <input
-      ref={ref}
-      className={props.className}
+    <Form.Item
+      label={props.custom.label ? props.custom.label : null}
       style={props.styles}
-      onChange={onChange}
-      type={"checkbox"}
-      checked={props.custom.checked}
-    />
+    >
+      <AntdCheckbox.Group
+        options={
+          props.custom.options || [
+            { value: "one", label: "One" },
+            { value: "two", label: "Two" },
+            { value: "three", label: "Three" },
+          ]
+        }
+      />
+    </Form.Item>
   );
 });
 

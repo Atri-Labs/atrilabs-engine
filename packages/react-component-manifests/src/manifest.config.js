@@ -181,5 +181,9 @@ module.exports = {
       modulePath: "./src/manifests/Search/Search.tsx",
       exportedVarName: "Search",
     },
+    Select: {
+      modulePath: "./src/manifests/Select/Select.tsx",
+      exportedVarName: "Select",
+    },
   },
 };

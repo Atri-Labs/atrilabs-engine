@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback } from "react";
-import { Radio as AntdRadio, Form } from "antd";
+import { Select as AntdSelect, Form } from "antd";
 
-const Radio = forwardRef<
+const Select = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
@@ -31,7 +31,7 @@ const Radio = forwardRef<
         width: props.custom.radius,
       }}
     >
-      <AntdRadio.Group
+      <AntdSelect
         options={
           props.custom.options || [
             { value: "one", label: "One" },
@@ -39,10 +39,10 @@ const Radio = forwardRef<
             { value: "three", label: "Three" },
           ]
         }
-        defaultValue={props.custom.checked}
+        placeholder="Select"
       />
     </Form.Item>
   );
 });
 
-export default Radio;
+export default Select;

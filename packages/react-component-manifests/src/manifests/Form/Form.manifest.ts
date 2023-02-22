@@ -167,7 +167,7 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           display: "inline-flex",
           flexDirection: "column",
-          rowGap: "1em",
+          //rowGap: "1em",
           padding: "10px",
         },
         treeOptions: cssTreeOptions,
@@ -193,7 +193,7 @@ const compManifest: ReactComponentManifestSchema = {
               text: {
                 label: "Name:",
                 id: "name",
-                placeholder: "Enter your name",
+                placeholder: "Enter Your Name",
               },
             },
             {
@@ -201,8 +201,92 @@ const compManifest: ReactComponentManifestSchema = {
               password: {
                 label: "Password:",
                 id: "pwd",
-                placeholder: "Enter your password",
+                placeholder: "Enter Your Password",
               },
+            },
+            {
+              selectedOption: "email",
+              email: {
+                label: "Email",
+                id: "Eid",
+                placeholder: "Enter Your Email",
+              },
+            },
+            {
+              selectedOption: "url",
+              url: { label: "url", id: "uid", placeholder: "Enter Your URL" },
+            },
+
+            {
+              selectedOption: "search",
+              search: { label: "Search", id: "sid", placeholder: "Search..." },
+            },
+            {
+              selectedOption: "color",
+              color: { label: "Color", id: "text" },
+            },
+
+            {
+              selectedOption: "time",
+              time: { label: "Time", id: "ids" },
+            },
+            {
+              selectedOption: "date",
+              date: { label: "Date", id: "ids" },
+            },
+            {
+              selectedOption: "datetimeLocal",
+              datetimeLocal: { label: "Date time Local", id: "ids" },
+            },
+
+            {
+              selectedOption: "select",
+              select: {
+                selectLabel: "Select",
+                selectIdentifier: "text",
+                // selectOptions: ["hey", "hello", "how are you"],
+                selectOptions: [
+                  { value: "one", label: "One" },
+                  { value: "two", label: "Two" },
+                  { value: "three", label: "Three" },
+                ],
+                multiple: false,
+              },
+            },
+
+            {
+              selectedOption: "checkbox",
+              checkbox: {
+                label: "Checkbox",
+                labels: ["text", "text", "text"],
+                id: ["1", "2", "3"],
+                value: ["1", "2", "3"],
+                selectOptions: [
+                  { value: "one", label: "One" },
+                  { value: "two", label: "Two" },
+                  { value: "three", label: "Three" },
+                ],
+              },
+            },
+
+            {
+              selectedOption: "radio",
+              radio: {
+                label: "Radio",
+                name: "text",
+                labels: ["1", "2", "1"],
+                id: "selectid",
+                value: ["1", "1", "1"],
+                selectOptions: [
+                  { value: "one", label: "One" },
+                  { value: "two", label: "Two" },
+                  { value: "three", label: "Three" },
+                ],
+              },
+            },
+            {
+              selectedOption: "file",
+              file: { label: "Upload File", id: "fileinput", multiple: true },
             },
           ],
         },
