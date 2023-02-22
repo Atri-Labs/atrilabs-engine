@@ -128,6 +128,11 @@ type CanvasMachineContext = {
   hovered: string | null;
   selected: string | null;
   lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
+  repositionTarget: {
+    pageX: number;
+    pageY: number;
+    target: MouseEvent["target"];
+  } | null;
 };
 
 // actions
@@ -179,16 +184,7 @@ function changeComponentLoc(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const parentComp = (target as HTMLElement).closest("[data-atri-parent]");
-    const canvasZone = (target as HTMLElement).closest("[data-atri-canvas-id]");
-    if (parentComp !== null) {
-      const parentCompId = parentComp.getAttribute("data-atri-comp-id");
-      const canvasZoneId = canvasZone?.getAttribute("data-atri-canvas-id");
-      context.mousePosition = event.event;
-    }
-  }
+  context.repositionTarget = event.event;
 }
 
 function setRepositionDataToNull(context: CanvasMachineContext) {
@@ -407,6 +403,7 @@ export function createCanvasMachine(id: string) {
         hovered: null,
         selected: null,
         lastDropped: null,
+        repositionTarget: null,
       },
       states: {
         [initial]: {
@@ -509,7 +506,8 @@ export function createCanvasMachine(id: string) {
               },
               states: {
                 [repositionIdle]: {
-                  entry: () => {
+                  entry: (context) => {
+                    context.repositionTarget = null;
                     console.log("Entered Reposition Idle State");
                   },
                   exit: () => {
@@ -519,7 +517,7 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       target: repositionActive,
                       cond: isNotInTheSameParent,
-                      actions: ["emitRepositionStarted"],
+                      actions: ["emitRepositionStarted", "changeComponentLoc"],
                     },
                   },
                 },
@@ -535,6 +533,11 @@ export function createCanvasMachine(id: string) {
                       target: repositionIdle,
                       cond: isInTheSameParent,
                       actions: ["emitRepositionEnded"],
+                    },
+                    [MOUSE_MOVE]: {
+                      target: repositionActive,
+                      cond: isNotInTheSameParent,
+                      actions: ["emitRepositionStarted", "changeComponentLoc"],
                     },
                   },
                 },

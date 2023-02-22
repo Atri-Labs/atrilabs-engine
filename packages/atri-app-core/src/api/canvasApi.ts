@@ -82,10 +82,11 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
 });
 
 subscribeCanvasMachine("reposition", (context) => {
-  const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
+  console.log("Reposition atri-app-core: ", context.repositionTarget);
+  const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
   );
-  const parentEl = (context.mousePosition!.target as HTMLElement).closest(
+  const parentEl = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-parent]"
   );
   if (canvasZone) {
@@ -102,11 +103,11 @@ subscribeCanvasMachine("reposition", (context) => {
             id === CANVAS_ZONE_ROOT_ID
               ? getComponentIndexInsideCanvasZone(
                   canvasZone.getAttribute("data-atri-canvas-id")!,
-                  context.mousePosition!
+                  context.repositionTarget!
                 )
               : getComponentIndexInsideParentComponent(
                   id,
-                  context.mousePosition!
+                  context.repositionTarget!
                 ),
           canvasZoneId: canvasZone.getAttribute("data-atri-canvas-id"),
         },
