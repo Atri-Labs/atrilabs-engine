@@ -347,6 +347,8 @@ type SubscribeStates =
   | "select"
   | "selectEnd"
   | "reposition"
+  | "repositionIdle"
+  | "repositionActive"
   | "repositionEnd";
 
 export function createCanvasMachine(id: string) {
@@ -365,6 +367,8 @@ export function createCanvasMachine(id: string) {
     select: [],
     selectEnd: [],
     reposition: [],
+    repositionIdle: [],
+    repositionActive: [],
     repositionEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
@@ -513,6 +517,12 @@ export function createCanvasMachine(id: string) {
             },
             [reposition]: {
               initial: repositionIdle,
+              entry: (context, event) => {
+                callSubscribers("reposition", context, event);
+              },
+              exit: (context, event) => {
+                callSubscribers("repositionEnd", context, event);
+              },
               on: {
                 [MOUSE_UP]: {
                   target: selected,
@@ -531,7 +541,7 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       target: repositionActive,
                       cond: isNotInTheSameParent,
-                      actions: ["setRepositionTarget", "emitRepositionStarted"],
+                      actions: ["setRepositionTarget", "emitRepositionActive"],
                     },
                   },
                 },
@@ -546,11 +556,11 @@ export function createCanvasMachine(id: string) {
                     [MOUSE_MOVE]: {
                       target: repositionIdle,
                       cond: isInTheSameParent,
-                      actions: ["emitRepositionEnded"],
+                      actions: ["emitRepositionIdle"],
                     },
                     [MOUSE_MOVE]: {
                       cond: isNotInTheSameParent,
-                      actions: ["setRepositionTarget", "emitRepositionStarted"],
+                      actions: ["setRepositionTarget", "emitRepositionActive"],
                     },
                   },
                 },
@@ -712,8 +722,8 @@ export function createCanvasMachine(id: string) {
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
         emitComponentRendered: callSubscribersFromAction("COMPONENT_RENDERED"),
-        emitRepositionStarted: callSubscribersFromAction("reposition"),
-        emitRepositionEnded: callSubscribersFromAction("repositionEnd"),
+        emitRepositionIdle: callSubscribersFromAction("repositionIdle"),
+        emitRepositionActive: callSubscribersFromAction("repositionActive"),
         setHoverComponent,
         setSelectedComponent,
         setLastDropped,
