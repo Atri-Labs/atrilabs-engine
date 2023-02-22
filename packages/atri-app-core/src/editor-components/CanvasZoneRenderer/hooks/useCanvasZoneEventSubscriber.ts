@@ -9,9 +9,9 @@ export function useCanvasZoneEventSubscriber(params: { canvasZoneId: string }) {
       "new_component",
       () => {
         if (componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId))
-          setChildCompIds(
-            componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId)
-          );
+          setChildCompIds([
+            ...componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId),
+          ]);
       }
     );
   }, []);
@@ -21,9 +21,9 @@ export function useCanvasZoneEventSubscriber(params: { canvasZoneId: string }) {
       "children_updated",
       () => {
         if (componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId))
-          setChildCompIds(
-            componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId)
-          );
+          setChildCompIds([
+            ...componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId),
+          ]);
       }
     );
   }, []);

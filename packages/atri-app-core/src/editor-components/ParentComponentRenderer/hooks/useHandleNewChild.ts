@@ -8,7 +8,7 @@ export function useHandleNewChild(props: { id: string }) {
 
   useEffect(() => {
     return canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
-      setChildren(componentStoreApi.getComponentChildrenId(props.id));
+      setChildren([...componentStoreApi.getComponentChildrenId(props.id)]);
     });
   }, [props.id]);
 
@@ -17,7 +17,7 @@ export function useHandleNewChild(props: { id: string }) {
       props.id,
       "children_updated",
       () => {
-        setChildren(componentStoreApi.getComponentChildrenId(props.id));
+        setChildren([...componentStoreApi.getComponentChildrenId(props.id)]);
       }
     );
   });

@@ -100,7 +100,6 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
 });
 
 subscribeCanvasMachine("repositionSuccess", (context) => {
-  console.log("Reposition atri-app-core: ", context.repositionTarget);
   const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
   );
@@ -287,13 +286,8 @@ if (typeof window !== "undefined") {
     }
     if (ev.data?.type === "REWIRE_COMPONENT") {
       const payload = ev.data.payload as RewireUpdate;
-      const newParent = {
-        ...payload.newParent,
-        canvasZoneId:
-          (payload.newParent as any).zoneId ||
-          (payload.newParent as any).canvasZoneId,
-      };
-      componentStoreApi.rewireComponent(payload.compId, { ...newParent });
+      const newParent = payload.newParent as any;
+      componentStoreApi.rewireComponent(payload.compId, newParent);
     }
   });
   window.document.addEventListener(
