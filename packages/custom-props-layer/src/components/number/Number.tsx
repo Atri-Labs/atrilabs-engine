@@ -5,6 +5,12 @@ import { Label } from "../commons/Label";
 import { NumberInput } from "../commons/NumberInput";
 import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
 
+/*
+  number prop is used in cases where a component needs a number
+  Example: The age of a person.
+  age: { type: "number" }
+*/
+
 export const Number: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
