@@ -142,6 +142,30 @@ function getAllDescendants(compId: string) {
   return _getAllDescendants(compId);
 }
 
+function updateProps(compId: string, props: any) {
+  componentStore[compId].props = props;
+  canvasMachineInterpreter.send({ type: "PROPS_UPDATED", compId });
+}
+
+function deleteComponent(compId: string) {
+  const comp: CanvasComponent = { ...componentStore[compId] };
+  delete componentStore[compId];
+  canvasMachineInterpreter.send({ type: "COMPONENT_DELETED", comp });
+}
+
+function rewireComponent(
+  compId: string,
+  newParent: { id: string; canvasZoneId: string; index: number }
+) {
+  const oldParent = { ...componentStore[compId].parent };
+  componentStore[compId].parent = { ...newParent };
+  canvasMachineInterpreter.send({
+    type: "COMPONENT_REWIRED",
+    oldParent,
+    newParent,
+  });
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -152,4 +176,7 @@ export const componentStoreApi = {
   getComponentRef,
   getComponentProps,
   getAllDescendants,
+  updateProps,
+  deleteComponent,
+  rewireComponent,
 };

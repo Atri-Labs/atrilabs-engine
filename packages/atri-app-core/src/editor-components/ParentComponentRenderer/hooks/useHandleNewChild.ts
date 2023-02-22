@@ -7,10 +7,20 @@ export function useHandleNewChild(props: { id: string }) {
   );
 
   useEffect(() => {
-    canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
+    return canvasApi.subscribeComponentEvent(props.id, "new_component", () => {
       setChildren(componentStoreApi.getComponentChildrenId(props.id));
     });
   }, [props.id]);
+
+  useEffect(() => {
+    return canvasApi.subscribeComponentEvent(
+      props.id,
+      "children_updated",
+      () => {
+        setChildren(componentStoreApi.getComponentChildrenId(props.id));
+      }
+    );
+  });
 
   return { children };
 }

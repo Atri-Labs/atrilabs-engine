@@ -3,6 +3,7 @@ import { componentStoreApi } from "../../api";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
+import { usePropsUpdated } from "../hooks/usePropsUpdated";
 
 export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   const {
@@ -14,5 +15,6 @@ export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
+  usePropsUpdated({ id: props.id });
   return <Comp {...compProps} ref={ref} {...callbacks} />;
 }

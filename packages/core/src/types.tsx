@@ -401,7 +401,6 @@ export interface ClientToServerEvents {
     callback: (events: AnyEvent[]) => void
   ) => void;
   saveEvent: (
-    forestPkgId: string,
     urlPath: string,
     event: AnyEvent,
     callback: (success: boolean) => void

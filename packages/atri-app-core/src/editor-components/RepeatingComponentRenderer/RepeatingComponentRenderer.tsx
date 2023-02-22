@@ -8,6 +8,7 @@ import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
+import { usePropsUpdated } from "../hooks/usePropsUpdated";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
@@ -26,6 +27,7 @@ export function RepeatingComponentRenderer(
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
+  usePropsUpdated({ id: props.id });
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
     childrenNodes = Array.from(Array(num).keys()).map(() => {

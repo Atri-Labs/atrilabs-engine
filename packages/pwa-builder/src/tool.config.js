@@ -50,6 +50,7 @@ const layers = [
   { pkg: "@atrilabs/component-navigator" },
   { pkg: "@atrilabs/services-status-layer" },
   { pkg: "@atrilabs/pwa-canvas-layer" },
+  { pkg: "@atrilabs/pwa-style-layer" },
 ];
 
 const runtimes = [{ pkg: "@atrilabs/canvas-runtime" }];

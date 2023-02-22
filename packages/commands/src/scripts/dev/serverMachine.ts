@@ -357,6 +357,7 @@ export function createServerMachine(id: string) {
     {
       id: id,
       initial: processing,
+      predictableActionArguments: true,
       context: {
         libServer: "processing",
         appServer: "processing",

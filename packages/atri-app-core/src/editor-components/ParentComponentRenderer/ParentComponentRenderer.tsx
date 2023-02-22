@@ -7,6 +7,7 @@ import { useHandleNewChild } from "./hooks/useHandleNewChild";
 import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 import { RepeatingComponentRenderer } from "../RepeatingComponentRenderer/RepeatingComponentRenderer";
+import { usePropsUpdated } from "../hooks/usePropsUpdated";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
@@ -20,6 +21,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
+  usePropsUpdated({ id: props.id });
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {

@@ -133,7 +133,7 @@ async function main() {
       middlewares(app, compiler, config);
     }
     app.use((req, res, next) => {
-      printRequest(req);
+      printRequest(req, interpreter);
       interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
     });
     app.get(
