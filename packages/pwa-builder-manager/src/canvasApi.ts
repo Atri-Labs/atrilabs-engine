@@ -6,6 +6,8 @@ import {
   getReactManifest,
 } from "@atrilabs/core";
 import { api } from "./api";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { PatchEvent } from "@atrilabs/forest";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -40,6 +42,20 @@ window.addEventListener("message", (ev) => {
       editorAppMachineInterpreter.send({
         type: "DRAG_SUCCESS",
         parent: ev.data.parent,
+      });
+    }
+    if (ev.data?.type === "REDROP_FAILED" && ev.source !== null) {
+      editorAppMachineInterpreter.send({ type: "REDROP_FAILED" });
+    }
+    if (
+      ev.data?.type === "REDROP_SUCCESSFUL" &&
+      ev.source !== null &&
+      ev.data.parent
+    ) {
+      editorAppMachineInterpreter.send({
+        type: "REDROP_SUCCESSFUL",
+        parent: ev.data.parent,
+        repositionComponent: ev.data.repositionComponent,
       });
     }
   }
@@ -134,6 +150,25 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         meta: { agent: "browser" },
       });
     }
+  }
+});
+
+subscribeEditorMachine("REDROP_SUCCESSFUL", (_context, event) => {
+  if (event.type === "REDROP_SUCCESSFUL") {
+    const { parent, repositionComponent } = event;
+    const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+    const patchEvent: PatchEvent = {
+      type: `PATCH$$${ComponentTreeId}`,
+      id: repositionComponent,
+      slice: {
+        parent: parent,
+      },
+    };
+    api.postNewEvents(forestPkgId, forestId, {
+      events: [patchEvent],
+      name: "REDROP",
+      meta: { agent: "browser" },
+    });
   }
 });
 

@@ -128,6 +128,9 @@ const focused = "focused" as const;
 const unfocused = "unfocused" as const;
 const selectIdle = "selectIdle" as const;
 const hoverWhileSelected = "hoverWhileSelected" as const;
+const reposition = "reposition" as const;
+const repositionIdle = "repositionIdle" as const;
+const repositionActive = "repositionActive" as const;
 
 // context
 
@@ -144,6 +147,13 @@ type CanvasMachineContext = {
   hovered: string | null;
   selected: string | null;
   lastDropped: string | null; // string until COMPONENT_RENDERED received, otherwise null
+  // Used in reposition states
+  repositionTarget: {
+    pageX: number;
+    pageY: number;
+    target: MouseEvent["target"];
+  } | null;
+  repositionComponent: string | null;
 };
 
 // actions
@@ -187,6 +197,27 @@ function setSelectedComponent(
     if (comp !== null) {
       const compId = comp.getAttribute("data-atri-comp-id");
       context.selected = compId;
+    }
+  }
+}
+
+function setRepositionTarget(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  context.repositionTarget = event.event;
+}
+
+function setRepositionComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const comp = (target as any).closest("[data-atri-comp-id]");
+    if (comp !== null) {
+      const compId = comp.getAttribute("data-atri-comp-id");
+      context.repositionComponent = compId;
     }
   }
 }
@@ -256,6 +287,47 @@ function isLastDroppedComponent(
   return context.lastDropped === event.compId;
 }
 
+function isInTheSameParent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const newTarget = event.event.target;
+  if (
+    newTarget !== null &&
+    "closest" in newTarget &&
+    context.repositionComponent !== null
+  ) {
+    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
+    if (newParent !== null) {
+      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
+      return newParentCompId === context.repositionComponent;
+    }
+  }
+  return false;
+}
+
+function isNotInTheSameParent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const newTarget = event.event.target;
+  if (
+    newTarget !== null &&
+    "closest" in newTarget &&
+    context.repositionComponent !== null
+  ) {
+    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
+    if (newParent !== null) {
+      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
+      return (
+        newParentCompId !== context.repositionComponent &&
+        (newTarget as HTMLElement).closest("[data-atri-parent]") !== null
+      );
+    }
+  }
+  return false;
+}
+
 type Callback = (
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -274,6 +346,11 @@ type SubscribeStates =
   | typeof COMPONENT_RENDERED
   | "select"
   | "selectEnd"
+  | "reposition"
+  | "repositionIdle"
+  | "repositionActive"
+  | "repositionFailed"
+  | "repositionSuccess"
   | typeof COMPONENT_DELETED
   | typeof COMPONENT_REWIRED
   | typeof PROPS_UPDATED;
@@ -293,6 +370,11 @@ export function createCanvasMachine(id: string) {
     [COMPONENT_RENDERED]: [],
     select: [],
     selectEnd: [],
+    reposition: [],
+    repositionIdle: [],
+    repositionActive: [],
+    repositionFailed: [],
+    repositionSuccess: [],
     [COMPONENT_DELETED]: [],
     [COMPONENT_REWIRED]: [],
     [PROPS_UPDATED]: [],
@@ -345,15 +427,29 @@ export function createCanvasMachine(id: string) {
         hovered: null,
         selected: null,
         lastDropped: null,
+        repositionTarget: null,
+        repositionComponent: null,
       },
       states: {
         [initial]: {
+          entry: (context) => {
+            console.log("Entered Initial State", context);
+          },
+          exit: (context) => {
+            console.log("Exited Initial State", context);
+          },
           on: {
             [IFRAME_DETECTED]: { target: checks_completed },
             [TOP_WINDOW_DETECTED]: { target: noop },
           },
         },
         [checks_completed]: {
+          entry: (context) => {
+            console.log("Entered checks_completed State", context);
+          },
+          exit: (context) => {
+            console.log("Exited checks_completed State", context);
+          },
           on: {
             [WINDOW_LOADED]: { target: ready, actions: ["emitReady"] },
           },
@@ -362,6 +458,12 @@ export function createCanvasMachine(id: string) {
           initial: idle,
           states: {
             [idle]: {
+              entry: (context) => {
+                console.log("Entered Ready Idle State", context);
+              },
+              exit: (context) => {
+                console.log("Exited Ready Idle State", context);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   target: hover,
@@ -378,10 +480,12 @@ export function createCanvasMachine(id: string) {
             [hover]: {
               entry: (context, event) => {
                 callSubscribers("hover", context, event);
+                console.log("Entered Ready Hover State", context);
               },
               exit: (context, event) => {
                 context.hovered = null;
                 callSubscribers("hoverEnd", context, event);
+                console.log("Exited Ready Hover State", context);
               },
               on: {
                 [MOUSE_MOVE]: {
@@ -391,6 +495,7 @@ export function createCanvasMachine(id: string) {
                 },
                 [MOUSE_DOWN]: {
                   target: pressed,
+                  actions: ["setMousePosition"],
                 },
                 [SCROLL]: {
                   target: idle,
@@ -401,10 +506,71 @@ export function createCanvasMachine(id: string) {
               },
             },
             [pressed]: {
+              entry: (context) => {
+                console.log("Entered Ready Pressed State", context);
+              },
+              exit: (context) => {
+                console.log("Exited Ready Pressed State", context);
+              },
               on: {
                 [MOUSE_UP]: {
                   target: selected,
                   actions: ["setSelectedComponent"],
+                },
+                [MOUSE_MOVE]: {
+                  target: reposition,
+                  actions: ["setRepositionComponent"],
+                },
+              },
+            },
+            [reposition]: {
+              initial: repositionIdle,
+              entry: (context, event) => {
+                callSubscribers("reposition", context, event);
+              },
+              states: {
+                [repositionIdle]: {
+                  entry: (context) => {
+                    context.repositionTarget = null;
+                    console.log("Entered Reposition Idle State");
+                  },
+                  exit: () => {
+                    console.log("Exited Reposition Idle State");
+                  },
+                  on: {
+                    [MOUSE_MOVE]: {
+                      target: repositionActive,
+                      cond: isNotInTheSameParent,
+                      actions: ["setRepositionTarget", "emitRepositionActive"],
+                    },
+                    [MOUSE_UP]: {
+                      target: `#${id}.${ready}`,
+                      actions: ["emitRepositionFailed"],
+                    },
+                  },
+                },
+                [repositionActive]: {
+                  entry: () => {
+                    console.log("Entered Reposition Active State");
+                  },
+                  exit: () => {
+                    console.log("Exited Reposition Active State");
+                  },
+                  on: {
+                    [MOUSE_MOVE]: {
+                      target: repositionIdle,
+                      cond: isInTheSameParent,
+                      actions: ["emitRepositionIdle"],
+                    },
+                    [MOUSE_MOVE]: {
+                      cond: isNotInTheSameParent,
+                      actions: ["setRepositionTarget", "emitRepositionActive"],
+                    },
+                    [MOUSE_UP]: {
+                      target: `#${id}.${ready}`,
+                      actions: ["emitRepositionSuccess"],
+                    },
+                  },
                 },
               },
             },
@@ -415,11 +581,13 @@ export function createCanvasMachine(id: string) {
               exit: (context, event) => {
                 callSubscribers("selectEnd", context, event);
                 context.selected = null;
+                console.log("Exited Ready Selected State", context);
               },
               on: {
                 [MOUSE_DOWN]: {
                   target: pressed,
                   cond: selectedDifferentComponent,
+                  actions: ["setMousePosition"],
                 },
               },
               type: "parallel",
@@ -430,9 +598,11 @@ export function createCanvasMachine(id: string) {
                     [focused]: {
                       entry: (context, event) => {
                         callSubscribers("focus", context, event);
+                        console.log("Entered focusstates Focused", context);
                       },
                       exit: (context, event) => {
                         callSubscribers("focusEnd", context, event);
+                        console.log("Exited focusstates Focused", context);
                       },
                       on: {
                         [BLUR]: {
@@ -449,6 +619,18 @@ export function createCanvasMachine(id: string) {
                   initial: selectIdle,
                   states: {
                     [selectIdle]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered hoverstates selectIdle State",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited hoverstates selectIdle State",
+                          context
+                        );
+                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -457,6 +639,18 @@ export function createCanvasMachine(id: string) {
                       },
                     },
                     [hoverWhileSelected]: {
+                      entry: (context) => {
+                        console.log(
+                          "Entered hoverstates hoverWhileSelected State",
+                          context
+                        );
+                      },
+                      exit: (context) => {
+                        console.log(
+                          "Exited hoverstates hoverWhileSelected State",
+                          context
+                        );
+                      },
                       on: {
                         [MOUSE_OVER]: {
                           target: hoverWhileSelected,
@@ -494,6 +688,12 @@ export function createCanvasMachine(id: string) {
           initial: drag_in_progress_idle,
           states: {
             [drag_in_progress_idle]: {
+              entry: (context) => {
+                console.log("Entered drag_in_progress_idle State", context);
+              },
+              exit: (context) => {
+                console.log("Exited drag_in_progress_idle State", context);
+              },
               on: {
                 [DRAG_STOPPED]: { target: `#${id}.${ready}` },
                 [INSIDE_CANVAS]: {
@@ -503,6 +703,12 @@ export function createCanvasMachine(id: string) {
               },
             },
             [drag_in_progress_active]: {
+              entry: (context) => {
+                console.log("Entered drag_in_progress_active State", context);
+              },
+              exit: (context) => {
+                console.log("Exited drag_in_progress_active State", context);
+              },
               on: {
                 [MOUSE_MOVE]: {
                   actions: ["setMousePosition", "emitMoveWhileDrag"],
@@ -533,10 +739,16 @@ export function createCanvasMachine(id: string) {
         emitReady: callSubscribersFromAction("ready"),
         emitComponentCreated: callSubscribersFromAction("COMPONENT_CREATED"),
         emitComponentRendered: callSubscribersFromAction("COMPONENT_RENDERED"),
+        emitRepositionIdle: callSubscribersFromAction("repositionIdle"),
+        emitRepositionActive: callSubscribersFromAction("repositionActive"),
         setHoverComponent,
         setSelectedComponent,
         setLastDropped,
         handleComponentRendered,
+        setRepositionTarget,
+        setRepositionComponent,
+        emitRepositionFailed: callSubscribersFromAction("repositionFailed"),
+        emitRepositionSuccess: callSubscribersFromAction("repositionSuccess"),
         emitComponentDeleted: callSubscribersFromAction(COMPONENT_DELETED),
         emitComponentRewired: callSubscribersFromAction(COMPONENT_REWIRED),
         emitPropsUpdated: callSubscribersFromAction(PROPS_UPDATED),
