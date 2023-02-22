@@ -273,26 +273,15 @@ function isInTheSameParent(
   event: MOUSE_MOVE_EVENT
 ) {
   const newTarget = event.event.target;
-  const currTarget = context.mousePosition?.target;
   if (
     newTarget !== null &&
     "closest" in newTarget &&
-    currTarget !== null &&
-    "closest" in currTarget!
+    context.repositionComponent !== null
   ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-parent]");
-    const currParent = (currTarget as HTMLElement).closest(
-      "[data-atri-parent]"
-    );
-    if (newParent !== null && currParent !== null) {
+    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
+    if (newParent !== null) {
       const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      const currParentCompId = currParent.getAttribute("data-atri-comp-id");
-      console.log(
-        "Reposition isNotInTheSameParent",
-        newParentCompId,
-        currParentCompId
-      );
-      return newParentCompId === currParentCompId;
+      return newParentCompId === context.repositionComponent;
     }
   }
   return false;
@@ -303,26 +292,15 @@ function isNotInTheSameParent(
   event: MOUSE_MOVE_EVENT
 ) {
   const newTarget = event.event.target;
-  const currTarget = context.mousePosition?.target;
   if (
     newTarget !== null &&
     "closest" in newTarget &&
-    currTarget !== null &&
-    "closest" in currTarget!
+    context.repositionComponent !== null
   ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-parent]");
-    const currParent = (currTarget as HTMLElement).closest(
-      "[data-atri-parent]"
-    );
-    if (newParent !== null && currParent !== null) {
+    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
+    if (newParent !== null) {
       const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      const currParentCompId = currParent.getAttribute("data-atri-comp-id");
-      console.log(
-        "Reposition isNotInTheSameParent",
-        newParentCompId,
-        currParentCompId
-      );
-      return newParentCompId !== currParentCompId;
+      return newParentCompId !== context.repositionComponent;
     }
   }
   return false;
