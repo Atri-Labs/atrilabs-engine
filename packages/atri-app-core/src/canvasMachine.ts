@@ -1,5 +1,5 @@
 import { createMachine, interpret } from "xstate";
-import { DragComp, DragData } from "./types";
+import { CanvasComponent, DragComp, DragData } from "./types";
 
 /**
  * events
@@ -22,6 +22,9 @@ const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after dr
 const SCROLL = "SCROLL" as const;
 const BLUR = "BLUR" as const;
 const COMPONENT_RENDERED = "COMPONENT_RENDERED" as const;
+const COMPONENT_DELETED = "COMPONENT_DELETED" as const;
+const COMPONENT_REWIRED = "COMPONENT_REWIRED" as const;
+const PROPS_UPDATED = "PROPS_UPDATED" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -74,6 +77,19 @@ type COMPONENT_RENDERED_EVENT = {
   type: typeof COMPONENT_RENDERED;
   compId: string;
 };
+type COMPONENT_DELETED_EVENT = {
+  type: typeof COMPONENT_DELETED;
+  comp: CanvasComponent;
+};
+type COMPONENT_REWIRED_EVENT = {
+  type: typeof COMPONENT_REWIRED;
+  oldParent: { id: string; canvasZoneId: string; index: number };
+  newParent: { id: string; canvasZoneId: string; index: number };
+};
+type PROPS_UPDATED_EVENT = {
+  type: typeof PROPS_UPDATED;
+  compId: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -90,7 +106,10 @@ type CanvasMachineEvent =
   | COMPONENT_CREATED_EVENT
   | SCROLL_EVENT
   | BLUR_EVENT
-  | COMPONENT_RENDERED_EVENT;
+  | COMPONENT_RENDERED_EVENT
+  | COMPONENT_DELETED_EVENT
+  | COMPONENT_REWIRED_EVENT
+  | PROPS_UPDATED_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -254,7 +273,10 @@ type SubscribeStates =
   | "focusEnd"
   | typeof COMPONENT_RENDERED
   | "select"
-  | "selectEnd";
+  | "selectEnd"
+  | typeof COMPONENT_DELETED
+  | typeof COMPONENT_REWIRED
+  | typeof PROPS_UPDATED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -268,9 +290,12 @@ export function createCanvasMachine(id: string) {
     hoverEnd: [],
     focus: [],
     focusEnd: [],
-    COMPONENT_RENDERED: [],
+    [COMPONENT_RENDERED]: [],
     select: [],
     selectEnd: [],
+    [COMPONENT_DELETED]: [],
+    [COMPONENT_REWIRED]: [],
+    [PROPS_UPDATED]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -454,6 +479,15 @@ export function createCanvasMachine(id: string) {
             [COMPONENT_CREATED]: {
               actions: ["emitComponentCreated", "setLastDropped"],
             },
+            [COMPONENT_DELETED]: {
+              actions: ["emitComponentDeleted"],
+            },
+            [COMPONENT_REWIRED]: {
+              actions: ["emitComponentRewired"],
+            },
+            [PROPS_UPDATED]: {
+              actions: ["emitPropsUpdated"],
+            },
           },
         },
         [drag_in_progress]: {
@@ -503,6 +537,9 @@ export function createCanvasMachine(id: string) {
         setSelectedComponent,
         setLastDropped,
         handleComponentRendered,
+        emitComponentDeleted: callSubscribersFromAction(COMPONENT_DELETED),
+        emitComponentRewired: callSubscribersFromAction(COMPONENT_REWIRED),
+        emitPropsUpdated: callSubscribersFromAction(PROPS_UPDATED),
       },
     }
   );

@@ -113,6 +113,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
           ) {
             const oldParentId =
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.id;
+            const oldParent: any = {
+              ...tree(treeId)?.nodes[patchEvent.id]?.state.parent,
+            };
             const oldIndex =
               tree(treeId)?.nodes[patchEvent.id]?.state.parent.index;
             if (oldParentId !== undefined && oldIndex !== undefined) {
@@ -126,11 +129,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
                   {
                     type: "rewire",
                     treeId,
-                    childId: patchEvent.id,
-                    newParentId: patchEvent.slice.parent.id,
-                    newIndex: patchEvent.slice.parent.index,
-                    oldIndex,
-                    oldParentId,
+                    compId: patchEvent.id,
+                    newParent: patchEvent.slice.parent,
+                    oldParent,
                   },
                   { name, meta }
                 );
@@ -271,11 +272,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
               {
                 type: "rewire",
                 treeId,
-                childId: patchEvent.id,
-                newParentId: patchEvent.state.parent.id,
-                newIndex: patchEvent.state.parent.index,
-                oldIndex: oldParent.index,
-                oldParentId: oldParent.id,
+                compId: patchEvent.id,
+                newParent: patchEvent.state.parent,
+                oldParent,
               },
               { name, meta }
             );
