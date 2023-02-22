@@ -13,6 +13,24 @@ const findIndex = (options: string[], key: string) => {
   return -1;
 };
 
+/*
+  typed_map custom prop is used in cases where a component needs a predefined set of datatypes
+  Example: The form component with a predefined set of datatypes.
+  data: {
+    type: "typed_map",
+    attributes: [
+      {
+        type: "text",
+        fieldName: "fName"
+      },
+      {
+        type: "text",
+        fieldName: "lName"
+      }
+    ]
+  }
+*/
+
 export const TypedMap: React.FC<ComponentProps> = (props) => {
   const { routes } = usePageRoutes();
 
