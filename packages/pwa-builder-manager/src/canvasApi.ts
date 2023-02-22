@@ -42,6 +42,19 @@ window.addEventListener("message", (ev) => {
         parent: ev.data.parent,
       });
     }
+    if (ev.data?.type === "REDROP_FAILED" && ev.source !== null) {
+      editorAppMachineInterpreter.send({ type: "REDROP_FAILED" });
+    }
+    if (
+      ev.data?.type === "REDROP_SUCCESSFUL" &&
+      ev.source !== null &&
+      ev.data.parent
+    ) {
+      editorAppMachineInterpreter.send({
+        type: "REDROP_SUCCESSFUL",
+        parent: ev.data.parent,
+      });
+    }
   }
 });
 
@@ -134,6 +147,37 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         meta: { agent: "browser" },
       });
     }
+  }
+});
+
+subscribeEditorMachine("REDROP_FAILED", () => {
+  removeMouseListeners();
+});
+
+subscribeEditorMachine("REDROP_SUCCESSFUL", (context, event) => {
+  removeMouseListeners();
+  console.log("Reposition event fired", context, event);
+  if (event.type === "REDROP_SUCCESSFUL") {
+    //   const { pkg, key, id, manifestSchema } = context.dragData!.data;
+    const { parent } = event;
+    //   const fullManifest = getReactManifest({ pkg, key });
+    //   if (fullManifest) {
+    //     const events = createEventsFromManifest({
+    //       manifest: fullManifest.manifest,
+    //       manifestSchema,
+    //       compId: id,
+    //       parent,
+    //       pkg,
+    //       key,
+    //     });
+    //     const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+    //     const forestId = BrowserForestManager.currentForest.forestId;
+    //     api.postNewEvents(forestPkgId, forestId, {
+    //       events,
+    //       name: "",
+    //       meta: { agent: "browser" },
+    //     });
+    //   }
   }
 });
 
