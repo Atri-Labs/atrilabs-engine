@@ -34,6 +34,19 @@ subscribeEditorMachine("before_app_load", (context) => {
   }
 });
 
+subscribeEditorMachine("after_app_load", (context) => {
+  const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+  const forest = BrowserForestManager.getForest(
+    forestPkgId,
+    context.currentRouteObjectPath
+  );
+  forest?.handleEvents({
+    events: context.events[context.currentUrlPath],
+    name: "INIT_EVENTS",
+    meta: { agent: "server-sent" },
+  });
+});
+
 function postNewEvents(
   forestPkgId: string,
   routeObjectPath: string,
@@ -48,17 +61,11 @@ function postNewEvents(
     forest.handleEvents(data);
     const { events } = data;
     events.forEach((event) => {
-      socket.emit(
-        "saveEvent",
-        forestPkgId,
-        routeObjectPath,
-        event,
-        (success) => {
-          if (!success) {
-            console.log("Failed to send event to backend");
-          }
+      socket.emit("saveEvent", routeObjectPath, event, (success) => {
+        if (!success) {
+          console.log("Failed to send event to backend");
         }
-      );
+      });
     });
   }
 }

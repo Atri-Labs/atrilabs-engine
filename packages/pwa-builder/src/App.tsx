@@ -19,6 +19,7 @@ import ComponentListLayer from "@atrilabs/component-list-layer";
 // import ComponentNavigatorLayer from "@atrilabs/component-navigator";
 // import ServicesStatusLayer from "@atrilabs/services-status-layer";
 import CanvasLayer from "@atrilabs/pwa-canvas-layer";
+import StyleLayer from "@atrilabs/pwa-style-layer";
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
         <OverlayHintsLayer />
         <ComponentNavigatorLayer />
       </CanvasRuntime> */}
+      <StyleLayer />
       <CanvasLayer />
     </>
   );

@@ -15,5 +15,17 @@ export function useCanvasZoneEventSubscriber(params: { canvasZoneId: string }) {
       }
     );
   }, []);
+  useEffect(() => {
+    return canvasApi.subscribeCanvasZoneEvent(
+      params.canvasZoneId,
+      "children_updated",
+      () => {
+        if (componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId))
+          setChildCompIds(
+            componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId)
+          );
+      }
+    );
+  }, []);
   return { childCompIds };
 }

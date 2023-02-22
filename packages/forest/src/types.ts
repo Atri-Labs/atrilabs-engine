@@ -188,11 +188,9 @@ export type DewireUpdate = {
 
 export type RewireUpdate = {
   type: "rewire";
-  childId: string;
-  oldParentId: string;
-  newParentId: string;
-  newIndex: number;
-  oldIndex: number;
+  compId: string;
+  oldParent: { id: string; index: number };
+  newParent: { id: string; index: number };
   treeId: string;
 };
 
