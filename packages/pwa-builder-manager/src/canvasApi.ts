@@ -6,6 +6,8 @@ import {
   getReactManifest,
 } from "@atrilabs/core";
 import { api } from "./api";
+import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { PatchEvent } from "@atrilabs/forest";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -151,34 +153,22 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
   }
 });
 
-subscribeEditorMachine("REDROP_FAILED", () => {
-  removeMouseListeners();
-});
-
-subscribeEditorMachine("REDROP_SUCCESSFUL", (context, event) => {
-  removeMouseListeners();
-  console.log("Reposition event fired", context, event);
+subscribeEditorMachine("REDROP_SUCCESSFUL", (_context, event) => {
   if (event.type === "REDROP_SUCCESSFUL") {
-    //   const { pkg, key, id, manifestSchema } = context.dragData!.data;
-    const { parent } = event;
-    //   const fullManifest = getReactManifest({ pkg, key });
-    //   if (fullManifest) {
-    //     const events = createEventsFromManifest({
-    //       manifest: fullManifest.manifest,
-    //       manifestSchema,
-    //       compId: id,
-    //       parent,
-    //       pkg,
-    //       key,
-    //     });
-    //     const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-    //     const forestId = BrowserForestManager.currentForest.forestId;
-    //     api.postNewEvents(forestPkgId, forestId, {
-    //       events,
-    //       name: "",
-    //       meta: { agent: "browser" },
-    //     });
-    //   }
+    const { parent, repositionComponent } = event;
+    const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+    const patchEvent: PatchEvent = {
+      type: `PATCH$$${ComponentTreeId}`,
+      id: repositionComponent,
+      slice: {
+        parent: parent,
+      },
+    };
+    api.postNewEvents(forestPkgId, forestId, {
+      events: [patchEvent],
+      name: "REDROP",
+      meta: { agent: "browser" },
+    });
   }
 });
 
