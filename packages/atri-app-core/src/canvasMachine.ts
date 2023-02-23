@@ -291,38 +291,41 @@ function isInTheSameParent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const newTarget = event.event.target;
-  if (
-    newTarget !== null &&
-    "closest" in newTarget &&
-    context.repositionComponent !== null
-  ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
-    if (newParent !== null) {
-      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      return newParentCompId === context.repositionComponent;
-    }
-  }
-  return false;
+  return !isNotInTheSameParent(context, event);
 }
 
 function isNotInTheSameParent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const newTarget = event.event.target;
+  const target = event.event.target;
   if (
-    newTarget !== null &&
-    "closest" in newTarget &&
+    target !== null &&
+    "closest" in target &&
     context.repositionComponent !== null
   ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
-    if (newParent !== null) {
-      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      return (
-        newParentCompId !== context.repositionComponent &&
-        (newTarget as HTMLElement).closest("[data-atri-parent]") !== null
+    const closestParent = (target as HTMLElement).closest("[data-atri-parent]");
+    if (closestParent) {
+      const closestParentId = closestParent.getAttribute("data-atri-comp-id");
+      const isRepositionComponentAnAncestorOfClosestParent =
+        closestParent.closest(
+          `[data-atri-comp-id='${context.repositionComponent}']`
+        ) !== null;
+      if (
+        closestParentId !== undefined &&
+        closestParentId !== context.repositionComponent &&
+        !isRepositionComponentAnAncestorOfClosestParent
+      ) {
+        return true;
+      }
+    } else {
+      // the new probable parent is actually a canvas zone
+      const closestCanvasZone = (target as HTMLElement).closest(
+        "[data-atri-canvas-id]"
       );
+      if (closestCanvasZone !== null) {
+        return true;
+      }
     }
   }
   return false;
@@ -527,7 +530,6 @@ export function createCanvasMachine(id: string) {
                       actions: ["emitRepositionIdle"],
                     },
                     [MOUSE_MOVE]: {
-                      cond: isNotInTheSameParent,
                       actions: ["setRepositionTarget", "emitRepositionActive"],
                     },
                     [MOUSE_UP]: {
