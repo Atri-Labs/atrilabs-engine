@@ -380,16 +380,6 @@ if (typeof window !== "undefined") {
     },
     true
   );
-  window.addEventListener(
-    "mouseover",
-    (ev) => {
-      canvasMachineInterpreter.send({
-        type: "MOUSE_OVER",
-        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
-      });
-    },
-    true
-  );
   window.addEventListener("scroll", () => {
     canvasMachineInterpreter.send({ type: "SCROLL" });
   });
