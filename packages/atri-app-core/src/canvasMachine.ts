@@ -25,6 +25,8 @@ const COMPONENT_RENDERED = "COMPONENT_RENDERED" as const;
 const COMPONENT_DELETED = "COMPONENT_DELETED" as const;
 const COMPONENT_REWIRED = "COMPONENT_REWIRED" as const;
 const PROPS_UPDATED = "PROPS_UPDATED" as const;
+const KEY_UP = "KEY_UP" as const;
+const KEY_DOWN = "KEY_DOWN" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -90,6 +92,14 @@ type PROPS_UPDATED_EVENT = {
   type: typeof PROPS_UPDATED;
   compId: string;
 };
+type KEY_UP_EVENT = {
+  type: typeof KEY_UP;
+  event: KeyboardEvent;
+};
+type KEY_DOWN_EVENT = {
+  type: typeof KEY_DOWN;
+  event: KeyboardEvent;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -109,7 +119,9 @@ type CanvasMachineEvent =
   | COMPONENT_RENDERED_EVENT
   | COMPONENT_DELETED_EVENT
   | COMPONENT_REWIRED_EVENT
-  | PROPS_UPDATED_EVENT;
+  | PROPS_UPDATED_EVENT
+  | KEY_UP_EVENT
+  | KEY_DOWN_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -356,7 +368,9 @@ type SubscribeStates =
   | "repositionSuccess"
   | typeof COMPONENT_DELETED
   | typeof COMPONENT_REWIRED
-  | typeof PROPS_UPDATED;
+  | typeof PROPS_UPDATED
+  | typeof KEY_UP
+  | typeof KEY_DOWN;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -381,6 +395,8 @@ export function createCanvasMachine(id: string) {
     [COMPONENT_DELETED]: [],
     [COMPONENT_REWIRED]: [],
     [PROPS_UPDATED]: [],
+    [KEY_UP]: [],
+    [KEY_DOWN]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -567,6 +583,8 @@ export function createCanvasMachine(id: string) {
                         callSubscribers("focusEnd", context, event);
                       },
                       on: {
+                        [KEY_DOWN]: { actions: ["emitKeyDown"] },
+                        [KEY_UP]: { actions: ["emitKeyUp"] },
                         [BLUR]: {
                           target: unfocused,
                         },
@@ -678,6 +696,8 @@ export function createCanvasMachine(id: string) {
         emitComponentDeleted: callSubscribersFromAction(COMPONENT_DELETED),
         emitComponentRewired: callSubscribersFromAction(COMPONENT_REWIRED),
         emitPropsUpdated: callSubscribersFromAction(PROPS_UPDATED),
+        emitKeyUp: callSubscribersFromAction(KEY_UP),
+        emitKeyDown: callSubscribersFromAction(KEY_DOWN),
       },
     }
   );

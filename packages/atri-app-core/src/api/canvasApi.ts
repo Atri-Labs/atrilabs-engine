@@ -98,7 +98,6 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     );
   }
 });
-
 subscribeCanvasMachine("repositionSuccess", (context) => {
   const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
@@ -141,12 +140,53 @@ subscribeCanvasMachine("repositionSuccess", (context) => {
     );
   }
 });
-
 subscribeCanvasMachine("select", (context) => {
   window.parent?.postMessage({ type: "select", id: context.selected }, "*");
 });
 subscribeCanvasMachine("selectEnd", (context) => {
   window.parent?.postMessage({ type: "selectEnd", id: context.selected }, "*");
+});
+function stringifyEvent(e: KeyboardEvent) {
+  const obj = {};
+  for (let k in e) {
+    // @ts-ignore
+    obj[k] = e[k];
+  }
+  return JSON.stringify(
+    obj,
+    (k, v) => {
+      if (v instanceof Node) return "Node";
+      if (v instanceof Window) return "Window";
+      return v;
+    },
+    " "
+  );
+}
+subscribeCanvasMachine("KEY_DOWN", (context, event) => {
+  if (event.type === "KEY_DOWN") {
+    const keyEvent = event.event;
+    window.parent?.postMessage(
+      {
+        type: "KEY_DOWN",
+        id: context.selected,
+        event: JSON.parse(stringifyEvent(keyEvent)),
+      },
+      "*"
+    );
+  }
+});
+subscribeCanvasMachine("KEY_UP", (context, event) => {
+  if (event.type === "KEY_UP") {
+    const keyEvent = event.event;
+    window.parent?.postMessage(
+      {
+        type: "KEY_UP",
+        id: context.selected,
+        event: JSON.parse(stringifyEvent(keyEvent)),
+      },
+      "*"
+    );
+  }
 });
 
 const componentEventSubscribers: {
@@ -362,6 +402,12 @@ if (typeof window !== "undefined") {
     },
     true
   );
+  window.addEventListener("keydown", (event) => {
+    canvasMachineInterpreter.send({ type: "KEY_DOWN", event });
+  });
+  window.addEventListener("keyup", (event) => {
+    canvasMachineInterpreter.send({ type: "KEY_UP", event });
+  });
 
   if (window.location !== window.parent.location) {
     canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
