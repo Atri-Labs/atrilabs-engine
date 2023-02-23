@@ -3,3 +3,4 @@ export * from "./api";
 export * from "./canvasApi";
 export * from "./breakpointApi";
 import "./handleBrowserForestManagerUpdates";
+import "./attachAllKeyboardShortcuts";
