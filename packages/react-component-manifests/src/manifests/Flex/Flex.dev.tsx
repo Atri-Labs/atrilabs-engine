@@ -7,8 +7,8 @@ const DevFlex: typeof Flex = forwardRef((props, ref) => {
     props.children.length === 0
       ? {
           // do not provide minHeight minWidth if user has provided height width
-          minHeight: props.styles.height ? "" : "100px",
-          minWidth: props.styles.width ? "" : "100px",
+          minHeight: props.styles?.height ? "" : "100px",
+          minWidth: props.styles?.width ? "" : "100px",
           borderWidth: `2px`,
           borderStyle: `dashed`,
           borderColor: `${gray500}`,
