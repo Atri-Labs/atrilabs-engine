@@ -400,9 +400,9 @@ export interface ClientToServerEvents {
     urlPath: string,
     callback: (events: AnyEvent[]) => void
   ) => void;
-  saveEvent: (
+  saveEvents: (
     urlPath: string,
-    event: AnyEvent,
+    events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
 }
