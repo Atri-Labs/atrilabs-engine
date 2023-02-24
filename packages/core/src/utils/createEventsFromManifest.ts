@@ -35,7 +35,7 @@ export function createEventsFromManifest(options: {
       type: `CREATE$$${treeId}`,
       meta: {},
       state: {
-        parent: { id: "", index: 0, zoneId: "" },
+        parent: { id: "", index: 0 },
         // NOTE: Introducting a convention to store node value in state's property field
         property: { [propKey]: initialValue },
       },
@@ -58,7 +58,7 @@ export function createEventsFromManifest(options: {
     type: `CREATE$$${CallbackTreeId}`,
     meta: {},
     state: {
-      parent: { id: "", index: 0, zoneId: "" },
+      parent: { id: "", index: 0 },
       // NOTE: Introducting a convention to store node value in state's property field
       property: { callbacks: defaultCallbacks },
     },
@@ -82,11 +82,7 @@ export function createEventsFromManifest(options: {
       manifestSchemaId: manifestSchema,
     },
     state: {
-      parent: {
-        id: parent.id,
-        index: parent.index,
-        zoneId: parent.canvasZoneId,
-      },
+      parent,
     },
   };
   events.push(event);

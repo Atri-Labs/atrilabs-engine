@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTree, manifestRegistryController } from "@atrilabs/core";
-import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import { subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 
 export const useShowTab = () => {
   const [showTab, setShowTab] = useState<boolean>(false);
@@ -14,28 +14,32 @@ export const useShowTab = () => {
     | null
   >(null);
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("select", (context) => {
-      const id = context.select!.id;
-      if (
-        compTree.nodes[id] &&
-        compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
-      ) {
-        const pkg = compTree.nodes[id].meta.pkg;
-        const key = compTree.nodes[id].meta.key;
-        const manifestRegistry =
-          manifestRegistryController.readManifestRegistry();
-        const fullManifest = manifestRegistry[
-          ReactManifestSchemaId
-        ].manifests.find((curr) => {
-          return curr.pkg === pkg && curr.manifest.meta.key === key;
-        });
-        if (fullManifest) {
-          const manifest: ReactComponentManifestSchema = fullManifest.manifest;
-          if (manifest.dev.attachProps["custom"]) {
-            const treeOptions = manifest.dev.attachProps["custom"].treeOptions;
-            setId(id);
-            setShowTab(true);
-            setTreeOptions(treeOptions);
+    const unsub = subscribeEditorMachine("SELECT", (_context, event) => {
+      if (event.type === "SELECT") {
+        const id = event.id;
+        if (
+          compTree.nodes[id] &&
+          compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
+        ) {
+          const pkg = compTree.nodes[id].meta.pkg;
+          const key = compTree.nodes[id].meta.key;
+          const manifestRegistry =
+            manifestRegistryController.readManifestRegistry();
+          const fullManifest = manifestRegistry[
+            ReactManifestSchemaId
+          ].manifests.find((curr) => {
+            return curr.pkg === pkg && curr.manifest.meta.key === key;
+          });
+          if (fullManifest) {
+            const manifest: ReactComponentManifestSchema =
+              fullManifest.manifest;
+            if (manifest.dev.attachProps["custom"]) {
+              const treeOptions =
+                manifest.dev.attachProps["custom"].treeOptions;
+              setId(id);
+              setShowTab(true);
+              setTreeOptions(treeOptions);
+            }
           }
         }
       }
@@ -43,7 +47,7 @@ export const useShowTab = () => {
     return unsub;
   }, [compTree]);
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("selectEnd", (context) => {
+    const unsub = subscribeEditorMachine("SELECT_END", () => {
       setShowTab(false);
       setId(null);
     });

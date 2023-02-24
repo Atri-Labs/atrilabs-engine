@@ -1,5 +1,6 @@
-import { api, ImportedResource } from "@atrilabs/core";
+import { ImportedResource } from "@atrilabs/core";
 import { useEffect, useMemo, useState } from "react";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useGetFontImports = () => {
   const [fonts, setFonts] = useState<

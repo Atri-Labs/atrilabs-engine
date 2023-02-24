@@ -6,5 +6,4 @@ module.exports = {
     },
   },
   exposes: {},
-  decorators: [{ pkg: "@atrilabs/canvas-runtime" }],
 };

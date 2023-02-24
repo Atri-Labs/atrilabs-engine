@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {
   BrowserForestManager,
   ClientToServerEvents,
+  ImportedResource,
   ServerToClientEvents,
 } from "@atrilabs/core";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
@@ -70,6 +71,39 @@ function postNewEvents(
   }
 }
 
+function importResource(
+  importStatement: { str: string },
+  callback: (success: boolean) => void
+) {}
+function getResources(callback: (resources: ImportedResource[]) => void) {}
+function subscribeResourceUpdates(
+  callback: (resource: ImportedResource) => void
+) {}
+
+/**
+ *
+ * @param files Each property of file is derived from the Web API File.
+ */
+function uploadAssets(
+  files: {
+    name: string;
+    data: ArrayBuffer;
+    size: number;
+    mime: string;
+  }[],
+  callback: (success: boolean, urls: string[]) => void
+) {}
+function getAssetsInfo(
+  callback: (assets: { [name: string]: { url: string; mime: string } }) => void
+) {}
+
 export const api = {
   postNewEvents,
+  // resource api
+  importResource,
+  getResources,
+  subscribeResourceUpdates,
+  // assets api
+  uploadAssets,
+  getAssetsInfo,
 };

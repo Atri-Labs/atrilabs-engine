@@ -38,6 +38,32 @@ function processManifest(manifest: ReactComponentManifestSchema) {
   return { acceptsChild, callbacks, decorators, isRepeating };
 }
 
+function addToReverseMap(
+  compId: string,
+  parent: { id: string; index: number; canvasZoneId: string }
+) {
+  if (parent.id !== CANVAS_ZONE_ROOT_ID) {
+    componentReverseMap[parent.id] = componentReverseMap[parent.id] ?? [];
+
+    componentReverseMap[parent.id] = [
+      ...componentReverseMap[parent.id],
+      compId,
+    ].sort((a, b) => {
+      return componentStore[a].parent.index - componentStore[b].parent.index;
+    });
+  } else {
+    canvasZoneReverseMap[parent.canvasZoneId] =
+      canvasZoneReverseMap[parent.canvasZoneId] ?? [];
+
+    canvasZoneReverseMap[parent.canvasZoneId] = [
+      ...canvasZoneReverseMap[parent.canvasZoneId],
+      compId,
+    ].sort((a, b) => {
+      return componentStore[a].parent.index - componentStore[b].parent.index;
+    });
+  }
+}
+
 function createComponent(
   manifestData: { manifestSchemaId: string; pkg: string; key: string },
   componentData: {
@@ -66,26 +92,7 @@ function createComponent(
       isRepeating,
     };
     // update reverse map
-    if (parent.id !== CANVAS_ZONE_ROOT_ID) {
-      componentReverseMap[parent.id] = componentReverseMap[parent.id] ?? [];
-
-      componentReverseMap[parent.id] = [
-        ...componentReverseMap[parent.id],
-        id,
-      ].sort((a, b) => {
-        return componentStore[a].parent.index - componentStore[b].parent.index;
-      });
-    } else {
-      canvasZoneReverseMap[parent.canvasZoneId] =
-        canvasZoneReverseMap[parent.canvasZoneId] ?? [];
-
-      canvasZoneReverseMap[parent.canvasZoneId] = [
-        ...canvasZoneReverseMap[parent.canvasZoneId],
-        id,
-      ].sort((a, b) => {
-        return componentStore[a].parent.index - componentStore[b].parent.index;
-      });
-    }
+    addToReverseMap(id, parent);
     // inform the canvas machine
     canvasMachineInterpreter.send({
       type: "COMPONENT_CREATED",
@@ -147,9 +154,29 @@ function updateProps(compId: string, props: any) {
   canvasMachineInterpreter.send({ type: "PROPS_UPDATED", compId });
 }
 
+function removeFromCanvasZoneReverseMap(compId: string, canvasZoneId: string) {
+  const foundIndex = canvasZoneReverseMap[canvasZoneId]?.findIndex((value) => {
+    return value === compId;
+  });
+  if (foundIndex >= 0) {
+    canvasZoneReverseMap[canvasZoneId].splice(foundIndex, 1);
+  }
+}
+
+function removeFromComponentReverseMap(compId: string, parentCompId: string) {
+  const foundIndex = componentReverseMap[parentCompId]?.findIndex(
+    (curr) => curr === compId
+  );
+  if (foundIndex >= 0) {
+    componentReverseMap[parentCompId].splice(foundIndex, 1);
+  }
+}
+
 function deleteComponent(compId: string) {
   const comp: CanvasComponent = { ...componentStore[compId] };
   delete componentStore[compId];
+  removeFromCanvasZoneReverseMap(compId, comp.parent.canvasZoneId);
+  removeFromComponentReverseMap(compId, comp.parent.id);
   canvasMachineInterpreter.send({ type: "COMPONENT_DELETED", comp });
 }
 
@@ -159,6 +186,9 @@ function rewireComponent(
 ) {
   const oldParent = { ...componentStore[compId].parent };
   componentStore[compId].parent = { ...newParent };
+  removeFromCanvasZoneReverseMap(compId, oldParent.canvasZoneId);
+  removeFromComponentReverseMap(compId, oldParent.id);
+  addToReverseMap(compId, newParent);
   canvasMachineInterpreter.send({
     type: "COMPONENT_REWIRED",
     oldParent,

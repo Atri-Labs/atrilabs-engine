@@ -245,8 +245,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     setGradient(undefined);
   }, []);
 
-  console.log("Gradient", gradients);
-
   return (
     <>
       {gradient && (

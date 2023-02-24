@@ -1,4 +1,4 @@
-import { getAncestors, getStylesAlias } from "@atrilabs/canvas-runtime-utils";
+import { componentApi } from "@atrilabs/pwa-builder-manager";
 import {
   gray200,
   teal400,
@@ -66,6 +66,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
+function getStylesAlias(id: string, componentTree: Tree, cssTree: Tree) {
+  // returns the alias and styles of an element
+  const cssNode = cssTree.links[id];
+  const cssNodeId = cssNode.childId;
+  return {
+    alias: componentTree.nodes[id].state?.alias,
+    cssStyles: cssTree.nodes[cssNodeId].state?.property.styles,
+  };
+}
+
 const CssOfElement: React.FC<CssOfElementProp> = ({
   compId,
   showAlias,
@@ -96,7 +106,7 @@ export const CssSummary: React.FC<CssSummaryProp> = ({
   compTree,
 }) => {
   const [showProperties, setShowProperties] = useState<boolean>(false);
-  const ancestorsId = getAncestors(compId);
+  const ancestorsId = componentApi.getAncestors(compId);
   const CssSummary = ancestorsId.map((ele, index) => {
     return (
       <CssOfElement

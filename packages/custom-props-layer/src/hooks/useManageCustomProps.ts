@@ -1,13 +1,10 @@
-import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import CustomPropsTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent } from "@atrilabs/forest";
-import {
-  getComponentProps,
-  updateComponentProps,
-} from "@atrilabs/canvas-runtime";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useManageCustomProps = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
@@ -58,13 +55,6 @@ export const useManageCustomProps = (id: string | null) => {
             setCustomProps({
               ...customPropsTree.nodes[customPropsNodeId].state.property.custom,
             });
-            // tranform it into props
-            const props =
-              customPropsTree.nodes[customPropsNodeId].state.property;
-            if (props) {
-              const oldProps = getComponentProps(id);
-              updateComponentProps(id, { ...oldProps, ...props });
-            }
           }
         }
       });

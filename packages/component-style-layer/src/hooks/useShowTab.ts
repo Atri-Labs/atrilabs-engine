@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, BrowserForestManager } from "@atrilabs/core";
-import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
+import { BrowserForestManager } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent, Tree } from "@atrilabs/forest";
+import { api, subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 
 export const useShowTab = (compTree: Tree) => {
   const [showTab, setShowTab] = useState<boolean>(false);
@@ -52,29 +52,31 @@ export const useShowTab = (compTree: Tree) => {
   }, [compTree]);
 
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("select", (context) => {
-      const id = context.select!.id;
-      if (
-        compTree.nodes[id] &&
-        compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
-      ) {
-        const alias = compTree.nodes[id].state.alias;
-        // When a new component is dropped, it is automatically selected, hence, it might
-        // be that no alias has been created till now.
-        if (alias === undefined) {
-          setAlias("");
-        } else {
-          setAlias(alias);
-          initialAlias.current = alias;
+    const unsub = subscribeEditorMachine("SELECT", (_context, event) => {
+      if (event.type === "SELECT") {
+        const id = event.id;
+        if (
+          compTree.nodes[id] &&
+          compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
+        ) {
+          const alias = compTree.nodes[id].state.alias;
+          // When a new component is dropped, it is automatically selected, hence, it might
+          // be that no alias has been created till now.
+          if (alias === undefined) {
+            setAlias("");
+          } else {
+            setAlias(alias);
+            initialAlias.current = alias;
+          }
+          setId(id);
+          setShowTab(true);
         }
-        setId(id);
-        setShowTab(true);
       }
     });
     return unsub;
   }, [compTree]);
   useEffect(() => {
-    const unsub = subscribeCanvasActivity("selectEnd", (context) => {
+    const unsub = subscribeEditorMachine("SELECT_END", (_context) => {
       setShowTab(false);
       setId(null);
     });

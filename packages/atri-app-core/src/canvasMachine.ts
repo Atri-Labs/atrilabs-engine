@@ -17,7 +17,6 @@ const OUTSIDE_CANVAS = "OUTSIDE_CANVAS" as const;
 const MOUSE_MOVE = "MOUSE_MOVE" as const;
 const MOUSE_UP = "MOUSE_UP" as const;
 const MOUSE_DOWN = "MOUSE_DOWN" as const;
-const MOUSE_OVER = "MOUSE_OVER" as const;
 const COMPONENT_CREATED = "COMPONENT_CREATED" as const; // emitted only after drag-drop
 const SCROLL = "SCROLL" as const;
 const BLUR = "BLUR" as const;
@@ -25,6 +24,9 @@ const COMPONENT_RENDERED = "COMPONENT_RENDERED" as const;
 const COMPONENT_DELETED = "COMPONENT_DELETED" as const;
 const COMPONENT_REWIRED = "COMPONENT_REWIRED" as const;
 const PROPS_UPDATED = "PROPS_UPDATED" as const;
+const KEY_UP = "KEY_UP" as const;
+const KEY_DOWN = "KEY_DOWN" as const;
+const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -57,10 +59,6 @@ type MOUSE_DOWN_EVENT = {
   type: typeof MOUSE_DOWN;
   event: { pageX: number; pageY: number; target: MouseEvent["target"] };
 };
-type MOUSE_OVER_EVENT = {
-  type: typeof MOUSE_OVER;
-  event: { pageX: number; pageY: number; target: MouseEvent["target"] };
-};
 type COMPONENT_CREATED_EVENT = {
   type: typeof COMPONENT_CREATED;
   compId: string;
@@ -90,6 +88,18 @@ type PROPS_UPDATED_EVENT = {
   type: typeof PROPS_UPDATED;
   compId: string;
 };
+type KEY_UP_EVENT = {
+  type: typeof KEY_UP;
+  event: KeyboardEvent;
+};
+type KEY_DOWN_EVENT = {
+  type: typeof KEY_DOWN;
+  event: KeyboardEvent;
+};
+type PROGRAMTIC_HOVER_EVENT = {
+  type: typeof PROGRAMTIC_HOVER;
+  id: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -102,14 +112,16 @@ type CanvasMachineEvent =
   | MOUSE_MOVE_EVENT
   | MOUSE_UP_EVENT
   | MOUSE_DOWN_EVENT
-  | MOUSE_OVER_EVENT
   | COMPONENT_CREATED_EVENT
   | SCROLL_EVENT
   | BLUR_EVENT
   | COMPONENT_RENDERED_EVENT
   | COMPONENT_DELETED_EVENT
   | COMPONENT_REWIRED_EVENT
-  | PROPS_UPDATED_EVENT;
+  | PROPS_UPDATED_EVENT
+  | KEY_UP_EVENT
+  | KEY_DOWN_EVENT
+  | PROGRAMTIC_HOVER_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -175,15 +187,20 @@ function setMousePosition(
 
 function setHoverComponent(
   context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT
+  event: CanvasMachineEvent
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-comp-id]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      context.hovered = compId;
+  if (event.type === MOUSE_MOVE) {
+    const { target } = event.event;
+    if (target !== null && "closest" in target) {
+      const comp = (target as any).closest("[data-atri-comp-id]");
+      if (comp !== null) {
+        const compId = comp.getAttribute("data-atri-comp-id");
+        context.hovered = compId;
+      }
     }
+  }
+  if (event.type === PROGRAMTIC_HOVER) {
+    context.hovered = event.id;
   }
 }
 
@@ -234,6 +251,14 @@ function handleComponentRendered(context: CanvasMachineContext) {
   context.lastDropped = null;
 }
 
+function setEverythingToNull(context: CanvasMachineContext) {
+  context.selected = null;
+  context.hovered = null;
+  context.repositionComponent = null;
+  context.mousePosition = null;
+  context.lastDropped = null;
+}
+
 // conds
 
 function insideComponent(
@@ -267,7 +292,7 @@ function hoveringOverDifferentComponent(
 
 function selectedDifferentComponent(
   context: CanvasMachineContext,
-  event: MOUSE_DOWN_EVENT | MOUSE_OVER_EVENT
+  event: MOUSE_DOWN_EVENT | MOUSE_MOVE_EVENT
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
@@ -291,41 +316,70 @@ function isInTheSameParent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const newTarget = event.event.target;
-  if (
-    newTarget !== null &&
-    "closest" in newTarget &&
-    context.repositionComponent !== null
-  ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
-    if (newParent !== null) {
-      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      return newParentCompId === context.repositionComponent;
-    }
-  }
-  return false;
+  return !isNotInTheSameParent(context, event);
 }
 
 function isNotInTheSameParent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
 ) {
-  const newTarget = event.event.target;
+  const target = event.event.target;
   if (
-    newTarget !== null &&
-    "closest" in newTarget &&
+    target !== null &&
+    "closest" in target &&
     context.repositionComponent !== null
   ) {
-    const newParent = (newTarget as HTMLElement).closest("[data-atri-comp-id]");
-    if (newParent !== null) {
-      const newParentCompId = newParent.getAttribute("data-atri-comp-id");
-      return (
-        newParentCompId !== context.repositionComponent &&
-        (newTarget as HTMLElement).closest("[data-atri-parent]") !== null
+    const closestParent = (target as HTMLElement).closest("[data-atri-parent]");
+    if (closestParent) {
+      const closestParentId = closestParent.getAttribute("data-atri-comp-id");
+      const isRepositionComponentAnAncestorOfClosestParent =
+        closestParent.closest(
+          `[data-atri-comp-id='${context.repositionComponent}']`
+        ) !== null;
+      if (
+        closestParentId !== undefined &&
+        closestParentId !== context.repositionComponent &&
+        !isRepositionComponentAnAncestorOfClosestParent
+      ) {
+        return true;
+      }
+    } else {
+      // the new probable parent is actually a canvas zone
+      const closestCanvasZone = (target as HTMLElement).closest(
+        "[data-atri-canvas-id]"
       );
+      if (closestCanvasZone !== null) {
+        return true;
+      }
     }
   }
   return false;
+}
+
+function mouseIsBackInTheRepositionComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_UP_EVENT
+) {
+  if (event.event.target && "closest" in event.event.target) {
+    const targetElement = event.event.target as HTMLElement;
+    const closestComponent = targetElement.closest("[data-atri-comp-id]");
+    const compId = closestComponent?.getAttribute("data-atri-comp-id");
+    if (compId === context.repositionComponent) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function mouseIsNotBackInTheRepositionComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_UP_EVENT
+) {
+  console.log(
+    "mouseIsNotBackInTheRepositionComponent",
+    !mouseIsBackInTheRepositionComponent(context, event)
+  );
+  return !mouseIsBackInTheRepositionComponent(context, event);
 }
 
 type Callback = (
@@ -353,7 +407,9 @@ type SubscribeStates =
   | "repositionSuccess"
   | typeof COMPONENT_DELETED
   | typeof COMPONENT_REWIRED
-  | typeof PROPS_UPDATED;
+  | typeof PROPS_UPDATED
+  | typeof KEY_UP
+  | typeof KEY_DOWN;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -378,6 +434,8 @@ export function createCanvasMachine(id: string) {
     [COMPONENT_DELETED]: [],
     [COMPONENT_REWIRED]: [],
     [PROPS_UPDATED]: [],
+    [KEY_UP]: [],
+    [KEY_DOWN]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -452,11 +510,6 @@ export function createCanvasMachine(id: string) {
                   cond: insideComponent,
                   actions: ["setHoverComponent"],
                 },
-                [COMPONENT_RENDERED]: {
-                  target: selected,
-                  cond: isLastDroppedComponent,
-                  actions: ["handleComponentRendered", "emitComponentRendered"],
-                },
               },
             },
             [hover]: {
@@ -513,25 +566,40 @@ export function createCanvasMachine(id: string) {
                       cond: isNotInTheSameParent,
                       actions: ["setRepositionTarget", "emitRepositionActive"],
                     },
-                    [MOUSE_UP]: {
-                      target: `#${id}.${ready}`,
-                      actions: ["emitRepositionFailed"],
-                    },
+                    [MOUSE_UP]: [
+                      {
+                        target: `#${id}.${ready}.${selected}`,
+                        cond: mouseIsBackInTheRepositionComponent,
+                        actions: [
+                          "setSelectedComponent",
+                          "emitRepositionFailed",
+                        ],
+                      },
+                      {
+                        target: `#${id}.${ready}.${idle}`,
+                        cond: mouseIsNotBackInTheRepositionComponent,
+                        actions: ["emitRepositionFailed"],
+                      },
+                    ],
                   },
                 },
                 [repositionActive]: {
                   on: {
-                    [MOUSE_MOVE]: {
-                      target: repositionIdle,
-                      cond: isInTheSameParent,
-                      actions: ["emitRepositionIdle"],
-                    },
-                    [MOUSE_MOVE]: {
-                      cond: isNotInTheSameParent,
-                      actions: ["setRepositionTarget", "emitRepositionActive"],
-                    },
+                    [MOUSE_MOVE]: [
+                      {
+                        target: repositionIdle,
+                        cond: isInTheSameParent,
+                        actions: ["emitRepositionIdle"],
+                      },
+                      {
+                        actions: [
+                          "setRepositionTarget",
+                          "emitRepositionActive",
+                        ],
+                      },
+                    ],
                     [MOUSE_UP]: {
-                      target: `#${id}.${ready}`,
+                      target: `#${id}.${ready}.${selected}`,
                       actions: ["emitRepositionSuccess"],
                     },
                   },
@@ -549,7 +617,6 @@ export function createCanvasMachine(id: string) {
               on: {
                 [MOUSE_DOWN]: {
                   target: pressed,
-                  cond: selectedDifferentComponent,
                   actions: ["setMousePosition"],
                 },
               },
@@ -566,6 +633,8 @@ export function createCanvasMachine(id: string) {
                         callSubscribers("focusEnd", context, event);
                       },
                       on: {
+                        [KEY_DOWN]: { actions: ["emitKeyDown"] },
+                        [KEY_UP]: { actions: ["emitKeyUp"] },
                         [BLUR]: {
                           target: unfocused,
                         },
@@ -581,7 +650,7 @@ export function createCanvasMachine(id: string) {
                   states: {
                     [selectIdle]: {
                       on: {
-                        [MOUSE_OVER]: {
+                        [MOUSE_MOVE]: {
                           target: hoverWhileSelected,
                           cond: selectedDifferentComponent,
                         },
@@ -589,7 +658,7 @@ export function createCanvasMachine(id: string) {
                     },
                     [hoverWhileSelected]: {
                       on: {
-                        [MOUSE_OVER]: {
+                        [MOUSE_MOVE]: {
                           target: hoverWhileSelected,
                           cond: selectedDifferentComponent,
                         },
@@ -610,14 +679,26 @@ export function createCanvasMachine(id: string) {
             [COMPONENT_CREATED]: {
               actions: ["emitComponentCreated", "setLastDropped"],
             },
-            [COMPONENT_DELETED]: {
-              actions: ["emitComponentDeleted"],
-            },
+            [COMPONENT_DELETED]: [
+              {
+                target: `#${id}.${ready}.${idle}`,
+                actions: ["emitComponentDeleted", "setEverythingToNull"],
+              },
+            ],
             [COMPONENT_REWIRED]: {
               actions: ["emitComponentRewired"],
             },
             [PROPS_UPDATED]: {
               actions: ["emitPropsUpdated"],
+            },
+            [COMPONENT_RENDERED]: {
+              target: `.${selected}`,
+              cond: isLastDroppedComponent,
+              actions: ["handleComponentRendered", "emitComponentRendered"],
+            },
+            [PROGRAMTIC_HOVER]: {
+              target: `.${hover}`,
+              actions: ["setHoverComponent"],
             },
           },
         },
@@ -677,6 +758,9 @@ export function createCanvasMachine(id: string) {
         emitComponentDeleted: callSubscribersFromAction(COMPONENT_DELETED),
         emitComponentRewired: callSubscribersFromAction(COMPONENT_REWIRED),
         emitPropsUpdated: callSubscribersFromAction(PROPS_UPDATED),
+        emitKeyUp: callSubscribersFromAction(KEY_UP),
+        emitKeyDown: callSubscribersFromAction(KEY_DOWN),
+        setEverythingToNull,
       },
     }
   );

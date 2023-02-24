@@ -98,9 +98,7 @@ subscribeCanvasMachine("upWhileDrag", (context) => {
     );
   }
 });
-
 subscribeCanvasMachine("repositionSuccess", (context) => {
-  console.log("Reposition atri-app-core: ", context.repositionTarget);
   const canvasZone = (context.repositionTarget!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
   );
@@ -142,12 +140,53 @@ subscribeCanvasMachine("repositionSuccess", (context) => {
     );
   }
 });
-
 subscribeCanvasMachine("select", (context) => {
   window.parent?.postMessage({ type: "select", id: context.selected }, "*");
 });
 subscribeCanvasMachine("selectEnd", (context) => {
   window.parent?.postMessage({ type: "selectEnd", id: context.selected }, "*");
+});
+function stringifyEvent(e: KeyboardEvent) {
+  const obj = {};
+  for (let k in e) {
+    // @ts-ignore
+    obj[k] = e[k];
+  }
+  return JSON.stringify(
+    obj,
+    (k, v) => {
+      if (v instanceof Node) return "Node";
+      if (v instanceof Window) return "Window";
+      return v;
+    },
+    " "
+  );
+}
+subscribeCanvasMachine("KEY_DOWN", (context, event) => {
+  if (event.type === "KEY_DOWN") {
+    const keyEvent = event.event;
+    window.parent?.postMessage(
+      {
+        type: "KEY_DOWN",
+        id: context.selected,
+        event: JSON.parse(stringifyEvent(keyEvent)),
+      },
+      "*"
+    );
+  }
+});
+subscribeCanvasMachine("KEY_UP", (context, event) => {
+  if (event.type === "KEY_UP") {
+    const keyEvent = event.event;
+    window.parent?.postMessage(
+      {
+        type: "KEY_UP",
+        id: context.selected,
+        event: JSON.parse(stringifyEvent(keyEvent)),
+      },
+      "*"
+    );
+  }
 });
 
 const componentEventSubscribers: {
@@ -287,13 +326,14 @@ if (typeof window !== "undefined") {
     }
     if (ev.data?.type === "REWIRE_COMPONENT") {
       const payload = ev.data.payload as RewireUpdate;
-      const newParent = {
-        ...payload.newParent,
-        canvasZoneId:
-          (payload.newParent as any).zoneId ||
-          (payload.newParent as any).canvasZoneId,
-      };
-      componentStoreApi.rewireComponent(payload.compId, { ...newParent });
+      const newParent = payload.newParent as any;
+      componentStoreApi.rewireComponent(payload.compId, newParent);
+    }
+    if (ev.data?.type === "PROGRAMTIC_HOVER") {
+      canvasMachineInterpreter.send({
+        type: "PROGRAMTIC_HOVER",
+        id: ev.data.id,
+      });
     }
   });
   window.document.addEventListener(
@@ -346,16 +386,6 @@ if (typeof window !== "undefined") {
     },
     true
   );
-  window.addEventListener(
-    "mouseover",
-    (ev) => {
-      canvasMachineInterpreter.send({
-        type: "MOUSE_OVER",
-        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
-      });
-    },
-    true
-  );
   window.addEventListener("scroll", () => {
     canvasMachineInterpreter.send({ type: "SCROLL" });
   });
@@ -368,6 +398,12 @@ if (typeof window !== "undefined") {
     },
     true
   );
+  window.addEventListener("keydown", (event) => {
+    canvasMachineInterpreter.send({ type: "KEY_DOWN", event });
+  });
+  window.addEventListener("keyup", (event) => {
+    canvasMachineInterpreter.send({ type: "KEY_UP", event });
+  });
 
   if (window.location !== window.parent.location) {
     canvasMachineInterpreter.send({ type: "IFRAME_DETECTED" });
