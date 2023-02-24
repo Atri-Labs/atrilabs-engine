@@ -188,8 +188,17 @@ function mouseUpInPlayground(event: { pageX: number; pageY: number }) {
   editorAppMachineInterpreter.send({ type: "MOUSE_UP", event });
 }
 
+function raiseHoverEvent(compId: string) {
+  editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+    { type: "PROGRAMTIC_HOVER", id: compId },
+    // @ts-ignore
+    "*"
+  );
+}
+
 export const canvasApi = {
   navigatePage,
   startDrag,
   mouseUpInPlayground,
+  raiseHoverEvent,
 };

@@ -26,6 +26,7 @@ const COMPONENT_REWIRED = "COMPONENT_REWIRED" as const;
 const PROPS_UPDATED = "PROPS_UPDATED" as const;
 const KEY_UP = "KEY_UP" as const;
 const KEY_DOWN = "KEY_DOWN" as const;
+const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -95,6 +96,10 @@ type KEY_DOWN_EVENT = {
   type: typeof KEY_DOWN;
   event: KeyboardEvent;
 };
+type PROGRAMTIC_HOVER_EVENT = {
+  type: typeof PROGRAMTIC_HOVER;
+  id: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -115,7 +120,8 @@ type CanvasMachineEvent =
   | COMPONENT_REWIRED_EVENT
   | PROPS_UPDATED_EVENT
   | KEY_UP_EVENT
-  | KEY_DOWN_EVENT;
+  | KEY_DOWN_EVENT
+  | PROGRAMTIC_HOVER_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -181,15 +187,20 @@ function setMousePosition(
 
 function setHoverComponent(
   context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT
+  event: CanvasMachineEvent
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-comp-id]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      context.hovered = compId;
+  if (event.type === MOUSE_MOVE) {
+    const { target } = event.event;
+    if (target !== null && "closest" in target) {
+      const comp = (target as any).closest("[data-atri-comp-id]");
+      if (comp !== null) {
+        const compId = comp.getAttribute("data-atri-comp-id");
+        context.hovered = compId;
+      }
     }
+  }
+  if (event.type === PROGRAMTIC_HOVER) {
+    context.hovered = event.id;
   }
 }
 
@@ -681,6 +692,10 @@ export function createCanvasMachine(id: string) {
               target: `.${selected}`,
               cond: isLastDroppedComponent,
               actions: ["handleComponentRendered", "emitComponentRendered"],
+            },
+            [PROGRAMTIC_HOVER]: {
+              target: `.${hover}`,
+              actions: ["setHoverComponent"],
             },
           },
         },

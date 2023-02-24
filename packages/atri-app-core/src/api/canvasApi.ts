@@ -329,6 +329,12 @@ if (typeof window !== "undefined") {
       const newParent = payload.newParent as any;
       componentStoreApi.rewireComponent(payload.compId, newParent);
     }
+    if (ev.data?.type === "PROGRAMTIC_HOVER") {
+      canvasMachineInterpreter.send({
+        type: "PROGRAMTIC_HOVER",
+        id: ev.data.id,
+      });
+    }
   });
   window.document.addEventListener(
     "mouseenter",

@@ -9,7 +9,7 @@ import ComponentListLayer from "@atrilabs/component-list-layer";
 import ComponentStyleLayer from "@atrilabs/component-style-layer";
 // import OverlayHintsLayer from "@atrilabs/overlay-hints-layer";
 // import PublishAppLayer from "@atrilabs/publish-app-layer";
-// import CustomPropsLayer from "@atrilabs/custom-props-layer";
+import CustomPropsLayer from "@atrilabs/custom-props-layer";
 // import AssetManagerLayer from "@atrilabs/asset-manager-layer";
 // import AppTemplateLayer from "@atrilabs/app-template-layer";
 // import ActionLayer from "@atrilabs/action-layer";
@@ -32,7 +32,7 @@ export default function App() {
       <ComponentListLayer />
       <ComponentStyleLayer />
       {/* <PublishAppLayer /> */}
-      {/* <CustomPropsLayer /> */}
+      <CustomPropsLayer />
       {/* <AssetManagerLayer /> */}
       {/* <AppTemplateLayer /> */}
       {/* <ActionLayer /> */}
