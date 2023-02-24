@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import {
   BrowserForestManager,
   ClientToServerEvents,
+  ImportedResource,
   ServerToClientEvents,
 } from "@atrilabs/core";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
@@ -70,6 +71,20 @@ function postNewEvents(
   }
 }
 
+function importResource(
+  importStatement: { str: string },
+  callback: (success: boolean) => void
+) {}
+
+function getResources(callback: (resources: ImportedResource[]) => void) {}
+
+function subscribeResourceUpdates(
+  callback: (resource: ImportedResource) => void
+) {}
+
 export const api = {
   postNewEvents,
+  importResource,
+  getResources,
+  subscribeResourceUpdates,
 };

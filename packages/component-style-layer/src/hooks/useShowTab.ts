@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, BrowserForestManager } from "@atrilabs/core";
+import { BrowserForestManager } from "@atrilabs/core";
 import { subscribeCanvasActivity } from "@atrilabs/canvas-runtime";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent, Tree } from "@atrilabs/forest";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useShowTab = (compTree: Tree) => {
   const [showTab, setShowTab] = useState<boolean>(false);

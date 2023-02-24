@@ -1,5 +1,4 @@
 import {
-  api,
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
@@ -15,6 +14,7 @@ import {
   Breakpoint,
 } from "@atrilabs/canvas-runtime";
 import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useManageCSS = (props: {
   id: string | null;
