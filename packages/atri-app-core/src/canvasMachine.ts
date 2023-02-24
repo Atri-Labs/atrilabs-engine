@@ -570,7 +570,10 @@ export function createCanvasMachine(id: string) {
                       {
                         target: `#${id}.${ready}.${selected}`,
                         cond: mouseIsBackInTheRepositionComponent,
-                        actions: ["emitRepositionFailed"],
+                        actions: [
+                          "setSelectedComponent",
+                          "emitRepositionFailed",
+                        ],
                       },
                       {
                         target: `#${id}.${ready}.${idle}`,
