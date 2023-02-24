@@ -1,4 +1,4 @@
-import { api } from "@atrilabs/core";
+import { api } from "@atrilabs/pwa-builder-manager";
 import {
   amber300,
   gray300,

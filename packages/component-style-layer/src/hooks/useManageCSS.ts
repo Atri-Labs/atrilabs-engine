@@ -7,14 +7,8 @@ import cssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import {
-  getComponentProps,
-  updateComponentProps,
-  subscribeBreakpointChange,
-  Breakpoint,
-} from "@atrilabs/canvas-runtime";
-import { getEffectiveStyle } from "@atrilabs/canvas-runtime-utils";
-import { api } from "@atrilabs/pwa-builder-manager";
+import { getEffectiveStyle, Breakpoint } from "@atrilabs/core";
+import { api, breakpointApi } from "@atrilabs/pwa-builder-manager";
 
 export const useManageCSS = (props: {
   id: string | null;
@@ -33,39 +27,9 @@ export const useManageCSS = (props: {
   // handle breakpoints
   const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
   useEffect(() => {
-    subscribeBreakpointChange((breakpoint) => {
+    breakpointApi.subscribeBreakpointChange(() => {
+      const breakpoint = breakpointApi.getActiveBreakpoint();
       setBreakpoint(breakpoint);
-      // update styles for all components on breakpoint change
-      const nodeIds = Object.keys(compTree.nodes);
-      nodeIds.forEach((nodeId) => {
-        const cssLink = cssTree.links[nodeId];
-        if (cssLink) {
-          const cssNode = cssTree.nodes[cssLink.childId];
-          if (cssNode) {
-            const styles = cssNode.state.property.styles;
-            const breakpoints = cssNode.state.breakpoints;
-            if (breakpoints && breakpoint) {
-              const effectiveStyle = getEffectiveStyle(
-                breakpoint,
-                breakpoints,
-                styles
-              );
-              const oldProps = getComponentProps(nodeId);
-              updateComponentProps(nodeId, {
-                ...oldProps,
-                styles: effectiveStyle,
-              });
-            }
-            if (breakpoint === null) {
-              const oldProps = getComponentProps(nodeId);
-              updateComponentProps(nodeId, {
-                ...oldProps,
-                styles: { ...styles },
-              });
-            }
-          }
-        }
-      });
     });
   }, [compTree, cssTree]);
 
@@ -107,52 +71,6 @@ export const useManageCSS = (props: {
     },
     [id, compTree, cssTree, breakpoint]
   );
-  useEffect(() => {
-    if (
-      id &&
-      compTree.nodes[id] &&
-      compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
-    ) {
-      // subscribe to forest
-      const currentForest = BrowserForestManager.currentForest;
-      const unsub = currentForest.subscribeForest((update) => {
-        if (update.type === "change") {
-          if (update.treeId === cssTreeId) {
-            const cssNode = cssTree.links[id];
-            const cssNodeId = cssNode.childId;
-            const styles = cssTree.nodes[cssNodeId].state.property.styles;
-            const breakpoints = cssTree.nodes[cssNodeId].state.breakpoints;
-            if (breakpoint && breakpoints) {
-              const effectiveStyle = getEffectiveStyle(
-                breakpoint,
-                breakpoints,
-                styles
-              );
-              setStyles(effectiveStyle);
-              // tranform it into props
-              const props = { ...cssTree.nodes[cssNodeId].state.property };
-              props.styles = effectiveStyle;
-              if (props) {
-                const oldProps = getComponentProps(id);
-                updateComponentProps(id, { ...oldProps, ...props });
-              }
-            } else {
-              setStyles({ ...cssTree.nodes[cssNodeId].state.property.styles });
-              // tranform it into props
-              const props = cssTree.nodes[cssNodeId].state.property;
-              if (props) {
-                const oldProps = getComponentProps(id);
-                updateComponentProps(id, { ...oldProps, ...props });
-              }
-            }
-
-            // TODO: update inherited styles (maybe inside a startTransition)
-          }
-        }
-      });
-      return unsub;
-    }
-  }, [id, compTree, cssTree, breakpoint]);
   useEffect(() => {
     // fetch values everytime id changes
     if (

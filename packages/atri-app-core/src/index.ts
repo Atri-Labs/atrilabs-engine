@@ -4,3 +4,4 @@ export * from "./contexts";
 export * from "./canvasMachine";
 export * from "./types";
 export * from "./editor-components";
+export * from "./api";

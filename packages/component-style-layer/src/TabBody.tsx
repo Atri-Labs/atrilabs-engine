@@ -15,7 +15,7 @@ import { Typography } from "./components/typography/Typography";
 import Position from "./components/position/Position";
 import { Background } from "./components/background/Background";
 import { CssProprtyComponentType } from "./types";
-import { Breakpoint } from "@atrilabs/canvas-runtime";
+import { Breakpoint } from "@atrilabs/core";
 import { Miscellaneous } from "./components/miscellaneous/Miscellaneous";
 import { Outline } from "./components/outline/Outline";
 import { Css2Display } from "./components/css2display/Css2Display";

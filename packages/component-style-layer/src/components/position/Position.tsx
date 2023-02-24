@@ -214,6 +214,7 @@ const dragMachine = createMachine({
     finalMousePosition: 0, // event.pageY event.pageX
   },
   initial: "idle",
+  predictableActionArguments: true,
   states: {
     idle: {
       on: {
