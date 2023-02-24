@@ -22,7 +22,6 @@ function createPropsFromManifestComponent(
       if (tree.links[compId] && tree.links[compId].childId) {
         const propNodeId = tree.links[compId].childId;
         // convention that state.property field in tree contains the value
-        console.log(compId, propNodeId, treeId);
         const value = tree.nodes[propNodeId].state.property;
         const breakpoints = tree.nodes[propNodeId].state.breakpoints;
         // temporary fix: handle breakpoint for styles prop only
