@@ -19,6 +19,8 @@ const DRAG_SUCCESS = "DRAG_SUCCESS" as const;
 const DRAG_FAILED = "DRAG_FAILED" as const;
 const REDROP_SUCCESSFUL = "REDROP_SUCCESSFUL" as const;
 const REDROP_FAILED = "REDROP_FAILED" as const;
+const SELECT = "SELECT" as const;
+const SELECT_END = "SELECT_END" as const;
 
 type APP_INFO_FETCHED_EVENT = {
   type: typeof APP_INFO_FETCHED;
@@ -87,6 +89,14 @@ type REDROP_SUCCESSFUL_EVENT = {
 type REDROP_FAILED_EVENT = {
   type: typeof REDROP_FAILED;
 };
+type SELECT_EVENT = {
+  type: typeof SELECT;
+  id: string;
+};
+type SELECT_END_EVENT = {
+  type: typeof SELECT_END;
+  id: string;
+};
 
 type EDITOR_APP_EVENTS =
   | APP_INFO_FETCHED_EVENT
@@ -104,7 +114,9 @@ type EDITOR_APP_EVENTS =
   | DRAG_SUCCESS_EVENT
   | DRAG_FAILED_EVENT
   | REDROP_SUCCESSFUL_EVENT
-  | REDROP_FAILED_EVENT;
+  | REDROP_FAILED_EVENT
+  | SELECT_EVENT
+  | SELECT_END_EVENT;
 
 // states
 const booting = "booting" as const; // initial data fetching is done
@@ -261,7 +273,9 @@ export function createEditorAppMachine(id: string) {
     | typeof REDROP_SUCCESSFUL
     | typeof REDROP_FAILED
     | typeof INSIDE_CANVAS
-    | typeof OUTSIDE_CANVAS;
+    | typeof OUTSIDE_CANVAS
+    | typeof SELECT
+    | typeof SELECT_END;
 
   const subscribers: {
     [key in SUBSCRIPTION_STATES]: ((
@@ -276,12 +290,14 @@ export function createEditorAppMachine(id: string) {
     drag_started: [],
     drag_in_progress: [],
     mouse_move_during_drag: [],
-    DRAG_SUCCESS: [],
-    DRAG_FAILED: [],
-    INSIDE_CANVAS: [],
-    OUTSIDE_CANVAS: [],
-    REDROP_SUCCESSFUL: [],
-    REDROP_FAILED: [],
+    [DRAG_SUCCESS]: [],
+    [DRAG_FAILED]: [],
+    [INSIDE_CANVAS]: [],
+    [OUTSIDE_CANVAS]: [],
+    [REDROP_SUCCESSFUL]: [],
+    [REDROP_FAILED]: [],
+    [SELECT]: [],
+    [SELECT_END]: [],
   };
 
   function subscribeEditorMachine(
@@ -344,6 +360,14 @@ export function createEditorAppMachine(id: string) {
     event: REDROP_FAILED_EVENT
   ) {
     callSubscribers("REDROP_FAILED", context, event);
+  }
+
+  function emitSelect(context: EDITOR_APP_CONTEXT, event: SELECT_EVENT) {
+    callSubscribers(SELECT, context, event);
+  }
+
+  function emitSelectEnd(context: EDITOR_APP_CONTEXT, event: SELECT_EVENT) {
+    callSubscribers(SELECT_END, context, event);
   }
 
   const editorAppMachine = createMachine<EDITOR_APP_CONTEXT, EDITOR_APP_EVENTS>(
@@ -472,6 +496,12 @@ export function createEditorAppMachine(id: string) {
             [REDROP_FAILED]: {
               actions: ["emitRepositionFailed"],
             },
+            [SELECT]: {
+              actions: ["emitSelect"],
+            },
+            [SELECT_END]: {
+              actions: ["emitSelectEnd"],
+            },
           },
           entry: (context, event) => {
             callSubscribers("ready", context, event);
@@ -548,6 +578,8 @@ export function createEditorAppMachine(id: string) {
         emitOutsideCanvas,
         emitRepositionSuccessful,
         emitRepositionFailed,
+        emitSelect,
+        emitSelectEnd,
       },
     }
   );

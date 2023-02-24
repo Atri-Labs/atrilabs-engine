@@ -329,6 +329,12 @@ if (typeof window !== "undefined") {
       const newParent = payload.newParent as any;
       componentStoreApi.rewireComponent(payload.compId, newParent);
     }
+    if (ev.data?.type === "PROGRAMTIC_HOVER") {
+      canvasMachineInterpreter.send({
+        type: "PROGRAMTIC_HOVER",
+        id: ev.data.id,
+      });
+    }
   });
   window.document.addEventListener(
     "mouseenter",
@@ -375,16 +381,6 @@ if (typeof window !== "undefined") {
     (ev) => {
       canvasMachineInterpreter.send({
         type: "MOUSE_DOWN",
-        event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
-      });
-    },
-    true
-  );
-  window.addEventListener(
-    "mouseover",
-    (ev) => {
-      canvasMachineInterpreter.send({
-        type: "MOUSE_OVER",
         event: { pageX: ev.pageX, pageY: ev.pageY, target: ev.target },
       });
     },

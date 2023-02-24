@@ -7,7 +7,7 @@ import {
   OpenAssetManagerCallabck,
   UseUploadAssetManagerOptions,
 } from "../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 
 export const useUploadAssetManager = ({
   patchCb,

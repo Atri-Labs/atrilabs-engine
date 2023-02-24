@@ -5,12 +5,11 @@ import AtriIconLayer from "@atrilabs/atri-icon-layer";
 import AppPageLayer from "@atrilabs/app-page-layer";
 import CanvasBreakPointLayer from "@atrilabs/canvas-breakpoint-layer";
 import ComponentListLayer from "@atrilabs/component-list-layer";
-// import CanvasRuntime from "@atrilabs/canvas-runtime";
 // import ManageCanvasRuntimeLayer from "@atrilabs/manage-canvas-runtime-layer";
-// import ComponentStyleLayer from "@atrilabs/component-style-layer";
+import ComponentStyleLayer from "@atrilabs/component-style-layer";
 // import OverlayHintsLayer from "@atrilabs/overlay-hints-layer";
 // import PublishAppLayer from "@atrilabs/publish-app-layer";
-// import CustomPropsLayer from "@atrilabs/custom-props-layer";
+import CustomPropsLayer from "@atrilabs/custom-props-layer";
 // import AssetManagerLayer from "@atrilabs/asset-manager-layer";
 // import AppTemplateLayer from "@atrilabs/app-template-layer";
 // import ActionLayer from "@atrilabs/action-layer";
@@ -19,7 +18,7 @@ import ComponentListLayer from "@atrilabs/component-list-layer";
 // import ComponentNavigatorLayer from "@atrilabs/component-navigator";
 // import ServicesStatusLayer from "@atrilabs/services-status-layer";
 import CanvasLayer from "@atrilabs/pwa-canvas-layer";
-import StyleLayer from "@atrilabs/pwa-style-layer";
+// import StyleLayer from "@atrilabs/pwa-style-layer";
 
 export default function App() {
   return (
@@ -31,9 +30,9 @@ export default function App() {
       <AppPageLayer />
       <CanvasBreakPointLayer />
       <ComponentListLayer />
-      {/* <ComponentStyleLayer /> */}
+      <ComponentStyleLayer />
       {/* <PublishAppLayer /> */}
-      {/* <CustomPropsLayer /> */}
+      <CustomPropsLayer />
       {/* <AssetManagerLayer /> */}
       {/* <AppTemplateLayer /> */}
       {/* <ActionLayer /> */}
@@ -45,7 +44,7 @@ export default function App() {
         <OverlayHintsLayer />
         <ComponentNavigatorLayer />
       </CanvasRuntime> */}
-      <StyleLayer />
+      {/* <StyleLayer /> */}
       <CanvasLayer />
     </>
   );

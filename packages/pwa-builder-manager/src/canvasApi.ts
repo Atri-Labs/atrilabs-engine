@@ -58,6 +58,18 @@ window.addEventListener("message", (ev) => {
         repositionComponent: ev.data.repositionComponent,
       });
     }
+    if (ev.data?.type === "select" && ev.source !== null && ev.data.id) {
+      editorAppMachineInterpreter.send({
+        type: "SELECT",
+        id: ev.data.id,
+      });
+    }
+    if (ev.data?.type === "selectEnd" && ev.source !== null && ev.data.id) {
+      editorAppMachineInterpreter.send({
+        type: "SELECT_END",
+        id: ev.data.id,
+      });
+    }
   }
 });
 
@@ -176,8 +188,17 @@ function mouseUpInPlayground(event: { pageX: number; pageY: number }) {
   editorAppMachineInterpreter.send({ type: "MOUSE_UP", event });
 }
 
+function raiseHoverEvent(compId: string) {
+  editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+    { type: "PROGRAMTIC_HOVER", id: compId },
+    // @ts-ignore
+    "*"
+  );
+}
+
 export const canvasApi = {
   navigatePage,
   startDrag,
   mouseUpInPlayground,
+  raiseHoverEvent,
 };
