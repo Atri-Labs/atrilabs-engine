@@ -9,6 +9,7 @@ import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { getEffectiveStyle, Breakpoint } from "@atrilabs/core";
 import { api, breakpointApi } from "@atrilabs/pwa-builder-manager";
+import CssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 
 export const useManageCSS = (props: {
   id: string | null;
@@ -71,6 +72,7 @@ export const useManageCSS = (props: {
     },
     [id, compTree, cssTree, breakpoint]
   );
+
   useEffect(() => {
     // fetch values everytime id changes
     if (
@@ -90,6 +92,7 @@ export const useManageCSS = (props: {
       }
     }
   }, [id, compTree, cssTree, breakpoint]);
+
   useEffect(() => {
     // find component registry
     if (
@@ -117,6 +120,27 @@ export const useManageCSS = (props: {
       }
     }
   }, [id, compTree]);
+
+  useEffect(() => {
+    return BrowserForestManager.currentForest.subscribeForest((update) => {
+      if (id && compTree.nodes[id]) {
+        const cssLink = cssTree.links[id];
+        if (
+          update.type === "change" &&
+          update.treeId === CssTreeId &&
+          cssLink.childId === update.id
+        ) {
+          const styles = cssTree.nodes[update.id].state.property.styles;
+          const breakpoints = cssTree.nodes[update.id].state.breakpoints;
+          if (breakpoint && breakpoints) {
+            setStyles(getEffectiveStyle(breakpoint, breakpoints, styles));
+          } else {
+            setStyles(styles);
+          }
+        }
+      }
+    });
+  }, [compTree, cssTree, breakpoint, id]);
 
   return { patchCb, styles, treeOptions, breakpoint };
 };
