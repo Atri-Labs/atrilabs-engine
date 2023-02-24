@@ -349,7 +349,6 @@ function mouseIsBackInTheRepositionComponent(
   context: CanvasMachineContext,
   event: MOUSE_UP_EVENT
 ) {
-  console.log("mouseIsBackInTheRepositionComponent");
   if (event.event.target && "closest" in event.event.target) {
     const targetElement = event.event.target as HTMLElement;
     const closestComponent = targetElement.closest("[data-atri-comp-id]");

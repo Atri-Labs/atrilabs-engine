@@ -98,7 +98,6 @@ function getComponentNode(id: string) {
 function getAncestors(id: string, ancestors: string[] = []) {
   // returns array of ancestors, 0th index is the component itself, 1st index is parent if exists, 2th is the grandparent and so on
   const compNode = getComponentNode(id);
-  console.log(compNode, id);
   const compParent = compNode.state.parent.id;
   ancestors.push(compNode.id);
   if (compParent !== CANVAS_ZONE_ROOT_ID) {

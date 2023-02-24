@@ -220,8 +220,6 @@ export const BoxShadow: React.FC<CssProprtyComponentType> = (props) => {
     updateBoxShadow(updatedValue);
   };
 
-  console.log("Props", props.styles);
-
   return (
     <div style={styles.container}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
