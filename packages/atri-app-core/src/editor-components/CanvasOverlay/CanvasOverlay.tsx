@@ -1,7 +1,8 @@
-import { useDragDrop } from "./hooks/useDragDrop";
+import { useDragDrop, useSelectHints } from "./hooks";
 
 export function CanvasOverlay() {
   const { dragFC, dragOverlayStyle } = useDragDrop();
+  useSelectHints();
   return (
     <>
       {dragFC?.Comp && dragOverlayStyle ? (
