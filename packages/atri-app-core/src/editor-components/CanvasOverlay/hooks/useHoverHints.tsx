@@ -121,7 +121,6 @@ export function useHoverHints() {
       rightLineHoverId.current = getId();
       bottomLineHoverId.current = getId();
       leftLineHoverId.current = getId();
-      console.log(context.hovered);
       compId.current = context.hovered;
       renderFn();
     });

@@ -1,5 +1,5 @@
 import { useDragDrop, useSelectHints } from "./hooks";
-import { useHoverHints } from "./hooks/useHoverEvents";
+import { useHoverHints } from "./hooks/useHoverHints";
 
 export function CanvasOverlay() {
   const { dragFC, dragOverlayStyle } = useDragDrop();
