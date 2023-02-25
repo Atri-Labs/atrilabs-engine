@@ -662,6 +662,7 @@ export function createCanvasMachine(id: string) {
                         [MOUSE_MOVE]: {
                           target: hoverWhileSelected,
                           cond: selectedDifferentComponent,
+                          actions: ["setHoverComponent"],
                         },
                         [SCROLL]: { target: selectIdle },
                         [OUTSIDE_CANVAS]: { target: selectIdle },
