@@ -375,10 +375,6 @@ function mouseIsNotBackInTheRepositionComponent(
   context: CanvasMachineContext,
   event: MOUSE_UP_EVENT
 ) {
-  console.log(
-    "mouseIsNotBackInTheRepositionComponent",
-    !mouseIsBackInTheRepositionComponent(context, event)
-  );
   return !mouseIsBackInTheRepositionComponent(context, event);
 }
 
@@ -409,7 +405,9 @@ type SubscribeStates =
   | typeof COMPONENT_REWIRED
   | typeof PROPS_UPDATED
   | typeof KEY_UP
-  | typeof KEY_DOWN;
+  | typeof KEY_DOWN
+  | "hoverWhileSelected"
+  | "hoverWhileSelectedEnd";
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -436,6 +434,8 @@ export function createCanvasMachine(id: string) {
     [PROPS_UPDATED]: [],
     [KEY_UP]: [],
     [KEY_DOWN]: [],
+    hoverWhileSelected: [],
+    hoverWhileSelectedEnd: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -653,6 +653,7 @@ export function createCanvasMachine(id: string) {
                         [MOUSE_MOVE]: {
                           target: hoverWhileSelected,
                           cond: selectedDifferentComponent,
+                          actions: ["setHoverComponent"],
                         },
                       },
                     },
@@ -661,9 +662,20 @@ export function createCanvasMachine(id: string) {
                         [MOUSE_MOVE]: {
                           target: hoverWhileSelected,
                           cond: selectedDifferentComponent,
+                          actions: ["setHoverComponent"],
                         },
                         [SCROLL]: { target: selectIdle },
                         [OUTSIDE_CANVAS]: { target: selectIdle },
+                      },
+                      entry: (context, event) => {
+                        callSubscribers("hoverWhileSelected", context, event);
+                      },
+                      exit: (context, event) => {
+                        callSubscribers(
+                          "hoverWhileSelectedEnd",
+                          context,
+                          event
+                        );
                       },
                     },
                   },

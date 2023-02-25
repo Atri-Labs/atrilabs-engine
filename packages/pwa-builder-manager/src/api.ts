@@ -61,12 +61,10 @@ function postNewEvents(
   if (forest) {
     forest.handleEvents(data);
     const { events } = data;
-    events.forEach((event) => {
-      socket.emit("saveEvent", routeObjectPath, event, (success) => {
-        if (!success) {
-          console.log("Failed to send event to backend");
-        }
-      });
+    socket.emit("saveEvents", routeObjectPath, events, (success) => {
+      if (!success) {
+        console.log("Failed to send event to backend");
+      }
     });
   }
 }

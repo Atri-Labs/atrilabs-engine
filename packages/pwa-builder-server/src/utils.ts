@@ -72,13 +72,13 @@ export function loadEventsForPage(unixFilepath: string) {
   return Buffer.from(JSON.stringify([]));
 }
 
-export function saveEventsForPage(unixFilepath: string, event: AnyEvent) {
+export function saveEventsForPage(unixFilepath: string, events: AnyEvent[]) {
   const filename = getEventsJSONFilename(unixFilepath);
   if (fs.existsSync(filename)) {
     const parsed = JSON.parse(fs.readFileSync(filename).toString());
-    parsed.push(event);
+    parsed.push(...events);
     fs.writeFileSync(filename, JSON.stringify(parsed, null, 2));
   } else {
-    fs.writeFileSync(filename, JSON.stringify([event], null, 2));
+    fs.writeFileSync(filename, JSON.stringify(events, null, 2));
   }
 }

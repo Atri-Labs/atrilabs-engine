@@ -6,6 +6,7 @@ import { componentStoreApi } from "../../api";
 import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
 import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
 import { RepeatingComponentRenderer } from "../RepeatingComponentRenderer/RepeatingComponentRenderer";
+import { useHintOverlays } from "../VisualHints/useHintOverlays";
 
 export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
   const { childCompIds } = useCanvasZoneEventSubscriber({
@@ -17,9 +18,14 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
         ...props.styles,
         height: "200px",
         border: `1px solid ${gray500}`,
+        position: "relative" as const,
       };
     }
+    return { ...props.styles, position: "relative" as const };
   }, [props.styles, childCompIds]);
+
+  const hintOverlayNodes = useHintOverlays(props.canvasZoneId);
+
   return (
     <div style={styles} data-atri-canvas-id={props.canvasZoneId}>
       {childCompIds.map((childCompId) => {
@@ -35,6 +41,9 @@ export function CanvasZoneRenderer(props: CanvasZoneRendererProps) {
           <NormalComponentRenderer id={childCompId} key={childCompId} />
         );
       })}
+      <div style={{ position: "absolute", height: "100%", top: 0, left: 0 }}>
+        {hintOverlayNodes}
+      </div>
     </div>
   );
 }
