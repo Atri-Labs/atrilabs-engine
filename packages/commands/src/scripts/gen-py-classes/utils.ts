@@ -85,6 +85,6 @@ export function createComponentClassFile(options: {
 
 export function createInitPyFile(compKeys: string[]) {
   return compKeys
-    .map((compKey) => `from components.${compKey} import ${compKey}`)
+    .map((compKey) => `from .${compKey} import ${compKey}`)
     .join("\n");
 }

@@ -18,6 +18,88 @@ const atriPyPkgOutputDir = "atri-py-pkg";
  */
 async function main() {
   const params = extractParams();
+  // @ts-ignore
+  const packageJSON = __non_webpack_require__(pkgUp.sync());
+  if (
+    !packageJSON["atriConfig"] &&
+    !packageJSON["atriConfig"]["pythonPackageName"]
+  ) {
+    throw Error("The package.json doesn't have valid atriConfig field.");
+  }
+
+  const componentsDir = path.resolve(
+    params.paths.outputDir,
+    atriPyPkgOutputDir,
+    "src",
+    packageJSON["atriConfig"]["pythonPackageName"]
+  );
+
+  if (!fs.existsSync(componentsDir))
+    fs.mkdirSync(componentsDir, {
+      recursive: true,
+    });
+
+  const configDir = path.resolve(
+    params.paths.outputDir,
+    atriPyPkgOutputDir,
+    "src",
+    "config"
+  );
+
+  if (!fs.existsSync(configDir))
+    fs.mkdirSync(configDir, {
+      recursive: true,
+    });
+
+  // write package.json to atri-py-pkg/config directory
+  fs.writeFileSync(
+    path.resolve(configDir, "package.json"),
+    JSON.stringify(packageJSON, null, 2)
+  );
+  fs.writeFileSync(path.resolve(configDir, "__init__.py"), "");
+
+  const setupPyFilepath = path.resolve(
+    params.paths.outputDir,
+    atriPyPkgOutputDir,
+    "setup.py"
+  );
+
+  if (!fs.existsSync(setupPyFilepath)) {
+    fs.copyFileSync(
+      path.resolve(
+        __dirname,
+        "..",
+        "src",
+        "scripts",
+        "gen-py-classes",
+        "templates",
+        "setup.py"
+      ),
+      setupPyFilepath
+    );
+  }
+
+  const pyProjectTomlFilepath = path.resolve(
+    params.paths.outputDir,
+    atriPyPkgOutputDir,
+    "pyproject.toml"
+  );
+
+  if (!fs.existsSync(pyProjectTomlFilepath)) {
+    fs.copyFileSync(
+      path.resolve(
+        __dirname,
+        "..",
+        "src",
+        "scripts",
+        "gen-py-classes",
+        "templates",
+        "pyproject.toml"
+      ),
+      pyProjectTomlFilepath
+    );
+  }
+
   buildManifests({ params })
     .then(() => {
       const outputFilepath = path.resolve(
@@ -26,16 +108,6 @@ async function main() {
       );
       // check if build of manifest registry was success
       if (fs.existsSync(outputFilepath)) {
-        const componentsDir = path.resolve(
-          params.paths.outputDir,
-          atriPyPkgOutputDir,
-          "src",
-          "components"
-        );
-        if (!fs.existsSync(componentsDir))
-          fs.mkdirSync(componentsDir, {
-            recursive: true,
-          });
         // @ts-ignore
         const registry = __non_webpack_require__(outputFilepath).default as {
           manifests: { [schema: string]: any };
@@ -47,7 +119,7 @@ async function main() {
             manifests[ReactComponentManifestSchemaId];
           if (reactManifest) {
             // @ts-ignore
-            const nodePkg = __non_webpack_require__(pkgUp.sync())["name"];
+            const nodePkg = packageJSON["name"];
             const compKey = reactManifest.meta.key;
             const callbacks = Object.keys(reactManifest.dev.attachCallbacks);
             const customProps = Object.keys(
@@ -79,7 +151,7 @@ async function main() {
         );
         // write __init__.py file
         fs.writeFileSync(
-          path.resolve(componentsDir, "..", `__init__.py`),
+          path.resolve(componentsDir, `__init__.py`),
           createInitPyFile(result.map((r) => r.compKey))
         );
       } else {
