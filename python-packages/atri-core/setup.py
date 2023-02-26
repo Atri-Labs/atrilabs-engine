@@ -4,18 +4,6 @@ import os
 
 EDITABLE_BUILD = os.getenv("PIP_EDITABLE_BUILD", None) == "true"
 
-try:
-    from pipenv.project import Project
-    try:
-        # Pipenv 2022.4.8
-        from pipenv.utils.dependencies import convert_deps_to_pip
-    except:
-        # Older Pipenv
-        from pipenv.utils import convert_deps_to_pip
-except:
-    err_msg = "Please install pipenv and try again."
-    sys.exit(err_msg)
-
 import subprocess
 import re
 
@@ -40,7 +28,7 @@ def get_git_tag():
 
     return git_tag
 
-NAME = "atri"
+NAME = "atri-core"
 
 VERSION = "1.0.0" if EDITABLE_BUILD else get_git_tag()[1:]
 
@@ -51,10 +39,6 @@ LONG_DESCRIPTION = (
     "The backend of these apps can be very easily built using Python."
     "It (semi-)automates many things out of the box such as CDN caching, browser caching etc."
 )
-
-pipfile = Project().parsed_pipfile
-packages = pipfile["packages"].copy()
-requirements = convert_deps_to_pip(packages)
 
 setuptools.setup(
     name=NAME,
@@ -71,8 +55,7 @@ setuptools.setup(
     license="GPLv3",
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
-    install_requires=requirements,
+    install_requires=[],
     zip_safe=False,
-    include_package_data=True,
-    entry_points={"console_scripts": ["atri=atri.cli:main"]}
+    include_package_data=True
 )

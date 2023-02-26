@@ -1,5 +1,5 @@
 const imports = `from typing import Any, Union
-from atri_core.AtriComponent import AtriComponent`;
+from atri_core import AtriComponent`;
 
 function createCustomClass(compKey: string, props: string[]) {
   return `class ${compKey}CustomClass:

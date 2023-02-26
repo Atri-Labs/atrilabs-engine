@@ -1,3 +1,3 @@
 [build-system]
-requires = ["setuptools", "pipenv"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"

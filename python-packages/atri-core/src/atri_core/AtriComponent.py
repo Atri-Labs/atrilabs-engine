@@ -1,5 +1,5 @@
 from typing import Any, Union
-from AtriStyles import AtriStyles
+from .AtriStyles import AtriStyles
 
 class AtriComponent:
 	def __init__(self, state: Union[Any, None]):
