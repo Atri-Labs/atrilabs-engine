@@ -82,3 +82,9 @@ export function createComponentClassFile(options: {
     options.callbacks
   )}`;
 }
+
+export function createInitPyFile(compKeys: string[]) {
+  return compKeys
+    .map((compKey) => `from components.${compKey} import ${compKey}`)
+    .join("\n");
+}

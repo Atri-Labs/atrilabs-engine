@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import pkgUp from "pkg-up";
-import { createComponentClassFile } from "./utils";
+import { createComponentClassFile, createInitPyFile } from "./utils";
 
 const atriPyPkgOutputDir = "atri-py-pkg";
 
@@ -26,9 +26,16 @@ async function main() {
       );
       // check if build of manifest registry was success
       if (fs.existsSync(outputFilepath)) {
-        fs.mkdirSync(path.resolve(params.paths.outputDir, atriPyPkgOutputDir), {
-          recursive: true,
-        });
+        const componentsDir = path.resolve(
+          params.paths.outputDir,
+          atriPyPkgOutputDir,
+          "src",
+          "components"
+        );
+        if (!fs.existsSync(componentsDir))
+          fs.mkdirSync(componentsDir, {
+            recursive: true,
+          });
         // @ts-ignore
         const registry = __non_webpack_require__(outputFilepath).default as {
           manifests: { [schema: string]: any };
@@ -55,7 +62,7 @@ async function main() {
                 callbacks,
                 customProps,
               }),
-              outputFilename: compKey,
+              compKey,
             };
           } else {
             throw Error(
@@ -63,15 +70,17 @@ async function main() {
             );
           }
         });
-        result.forEach(({ outputFilename, content }) =>
+        // write components py file
+        result.forEach(({ compKey, content }) =>
           fs.writeFileSync(
-            path.resolve(
-              params.paths.outputDir,
-              atriPyPkgOutputDir,
-              `${outputFilename}.py`
-            ),
+            path.resolve(componentsDir, `${compKey}.py`),
             content
           )
+        );
+        // write __init__.py file
+        fs.writeFileSync(
+          path.resolve(componentsDir, "..", `__init__.py`),
+          createInitPyFile(result.map((r) => r.compKey))
         );
       } else {
         throw Error(`Missing bundle ${outputFilepath}`);
