@@ -27,15 +27,20 @@ export function addOrModifyHintOverlays(overlays: {
   });
 }
 
-export function removeHintOverlays(overlayIds: string[]) {
+export function removeHintOverlays(
+  overlayIds: string[],
+  canvasZoneIdForSelectEnd?: string
+) {
   const affectedCanvasZones: Set<string> = new Set();
   overlayIds.forEach((overlayId) => {
     if (!hintOverlays[overlayId]) {
       return;
     }
     const overlay = hintOverlays[overlayId]!;
-    const canvasZoneId = componentStoreApi.getComponent(overlay.compId)!.parent
-      .canvasZoneId;
+    const canvasZoneId =
+      canvasZoneIdForSelectEnd !== undefined
+        ? canvasZoneIdForSelectEnd
+        : componentStoreApi.getComponent(overlay.compId)!.parent.canvasZoneId;
     affectedCanvasZones.add(canvasZoneId);
     if (hintOverlays[overlayId]) {
       delete hintOverlays[overlayId];
