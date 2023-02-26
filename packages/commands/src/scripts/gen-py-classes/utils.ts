@@ -42,9 +42,11 @@ class ${compKey}(AtriComponent):
 		self._setter_access_tracker = {}
 		self.compKey = "${compKey}"
 		self.nodePkg = "${nodePkg}"
-		${callbacks.map((callback) => {
-      return `self.${callback} = False`;
-    })}
+		${callbacks
+      .map((callback) => {
+        return `self.${callback} = False`;
+      })
+      .join("\n\t\t")}
 		self.custom = state["custom"] if state != None and "custom" in state else None
 		self._setter_access_tracker = {}
 		self._getter_access_tracker = {}

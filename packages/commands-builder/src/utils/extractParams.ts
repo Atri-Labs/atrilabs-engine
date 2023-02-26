@@ -22,7 +22,7 @@ export function processArgs() {
     .option("f", {
       alias: "outputFilename",
       type: "string",
-      default: "main",
+      default: "main.js",
       description: "name of the output bundle file",
     })
     .option("s", { alias: "appSrc", type: "string", default: "./src" })
