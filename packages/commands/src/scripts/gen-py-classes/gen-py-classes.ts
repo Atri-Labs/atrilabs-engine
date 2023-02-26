@@ -123,8 +123,8 @@ async function main() {
             const compKey = reactManifest.meta.key;
             const callbacks = Object.keys(reactManifest.dev.attachCallbacks);
             const customProps = Object.keys(
-              reactManifest.dev.attachProps[
-                "atrilabs/app-design-forest/src/customPropsTree"
+              reactManifest.dev.attachProps["custom"]?.["treeOptions"][
+                "dataTypes"
               ] || {}
             );
             return {
