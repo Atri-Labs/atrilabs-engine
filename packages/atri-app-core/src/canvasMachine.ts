@@ -522,12 +522,10 @@ export function createCanvasMachine(id: string) {
             [hover]: {
               entry: (context, event) => {
                 callSubscribers("hover", context, event);
-                console.log("Entered hover state");
               },
               exit: (context, event) => {
                 context.hovered = null;
                 callSubscribers("hoverEnd", context, event);
-                console.log("Exited hover state");
               },
               on: {
                 [MOUSE_MOVE]: {
@@ -548,12 +546,6 @@ export function createCanvasMachine(id: string) {
               },
             },
             [pressed]: {
-              entry: () => {
-                console.log("Entered pressed state");
-              },
-              exit: () => {
-                console.log("Exited pressed state");
-              },
               on: {
                 [MOUSE_UP]: {
                   target: selected,
@@ -624,12 +616,10 @@ export function createCanvasMachine(id: string) {
             [selected]: {
               entry: (context, event) => {
                 callSubscribers("select", context, event);
-                console.log("Entered selected state");
               },
               exit: (context, event) => {
                 callSubscribers("selectEnd", context, event);
                 context.selected = null;
-                console.log("Exited selected state");
               },
               on: {
                 [MOUSE_DOWN]: [
