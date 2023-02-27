@@ -82,6 +82,12 @@ export const useShowTab = (compTree: Tree) => {
     });
     return unsub;
   }, []);
+
+  useEffect(() => {
+    return subscribeEditorMachine("before_app_load", () => {
+      setId(null);
+    });
+  }, []);
   return {
     showTab,
     alias,

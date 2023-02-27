@@ -5,3 +5,4 @@ export * from "./breakpointApi";
 export * from "./componentApi";
 import "./handleBrowserForestManagerUpdates";
 import "./attachAllKeyboardShortcuts";
+import "./handleBreakpointChange";

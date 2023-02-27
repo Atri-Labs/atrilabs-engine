@@ -47,10 +47,10 @@ io.on("connection", (socket) => {
       cb(JSON.parse(events.toString()));
     }
   });
-  socket.on("saveEvent", async (urlPath, event, cb) => {
+  socket.on("saveEvents", async (urlPath, events, cb) => {
     const pageInfo = await getMatchedPageInfo(urlPath);
     if (pageInfo) {
-      saveEventsForPage(resolvePages(pageInfo.unixFilepath), event);
+      saveEventsForPage(resolvePages(pageInfo.unixFilepath), events);
       cb(true);
     } else {
       cb(false);
