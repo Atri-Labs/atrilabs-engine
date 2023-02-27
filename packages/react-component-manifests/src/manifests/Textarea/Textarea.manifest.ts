@@ -24,7 +24,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     value: { type: "text" },
     placeholder: { type: "text" },
-    isPasswordField: { type: "boolean" },
   },
 };
 

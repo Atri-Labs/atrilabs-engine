@@ -5,13 +5,21 @@ import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
+import { Alert as AntdAlert, AlertProps, Button, InputRef } from "antd";
+
+const enum AlertType {
+  SUCEESS = "success",
+  INFO = "info",
+  WARNING = "warning",
+  ERROR = "error",
+}
 
 const Alert = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      alertType: string;
+      alertType: AlertType; // | string;
       title: string;
       description?: string;
       successIcon?: string;
@@ -19,11 +27,15 @@ const Alert = forwardRef<
       warningIcon?: string;
       errorIcon?: string;
       isClosable: boolean;
+      showIcon?:boolean
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
-  }
+    showIcon?:boolean;
+  } //& AlertProps
 >((props, ref) => {
+  const { custom, ...restProps } = props;
+  console.log("restProps",restProps)
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       props.onClick({ pageX: e.pageX, pageY: e.pageY });
@@ -98,7 +110,28 @@ const Alert = forwardRef<
           }
         `}
       </style>
-      <div
+      <div ref={ref}>
+        <AntdAlert
+          className={props.className}
+          style={{ ...alertStyle, ...props.styles }}
+          {...restProps}
+          onClick={onClick}
+          type={props.custom.alertType || AlertType.SUCEESS}
+          showIcon ={props.custom.showIcon}//it will show antd icon  
+          message={props.custom.title}
+          description={props.custom.description}
+          closable={props.custom.isClosable }
+          
+        />
+      </div>
+    </>
+  );
+});
+
+export default Alert;
+
+{
+  /* <div
         ref={ref}
         className={props.className}
         style={{ ...alertStyle, ...props.styles }}
@@ -120,9 +153,5 @@ const Alert = forwardRef<
             />
           </button>
         )}
-      </div>
-    </>
-  );
-});
-
-export default Alert;
+      </div> */
+}

@@ -6,6 +6,7 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
+
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
   flexContainerOptions: true,
@@ -23,9 +24,10 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     name: { type: "text" },
-    label: { type: "text" },
     checked: { type: "boolean" },
     radius: { type: "number" },
+    label: { type: "text"},
+   // buttonStyle :{type : "enum" }
   },
 };
 
@@ -48,7 +50,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          name: "",
+          name: "Name",
           label: "Radio",
           checked: false,
         },

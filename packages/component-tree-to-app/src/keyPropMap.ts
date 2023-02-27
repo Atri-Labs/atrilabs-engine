@@ -374,4 +374,6 @@ export const keyPropMap: any = {
   Textarea:{},
   Search:{},
   Select:{},
+  Typography:{},
+  Title:{},
 };

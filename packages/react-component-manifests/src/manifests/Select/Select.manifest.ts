@@ -25,7 +25,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
     name: { type: "text" },
     label: { type: "text" },
     checked: { type: "boolean" },
-    radius: { type: "number" },
   },
 };
 

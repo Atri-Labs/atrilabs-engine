@@ -185,5 +185,13 @@ module.exports = {
       modulePath: "./src/manifests/Select/Select.tsx",
       exportedVarName: "Select",
     },
+    Typography:{
+      modulePath: "./src/manifests/Typography/Typography.tsx",
+      exportedVarName: "Typography",
+    },
+    Title:{
+      modulePath: "./src/manifests/Title/Title.tsx",
+      exportedVarName: "Title",
+    },
   },
 };

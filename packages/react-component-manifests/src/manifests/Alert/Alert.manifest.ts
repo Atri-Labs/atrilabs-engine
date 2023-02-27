@@ -26,6 +26,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["success", "info", "warning", "error"],
     },
+    icon: { type: "static_asset" },
     title: { type: "text" },
     description: { type: "text" },
     successIcon: { type: "static_asset" },
@@ -33,6 +34,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
     warningIcon: { type: "static_asset" },
     errorIcon: { type: "static_asset" },
     isClosable: { type: "boolean" },
+    banner: { type: "boolean" },
+    showIcon: { type: "boolean" },
   },
 };
 

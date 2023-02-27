@@ -24,7 +24,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     value: { type: "text" },
     placeholder: { type: "text" },
-    isPasswordField: { type: "boolean" },
   },
 };
 
@@ -59,7 +58,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           value: "",
-          placeholder: "Placeholder Text",
+          placeholder: "Search...",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

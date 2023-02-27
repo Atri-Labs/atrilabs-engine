@@ -5,13 +5,14 @@ import React, {
   MouseEvent,
   KeyboardEvent,
 } from "react";
-import { Input } from "antd";
+import { Input, InputRef } from "antd";
 const SearchInput = Input.Search;
 
 const Search = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    className?: string;
     custom: { value: string; placeholder: string };
     enterButton?: boolean | ReactNode; //Whether to show an enter button after input. This property conflicts with the addonAfter property
     loading?: boolean; //Search box with loading
@@ -20,7 +21,20 @@ const Search = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
-  return <SearchInput {...restProps} {...custom} />;
+  return (
+    <SearchInput
+      ref={(node: InputRef) => {
+        if (typeof ref === "function") {
+          ref(node?.input || null);
+        } else if (ref) {
+          ref.current = node?.input || null;
+        }
+      }}
+      {...restProps}
+      {...custom}
+      value={props.custom.value}
+    />
+  );
 });
 
 export default Search;
