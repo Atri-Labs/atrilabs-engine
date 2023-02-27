@@ -23,7 +23,7 @@ import path from "path";
 async function main() {
   await generatePythonPageModels();
   await generatePythonRoutes();
-  const watcher = watch(PAGE_DIR, { ignoreInitial: true });
+  const watcher = watch(PAGE_DIR, { ignoreInitial: true, alwaysStat: true });
   watcher.on("add", async (_filepath, stats) => {
     if (stats?.isDirectory() === false) {
       await generatePythonPageModels();
@@ -38,6 +38,21 @@ async function main() {
       generatePythonModelForAPage(ir);
     }
   });
+
+  ["SIGINT", "SIGTERM"].forEach(function (sig) {
+    process.on(sig, function () {
+      watcher.close();
+      process.exit();
+    });
+  });
+
+  if (process.env["CI"] !== "true") {
+    // Gracefully exit when stdin ends
+    process.stdin.on("end", function () {
+      watcher.close();
+      process.exit();
+    });
+  }
 }
 
 main().catch(console.log);
