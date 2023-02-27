@@ -11,7 +11,8 @@
     "dev-atri-app": "dist/dev.js",
     "dev-editor": "dist/dev-editor.js",
     "build-manifest-registry": "dist/build-manifest-registry.js",
-    "gen-py-classes": "dist/gen-py-classes.js"
+    "gen-py-classes": "dist/gen-py-classes.js",
+    "gen-py-app": "dist/gen-py-app.js"
   },
   "directories": {
     "test": "__tests__"
@@ -32,7 +33,8 @@
     "build-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry'",
     "build-manifest-registry": "build-node-app -e ./src/scripts/build-manifest-registry/build-manifest-registry.ts -f build-manifest-registry.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/design-system'",
     "build-gen-py-classes": "build-node-app -e ./src/scripts/gen-py-classes/gen-py-classes.ts -f gen-py-classes.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry'",
-    "build": "yarn build-app-dev & yarn build-editor & yarn build-manifest-registry & yarn build-gen-py-classes",
+    "build-gen-py-app": "build-node-app -e ./src/scripts/gen-py-app/gen-py-app.ts -f gen-py-app.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry'",
+    "build": "yarn build-app-dev & yarn build-editor & yarn build-manifest-registry & yarn build-gen-py-classes & yarn build-gen-py-app",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles"
   },
