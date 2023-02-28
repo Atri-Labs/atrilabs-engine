@@ -7,3 +7,4 @@ import "./handleBrowserForestManagerUpdates";
 import "./attachAllKeyboardShortcuts";
 import "./handleBreakpointChange";
 export * from "./aliasApi";
+import "./handleResourceTransfer";

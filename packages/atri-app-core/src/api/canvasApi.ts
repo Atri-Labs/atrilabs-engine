@@ -1,12 +1,13 @@
 import { canvasMachineInterpreter, subscribeCanvasMachine } from "./init";
 import { componentStoreApi } from "./componentStoreApi";
 import { CANVAS_ZONE_ROOT_ID } from "./consts";
-import { CanvasZoneEvent, ComponentEvent } from "../types";
+import { CanvasZoneEvent, ComponentEvent, ImportedResource } from "../types";
 import {
   getComponentIndexInsideCanvasZone,
   getComponentIndexInsideParentComponent,
 } from "./utils";
 import type { DewireUpdate, RewireUpdate } from "@atrilabs/forest";
+import { handleResources } from "./handleResources";
 
 type ComponentPayload = {
   id: string;
@@ -334,6 +335,10 @@ if (typeof window !== "undefined") {
         type: "PROGRAMTIC_HOVER",
         id: ev.data.id,
       });
+    }
+    if (ev.data?.type === "IMPORT_RESOURCES" && ev.data?.resources) {
+      const resources = ev.data.resources as ImportedResource[];
+      handleResources(resources);
     }
   });
   window.document.addEventListener(

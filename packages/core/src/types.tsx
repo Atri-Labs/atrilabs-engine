@@ -177,17 +177,8 @@ export type EventSubscriber = (
 // array of filenames without extension
 export type TemplateDetail = { relativeDir: string; templateName: string };
 
-export type ImportedResource = {
-  str: string;
-  method: "link" | "css";
-  imports: {
-    fonts?: {
-      fontFamily: string;
-      fontWeight: string | number;
-      fontStyle: string;
-    }[];
-  };
-};
+export type { ImportedResource } from "@atrilabs/atri-app-core";
+import type { ImportedResource } from "@atrilabs/atri-app-core";
 
 export type BrowserClient = {
   getSocket(): Socket;
