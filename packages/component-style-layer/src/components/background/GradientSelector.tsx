@@ -28,6 +28,9 @@ type GradientType = {
 const AngleSelector: React.FC<{
   angle: number;
   setAngle: React.Dispatch<React.SetStateAction<number>>;
+  gradient: string;
+  index: number;
+  updateGradient: (index: number, gradient: string) => void;
 }> = (props) => {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +59,9 @@ const AngleSelector: React.FC<{
         position: "relative",
       }}
       onMouseMove={calculateAngle}
+      onMouseLeave={() => {
+        props.updateGradient(props.index, props.gradient);
+      }}
     >
       <div
         style={{
@@ -354,7 +360,13 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             >
               Angle
             </div>
-            <AngleSelector angle={gradientAngle} setAngle={setGradientAngle} />
+            <AngleSelector
+              angle={gradientAngle}
+              setAngle={setGradientAngle}
+              updateGradient={props.updateGradient}
+              index={props.index}
+              gradient={props.gradient}
+            />
             <div
               style={{
                 ...smallText,
