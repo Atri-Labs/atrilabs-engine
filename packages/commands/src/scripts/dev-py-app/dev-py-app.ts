@@ -32,9 +32,12 @@ async function main() {
   });
   watcher.on("change", (filepath, stats) => {
     if (stats?.isDirectory() === false && filepath.endsWith(".events.json")) {
-      const ir = dirStructureToIR([
-        path.relative(PAGE_DIR, filepath).replace(/(\.events\.json)$/, ""),
-      ])[0]!;
+      // WARN: adding .jsx without confirming that the actual
+      // extension is .jsx.
+      const unixfilepath = `/${path
+        .relative(PAGE_DIR, filepath)
+        .replace(/(\.events\.json)$/, "")}.jsx`;
+      const ir = dirStructureToIR([unixfilepath])[0]!;
       generatePythonModelForAPage(ir);
     }
   });
