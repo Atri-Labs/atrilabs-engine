@@ -12,7 +12,7 @@ import ComponentStyleLayer from "@atrilabs/component-style-layer";
 import CustomPropsLayer from "@atrilabs/custom-props-layer";
 // import AssetManagerLayer from "@atrilabs/asset-manager-layer";
 // import AppTemplateLayer from "@atrilabs/app-template-layer";
-// import ActionLayer from "@atrilabs/action-layer";
+import ActionLayer from "@atrilabs/action-layer";
 // import ResourceProcessLayer from "@atrilabs/resource-processor-layer";
 // import UndoRedoLayer from "@atrilabs/undo-redo-layer";
 // import ComponentNavigatorLayer from "@atrilabs/component-navigator";
@@ -35,7 +35,7 @@ export default function App() {
       <CustomPropsLayer />
       {/* <AssetManagerLayer /> */}
       {/* <AppTemplateLayer /> */}
-      {/* <ActionLayer /> */}
+      <ActionLayer />
       {/* <ResourceProcessLayer /> */}
       {/* <UndoRedoLayer /> */}
       {/* <ServicesStatusLayer /> */}
