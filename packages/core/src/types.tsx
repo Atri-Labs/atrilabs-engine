@@ -142,6 +142,9 @@ export type ToolConfig = {
   resources: {
     path: string;
   };
+  shared: {
+    pkg: string;
+  }[];
 };
 
 // type for manifest.schema.config.js

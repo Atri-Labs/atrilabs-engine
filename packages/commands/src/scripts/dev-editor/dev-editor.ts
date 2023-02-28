@@ -65,6 +65,12 @@ function main() {
           __non_webpack_require__.resolve(pkg)
         );
       }),
+      ...toolConfig.shared.map(({ pkg }) => {
+        return path.dirname(
+          // @ts-ignore
+          __non_webpack_require__.resolve(pkg)
+        );
+      }),
       ...toolConfig.runtimes.map(({ pkg }) => {
         return path.dirname(
           // @ts-ignore

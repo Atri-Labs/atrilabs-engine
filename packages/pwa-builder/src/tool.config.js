@@ -57,6 +57,8 @@ const runtimes = [{ pkg: "@atrilabs/canvas-runtime" }];
 
 const manifestDirs = [{ pkg: "@atrilabs/react-component-manifests" }];
 
+const shared = [{ pkg: "@atrilabs/shared-layer-lib" }];
+
 module.exports = {
   forests,
   clients,
@@ -64,4 +66,5 @@ module.exports = {
   layers,
   runtimes,
   manifestDirs,
+  shared,
 };
