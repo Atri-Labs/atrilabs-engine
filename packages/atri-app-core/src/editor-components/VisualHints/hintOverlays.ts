@@ -34,8 +34,11 @@ export function removeHintOverlays(overlayIds: string[]) {
       return;
     }
     const overlay = hintOverlays[overlayId]!;
-    const canvasZoneId = componentStoreApi.getComponent(overlay.compId)!.parent
-      .canvasZoneId;
+    let canvasZoneId = "";
+    for (const property in overlayCanvasZoneMap) {
+      if (overlayCanvasZoneMap[property].includes(overlay.overlayId))
+        canvasZoneId = property;
+    }
     affectedCanvasZones.add(canvasZoneId);
     if (hintOverlays[overlayId]) {
       delete hintOverlays[overlayId];
