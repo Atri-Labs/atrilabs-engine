@@ -25,6 +25,12 @@
   "dependencies": {
     "@atrilabs/atri-app-core": "^0.0.90",
     "@atrilabs/commands-builder": "^0.0.90",
-    "@atrilabs/core": "^0.0.90"
+    "@atrilabs/core": "^0.0.90",
+    "mime-types": "^2.1.35",
+    "recursive-readdir": "^2.2.3",
+    "upath": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^2.1.1"
   }
 }

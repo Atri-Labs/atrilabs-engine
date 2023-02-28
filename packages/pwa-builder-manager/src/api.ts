@@ -90,10 +90,14 @@ function uploadAssets(
     mime: string;
   }[],
   callback: (success: boolean, urls: string[]) => void
-) {}
+) {
+  socket.emit("uploadAssets", files, callback);
+}
 function getAssetsInfo(
   callback: (assets: { [name: string]: { url: string; mime: string } }) => void
-) {}
+) {
+  socket.emit("getAssetsInfo", callback);
+}
 
 export const api = {
   postNewEvents,

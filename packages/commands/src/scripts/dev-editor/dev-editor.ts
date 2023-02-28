@@ -199,8 +199,11 @@ function main() {
       generateIndexHtml: true,
       proxy: {
         "/socket.io": {
-          target: "http://localhost:4000/socket.io",
+          target: "http://localhost:4000",
           ws: true,
+        },
+        "/assets": {
+          target: "http://localhost:4000",
         },
       },
       babel: {

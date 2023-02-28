@@ -16,6 +16,7 @@ import {
   resolvePages,
   saveEventsForPage,
 } from "./utils";
+import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
 
 const app = express();
 const server = http.createServer(app);
@@ -56,7 +57,29 @@ io.on("connection", (socket) => {
       cb(false);
     }
   });
+  socket.on("uploadAssets", (files, cb) => {
+    saveAssets(files)
+      .then((urls) => {
+        cb(true, urls);
+      })
+      .catch((err) => {
+        cb(false, []);
+        console.log(err);
+      });
+  });
+  socket.on("getAssetsInfo", (cb) => {
+    getAllAssetsInfo()
+      .then((info) => {
+        cb(info);
+      })
+      .catch((err) => {
+        cb({});
+        console.log(err);
+      });
+  });
 });
+
+app.use(express.static(PUBLIC_DIR));
 
 const port = process.env["PORT"] ? parseInt(process.env["PORT"]) : 4000;
 const host = process.env["HOST"] ? process.env["HOST"] : "0.0.0.0";

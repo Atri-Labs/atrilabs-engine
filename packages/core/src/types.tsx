@@ -408,6 +408,24 @@ export interface ClientToServerEvents {
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
+  /**
+   *
+   * @param files Each property of file is derived from the Web API File.
+   */
+  uploadAssets(
+    files: {
+      name: string;
+      data: ArrayBuffer;
+      size: number;
+      mime: string;
+    }[],
+    callback: (success: boolean, urls: string[]) => void
+  ): void;
+  getAssetsInfo: (
+    callback: (assets: {
+      [name: string]: { url: string; mime: string };
+    }) => void
+  ) => void;
 }
 
 export interface InterServerEvents {}
