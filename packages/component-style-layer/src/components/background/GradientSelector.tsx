@@ -268,7 +268,10 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 WebkitAppearance: "none",
                 MozAppearance: "none",
               }}
-              onChange={(e) => setGradientType(e.target.value)}
+              onChange={(e) => {
+                setGradientType(e.target.value);
+                props.updateGradient(props.index, gradientStr);
+              }}
               value={gradientType}
             >
               <option value="linearGradient">Linear Gradient</option>
