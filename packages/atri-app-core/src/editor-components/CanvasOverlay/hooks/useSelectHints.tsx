@@ -17,21 +17,21 @@ export function useSelectHints() {
   const leftLineHoverId = useRef<string | null>(null);
   const compId = useRef<string | null>(null);
 
-  const clearOverlay = useCallback((canvasZoneIdForSelectEnd?: string) => {
+  const clearOverlay = useCallback(() => {
     if (topLineHoverId.current) {
-      removeHintOverlays([topLineHoverId.current], canvasZoneIdForSelectEnd);
+      removeHintOverlays([topLineHoverId.current]);
       topLineHoverId.current = null;
     }
     if (rightLineHoverId.current) {
-      removeHintOverlays([rightLineHoverId.current], canvasZoneIdForSelectEnd);
+      removeHintOverlays([rightLineHoverId.current]);
       rightLineHoverId.current = null;
     }
     if (bottomLineHoverId.current) {
-      removeHintOverlays([bottomLineHoverId.current], canvasZoneIdForSelectEnd);
+      removeHintOverlays([bottomLineHoverId.current]);
       bottomLineHoverId.current = null;
     }
     if (leftLineHoverId.current) {
-      removeHintOverlays([leftLineHoverId.current], canvasZoneIdForSelectEnd);
+      removeHintOverlays([leftLineHoverId.current]);
       leftLineHoverId.current = null;
     }
   }, []);
@@ -128,11 +128,7 @@ export function useSelectHints() {
 
   useEffect(() => {
     return subscribeCanvasMachine("selectEnd", (context, event: any) => {
-      if (event.type === "COMPONENT_DELETED") {
-        clearOverlay(event.comp!.parent.canvasZoneId);
-      } else {
-        clearOverlay();
-      }
+      clearOverlay();
       compId.current = null;
     });
   }, []);
