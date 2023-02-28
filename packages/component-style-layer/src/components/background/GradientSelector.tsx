@@ -460,7 +460,10 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             <div>
               <select
                 name="Select Shape"
-                onChange={(e) => setShapeType(e.target.value)}
+                onChange={(e) => {
+                  setShapeType(e.target.value);
+                  props.updateGradient(props.index, gradientStr);
+                }}
                 style={{
                   ...smallText,
                   outline: "none",
