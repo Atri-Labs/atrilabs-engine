@@ -1,4 +1,4 @@
-import { api, Container, Menu } from "@atrilabs/core";
+import { Container, Menu } from "@atrilabs/core";
 import {
   amber300,
   gray200,
@@ -17,6 +17,8 @@ import { useState, useCallback, useRef } from "react";
 import { Cross } from "./assets/Cross";
 import { useFetchResources } from "./hooks/useFetchResources";
 import "./styles.css";
+import { api } from "@atrilabs/pwa-builder-manager";
+
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
     borderRight: `1px solid ${gray800}`,

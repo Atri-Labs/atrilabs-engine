@@ -72,11 +72,20 @@ function postNewEvents(
 function importResource(
   importStatement: { str: string },
   callback: (success: boolean) => void
-) {}
-function getResources(callback: (resources: ImportedResource[]) => void) {}
+) {
+  socket.emit("importResource", importStatement, callback);
+}
+function getResources(callback: (resources: ImportedResource[]) => void) {
+  socket.emit("getResources", callback);
+}
 function subscribeResourceUpdates(
   callback: (resource: ImportedResource) => void
-) {}
+) {
+  socket.on("newResource", callback);
+  return () => {
+    socket.off("newResource", callback);
+  };
+}
 
 /**
  *

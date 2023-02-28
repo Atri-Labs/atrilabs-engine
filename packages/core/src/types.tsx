@@ -389,6 +389,7 @@ export type ManifestIR = {
 
 export interface ServerToClientEvents {
   loadEvent: (forestPkgId: string, urlPath: string, event: AnyEvent) => void;
+  newResource: (resource: ImportedResource) => void;
 }
 
 export interface ClientToServerEvents {
@@ -425,6 +426,15 @@ export interface ClientToServerEvents {
     callback: (assets: {
       [name: string]: { url: string; mime: string };
     }) => void
+  ) => void;
+  /** resource management api */
+  importResource: (
+    importStatement: { str: string },
+    callback: (success: boolean) => void
+  ) => void;
+  getResources: (callback: (resources: ImportedResource[]) => void) => void;
+  subscribeResourceUpdates: (
+    callback: (resource: ImportedResource) => void
   ) => void;
 }
 
