@@ -327,7 +327,10 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
               : toColor("hex", "")
           }
           onChange={(e) => changeColor(selectedPositionIdx, e.hex)}
-          onChangeComplete={(e) => changeColor(selectedPositionIdx, e.hex)}
+          onChangeComplete={(e) => {
+            changeColor(selectedPositionIdx, e.hex);
+            props.updateGradient(props.index, gradientStr);
+          }}
           hideHSV
           dark
         />
