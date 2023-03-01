@@ -1,5 +1,5 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
 import { ColorPicker, toColor, Color } from "react-color-palette";
 
@@ -27,7 +27,7 @@ type GradientType = {
 
 const AngleSelector: React.FC<{
   angle: number;
-  setAngle: React.Dispatch<React.SetStateAction<number>>;
+  setAngle: (angle: number) => void;
   gradient: string;
   index: number;
   updateGradient: (index: number, gradient: string) => void;
@@ -86,106 +86,104 @@ const AngleSelector: React.FC<{
   );
 };
 
-export const GradientColorSelector: React.FC<GradientSelectorType> = (
-  props
-) => {
-  const gradientProperty = useMemo(() => {
-    let prevGradient: GradientType = {
-      repeat: false,
-      gradientType: "linearGradient",
-      shapeType: "",
-      xAxis: 0,
-      yAxis: 0,
-      positions: [],
-      gradientAngle: 0,
+function createGradientObject(gradientStr: string): GradientType {
+  const gradientObject: GradientType = {
+    repeat: false,
+    gradientType: "linearGradient",
+    shapeType: "",
+    xAxis: 0,
+    yAxis: 0,
+    positions: [],
+    gradientAngle: 0,
+  };
+
+  gradientStr = gradientStr.replace("(", ",");
+  gradientStr = gradientStr.replace(")", "");
+
+  const [type, control, ...colors] = gradientStr.split(",");
+
+  if (type[0] === "r" && type[1] === "e") {
+    gradientObject.repeat = true;
+  }
+  gradientObject.gradientType = type
+    .replace("repeating-", "")
+    .replace("-g", "G");
+
+  for (let i = 0; i < colors.length; i++) {
+    const [color, stop] = colors[i].trim().split(" ");
+    gradientObject.positions[i] = {
+      stop: parseInt(stop),
+      color: toColor("hex", color),
     };
+  }
 
-    let gradientStr = props.gradient;
-    gradientStr = gradientStr.replace("(", ",");
-    gradientStr = gradientStr.replace(")", "");
+  if (gradientObject.gradientType === "linearGradient") {
+    gradientObject.gradientAngle = parseInt(control);
+  } else if (gradientObject.gradientType === "radialGradient") {
+    const controls = control.split(" ");
+    gradientObject.shapeType = controls[0];
+    gradientObject.xAxis = parseInt(controls[2]);
+    gradientObject.yAxis = parseInt(controls[3]);
+  } else if (gradientObject.gradientType === "conicGradient") {
+    const controls = control.split(" ");
+    gradientObject.gradientAngle = parseInt(controls[1]);
+    gradientObject.xAxis = parseInt(controls[3]);
+    gradientObject.yAxis = parseInt(controls[4]);
+  }
 
-    const [type, control, ...colors] = gradientStr.split(",");
-    if (type[0] === "r" && type[1] === "e") {
-      prevGradient.repeat = true;
-    }
-    prevGradient.gradientType = type
-      .replace("repeating-", "")
-      .replace("-g", "G");
+  return gradientObject;
+}
 
-    for (let i = 0; i < colors.length; i++) {
-      const [color, stop] = colors[i].trim().split(" ");
-      prevGradient.positions[i] = {
-        stop: parseInt(stop),
-        color: toColor("hex", color),
-      };
-    }
-
-    if (prevGradient.gradientType === "linearGradient") {
-      prevGradient.gradientAngle = parseInt(control);
-    } else if (prevGradient.gradientType === "radialGradient") {
-      const controls = control.split(" ");
-      prevGradient.shapeType = controls[0];
-      prevGradient.xAxis = parseInt(controls[2]);
-      prevGradient.yAxis = parseInt(controls[3]);
-    } else if (prevGradient.gradientType === "conicGradient") {
-      const controls = control.split(" ");
-      prevGradient.gradientAngle = parseInt(controls[1]);
-      prevGradient.xAxis = parseInt(controls[3]);
-      prevGradient.yAxis = parseInt(controls[4]);
-    }
-
-    return prevGradient;
-  }, [props.gradient]);
-
-  const [gradientType, setGradientType] = useState<string>(
-    gradientProperty.gradientType
-  );
-  const [shapeType, setShapeType] = useState<string>(
-    gradientProperty.shapeType
-  );
-  const [xAxis, setXAxis] = useState<number>(gradientProperty.xAxis);
-  const [yAxis, setYAxis] = useState<number>(gradientProperty.yAxis);
-
-  const [positions, setPositions] = useState<Position[]>(
-    gradientProperty.positions
-  );
-  const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
-  const [color, setColor] = useState(positions ? positions[0].color.hex : "");
-  const [gradientAngle, setGradientAngle] = useState(
-    gradientProperty.gradientAngle
-  );
-  const divRef = useRef<HTMLDivElement>(null);
-
-  const gradientStr = useMemo(() => {
-    const tempPositions = [...positions];
-    tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
-    let gradientStr = "";
-    if (gradientProperty.repeat) gradientStr += "repeating-";
-    if (gradientType === "linearGradient")
-      gradientStr += `linear-gradient(${gradientAngle}deg`;
-    else if (gradientType === "radialGradient")
-      gradientStr += `radial-gradient(${shapeType} at ${xAxis}% ${yAxis}%`;
-    else if (gradientType === "conicGradient")
-      gradientStr += `conic-gradient(from ${gradientAngle}deg at ${xAxis}% ${yAxis}%`;
-    for (let i = 0; i < tempPositions.length; i++) {
-      gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
-    }
-    gradientStr += ")";
-    return gradientStr || "";
-  }, [
-    gradientAngle,
-    gradientProperty.repeat,
-    gradientType,
+function createGradientString(gradientObject: GradientType): string {
+  const {
     positions,
+    repeat,
+    gradientAngle,
+    gradientType,
     shapeType,
     xAxis,
     yAxis,
-  ]);
+  } = gradientObject;
+  const tempPositions = [...positions];
+  tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
+  let gradientStr = "";
+  if (repeat) gradientStr += "repeating-";
+  if (gradientType === "linearGradient")
+    gradientStr += `linear-gradient(${gradientAngle}deg`;
+  else if (gradientType === "radialGradient")
+    gradientStr += `radial-gradient(${shapeType} at ${xAxis}% ${yAxis}%`;
+  else if (gradientType === "conicGradient")
+    gradientStr += `conic-gradient(from ${gradientAngle}deg at ${xAxis}% ${yAxis}%`;
+  for (let i = 0; i < tempPositions.length; i++) {
+    gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
+  }
+  gradientStr += ")";
+  return gradientStr || "";
+}
 
-  useEffect(() => {
-    if (props.gradient !== gradientStr)
+export const GradientColorSelector: React.FC<GradientSelectorType> = (
+  props
+) => {
+  // Use gradientProperty only in UI, not for update
+  const gradientProperty = useMemo(() => {
+    return createGradientObject(props.gradient);
+  }, [props.gradient]);
+
+  const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
+
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const updateGradientCb = useCallback(
+    (update: Partial<GradientType>) => {
+      const gradientProperty: GradientType = {
+        ...createGradientObject(props.gradient),
+        ...update,
+      };
+      const gradientStr = createGradientString(gradientProperty);
       props.updateGradient(props.index, gradientStr);
-  }, [gradientStr, props]);
+    },
+    [props]
+  );
 
   const selectStopOnClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -193,11 +191,11 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
       const divRect = divRef.current!.getBoundingClientRect();
       const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
       let stopPresent = false;
-      for (let i = 0; i < positions.length; i++) {
+      for (let i = 0; i < gradientProperty.positions.length; i++) {
         if (
-          x === positions[i].stop ||
-          (Math.abs(x - positions[i].stop) >= 0 &&
-            Math.abs(x - positions[i].stop) <= 5)
+          x === gradientProperty.positions[i].stop ||
+          (Math.abs(x - gradientProperty.positions[i].stop) >= 0 &&
+            Math.abs(x - gradientProperty.positions[i].stop) <= 5)
         ) {
           stopPresent = true;
           setSelectedPositionIdx(i);
@@ -205,14 +203,22 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
         }
       }
       if (!stopPresent) {
-        setSelectedPositionIdx(positions.length);
-        setPositions([
-          ...positions,
-          { stop: x, color: toColor("hex", color || "") },
-        ]);
+        setSelectedPositionIdx(gradientProperty.positions.length);
+        updateGradientCb({
+          positions: [
+            ...gradientProperty.positions,
+            {
+              stop: x,
+              color: toColor(
+                "hex",
+                gradientProperty.positions[selectedPositionIdx].color.hex || ""
+              ),
+            },
+          ],
+        });
       }
     },
-    [color, positions]
+    [gradientProperty, updateGradientCb, selectedPositionIdx]
   );
 
   const deleteStopOnKeyDown = useCallback(
@@ -221,14 +227,17 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
         selectedPositionIdx !== null &&
         (event.key === "Backspace" || event.key === "Delete")
       ) {
-        if (positions.length > 2)
-          setPositions(
-            positions.filter((_, idx) => idx !== selectedPositionIdx)
-          );
+        if (gradientProperty.positions.length > 2) {
+          const copyOfPositions = [...gradientProperty.positions];
+          copyOfPositions.splice(selectedPositionIdx, 1);
+          updateGradientCb({
+            positions: copyOfPositions,
+          });
+        }
         setSelectedPositionIdx(0);
       }
     },
-    [positions, selectedPositionIdx]
+    [gradientProperty, selectedPositionIdx, updateGradientCb]
   );
 
   const changeColor = useCallback(
@@ -280,10 +289,9 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 MozAppearance: "none",
               }}
               onChange={(e) => {
-                setGradientType(e.target.value);
-                // props.updateGradient(props.index, gradientStr);
+                updateGradientCb({ gradientType: e.target.value });
               }}
-              value={gradientType}
+              value={gradientProperty.gradientType}
             >
               <option value="linearGradient">Linear Gradient</option>
               <option value="radialGradient">Radial Gradient</option>
