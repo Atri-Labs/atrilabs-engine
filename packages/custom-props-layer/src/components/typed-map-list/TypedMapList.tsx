@@ -4,7 +4,7 @@ import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import { ArrayTypedMapCustomProp } from "@atrilabs/app-design-forest";
 import { MapContainer } from "../commons/MapContainer";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";

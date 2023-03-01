@@ -1,6 +1,6 @@
 import { ComponentProps } from "../../types";
 import { useMemo, useCallback } from "react";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 
 export const ExternalLink: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

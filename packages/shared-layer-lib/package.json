@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@atrilabs/layer-types": "^0.0.90",
-    "@atrilabs/scripts": "^0.0.90",
     "typescript": "4.6.3"
   },
   "devDependencies": {

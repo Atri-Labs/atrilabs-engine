@@ -1,7 +1,7 @@
 import { AssetInputButton } from "@atrilabs/shared-layer-lib";
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { RearrangeListWrapper } from "../commons/RearrangeListWrapper";

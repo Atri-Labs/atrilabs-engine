@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useManualHover } from "../../hooks/useManualHover";
 import { ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 
 export const ComponentSelector: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

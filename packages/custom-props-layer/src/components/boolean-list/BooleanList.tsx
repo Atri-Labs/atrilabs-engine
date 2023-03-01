@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { Checkbox } from "../commons/Checkbox";
