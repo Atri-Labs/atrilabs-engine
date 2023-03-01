@@ -65,6 +65,12 @@ function main() {
           __non_webpack_require__.resolve(pkg)
         );
       }),
+      ...toolConfig.shared.map(({ pkg }) => {
+        return path.dirname(
+          // @ts-ignore
+          __non_webpack_require__.resolve(pkg)
+        );
+      }),
       ...toolConfig.runtimes.map(({ pkg }) => {
         return path.dirname(
           // @ts-ignore
@@ -193,8 +199,11 @@ function main() {
       generateIndexHtml: true,
       proxy: {
         "/socket.io": {
-          target: "http://localhost:4000/socket.io",
+          target: "http://localhost:4000",
           ws: true,
+        },
+        "/assets": {
+          target: "http://localhost:4000",
         },
       },
       babel: {

@@ -11,7 +11,7 @@ import {
   CallbackHandler,
   NavigationCallbackHandler,
 } from "@atrilabs/react-component-manifest-schema";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { ReactComponent as AddIcon } from "./assets/add.svg";
 import { useFileUploadAliases } from "./hooks/useFileUploadAliases";
 import { usePageRoutes } from "./hooks/usePageRoutes";
@@ -52,7 +52,7 @@ function surelyReutrnArray(arr: any[]) {
 
 export const TabBody: React.FC<TabBodyProps> = (props) => {
   const { fileUploadActions } = useFileUploadAliases();
-  const { routes } = usePageRoutes();
+  const { pagesInfo } = usePageRoutes();
 
   const options = useMemo(() => {
     const options: { action: CallbackHandler["0"]; value: number }[] = [];
@@ -74,12 +74,13 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       }
     });
     // internal navigation
-    routes.forEach((route) => {
-      const action: CallbackHandler["0"] = {
-        navigate: { type: "internal", url: route },
-      };
-      options.push({ action, value: options.length + 1 });
-    });
+    if (pagesInfo)
+      pagesInfo.forEach((info) => {
+        const action: CallbackHandler["0"] = {
+          navigate: { type: "internal", url: info.routeObjectPath },
+        };
+        options.push({ action, value: options.length + 1 });
+      });
     // external navigation
     options.push({
       action: { navigate: { type: "external", url: "", target: "_blank" } },
@@ -91,7 +92,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       value: options.length + 1,
     });
     return options;
-  }, [fileUploadActions, props, routes]);
+  }, [fileUploadActions, props, pagesInfo]);
 
   const onChangeAction = useCallback(
     (callbackName: string, index: number, value: number) => {
@@ -168,10 +169,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     },
     [props]
   );
-
-  useEffect(() => {
-    console.log(surelyReutrnArray);
-  }, []);
 
   return (
     <div

@@ -1,6 +1,7 @@
-import { api, ImportedResource } from "@atrilabs/core";
+import { ImportedResource } from "@atrilabs/core";
 import { useEffect, useState } from "react";
 import { addStylesheet } from "@atrilabs/canvas-runtime";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useFetchResources = () => {
   const [resources, setResources] = useState<ImportedResource[]>([]);

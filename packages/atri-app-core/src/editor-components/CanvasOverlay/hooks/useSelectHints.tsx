@@ -127,7 +127,7 @@ export function useSelectHints() {
   }, []);
 
   useEffect(() => {
-    return subscribeCanvasMachine("selectEnd", (context, event: any) => {
+    return subscribeCanvasMachine("selectEnd", (context, event) => {
       clearOverlay();
       compId.current = null;
     });

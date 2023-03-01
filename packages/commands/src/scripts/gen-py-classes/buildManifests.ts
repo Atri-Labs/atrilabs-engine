@@ -47,7 +47,7 @@ export function buildManifests(options: {
       ...params,
       entry: createManifestsEntry,
       moduleFileExtensions,
-      outputFilename: "component.registry.js",
+      outputFilename: params.outputFilename,
       babel: {
         plugins: [
           [

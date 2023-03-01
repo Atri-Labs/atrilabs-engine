@@ -8,6 +8,7 @@ import {
 import { api } from "./api";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { PatchEvent } from "@atrilabs/forest";
+import { aliasApi } from "./aliasApi";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -160,6 +161,15 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         events,
         name: "NEW_DROP",
         meta: { agent: "browser" },
+      });
+      aliasApi.assingAliasFromPrefix({
+        prefix: key,
+        id,
+        postData: {
+          name: "NEW_DROP_ALIAS",
+          meta: { agent: "browser" },
+          events: [],
+        },
       });
     }
   }

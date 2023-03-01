@@ -1,33 +1,37 @@
 const imports = `from typing import Any, Union
-from atri_core.AtriComponent import AtriComponent`;
+from atri_core import AtriComponent`;
 
 function createCustomClass(compKey: string, props: string[]) {
   return `class ${compKey}CustomClass:
 	def __init__(self, state: Union[Any, None]):
 		self._setter_access_tracker = {}
-		${props.map((prop) => {
-      return `self.${prop}: Union[str, None] = state["${prop}"] if state != None and "${prop}" in state else None`;
-    })}
+		${props
+      .map((prop) => {
+        return `self.${prop}: Union[str, None] = state["${prop}"] if state != None and "${prop}" in state else None`;
+      })
+      .join("\n\t\t")}
 		self._setter_access_tracker = {}
 		self._getter_access_tracker = {}
 
-	${props.map((prop) => {
-    return `@property
+	${props
+    .map((prop) => {
+      return `@property
 	def ${prop}(self):
 		self._getter_access_tracker["${prop}"] = {}
 		return self._${prop}
-	@text.setter
-	def text(self, state):
+	@${prop}.setter
+	def ${prop}(self, state):
 		self._setter_access_tracker["${prop}"] = {}
 		self._${prop} = state`;
-  })}
+    })
+    .join("\n\t")}
 
 	def _to_json_fields(self):
 		return {\n${props
       .map((prop) => {
         return `\t\t\t"${prop}": self._${prop}`;
       })
-      .join(",")}\n\t\t\t}`;
+      .join(",\n")}\n\t\t\t}`;
 }
 
 function createComponentClass(
@@ -42,9 +46,11 @@ class ${compKey}(AtriComponent):
 		self._setter_access_tracker = {}
 		self.compKey = "${compKey}"
 		self.nodePkg = "${nodePkg}"
-		${callbacks.map((callback) => {
-      return `self.${callback} = False`;
-    })}
+		${callbacks
+      .map((callback) => {
+        return `self.${callback} = False`;
+      })
+      .join("\n\t\t")}
 		self.custom = state["custom"] if state != None and "custom" in state else None
 		self._setter_access_tracker = {}
 		self._getter_access_tracker = {}
@@ -79,4 +85,10 @@ export function createComponentClassFile(options: {
     options.nodePkg,
     options.callbacks
   )}`;
+}
+
+export function createInitPyFile(compKeys: string[]) {
+  return compKeys
+    .map((compKey) => `from .${compKey} import ${compKey}`)
+    .join("\n");
 }

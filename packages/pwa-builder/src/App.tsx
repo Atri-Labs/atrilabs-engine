@@ -10,10 +10,10 @@ import ComponentStyleLayer from "@atrilabs/component-style-layer";
 // import OverlayHintsLayer from "@atrilabs/overlay-hints-layer";
 // import PublishAppLayer from "@atrilabs/publish-app-layer";
 import CustomPropsLayer from "@atrilabs/custom-props-layer";
-// import AssetManagerLayer from "@atrilabs/asset-manager-layer";
+import AssetManagerLayer from "@atrilabs/asset-manager-layer";
 // import AppTemplateLayer from "@atrilabs/app-template-layer";
-// import ActionLayer from "@atrilabs/action-layer";
-// import ResourceProcessLayer from "@atrilabs/resource-processor-layer";
+import ActionLayer from "@atrilabs/action-layer";
+import ResourceProcessLayer from "@atrilabs/resource-processor-layer";
 // import UndoRedoLayer from "@atrilabs/undo-redo-layer";
 // import ComponentNavigatorLayer from "@atrilabs/component-navigator";
 // import ServicesStatusLayer from "@atrilabs/services-status-layer";
@@ -33,10 +33,10 @@ export default function App() {
       <ComponentStyleLayer />
       {/* <PublishAppLayer /> */}
       <CustomPropsLayer />
-      {/* <AssetManagerLayer /> */}
+      <AssetManagerLayer />
       {/* <AppTemplateLayer /> */}
-      {/* <ActionLayer /> */}
-      {/* <ResourceProcessLayer /> */}
+      <ActionLayer />
+      <ResourceProcessLayer />
       {/* <UndoRedoLayer /> */}
       {/* <ServicesStatusLayer /> */}
       {/* <CanvasRuntime>

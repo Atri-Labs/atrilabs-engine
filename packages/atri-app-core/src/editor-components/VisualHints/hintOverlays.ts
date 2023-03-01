@@ -34,10 +34,13 @@ export function removeHintOverlays(overlayIds: string[]) {
       return;
     }
     const overlay = hintOverlays[overlayId]!;
-    let canvasZoneId = "";
+    let canvasZoneId: string | null = null;
     for (const property in overlayCanvasZoneMap) {
       if (overlayCanvasZoneMap[property].includes(overlay.overlayId))
         canvasZoneId = property;
+    }
+    if(canvasZoneId === null) {
+      throw Error(`Cannot find canvas zone for overlay ${overlay.overlayId}.`)
     }
     affectedCanvasZones.add(canvasZoneId);
     if (hintOverlays[overlayId]) {
