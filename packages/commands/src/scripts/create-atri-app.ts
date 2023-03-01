@@ -78,7 +78,13 @@ function createPackageJSON(
 }
 
 function createPageScaffold() {
-  return [`export default function(){`, ``, `}`].join("\n");
+  return [
+    `import { CanvasZone } from "@atrilabs/canvas-zone";`,
+    ``,
+    `export default function() {`,
+    `\treturn <CanvasZone id={"main"} />`,
+    `}`,
+  ].join("\n");
 }
 
 function convertTsxToJsX(filepath: string) {
