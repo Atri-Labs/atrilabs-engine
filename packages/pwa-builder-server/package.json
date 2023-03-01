@@ -6,6 +6,9 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "src/index.ts",
+  "bin": {
+    "dev-atri-editor": "dist/dev.js"
+  },
   "files": [
     "dist",
     "src"
