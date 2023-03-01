@@ -27,7 +27,7 @@ type GradientType = {
 
 const AngleSelector: React.FC<{
   angle: number;
-  setAngle: React.Dispatch<React.SetStateAction<number>>;
+  setAngle: (angle: number) => void;
 }> = (props) => {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -80,101 +80,104 @@ const AngleSelector: React.FC<{
   );
 };
 
-export const GradientColorSelector: React.FC<GradientSelectorType> = (
-  props
-) => {
-  const gradientProperty = useMemo(() => {
-    let prevGradient: GradientType = {
-      repeat: false,
-      gradientType: "linearGradient",
-      shapeType: "",
-      xAxis: 0,
-      yAxis: 0,
-      positions: [],
-      gradientAngle: 0,
+function createGradientObject(gradientStr: string): GradientType {
+  const gradientObject: GradientType = {
+    repeat: false,
+    gradientType: "linearGradient",
+    shapeType: "",
+    xAxis: 0,
+    yAxis: 0,
+    positions: [],
+    gradientAngle: 0,
+  };
+
+  gradientStr = gradientStr.replace("(", ",");
+  gradientStr = gradientStr.replace(")", "");
+
+  const [type, control, ...colors] = gradientStr.split(",");
+
+  if (type[0] === "r" && type[1] === "e") {
+    gradientObject.repeat = true;
+  }
+  gradientObject.gradientType = type
+    .replace("repeating-", "")
+    .replace("-g", "G");
+
+  for (let i = 0; i < colors.length; i++) {
+    const [color, stop] = colors[i].trim().split(" ");
+    gradientObject.positions[i] = {
+      stop: parseInt(stop),
+      color: toColor("hex", color),
     };
+  }
 
-    let gradientStr = props.gradient;
-    gradientStr = gradientStr.replace("(", ",");
-    gradientStr = gradientStr.replace(")", "");
+  if (gradientObject.gradientType === "linearGradient") {
+    gradientObject.gradientAngle = parseInt(control);
+  } else if (gradientObject.gradientType === "radialGradient") {
+    const controls = control.split(" ");
+    gradientObject.shapeType = controls[0];
+    gradientObject.xAxis = parseInt(controls[2]);
+    gradientObject.yAxis = parseInt(controls[3]);
+  } else if (gradientObject.gradientType === "conicGradient") {
+    const controls = control.split(" ");
+    gradientObject.gradientAngle = parseInt(controls[1]);
+    gradientObject.xAxis = parseInt(controls[3]);
+    gradientObject.yAxis = parseInt(controls[4]);
+  }
 
-    const [type, control, ...colors] = gradientStr.split(",");
-    if (type[0] === "r" && type[1] === "e") {
-      prevGradient.repeat = true;
-    }
-    prevGradient.gradientType = type
-      .replace("repeating-", "")
-      .replace("-g", "G");
+  return gradientObject;
+}
 
-    for (let i = 0; i < colors.length; i++) {
-      const [color, stop] = colors[i].trim().split(" ");
-      prevGradient.positions[i] = {
-        stop: parseInt(stop),
-        color: toColor("hex", color),
-      };
-    }
-
-    if (prevGradient.gradientType === "linearGradient") {
-      prevGradient.gradientAngle = parseInt(control);
-    } else if (prevGradient.gradientType === "radialGradient") {
-      const controls = control.split(" ");
-      prevGradient.shapeType = controls[0];
-      prevGradient.xAxis = parseInt(controls[2]);
-      prevGradient.yAxis = parseInt(controls[3]);
-    } else if (prevGradient.gradientType === "conicGradient") {
-      const controls = control.split(" ");
-      prevGradient.gradientAngle = parseInt(controls[1]);
-      prevGradient.xAxis = parseInt(controls[3]);
-      prevGradient.yAxis = parseInt(controls[4]);
-    }
-
-    return prevGradient;
-  }, [props.gradient]);
-
-  const [gradientType, setGradientType] = useState<string>(
-    gradientProperty.gradientType
-  );
-  const [shapeType, setShapeType] = useState<string>(
-    gradientProperty.shapeType
-  );
-  const [xAxis, setXAxis] = useState<number>(gradientProperty.xAxis);
-  const [yAxis, setYAxis] = useState<number>(gradientProperty.yAxis);
-
-  const [positions, setPositions] = useState<Position[]>(
-    gradientProperty.positions
-  );
-  const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
-  const [color, setColor] = useState(positions ? positions[0].color.hex : "");
-  const [gradientAngle, setGradientAngle] = useState(
-    gradientProperty.gradientAngle
-  );
-  const divRef = useRef<HTMLDivElement>(null);
-
-  const gradientStr = useMemo(() => {
-    const tempPositions = [...positions];
-    tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
-    let gradientStr = "";
-    if (gradientProperty.repeat) gradientStr += "repeating-";
-    if (gradientType === "linearGradient")
-      gradientStr += `linear-gradient(${gradientAngle}deg`;
-    else if (gradientType === "radialGradient")
-      gradientStr += `radial-gradient(${shapeType} at ${xAxis}% ${yAxis}%`;
-    else if (gradientType === "conicGradient")
-      gradientStr += `conic-gradient(from ${gradientAngle}deg at ${xAxis}% ${yAxis}%`;
-    for (let i = 0; i < tempPositions.length; i++) {
-      gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
-    }
-    gradientStr += ")";
-    return gradientStr || "";
-  }, [
-    gradientAngle,
-    gradientProperty.repeat,
-    gradientType,
+function createGradientString(gradientObject: GradientType): string {
+  const {
     positions,
+    repeat,
+    gradientAngle,
+    gradientType,
     shapeType,
     xAxis,
     yAxis,
-  ]);
+  } = gradientObject;
+  const tempPositions = [...positions];
+  tempPositions.sort((ob1, ob2) => (ob1.stop > ob2.stop ? 1 : -1));
+  let gradientStr = "";
+  if (repeat) gradientStr += "repeating-";
+  if (gradientType === "linearGradient")
+    gradientStr += `linear-gradient(${gradientAngle}deg`;
+  else if (gradientType === "radialGradient")
+    gradientStr += `radial-gradient(${shapeType} at ${xAxis}% ${yAxis}%`;
+  else if (gradientType === "conicGradient")
+    gradientStr += `conic-gradient(from ${gradientAngle}deg at ${xAxis}% ${yAxis}%`;
+  for (let i = 0; i < tempPositions.length; i++) {
+    gradientStr += `, ${tempPositions[i].color.hex} ${tempPositions[i].stop}%`;
+  }
+  gradientStr += ")";
+  return gradientStr || "";
+}
+
+export const GradientColorSelector: React.FC<GradientSelectorType> = (
+  props
+) => {
+  // Use gradientProperty only in UI, not for update
+  const gradientProperty = useMemo(() => {
+    return createGradientObject(props.gradient);
+  }, [props.gradient]);
+
+  const [selectedPositionIdx, setSelectedPositionIdx] = useState<number>(0);
+
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const updateGradientCb = useCallback(
+    (update: Partial<GradientType>) => {
+      const gradientProperty: GradientType = {
+        ...createGradientObject(props.gradient),
+        ...update,
+      };
+      const gradientStr = createGradientString(gradientProperty);
+      props.updateGradient(props.index, gradientStr);
+    },
+    [props]
+  );
 
   const selectStopOnClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -182,11 +185,11 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
       const divRect = divRef.current!.getBoundingClientRect();
       const x = Math.trunc((Math.trunc(clientX - divRect.left) / 250) * 100);
       let stopPresent = false;
-      for (let i = 0; i < positions.length; i++) {
+      for (let i = 0; i < gradientProperty.positions.length; i++) {
         if (
-          x === positions[i].stop ||
-          (Math.abs(x - positions[i].stop) >= 0 &&
-            Math.abs(x - positions[i].stop) <= 5)
+          x === gradientProperty.positions[i].stop ||
+          (Math.abs(x - gradientProperty.positions[i].stop) >= 0 &&
+            Math.abs(x - gradientProperty.positions[i].stop) <= 5)
         ) {
           stopPresent = true;
           setSelectedPositionIdx(i);
@@ -194,14 +197,22 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
         }
       }
       if (!stopPresent) {
-        setSelectedPositionIdx(positions.length);
-        setPositions([
-          ...positions,
-          { stop: x, color: toColor("hex", color || "") },
-        ]);
+        setSelectedPositionIdx(gradientProperty.positions.length);
+        const prevGradient = gradientProperty;
+        prevGradient.positions = [
+          ...gradientProperty.positions,
+          {
+            stop: x,
+            color: toColor(
+              "hex",
+              gradientProperty.positions[selectedPositionIdx].color.hex || ""
+            ),
+          },
+        ];
+        updateGradientCb(prevGradient);
       }
     },
-    [color, positions]
+    [gradientProperty, updateGradientCb, selectedPositionIdx]
   );
 
   const deleteStopOnKeyDown = useCallback(
@@ -210,26 +221,53 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
         selectedPositionIdx !== null &&
         (event.key === "Backspace" || event.key === "Delete")
       ) {
-        if (positions.length > 2)
-          setPositions(
-            positions.filter((_, idx) => idx !== selectedPositionIdx)
-          );
+        if (gradientProperty.positions.length > 2) {
+          const prevGradient = gradientProperty;
+          prevGradient.positions.splice(selectedPositionIdx, 1);
+          updateGradientCb(prevGradient);
+        }
         setSelectedPositionIdx(0);
       }
     },
-    [positions, selectedPositionIdx]
+    [gradientProperty, selectedPositionIdx, updateGradientCb]
   );
 
   const changeColor = useCallback(
     (index: number, color: string) => {
-      const value = positions[index];
+      const value = gradientProperty.positions[index];
       value.color = toColor("hex", color);
-      const values = [...positions];
+      const values = [...gradientProperty.positions];
       values.splice(index, 1, value);
-      setPositions(values);
-      setColor(toColor("hex", color)["hex"]);
+      updateGradientCb({
+        positions: values,
+      });
     },
-    [positions]
+    [gradientProperty.positions, updateGradientCb]
+  );
+
+  const setGradientAngle = useCallback(
+    (angle: number) => {
+      const prevGradientProperty = gradientProperty;
+      prevGradientProperty.gradientAngle = angle;
+      updateGradientCb(prevGradientProperty);
+    },
+    [gradientProperty, updateGradientCb]
+  );
+
+  const setGradientAttribute = useCallback(
+    (
+      attribute: "gradientType" | "xAxis" | "yAxis" | "shapeType",
+      value: string
+    ) => {
+      const prevGradientProperty = gradientProperty;
+      if (attribute === "xAxis" || attribute === "yAxis") {
+        prevGradientProperty[attribute] = parseInt(value);
+      } else {
+        prevGradientProperty[attribute] = value;
+      }
+      updateGradientCb(prevGradientProperty);
+    },
+    [gradientProperty, updateGradientCb]
   );
 
   return (
@@ -268,8 +306,10 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 WebkitAppearance: "none",
                 MozAppearance: "none",
               }}
-              onChange={(e) => setGradientType(e.target.value)}
-              value={gradientType}
+              onChange={(e) => {
+                setGradientAttribute("gradientType", e.target.value);
+              }}
+              value={gradientProperty.gradientType}
             >
               <option value="linearGradient">Linear Gradient</option>
               <option value="radialGradient">Radial Gradient</option>
@@ -278,7 +318,6 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           </div>
           <div
             onClick={() => {
-              props.updateGradient(props.index, gradientStr);
               props.closeGradientSelector();
             }}
           >
@@ -292,16 +331,16 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           onKeyDown={deleteStopOnKeyDown}
           style={{
             backgroundColor: "rebeccapurple",
-            backgroundImage: `${gradientStr}`,
+            backgroundImage: `${createGradientString(gradientProperty)}`,
             height: "1em",
             width: "250px",
             position: "relative",
           }}
           tabIndex={-1}
         >
-          {positions.map((position, index) => (
+          {gradientProperty.positions.map((position, index) => (
             <div
-              key={index + color}
+              key={index + gradientProperty.positions[index].color.hex}
               style={{
                 position: "absolute",
                 left: `${position.stop}%`,
@@ -319,17 +358,19 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           width={250}
           height={200}
           color={
-            positions[selectedPositionIdx]
-              ? positions[selectedPositionIdx].color
+            gradientProperty.positions[selectedPositionIdx]
+              ? gradientProperty.positions[selectedPositionIdx].color
               : toColor("hex", "")
           }
           onChange={(e) => changeColor(selectedPositionIdx, e.hex)}
-          onChangeComplete={(e) => changeColor(selectedPositionIdx, e.hex)}
+          onChangeComplete={(e) => {
+            changeColor(selectedPositionIdx, e.hex);
+          }}
           hideHSV
           dark
         />
-        {(gradientType === "linearGradient" ||
-          gradientType === "conicGradient") && (
+        {(gradientProperty.gradientType === "linearGradient" ||
+          gradientProperty.gradientType === "conicGradient") && (
           <div
             style={{
               display: "flex",
@@ -348,7 +389,10 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             >
               Angle
             </div>
-            <AngleSelector angle={gradientAngle} setAngle={setGradientAngle} />
+            <AngleSelector
+              angle={gradientProperty.gradientAngle}
+              setAngle={setGradientAngle}
+            />
             <div
               style={{
                 ...smallText,
@@ -365,12 +409,12 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 alignItems: "center",
               }}
             >
-              {gradientAngle}
+              {gradientProperty.gradientAngle}
             </div>
           </div>
         )}
-        {(gradientType === "radialGradient" ||
-          gradientType === "conicGradient") && (
+        {(gradientProperty.gradientType === "radialGradient" ||
+          gradientProperty.gradientType === "conicGradient") && (
           <div
             style={{
               display: "flex",
@@ -394,16 +438,18 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 type="range"
                 min="0"
                 max="125"
-                value={xAxis}
+                value={gradientProperty.xAxis}
                 id="xAxis"
-                onChange={(e) => setXAxis(parseInt(e.target.value))}
+                onChange={(e) => {
+                  setGradientAttribute("xAxis", e.target.value);
+                }}
                 style={{ width: "120px" }}
               />
             </div>
           </div>
         )}
-        {(gradientType === "radialGradient" ||
-          gradientType === "conicGradient") && (
+        {(gradientProperty.gradientType === "radialGradient" ||
+          gradientProperty.gradientType === "conicGradient") && (
           <div
             style={{
               display: "flex",
@@ -425,17 +471,19 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             <div style={{ width: "120px" }}>
               <input
                 type="range"
-                onChange={(e) => setYAxis(parseInt(e.target.value))}
+                onChange={(e) => {
+                  setGradientAttribute("yAxis", e.target.value);
+                }}
                 min="0"
                 max="125"
-                value={yAxis}
+                value={gradientProperty.yAxis}
                 id="yAxis"
                 style={{ width: "120px" }}
               />
             </div>
           </div>
         )}
-        {gradientType === "radialGradient" && (
+        {gradientProperty.gradientType === "radialGradient" && (
           <div
             style={{
               display: "flex",
@@ -457,7 +505,9 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
             <div>
               <select
                 name="Select Shape"
-                onChange={(e) => setShapeType(e.target.value)}
+                onChange={(e) => {
+                  setGradientAttribute("shapeType", e.target.value);
+                }}
                 style={{
                   ...smallText,
                   outline: "none",
@@ -468,7 +518,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                   border: "none",
                   borderRadius: "2px",
                 }}
-                value={shapeType}
+                value={gradientProperty.shapeType}
               >
                 <option
                   style={{
