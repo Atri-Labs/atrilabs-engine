@@ -16,12 +16,9 @@
     "dev-py-app": "dist/dev-py-app.js",
     "build-editor": "dist/build-editor.js"
   },
-  "directories": {
-    "test": "__tests__"
-  },
   "files": [
     "dist",
-    "src/scripts/dev/loaders"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
