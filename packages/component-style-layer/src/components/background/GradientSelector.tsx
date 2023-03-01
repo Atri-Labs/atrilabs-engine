@@ -1,5 +1,5 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
 import { ColorPicker, toColor, Color } from "react-color-palette";
 
@@ -60,7 +60,7 @@ const AngleSelector: React.FC<{
       }}
       onMouseMove={calculateAngle}
       onMouseLeave={() => {
-        props.updateGradient(props.index, props.gradient);
+        // props.updateGradient(props.index, props.gradient);
       }}
     >
       <div
@@ -182,6 +182,11 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
     yAxis,
   ]);
 
+  useEffect(() => {
+    if (props.gradient !== gradientStr)
+      props.updateGradient(props.index, gradientStr);
+  }, [gradientStr, props]);
+
   const selectStopOnClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const { clientX } = event;
@@ -276,7 +281,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
               }}
               onChange={(e) => {
                 setGradientType(e.target.value);
-                props.updateGradient(props.index, gradientStr);
+                // props.updateGradient(props.index, gradientStr);
               }}
               value={gradientType}
             >
@@ -287,7 +292,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           </div>
           <div
             onClick={() => {
-              props.updateGradient(props.index, gradientStr);
+              // props.updateGradient(props.index, gradientStr);
               props.closeGradientSelector();
             }}
           >
@@ -335,7 +340,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
           onChange={(e) => changeColor(selectedPositionIdx, e.hex)}
           onChangeComplete={(e) => {
             changeColor(selectedPositionIdx, e.hex);
-            props.updateGradient(props.index, gradientStr);
+            // props.updateGradient(props.index, gradientStr);
           }}
           hideHSV
           dark
@@ -477,7 +482,7 @@ export const GradientColorSelector: React.FC<GradientSelectorType> = (
                 name="Select Shape"
                 onChange={(e) => {
                   setShapeType(e.target.value);
-                  props.updateGradient(props.index, gradientStr);
+                  // props.updateGradient(props.index, gradientStr);
                 }}
                 style={{
                   ...smallText,
