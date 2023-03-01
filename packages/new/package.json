@@ -1,0 +1,30 @@
+{
+  "name": "@atrilabs/new",
+  "version": "0.0.90",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "dist/main.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "build": "build-node-app -e ./src/index.ts -f main.js -n '../../node_modules'"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/commands": "^0.0.90",
+    "pkg-up": "^3.1.0",
+    "prompts": "^2.4.2"
+  }
+}
