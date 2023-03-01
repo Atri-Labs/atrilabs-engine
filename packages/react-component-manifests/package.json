@@ -6,9 +6,6 @@
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "./src/manifest.config.js",
-  "directories": {
-    "lib": "src"
-  },
   "files": [
     "src"
   ],
@@ -20,7 +17,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "gen-py-classes -n ../../node_modules"
+    "build": "gen-py-classes -n ../../node_modules",
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"

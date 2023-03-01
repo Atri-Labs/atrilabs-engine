@@ -9,11 +9,9 @@
   "bin": {
     "build-node-app": "dist/scripts/build-node-app.js"
   },
-  "directories": {
-    "lib": "lib"
-  },
   "files": [
-    "lib"
+    "src",
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,7 +21,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
