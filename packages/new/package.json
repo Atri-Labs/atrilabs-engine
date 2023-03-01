@@ -5,7 +5,7 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "dist/main.js",
+  "bin": "dist/main.js",
   "files": [
     "dist"
   ],
