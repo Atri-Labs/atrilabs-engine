@@ -8,7 +8,7 @@ export function processManifestDirsString(dirs: string[]) {
         __non_webpack_require__.resolve(dir.replace("#", ""))
       );
     }
-    return dir;
+    return path.resolve(dir);
   });
   return processedDirs;
 }

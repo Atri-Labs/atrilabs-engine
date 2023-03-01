@@ -20,7 +20,7 @@ import express from "express";
 import { watchManifestDirs } from "./machine/watchManifestDirs";
 import fs from "fs";
 import { computeFSAndSend } from "./machine/computeFSAndSend";
-import { processManifestDirsString } from "./machine/processManifestDirsString";
+import { processManifestDirsString } from "../../commons/processManifestDirsString";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -37,7 +37,7 @@ async function main() {
   setFSWatchers();
   const manifestDirs = processManifestDirsString(params.manifestDirs);
   if (fs.existsSync("manifests")) {
-    manifestDirs.push("manifests");
+    manifestDirs.push(path.resolve("manifests"));
   }
   watchManifestDirs(manifestDirs);
 
