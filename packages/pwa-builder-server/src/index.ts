@@ -6,6 +6,7 @@ import type {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
+  ImportedResource,
 } from "@atrilabs/core";
 import {
   getAppInfo,
@@ -16,6 +17,14 @@ import {
   resolvePages,
   saveEventsForPage,
 } from "./utils";
+import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
+import fs from "fs";
+import {
+  createCSSFile,
+  fetchCSSFromFile,
+  fetchCSSResource,
+  getResourceFiles,
+} from "./handle-resources";
 
 const app = express();
 const server = http.createServer(app);
@@ -56,7 +65,62 @@ io.on("connection", (socket) => {
       cb(false);
     }
   });
+  socket.on("uploadAssets", (files, cb) => {
+    saveAssets(files)
+      .then((urls) => {
+        cb(true, urls);
+      })
+      .catch((err) => {
+        cb(false, []);
+        console.log(err);
+      });
+  });
+  socket.on("getAssetsInfo", (cb) => {
+    getAllAssetsInfo()
+      .then((info) => {
+        cb(info);
+      })
+      .catch((err) => {
+        cb({});
+        console.log(err);
+      });
+  });
+  socket.on("importResource", (resource, cb) => {
+    fetchCSSResource(resource.str)
+      .then((importedResource) => {
+        try {
+          createCSSFile(resource.str);
+          io.sockets.emit("newResource", importedResource);
+          cb(true);
+        } catch (err) {
+          console.log(err);
+          cb(false);
+        }
+      })
+      .catch(() => {
+        console.log("Some error occured while fetching CSS resource.");
+        cb(false);
+      });
+  });
+  socket.on("getResources", (cb) => {
+    getResourceFiles()
+      .then((files) => {
+        const promises = files
+          .filter((file) => file.endsWith(".css"))
+          .map((file) => fetchCSSFromFile(file));
+        return Promise.all(promises);
+      })
+      .then((resources) => {
+        cb(resources);
+      })
+      .catch((err) => {
+        console.log(err);
+        cb([]);
+      });
+  });
 });
+
+app.use(express.static(PUBLIC_DIR));
 
 const port = process.env["PORT"] ? parseInt(process.env["PORT"]) : 4000;
 const host = process.env["HOST"] ? process.env["HOST"] : "0.0.0.0";

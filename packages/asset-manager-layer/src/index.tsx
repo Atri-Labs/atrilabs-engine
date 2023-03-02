@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import {
   UploadContainer,
   UploadContainerProps,
-} from "./components/upload-container/UploadContainer";
+} from "@atrilabs/shared-layer-lib";
 import { ReactComponent as AssetIcon } from "./assets/asset-icon.svg";
 import "./styles.css";
 const styles: { [key: string]: React.CSSProperties } = {

@@ -275,6 +275,13 @@ function insideComponent(
   return false;
 }
 
+function notInsideComponent(
+  context: CanvasMachineContext,
+  event: MOUSE_DOWN_EVENT
+) {
+  return !insideComponent(context, event);
+}
+
 function hoveringOverDifferentComponent(
   context: CanvasMachineContext,
   event: MOUSE_MOVE_EVENT
@@ -615,10 +622,17 @@ export function createCanvasMachine(id: string) {
                 context.selected = null;
               },
               on: {
-                [MOUSE_DOWN]: {
-                  target: pressed,
-                  actions: ["setMousePosition"],
-                },
+                [MOUSE_DOWN]: [
+                  {
+                    target: pressed,
+                    cond: insideComponent,
+                    actions: ["setMousePosition"],
+                  },
+                  {
+                    target: `#${id}.${ready}.${idle}`,
+                    cond: notInsideComponent,
+                  },
+                ],
               },
               type: "parallel",
               states: {

@@ -142,6 +142,9 @@ export type ToolConfig = {
   resources: {
     path: string;
   };
+  shared: {
+    pkg: string;
+  }[];
 };
 
 // type for manifest.schema.config.js
@@ -174,17 +177,8 @@ export type EventSubscriber = (
 // array of filenames without extension
 export type TemplateDetail = { relativeDir: string; templateName: string };
 
-export type ImportedResource = {
-  str: string;
-  method: "link" | "css";
-  imports: {
-    fonts?: {
-      fontFamily: string;
-      fontWeight: string | number;
-      fontStyle: string;
-    }[];
-  };
-};
+export type { ImportedResource } from "@atrilabs/atri-app-core";
+import type { ImportedResource } from "@atrilabs/atri-app-core";
 
 export type BrowserClient = {
   getSocket(): Socket;
@@ -386,6 +380,7 @@ export type ManifestIR = {
 
 export interface ServerToClientEvents {
   loadEvent: (forestPkgId: string, urlPath: string, event: AnyEvent) => void;
+  newResource: (resource: ImportedResource) => void;
 }
 
 export interface ClientToServerEvents {
@@ -404,6 +399,33 @@ export interface ClientToServerEvents {
     urlPath: string,
     events: AnyEvent[],
     callback: (success: boolean) => void
+  ) => void;
+  /**
+   *
+   * @param files Each property of file is derived from the Web API File.
+   */
+  uploadAssets(
+    files: {
+      name: string;
+      data: ArrayBuffer;
+      size: number;
+      mime: string;
+    }[],
+    callback: (success: boolean, urls: string[]) => void
+  ): void;
+  getAssetsInfo: (
+    callback: (assets: {
+      [name: string]: { url: string; mime: string };
+    }) => void
+  ) => void;
+  /** resource management api */
+  importResource: (
+    importStatement: { str: string },
+    callback: (success: boolean) => void
+  ) => void;
+  getResources: (callback: (resources: ImportedResource[]) => void) => void;
+  subscribeResourceUpdates: (
+    callback: (resource: ImportedResource) => void
   ) => void;
 }
 

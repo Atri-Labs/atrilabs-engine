@@ -1,11 +1,12 @@
-import { api, BrowserForestManager, useTree } from "@atrilabs/core";
+import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import CallbackTreeId from "@atrilabs/app-design-forest/lib/callbackHandlerTree?id";
+import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { CallbackHandler } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent } from "@atrilabs/forest";
 import { getComponentManifest } from "../utils";
+import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useManageActionLayer = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);

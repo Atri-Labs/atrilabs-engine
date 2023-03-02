@@ -60,3 +60,15 @@ export type ComponentCoordsWM = {
 };
 
 export type Location = { pageX: number; pageY: number };
+
+export type ImportedResource = {
+  str: string;
+  method: "link" | "css";
+  imports: {
+    fonts?: {
+      fontFamily: string;
+      fontWeight: string | number;
+      fontStyle: string;
+    }[];
+  };
+};

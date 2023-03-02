@@ -4,7 +4,7 @@ import pkgUp from "pkg-up";
 import path from "path";
 
 /**
- * This script can be run inside a packages or Atri app.
+ * This function can be run inside a packages or Atri app.
  *
  * 1. If ran inside a Atri app:
  *

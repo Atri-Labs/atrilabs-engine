@@ -72,11 +72,20 @@ function postNewEvents(
 function importResource(
   importStatement: { str: string },
   callback: (success: boolean) => void
-) {}
-function getResources(callback: (resources: ImportedResource[]) => void) {}
+) {
+  socket.emit("importResource", importStatement, callback);
+}
+function getResources(callback: (resources: ImportedResource[]) => void) {
+  socket.emit("getResources", callback);
+}
 function subscribeResourceUpdates(
   callback: (resource: ImportedResource) => void
-) {}
+) {
+  socket.on("newResource", callback);
+  return () => {
+    socket.off("newResource", callback);
+  };
+}
 
 /**
  *
@@ -90,10 +99,14 @@ function uploadAssets(
     mime: string;
   }[],
   callback: (success: boolean, urls: string[]) => void
-) {}
+) {
+  socket.emit("uploadAssets", files, callback);
+}
 function getAssetsInfo(
   callback: (assets: { [name: string]: { url: string; mime: string } }) => void
-) {}
+) {
+  socket.emit("getAssetsInfo", callback);
+}
 
 export const api = {
   postNewEvents,

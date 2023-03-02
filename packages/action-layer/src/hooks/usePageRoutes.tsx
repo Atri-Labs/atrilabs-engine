@@ -1,18 +1,23 @@
-import { api, BrowserForestManager } from "@atrilabs/core";
 import { useEffect, useState } from "react";
+import {
+  editorAppMachineInterpreter,
+  subscribeEditorMachine,
+} from "@atrilabs/pwa-builder-manager";
+import { PageInfo } from "../types";
 
-export const usePageRoutes = () => {
-  const [routes, setRoutes] = useState<string[]>([]);
+export function usePageRoutes() {
+  const [pagesInfo, setPagesInfo] = useState<PageInfo | null>(null);
+
   useEffect(() => {
-    const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-    api.getPages(forestPkgId, (pages) => {
-      const routes: string[] = [];
-      const pageIds = Object.keys(pages);
-      pageIds.forEach((pageId) => {
-        routes.push(pages[pageId].route);
+    if (editorAppMachineInterpreter.getSnapshot().value !== "booting") {
+      const pagesInfo = editorAppMachineInterpreter.machine.context.pagesInfo;
+      setPagesInfo(pagesInfo);
+    } else {
+      return subscribeEditorMachine("afterbootup", (context) => {
+        setPagesInfo(context.pagesInfo);
       });
-      setRoutes(routes);
-    });
+    }
   }, []);
-  return { routes };
-};
+
+  return { pagesInfo };
+}

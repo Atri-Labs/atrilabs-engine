@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BrowserForestManager } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import { PatchEvent, Tree } from "@atrilabs/forest";
-import { api, subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
+import { Tree } from "@atrilabs/forest";
+import {
+  subscribeEditorMachine,
+  aliasApi,
+} from "@atrilabs/pwa-builder-manager";
 
 export const useShowTab = (compTree: Tree) => {
   const [showTab, setShowTab] = useState<boolean>(false);
@@ -13,22 +15,15 @@ export const useShowTab = (compTree: Tree) => {
   const setAliasCb = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (id) {
-        const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
-        const forestId = BrowserForestManager.currentForest.forestId;
         const alias = event.target.value.replace(/\s+/g, "_");
-        const patchEvent: PatchEvent = {
-          type: `PATCH$$${ComponentTreeId}`,
+        aliasApi.maybeAssignAlias({
+          alias,
           id,
-          slice: {
-            alias,
+          postData: {
+            events: [],
+            meta: { agent: "browser" },
+            name: "SET_ALIAS",
           },
-        };
-        api.postNewEvents(forestPkgId, forestId, {
-          events: [patchEvent],
-          meta: {
-            agent: "browser",
-          },
-          name: "SET_ALIAS",
         });
       }
     },
