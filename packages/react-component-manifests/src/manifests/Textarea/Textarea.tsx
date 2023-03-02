@@ -30,19 +30,15 @@ const Textarea = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+   // moved ref to div, as the Antd TextArea doesnt provide ref for TextArea 
   return (
+    <div ref={ref} style={{display: 'inline-block'}}>
     <TextArea
-    ref={(node: InputRef) => {
-      if (typeof ref === "function") {
-        ref(node?.input || null);
-      } else if (ref) {
-        ref.current = node?.input || null;
-      }
-    }}
     {...restProps}
     {...custom}
     value={props.custom.value}
     />
+     </div>
   );
 });
 

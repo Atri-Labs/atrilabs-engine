@@ -226,7 +226,7 @@ const Form = forwardRef<
                     : ""
                 }
               >
-                <DatePicker />
+                <DatePicker style={{width : "100%"}}/>
               </AntdForm.Item>
             );
           else if (element.selectedOption === "time")
@@ -238,7 +238,7 @@ const Form = forwardRef<
                     : ""
                 }
               >
-                <TimePicker />
+                <TimePicker style={{width : "100%"}}/>
               </AntdForm.Item>
             );
           else if (element.selectedOption === "datetimeLocal")
@@ -250,7 +250,7 @@ const Form = forwardRef<
                     : ""
                 }
               >
-                <DatePicker showTime />
+                <DatePicker showTime/>
               </AntdForm.Item>
             );
           else if (element.selectedOption === "search")

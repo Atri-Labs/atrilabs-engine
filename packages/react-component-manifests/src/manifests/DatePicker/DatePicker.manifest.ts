@@ -28,10 +28,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     },
     showTime: {
       type: "boolean",
-    },
-    disabled: {
-      type: "boolean",
-    },
+    }
   },
 };
 

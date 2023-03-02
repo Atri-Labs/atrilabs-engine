@@ -77,7 +77,7 @@ const Alert = forwardRef<
     props.custom.infoIcon,
     props.custom.successIcon,
   ]);
-
+ // moved ref to div, as the Alert select doesnt provide ref for Alert 
   return (
     <>
       <style>

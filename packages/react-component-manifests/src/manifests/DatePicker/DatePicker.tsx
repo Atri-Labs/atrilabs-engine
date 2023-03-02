@@ -13,11 +13,13 @@ const DatePicker = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+  // moved ref to div, as the Antd DatePicker doesnt provide ref for DatePicker 
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={{display: 'inline-block'}}>
       <AntdDatePicker
         picker={props.custom?.picker}
         showTime={props.custom?.showTime}
+        style={props.styles}
       />
     </div>
   );

@@ -32,10 +32,12 @@ const Title = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+  // moved ref to div, as the Antd Title doesnt provide ref for Title
   return (
-    <div ref={ref} style={{ width: 200 }}>
+    <div ref={ref} >
       <Typography>
         <Typography.Title
+          style={props.styles}
           level={props.custom?.level}
           type={props.custom?.type}
           code={props.custom?.style === "code"}

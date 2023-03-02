@@ -37,7 +37,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
         "sql",
       ],
     },
-    value: { type: "text" },
+    value: { type: "large_text" },
     theme: {
       type: "enum",
       options: ["light", "dark"],

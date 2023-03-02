@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { Select as AntdSelect } from "antd";
 
 const Select = forwardRef<
@@ -10,6 +10,7 @@ const Select = forwardRef<
       label: string[];
       options?: any;
       defaultValue?: any;
+      disabled: boolean;
     };
     onChange: (checked: boolean) => void;
     className?: string;
@@ -17,6 +18,11 @@ const Select = forwardRef<
 >((props, ref) => {
   const { custom, ...restProps } = props;
 
+  useEffect(() => {
+
+  }, [])
+
+  // moved ref to div, as the Antd select doesnt provide ref for select 
   return (
     <div ref={ref} style={props.styles}>
       <AntdSelect

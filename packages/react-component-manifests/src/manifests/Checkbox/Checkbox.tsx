@@ -10,21 +10,17 @@ const Checkbox = forwardRef<
     className?: string;
   }
 >((props, ref) => {
+  // moved ref to div, as the Antd Checkbox doesnt provide ref for Checkbox
   return (
-    <AntdCheckbox
-      ref={(node: InputRef) => {
-        if (typeof ref === "function") {
-          ref(node?.input || null);
-        } else if (ref) {
-          ref.current = node?.input || null;
-        }
-      }}
-      className={props.className}
-      style={props.styles}
-      checked={props.custom.checked}
-    >
-      {props.custom.label ? props.custom.label : "label"}
-    </AntdCheckbox>
+    <div ref={ref} style={{ display: "inline-block" }}>
+      <AntdCheckbox
+        className={props.className}
+        style={props.styles}
+        checked={props.custom.checked}
+      >
+        {props.custom.label ? props.custom.label : "label"}
+      </AntdCheckbox>
+    </div>
   );
 });
 

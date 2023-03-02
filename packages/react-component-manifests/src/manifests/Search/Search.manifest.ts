@@ -49,7 +49,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onSearch: [{ type: "controlled", selector: ["custom", "value"] }],
       onPressEnter: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},

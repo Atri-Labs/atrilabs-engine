@@ -1,5 +1,6 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { Typography as AntdTypography } from "antd";
+import { width } from "@mui/system";
 const { Paragraph } = AntdTypography;
 
 export type TextStyle =
@@ -27,16 +28,19 @@ const Typography = forwardRef<
       ellipsis?: boolean;
       editable: boolean;
       copyable?: boolean;
+      rows?:number;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
-
+ 
   return (
-    <div ref={ref} style={{ width: 200 }}>
+    <div ref={ref} >
       <AntdTypography>
-        <Paragraph
+        <Paragraph 
+          style={props.styles}
+          ellipsis={props.custom?.ellipsis ? { rows: props.custom?.rows, expandable: true, symbol: 'more' } : false}
           type={props.custom?.type}
           code={props.custom?.style === "code"}
           keyboard={props.custom?.style === "keyboard"}
@@ -47,11 +51,10 @@ const Typography = forwardRef<
           delete={props.custom?.style === "delete"}
           onClick={props.onClick}
           disabled={props.custom?.disabled}
-          ellipsis={props.custom?.ellipsis}
           editable={props.custom?.editable}
           copyable={props.custom?.copyable}
         >
-          {props.custom?.content}
+         {props.custom?.content} 
         </Paragraph>
       </AntdTypography>
     </div>

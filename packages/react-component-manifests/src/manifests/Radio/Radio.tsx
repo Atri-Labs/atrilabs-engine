@@ -1,5 +1,5 @@
-import React, { forwardRef, useCallback } from "react";
-import { Radio as AntdRadio, Form, InputRef } from "antd";
+import React, { forwardRef} from "react";
+import { Radio as AntdRadio } from "antd";
 
 const Radio = forwardRef<
   HTMLInputElement,
@@ -17,27 +17,24 @@ const Radio = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+
+  // moved ref to div, as the Antd Radio doesnt provide ref for Radio 
   return (
-    <AntdRadio
-      ref={(node: InputRef) => {
-        if (typeof ref === "function") {
-          ref(node?.input);
-        } else if (ref) {
-          ref.current = node?.input;
-        }
-      }}
-      name={props.custom.name || "Name"}
-      style={{
-        ...props.styles,
-        height: props.custom.radius,
-        width: props.custom.radius,
-      }}
-      className={props.className}
-      checked={props.custom.checked}
-      value={props.custom.label ? props.custom.label : "label"}
-    >
-      {props.custom.label ? props.custom.label : "label"}
-    </AntdRadio>
+    <div ref={ref} style={{display: 'inline-block'}}>
+      <AntdRadio
+        name={props.custom.name || "Name"}
+        style={{
+          ...props.styles,
+          height: props.custom.radius,
+          width: props.custom.radius,
+        }}
+        className={props.className}
+        checked={props.custom.checked}
+        value={props.custom.label ? props.custom.label : "label"}
+      >
+        {props.custom.label ? props.custom.label : "label"}
+      </AntdRadio>
+    </div>
   );
 });
 

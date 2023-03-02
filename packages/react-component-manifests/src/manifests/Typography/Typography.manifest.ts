@@ -45,6 +45,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
     ellipsis :{
       type: "boolean",
     },
+    rows : {
+      type :"number"
+    },
     editable: {
       type: "boolean",
     },
