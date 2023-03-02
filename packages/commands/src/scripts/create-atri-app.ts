@@ -4,6 +4,7 @@ import yargs from "yargs";
 import path from "path";
 import fs from "fs";
 import * as ts from "typescript";
+import recursive from "recursive-readdir";
 
 process.on("unhandledRejection", (reason) => {
   console.log(chalk.red(`create-atri-app failed with reason\n ${reason}`));
@@ -51,14 +52,23 @@ function createPackageJSON(
       name: data.name,
       author: data.author,
       description: data.description,
-      scripts: { dev: "dev-atri-app" },
+      scripts: {
+        dev: "dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils' -i '@atrilabs/utils'",
+        editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
+        "gen-py-app": "gen-py-app",
+        "dev-py-app": "dev-py-app",
+      },
       // Update these versions on every release
       dependencies: {
-        "@atrilabs/atri-app-core": "^0.0.90",
-        "@atrilabs/canvas-zone": "^0.0.90",
-        "@atrilabs/commands": "^0.0.90",
-        "@atrilabs/commands-builder": "^0.0.90",
+        "@atrilabs/atri-app-core": "1.0.0-alpha.0",
+        "@atrilabs/canvas-zone": "1.0.0-alpha.0",
+        "@atrilabs/commands": "1.0.0-alpha.0",
+        "@atrilabs/commands-builder": "1.0.0-alpha.0",
+        "@atrilabs/core": "1.0.0-alpha.0",
+        "@atrilabs/design-system": "1.0.0-alpha.0",
+        "@atrilabs/pwa-builder-server": "1.0.0-alpha.0",
         "node-noop": "^1.0.0",
+        xstate: "^4.35.2",
       },
     },
     null,
@@ -77,7 +87,13 @@ function createPackageJSON(
 }
 
 function createPageScaffold() {
-  return [`export default function(){`, ``, `}`].join("\n");
+  return [
+    `import { CanvasZone } from "@atrilabs/canvas-zone";`,
+    ``,
+    `export default function() {`,
+    `\treturn <CanvasZone id={"main"} />`,
+    `}`,
+  ].join("\n");
 }
 
 function convertTsxToJsX(filepath: string) {
@@ -96,8 +112,9 @@ function convertTsxToJsX(filepath: string) {
 
 function copyAppWrapper(options: { dest: string; useTypescript: boolean }) {
   const moduleExtenstion = options.useTypescript ? ".tsx" : ".jsx";
-  const appWrapperPath = require.resolve(
-    "@atrilabs/atri-app-core/src/components/AppWrapper" + moduleExtenstion
+  // @ts-ignore
+  const appWrapperPath = __non_webpack_require__.resolve(
+    "@atrilabs/atri-app-core/src/components/AppWrapper.tsx"
   );
   const content =
     moduleExtenstion === ".tsx"
@@ -111,8 +128,9 @@ function copyAppWrapper(options: { dest: string; useTypescript: boolean }) {
 
 function copyDocument(options: { dest: string; useTypescript: boolean }) {
   const moduleExtenstion = options.useTypescript ? ".tsx" : ".jsx";
-  const documentPath = require.resolve(
-    "@atrilabs/atri-app-core/src/components/Document" + moduleExtenstion
+  // @ts-ignore
+  const documentPath = __non_webpack_require__.resolve(
+    "@atrilabs/atri-app-core/src/components/Document.tsx"
   );
   const content =
     moduleExtenstion === ".tsx"
@@ -166,6 +184,19 @@ function createEslintRC(options: { dest: string }) {
   );
 }
 
+function createPublicDirectory(options: { dest: string }) {
+  const { dest } = options;
+  const publicDir = path.resolve(dest, "public");
+  fs.mkdirSync(publicDir, { recursive: true });
+  recursive(
+    path.resolve(__dirname, "..", "src", "scripts", "dev", "public")
+  ).then((files) => {
+    files.forEach((file) => {
+      fs.copyFileSync(file, path.resolve(publicDir, path.basename(file)));
+    });
+  });
+}
+
 function main() {
   const args = processArgs();
   const dirname = args.name.startsWith("@")
@@ -183,6 +214,7 @@ function main() {
   createPagesDirectory({ dest, useTypescript: args.typescript });
   createEslintRC({ dest });
   copyDocument({ dest, useTypescript: args.typescript });
+  createPublicDirectory({ dest });
 }
 
 main();

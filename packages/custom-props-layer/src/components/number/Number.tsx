@@ -3,7 +3,7 @@ import { useMemo, useCallback } from "react";
 import { PropertyContainer } from "../commons/PropertyContainer";
 import { Label } from "../commons/Label";
 import { NumberInput } from "../commons/NumberInput";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 
 export const Number: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

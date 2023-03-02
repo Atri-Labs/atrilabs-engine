@@ -16,27 +16,21 @@ import { NETWORK_REQUEST } from "../dev/serverMachine";
 import { computeFSAndSend } from "./machine/computeFSAndSend";
 import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
 import startManifestRegistryLibDevServer from "./startManifestRegistryLibDevServer";
+import { processManifestDirsString } from "../../commons/processManifestDirsString";
 
 function main() {
   // TODO: copy public folder if not already exists
 
   const toolConfig = readToolConfig();
+  const params = extractParams();
+  const manifestDirs = processManifestDirsString([
+    ...params.manifestDirs,
+    ...toolConfig.manifestDirs.map(({ pkg }) => `#${pkg}`),
+  ]);
 
-  watchManifestDirs(
-    toolConfig.manifestDirs.map(({ pkg }) =>
-      // @ts-ignore
-      path.dirname(__non_webpack_require__.resolve(pkg))
-    )
-  );
+  watchManifestDirs(manifestDirs);
 
-  computeFSAndSend(
-    editorServerMachineInterpreter,
-    toolConfig.manifestDirs.map(({ pkg }) =>
-      // @ts-ignore
-      path.dirname(__non_webpack_require__.resolve(pkg))
-    )
-  ).then(() => {
-    const params = extractParams();
+  computeFSAndSend(editorServerMachineInterpreter, manifestDirs).then(() => {
     const additionalInclude = params.additionalInclude || [];
     additionalInclude.push(
       path.dirname(
@@ -77,12 +71,7 @@ function main() {
           __non_webpack_require__.resolve(pkg)
         );
       }),
-      ...toolConfig.manifestDirs.map(({ pkg }) => {
-        return path.dirname(
-          // @ts-ignore
-          __non_webpack_require__.resolve(pkg)
-        );
-      }),
+      ...manifestDirs,
       ...toolConfig.manifestSchema.map(({ pkg }) => {
         return path.dirname(
           // @ts-ignore

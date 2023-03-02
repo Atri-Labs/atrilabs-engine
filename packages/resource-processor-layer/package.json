@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/resource-processor-layer",
-  "version": "0.0.90",
+  "version": "1.0.0-alpha.0",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
@@ -16,22 +16,16 @@
     "type": "git",
     "url": "git+https://github.com/Atri-Labs/atrilabs-engine.git"
   },
-  "scripts": {
-    "clean": "rimraf lib",
-    "build": "build-atri-layer",
-    "prepublishOnly": "yarn run build"
-  },
+  "scripts": {},
   "bugs": {
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/canvas-runtime": "^0.0.90",
-    "@atrilabs/core": "^0.0.90",
-    "@atrilabs/design-system": "^0.0.90",
-    "@atrilabs/layer-types": "^0.0.90",
-    "@atrilabs/pwa-builder-manager": "^0.0.90",
-    "@atrilabs/scripts": "^0.0.90",
-    "eslint-plugin-atrilabs": "^0.0.90",
+    "@atrilabs/core": "^1.0.0-alpha.0",
+    "@atrilabs/design-system": "^1.0.0-alpha.0",
+    "@atrilabs/layer-types": "^1.0.0-alpha.0",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.0",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.0",
     "typescript": "4.6.3"
   },
   "devDependencies": {

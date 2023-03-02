@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
 import { AttributeType, ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";

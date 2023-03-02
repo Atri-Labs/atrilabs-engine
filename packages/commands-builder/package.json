@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/commands-builder",
-  "version": "0.0.90",
+  "version": "1.0.0-alpha.0",
   "description": "builds & provide utils for @atrilabs/commands",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -9,11 +9,9 @@
   "bin": {
     "build-node-app": "dist/scripts/build-node-app.js"
   },
-  "directories": {
-    "lib": "lib"
-  },
   "files": [
-    "lib"
+    "src",
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,7 +21,8 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
@@ -104,6 +103,7 @@
     "webpack": "^5.73.0",
     "webpack-dev-server": "^4.11.1",
     "webpack-manifest-plugin": "^5.0.0",
+    "webpack-node-externals": "^3.0.0",
     "webpack-sources": "^3.2.3",
     "workbox-webpack-plugin": "^6.5.4",
     "yargs": "^17.6.2"
