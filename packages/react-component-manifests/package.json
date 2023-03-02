@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/react-component-manifests",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.4",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -24,12 +24,12 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^1.0.0-alpha.0",
-    "@atrilabs/commands": "^1.0.0-alpha.0",
-    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.0",
-    "@atrilabs/design-system": "^1.0.0-alpha.0",
-    "@atrilabs/layer-types": "^1.0.0-alpha.0",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.0",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.4",
+    "@atrilabs/commands": "^1.0.0-alpha.4",
+    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.4",
+    "@atrilabs/design-system": "^1.0.0-alpha.4",
+    "@atrilabs/layer-types": "^1.0.0-alpha.4",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.4",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.0",
