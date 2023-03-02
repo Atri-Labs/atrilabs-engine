@@ -136,26 +136,29 @@ async function main() {
       printRequest(req, interpreter);
       interpreter.send({ type: NETWORK_REQUEST, input: { req, res, next } });
     });
-    app.get(
-      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js",
-      (_req, res) => {
+    app.use((req, res, next) => {
+      if (
+        req.method === "GET" &&
+        req.originalUrl.endsWith("/dist/atri-editor/manifestRegistry.js")
+      ) {
         // @ts-ignore
         const absManifestRegistryPath = __non_webpack_require__.resolve(
           "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js"
         );
         res.sendFile(absManifestRegistryPath);
-      }
-    );
-    app.get(
-      "/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map",
-      (_req, res) => {
+      } else if (
+        req.method === "GET" &&
+        req.originalUrl.endsWith("/dist/atri-editor/manifestRegistry.js.map")
+      ) {
         // @ts-ignore
         const absManifestRegistryPath = __non_webpack_require__.resolve(
           "@atrilabs/pwa-builder/public/dist/atri-editor/manifestRegistry.js.map"
         );
         res.sendFile(absManifestRegistryPath);
+      } else {
+        next();
       }
-    );
+    });
     app.use(express.static(paths.appPublic));
   };
 
