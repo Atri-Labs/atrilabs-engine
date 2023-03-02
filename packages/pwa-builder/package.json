@@ -21,7 +21,7 @@
     "dev": "dev-editor -i '@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest:@atrilabs/utils' -d '../example-atri-app/manifests'",
     "build-manifest-registry": "build-manifest-registry",
     "build-editor": "build-editor -i '@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest:@atrilabs/utils'",
-    "build": "yarn build-editor & yarn build-manifest-registry",
+    "build": "concurrently 'yarn build-editor' 'yarn build-manifest-registry'",
     "prepublishOnly": "yarn build"
   },
   "bugs": {
@@ -44,6 +44,7 @@
     "typescript": "^4.6.4"
   },
   "devDependencies": {
+    "concurrently": "^7.6.0",
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
     "pkg": "^5.8.0",

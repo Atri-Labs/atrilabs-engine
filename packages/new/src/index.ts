@@ -48,7 +48,7 @@ async function main() {
     "create-atri-app.js"
   );
   exec(
-    `node ${createAtriAppJS} -n ${projectName} -a ${author} -d ${description} ${
+    `node ${createAtriAppJS} -n "${projectName}" -a "${author}" -d "${description}" ${
       language === "TypeScript" ? "--typescript" : ""
     }`,
     (err, stdout, stderr) => {
