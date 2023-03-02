@@ -22,12 +22,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    options: {
-      type: "array_map",
-      attributes: [
-        { fieldName: "option", type: "text" },
-      ],
-    },
+    name: { type: "text" },
+    label: { type: "text" },
+    defaultValue: { type: "text" },
   },
 };
 
@@ -39,17 +36,10 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          options: [
-            {
-              option: "One",
-            },
-            {
-              option: "Two",
-            },
-            {
-              option: "Three",
-            },
-          ],
+          cursor: "pointer",
+          display: "inline-flex",
+          columnGap: "10px",
+          alignItems: "center",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
