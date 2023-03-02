@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-design-layer",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "allows for basic structure of design layer",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -24,7 +24,7 @@
     "@atrilabs/app-design-forest": "^1.0.0-alpha.0",
     "@atrilabs/core": "^1.0.0-alpha.0",
     "@atrilabs/design-system": "^1.0.0-alpha.0",
-    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.0",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.1",
     "eslint-plugin-atrilabs": "^1.0.0-alpha.0",
     "typescript": "^4.6.3"
   },

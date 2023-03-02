@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/pwa-builder-manager",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,7 +21,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.0",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.1",
     "@atrilabs/core": "^1.0.0-alpha.0",
     "socket.io-client": "^4.5.0",
     "trie-search": "^1.3.6",
