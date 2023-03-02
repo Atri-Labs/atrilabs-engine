@@ -23,9 +23,7 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     level: {
-      type: "number",
-    //  options: ["1","2","3","4","5"],
-    
+      type: "number", 
     },
     content: { type: "text" },
     style: {

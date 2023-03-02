@@ -1,9 +1,9 @@
-import React, { forwardRef, ChangeEventHandler, ReactNode, useState } from "react";
-import { Typography as AntdTypography, TabsProps } from "antd";
-const { Title, Paragraph, Text, Link } = AntdTypography;
+import React, { forwardRef } from "react";
+import { Typography as AntdTypography } from "antd";
+const { Paragraph } = AntdTypography;
 
 export type TextStyle =
-   "code"
+  | "code"
   | "keyboard"
   | "mark"
   | "strong"
@@ -11,31 +11,32 @@ export type TextStyle =
   | "underline"
   | "delete";
 
-  export type TextType =  
-   "secondary"
-  | "success"
-  | "warning"
-  | "danger"
-
+export type TextType = "secondary" | "success" | "warning" | "danger";
 
 const Typography = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     className?: string;
-    custom?: { isTitle:boolean; content?: string; style: TextStyle ; type?: TextType; disabled : boolean; ellipsis?: boolean; editable:boolean; copyable?:boolean};
-    onClick: (event: { pageX: number; pageY: number }) => void;  
+    custom?: {
+      isTitle: boolean;
+      content?: string;
+      style: TextStyle;
+      type?: TextType;
+      disabled: boolean;
+      ellipsis?: boolean;
+      editable: boolean;
+      copyable?: boolean;
+    };
+    onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
-  //debugger
   const { custom, ...restProps } = props;
-  console.log("{props.custom?.style}", typeof props.custom?.style);
-  const [editableStr, setEditableStr] = useState('This is an editable text.');
- // const [ellipsis, setEllipsis] = useState(true);
+
   return (
-    <div ref={ref} style={{ width: 200 }} >
+    <div ref={ref} style={{ width: 200 }}>
       <AntdTypography>
-        <Text
+        <Paragraph
           type={props.custom?.type}
           code={props.custom?.style === "code"}
           keyboard={props.custom?.style === "keyboard"}
@@ -44,17 +45,15 @@ const Typography = forwardRef<
           italic={props.custom?.style === "italic"}
           underline={props.custom?.style === "underline"}
           delete={props.custom?.style === "delete"}
-          onClick= {props.onClick}
-          disabled = {props.custom?.disabled}
+          onClick={props.onClick}
+          disabled={props.custom?.disabled}
           ellipsis={props.custom?.ellipsis}
           editable={props.custom?.editable}
           copyable={props.custom?.copyable}
         >
           {props.custom?.content}
-        </Text>
-   
+        </Paragraph>
       </AntdTypography>
-
     </div>
   );
 });

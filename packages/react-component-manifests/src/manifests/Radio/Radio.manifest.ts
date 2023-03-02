@@ -6,7 +6,6 @@ import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
-
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
   flexContainerOptions: true,
@@ -27,7 +26,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
     checked: { type: "boolean" },
     radius: { type: "number" },
     label: { type: "text"},
-   // buttonStyle :{type : "enum" }
   },
 };
 

@@ -24,6 +24,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     alt: { type: "text" },
     src: { type: "static_asset" },
+    preview: { type: "boolean" },
   },
 };
 

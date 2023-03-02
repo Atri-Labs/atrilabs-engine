@@ -19,7 +19,7 @@ const Alert = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      alertType: AlertType; // | string;
+      alertType: AlertType;
       title: string;
       description?: string;
       successIcon?: string;
@@ -27,15 +27,16 @@ const Alert = forwardRef<
       warningIcon?: string;
       errorIcon?: string;
       isClosable: boolean;
-      showIcon?:boolean
+      showIcon?: boolean;
+      closeText?: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
-    showIcon?:boolean;
-  } //& AlertProps
+    showIcon?: boolean;
+  }
 >((props, ref) => {
   const { custom, ...restProps } = props;
-  console.log("restProps",restProps)
+  console.log("restProps", restProps);
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       props.onClick({ pageX: e.pageX, pageY: e.pageY });
@@ -117,11 +118,11 @@ const Alert = forwardRef<
           {...restProps}
           onClick={onClick}
           type={props.custom.alertType || AlertType.SUCEESS}
-          showIcon ={props.custom.showIcon}//it will show antd icon  
+          showIcon={props.custom.showIcon} //it will show antd icon
           message={props.custom.title}
           description={props.custom.description}
-          closable={props.custom.isClosable }
-          
+          closable={props.custom?.isClosable}
+          closeText={props.custom?.closeText}
         />
       </div>
     </>
@@ -129,29 +130,3 @@ const Alert = forwardRef<
 });
 
 export default Alert;
-
-{
-  /* <div
-        ref={ref}
-        className={props.className}
-        style={{ ...alertStyle, ...props.styles }}
-        onClick={onClick}
-      >
-        <div id="icon">
-          <img id="icon-logo" src={alertStatusIcon} alt="Icon for alert" />
-        </div>
-        <div id="information">
-          <div>{props.custom.title}</div>
-          <div id="description">{props.custom.description}</div>
-        </div>
-        {props.custom.isClosable && (
-          <button id="close-button">
-            <img
-              id="close-button"
-              src={closeIcon}
-              alt="Icon to close the alert"
-            />
-          </button>
-        )}
-      </div> */
-}

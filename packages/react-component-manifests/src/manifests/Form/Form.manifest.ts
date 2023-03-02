@@ -22,7 +22,6 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
     autocomplete: {
       type: "enum",
       options: ["on", "off"],
@@ -154,6 +153,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     submitButtonColor: { type: "color" },
     resetButtonBgColor: { type: "color" },
     resetButtonColor: { type: "color" },
+    target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
   },
 };
 
@@ -167,7 +167,6 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           display: "inline-flex",
           flexDirection: "column",
-          //rowGap: "1em",
           padding: "10px",
         },
         treeOptions: cssTreeOptions,
@@ -244,7 +243,6 @@ const compManifest: ReactComponentManifestSchema = {
               select: {
                 selectLabel: "Select",
                 selectIdentifier: "text",
-                // selectOptions: ["hey", "hello", "how are you"],
                 selectOptions: [
                   { value: "one", label: "One" },
                   { value: "two", label: "Two" },

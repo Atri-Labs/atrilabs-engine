@@ -22,10 +22,6 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    level: {
-      type: "enum",
-      options: ["1","2","3","4","5"],
-    },
     content: { type: "text" },
     style: {
       type: "enum",

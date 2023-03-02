@@ -45,7 +45,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
         { fieldName: "label", type: "text" },
         { fieldName: "children", type: "text" },
         { fieldName: "disabled", type: "boolean" },
-       // { fieldName: "closable", type: "boolean" },
       ],
     },
   },

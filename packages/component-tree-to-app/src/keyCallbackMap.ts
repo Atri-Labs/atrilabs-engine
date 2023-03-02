@@ -188,4 +188,8 @@ export const keyCallbackMap: {
   Select:{},
   Typography:{},
   Title:{},
+  DatePicker:{},
+  Anchor:{},
+  CodeMirror:{}
+  
 };

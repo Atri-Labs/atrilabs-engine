@@ -193,5 +193,17 @@ module.exports = {
       modulePath: "./src/manifests/Title/Title.tsx",
       exportedVarName: "Title",
     },
+    DatePicker:{
+      modulePath: "./src/manifests/DatePicker/DatePicker.tsx",
+      exportedVarName: "DatePicker",
+    },
+    Anchor:{
+      modulePath: "./src/manifests/Anchor/Anchor.tsx",
+      exportedVarName: "Anchor",
+    },
+    CodeMirror:{
+      modulePath: "./src/manifests/CodeMirror/CodeMirror.tsx",
+      exportedVarName: "CodeMirror",
+    },
   },
 };

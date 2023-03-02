@@ -376,4 +376,7 @@ export const keyPropMap: any = {
   Select:{},
   Typography:{},
   Title:{},
+  DatePicker:{},
+  Anchor:{},
+  CodeMirror:{},
 };

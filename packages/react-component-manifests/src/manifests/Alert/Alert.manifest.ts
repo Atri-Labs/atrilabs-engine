@@ -36,6 +36,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     isClosable: { type: "boolean" },
     banner: { type: "boolean" },
     showIcon: { type: "boolean" },
+    closeText: { type: "text" },
   },
 };
 

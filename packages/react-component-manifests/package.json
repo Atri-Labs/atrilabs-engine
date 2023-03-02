@@ -39,7 +39,19 @@
     "antd": "^5.2.2",
     "color": "^4.2.3",
     "recharts": "^2.1.13",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "@uiw/react-codemirror": "^4.19.9",
+    "@codemirror/lang-css": "^6.0.2",
+    "@codemirror/lang-html": "^6.4.2",
+    "@codemirror/lang-java": "^6.0.1",
+    "@codemirror/lang-javascript": "^6.1.4",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-php": "^6.0.1",
+    "@codemirror/lang-python": "^6.1.1",
+    "@codemirror/lang-rust": "^6.0.1",
+    "@codemirror/lang-sql": "^6.4.0",
+    "@codemirror/lang-xml": "^6.0.2",
+    "@uiw/codemirror-extensions-langs": "^4.19.9"
   },
   "devDependencies": {
     "@atrilabs/scripts": "^0.0.90",

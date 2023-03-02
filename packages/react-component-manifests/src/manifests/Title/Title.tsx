@@ -1,11 +1,5 @@
-import React, {
-  forwardRef,
-  ChangeEventHandler,
-  ReactNode,
-  useState,
-} from "react";
+import React, { forwardRef } from "react";
 import { Typography } from "antd";
-const { Paragraph, Text, Link } = Typography;
 
 export type TextStyle =
   | "code"
@@ -37,11 +31,7 @@ const Title = forwardRef<
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
-  //debugger
   const { custom, ...restProps } = props;
-  console.log("props.custom?.level", typeof props.custom?.level);
-  const [editableStr, setEditableStr] = useState("This is an editable text.");
-  // const [ellipsis, setEllipsis] = useState(true);
   return (
     <div ref={ref} style={{ width: 200 }}>
       <Typography>

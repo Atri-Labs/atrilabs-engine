@@ -1,43 +1,31 @@
-import React, { forwardRef, useCallback } from "react";
-import { Select as AntdSelect} from "antd";
+import React, { forwardRef } from "react";
+import { Select as AntdSelect } from "antd";
 
 const Select = forwardRef<
-  HTMLSelectElement,
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
       name: string;
       label: string[];
-      checked: boolean;
       options?: any;
+      defaultValue?: any;
     };
     onChange: (checked: boolean) => void;
     className?: string;
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
-  const onChangeCb: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      props.onChange(e.target.checked);
-    },
-    [props]
-  );
+
   return (
-      <AntdSelect 
-      ref={(node: any) => {
-        console.log("select",node)
-        if (typeof ref === "function") {
-          ref(node || null);
-        } else if (ref) {
-          ref.current = node || null;
-        }
-        debugger
-      }}
-      {...restProps}
-      {...custom}
-      className={props.className}
-      style={props.styles}
-      onChange={props.onChange}
+    <div ref={ref} style={props.styles}>
+      <AntdSelect
+        defaultValue={props.custom.defaultValue}
+        {...restProps}
+        {...custom}
+        className={props.className}
+        style={props.styles}
+        onChange={props.onChange}
         options={
           props.custom.options || [
             { value: "one", label: "One" },
@@ -47,8 +35,9 @@ const Select = forwardRef<
         }
         placeholder="Select"
       >
-         {props.custom.label ? props.custom.label : "label"}
+        {props.custom.label ? props.custom.label : "label"}
       </AntdSelect>
+    </div>
   );
 });
 
