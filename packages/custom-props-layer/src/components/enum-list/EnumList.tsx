@@ -6,6 +6,14 @@ import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { gray900 } from "@atrilabs/design-system";
 import { createObject } from "@atrilabs/core";
 
+/*
+  Enum list custom prop is used in cases where a component needs a single value out of predefined values
+  and these values are stored in the form of an array.
+  Currently not used anywhere in the codebase.
+  Example: 
+    tabsClicked: {type: "array_enum", options: ["yes", "no"]}
+*/
+
 export const EnumList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];

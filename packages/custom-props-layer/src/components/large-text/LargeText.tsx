@@ -3,6 +3,12 @@ import { ComponentProps } from "../../types";
 import { createObject } from "@atrilabs/core";
 import ControlledInput from "./ControlledInput";
 
+/*
+  large text custom prop is used in cases where a component needs a big textbox.
+  Example: Large text is used in Modal component.
+           body: { type: "large_text" }
+*/
+
 export const LargeText: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];

@@ -5,6 +5,12 @@ import { createObject } from "@atrilabs/core";
 import { Label } from "../commons/Label";
 import { PropertyContainer } from "../commons/PropertyContainer";
 
+/*
+  Color custom prop is used in cases where a component needs a color value.
+  Example: To change the color of a component.
+      bgColor: { type: "color" }
+*/
+
 export const Color: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];

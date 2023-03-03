@@ -10,6 +10,24 @@ import { MapContainer } from "../commons/MapContainer";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
 
+/*
+  array_typed_map custom prop is used in cases where a component needs an array of predefined set of datatypes
+  Example: The form component with a predefined set of datatypes.
+  data: {
+    type: "array_typed_map",
+    attributes: [
+      {
+        type: "text",
+        fieldName: "fName"
+      },
+      {
+        type: "text",
+        fieldName: "lName"
+      }
+    ]
+  }
+*/
+
 export const TypedMapList: React.FC<ComponentProps> = (props) => {
   const { routes } = usePageRoutes();
 

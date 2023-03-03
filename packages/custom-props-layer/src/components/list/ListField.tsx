@@ -6,6 +6,12 @@ import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { createObject } from "@atrilabs/core";
 
+/*
+  List custom prop is used in cases where a component needs an array of strings.
+  Example: 
+    data: { type: "array" }
+*/
+
 export const ListField: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];

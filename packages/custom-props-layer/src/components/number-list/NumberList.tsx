@@ -5,6 +5,13 @@ import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
 import { createObject } from "@atrilabs/core";
 
+/*
+  array_number prop is used in cases where a component needs an array of numbers.
+  Currently not used anywhere in the codebase.
+  Example: The age of people.
+  age: { type: "array_number" }
+*/
+
 export const NumberList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {
     return props.selector || [];
