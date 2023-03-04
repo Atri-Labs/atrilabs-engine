@@ -8,6 +8,7 @@ import {
 } from "./utils";
 import type { DewireUpdate, RewireUpdate } from "@atrilabs/forest";
 import { handleResources } from "./handleResources";
+import { handlePasteEvents } from "./handlePasteEvents";
 
 type ComponentPayload = {
   id: string;
@@ -339,6 +340,9 @@ if (typeof window !== "undefined") {
     if (ev.data?.type === "IMPORT_RESOURCES" && ev.data?.resources) {
       const resources = ev.data.resources as ImportedResource[];
       handleResources(resources);
+    }
+    if (ev.data?.type === "atri-paste-events") {
+      handlePasteEvents(ev.data);
     }
   });
   window.document.addEventListener(

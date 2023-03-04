@@ -1,5 +1,9 @@
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
-import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import type {
+  ClipboardPasteObjectWithParent,
+  DragComp,
+  DragData,
+} from "@atrilabs/atri-app-core";
 import {
   BrowserForestManager,
   createEventsFromManifest,
@@ -9,6 +13,7 @@ import { api } from "./api";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { PatchEvent } from "@atrilabs/forest";
 import { aliasApi } from "./aliasApi";
+import { postPasteEvents } from "./copy-paste/postPasteEvents";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -69,6 +74,18 @@ window.addEventListener("message", (ev) => {
       editorAppMachineInterpreter.send({
         type: "SELECT_END",
         id: ev.data.id,
+      });
+    }
+    if (ev.data?.type === "PASTE_EVENTS") {
+      const { parent, newTemplateRootId, events } =
+        ev.data as ClipboardPasteObjectWithParent;
+      const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+      postPasteEvents({
+        parent,
+        newTemplateRootId,
+        events,
+        forestId,
+        forestPkgId,
       });
     }
   }

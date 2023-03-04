@@ -2,6 +2,9 @@ import { BrowserForestManager } from "@atrilabs/core";
 import { api } from "./api";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { DeleteEvent } from "@atrilabs/forest";
+import { createEventsThatCanBeCopied } from "./copy-paste/createEventsThatCanBeCopied";
+import { putInClipboard, readFromClipboard } from "./copy-paste/clipboard";
+import { editorAppMachineInterpreter } from "./init";
 
 function isMac() {
   if (window.navigator && window.navigator.userAgent) {
@@ -40,8 +43,56 @@ function handleDelete() {
   });
 }
 
+function isCopyShortcutPressed(ev: KeyboardEvent) {
+  if (isMac()) {
+    return ev.key.toLowerCase() === "c" && ev.metaKey;
+  } else {
+    return ev.key.toLowerCase() === "c" && ev.ctrlKey;
+  }
+}
+
+function isPasteShortcutPressed(ev: KeyboardEvent) {
+  if (isMac()) {
+    return ev.key.toLowerCase() === "v" && ev.metaKey;
+  } else {
+    return ev.key.toLowerCase() === "v" && ev.ctrlKey;
+  }
+}
+
+function handleCopyPaste() {
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type === "KEY_DOWN" && ev.data.event && ev.data.id) {
+      if (isCopyShortcutPressed(ev.data.event)) {
+        const compId = ev.data.id;
+        const events = createEventsThatCanBeCopied({
+          compId,
+          copyCallbacks: true,
+          copyDefaulCallbacks: false,
+        });
+        putInClipboard({ events, copiedCompId: compId });
+      }
+      if (isPasteShortcutPressed(ev.data.event)) {
+        readFromClipboard().then((copyObject) => {
+          if (copyObject) {
+            editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+              {
+                ...copyObject,
+                type: "atri-paste-events",
+                pasteTargetComp: ev.data.id,
+              },
+              // @ts-ignore
+              "*"
+            );
+          }
+        });
+      }
+    }
+  });
+}
+
 function attachAllKeyboardShortcuts() {
   handleDelete();
+  handleCopyPaste();
 }
 
 attachAllKeyboardShortcuts();
