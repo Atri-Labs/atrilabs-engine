@@ -3,6 +3,7 @@ import { getId } from "../utils/getId";
 import { componentStoreApi } from "./componentStoreApi";
 import { CANVAS_ZONE_ROOT_ID } from "./consts";
 import {
+  getComponentIndexInsideCanvasZone,
   getComponentIndexInsideParentComponent,
   getCSSBoxCoords,
 } from "./utils";
@@ -14,6 +15,34 @@ const lastPasted: { lastPastedCompId: string | null } = {
 function handlePasteInCanvasZone(pasteObject: ClipboardPasteObject) {
   const { pasteTargetCanvasZone } = pasteObject;
   if (pasteTargetCanvasZone) {
+    let index = 0;
+    const canvasZone = componentStoreApi.getCanvasZoneComponent(
+      pasteTargetCanvasZone
+    );
+    if (canvasZone) {
+      const selectedBoxCoords = getCSSBoxCoords(canvasZone);
+      const bottomWM = selectedBoxCoords.bottomWM;
+      const rightWM = selectedBoxCoords.rightWM;
+
+      // get location pageX, pageY
+      const loc: Location = { pageX: rightWM, pageY: bottomWM };
+
+      index = getComponentIndexInsideCanvasZone(pasteTargetCanvasZone, loc);
+    }
+    lastPasted.lastPastedCompId = getId();
+    window.top?.postMessage(
+      {
+        ...pasteObject,
+        type: "PASTE_EVENTS",
+        parent: {
+          id: CANVAS_ZONE_ROOT_ID,
+          index,
+          canvasZoneId: pasteTargetCanvasZone,
+        },
+        newTemplateRootId: lastPasted.lastPastedCompId,
+      },
+      "*"
+    );
   } else {
     console.log(
       `pasteTargetCanvasZone expected to be defined, got ${pasteTargetCanvasZone}`
