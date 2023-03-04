@@ -7,6 +7,7 @@ import { putInClipboard, readFromClipboard } from "./copy-paste/clipboard";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
 import { componentApi } from "./componentApi";
+import { undo, redo } from "./undo-redo/postUndoRedoEvents";
 
 function isMac() {
   if (window.navigator && window.navigator.userAgent) {
@@ -229,10 +230,40 @@ function handleArrowKeys() {
   });
 }
 
+function isUndoPressed(ev: KeyboardEvent) {
+  if (isMac()) {
+    return ev.key.toLowerCase() === "z" && ev.metaKey;
+  } else {
+    return ev.key.toLowerCase() === "z" && ev.ctrlKey;
+  }
+}
+
+function isRedoPressed(ev: KeyboardEvent) {
+  if (isMac()) {
+    return ev.key.toLowerCase() === "z" && ev.metaKey && ev.shiftKey;
+  } else {
+    return ev.key.toLowerCase() === "y" && ev.ctrlKey;
+  }
+}
+
+function handleUndoRedo() {
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type === "KEY_DOWN" && ev.data.event && ev.data.id) {
+      if (isUndoPressed(ev.data.event)) {
+        undo();
+      }
+      if (isRedoPressed(ev.data.event)) {
+        redo();
+      }
+    }
+  });
+}
+
 function attachAllKeyboardShortcuts() {
   handleDelete();
   handleCopyPaste();
   handleArrowKeys();
+  handleUndoRedo();
 }
 
 attachAllKeyboardShortcuts();
