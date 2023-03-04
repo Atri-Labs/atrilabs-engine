@@ -4,7 +4,9 @@ import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { DeleteEvent } from "@atrilabs/forest";
 import { createEventsThatCanBeCopied } from "./copy-paste/createEventsThatCanBeCopied";
 import { putInClipboard, readFromClipboard } from "./copy-paste/clipboard";
-import { editorAppMachineInterpreter } from "./init";
+import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
+import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
+import { componentApi } from "./componentApi";
 
 function isMac() {
   if (window.navigator && window.navigator.userAgent) {
@@ -90,9 +92,147 @@ function handleCopyPaste() {
   });
 }
 
+function handleArrowKeys() {
+  let selectedCompId: string | null = null;
+  subscribeEditorMachine("SELECT", (_context, event) => {
+    if (event.type === "SELECT") selectedCompId = event.id;
+  });
+  subscribeEditorMachine("SELECT_END", (_context, event) => {
+    if (event.type === "SELECT") selectedCompId = null;
+  });
+  window.addEventListener("message", (ev) => {
+    if (
+      ev.data?.type === "KEY_DOWN" &&
+      ev.data.event &&
+      ev.data.id &&
+      selectedCompId
+    ) {
+      const keyboardEvent = ev.data.event as KeyboardEvent;
+      if (keyboardEvent.key.toLowerCase() === "arrowup") {
+        const compTree =
+          BrowserForestManager.currentForest.tree(ComponentTreeId);
+        const selectedCompNode = compTree?.nodes[selectedCompId];
+        if (selectedCompNode) {
+          const parentId = selectedCompNode.state.parent.id;
+          if (parentId !== CANVAS_ZONE_ROOT_ID) {
+            editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+              { type: "PROGRAMTIC_SELECT", id: parentId },
+              // @ts-ignore
+              "*"
+            );
+          }
+        }
+      }
+      if (keyboardEvent.key.toLowerCase() === "arrowdown") {
+        const compTree =
+          BrowserForestManager.currentForest.tree(ComponentTreeId);
+        const selectedCompNode = compTree?.nodes[selectedCompId];
+        if (selectedCompNode) {
+          const parentChildMap = componentApi.createSortedParentChildMap(
+            compTree!.nodes,
+            selectedCompId
+          );
+          if (
+            parentChildMap &&
+            parentChildMap[selectedCompId] &&
+            parentChildMap[selectedCompId].length > 0
+          ) {
+            const childCompId = parentChildMap[selectedCompId][0];
+            editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+              { type: "PROGRAMTIC_SELECT", id: childCompId },
+              // @ts-ignore
+              "*"
+            );
+          }
+        }
+      }
+      if (keyboardEvent.key.toLowerCase() === "arrowright") {
+        const compTree =
+          BrowserForestManager.currentForest.tree(ComponentTreeId);
+        const selectedCompNode = compTree?.nodes[selectedCompId];
+        if (
+          selectedCompNode &&
+          selectedCompNode.state.parent.id !== CANVAS_ZONE_ROOT_ID
+        ) {
+          const parentChildMap = componentApi.createSortedParentChildMap(
+            compTree!.nodes,
+            selectedCompNode.state.parent.id
+          );
+          const parentIdOfSelectedNode = selectedCompNode.state.parent.id;
+          if (
+            parentChildMap &&
+            parentChildMap[parentIdOfSelectedNode] &&
+            parentChildMap[parentIdOfSelectedNode].length > 0
+          ) {
+            const selectedCompIndex = parentChildMap[
+              parentIdOfSelectedNode
+            ].findIndex((curr) => curr === selectedCompId);
+            if (
+              selectedCompIndex >= 0 &&
+              parentChildMap[parentIdOfSelectedNode][selectedCompIndex + 1]
+            ) {
+              editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+                {
+                  type: "PROGRAMTIC_SELECT",
+                  id: parentChildMap[parentIdOfSelectedNode][
+                    selectedCompIndex + 1
+                  ],
+                },
+                // @ts-ignore
+                "*"
+              );
+            }
+          }
+        }
+      }
+      if (keyboardEvent.key.toLowerCase() === "arrowleft") {
+        const compTree =
+          BrowserForestManager.currentForest.tree(ComponentTreeId);
+        const selectedCompNode = compTree?.nodes[selectedCompId];
+        if (
+          selectedCompNode &&
+          selectedCompNode.state.parent.id !== CANVAS_ZONE_ROOT_ID
+        ) {
+          const parentChildMap = componentApi.createSortedParentChildMap(
+            compTree!.nodes,
+            selectedCompNode.state.parent.id
+          );
+          const parentIdOfSelectedNode = selectedCompNode.state.parent.id;
+          if (
+            parentChildMap &&
+            parentChildMap[parentIdOfSelectedNode] &&
+            parentChildMap[parentIdOfSelectedNode].length > 0
+          ) {
+            const selectedCompIndex = parentChildMap[
+              parentIdOfSelectedNode
+            ].findIndex((curr) => curr === selectedCompId);
+            if (
+              selectedCompIndex >= 0 &&
+              selectedCompIndex - 1 >= 0 &&
+              parentChildMap[parentIdOfSelectedNode][selectedCompIndex - 1]
+            ) {
+              editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+                {
+                  type: "PROGRAMTIC_SELECT",
+                  id: parentChildMap[parentIdOfSelectedNode][
+                    selectedCompIndex - 1
+                  ],
+                },
+                // @ts-ignore
+                "*"
+              );
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
 function attachAllKeyboardShortcuts() {
   handleDelete();
   handleCopyPaste();
+  handleArrowKeys();
 }
 
 attachAllKeyboardShortcuts();

@@ -337,6 +337,13 @@ if (typeof window !== "undefined") {
         id: ev.data.id,
       });
     }
+    if (ev.data?.type === "PROGRAMTIC_SELECT") {
+      window.blur();
+      canvasMachineInterpreter.send({
+        type: "PROGRAMTIC_SELECT",
+        id: ev.data.id,
+      });
+    }
     if (ev.data?.type === "IMPORT_RESOURCES" && ev.data?.resources) {
       const resources = ev.data.resources as ImportedResource[];
       handleResources(resources);
@@ -400,10 +407,25 @@ if (typeof window !== "undefined") {
   });
   window.addEventListener(
     "blur",
-    () => {
-      canvasMachineInterpreter.send({
-        type: "BLUR",
-      });
+    (ev) => {
+      if (
+        ev.relatedTarget !== null &&
+        ev.relatedTarget !== undefined &&
+        "getAttribute" in ev.relatedTarget
+      ) {
+        const value = (ev.relatedTarget as HTMLElement).getAttribute(
+          "data-atri-comp-id"
+        );
+        if (value === undefined) {
+          canvasMachineInterpreter.send({
+            type: "BLUR",
+          });
+        }
+      } else {
+        canvasMachineInterpreter.send({
+          type: "BLUR",
+        });
+      }
     },
     true
   );

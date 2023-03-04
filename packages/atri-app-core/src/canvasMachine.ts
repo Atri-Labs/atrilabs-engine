@@ -27,6 +27,7 @@ const PROPS_UPDATED = "PROPS_UPDATED" as const;
 const KEY_UP = "KEY_UP" as const;
 const KEY_DOWN = "KEY_DOWN" as const;
 const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
+const PROGRAMTIC_SELECT = "PROGRAMTIC_SELECT" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -100,6 +101,10 @@ type PROGRAMTIC_HOVER_EVENT = {
   type: typeof PROGRAMTIC_HOVER;
   id: string;
 };
+type PROGRAMTIC_SELECT_EVENT = {
+  type: typeof PROGRAMTIC_SELECT;
+  id: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -121,7 +126,8 @@ type CanvasMachineEvent =
   | PROPS_UPDATED_EVENT
   | KEY_UP_EVENT
   | KEY_DOWN_EVENT
-  | PROGRAMTIC_HOVER_EVENT;
+  | PROGRAMTIC_HOVER_EVENT
+  | PROGRAMTIC_SELECT_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -206,15 +212,20 @@ function setHoverComponent(
 
 function setSelectedComponent(
   context: CanvasMachineContext,
-  event: MOUSE_DOWN_EVENT
+  event: MOUSE_UP_EVENT | PROGRAMTIC_SELECT_EVENT
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-comp-id]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      context.selected = compId;
+  if (event.type === MOUSE_UP) {
+    const { target } = event.event;
+    if (target !== null && "closest" in target) {
+      const comp = (target as any).closest("[data-atri-comp-id]");
+      if (comp !== null) {
+        const compId = comp.getAttribute("data-atri-comp-id");
+        context.selected = compId;
+      }
     }
+  }
+  if (event.type === PROGRAMTIC_SELECT) {
+    context.selected = event.id;
   }
 }
 
@@ -725,6 +736,13 @@ export function createCanvasMachine(id: string) {
             [PROGRAMTIC_HOVER]: {
               target: `.${hover}`,
               actions: ["setHoverComponent"],
+            },
+            [PROGRAMTIC_SELECT]: {
+              target: [
+                `#${id}.${ready}.${selected}.focusstates.${focused}`,
+                `#${id}.${ready}.${selected}.hoverstates.${selectIdle}`,
+              ],
+              actions: ["setSelectedComponent"],
             },
           },
         },
