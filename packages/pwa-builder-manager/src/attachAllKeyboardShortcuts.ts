@@ -29,12 +29,16 @@ function isDeleteKeyPressed(ev: KeyboardEvent) {
 function handleDelete() {
   window.addEventListener("message", (ev) => {
     if (ev.data?.type === "KEY_DOWN") {
-      if (ev.data.event && isDeleteKeyPressed(ev.data.event)) {
+      if (
+        ev.data.event &&
+        isDeleteKeyPressed(ev.data.event) &&
+        ev.data.context.selected
+      ) {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;
         const deleteEvent: DeleteEvent = {
           type: `DELETE$$${ComponentTreeId}`,
-          id: ev.data.id,
+          id: ev.data.context.selected,
         };
         api.postNewEvents(forestPkgId, forestId, {
           name: "DELETE",
@@ -64,9 +68,13 @@ function isPasteShortcutPressed(ev: KeyboardEvent) {
 
 function handleCopyPaste() {
   window.addEventListener("message", (ev) => {
-    if (ev.data?.type === "KEY_DOWN" && ev.data.event && ev.data.id) {
+    if (
+      ev.data?.type === "KEY_DOWN" &&
+      ev.data.event &&
+      ev.data.context.selected
+    ) {
       if (isCopyShortcutPressed(ev.data.event)) {
-        const compId = ev.data.id;
+        const compId = ev.data.context.selected;
         const events = createEventsThatCanBeCopied({
           compId,
           copyCallbacks: true,
@@ -81,7 +89,7 @@ function handleCopyPaste() {
               {
                 ...copyObject,
                 type: "atri-paste-events",
-                pasteTargetComp: ev.data.id,
+                pasteTargetComp: ev.data.context.selected,
               },
               // @ts-ignore
               "*"
@@ -105,7 +113,7 @@ function handleArrowKeys() {
     if (
       ev.data?.type === "KEY_DOWN" &&
       ev.data.event &&
-      ev.data.id &&
+      ev.data.context?.selected &&
       selectedCompId
     ) {
       const keyboardEvent = ev.data.event as KeyboardEvent;
@@ -248,12 +256,11 @@ function isRedoPressed(ev: KeyboardEvent) {
 
 function handleUndoRedo() {
   window.addEventListener("message", (ev) => {
-    if (ev.data?.type === "KEY_DOWN" && ev.data.event && ev.data.id) {
-      if (isUndoPressed(ev.data.event)) {
-        undo();
-      }
+    if (ev.data?.type === "KEY_DOWN" && ev.data.event) {
       if (isRedoPressed(ev.data.event)) {
         redo();
+      } else if (isUndoPressed(ev.data.event)) {
+        undo();
       }
     }
   });

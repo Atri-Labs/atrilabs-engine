@@ -658,8 +658,6 @@ export function createCanvasMachine(id: string) {
                         callSubscribers("focusEnd", context, event);
                       },
                       on: {
-                        [KEY_DOWN]: { actions: ["emitKeyDown"] },
-                        [KEY_UP]: { actions: ["emitKeyUp"] },
                         [BLUR]: {
                           target: unfocused,
                         },
@@ -734,7 +732,7 @@ export function createCanvasMachine(id: string) {
               actions: ["handleComponentRendered", "emitComponentRendered"],
             },
             [PROGRAMTIC_HOVER]: {
-              target: `.${hover}`,
+              target: `#${id}.${ready}.${hover}`,
               actions: ["setHoverComponent"],
             },
             [PROGRAMTIC_SELECT]: {
@@ -744,6 +742,8 @@ export function createCanvasMachine(id: string) {
               ],
               actions: ["setSelectedComponent"],
             },
+            [KEY_DOWN]: { actions: ["emitKeyDown"] },
+            [KEY_UP]: { actions: ["emitKeyUp"] },
           },
         },
         [drag_in_progress]: {

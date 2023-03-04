@@ -170,7 +170,7 @@ subscribeCanvasMachine("KEY_DOWN", (context, event) => {
     window.parent?.postMessage(
       {
         type: "KEY_DOWN",
-        id: context.selected,
+        context: { selected: context.selected, hovered: context.hovered },
         event: JSON.parse(stringifyEvent(keyEvent)),
       },
       "*"
@@ -183,7 +183,7 @@ subscribeCanvasMachine("KEY_UP", (context, event) => {
     window.parent?.postMessage(
       {
         type: "KEY_UP",
-        id: context.selected,
+        context: { selected: context.selected, hovered: context.hovered },
         event: JSON.parse(stringifyEvent(keyEvent)),
       },
       "*"

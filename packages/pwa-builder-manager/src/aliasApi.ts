@@ -21,6 +21,21 @@ async function createAliasFromPrefix(prefix: string) {
     });
   }
   const alias = prefix + largestNumber;
+  /**
+   * Bug:
+   *
+   * Steps to replicate:
+   *
+   * 1. Select a flexbox with multiple buttons.
+   * 2. Do ctrl + c & ctrl + v
+   *
+   * All the buttons in the new flexbox have same alias.
+   *
+   * Fix:
+   *
+   * Put the alias generated using this function in the trie.
+   */
+  createOrUndangle(alias, "created_for_fixing_copy_paste");
   return alias;
 }
 
