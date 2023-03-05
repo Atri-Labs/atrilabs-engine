@@ -1,4 +1,4 @@
-import { Container, Menu, useTree } from "@atrilabs/core";
+import { Container, Menu } from "@atrilabs/core";
 import {
   gray300,
   gray700,
@@ -10,9 +10,6 @@ import React, { useCallback, useState, useEffect } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
 import { ComponentNavigatorWrapper } from "./ComponentNavigatorWrapper";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import { transformTreeToNavigatorNode } from "./utils";
-import { subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -59,12 +56,6 @@ export default function () {
   const closeContainer = useCallback(() => {
     setShowDropContianer(false);
   }, []);
-  const tree = useTree(ComponentTreeId);
-  useEffect(() => {
-    subscribeEditorMachine("after_app_load", () => {
-      console.log(transformTreeToNavigatorNode(tree, {}, {}));
-    });
-  }, [tree]);
 
   return (
     <>

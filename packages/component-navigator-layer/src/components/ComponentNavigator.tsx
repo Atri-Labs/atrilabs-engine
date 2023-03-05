@@ -11,8 +11,8 @@ import {
   waitingForNodesToClose,
 } from "../dragDropMachine";
 import { NavigatorNode } from "../types";
-import { getHoverIndex } from "../utils";
 import { TabbedContent } from "./TabbedContent";
+import { getHoverIndex } from "../utils";
 
 export type ComponentNavigatorProps = {
   flattenedNodes: NavigatorNode[];
@@ -131,7 +131,8 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
       onMouseUp={onMouseUp}
     >
       {flattenedNodes.map((node) => {
-        const showCaret = node.type === "acceptsChild";
+        const showCaret =
+          node.type === "acceptsChild" || node.type === "canvasZone";
         return (
           <TabbedContent
             key={node.id}

@@ -178,3 +178,49 @@ export function transformTreeToNavigatorNode(
 
   return { canvasZoneNavigatorNodes, nodeMap };
 }
+
+function _flattenCanvasZoneNavigatorNode(
+  flattenNodes: NavigatorNode[],
+  respectOpenOrClose: boolean,
+  currentNode: NavigatorNode,
+  currentTabs: number
+) {
+  const children = currentNode.children;
+  const shouldTraverseChildren = respectOpenOrClose ? currentNode.open : true;
+  if (children && shouldTraverseChildren) {
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      flattenNodes.push(child);
+      _flattenCanvasZoneNavigatorNode(
+        flattenNodes,
+        respectOpenOrClose,
+        child,
+        currentTabs + 1
+      );
+    }
+  }
+}
+
+/**
+ * Walks depth first and flattens all nodes in an array
+ * @param rootComponentNode node to start walking from
+ * @param respectOpenOrClose true if flatten node should node include closed nodes or its descendants
+ * @returns array of all nodes in depth first
+ */
+export function flattenNavigatorNodes(
+  canvasZoneNavigatorNodes: NavigatorNode[],
+  respectOpenOrClose: boolean
+) {
+  return canvasZoneNavigatorNodes
+    .map((canvasZoneNavigatorNode) => {
+      const flattenNodes = [canvasZoneNavigatorNode];
+      _flattenCanvasZoneNavigatorNode(
+        flattenNodes,
+        respectOpenOrClose,
+        canvasZoneNavigatorNode,
+        0
+      );
+      return flattenNodes;
+    })
+    .flat();
+}
