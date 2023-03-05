@@ -10,6 +10,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { ReactComponent as CompNavIcon } from "./assets/comp-nav-icon.svg";
 import { Cross } from "./assets/Cross";
 import { ComponentNavigatorWrapper } from "./ComponentNavigatorWrapper";
+import { useOpenClose } from "./hooks/useOpenClose";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -56,6 +57,7 @@ export default function () {
   const closeContainer = useCallback(() => {
     setShowDropContianer(false);
   }, []);
+  const openClose = useOpenClose();
 
   return (
     <>
@@ -82,7 +84,7 @@ export default function () {
                 </span>
               </div>
             </header>
-            <ComponentNavigatorWrapper />
+            <ComponentNavigatorWrapper openClose={openClose} />
           </div>
         </Container>
       ) : null}

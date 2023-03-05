@@ -5,25 +5,37 @@ import { BrowserForestManager } from "@atrilabs/core";
 import { useEffect, useState, useCallback } from "react";
 import { NavigatorNode } from "../types";
 
-function compute() {
+function compute(props: {
+  openOrCloseMap: { [compId: string]: boolean };
+  canvasOpenOrCloseMap: { [canvasZoneId: string]: boolean };
+}) {
   const tree = BrowserForestManager.currentForest.tree(ComponentTreeId)!;
-  return transformTreeToNavigatorNode(tree, {}, {});
+  return transformTreeToNavigatorNode(
+    tree,
+    props.openOrCloseMap,
+    props.canvasOpenOrCloseMap
+  );
 }
 
-export function useGetFlattenedNodes() {
+export function useGetFlattenedNodes(props: {
+  openOrCloseMap: { [compId: string]: boolean };
+  canvasOpenOrCloseMap: { [canvasZoneId: string]: boolean };
+}) {
   const [flattenedNodes, setFlattenedNodes] = useState<NavigatorNode[]>([]);
   const [nodeMap, setNodeMap] = useState<{
     [compId: string]: NavigatorNode;
   }>({});
 
   const setAllStates = useCallback(() => {
-    const { canvasZoneNavigatorNodes, nodeMap } = compute();
-    setFlattenedNodes(flattenNavigatorNodes(canvasZoneNavigatorNodes, false));
+    const { canvasZoneNavigatorNodes, nodeMap } = compute({
+      openOrCloseMap: props.openOrCloseMap,
+      canvasOpenOrCloseMap: props.canvasOpenOrCloseMap,
+    });
+    setFlattenedNodes(flattenNavigatorNodes(canvasZoneNavigatorNodes, true));
     setNodeMap(nodeMap);
-  }, []);
+  }, [props.canvasOpenOrCloseMap, props.openOrCloseMap]);
 
   useEffect(() => {
-    const { canvasZoneNavigatorNodes } = compute();
     setAllStates();
   }, [setAllStates]);
 
@@ -51,7 +63,8 @@ export function useGetFlattenedNodes() {
         const node = tree.nodes[update.id];
         if (
           update.oldState.alias &&
-          update.oldState.alias !== node.state.alias
+          update.oldState.alias !== node.state.alias &&
+          nodeMap[node.id]
         ) {
           setFlattenedNodes((value) => {
             nodeMap[node.id].name = node.state.alias;
@@ -61,5 +74,26 @@ export function useGetFlattenedNodes() {
       }
     });
   }, [setAllStates, nodeMap]);
-  return { flattenedNodes, nodeMap };
+
+  const toggleNode = useCallback(
+    (navigatorNode: NavigatorNode) => {
+      if (navigatorNode.type === "canvasZone") {
+        props.canvasOpenOrCloseMap[navigatorNode.id] =
+          props.canvasOpenOrCloseMap[navigatorNode.id] === undefined
+            ? true
+            : !props.canvasOpenOrCloseMap[navigatorNode.id];
+        setAllStates();
+      }
+      if (navigatorNode.type === "acceptsChild") {
+        props.openOrCloseMap[navigatorNode.id] =
+          props.openOrCloseMap[navigatorNode.id] === undefined
+            ? true
+            : !props.openOrCloseMap[navigatorNode.id];
+        setAllStates();
+      }
+    },
+    [props.canvasOpenOrCloseMap, props.openOrCloseMap, setAllStates]
+  );
+
+  return { flattenedNodes, nodeMap, toggleNode };
 }

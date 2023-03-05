@@ -33,7 +33,7 @@ export type ComponentNavigatorProps = {
   // Call onDragEnd whenever the drag process stops
   onDragEnd?: (draggedNode: NavigatorNode) => void;
   // Open or close a subtree
-  onToggleOpen?: (id: string) => void;
+  onToggleOpen?: (navigatorNode: NavigatorNode) => void;
 };
 
 export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
@@ -85,7 +85,7 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
     const { draggedNode, draggedNodeIndexInFlattenedArray } =
       machineState.context;
     if (draggedNode?.open) {
-      props.onToggleOpen?.(draggedNode.id);
+      props.onToggleOpen?.(draggedNode);
     } else {
       sendClosedNodeEvent(
         flattenedNodes,
@@ -99,7 +99,7 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
     const unsub = subscribeWait((context) => {
       const { draggedNode } = context;
       if (draggedNode?.open) {
-        props.onToggleOpen?.(draggedNode.id);
+        props.onToggleOpen?.(draggedNode);
       }
     });
     return unsub;
@@ -141,8 +141,8 @@ export const ComponentNavigator: React.FC<ComponentNavigatorProps> = (
             tabs={node.depth}
             showDownCaret={showCaret ? node.open : undefined}
             showRightCaret={showCaret ? !node.open : undefined}
-            onCaretClicked={(id) => {
-              props.onToggleOpen?.(id);
+            onCaretClicked={() => {
+              props.onToggleOpen?.(node);
             }}
           />
         );
