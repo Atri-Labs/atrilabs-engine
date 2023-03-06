@@ -84,6 +84,7 @@ type COMPONENT_REWIRED_EVENT = {
   type: typeof COMPONENT_REWIRED;
   oldParent: { id: string; canvasZoneId: string; index: number };
   newParent: { id: string; canvasZoneId: string; index: number };
+  compId: string;
 };
 type PROPS_UPDATED_EVENT = {
   type: typeof PROPS_UPDATED;
@@ -172,6 +173,7 @@ type CanvasMachineContext = {
     target: MouseEvent["target"];
   } | null;
   repositionComponent: string | null;
+  lastRewiredComponent: string | null;
 };
 
 // actions
@@ -505,6 +507,7 @@ export function createCanvasMachine(id: string) {
         lastDropped: null,
         repositionTarget: null,
         repositionComponent: null,
+        lastRewiredComponent: null,
       },
       states: {
         [initial]: {
@@ -721,16 +724,42 @@ export function createCanvasMachine(id: string) {
               },
             ],
             [COMPONENT_REWIRED]: {
-              actions: ["emitComponentRewired"],
+              actions: [
+                (context, event) => {
+                  context.lastRewiredComponent = event.compId;
+                },
+                "emitComponentRewired",
+              ],
             },
             [PROPS_UPDATED]: {
               actions: ["emitPropsUpdated"],
             },
-            [COMPONENT_RENDERED]: {
-              target: `.${selected}`,
-              cond: isLastDroppedComponent,
-              actions: ["handleComponentRendered", "emitComponentRendered"],
-            },
+            [COMPONENT_RENDERED]: [
+              {
+                target: `#${id}.${ready}.${selected}`,
+                cond: isLastDroppedComponent,
+                actions: ["handleComponentRendered", "emitComponentRendered"],
+              },
+              {
+                target: `#${id}.${ready}.${selected}`,
+                cond: (context, event) => {
+                  if (
+                    context.lastRewiredComponent &&
+                    context.lastRewiredComponent === event.compId
+                  ) {
+                    return true;
+                  }
+                  return false;
+                },
+                actions: [
+                  (context) => {
+                    context.selected = context.lastRewiredComponent;
+                    context.lastRewiredComponent = null;
+                  },
+                  "emitComponentRendered",
+                ],
+              },
+            ],
             [PROGRAMTIC_HOVER]: [
               {
                 target: [

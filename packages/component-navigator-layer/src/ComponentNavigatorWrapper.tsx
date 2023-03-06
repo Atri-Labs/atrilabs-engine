@@ -149,7 +149,17 @@ export function ComponentNavigatorWrapper(props: {
           index: getFractionalIndex(),
           canvasZoneId,
         };
-        patchCb(draggedNode.id, newParent);
+        const oldParent = componentApi.getComponentNode(draggedNode.id).state
+          .parent;
+        if (
+          !(
+            oldParent.id === newParent.id &&
+            oldParent.index === newParent.index &&
+            oldParent.canvasZoneId === newParent.canvasZoneId
+          )
+        ) {
+          patchCb(draggedNode.id, newParent);
+        }
       }
     });
     return unsub;
