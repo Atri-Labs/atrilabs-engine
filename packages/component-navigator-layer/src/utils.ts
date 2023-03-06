@@ -146,6 +146,15 @@ export function transformTreeToNavigatorNode(
           ] = [compNodeId]);
     }
   });
+  // sort direct child
+  Object.keys(canvasZoneIdDirectChildrenMap).forEach((canvasZoneId) => {
+    canvasZoneIdDirectChildrenMap[canvasZoneId]!.sort((a, b) => {
+      return (
+        componentApi.getComponentNode(a).state.parent.index -
+        componentApi.getComponentNode(b).state.parent.index
+      );
+    });
+  });
 
   const sortedCanvasZoneIds = Object.keys(canvasZoneIdDirectChildrenMap).sort();
 
