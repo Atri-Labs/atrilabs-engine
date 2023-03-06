@@ -77,7 +77,9 @@ export const TabbedContent: React.FC<TabbedContentProps> = (props) => {
             display: "flex",
             alignItems: "center",
           }}
-          onClick={() => {
+          onMouseDown={(ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
             props.onCaretClicked?.(props.id);
           }}
         >

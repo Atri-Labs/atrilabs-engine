@@ -1,9 +1,10 @@
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { flattenNavigatorNodes, transformTreeToNavigatorNode } from "../utils";
-import { subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
+import { api, subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 import { BrowserForestManager } from "@atrilabs/core";
 import { useEffect, useState, useCallback } from "react";
 import { NavigatorNode } from "../types";
+import { PatchEvent } from "@atrilabs/forest";
 
 function compute(props: {
   openOrCloseMap: { [compId: string]: boolean };
@@ -95,5 +96,71 @@ export function useGetFlattenedNodes(props: {
     [props.canvasOpenOrCloseMap, props.openOrCloseMap, setAllStates]
   );
 
-  return { flattenedNodes, nodeMap, toggleNode };
+  /**
+   * This function repositions a node in the navigator tree
+   */
+  const repositionNavNode = useCallback(
+    (
+      id: string,
+      parentNavNode: NavigatorNode,
+      index: number,
+      oldNavIndex: number,
+      movement: 2 | 1 | 0 | -1 | -2
+    ) => {
+      // update following nav nodes: old parent, dragged nav node and new parent
+      const navNode = nodeMap[id];
+      if (parentNavNode.children === undefined) {
+        parentNavNode.children = [];
+      }
+      navNode.parentNode?.children?.splice(navNode.index, 1);
+      navNode.parentNode?.children?.forEach((node, index) => {
+        node.index = index;
+      });
+      navNode.index = index;
+      navNode.parentNode = parentNavNode;
+      navNode.depth = parentNavNode.depth + 1;
+      parentNavNode.children.splice(index, 0, navNode);
+      parentNavNode.children.forEach((child, index) => {
+        child.index = index;
+      });
+
+      // update flattendNodes
+      setFlattenedNodes((old) => {
+        const newFlatten = [...old];
+        newFlatten.splice(oldNavIndex, 1);
+        newFlatten.splice(oldNavIndex + movement, 0, navNode);
+        return newFlatten;
+      });
+    },
+    [nodeMap]
+  );
+
+  /**
+   * This function repositions a node in the component tree to a new index
+   */
+  const patchCb = useCallback(
+    (
+      nodeId: string,
+      newParent: { id: string; index: number; canvasZoneId: string }
+    ) => {
+      const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+      const forestId = BrowserForestManager.currentForest.forestId;
+      const slice = {
+        parent: newParent,
+      };
+      const patchEvent: PatchEvent = {
+        type: `PATCH$$${ComponentTreeId}`,
+        slice,
+        id: nodeId,
+      };
+      api.postNewEvents(forestPkgId, forestId, {
+        events: [patchEvent],
+        meta: { agent: "browser" },
+        name: "REPOSITION",
+      });
+    },
+    []
+  );
+
+  return { flattenedNodes, nodeMap, toggleNode, repositionNavNode, patchCb };
 }

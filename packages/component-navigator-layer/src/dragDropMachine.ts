@@ -68,7 +68,7 @@ const onMouseDownAction = assign<DragDropMachineContext, MouseDownEvent>(
 
 type RepositionSubscriber = (
   id: string,
-  parentId: string,
+  parentNode: NavigatorNode,
   index: number,
   oldNavIndex: number,
   movement: 1 | 0 | -1
@@ -88,13 +88,13 @@ export function subscribeReposition(cb: RepositionSubscriber) {
 
 function callRepositionSubscribers(
   id: string,
-  parentId: string,
+  parentNode: NavigatorNode,
   index: number,
   oldNavIndex: number,
   movement: 1 | 0 | -1
 ) {
   repositionSubscribers.forEach((cb) => {
-    cb(id, parentId, index, oldNavIndex, movement);
+    cb(id, parentNode, index, oldNavIndex, movement);
   });
 }
 
@@ -120,17 +120,18 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         newIndex > 0 &&
         !isDraggedNodeAlreadyAtNewIndex
       ) {
-        // TODO: call callbacks for reposition
         const movingUp = oldIndexInFlattenedArray - newIndex > 0 ? true : false;
         const movingDown =
           oldIndexInFlattenedArray - newIndex < 0 ? true : false;
         const newIndexIsSibling =
-          flattenedNodes![newIndex]!.parentNode!.id ===
+          flattenedNodes![newIndex]!.parentNode?.id ===
           context.draggedNode!.parentNode!.id
             ? true
             : false;
         const newIndexIsParent =
           flattenedNodes![newIndex]!.id === context.draggedNode!.parentNode!.id;
+        const newIndexIsCanvasZone =
+          flattenedNodes![newIndex]!.type === "canvasZone";
         const newIndexIsSomeOpenParent =
           flattenedNodes![newIndex]!.type === "acceptsChild" &&
           flattenedNodes![newIndex]!.open;
@@ -141,23 +142,25 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         if (movingUp && newIndexIsSibling) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            context.draggedNode!.parentNode!.id,
+            context.draggedNode!.parentNode!,
             context.draggedNode!.index - 1,
             oldIndexInFlattenedArray,
             -1
           );
-        } else if (movingUp && newIndexIsParent) {
+        } else if (movingUp && newIndexIsParent && !newIndexIsCanvasZone) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            context.draggedNode!.parentNode!.parentNode!.id,
+            context.draggedNode!.parentNode!.parentNode!,
             context.draggedNode!.parentNode!.index,
             oldIndexInFlattenedArray,
             -1
           );
+        } else if (movingUp && newIndexIsParent && newIndexIsCanvasZone) {
+          // TODO: allow drag-drop across canvas-zones
         } else if (movingUp && newIndexisLastChild) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            flattenedNodes![newIndex]!.parentNode!.id,
+            flattenedNodes![newIndex]!.parentNode!,
             flattenedNodes![newIndex]!.parentNode!.children!.length - 1,
             oldIndexInFlattenedArray,
             -1
@@ -169,7 +172,7 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         ) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            context.draggedNode!.parentNode!.id,
+            context.draggedNode!.parentNode!,
             context.draggedNode!.index + 1,
             oldIndexInFlattenedArray,
             1
@@ -177,7 +180,7 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         } else if (movingDown && newIndexIsSomeOpenParent) {
           callRepositionSubscribers(
             context.draggedNode!.id,
-            flattenedNodes![newIndex]!.id,
+            flattenedNodes![newIndex]!,
             0,
             oldIndexInFlattenedArray,
             1
@@ -202,7 +205,7 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
         if (isLastChild && draggedNodesParent.parentNode !== null) {
           callRepositionSubscribers(
             draggedNode.id,
-            draggedNodesParent.parentNode!.id,
+            draggedNodesParent.parentNode!,
             draggedNodesParent.index + 1,
             oldIndexInFlattenedArray,
             0
@@ -226,7 +229,7 @@ const onMouseMoveAction = assign<DragDropMachineContext, MouseMoveEvent>(
           if (isPrevSiblingAnOpenParent) {
             callRepositionSubscribers(
               draggedNode.id,
-              draggedNodesPrevSibling.id,
+              draggedNodesPrevSibling,
               draggedNodesPrevSibling.children?.length || 0,
               oldIndexInFlattenedArray,
               0
@@ -299,11 +302,13 @@ const shouldNotBeOpen = (
   return true;
 };
 
-const shouldNotBeRoot = (
+const shouldNotBeCanvasZone = (
   _context: DragDropMachineContext,
   event: MouseDownEvent
 ) => {
-  if (event.draggedNodeIndexInFlattenedArray === 0) {
+  const navigatorNode =
+    event.flattenedNodes[event.draggedNodeIndexInFlattenedArray];
+  if (navigatorNode.type === "canvasZone") {
     return false;
   }
   return true;
@@ -342,7 +347,7 @@ const navigatorDragDropMachine = createMachine<
         mouseDown: {
           target: dragStarted,
           actions: [onMouseDownAction],
-          cond: shouldNotBeRoot,
+          cond: shouldNotBeCanvasZone,
         },
       },
     },
@@ -424,5 +429,8 @@ export function sendClosedNodeEvent(
 }
 
 export function getMachineState() {
-  return { context: service.state.context, value: service.state.value };
+  return {
+    context: service.machine.context,
+    value: service.getSnapshot().value,
+  };
 }
