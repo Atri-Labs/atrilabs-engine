@@ -10,7 +10,7 @@ import {
   subscribeWait,
 } from "./dragDropMachine";
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
-import { componentApi } from "@atrilabs/pwa-builder-manager";
+import { canvasApi, componentApi } from "@atrilabs/pwa-builder-manager";
 
 export function ComponentNavigatorWrapper(props: {
   openClose: {
@@ -20,7 +20,7 @@ export function ComponentNavigatorWrapper(props: {
 }) {
   const { flattenedNodes, toggleNode, repositionNavNode, patchCb } =
     useGetFlattenedNodes(props.openClose);
-  const componentNavigatorRef = useRef(null);
+  const componentNavigatorRef = useRef<HTMLDivElement>(null);
 
   const onMouseDown = useCallback(
     (event: MouseEvent) => {
@@ -31,8 +31,20 @@ export function ComponentNavigatorWrapper(props: {
 
   const onMouseMove = useCallback(
     (event: MouseEvent) => {
-      if (componentNavigatorRef.current)
+      if (componentNavigatorRef.current) {
+        const { y } = componentNavigatorRef.current.getBoundingClientRect();
+        const netY =
+          event.clientY - y + componentNavigatorRef.current.scrollTop;
+        const hoverIndex = Math.floor(netY / 24);
+        if (
+          hoverIndex < flattenedNodes.length &&
+          hoverIndex >= 0 &&
+          flattenedNodes[hoverIndex].type !== "canvasZone"
+        ) {
+          canvasApi.raiseHoverEvent(flattenedNodes[hoverIndex].id);
+        }
         sendMouseMoveEvent(event, flattenedNodes);
+      }
     },
     [flattenedNodes]
   );
@@ -40,6 +52,25 @@ export function ComponentNavigatorWrapper(props: {
   const onMouseUp = useCallback((_event: MouseEvent) => {
     sendMouseUpEvent();
   }, []);
+
+  const onClick = useCallback(
+    (event: MouseEvent) => {
+      if (componentNavigatorRef.current) {
+        const { y } = componentNavigatorRef.current.getBoundingClientRect();
+        const netY =
+          event.clientY - y + componentNavigatorRef.current.scrollTop;
+        const hoverIndex = Math.floor(netY / 24);
+        if (
+          hoverIndex < flattenedNodes.length &&
+          hoverIndex >= 0 &&
+          flattenedNodes[hoverIndex].type !== "canvasZone"
+        ) {
+          canvasApi.raiseSelectEvent(flattenedNodes[hoverIndex].id);
+        }
+      }
+    },
+    [flattenedNodes]
+  );
 
   useEffect(() => {
     const unsub = subscribeWait((context) => {
@@ -132,6 +163,7 @@ export function ComponentNavigatorWrapper(props: {
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
+      onClick={onClick}
     />
   );
 }

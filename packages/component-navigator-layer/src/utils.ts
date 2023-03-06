@@ -154,7 +154,10 @@ export function transformTreeToNavigatorNode(
   )
     .flat()
     .reduce((prev, curr) => {
-      return { ...prev, ...componentApi.createReverseMap(tree.nodes, curr) };
+      return {
+        ...prev,
+        ...componentApi.createSortedParentChildMap(tree.nodes, curr),
+      };
     }, {});
 
   const results = sortedCanvasZoneIds.map((canvasZoneId) => {

@@ -338,7 +338,6 @@ if (typeof window !== "undefined") {
       });
     }
     if (ev.data?.type === "PROGRAMTIC_SELECT") {
-      window.blur();
       canvasMachineInterpreter.send({
         type: "PROGRAMTIC_SELECT",
         id: ev.data.id,

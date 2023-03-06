@@ -630,7 +630,7 @@ export function createCanvasMachine(id: string) {
               },
               exit: (context, event) => {
                 callSubscribers("selectEnd", context, event);
-                context.selected = null;
+                if (event.type !== PROGRAMTIC_HOVER) context.selected = null;
               },
               on: {
                 [MOUSE_DOWN]: [
@@ -731,10 +731,26 @@ export function createCanvasMachine(id: string) {
               cond: isLastDroppedComponent,
               actions: ["handleComponentRendered", "emitComponentRendered"],
             },
-            [PROGRAMTIC_HOVER]: {
-              target: `#${id}.${ready}.${hover}`,
-              actions: ["setHoverComponent"],
-            },
+            [PROGRAMTIC_HOVER]: [
+              {
+                target: [
+                  `#${id}.${ready}.${selected}.hoverstates.${hoverWhileSelected}`,
+                ],
+                actions: ["setHoverComponent"],
+                cond: (context, event) => {
+                  return (
+                    context.selected !== null && event.id !== context.hovered
+                  );
+                },
+              },
+              {
+                target: `#${id}.${ready}.${hover}`,
+                actions: ["setHoverComponent"],
+                cond: (context) => {
+                  return context.selected === null;
+                },
+              },
+            ],
             [PROGRAMTIC_SELECT]: {
               target: [
                 `#${id}.${ready}.${selected}.focusstates.${focused}`,

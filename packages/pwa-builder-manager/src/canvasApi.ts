@@ -223,9 +223,18 @@ function raiseHoverEvent(compId: string) {
   );
 }
 
+function raiseSelectEvent(compId: string) {
+  editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
+    { type: "PROGRAMTIC_SELECT", id: compId },
+    // @ts-ignore
+    "*"
+  );
+}
+
 export const canvasApi = {
   navigatePage,
   startDrag,
   mouseUpInPlayground,
   raiseHoverEvent,
+  raiseSelectEvent,
 };
