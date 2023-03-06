@@ -8,6 +8,7 @@ import {
 } from "./utils";
 import type { DewireUpdate, RewireUpdate } from "@atrilabs/forest";
 import { handleResources } from "./handleResources";
+import { handlePasteEvents } from "./handlePasteEvents";
 
 type ComponentPayload = {
   id: string;
@@ -169,7 +170,7 @@ subscribeCanvasMachine("KEY_DOWN", (context, event) => {
     window.parent?.postMessage(
       {
         type: "KEY_DOWN",
-        id: context.selected,
+        context: { selected: context.selected, hovered: context.hovered },
         event: JSON.parse(stringifyEvent(keyEvent)),
       },
       "*"
@@ -182,7 +183,7 @@ subscribeCanvasMachine("KEY_UP", (context, event) => {
     window.parent?.postMessage(
       {
         type: "KEY_UP",
-        id: context.selected,
+        context: { selected: context.selected, hovered: context.hovered },
         event: JSON.parse(stringifyEvent(keyEvent)),
       },
       "*"
@@ -336,9 +337,18 @@ if (typeof window !== "undefined") {
         id: ev.data.id,
       });
     }
+    if (ev.data?.type === "PROGRAMTIC_SELECT") {
+      canvasMachineInterpreter.send({
+        type: "PROGRAMTIC_SELECT",
+        id: ev.data.id,
+      });
+    }
     if (ev.data?.type === "IMPORT_RESOURCES" && ev.data?.resources) {
       const resources = ev.data.resources as ImportedResource[];
       handleResources(resources);
+    }
+    if (ev.data?.type === "atri-paste-events") {
+      handlePasteEvents(ev.data);
     }
   });
   window.document.addEventListener(
@@ -396,10 +406,25 @@ if (typeof window !== "undefined") {
   });
   window.addEventListener(
     "blur",
-    () => {
-      canvasMachineInterpreter.send({
-        type: "BLUR",
-      });
+    (ev) => {
+      if (
+        ev.relatedTarget !== null &&
+        ev.relatedTarget !== undefined &&
+        "getAttribute" in ev.relatedTarget
+      ) {
+        const value = (ev.relatedTarget as HTMLElement).getAttribute(
+          "data-atri-comp-id"
+        );
+        if (value === undefined) {
+          canvasMachineInterpreter.send({
+            type: "BLUR",
+          });
+        }
+      } else {
+        canvasMachineInterpreter.send({
+          type: "BLUR",
+        });
+      }
     },
     true
   );

@@ -193,6 +193,7 @@ function rewireComponent(
     type: "COMPONENT_REWIRED",
     oldParent,
     newParent,
+    compId,
   });
 }
 

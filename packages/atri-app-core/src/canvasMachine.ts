@@ -27,6 +27,7 @@ const PROPS_UPDATED = "PROPS_UPDATED" as const;
 const KEY_UP = "KEY_UP" as const;
 const KEY_DOWN = "KEY_DOWN" as const;
 const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
+const PROGRAMTIC_SELECT = "PROGRAMTIC_SELECT" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -83,6 +84,7 @@ type COMPONENT_REWIRED_EVENT = {
   type: typeof COMPONENT_REWIRED;
   oldParent: { id: string; canvasZoneId: string; index: number };
   newParent: { id: string; canvasZoneId: string; index: number };
+  compId: string;
 };
 type PROPS_UPDATED_EVENT = {
   type: typeof PROPS_UPDATED;
@@ -98,6 +100,10 @@ type KEY_DOWN_EVENT = {
 };
 type PROGRAMTIC_HOVER_EVENT = {
   type: typeof PROGRAMTIC_HOVER;
+  id: string;
+};
+type PROGRAMTIC_SELECT_EVENT = {
+  type: typeof PROGRAMTIC_SELECT;
   id: string;
 };
 
@@ -121,7 +127,8 @@ type CanvasMachineEvent =
   | PROPS_UPDATED_EVENT
   | KEY_UP_EVENT
   | KEY_DOWN_EVENT
-  | PROGRAMTIC_HOVER_EVENT;
+  | PROGRAMTIC_HOVER_EVENT
+  | PROGRAMTIC_SELECT_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -166,6 +173,7 @@ type CanvasMachineContext = {
     target: MouseEvent["target"];
   } | null;
   repositionComponent: string | null;
+  lastRewiredComponent: string | null;
 };
 
 // actions
@@ -206,15 +214,20 @@ function setHoverComponent(
 
 function setSelectedComponent(
   context: CanvasMachineContext,
-  event: MOUSE_DOWN_EVENT
+  event: MOUSE_UP_EVENT | PROGRAMTIC_SELECT_EVENT
 ) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const comp = (target as any).closest("[data-atri-comp-id]");
-    if (comp !== null) {
-      const compId = comp.getAttribute("data-atri-comp-id");
-      context.selected = compId;
+  if (event.type === MOUSE_UP) {
+    const { target } = event.event;
+    if (target !== null && "closest" in target) {
+      const comp = (target as any).closest("[data-atri-comp-id]");
+      if (comp !== null) {
+        const compId = comp.getAttribute("data-atri-comp-id");
+        context.selected = compId;
+      }
     }
+  }
+  if (event.type === PROGRAMTIC_SELECT) {
+    context.selected = event.id;
   }
 }
 
@@ -494,6 +507,7 @@ export function createCanvasMachine(id: string) {
         lastDropped: null,
         repositionTarget: null,
         repositionComponent: null,
+        lastRewiredComponent: null,
       },
       states: {
         [initial]: {
@@ -619,7 +633,7 @@ export function createCanvasMachine(id: string) {
               },
               exit: (context, event) => {
                 callSubscribers("selectEnd", context, event);
-                context.selected = null;
+                if (event.type !== PROGRAMTIC_HOVER) context.selected = null;
               },
               on: {
                 [MOUSE_DOWN]: [
@@ -647,8 +661,6 @@ export function createCanvasMachine(id: string) {
                         callSubscribers("focusEnd", context, event);
                       },
                       on: {
-                        [KEY_DOWN]: { actions: ["emitKeyDown"] },
-                        [KEY_UP]: { actions: ["emitKeyUp"] },
                         [BLUR]: {
                           target: unfocused,
                         },
@@ -712,20 +724,71 @@ export function createCanvasMachine(id: string) {
               },
             ],
             [COMPONENT_REWIRED]: {
-              actions: ["emitComponentRewired"],
+              actions: [
+                (context, event) => {
+                  context.lastRewiredComponent = event.compId;
+                },
+                "emitComponentRewired",
+              ],
             },
             [PROPS_UPDATED]: {
               actions: ["emitPropsUpdated"],
             },
-            [COMPONENT_RENDERED]: {
-              target: `.${selected}`,
-              cond: isLastDroppedComponent,
-              actions: ["handleComponentRendered", "emitComponentRendered"],
+            [COMPONENT_RENDERED]: [
+              {
+                target: `#${id}.${ready}.${selected}`,
+                cond: isLastDroppedComponent,
+                actions: ["handleComponentRendered", "emitComponentRendered"],
+              },
+              {
+                target: `#${id}.${ready}.${selected}`,
+                cond: (context, event) => {
+                  if (
+                    context.lastRewiredComponent &&
+                    context.lastRewiredComponent === event.compId
+                  ) {
+                    return true;
+                  }
+                  return false;
+                },
+                actions: [
+                  (context) => {
+                    context.selected = context.lastRewiredComponent;
+                    context.lastRewiredComponent = null;
+                  },
+                  "emitComponentRendered",
+                ],
+              },
+            ],
+            [PROGRAMTIC_HOVER]: [
+              {
+                target: [
+                  `#${id}.${ready}.${selected}.hoverstates.${hoverWhileSelected}`,
+                ],
+                actions: ["setHoverComponent"],
+                cond: (context, event) => {
+                  return (
+                    context.selected !== null && event.id !== context.hovered
+                  );
+                },
+              },
+              {
+                target: `#${id}.${ready}.${hover}`,
+                actions: ["setHoverComponent"],
+                cond: (context) => {
+                  return context.selected === null;
+                },
+              },
+            ],
+            [PROGRAMTIC_SELECT]: {
+              target: [
+                `#${id}.${ready}.${selected}.focusstates.${focused}`,
+                `#${id}.${ready}.${selected}.hoverstates.${selectIdle}`,
+              ],
+              actions: ["setSelectedComponent"],
             },
-            [PROGRAMTIC_HOVER]: {
-              target: `.${hover}`,
-              actions: ["setHoverComponent"],
-            },
+            [KEY_DOWN]: { actions: ["emitKeyDown"] },
+            [KEY_UP]: { actions: ["emitKeyUp"] },
           },
         },
         [drag_in_progress]: {

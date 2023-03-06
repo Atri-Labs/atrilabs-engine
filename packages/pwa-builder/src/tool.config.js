@@ -42,6 +42,7 @@ const layers = [
   { pkg: "@atrilabs/action-layer" },
   { pkg: "@atrilabs/resource-processor-layer" },
   { pkg: "@atrilabs/pwa-canvas-layer" },
+  { pkg: "@atrilabs/component-navigator-layer" },
 ];
 
 const runtimes = [];
