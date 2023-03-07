@@ -1,0 +1,28 @@
+{
+  "name": "@atrilabs/component-navigator-layer",
+  "version": "1.0.0-alpha.5",
+  "description": "component navigator for pwa-builder",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "src/index.tsx",
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/cruxcode/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/pwa-builder": "^1.0.0-alpha.5"
+  }
+}

@@ -1,1 +1,0 @@
-# `@atrilabs/app-template-layer`

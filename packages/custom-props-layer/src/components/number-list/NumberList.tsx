@@ -3,7 +3,7 @@ import { ComponentProps } from "../../types";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 
 export const NumberList: React.FC<ComponentProps> = (props) => {
   const selector = useMemo(() => {

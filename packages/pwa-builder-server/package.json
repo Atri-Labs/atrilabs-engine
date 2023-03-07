@@ -1,12 +1,16 @@
 {
   "name": "@atrilabs/pwa-builder-server",
-  "version": "0.0.90",
+  "version": "1.0.0-alpha.5",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "src/index.ts",
+  "bin": {
+    "dev-atri-editor": "dist/dev.js"
+  },
   "files": [
+    "dist",
     "src"
   ],
   "publishConfig": {
@@ -17,18 +21,21 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry'"
+    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry'",
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^0.0.90",
-    "@atrilabs/commands-builder": "^0.0.90",
-    "@atrilabs/core": "^0.0.90",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.5",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.5",
+    "@atrilabs/core": "^1.0.0-alpha.5",
     "css-tree": "^2.3.1",
     "mime-types": "^2.1.35",
+    "pkg-up": "3.1.0",
     "recursive-readdir": "^2.2.3",
+    "socket.io": "^4.5.0",
     "upath": "^2.0.1",
     "uuid": "^9.0.0"
   },

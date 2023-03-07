@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import ControlledInput from "./ControlledInput";
 
 export const LargeText: React.FC<ComponentProps> = (props) => {

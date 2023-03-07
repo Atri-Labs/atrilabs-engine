@@ -1,7 +1,7 @@
 import { gray900 } from "@atrilabs/design-system";
 import { useCallback, useMemo } from "react";
 import { AttributeType, ComponentProps } from "../../types";
-import { createObject } from "@atrilabs/canvas-runtime-utils/src/utils";
+import { createObject } from "@atrilabs/core";
 import { CommonPropTypeContainer } from "../commons/CommonPropTypeContainer";
 import { usePageRoutes } from "../../hooks/usePageRoutes";
 import { MapContainer } from "../commons/MapContainer";

@@ -1,6 +1,5 @@
 import { ImportedResource } from "@atrilabs/core";
 import { useEffect, useState } from "react";
-import { addStylesheet } from "@atrilabs/canvas-runtime";
 import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useFetchResources = () => {
@@ -12,7 +11,7 @@ export const useFetchResources = () => {
       // add to canvas
       resources.forEach((resource) => {
         if (resource.method === "css") {
-          addStylesheet({ content: resource.str });
+          // TODO
         }
       });
     });
@@ -23,7 +22,7 @@ export const useFetchResources = () => {
       setResources((old) => [...old, resource]);
       // add to canvas
       if (resource.method === "css") {
-        addStylesheet({ content: resource.str });
+        // TODO
       }
     });
   }, []);

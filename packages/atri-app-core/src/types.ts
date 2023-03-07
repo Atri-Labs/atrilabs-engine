@@ -1,3 +1,4 @@
+import { AnyEvent } from "@atrilabs/forest";
 import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
 
 export type DragData = {
@@ -71,4 +72,24 @@ export type ImportedResource = {
       fontStyle: string;
     }[];
   };
+};
+
+export type ClipboardCopyObject = {
+  type: "atri-copy-events";
+  events: AnyEvent[];
+  copiedCompId: string;
+};
+
+export type ClipboardPasteObject = Omit<ClipboardCopyObject, "type"> & {
+  type: "atri-paste-events";
+  pasteTargetComp?: string; // comp id where Ctrl + V event was emitted
+  pasteTargetCanvasZone?: string;
+};
+
+export type ClipboardPasteObjectWithParent = Omit<
+  ClipboardPasteObject,
+  "type"
+> & {
+  parent: { id: string; index: number; canvasZoneId: string };
+  newTemplateRootId: string;
 };

@@ -1,14 +1,11 @@
 {
   "name": "@atrilabs/react-component-manifests",
-  "version": "0.0.90",
+  "version": "1.0.0-alpha.5",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "./src/manifest.config.js",
-  "directories": {
-    "lib": "src"
-  },
   "files": [
     "src"
   ],
@@ -20,18 +17,19 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "gen-py-classes -n ../../node_modules"
+    "build": "gen-py-classes -n ../../node_modules",
+    "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^0.0.90",
-    "@atrilabs/commands": "^0.0.90",
-    "@atrilabs/component-icon-manifest-schema": "^0.0.90",
-    "@atrilabs/design-system": "^0.0.90",
-    "@atrilabs/layer-types": "^0.0.90",
-    "@atrilabs/react-component-manifest-schema": "^0.0.90",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.5",
+    "@atrilabs/commands": "^1.0.0-alpha.5",
+    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.5",
+    "@atrilabs/design-system": "^1.0.0-alpha.5",
+    "@atrilabs/layer-types": "^1.0.0-alpha.5",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.5",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.0",
@@ -54,7 +52,6 @@
     "@uiw/codemirror-extensions-langs": "^4.19.9"
   },
   "devDependencies": {
-    "@atrilabs/scripts": "^0.0.90",
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",

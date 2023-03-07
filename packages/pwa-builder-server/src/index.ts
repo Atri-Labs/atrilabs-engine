@@ -6,7 +6,6 @@ import type {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-  ImportedResource,
 } from "@atrilabs/core";
 import {
   getAppInfo,
@@ -18,13 +17,14 @@ import {
   saveEventsForPage,
 } from "./utils";
 import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
-import fs from "fs";
 import {
   createCSSFile,
   fetchCSSFromFile,
   fetchCSSResource,
   getResourceFiles,
 } from "./handle-resources";
+import pkgUp from "pkg-up";
+import path from "path";
 
 const app = express();
 const server = http.createServer(app);
@@ -119,6 +119,21 @@ io.on("connection", (socket) => {
       });
   });
 });
+
+const pwaBuilderPkgJSON = pkgUp.sync({
+  // @ts-ignore
+  cwd: path.dirname(__non_webpack_require__.resolve("@atrilabs/pwa-builder")),
+});
+if (typeof pwaBuilderPkgJSON === "string") {
+  const pwaBuilderDir = path.dirname(pwaBuilderPkgJSON);
+  app.use(express.static(path.resolve(pwaBuilderDir, "dist")));
+  app.use(express.static(path.resolve(pwaBuilderDir, "public")));
+  app.get("/", (req, res) => {
+    res.send(path.resolve(pwaBuilderDir, "dist", "index.html"));
+  });
+} else {
+  console.warn("Failed to find @atrilabs/pwa-builder package.");
+}
 
 app.use(express.static(PUBLIC_DIR));
 

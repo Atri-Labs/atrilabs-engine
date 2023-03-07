@@ -84,84 +84,40 @@ Adhering to the following process is the best way to get your work included in t
    # Assign the original repo to a remote called "upstream"
    git remote add upstream https://github.com/Atri-Labs/atrilabs-engine.git
    ```
+2. Follow the steps to build and start the development servers from [this GitHub discussion](https://github.com/Atri-Labs/atrilabs-engine/discussions/655#discussion-4829986).
 
-2. The initial installation of `node_modules` and building all packages is a bit tricky and will be simplified once we migrate from `lerna` to `turborepo` soon. You might have to install lerna by running `npm i -g lerna` in a shell. Similarly, you might have to install yarn by running `npm i -g yarn` in a shell.
-
-   ```
-   # install node_modules
-   yarn install
-
-   # store project root directory to make installation easy
-   export PROJECT_ROOT=$(pwd)
-
-   # build some pre-requisite package
-   cd $PROJECT_ROOT/packages/forest && yarn run build
-   cd $PROJECT_ROOT/packages/core && yarn run build
-   cd $PROJECT_ROOT/packages/scripts && yarn run build
-
-   # delete the node_modules folder in project root directory
-   rm -rf $PROJECT_ROOT/node_modules
-
-   # bootstrap the project
-   lerna bootstrap
-
-   # build all packages
-   lerna run build
-
-   # run again (because of known issue with lerna)
-   lerna run build
-   ```
-
-3. Start the development server
-
-   Run the following commands in a shell:
-
-   ```
-   cd $PROJECT_ROOT/packages/webapp-builder
-   yarn run server
-   ```
-
-   Open another shell and run the following:
-
-   ```
-   cd $PROJECT_ROOT/packages/webapp-builder
-   yarn run start
-   ```
-
-   This will launch the visual editor in `http://localhost:4000`.
-
-4. If you cloned a while ago, get the latest changes from upstream:
+3. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
    git checkout main
    git pull upstream main
    ```
 
-5. Create a new topic branch (off the main project development branch) to contain your feature, change or fix:
+4. Create a new topic branch (off the main project development branch) to contain your feature, change or fix:
 
    ```bash
    git checkout -b <topic-branch-name>
    ```
 
-6. Commit your changes in logical chunks. Please adhere to these [git commit
+5. Commit your changes in logical chunks. Please adhere to these [git commit
    message guidelines](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
    or your code is unlikely be merged into the main project. Use Git's
    [interactive rebase](https://help.github.com/articles/about-git-rebase/)
    feature to tidy up your commits before making them public.
 
-7. Locally merge (or rebase) the upstream development branch into your topic branch:
+6. Locally merge (or rebase) the upstream development branch into your topic branch:
 
    ```bash
    git pull [--rebase] upstream main
    ```
 
-8. Push your topic branch up to your fork:
+7. Push your topic branch up to your fork:
 
    ```bash
    git push origin <topic-branch-name>
    ```
 
-9. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
+8. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
    with a clear title and description.
 
 ### Cutting a release

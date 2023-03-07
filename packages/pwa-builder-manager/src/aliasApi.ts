@@ -6,12 +6,7 @@ import { api } from "./api";
 
 const trie = new TrieSearch();
 
-async function assingAliasFromPrefix(options: {
-  prefix: string;
-  id: string;
-  postData: Parameters<typeof api.postNewEvents>[2];
-}) {
-  const { prefix, id, postData } = options;
+async function createAliasFromPrefix(prefix: string) {
   const results = trie.search(prefix);
   let largestNumber = 1;
   if (Array.isArray(results) && results.length > 0) {
@@ -26,6 +21,31 @@ async function assingAliasFromPrefix(options: {
     });
   }
   const alias = prefix + largestNumber;
+  /**
+   * Bug:
+   *
+   * Steps to replicate:
+   *
+   * 1. Select a flexbox with multiple buttons.
+   * 2. Do ctrl + c & ctrl + v
+   *
+   * All the buttons in the new flexbox have same alias.
+   *
+   * Fix:
+   *
+   * Put the alias generated using this function in the trie.
+   */
+  createOrUndangle(alias, "created_for_fixing_copy_paste");
+  return alias;
+}
+
+async function assingAliasFromPrefix(options: {
+  prefix: string;
+  id: string;
+  postData: Parameters<typeof api.postNewEvents>[2];
+}) {
+  const { prefix, id, postData } = options;
+  const alias = await createAliasFromPrefix(prefix);
   const { forestPkgId, forestId } = BrowserForestManager.currentForest;
   postData.events.push({
     type: `PATCH$$${ComponentTreeId}`,
@@ -133,4 +153,5 @@ export const aliasApi = {
   assingAliasFromPrefix,
   getCompIdForAlias,
   maybeAssignAlias,
+  createAliasFromPrefix,
 };
