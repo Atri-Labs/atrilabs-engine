@@ -22,18 +22,28 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    picker: {
-      type: "enum",
-      options: ["", "week", "month", "quarter", "year"],
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "children", type: "text" },
+        { fieldName: "label", type: "text" },
+        { fieldName: "color", type: "color" },
+        { fieldName: "dot", type: "static_asset" },
+      ],
     },
-    showTime: {
-      type: "boolean",
-    }
+    mode: {
+      type: "enum",
+      options: ["left", "alternate", "right"],
+    },
+    pending: { type: "text" },
+    pendingDot: { type: "static_asset" },
+    reverse: { type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "DatePicker", category: "Basics" },
+  meta: { key: "Timeline", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -46,25 +56,30 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          content: "I am Text",
+          items: [
+            {
+              children: `Create a services site 2015-09-01`,
+              label: `10:00 am`,
+              color: "orange",
+            },
+          ],
+          mode: "left",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
-    attachCallbacks: {
-      onClick: [{ type: "controlled", selector: ["custom", "open"] }],
-    },
+    attachCallbacks: {},
     defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "DatePicker" } },
+  panel: { comp: "CommonIcon", props: { name: "Timeline" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "DatePicker",
+      name: "Timeline",
       containerStyle: { padding: "1rem" },
     },
   },

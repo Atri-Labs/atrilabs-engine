@@ -5,7 +5,7 @@ const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { checked: boolean; options?: any; label: string[] };
+    custom: { checked: boolean; options?: any; text: string[] };
     onChange: (checked: boolean) => void;
     className?: string;
   }
@@ -18,7 +18,7 @@ const Checkbox = forwardRef<
         style={props.styles}
         checked={props.custom.checked}
       >
-        {props.custom.label ? props.custom.label : "label"}
+        {props.custom.text}
       </AntdCheckbox>
     </div>
   );

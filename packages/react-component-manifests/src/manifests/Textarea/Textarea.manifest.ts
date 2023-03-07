@@ -22,7 +22,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    value: { type: "large_text" },
+    text: { type: "large_text" },
     placeholder: { type: "text" },
   },
 };
@@ -41,7 +41,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          value: "",
+          text: "",
           placeholder: "Placeholder Text",
         },
         treeOptions: customTreeOptions,

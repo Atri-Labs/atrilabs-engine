@@ -7,7 +7,7 @@ const Radio = forwardRef<
     styles: React.CSSProperties;
     custom: {
       name: string;
-      label: string[];
+      text: string[];
       checked: boolean;
       radius?: string;
       options?: any;
@@ -30,9 +30,9 @@ const Radio = forwardRef<
         }}
         className={props.className}
         checked={props.custom.checked}
-        value={props.custom.label ? props.custom.label : "label"}
+        value={props.custom.text}
       >
-        {props.custom.label ? props.custom.label : "label"}
+        {props.custom.text ? props.custom.text : "label"}
       </AntdRadio>
     </div>
   );

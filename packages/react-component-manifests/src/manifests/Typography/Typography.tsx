@@ -21,7 +21,7 @@ const Typography = forwardRef<
     className?: string;
     custom?: {
       isTitle: boolean;
-      content?: string;
+      text?: string;
       style: TextStyle;
       type?: TextType;
       disabled: boolean;
@@ -54,7 +54,7 @@ const Typography = forwardRef<
           editable={props.custom?.editable}
           copyable={props.custom?.copyable}
         >
-         {props.custom?.content} 
+         {props.custom?.text} 
         </Paragraph>
       </AntdTypography>
     </div>

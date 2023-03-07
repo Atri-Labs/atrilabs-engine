@@ -13,7 +13,7 @@ const DevAnchor: typeof Anchor = forwardRef((props, ref) => {
           borderStyle: `dashed`,
           borderColor: `${gray500}`,
           boxSizing: "border-box",
-          display:"block",
+          display:"inline-block",
           ...props.styles,
         }
       : { ...props.styles };

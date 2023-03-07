@@ -20,7 +20,7 @@ const Title = forwardRef<
     className?: string;
     custom?: {
       level: TitleLevel;
-      content?: string;
+      text?: string;
       style: TextStyle;
       type?: TextType;
       disabled: boolean;
@@ -52,7 +52,7 @@ const Title = forwardRef<
           editable={props.custom?.editable}
           copyable={props.custom?.copyable}
         >
-          {props.custom?.content}
+          {props.custom?.text}
         </Typography.Title>
       </Typography>
     </div>

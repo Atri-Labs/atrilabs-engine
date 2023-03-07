@@ -1,31 +1,19 @@
 import React, { forwardRef, useCallback, ReactNode } from "react";
 import { Button as AntdButton } from "antd";
 
-export enum ButtonShape {
-  DEFAULT = "default",
-  CIRCLE = "circle",
-  ROUND = "round",
-}
+export type ButtonShape = "default" | "circle" | "round";
 
-export enum ButtonType {
-  PRIMARY = "primary",
-  GHOST = "ghost",
-  DASHED = "dashed",
-  LINK = "link",
-  TEXT = "text",
-  DEFAULT = "default",
-}
+export type ButtonType =
+  | "primary"
+  | "ghost"
+  | "dashed"
+  | "link"
+  | "text"
+  | "default";
 
-export enum ButtonSize {
-  LARGE = "large",
-  MIDDLE = "middle",
-  SMALL = "small",
-}
-export enum ButtonhtmlType {
-  BUTTON = "button",
-  SUBMIT = "submit",
-  RESET = "reset",
-}
+export type ButtonSize = "large" | "middle" | "small";
+
+export type ButtonhtmlType = "button" | "submit" | "reset";
 
 const Button = forwardRef<
   HTMLButtonElement,

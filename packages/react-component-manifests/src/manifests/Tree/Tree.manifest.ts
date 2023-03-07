@@ -22,18 +22,26 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    picker: {
-      type: "enum",
-      options: ["", "week", "month", "quarter", "year"],
+    checkable: { type: "boolean" },
+    showLine: { type: "boolean" },
+    multiple: { type: "boolean" },
+    defaultExpandAll: { type: "boolean" },
+    defaultExpandParent: { type: "boolean" },
+    treeData: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "title", type: "text" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "disabled", type: "boolean" },  
+        { fieldName: "children", type: "array" },   
+      ],
     },
-    showTime: {
-      type: "boolean",
-    }
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "DatePicker", category: "Basics" },
+  meta: { key: "Tree", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -46,25 +54,34 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          content: "I am Text",
+          treeData: [
+            {
+              title: `0-0`,
+              key: `0-0`,
+              disabled: false,  
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onCheck: [{ type: "controlled", selector: ["custom", "open"] }],
+      onExpand: [{ type: "controlled", selector: ["custom", "open"] }],
+      onRightClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onSelect: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "DatePicker" } },
+  panel: { comp: "CommonIcon", props: { name: "Tree" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "DatePicker",
+      name: "Tree",
       containerStyle: { padding: "1rem" },
     },
   },

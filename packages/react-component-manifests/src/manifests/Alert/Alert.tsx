@@ -20,7 +20,7 @@ const Alert = forwardRef<
     styles: React.CSSProperties;
     custom: {
       alertType: AlertType;
-      title: string;
+      text: string;
       description?: string;
       successIcon?: string;
       infoIcon?: string;
@@ -119,7 +119,7 @@ const Alert = forwardRef<
           onClick={onClick}
           type={props.custom.alertType || AlertType.SUCEESS}
           showIcon={props.custom.showIcon} //it will show antd icon
-          message={props.custom.title}
+          message={props.custom.text}
           description={props.custom.description}
           closable={props.custom?.isClosable}
           closeText={props.custom?.closeText}

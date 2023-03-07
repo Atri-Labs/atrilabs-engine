@@ -9,6 +9,11 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
+import {
+  AppstoreOutlined,
+  MailOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -33,13 +38,32 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    open: { type: "boolean" },
-    src: { type: "static_asset" },
-    iconHeight: { type: "number" },
-    iconWidth: { type: "number" },
-    strokeColor: { type: "color" },
-    gap: { type: "number" },
-    alignRight: { type: "boolean" },
+    mode: {
+      type: "enum",
+      options: ["vertical", "horizontal", "inline"],
+    },
+    theme: {
+      type: "enum",
+      options: ["light", "dark"],
+    },
+    multiple: { type: "boolean" },
+    selectable: { type: "boolean" },
+    selectedKeys: { type: "boolean" },
+    defaultOpenKeys: { type: "text" },
+    defaultSelectedKeys: { type: "text" },
+    expandIcon: { type: "static_asset" },
+    openKeys: { type: "number" },
+    items: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        { fieldName: "key", type: "number" },
+        { fieldName: "label", type: "text" },
+        { fieldName: "icon", type: "static_asset" },
+        { fieldName: "disabled", type: "boolean" },
+        { fieldName: "children", type: "array" },
+      ],
+    },
   },
 };
 
@@ -57,9 +81,17 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          open: true,
-          iconHeight: 24,
-          iconWidth: 24,
+          items: [
+            {
+              label: "Navigation One",
+              key: "mail",
+            },
+            {
+              label: "Navigation Two",
+              key: "app",
+              disabled: true,
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -67,6 +99,8 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onOpenChange: [{ type: "controlled", selector: ["custom", "open"] }],
+      onSelect: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
     acceptsChild,

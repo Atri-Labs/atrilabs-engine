@@ -22,9 +22,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    name: { type: "text" },
+    text: { type: "text"},
     checked: { type: "boolean" },
-    label: { type: "text"},
+    name: { type: "text" },
   },
 };
 
@@ -48,7 +48,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CustomTreeId,
         initialValue: {
           name: "Name",
-          label: "Radio",
+          text: "Radio",
           checked: false,
         },
         treeOptions: customTreeOptions,

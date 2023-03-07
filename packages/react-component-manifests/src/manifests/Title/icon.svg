@@ -1,9 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-typography" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#D1D5DB" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <line x1="4" y1="20" x2="7" y2="20" />
-  <line x1="14" y1="20" x2="21" y2="20" />
-  <line x1="6.9" y1="15" x2="13.8" y2="15" />
-  <line x1="10.2" y1="6.3" x2="16" y2="20" />
-  <polyline points="5 20 11 4 13 4 20 20" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="#D1D5DB"  width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path   d="M5 5.5C5 6.33 5.67 7 6.5 7h4v10.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V7h4c.83 0 1.5-.67 1.5-1.5S18.33 4 17.5 4h-11C5.67 4 5 4.67 5 5.5z"/></svg>
 
+<!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none"  d="M0 0h24v24H0V0z"/><path d="M5 4v3h5.5v12h3V7H19V4H5z" stroke="#D1D5DB"/></svg>
+
+
+ -->

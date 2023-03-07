@@ -1,10 +1,17 @@
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import { ReactComponentManifestSchema,AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
+import {
+  flexRowSort,
+  flexColSort,
+  flexRowReverseSort,
+  flexColReverseSort,
+} from "@atrilabs/react-component-manifest-schema";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
+
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -18,6 +25,15 @@ const cssTreeOptions: CSSTreeOptions = {
   outlineOptions: true,
   backgroundOptions: true,
   miscellaneousOptions: true,
+};
+
+const acceptsChild: AcceptsChildFunction = (info: any) => {
+  console.log("info------", info.ref.current, info)
+  console.log("target------", info.loc.target);
+
+  
+
+  return 1;
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
@@ -64,27 +80,24 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [
-            {
-              key: "1",
-              label: `One`,
-              children: `Content of Tab Pane 1`,
-            },
-            {
-              key: "2",
-              label: `Two`,
-              children: `Content of Tab Pane 2`,
-            },
-            {
-              key: "3",
-              label: `Three`,
-              children: `Content of Tab Pane 3`,
-            },
-          ],
-          title: [],
-          description: [],
-          open: [],
-        },
+          items :[
+          {
+            key: "1",
+            label: `Tab 1`,
+            children : [],
+          },
+          {
+            key: "2",
+            label: `Tab 2`,
+            children : [],
+          },
+          {
+            key: "3",
+            label: `Tab 3`,
+            children : [],
+          },
+        ]
+      },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
@@ -93,6 +106,7 @@ const compManifest: ReactComponentManifestSchema = {
       onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
+    acceptsChild,
   },
 };
 

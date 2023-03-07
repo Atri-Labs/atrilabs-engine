@@ -6,7 +6,7 @@ const Textarea = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { value: string; placeholder: string };
+    custom: { text: string; placeholder: string };
     onChange: ChangeEventHandler<HTMLElement>;
     onPressEnter?: () => void;
     onResize?: () => { width: number; height: number }; //The callback function that is triggered when resize
@@ -36,7 +36,7 @@ const Textarea = forwardRef<
     <TextArea
     {...restProps}
     {...custom}
-    value={props.custom.value}
+    value={props.custom.text}
     />
      </div>
   );

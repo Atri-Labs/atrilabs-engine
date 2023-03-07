@@ -1,35 +1,53 @@
-import React, { forwardRef} from "react";
-import { Tabs as AntdTabs , TabsProps } from "antd";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import { Tabs as AntdTabs, TabsProps } from "antd";
 
-export type TabsType = 'line' | 'card' | 'editable-card';
-export type TabPosition = 'left' | 'right' | 'top' | 'bottom';
-export type SizeType = 'large' | 'middle' | 'small';
+export type TabsType = "line" | "card" | "editable-card";
+export type TabPosition = "left" | "right" | "top" | "bottom";
+export type SizeType = "large" | "middle" | "small";
 
 const Tabs = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    children: React.ReactNode[];
     className?: string;
-    custom?: { items?: any } ;
+    custom: { 
+      items: {
+      key: string;
+      label: React.ReactNode;
+    }[]
+  };
     onChange: (activeKey: string) => void;
     onTitleClick?: (
       activeKey: string,
       e: React.KeyboardEvent | React.MouseEvent
     ) => void;
-  }& TabsProps
+  } & TabsProps
 >((props, ref) => {
-  const { custom, ...restProps } = props; 
+  const { custom, children, ...restProps } = props;
+  const {items} = custom;
+
+  const tabItems = useMemo(() => {
+    if (children?.length) {
+      return items.map((item, index) => ({...item, children: children[index] || ''}))
+    } else {
+      return items;
+    }
+  }, [items, children])
+
   return (
-      <div ref={ref}  style={props.styles}>
-        <AntdTabs
-          className={props.className}
-          items={props?.custom?.items}
-          {...custom}
-          {...restProps}
-          onChange= {props.onChange}
-          onTabClick={props.onTitleClick}               
-        />
-      </div>
+    <div ref={ref} style={props.styles}>
+      <AntdTabs
+        className={props.className}
+        {...custom}
+        {...restProps}
+        items={tabItems}
+        // onChange={handleTabChange}
+        onChange={props.onChange}
+        onTabClick={props.onTitleClick}
+      />
+      {/* {props.children} */}
+    </div>
   );
 });
 export default Tabs;

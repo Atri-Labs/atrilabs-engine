@@ -23,6 +23,23 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     text: { type: "text" },
+    type: {
+      type: "enum",
+      options: [ "default", "primary","ghost","dashed","link","text"],
+    },
+    block: { type: "boolean" },
+    danger: { type: "boolean" },
+    disabled: { type: "boolean" },
+    icon: {type : "static_asset"},
+    loading:{ type: "boolean" },
+    shape: {
+      type: "enum",
+      options: ["default", "circle", "round"],
+    },
+    size: {
+      type: "enum",
+      options: [ "middle", "large","small"],
+    },
   },
 };
 

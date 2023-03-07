@@ -2,13 +2,13 @@ import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -22,64 +22,51 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    placeholder: { type: "text" },
-    defaultValue: { type: "text" },
-    options: {
-      type: "array_map",
-      singleObjectName: "option",
-      attributes: [
-        { fieldName: "value", type: "text" },
-        { fieldName: "label", type: "text" },
-        { fieldName: "disabled", type: "boolean" },
-      ],
+    title: { type: "text" },
+    description: { type: "large_text" },
+    extra: { type: "text" },
+    size: {
+      type: "enum",
+      options: [ "default","small"],
     },
+
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Select", category: "Basics" },
+  meta: { key: "Card", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          cursor: "pointer",
-          display: "inline-flex",
-          columnGap: "10px",
-          alignItems: "center",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          placeholder: "Select",
-          options: [
-            { value: "one", label: "One", disabled: true },
-            { value: "two", label: "Two" },
-            { value: "three", label: "Three" },
-          ],
+          text: "Submit",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "checked"] }],
+      onClick: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
-      onChange: [{ sendEventData: true }],
+      onClick: [{ sendEventData: true }],
     },
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Select" } },
+  panel: { comp: "CommonIcon", props: { name: "Card" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Select", containerStyle: { padding: "1rem" } },
+    props: { name: "Card", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

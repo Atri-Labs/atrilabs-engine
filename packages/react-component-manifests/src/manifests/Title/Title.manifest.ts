@@ -22,10 +22,10 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    text: { type: "text" },
     level: {
       type: "number", 
     },
-    content: { type: "text" },
     style: {
       type: "enum",
       options: [
@@ -69,7 +69,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          content: "I am Text",
+          text: "I am Text",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
