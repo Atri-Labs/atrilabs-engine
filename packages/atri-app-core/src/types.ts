@@ -93,3 +93,21 @@ export type ClipboardPasteObjectWithParent = Omit<
   parent: { id: string; index: number; canvasZoneId: string };
   newTemplateRootId: string;
 };
+
+export type Breakpoint = {
+  min: number;
+  max: number;
+  isReferencePoint?: boolean; // desktop size is the reference point to apply styles
+};
+
+export interface LiveApiServerToClientEvents {
+  newEvents(urlPath: string, events: AnyEvent[]): void;
+}
+
+export interface LiveapiClientToServerEvents {
+  sendEvents(urlPath: string, callback: (events: AnyEvent[]) => void): void;
+}
+
+export interface LiveApiInterServerEvents {}
+
+export interface LiveApiSocketData {}
