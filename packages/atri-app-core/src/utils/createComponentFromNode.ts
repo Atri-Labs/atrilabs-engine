@@ -1,23 +1,20 @@
-import {
-  Breakpoint,
-  BrowserForestManager,
-  manifestRegistryController,
-} from "@atrilabs/core";
-import { TreeNode } from "@atrilabs/forest";
+import { Forest, TreeNode } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { getEffectiveStyle } from "./getEffectiveStyle";
+import { manifestRegistryController } from "@atrilabs/manifest-registry";
 
 function createPropsFromManifestComponent(
   compId: string,
   manifet: any,
-  breakpoint: Breakpoint
+  breakpoint: { min: number; max: number },
+  forest: Forest
 ) {
   const propsKeys = Object.keys(manifet.dev.attachProps);
   const props: { [key: string]: any } = {};
   for (let i = 0; i < propsKeys.length; i++) {
     const propKey = propsKeys[i];
     const treeId = manifet.dev.attachProps[propKey].treeId;
-    const tree = BrowserForestManager.currentForest.tree(treeId);
+    const tree = forest.tree(treeId);
     if (tree) {
       if (tree.links[compId] && tree.links[compId].childId) {
         const propNodeId = tree.links[compId].childId;
@@ -46,7 +43,8 @@ function createPropsFromManifestComponent(
 
 export function createComponentFromNode(
   node: TreeNode,
-  breakpoint: Breakpoint
+  breakpoint: { min: number; max: number },
+  forest: Forest
 ) {
   const id = node.id;
   const meta = node.meta;
@@ -68,7 +66,12 @@ export function createComponentFromNode(
   // use CanvasAPI to create component
   if (fullManifest) {
     const manifest = fullManifest.manifest as ReactComponentManifestSchema;
-    const props = createPropsFromManifestComponent(id, manifest, breakpoint);
+    const props = createPropsFromManifestComponent(
+      id,
+      manifest,
+      breakpoint,
+      forest
+    );
     const callbacks =
       manifest.dev["attachCallbacks"] &&
       typeof manifest.dev["attachCallbacks"] === "object" &&

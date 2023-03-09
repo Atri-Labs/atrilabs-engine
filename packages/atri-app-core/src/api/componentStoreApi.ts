@@ -197,6 +197,14 @@ function rewireComponent(
   });
 }
 
+/**
+ *
+ * @returns {string[]} canvas zone id with atlest one component
+ */
+function getActiveCanvasZoneIds() {
+  return Object.keys(canvasZoneReverseMap);
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -210,4 +218,5 @@ export const componentStoreApi = {
   updateProps,
   deleteComponent,
   rewireComponent,
+  getActiveCanvasZoneIds,
 };

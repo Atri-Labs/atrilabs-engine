@@ -4,29 +4,61 @@ import {
   LiveApiServerToClientEvents,
   LiveapiClientToServerEvents,
 } from "../types";
-import { forestDef } from "./forestDef";
-
-let events: AnyEvent[] = [];
+import { componentStoreApi } from "./componentStoreApi";
+import { componentTreeDef, forestDef } from "./forestDef";
+import { createComponentFromNode } from "../utils/createComponentFromNode";
 
 // communicate over socket to fetch events
 const socket: Socket<LiveApiServerToClientEvents, LiveapiClientToServerEvents> =
-  io({ path: "/_atri/socket.io" });
+  io({ path: "/_atri/socket.io", autoConnect: false });
 socket.on("connect", () => {
-  console.log("socket connected");
   socket.emit("sendEvents", window.location.pathname, (incomingEvents) => {
-    events = incomingEvents;
+    eventsToComponent(incomingEvents);
+    const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
+    canvasZoneIds.forEach((canvasZoneId) => {
+      callCanvasZoneSubscriber(canvasZoneId);
+    });
   });
 });
-socket.connect();
-socket.on("newEvents", (urlPath, incomingEvents) => {
+if (
+  typeof window !== "undefined" &&
+  window.location === window.parent.location
+) {
+  socket.connect();
+}
+
+socket.on("newEvents", (urlPath, _incomingEvents) => {
   if (urlPath === window.location.pathname) {
-    events = incomingEvents;
+    // Currently, we reload the page whenever there is a change in the editor
+    window.location.href = window.location.href;
   }
 });
 
-// create forest
+// convert events to component
 function eventsToComponent(events: AnyEvent[]) {
   const forest = createForest(forestDef);
+  forest.handleEvents({
+    name: "events",
+    events,
+    meta: { agent: "server-sent" },
+  });
+  const nodes = forest.tree(componentTreeDef.id)!.nodes!;
+  const nodeIds = Object.keys(nodes);
+  nodeIds.map((nodeId) => {
+    const component = createComponentFromNode(
+      nodes[nodeId],
+      {
+        max: window.innerWidth,
+        min: window.innerWidth,
+      },
+      forest
+    )!;
+    componentStoreApi.createComponent(component.meta, {
+      id: component.id,
+      props: component.props,
+      parent: component.parent,
+    });
+  });
 }
 
 // call subscriber of each canvas zone

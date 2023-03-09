@@ -49,6 +49,8 @@ async function main() {
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/forest")),
+    // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system")),
@@ -188,6 +190,7 @@ async function main() {
   const serverPath = path.join(params.paths.outputDir, "server", "pages");
   const paths = { ...params.paths, outputDir: serverPath };
   const allowlist = params.allowlist || [];
+  allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
   allowlist.push("@atrilabs/atri-app-core/src/editor-components");
   allowlist.push("@atrilabs/design-system");
