@@ -32,6 +32,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     icon: { type: "static_asset" },
     isClosable: { type: "boolean" },
     closeText: { type: "text" },
+    closeIcon: {type: "static_asset"},
     banner: { type: "boolean" },  
     successIcon: { type: "static_asset" },
     infoIcon: { type: "static_asset" },

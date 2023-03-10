@@ -21,21 +21,27 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    divider: {
+    separator: {
       type: "text",
     },
+
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
         {
-          fieldName: "name",
+          fieldName: "title",
           type: "text",
         },
         {
-          fieldName: "link",
+          fieldName: "href",
           type: "text",
         },
+        {
+          fieldName: "icon",
+          type: "static_asset",
+        },
+        
       ],
     },
   },
@@ -55,23 +61,23 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          divider: ">",
+          separator: "/",
           items: [
             {
-              name: "Home",
-              link: "",
+              title: "Home",
+              href: "",
             },
             {
-              name: "Application Center",
-              link: "",
+              title: "Application Center",
+              href: "",
             },
             {
-              name: "Application List",
-              link: "",
+              title: "Application List",
+              href: "",
             },
             {
-              name: "Application One",
-              link: "",
+              title: "An Application",
+              href: "",
             },
           ],
         },

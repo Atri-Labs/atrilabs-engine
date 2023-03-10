@@ -1,44 +1,61 @@
 import React, { forwardRef, useCallback, ReactNode } from "react";
-import { Card as AntdCard } from "antd";
+import { Card as AntdCard, Avatar } from "antd";
+const { Meta } = AntdCard;
 
-export type ButtonShape = "default" | "circle" | "round";
-
-export type ButtonType =
-  | "primary"
-  | "ghost"
-  | "dashed"
-  | "link"
-  | "text"
-  | "default";
+export type type = "card" | "meta";
 
 export type Size = "default" | "small";
-
-export type ButtonhtmlType = "button" | "submit" | "reset";
 
 const Card = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { title: string ; extra: ReactNode;tabBarExtraContent : ReactNode; bordered: boolean; cover: ReactNode; avatar: ReactNode;description: ReactNode; loading: boolean; size?: Size;  };
-    onTabChange: any;
-    
+    custom: {
+      type: type;
+      text: string;
+      tabBarExtraContent: ReactNode;
+      bordered: boolean;
+      cover: string;
+      avatar: string;
+      description: ReactNode;
+      size?: Size;
+      // actions?: ReactNode;
+      //extra: ReactNode;
+    };
     className?: string;
   }
 >((props, ref) => {
-  const onTabChange = {}
   const { custom, ...restProps } = props;
   return (
     <AntdCard
       ref={ref}
-      className={props.className}
+      className={props.custom.type === "card" ? props.className : undefined}
       style={props.styles}
-     // onTabChange={onTabChange}
-      title={props.custom.title} 
+      title={props.custom.type === "card" ? props.custom.text : undefined}
       bordered={props.custom.bordered}
       size={props.custom.size}
-      extra={props.custom.extra}
+      cover={<img src={props.custom.cover} alt={props.custom.cover} />}
+      // actions={
+      //   props.custom.actions !== undefined || ""
+      //     ? [props.custom.actions]
+      //     : undefined
+      // }
+      // extra={props.custom.extra}
     >
-        {props.custom.description}
+      {props.custom.type === "card" && <p> {props.custom.description}</p>}
+      {props.custom.type === "meta" && (
+        <Meta
+          className={props.className}
+          style={props.styles}
+          avatar={
+            props.custom.avatar ? (
+              <Avatar src={props.custom.avatar} alt={props.custom.avatar} />
+            ) : undefined
+          }
+          title={props.custom.text}
+          description={props.custom.description}
+        />
+      )}
     </AntdCard>
   );
 });

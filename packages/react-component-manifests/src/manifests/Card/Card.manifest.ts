@@ -22,14 +22,22 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    title: { type: "text" },
+    type: {
+      type: "enum",
+      options: [ "card","meta"],
+    },
+    text: { type: "text" },
     description: { type: "large_text" },
-    extra: { type: "text" },
+  //  extra: { type: "text" },
     size: {
       type: "enum",
       options: [ "default","small"],
     },
-
+     hoverable: { type: "boolean" }, 
+     bordered: { type: "boolean" }, 
+     cover:{ type: "static_asset" },
+     avatar: { type: "static_asset" },
+   //  actions:{ type: "array_static_asset"},
   },
 };
 
@@ -40,14 +48,17 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: { width: 300 },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Submit",
+          text: "Card Title",
+          description:"Card content",
+          bordered: true,
+          type:"card",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

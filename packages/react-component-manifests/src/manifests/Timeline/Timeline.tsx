@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from "react";
+import React, { forwardRef, ReactNode, useMemo } from "react";
 import { Timeline as AntdTimeline } from "antd";
 
 export type CollapsibleTypes = "header" | "icon" | "disabled";
@@ -17,26 +17,42 @@ const Timeline = forwardRef<
         children?: React.ReactNode;
         time?: React.ReactNode;
         color?: string;
-        dot?: React.ReactNode;
+        dot?: string;
         position?: Position;
       }[];
       pending?: React.ReactNode;
-      pendingDot?: React.ReactNode;
+      pendingDot?: string;
       reverse?: boolean;
       mode?: "left" | "alternate" | "right";
     };
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+  const { items } = custom;
+  const timelineItems = useMemo(() => {
+    return items.map((item) => {
+      if (typeof item.dot === "string") {
+        return {
+          ...item,
+          dot: <img src={item.dot} alt={item.dot} />,
+        };
+      }
+      return item;
+    });
+  }, [items]);
   return (
-    <div ref={ref} style={{display: 'inline-block'}}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdTimeline
         style={props.styles}
         className={props.className}
         mode={props.custom.mode}
-        items={props.custom.items}
+        items={timelineItems}
         pending={props.custom.pending}
-        pendingDot={props.custom.pendingDot}
+        pendingDot={
+          props.custom.pendingDot !== undefined && (
+            <img src={props.custom.pendingDot} alt={props.custom.pendingDot} />
+          )
+        }
         reverse={props.custom.reverse}
       ></AntdTimeline>
     </div>

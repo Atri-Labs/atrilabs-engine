@@ -30,8 +30,7 @@ const cssTreeOptions: CSSTreeOptions = {
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   console.log("info------", info.ref.current, info)
   console.log("target------", info.loc.target);
-
-  
+//ant-tabs-tab-active
 
   return 1;
 };

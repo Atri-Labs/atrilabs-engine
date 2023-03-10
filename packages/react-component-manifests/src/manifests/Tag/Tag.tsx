@@ -49,11 +49,15 @@ const Tag = forwardRef<
   );
   const { custom, ...restProps } = props;
   const icon =
-    props.custom.icon !== undefined ? (
-      props.custom.icon
+    props.custom.icon !== undefined || "" ? (
+      <img src={props.custom.icon} alt={props.custom.icon} />
     ) : (
-      <IconComponent variant={props.custom.iconVariant!}  />
+      <IconComponent variant={props.custom.iconVariant!} />
     );
+  const closeIcon = props.custom.closeIcon !== undefined && (
+    <img src={props.custom.closeIcon} alt={props.custom.closeIcon} />
+  );
+
   return (
     <AntdTag
       {...restProps}
@@ -69,7 +73,7 @@ const Tag = forwardRef<
           : props.custom?.variant
       }
       icon={icon}
-      closeIcon={props.custom.closeIcon}
+      closeIcon={closeIcon}
     >
       {props.custom.link !== undefined || "" ? (
         <a href={props.custom?.link}>{props.custom?.text}</a>
@@ -97,7 +101,7 @@ function IconComponent(props: IconProps) {
     case "warning":
       return <ExclamationCircleOutlined />;
     case "processing":
-      return <SyncOutlined spin/>;
+      return <SyncOutlined spin />;
     default:
       return null;
   }

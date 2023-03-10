@@ -5,7 +5,7 @@ const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { checked: boolean; options?: any; text: string[] };
+    custom: { checked: boolean; text: string[] };
     onChange: (checked: boolean) => void;
     className?: string;
   }

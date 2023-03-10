@@ -28,15 +28,21 @@ const customTreeOptions: CustomPropsTreeOptions = {
     color: { type: "color" },
     variant: {
       type: "enum",
-      options: ["default","success","processing","error","warning"],
+      options: ["default", "success", "processing", "error", "warning"],
     },
     icon: { type: "static_asset" },
     iconVariant: {
       type: "enum",
-      options: ["default","success","waiting","error","warning","processing"],
+      options: [
+        "default",
+        "success",
+        "waiting",
+        "error",
+        "warning",
+        "processing",
+      ],
     },
     closeIcon: { type: "static_asset" },
-   
   },
 };
 
@@ -47,7 +53,12 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {},
+        initialValue: {
+          height: "20px",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "5px",
+        },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

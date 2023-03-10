@@ -23,10 +23,19 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    multuple: { type: "boolean" },
-    showFilename: { type: "boolean" },
     text: { type: "text" },
+    listType: {
+      type: "enum",
+      options: ["text", "picture-card", "picture-circle"],
+    },
+    dragger: { type: "boolean" },
+    maxCount: { type: "number" },
+    multiple: { type: "boolean" },
     disabled: { type: "boolean" },
+    directory :{ type: "boolean" },
+    allowFiles : {type : "enum",
+     options : [ "all" ,"image" ,"video"]
+  },
   },
 };
 
@@ -37,35 +46,19 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          alignItems: "center",
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
-          columnGap: "12px",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          multiple: false,
-          showFilename: true,
-          text: "Upload",
-          disabled: false,
+          text: "Click to Upload",
+          listType: "text",
+          dragger: false,
+          disabled : false,
+          directory : false,  
+          allowFiles :  "all",   
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

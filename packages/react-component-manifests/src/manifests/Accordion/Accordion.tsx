@@ -21,7 +21,7 @@ const Accordion = forwardRef<
       bordered?: boolean;
       collapse?: boolean;
       defaultActiveKey?: string[] | string | number[] | number;
-      expandIcon?: ((panelProps: any) => ReactNode) | undefined;
+      expandIcon?: string;
       expandIconPosition?: ExpandIconPosition;
       ghost?: boolean;
       size?: Size;
@@ -31,6 +31,12 @@ const Accordion = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
+  const customExpandIcon = () => (
+    <img
+      src={props.custom?.expandIcon}
+      alt={props.custom?.expandIcon}
+    />
+  );
   return (
     <div ref={ref}>
       <Collapse
@@ -39,7 +45,11 @@ const Accordion = forwardRef<
         size={props.custom?.size}
         bordered={props.custom.bordered}
         defaultActiveKey={props.custom.defaultActiveKey}
-        expandIcon={props.custom?.expandIcon}
+        expandIcon={
+          props.custom.expandIcon !== undefined
+            ? customExpandIcon
+            : props.custom.expandIcon
+        }
         expandIconPosition={props.custom.expandIconPosition}
         ghost={props.custom.ghost}
         accordion={!props.custom.collapse}

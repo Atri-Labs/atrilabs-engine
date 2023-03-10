@@ -19,14 +19,16 @@ const Button = forwardRef<
   HTMLButtonElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string };
+    custom: {
+      text: string;
+      icon?: string; //Set the icon component of button
+    };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
     shape?: ButtonShape; //Can be set button shape
     type?: ButtonType; //Can be set to primary ghost dashed link text default
     size?: ButtonSize; //Set the size of button
     disabled?: boolean; //Disabled state of button
-    icon?: ReactNode; //Set the icon component of button
     loading?: boolean | { delay: number }; //Set the loading status of button
     block?: boolean; //Option to fit button width to its parent width
     danger?: boolean; //Set the danger status of button
@@ -51,6 +53,16 @@ const Button = forwardRef<
       className={props.className}
       style={props.styles}
       onClick={onClick}
+      icon={
+        props.custom.icon && (
+          <img
+            src={props.custom.icon}
+            height="100%"
+            width="100%"
+            alt={props.custom.icon}
+          />
+        )
+      }
     >
       {props.custom.text}
     </AntdButton>

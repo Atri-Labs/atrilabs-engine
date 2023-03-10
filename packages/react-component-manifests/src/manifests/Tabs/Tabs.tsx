@@ -42,11 +42,10 @@ const Tabs = forwardRef<
         {...custom}
         {...restProps}
         items={tabItems}
-        // onChange={handleTabChange}
         onChange={props.onChange}
         onTabClick={props.onTitleClick}
       />
-      {/* {props.children} */}
+      
     </div>
   );
 });

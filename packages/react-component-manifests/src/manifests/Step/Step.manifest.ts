@@ -22,16 +22,31 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    color: { type: "color" },
     current: { type: "number" },
-    steps: {
+    size : {type : "enum",options: ["default","small"]},
+    direction : {type : "enum",options: ["horizontal" , "vertical"]},
+    dotStyle :{type : "enum",options: ["","dot","withHover"]},
+    clickable:{ type: "boolean" } ,
+    type: {type : "enum",options: ["default" , "navigation" , "inline"]},
+    percent: {type : "number"},
+    labelPlacement:{type : "enum",options: ["horizontal" , "vertical" ]},
+    items: {
       type: "array_map",
-      singleObjectName: "step",
+      singleObjectName: "item",
       attributes: [
         { fieldName: "title", type: "text" },
+        { fieldName: "subTitle", type: "text" },
         { fieldName: "description", type: "text" },
+        { fieldName: "icon", type: "static_asset" },
+        {
+          fieldName: "status",
+          type: "enum",
+          options: ["wait", "process", "finish", "error"],
+        },
+        { fieldName: "disabled", type: "boolean" },
       ],
     },
+   
   },
 };
 
@@ -42,20 +57,36 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          width: "100%",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          color: "#336699",
-          current: 1,
-          steps: [],
-          title: [],
-          description: [],
+          items: [
+            {
+              title: "Finished",
+              description: "description",
+            },
+            {
+              title: "In Progress",
+              description: "description",
+              subTitle: "Left 00:00:08",
+            },
+            {
+              title: "Waiting",
+              description: "description",
+            },
+            {
+              title: "Error",
+              description: "description",
+            },
+          ],
+          size : "default",
+          current : 1,
+          direction : "horizontal",
+          clickable: false,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

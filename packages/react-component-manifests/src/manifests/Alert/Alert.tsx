@@ -1,11 +1,12 @@
-import React, { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, ReactNode, useCallback, useMemo } from "react";
 import AlertStyles from "./AlertStyles";
 import closeIcon from "./close.svg";
 import SuccessIcon from "./success.svg";
 import InfoIcon from "./info.svg";
 import WarningIcon from "./warning.svg";
 import ErrorIcon from "./error.svg";
-import { Alert as AntdAlert, AlertProps, Button, InputRef } from "antd";
+import { Alert as AntdAlert } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
 
 const enum AlertType {
   SUCEESS = "success",
@@ -22,6 +23,7 @@ const Alert = forwardRef<
       alertType: AlertType;
       text: string;
       description?: string;
+      icon?: string;
       successIcon?: string;
       infoIcon?: string;
       warningIcon?: string;
@@ -29,6 +31,7 @@ const Alert = forwardRef<
       isClosable: boolean;
       showIcon?: boolean;
       closeText?: string;
+      closeIcon?: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
@@ -77,7 +80,7 @@ const Alert = forwardRef<
     props.custom.infoIcon,
     props.custom.successIcon,
   ]);
- // moved ref to div, as the Alert select doesnt provide ref for Alert 
+  // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
       <style>
@@ -118,11 +121,27 @@ const Alert = forwardRef<
           {...restProps}
           onClick={onClick}
           type={props.custom.alertType || AlertType.SUCEESS}
+          icon={
+            props.custom.icon && (
+              <img
+                src={props.custom.icon}
+                alt={props.custom.icon}
+              />
+            )
+          }
           showIcon={props.custom.showIcon} //it will show antd icon
           message={props.custom.text}
           description={props.custom.description}
           closable={props.custom?.isClosable}
           closeText={props.custom?.closeText}
+          closeIcon={
+            props.custom.closeIcon && (
+              <img
+                src={props.custom.closeIcon}
+                alt={props.custom.closeIcon}
+              />
+            )
+          }
         />
       </div>
     </>
