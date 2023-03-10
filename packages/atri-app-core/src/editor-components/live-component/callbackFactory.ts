@@ -1,5 +1,6 @@
 import { Callback } from "@atrilabs/react-component-manifest-schema";
 import { componentStoreApi, liveApi } from "../../api";
+import { sendEventDataFn } from "./callbackHandlers";
 
 type NavigationCallbackHandlerDef = {
   type: "internal" | "external";
@@ -25,7 +26,7 @@ function callCallbacks(id: string, callbacks: Callback[], value: any) {
   });
 }
 
-function callHandlers(handlers: CallbackHandler[]) {
+function callHandlers(id: string, callbackName: string, value: any) {
   /**
    * Either one sendEventData job or multiple sendFiles job can be performed.
    * Both cannot be performed in a single request.
@@ -33,6 +34,11 @@ function callHandlers(handlers: CallbackHandler[]) {
    * A navigate job is always preformed at last. A job that has been run prior
    * to navigate can be either of sendEventData or sendFiles.
    */
+  const handlers: CallbackHandler[] =
+    liveApi.getComponentCallbackHandlers(id)[callbackName];
+  if (!Array.isArray(handlers)) {
+    return;
+  }
   const jobs: {
     // only one send event data
     sendEventData?: CallbackHandler;
@@ -62,6 +68,11 @@ function callHandlers(handlers: CallbackHandler[]) {
     // TODO: send request with form data
   } else if (jobs["sendEventData"]) {
     // TODO: send request to python
+    const pageState = { ...componentStoreApi.getComponentProps(id) };
+    delete pageState["styles"];
+    const pageRoute = liveApi.getActivePageRoute();
+    const alias = liveApi.getComponentAlias(id);
+    sendEventDataFn(alias, pageState, pageRoute, callbackName, value);
   } else if (jobs["navigate"]) {
     // TODO: check headers for navigation
   }
@@ -76,6 +87,7 @@ export function callbackFactory(props: { id: string }) {
       if (Array.isArray(callbacks[callbackName])) {
         callbackObject[callbackName] = (value: any) => {
           callCallbacks(props.id, callbacks[callbackName], value);
+          callHandlers(props.id, callbackName, value);
         };
       }
     });

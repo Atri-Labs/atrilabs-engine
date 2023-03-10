@@ -1,12 +1,14 @@
-import { AnyEvent, createForest } from "@atrilabs/forest";
+import { AnyEvent, createForest, Forest } from "@atrilabs/forest";
 import { io, Socket } from "socket.io-client";
 import {
   LiveApiServerToClientEvents,
   LiveapiClientToServerEvents,
 } from "../types";
 import { componentStoreApi } from "./componentStoreApi";
-import { componentTreeDef, forestDef } from "./forestDef";
+import { callbackTreeDef, componentTreeDef, forestDef } from "./forestDef";
 import { createComponentFromNode } from "../utils/createComponentFromNode";
+
+let activeForest: Forest | null = null;
 
 // convert events to component
 function eventsToComponent(events: AnyEvent[]) {
@@ -16,6 +18,7 @@ function eventsToComponent(events: AnyEvent[]) {
     events,
     meta: { agent: "server-sent" },
   });
+  activeForest = forest;
   const nodes = forest.tree(componentTreeDef.id)!.nodes!;
   const nodeIds = Object.keys(nodes);
   nodeIds.map((nodeId) => {
@@ -120,7 +123,7 @@ function updateProps(id: string, selector: string[], value: any) {
 const socket: Socket<LiveApiServerToClientEvents, LiveapiClientToServerEvents> =
   io({ path: "/_atri/socket.io", autoConnect: false });
 socket.on("connect", () => {
-  socket.emit("sendEvents", window.location.pathname, (incomingEvents) => {
+  socket.emit("sendEvents", getActivePageRoute(), (incomingEvents) => {
     eventsToComponent(incomingEvents);
     const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
     canvasZoneIds.forEach((canvasZoneId) => {
@@ -136,14 +139,36 @@ if (
 }
 
 socket.on("newEvents", (urlPath, _incomingEvents) => {
-  if (urlPath === window.location.pathname) {
+  if (urlPath === getActivePageRoute()) {
     // Currently, we reload the page whenever there is a change in the editor
     window.location.href = window.location.href;
   }
 });
 
+function getActivePageRoute() {
+  // TODO: Get route from atri router instead
+  return window.location.pathname;
+}
+
+function getComponentAlias(compId: string) {
+  return activeForest?.tree(componentTreeDef.id)?.nodes[compId].state.alias;
+}
+
+function getComponentCallbackHandlers(compId: string) {
+  const callbackTree = activeForest?.tree(callbackTreeDef.id);
+  if (callbackTree) {
+    const callbackNodeId = callbackTree.links[compId].childId;
+    if (callbackNodeId) {
+      return callbackTree.nodes[callbackNodeId].state.property?.callbacks;
+    }
+  }
+}
+
 export const liveApi = {
   subscribeCanvasZone,
   updateProps,
   subscribeComponentUpdates,
+  getActivePageRoute,
+  getComponentAlias,
+  getComponentCallbackHandlers,
 };
