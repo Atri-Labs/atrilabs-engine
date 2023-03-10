@@ -5,22 +5,22 @@ import { LiveParentComponentRenderer } from "../LiveParentComponentRenderer/Live
 import { LiveNormalComponentRenderer } from "../LiveNormalComponentRenderer/LiveNormalComponentRenderer";
 import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
+import { useGetComponentProps } from "../live-component/hooks/useGetComponentProps";
+import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
 
 export function LiveRepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  const {
-    comp: Comp,
-    props: compProps,
-    ref,
-    callbacks,
-  } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp, ref } = componentStoreApi.getComponent(props.id)!;
 
   const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
   const [num, setNum] = useState<number>(end - start);
   const children = componentStoreApi.getComponentChildrenId(props.id);
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
+  const compProps = useGetComponentProps({ id: props.id });
+  const callbacks = useGetCallbacks({ id: props.id });
+
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
     childrenNodes = Array.from(Array(num).keys()).map(() => {

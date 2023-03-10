@@ -107,6 +107,32 @@ function createComponent(
   }
 }
 
+function processManifestForLiveView(manifest: ReactComponentManifestSchema) {
+  const acceptsChild = manifest.dev.acceptsChild;
+  const isRepeating = manifest.dev.isRepeating ?? false;
+  const callbacks = manifest.dev.attachCallbacks;
+  const decorators: React.FC<any>[] = [];
+  return { acceptsChild, callbacks, decorators, isRepeating };
+}
+
+function createLiveComponent(
+  manifestData: { manifestSchemaId: string; pkg: string; key: string },
+  componentData: {
+    id: string;
+    props: any;
+    parent: { id: string; index: number; canvasZoneId: string };
+  }
+) {
+  createComponent(manifestData, componentData);
+  const fullManifest = searchComponentFromManifestRegistry(manifestData);
+  if (fullManifest) {
+    const { component } = fullManifest;
+    const { callbacks } = processManifestForLiveView(fullManifest.manifest);
+    componentStore[componentData.id].comp = component!;
+    componentStore[componentData.id].callbacks = callbacks;
+  }
+}
+
 function getCanvasZoneChildrenId(canvasZoneId: string) {
   return canvasZoneReverseMap[canvasZoneId] || [];
 }
@@ -219,4 +245,6 @@ export const componentStoreApi = {
   deleteComponent,
   rewireComponent,
   getActiveCanvasZoneIds,
+  // api for live view
+  createLiveComponent,
 };
