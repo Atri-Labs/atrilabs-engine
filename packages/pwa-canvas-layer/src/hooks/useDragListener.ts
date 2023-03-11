@@ -54,12 +54,13 @@ export function useDragListener() {
     const unsubComponentCreated = subscribeEditorMachine("DRAG_SUCCESS", () => {
       handleDragEnd();
     });
-    subscribeEditorMachine("OUTSIDE_CANVAS", () => {
+    const unsubOutsideCanvas = subscribeEditorMachine("INSIDE_CANVAS", () => {
       handleDragEnd();
     });
     return () => {
       unsubDragFailed();
       unsubComponentCreated();
+      unsubOutsideCanvas();
     };
   }, []);
 
