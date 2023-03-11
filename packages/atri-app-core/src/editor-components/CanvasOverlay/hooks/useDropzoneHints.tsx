@@ -115,20 +115,16 @@ export function useDropzoneHints() {
     }
   }, []);
 
-  //   useEffect(() => {
-  //     return subscribeCanvasMachine("moveWhileDrag", (context, event) => {
-  //       topLineHoverId.current = getId();
-  //       rightLineHoverId.current = getId();
-  //       bottomLineHoverId.current = getId();
-  //       leftLineHoverId.current = getId();
-  //       //   compId.current = event.;
-  //       renderFn();
-  //     });
-  //   }, []);
-
   useEffect(() => {
-    return subscribeCanvasMachine("moveWhileDrag", (context) => {
-      console.log("wiring working properly", context.probableParent);
+    return subscribeCanvasMachine("moveWhileDrag", (context, event) => {
+      if (context.probableParent !== null) {
+        topLineHoverId.current = getId();
+        rightLineHoverId.current = getId();
+        bottomLineHoverId.current = getId();
+        leftLineHoverId.current = getId();
+        compId.current = context.probableParent;
+        renderFn();
+      }
     });
   }, []);
 }
