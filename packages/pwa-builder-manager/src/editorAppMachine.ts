@@ -21,6 +21,7 @@ const REDROP_SUCCESSFUL = "REDROP_SUCCESSFUL" as const;
 const REDROP_FAILED = "REDROP_FAILED" as const;
 const SELECT = "SELECT" as const;
 const SELECT_END = "SELECT_END" as const;
+const DROPZONE_CREATION_IN_PROGRESS = "DROPZONE_CREATION_IN_PROGRESS" as const;
 
 type APP_INFO_FETCHED_EVENT = {
   type: typeof APP_INFO_FETCHED;
@@ -97,6 +98,10 @@ type SELECT_END_EVENT = {
   type: typeof SELECT_END;
   id: string;
 };
+type DROPZONE_CREATION_IN_PROGRESS_EVENT = {
+  type: typeof DROPZONE_CREATION_IN_PROGRESS;
+  id: string;
+};
 
 type EDITOR_APP_EVENTS =
   | APP_INFO_FETCHED_EVENT
@@ -116,7 +121,8 @@ type EDITOR_APP_EVENTS =
   | REDROP_SUCCESSFUL_EVENT
   | REDROP_FAILED_EVENT
   | SELECT_EVENT
-  | SELECT_END_EVENT;
+  | SELECT_END_EVENT
+  | DROPZONE_CREATION_IN_PROGRESS_EVENT;
 
 // states
 const booting = "booting" as const; // initial data fetching is done
@@ -275,7 +281,8 @@ export function createEditorAppMachine(id: string) {
     | typeof INSIDE_CANVAS
     | typeof OUTSIDE_CANVAS
     | typeof SELECT
-    | typeof SELECT_END;
+    | typeof SELECT_END
+    | typeof DROPZONE_CREATION_IN_PROGRESS;
 
   const subscribers: {
     [key in SUBSCRIPTION_STATES]: ((
@@ -298,6 +305,7 @@ export function createEditorAppMachine(id: string) {
     [REDROP_FAILED]: [],
     [SELECT]: [],
     [SELECT_END]: [],
+    [DROPZONE_CREATION_IN_PROGRESS]: [],
   };
 
   function subscribeEditorMachine(
@@ -368,6 +376,13 @@ export function createEditorAppMachine(id: string) {
 
   function emitSelectEnd(context: EDITOR_APP_CONTEXT, event: SELECT_EVENT) {
     callSubscribers(SELECT_END, context, event);
+  }
+
+  function emitDropzoneCreationInProgress(
+    context: EDITOR_APP_CONTEXT,
+    event: DROPZONE_CREATION_IN_PROGRESS_EVENT
+  ) {
+    callSubscribers(DROPZONE_CREATION_IN_PROGRESS, context, event);
   }
 
   const editorAppMachine = createMachine<EDITOR_APP_CONTEXT, EDITOR_APP_EVENTS>(
@@ -501,6 +516,9 @@ export function createEditorAppMachine(id: string) {
             },
             [SELECT_END]: {
               actions: ["emitSelectEnd"],
+            },
+            [DROPZONE_CREATION_IN_PROGRESS]: {
+              actions: ["emitDropzoneCreationInProgress"],
             },
           },
           entry: (context, event) => {

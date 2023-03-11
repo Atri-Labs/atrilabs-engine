@@ -88,6 +88,12 @@ window.addEventListener("message", (ev) => {
         forestPkgId,
       });
     }
+    if (ev.data?.type === "moveWhileDrag" && ev.source !== null && ev.data.id) {
+      editorAppMachineInterpreter.send({
+        type: "DROPZONE_CREATION_IN_PROGRESS",
+        id: ev.data.id,
+      });
+    }
   }
 });
 

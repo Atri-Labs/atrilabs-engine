@@ -56,8 +56,20 @@ subscribeCanvasMachine("INSIDE_CANVAS", (_context, event) => {
     "*"
   );
 });
-subscribeCanvasMachine("moveWhileDrag", () => {
-  // TODO: detect catcher & call canvas overlay api
+subscribeCanvasMachine("moveWhileDrag", (context) => {
+  const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
+    "[data-atri-canvas-id]"
+  );
+  const parentEl = (context.mousePosition!.target as HTMLElement).closest(
+    "[data-atri-parent]"
+  );
+  if (canvasZone) {
+    let id = canvasZone.getAttribute("data-atri-canvas-id")!;
+    if (parentEl) {
+      id = parentEl.getAttribute("data-atri-comp-id")!;
+    }
+    window.parent.postMessage({ type: "moveWhileDrag", id }, "*");
+  }
 });
 subscribeCanvasMachine("upWhileDrag", (context) => {
   const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
