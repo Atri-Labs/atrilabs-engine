@@ -194,6 +194,24 @@ function setMousePosition(
   context.mousePosition = event.event;
 }
 
+function setProbableParent(
+  context: CanvasMachineContext,
+  event: MOUSE_MOVE_EVENT
+) {
+  const { target } = event.event;
+  if (target !== null && "closest" in target) {
+    const canvasZone = (target as HTMLElement).closest("[data-atri-canvas-id]");
+    const parentEl = (target as HTMLElement).closest("[data-atri-parent]");
+    if (canvasZone) {
+      let id = canvasZone.getAttribute("data-atri-canvas-id")!;
+      if (parentEl) {
+        id = parentEl.getAttribute("data-atri-comp-id")!;
+      }
+      if (id !== context.probableParent) context.probableParent = id;
+    }
+  }
+}
+
 function setHoverComponent(
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -271,6 +289,10 @@ function setEverythingToNull(context: CanvasMachineContext) {
   context.repositionComponent = null;
   context.mousePosition = null;
   context.lastDropped = null;
+}
+
+function setProbableParentToNull(context: CanvasMachineContext) {
+  context.probableParent = null;
 }
 
 // conds
@@ -808,15 +830,23 @@ export function createCanvasMachine(id: string) {
             [drag_in_progress_active]: {
               on: {
                 [MOUSE_MOVE]: {
-                  actions: ["setMousePosition", "emitMoveWhileDrag"],
+                  actions: [
+                    "setMousePosition",
+                    "emitMoveWhileDrag",
+                    "setProbableParent",
+                  ],
                 },
                 [MOUSE_UP]: {
                   target: `#${id}.${ready}`,
-                  actions: ["setMousePosition", "emitUpWhileDrag"],
+                  actions: [
+                    "setMousePosition",
+                    "emitUpWhileDrag",
+                    "setProbableParentToNull",
+                  ],
                 },
                 [OUTSIDE_CANVAS]: {
                   target: drag_in_progress_idle,
-                  actions: ["emitOutsideCanvas"],
+                  actions: ["emitOutsideCanvas", "setProbableParentToNull"],
                 },
               },
             },
@@ -829,6 +859,8 @@ export function createCanvasMachine(id: string) {
       actions: {
         setDragData,
         setMousePosition,
+        setProbableParent,
+        setProbableParentToNull,
         emitUpWhileDrag: callSubscribersFromAction("upWhileDrag"),
         emitMoveWhileDrag: callSubscribersFromAction("moveWhileDrag"),
         emitOutsideCanvas: callSubscribersFromAction("OUTSIDE_CANVAS"),
