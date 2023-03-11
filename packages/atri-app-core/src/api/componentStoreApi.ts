@@ -231,6 +231,10 @@ function getActiveCanvasZoneIds() {
   return Object.keys(canvasZoneReverseMap);
 }
 
+function getAllComponentIds() {
+  return Object.keys(componentStore);
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -247,4 +251,5 @@ export const componentStoreApi = {
   getActiveCanvasZoneIds,
   // api for live view
   createLiveComponent,
+  getAllComponentIds,
 };

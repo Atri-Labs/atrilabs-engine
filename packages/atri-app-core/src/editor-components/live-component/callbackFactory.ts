@@ -68,8 +68,7 @@ function callHandlers(id: string, callbackName: string, value: any) {
     // TODO: send request with form data
   } else if (jobs["sendEventData"]) {
     // TODO: send request to python
-    const pageState = { ...componentStoreApi.getComponentProps(id) };
-    delete pageState["styles"];
+    const pageState = liveApi.getPageState();
     const pageRoute = liveApi.getActivePageRoute();
     const alias = liveApi.getComponentAlias(id);
     sendEventDataFn(alias, pageState, pageRoute, callbackName, value);

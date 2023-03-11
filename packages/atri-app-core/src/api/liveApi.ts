@@ -150,7 +150,7 @@ function getActivePageRoute() {
   return window.location.pathname;
 }
 
-function getComponentAlias(compId: string) {
+function getComponentAlias(compId: string): string {
   return activeForest?.tree(componentTreeDef.id)?.nodes[compId].state.alias;
 }
 
@@ -164,6 +164,61 @@ function getComponentCallbackHandlers(compId: string) {
   }
 }
 
+/**
+ * state of the page that should be sent to the backend
+ */
+function getPageState() {
+  const compIds = componentStoreApi.getAllComponentIds();
+  const pageState = compIds.reduce((prev, curr) => {
+    const alias = getComponentAlias(curr);
+    prev[alias] = componentStoreApi.getComponentProps(curr);
+    delete prev[alias]["styles"];
+    return prev;
+  }, {} as { [alias: string]: any });
+  return pageState;
+}
+
+function getComponentIdFromAlias(alias: string) {
+  const nodes = activeForest?.tree(componentTreeDef.id)!.nodes;
+  if (nodes) {
+    const nodeIds = Object.keys(nodes);
+    return nodeIds.find(
+      (nodeId) => nodes[nodeId].state.alias === alias && alias !== undefined
+    );
+  }
+}
+
+// unsafe merge state
+// and mew properties will added or existing properties will be changed
+// but the type of value of the property must not change
+function mergeState(baseState: any, newState: any) {
+  if (
+    typeof newState === "object" &&
+    !Array.isArray(newState) &&
+    newState !== null
+  ) {
+    const keys = Object.keys(newState);
+    keys.forEach((key) => {
+      // create a new key in base if not exists
+      if (!(key in baseState)) {
+        baseState[key] = {};
+      }
+      if (typeof newState[key] === "object" && !Array.isArray(newState[key]))
+        mergeState(baseState[key], newState[key]);
+      else baseState[key] = newState[key];
+    });
+  }
+}
+
+function mergeProps(id: string, propsDelta: any) {
+  const props = JSON.parse(
+    JSON.stringify(componentStoreApi.getComponentProps(id))
+  );
+  mergeState(props, propsDelta);
+  componentStoreApi.updateProps(id, props);
+  callComponentUpdateSubscribers(id);
+}
+
 export const liveApi = {
   subscribeCanvasZone,
   updateProps,
@@ -171,4 +226,7 @@ export const liveApi = {
   getActivePageRoute,
   getComponentAlias,
   getComponentCallbackHandlers,
+  getPageState,
+  getComponentIdFromAlias,
+  mergeProps,
 };

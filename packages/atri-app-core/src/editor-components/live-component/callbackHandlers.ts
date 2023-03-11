@@ -1,3 +1,5 @@
+import { liveApi } from "../../api";
+
 const API_ENDPOINT = process.env["ATRI_APP_API_ENDPOINT"];
 
 function handleRedirection(res: Response) {
@@ -5,7 +7,11 @@ function handleRedirection(res: Response) {
 }
 
 function updatePropsFromDelta(delta: { [alias: string]: any }) {
-  console.log("Received delta", delta);
+  const aliases = Object.keys(delta);
+  aliases.forEach((alias) => {
+    const compId = liveApi.getComponentIdFromAlias(alias);
+    if (compId) liveApi.mergeProps(compId, delta[alias]);
+  });
 }
 
 export function sendEventDataFn(
@@ -36,8 +42,8 @@ export function sendEventDataFn(
     .then((res) => handleRedirection(res))
     .then((res) => res.json())
     .then((res) => {
-      if (res && res["pageState"]) {
-        updatePropsFromDelta(res["pageState"]);
+      if (res) {
+        updatePropsFromDelta(res);
       }
     });
 }
