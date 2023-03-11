@@ -174,6 +174,7 @@ type CanvasMachineContext = {
   } | null;
   repositionComponent: string | null;
   lastRewiredComponent: string | null;
+  probableParent: string | null;
 };
 
 // actions
@@ -508,6 +509,7 @@ export function createCanvasMachine(id: string) {
         repositionTarget: null,
         repositionComponent: null,
         lastRewiredComponent: null,
+        probableParent: null,
       },
       states: {
         [initial]: {
