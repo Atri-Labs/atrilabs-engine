@@ -124,7 +124,24 @@ export function useDropzoneHints() {
         leftLineHoverId.current = getId();
         compId.current = context.probableParent;
         renderFn();
+        console.log("moveWhileDrag", compId.current);
       }
+    });
+  }, []);
+
+  useEffect(() => {
+    return subscribeCanvasMachine("upWhileDrag", (context, event) => {
+      console.log("upWhileDrag clear", compId.current);
+      clearOverlay();
+      compId.current = null;
+    });
+  }, []);
+
+  useEffect(() => {
+    return subscribeCanvasMachine("OUTSIDE_CANVAS", (context, event) => {
+      console.log("OUTSIDE_CANVAS clear");
+      clearOverlay();
+      compId.current = null;
     });
   }, []);
 }

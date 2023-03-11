@@ -200,15 +200,13 @@ function setProbableParent(
 ) {
   const { target } = event.event;
   if (target !== null && "closest" in target) {
-    const canvasZone = (target as HTMLElement).closest("[data-atri-canvas-id]");
     const parentEl = (target as HTMLElement).closest("[data-atri-parent]");
-    if (canvasZone) {
-      let id = canvasZone.getAttribute("data-atri-canvas-id")!;
-      if (parentEl) {
-        id = parentEl.getAttribute("data-atri-comp-id")!;
-      }
-      if (id !== context.probableParent) context.probableParent = id;
+    let parentElId: string | null = null;
+    if (parentEl) {
+      parentElId = parentEl.getAttribute("data-atri-comp-id")!;
     }
+    if (parentElId !== null && parentElId !== context.probableParent)
+      context.probableParent = parentElId;
   }
 }
 
