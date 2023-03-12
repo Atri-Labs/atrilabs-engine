@@ -83,7 +83,7 @@ export const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (
       return { top, left, width, height };
     });
   }, [box, canvasZoneCoords, props.scale]);
-  console.log(positionAndDims);
+
   return (
     <React.Fragment>
       {positionAndDims.map((dims, index) => {
