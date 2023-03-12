@@ -30,7 +30,6 @@ type ClosedNavigatorNodeEvent = {
   type: "closedNavigatorNodeEvent";
   flattenedNodes: NavigatorNode[];
   containerRef: React.MutableRefObject<HTMLDivElement | null>;
-  draggedNodeIndexInFlattenedArray: number;
 };
 type DragDropMachineEvent =
   | MouseDownEvent
@@ -270,12 +269,16 @@ const onMouseUpAction = assign<DragDropMachineContext, MouseUpEvent>(
   }
 );
 
-const onClosedNodeAction = assign<
-  DragDropMachineContext,
-  ClosedNavigatorNodeEvent
->((context, event) => {
-  return { ...context, ...event };
-});
+const onClosedNodeAction = (
+  context: DragDropMachineContext,
+  event: ClosedNavigatorNodeEvent
+) => {
+  // calling toggleNode, changes the draggedNode instance
+  // hence, we need to set the context.draggedNode to the new instance
+  context.containerRef = event.containerRef;
+  context.draggedNode =
+    event.flattenedNodes[context.draggedNodeIndexInFlattenedArray!];
+};
 
 // guards
 const shouldNotBeOpen = (
@@ -417,14 +420,12 @@ export function sendMouseUpEvent() {
 
 export function sendClosedNodeEvent(
   flattenedNodes: NavigatorNode[],
-  draggedNodeIndexInFlattenedArray: number,
   containerRef: React.MutableRefObject<HTMLDivElement | null>
 ) {
   return service.send({
     type: "closedNavigatorNodeEvent",
     flattenedNodes,
     containerRef,
-    draggedNodeIndexInFlattenedArray,
   });
 }
 

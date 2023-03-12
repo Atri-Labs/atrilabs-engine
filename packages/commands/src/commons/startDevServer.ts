@@ -19,6 +19,7 @@ import chalk from "chalk";
 import openBrowser from "react-dev-utils/openBrowser";
 import WebpackDevServer from "webpack-dev-server";
 import Express from "express";
+import { liveApiServer } from "../scripts/dev/live-api-server/liveApiServer";
 
 export default function startDevServer(
   params: ReturnType<typeof extractParams> & {
@@ -59,7 +60,7 @@ export default function startDevServer(
     babel,
   } = params;
 
-  checkBrowsers(paths.appPath, isInteractive())
+  return checkBrowsers(paths.appPath, isInteractive())
     .then(() => {
       return choosePort(host, port);
     })
@@ -150,10 +151,12 @@ export default function startDevServer(
         { ...devWebpackConfig, host, port },
         compiler
       );
+
       devServer.startCallback(() => {
         if (isInteractive()) {
           // clearConsole();
         }
+        if (devServer.server) liveApiServer(devServer.server);
 
         console.log(chalk.cyan("Starting the development server...\n"));
         openBrowser(urls.localUrlForBrowser);
@@ -173,6 +176,8 @@ export default function startDevServer(
           process.exit();
         });
       }
+
+      return devServer;
     })
     .catch((err) => {
       if (err && err.message) {

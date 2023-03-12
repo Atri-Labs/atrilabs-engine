@@ -55,7 +55,8 @@ function postNewEvents(
     name: string;
     events: AnyEvent[];
     meta: EventMetaData;
-  }
+  },
+  callback?: (success: boolean) => void
 ) {
   const forest = BrowserForestManager.getForest(forestPkgId, routeObjectPath);
   if (forest) {
@@ -65,6 +66,7 @@ function postNewEvents(
       if (!success) {
         console.log("Failed to send event to backend");
       }
+      callback?.(success);
     });
   }
 }

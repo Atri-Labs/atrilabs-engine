@@ -81,7 +81,7 @@ function createComponent(
     // update component store
     componentStore[id] = {
       id,
-      ref: React.createRef(),
+      ref: [React.createRef()],
       comp: devComponent ?? component!,
       props,
       parent,
@@ -107,6 +107,32 @@ function createComponent(
   }
 }
 
+function processManifestForLiveView(manifest: ReactComponentManifestSchema) {
+  const acceptsChild = manifest.dev.acceptsChild;
+  const isRepeating = manifest.dev.isRepeating ?? false;
+  const callbacks = manifest.dev.attachCallbacks;
+  const decorators: React.FC<any>[] = [];
+  return { acceptsChild, callbacks, decorators, isRepeating };
+}
+
+function createLiveComponent(
+  manifestData: { manifestSchemaId: string; pkg: string; key: string },
+  componentData: {
+    id: string;
+    props: any;
+    parent: { id: string; index: number; canvasZoneId: string };
+  }
+) {
+  createComponent(manifestData, componentData);
+  const fullManifest = searchComponentFromManifestRegistry(manifestData);
+  if (fullManifest) {
+    const { component } = fullManifest;
+    const { callbacks } = processManifestForLiveView(fullManifest.manifest);
+    componentStore[componentData.id].comp = component!;
+    componentStore[componentData.id].callbacks = callbacks;
+  }
+}
+
 function getCanvasZoneChildrenId(canvasZoneId: string) {
   return canvasZoneReverseMap[canvasZoneId] || [];
 }
@@ -127,8 +153,33 @@ function getCanvasZoneComponent(canvasZoneId: string) {
   return document.querySelector(`[data-atri-canvas-id='${canvasZoneId}']`);
 }
 
-function getComponentRef(compId: string) {
-  return componentStore[compId].ref;
+function getComponentRef(
+  compId: string,
+  repeatingIndices?: number[],
+  repeatingLengths?: number[]
+) {
+  if (repeatingIndices === undefined || repeatingIndices === null) {
+    return componentStore[compId].ref[0];
+  }
+  if (repeatingIndices && repeatingLengths) {
+    let refIndex = 0;
+    for (let i = 0; i < repeatingIndices.length; i++) {
+      if (i === repeatingIndices.length - 1) {
+        refIndex = refIndex + repeatingIndices[i];
+      } else {
+        refIndex = refIndex + repeatingIndices[i] * repeatingLengths[i];
+      }
+    }
+    if (componentStore[compId].ref[refIndex] === undefined) {
+      let curr = componentStore[compId].ref.length;
+      while (curr <= refIndex) {
+        componentStore[compId].ref[curr] = React.createRef();
+        curr++;
+      }
+    }
+    return componentStore[compId].ref[refIndex];
+  }
+  throw Error("repeatingLengths must be defined");
 }
 
 function getComponentProps(compId: string) {
@@ -197,6 +248,18 @@ function rewireComponent(
   });
 }
 
+/**
+ *
+ * @returns {string[]} canvas zone id with atlest one component
+ */
+function getActiveCanvasZoneIds() {
+  return Object.keys(canvasZoneReverseMap);
+}
+
+function getAllComponentIds() {
+  return Object.keys(componentStore);
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -210,4 +273,8 @@ export const componentStoreApi = {
   updateProps,
   deleteComponent,
   rewireComponent,
+  getActiveCanvasZoneIds,
+  // api for live view
+  createLiveComponent,
+  getAllComponentIds,
 };

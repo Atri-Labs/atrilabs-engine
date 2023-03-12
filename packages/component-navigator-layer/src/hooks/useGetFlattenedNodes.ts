@@ -123,7 +123,6 @@ export function useGetFlattenedNodes(props: {
       parentNavNode.children.forEach((child, index) => {
         child.index = index;
       });
-
       // update flattendNodes
       setFlattenedNodes((old) => {
         const newFlatten = [...old];

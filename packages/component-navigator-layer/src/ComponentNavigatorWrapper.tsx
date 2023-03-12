@@ -2,12 +2,15 @@ import { ComponentNavigator } from "./components/ComponentNavigator";
 import { useGetFlattenedNodes } from "./hooks/useGetFlattenedNodes";
 import { useRef, useCallback, MouseEvent, useEffect } from "react";
 import {
+  getMachineState,
+  sendClosedNodeEvent,
   sendMouseDownEvent,
   sendMouseMoveEvent,
   sendMouseUpEvent,
   subscribeDragEnd,
   subscribeReposition,
   subscribeWait,
+  waitingForNodesToClose,
 } from "./dragDropMachine";
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
 import { canvasApi, componentApi } from "@atrilabs/pwa-builder-manager";
@@ -164,6 +167,16 @@ export function ComponentNavigatorWrapper(props: {
     });
     return unsub;
   }, [patchCb]);
+
+  const machineState = getMachineState();
+  if (machineState.value === waitingForNodesToClose) {
+    const { draggedNode } = machineState.context;
+    if (draggedNode?.open) {
+      toggleNode(draggedNode);
+    } else {
+      sendClosedNodeEvent(flattenedNodes, componentNavigatorRef);
+    }
+  }
 
   return (
     <ComponentNavigator

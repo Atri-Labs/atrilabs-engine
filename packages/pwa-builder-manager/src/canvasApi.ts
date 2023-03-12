@@ -174,20 +174,28 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
       });
       const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
       const forestId = BrowserForestManager.currentForest.forestId;
-      api.postNewEvents(forestPkgId, forestId, {
-        events,
-        name: "NEW_DROP",
-        meta: { agent: "browser" },
-      });
-      aliasApi.assingAliasFromPrefix({
-        prefix: key,
-        id,
-        postData: {
-          name: "NEW_DROP_ALIAS",
+      api.postNewEvents(
+        forestPkgId,
+        forestId,
+        {
+          events,
+          name: "NEW_DROP",
           meta: { agent: "browser" },
-          events: [],
         },
-      });
+        (success) => {
+          if (success) {
+            aliasApi.assingAliasFromPrefix({
+              prefix: key,
+              id,
+              postData: {
+                name: "NEW_DROP_ALIAS",
+                meta: { agent: "browser" },
+                events: [],
+              },
+            });
+          }
+        }
+      );
     }
   }
 });
