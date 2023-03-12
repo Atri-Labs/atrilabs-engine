@@ -5,8 +5,9 @@ import { HintOverlay, HintOverlayDimension } from "./types";
 
 function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension {
   const canvasComponent = componentStoreApi.getComponent(props.compId);
-  if (canvasComponent?.ref.current) {
-    const comp = canvasComponent.ref.current!;
+  const canvasComponentRef = componentStoreApi.getComponentRef(props.compId);
+  if (canvasComponent && canvasComponentRef.current) {
+    const comp = canvasComponentRef.current!;
     const canvasZoneId = canvasComponent.parent.canvasZoneId;
     const canvasZone = componentStoreApi.getCanvasZoneComponent(canvasZoneId);
     if (!canvasZone) {

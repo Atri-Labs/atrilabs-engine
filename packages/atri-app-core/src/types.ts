@@ -10,7 +10,7 @@ export type DragComp = { comp: "CommonIcon"; props: any };
 
 export type CanvasComponent = {
   id: string;
-  ref: React.RefObject<HTMLElement>;
+  ref: React.RefObject<HTMLElement>[];
   comp: React.FC<any>;
   props: any;
   parent: { id: string; index: number; canvasZoneId: string };
@@ -111,3 +111,5 @@ export interface LiveapiClientToServerEvents {
 export interface LiveApiInterServerEvents {}
 
 export interface LiveApiSocketData {}
+
+export type RepeatingContextData = { indices: number[]; lengths: number[] };
