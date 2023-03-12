@@ -57,7 +57,7 @@ function createPackageJSON(
       scripts: {
         dev: "dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils' -i '@atrilabs/utils'",
         editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
-        "gen-py-app": "gen-py-app",
+        "gen-py-app": "gen-py-app -i '@atrilabs/utils' -a '@atrilabs/utils'",
         "gen-py-classes": "gen-py-classes",
         "dev-py-app": "dev-py-app",
       },
