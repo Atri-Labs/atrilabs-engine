@@ -5,8 +5,9 @@ import { HintOverlay, HintOverlayDimension } from "./types";
 
 function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension {
   const canvasComponent = componentStoreApi.getComponent(props.compId);
-  if (canvasComponent?.ref.current) {
-    const comp = canvasComponent.ref.current!;
+  const canvasComponentRef = componentStoreApi.getComponentRef(props.compId);
+  if (canvasComponent && canvasComponentRef.current) {
+    const comp = canvasComponentRef.current!;
     const canvasZoneId = canvasComponent.parent.canvasZoneId;
     const canvasZone = componentStoreApi.getCanvasZoneComponent(canvasZoneId);
     if (!canvasZone) {
@@ -51,45 +52,58 @@ function calculateBoxDimensions(props: HintOverlay): HintOverlayDimension {
 export const HintOverlayBox: React.FC<HintOverlay & { scale: number }> = (
   props
 ) => {
-  const { box, canvasZoneCoords, compCoords } = useMemo(() => {
-    return calculateBoxDimensions(props);
+  const { box, canvasZoneCoords, compCoordsArray } = useMemo(() => {
+    const compCoordsArray = componentStoreApi
+      .getComponent(props.compId)!
+      .ref.filter(
+        (currRef) => currRef.current !== null && currRef.current !== undefined
+      )
+      .map((currRef) => {
+        return getCSSBoxCoords(currRef.current!);
+      });
+    return { ...calculateBoxDimensions(props), compCoordsArray };
   }, [props]);
 
-  const { top, left, width, height } = useMemo(() => {
-    const canvasZonePosition = {
-      top: canvasZoneCoords.top,
-      left: canvasZoneCoords.left,
-    };
-    const compPosition = { top: compCoords.top, left: compCoords.left };
-    const top =
-      (compPosition.top - canvasZonePosition.top + box.position.top) /
-      props.scale;
-    const left =
-      (compPosition.left - canvasZonePosition.left + box.position.left) /
-      props.scale;
-    const width = box.dimension.width / props.scale;
-    const height = box.dimension.height / props.scale;
+  const positionAndDims = useMemo(() => {
+    return compCoordsArray.map((compCoords) => {
+      const canvasZonePosition = {
+        top: canvasZoneCoords.top,
+        left: canvasZoneCoords.left,
+      };
+      const compPosition = { top: compCoords.top, left: compCoords.left };
+      const top =
+        (compPosition.top - canvasZonePosition.top + box.position.top) /
+        props.scale;
+      const left =
+        (compPosition.left - canvasZonePosition.left + box.position.left) /
+        props.scale;
+      const width = box.dimension.width / props.scale;
+      const height = box.dimension.height / props.scale;
 
-    return { top, left, width, height };
-  }, [box, canvasZoneCoords, compCoords, props.scale]);
+      return { top, left, width, height };
+    });
+  }, [box, canvasZoneCoords, props.scale]);
 
   return (
     <React.Fragment>
-      {box ? (
-        <div
-          style={{
-            position: "absolute",
-            top,
-            left,
-            width,
-            height,
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-        >
-          {props.comp}
-        </div>
-      ) : null}
+      {positionAndDims.map((dims, index) => {
+        return (
+          <div
+            style={{
+              position: "absolute",
+              top: dims.top,
+              left: dims.left,
+              width: dims.width,
+              height: dims.height,
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+            key={index}
+          >
+            {props.comp}
+          </div>
+        );
+      })}
     </React.Fragment>
   );
 };

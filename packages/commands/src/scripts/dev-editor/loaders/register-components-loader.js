@@ -4,7 +4,7 @@ function registerComponentLoader() {
    */
   const irs = JSON.parse(this.getOptions().irs);
   return `
-  import { manifestRegistryController } from "@atrilabs/core";
+  import { manifestRegistryController } from "@atrilabs/manifest-registry";
   ${irs
     .map((ir, index) => {
       return `

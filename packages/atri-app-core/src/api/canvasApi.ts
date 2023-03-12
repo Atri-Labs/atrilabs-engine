@@ -44,7 +44,7 @@ subscribeCanvasMachine("INSIDE_CANVAS", (_context, event) => {
     "*"
   );
 });
-subscribeCanvasMachine("INSIDE_CANVAS", (_context, event) => {
+subscribeCanvasMachine("OUTSIDE_CANVAS", (_context, event) => {
   window.parent.postMessage(
     {
       type: "OUTSIDE_CANVAS",
@@ -361,10 +361,12 @@ if (typeof window !== "undefined") {
   window.document.addEventListener(
     "mouseleave",
     (ev) => {
-      canvasMachineInterpreter.send({
-        type: "OUTSIDE_CANVAS",
-        event: { pageX: ev.pageX, pageY: ev.pageY },
-      });
+      if (ev.target === window.document) {
+        canvasMachineInterpreter.send({
+          type: "OUTSIDE_CANVAS",
+          event: { pageX: ev.pageX, pageY: ev.pageY },
+        });
+      }
     },
     true
   );
