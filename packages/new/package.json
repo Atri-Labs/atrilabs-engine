@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@atrilabs/commands": "^1.0.0-alpha.6",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.6",
     "pkg-up": "^3.1.0",
     "prompts": "^2.4.2"
   }
