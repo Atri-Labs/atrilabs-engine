@@ -25,6 +25,8 @@ import {
 } from "./handle-resources";
 import pkgUp from "pkg-up";
 import path from "path";
+import yargs from "yargs";
+import { startDevServer } from "./dev-register-components/startDevServer";
 
 const app = express();
 const server = http.createServer(app);
@@ -120,17 +122,36 @@ io.on("connection", (socket) => {
   });
 });
 
+const { nomanifests } = yargs.boolean("nomanifests").argv as {
+  nomanifests: boolean | undefined;
+};
+
 const pwaBuilderPkgJSON = pkgUp.sync({
   // @ts-ignore
   cwd: path.dirname(__non_webpack_require__.resolve("@atrilabs/pwa-builder")),
 });
 if (typeof pwaBuilderPkgJSON === "string") {
   const pwaBuilderDir = path.dirname(pwaBuilderPkgJSON);
-  app.use(express.static(path.resolve(pwaBuilderDir, "dist")));
-  app.use(express.static(path.resolve(pwaBuilderDir, "public")));
-  app.get("/", (req, res) => {
-    res.send(path.resolve(pwaBuilderDir, "dist", "index.html"));
-  });
+  const indexHtml = path.resolve(pwaBuilderDir, "dist", "index.html");
+  if (nomanifests) {
+    app.use(express.static(path.resolve(pwaBuilderDir, "dist")));
+    app.use(express.static(path.resolve(pwaBuilderDir, "public")));
+    app.get("/", (_req, res) => {
+      res.send(indexHtml);
+    });
+  } else {
+    const compiler = startDevServer({ app, appHtml: indexHtml });
+    app.use(
+      // @ts-ignore
+      __non_webpack_require__("webpack-dev-middleware")(compiler, {
+        /* Options */
+      })
+    );
+    // @ts-ignore
+    app.use(__non_webpack_require__("webpack-hot-middleware")(compiler));
+    app.use(express.static(path.resolve(pwaBuilderDir, "dist")));
+    app.use(express.static(path.resolve(pwaBuilderDir, "public")));
+  }
 } else {
   console.warn("Failed to find @atrilabs/pwa-builder package.");
 }

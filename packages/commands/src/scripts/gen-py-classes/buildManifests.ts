@@ -5,6 +5,7 @@ import {
 } from "@atrilabs/commands-builder";
 import { createManifestsEntry } from "./createManifestsEntry";
 import path from "path";
+import fs from "fs";
 import webpack from "webpack";
 
 export function buildManifests(options: {
@@ -42,6 +43,13 @@ export function buildManifests(options: {
     params.allowlist.push("@atrilabs/manifest-registry");
     params.allowlist.push("@atrilabs/react-component-manifest-schema");
     params.allowlist.push("@atrilabs/forest");
+
+    if (fs.existsSync(path.resolve("manifests"))) {
+      params.additionalInclude = [
+        ...params.additionalInclude,
+        path.resolve("manifests"),
+      ];
+    }
 
     const conifg = createNodeLibConfig({
       ...params,

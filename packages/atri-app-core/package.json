@@ -27,6 +27,7 @@
     "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.5",
     "react-router-dom": "^6.6.2",
     "recursive-readdir": "^2.2.3",
+    "socket.io-client": "^4.5.0",
     "upath": "^2.0.1",
     "xstate": "^4.35.4"
   },

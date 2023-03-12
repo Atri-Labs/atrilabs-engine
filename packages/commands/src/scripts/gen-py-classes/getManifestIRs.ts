@@ -16,8 +16,8 @@ import path from "path";
  */
 export async function getManifestIRs() {
   const manifestDirs: string[] = [];
-  if (fs.existsSync("manifests")) {
-    manifestDirs.push("manifests");
+  if (fs.existsSync(path.resolve("manifests"))) {
+    manifestDirs.push(path.resolve("manifests"));
   }
   // @ts-ignore
   const main = __non_webpack_require__(pkgUp.sync())["main"];

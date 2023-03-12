@@ -860,5 +860,8 @@ export function createCanvasMachine(id: string) {
 export function createCanvasMachineInterpreter(id: string) {
   const { canvasMachine, subscribeCanvasMachine } = createCanvasMachine(id);
   const canvasMachineInterpreter = interpret(canvasMachine);
+  canvasMachineInterpreter.onTransition((state, event) => {
+    // console.log(JSON.stringify(state.value), event.type);
+  });
   return { canvasMachineInterpreter, subscribeCanvasMachine };
 }

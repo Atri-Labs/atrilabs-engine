@@ -8,12 +8,12 @@ import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 import { RepeatingComponentRenderer } from "../RepeatingComponentRenderer/RepeatingComponentRenderer";
 import { usePropsUpdated } from "../hooks/usePropsUpdated";
+import { useGetComponentRef } from "../hooks/useGetComponentRef";
 
 export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
     comp: Comp,
     props: compProps,
-    ref,
     callbacks,
   } = componentStoreApi.getComponent(props.id)!;
   const { children } = useHandleNewChild(props);
@@ -22,6 +22,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
   usePropsUpdated({ id: props.id });
+  const ref = useGetComponentRef({ id: props.id });
   return (
     <Comp {...compProps} ref={ref} {...callbacks}>
       {children.map((childId) => {
