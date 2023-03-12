@@ -81,7 +81,7 @@ function createComponent(
     // update component store
     componentStore[id] = {
       id,
-      ref: React.createRef(),
+      ref: [React.createRef()],
       comp: devComponent ?? component!,
       props,
       parent,
@@ -153,8 +153,33 @@ function getCanvasZoneComponent(canvasZoneId: string) {
   return document.querySelector(`[data-atri-canvas-id='${canvasZoneId}']`);
 }
 
-function getComponentRef(compId: string) {
-  return componentStore[compId].ref;
+function getComponentRef(
+  compId: string,
+  repeatingIndices?: number[],
+  repeatingLengths?: number[]
+) {
+  if (repeatingIndices === undefined || repeatingIndices === null) {
+    return componentStore[compId].ref[0];
+  }
+  if (repeatingIndices && repeatingLengths) {
+    let refIndex = 0;
+    for (let i = 0; i < repeatingIndices.length; i++) {
+      if (i === repeatingIndices.length - 1) {
+        refIndex = refIndex + repeatingIndices[i];
+      } else {
+        refIndex = refIndex + repeatingIndices[i] * repeatingLengths[i];
+      }
+    }
+    if (componentStore[compId].ref[refIndex] === undefined) {
+      let curr = componentStore[compId].ref.length;
+      while (curr <= refIndex) {
+        componentStore[compId].ref[curr] = React.createRef();
+        curr++;
+      }
+    }
+    return componentStore[compId].ref[refIndex];
+  }
+  throw Error("repeatingLengths must be defined");
 }
 
 function getComponentProps(compId: string) {

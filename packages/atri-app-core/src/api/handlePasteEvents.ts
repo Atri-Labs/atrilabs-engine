@@ -83,7 +83,7 @@ export function handlePasteEvents(pasteObject: ClipboardPasteObject) {
 
     // compute child index by creating/mimicing a synthetic loc
     let index = 0;
-    const pasteTargetRef = componentStoreApi.getComponent(pasteTargetComp)?.ref;
+    const pasteTargetRef = componentStoreApi.getComponentRef(pasteTargetComp);
     if (pasteTargetRef && pasteTargetRef.current) {
       const selectedBoxCoords = getCSSBoxCoords(pasteTargetRef.current);
       const bottomWM = selectedBoxCoords.bottomWM;

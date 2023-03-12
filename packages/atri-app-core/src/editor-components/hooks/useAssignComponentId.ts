@@ -1,10 +1,10 @@
 import { DecoratorData } from "../../types";
-import { componentStoreApi } from "../../api/componentStoreApi";
 import { useEffect } from "react";
+import { useGetComponentRef } from "./useGetComponentRef";
 
 export function useAssignComponentId(props: DecoratorData) {
+  const ref = useGetComponentRef(props);
   useEffect(() => {
-    const ref = componentStoreApi.getComponentRef(props.id);
     ref.current?.setAttribute("data-atri-comp-id", props.id);
-  }, [props.id]);
+  }, [props.id, ref]);
 }
