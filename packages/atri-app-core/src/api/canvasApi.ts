@@ -56,12 +56,6 @@ subscribeCanvasMachine("INSIDE_CANVAS", (_context, event) => {
     "*"
   );
 });
-subscribeCanvasMachine("moveWhileDrag", (context) => {
-  window.parent.postMessage(
-    { type: "moveWhileDrag", id: context.probableParent },
-    "*"
-  );
-});
 subscribeCanvasMachine("upWhileDrag", (context) => {
   const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
