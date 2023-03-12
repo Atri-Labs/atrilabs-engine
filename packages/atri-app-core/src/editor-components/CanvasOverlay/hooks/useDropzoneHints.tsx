@@ -117,21 +117,19 @@ export function useDropzoneHints() {
 
   useEffect(() => {
     return subscribeCanvasMachine("moveWhileDrag", (context, event) => {
-      if (context.probableParent !== null) {
+      if (compId.current === null && context.probableParent !== null) {
         topLineHoverId.current = getId();
         rightLineHoverId.current = getId();
         bottomLineHoverId.current = getId();
         leftLineHoverId.current = getId();
         compId.current = context.probableParent;
         renderFn();
-        console.log("moveWhileDrag", compId.current);
       }
     });
   }, []);
 
   useEffect(() => {
     return subscribeCanvasMachine("upWhileDrag", (context, event) => {
-      console.log("upWhileDrag clear", compId.current);
       clearOverlay();
       compId.current = null;
     });
@@ -139,7 +137,6 @@ export function useDropzoneHints() {
 
   useEffect(() => {
     return subscribeCanvasMachine("OUTSIDE_CANVAS", (context, event) => {
-      console.log("OUTSIDE_CANVAS clear");
       clearOverlay();
       compId.current = null;
     });
