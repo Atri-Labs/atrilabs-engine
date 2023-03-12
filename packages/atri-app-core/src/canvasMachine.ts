@@ -28,6 +28,8 @@ const KEY_UP = "KEY_UP" as const;
 const KEY_DOWN = "KEY_DOWN" as const;
 const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
 const PROGRAMTIC_SELECT = "PROGRAMTIC_SELECT" as const;
+const DROP_ZONE_CREATED = "DROP_ZONE_CREATED" as const;
+const DROP_ZONE_DESTROYED = "DROP_ZONE_DESTROYED" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -105,6 +107,13 @@ type PROGRAMTIC_HOVER_EVENT = {
 type PROGRAMTIC_SELECT_EVENT = {
   type: typeof PROGRAMTIC_SELECT;
   id: string;
+};
+type DROP_ZONE_CREATED_EVENT = {
+  type: typeof DROP_ZONE_CREATED;
+  id: string;
+};
+type DROP_ZONE_DESTROYED_EVENT = {
+  type: typeof DROP_ZONE_DESTROYED;
 };
 
 type CanvasMachineEvent =
@@ -205,8 +214,9 @@ function setProbableParent(
     if (parentEl) {
       parentElId = parentEl.getAttribute("data-atri-comp-id")!;
     }
-    if (parentElId !== null && parentElId !== context.probableParent)
+    if (parentElId !== null && parentElId !== context.probableParent) {
       context.probableParent = parentElId;
+    }
   }
 }
 
@@ -448,7 +458,9 @@ type SubscribeStates =
   | typeof KEY_UP
   | typeof KEY_DOWN
   | "hoverWhileSelected"
-  | "hoverWhileSelectedEnd";
+  | "hoverWhileSelectedEnd"
+  | typeof DROP_ZONE_CREATED
+  | typeof DROP_ZONE_DESTROYED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -477,6 +489,8 @@ export function createCanvasMachine(id: string) {
     [KEY_DOWN]: [],
     hoverWhileSelected: [],
     hoverWhileSelectedEnd: [],
+    [DROP_ZONE_CREATED]: [],
+    [DROP_ZONE_DESTROYED]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
