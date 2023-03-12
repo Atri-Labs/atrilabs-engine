@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/commands",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "Commands and related utilities for Atri framework.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -60,10 +60,10 @@
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.5",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.5",
-    "@atrilabs/core": "^1.0.0-alpha.5",
-    "@atrilabs/design-system": "^1.0.0-alpha.5",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.6",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.6",
+    "@atrilabs/core": "^1.0.0-alpha.6",
+    "@atrilabs/design-system": "^1.0.0-alpha.6",
     "@svgr/webpack": "^6.5.1",
     "bfj": "^7.0.2",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
