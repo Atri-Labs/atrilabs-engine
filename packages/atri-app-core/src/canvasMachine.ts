@@ -856,11 +856,16 @@ export function createCanvasMachine(id: string) {
                     "setMousePosition",
                     "emitUpWhileDrag",
                     "setProbableParentToNull",
+                    "emitDropZoneDestroyed",
                   ],
                 },
                 [OUTSIDE_CANVAS]: {
                   target: drag_in_progress_idle,
-                  actions: ["emitOutsideCanvas", "setProbableParentToNull"],
+                  actions: [
+                    "emitOutsideCanvas",
+                    "setProbableParentToNull",
+                    "emitDropZoneDestroyed",
+                  ],
                 },
               },
             },
@@ -897,6 +902,7 @@ export function createCanvasMachine(id: string) {
         emitKeyUp: callSubscribersFromAction(KEY_UP),
         emitKeyDown: callSubscribersFromAction(KEY_DOWN),
         setEverythingToNull,
+        emitDropZoneDestroyed: callSubscribersFromAction(DROP_ZONE_DESTROYED),
       },
     }
   );

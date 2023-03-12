@@ -129,14 +129,7 @@ export function useDropzoneHints() {
   }, []);
 
   useEffect(() => {
-    return subscribeCanvasMachine("upWhileDrag", (context, event) => {
-      clearOverlay();
-      compId.current = null;
-    });
-  }, []);
-
-  useEffect(() => {
-    return subscribeCanvasMachine("OUTSIDE_CANVAS", (context, event) => {
+    return subscribeCanvasMachine("DROP_ZONE_DESTROYED", (context, event) => {
       clearOverlay();
       compId.current = null;
     });
