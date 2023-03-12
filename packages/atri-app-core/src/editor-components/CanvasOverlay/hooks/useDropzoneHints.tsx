@@ -116,7 +116,7 @@ export function useDropzoneHints() {
   }, []);
 
   useEffect(() => {
-    return subscribeCanvasMachine("moveWhileDrag", (context, event) => {
+    return subscribeCanvasMachine("DROP_ZONE_CREATED", (context, event) => {
       if (compId.current === null && context.probableParent !== null) {
         topLineHoverId.current = getId();
         rightLineHoverId.current = getId();

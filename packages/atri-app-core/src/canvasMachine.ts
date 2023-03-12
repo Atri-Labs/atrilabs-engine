@@ -203,23 +203,6 @@ function setMousePosition(
   context.mousePosition = event.event;
 }
 
-function setProbableParent(
-  context: CanvasMachineContext,
-  event: MOUSE_MOVE_EVENT
-) {
-  const { target } = event.event;
-  if (target !== null && "closest" in target) {
-    const parentEl = (target as HTMLElement).closest("[data-atri-parent]");
-    let parentElId: string | null = null;
-    if (parentEl) {
-      parentElId = parentEl.getAttribute("data-atri-comp-id")!;
-    }
-    if (parentElId !== null && parentElId !== context.probableParent) {
-      context.probableParent = parentElId;
-    }
-  }
-}
-
 function setHoverComponent(
   context: CanvasMachineContext,
   event: CanvasMachineEvent
@@ -845,7 +828,26 @@ export function createCanvasMachine(id: string) {
                   actions: [
                     "setMousePosition",
                     "emitMoveWhileDrag",
-                    "setProbableParent",
+                    (context, event) => {
+                      const { target } = event.event;
+                      if (target !== null && "closest" in target) {
+                        const parentEl = (target as HTMLElement).closest(
+                          "[data-atri-parent]"
+                        );
+                        let parentElId: string | null = null;
+                        if (parentEl) {
+                          parentElId =
+                            parentEl.getAttribute("data-atri-comp-id")!;
+                        }
+                        if (
+                          parentElId !== null &&
+                          parentElId !== context.probableParent
+                        ) {
+                          context.probableParent = parentElId;
+                          callSubscribers("DROP_ZONE_CREATED", context, event);
+                        }
+                      }
+                    },
                   ],
                 },
                 [MOUSE_UP]: {
@@ -871,7 +873,6 @@ export function createCanvasMachine(id: string) {
       actions: {
         setDragData,
         setMousePosition,
-        setProbableParent,
         setProbableParentToNull,
         emitUpWhileDrag: callSubscribersFromAction("upWhileDrag"),
         emitMoveWhileDrag: callSubscribersFromAction("moveWhileDrag"),
