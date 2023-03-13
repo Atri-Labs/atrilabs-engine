@@ -23,6 +23,23 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     text: { type: "text" },
+    type: {
+      type: "enum",
+      options: [ "default", "primary","ghost","dashed","link","text"],
+    },
+    block: { type: "boolean" },
+    danger: { type: "boolean" },
+    disabled: { type: "boolean" },
+    icon: {type : "static_asset"},
+    loading:{ type: "boolean" },
+    shape: {
+      type: "enum",
+      options: ["default", "circle", "round"],
+    },
+    size: {
+      type: "enum",
+      options: [ "middle", "large","small"],
+    },
   },
 };
 
@@ -33,24 +50,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          color: "#fff",
-          backgroundColor: "#1890ff",
-          paddingTop: "8px",
-          paddingLeft: "15px",
-          paddingBottom: "8px",
-          paddingRight: "15px",
-          fontSize: "16px",
-          borderRadius: "2px",
-          outline: "none",
-          fontWeight: 400,
-          textAlign: "center",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#1890ff",
-          cursor: "pointer",
-          userSelect: "none",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

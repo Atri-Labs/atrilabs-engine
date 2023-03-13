@@ -1,35 +1,37 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef } from "react";
+import { Radio as AntdRadio } from "antd";
 
 const Radio = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { name: string; label: string; checked: boolean; radius?: string };
+    custom: {
+      name: string;
+      text: string[];
+      checked: boolean;
+      radius?: string;
+      options?: any;
+    };
     onChange: (checked: boolean) => void;
     className?: string;
   }
 >((props, ref) => {
-  const onChangeCb: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      props.onChange(e.target.checked);
-    },
-    [props]
-  );
+  // moved ref to div, as the Antd Radio doesnt provide ref for Radio
   return (
-    <div style={props.styles} ref={ref} className={props.className}>
-      <input
-        type="radio"
-        onChange={onChangeCb}
-        name={props.custom.name}
-        value={props.custom.label}
-        checked={props.custom.checked}
+    <div ref={ref} style={{ display: "inline-block" }}>
+      <AntdRadio
+        name={props.custom.name || "Name"}
         style={{
           ...props.styles,
           height: props.custom.radius,
           width: props.custom.radius,
         }}
-      />
-      {props.custom.label ? <label>{props.custom.label}</label> : null}
+        className={props.className}
+        checked={props.custom.checked}
+        value={props.custom.text}
+      >
+        {props.custom.text ? props.custom.text : "label"}
+      </AntdRadio>
     </div>
   );
 });

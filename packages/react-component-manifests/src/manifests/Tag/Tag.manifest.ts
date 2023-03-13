@@ -8,7 +8,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -23,41 +23,41 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     text: { type: "text" },
-    description: { type: "text" },
-    alertType: {
+    closable: { type: "boolean" },
+    link: { type: "text" },
+    color: { type: "color" },
+    variant: {
       type: "enum",
-      options: ["success", "info", "warning", "error"],
+      options: ["default", "success", "processing", "error", "warning"],
     },
-    showIcon: { type: "boolean" },
     icon: { type: "static_asset" },
-    isClosable: { type: "boolean" },
-    closeText: { type: "text" },
-    closeIcon: {type: "static_asset"},
-    banner: { type: "boolean" },  
-    successIcon: { type: "static_asset" },
-    infoIcon: { type: "static_asset" },
-    warningIcon: { type: "static_asset" },
-    errorIcon: { type: "static_asset" },  
+    iconVariant: {
+      type: "enum",
+      options: [
+        "default",
+        "success",
+        "waiting",
+        "error",
+        "warning",
+        "processing",
+      ],
+    },
+    closeIcon: { type: "static_asset" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Alert", category: "Basics" },
+  meta: { key: "Tag", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          paddingTop: "15px",
-          paddingLeft: "24px",
-          paddingBottom: "15px",
-          paddingRight: "15px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          columnGap: "10px",
-          justifyContent: "space-between",
+          height: "20px",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "5px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -65,10 +65,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Alert Title",
-          description: "Alert Description",
-          isClosable: true,
-          showIcon:true,
+          text: "Tag",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -77,15 +74,17 @@ const compManifest: ReactComponentManifestSchema = {
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {},
+    defaultCallbackHandlers: {
+      onClick: [{ sendEventData: true }],
+    },
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Alert" } },
+  panel: { comp: "CommonIcon", props: { name: "Tag" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Alert", containerStyle: { padding: "1rem" } },
+    props: { name: "Tag", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

@@ -1,29 +1,38 @@
 import React, { forwardRef, useCallback, useMemo } from "react";
 import AlertStyles from "./AlertStyles";
-import closeIcon from "./close.svg";
-import SuccessIcon from "./success.svg";
-import InfoIcon from "./info.svg";
-import WarningIcon from "./warning.svg";
-import ErrorIcon from "./error.svg";
+import { Alert as AntdAlert } from "antd";
+
+const enum AlertType {
+  SUCEESS = "success",
+  INFO = "info",
+  WARNING = "warning",
+  ERROR = "error",
+}
 
 const Alert = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      alertType: string;
-      title: string;
+      alertType: AlertType;
+      text: string;
       description?: string;
+      icon?: string;
       successIcon?: string;
       infoIcon?: string;
       warningIcon?: string;
       errorIcon?: string;
       isClosable: boolean;
+      showIcon?: boolean;
+      closeText?: string;
+      closeIcon?: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
+    showIcon?: boolean;
   }
 >((props, ref) => {
+  const { custom, ...restProps } = props;
   const onClick = useCallback(
     (e: React.MouseEvent) => {
       props.onClick({ pageX: e.pageX, pageY: e.pageY });
@@ -46,25 +55,7 @@ const Alert = forwardRef<
     };
   }, [props.custom.alertType]);
 
-  const alertStatusIcon = useMemo(() => {
-    const alertType = props.custom.alertType;
-    if (alertType === "error") {
-      return props.custom.errorIcon || ErrorIcon;
-    } else if (alertType === "warning") {
-      return props.custom.warningIcon || WarningIcon;
-    } else if (alertType === "info") {
-      return props.custom.infoIcon || InfoIcon;
-    } else {
-      return props.custom.successIcon || SuccessIcon;
-    }
-  }, [
-    props.custom.alertType,
-    props.custom.errorIcon,
-    props.custom.warningIcon,
-    props.custom.infoIcon,
-    props.custom.successIcon,
-  ]);
-
+  // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
       <style>
@@ -98,28 +89,29 @@ const Alert = forwardRef<
           }
         `}
       </style>
-      <div
-        ref={ref}
-        className={props.className}
-        style={{ ...alertStyle, ...props.styles }}
-        onClick={onClick}
-      >
-        <div id="icon">
-          <img id="icon-logo" src={alertStatusIcon} alt="Icon for alert" />
-        </div>
-        <div id="information">
-          <div>{props.custom.title}</div>
-          <div id="description">{props.custom.description}</div>
-        </div>
-        {props.custom.isClosable && (
-          <button id="close-button">
-            <img
-              id="close-button"
-              src={closeIcon}
-              alt="Icon to close the alert"
-            />
-          </button>
-        )}
+      <div ref={ref}>
+        <AntdAlert
+          className={props.className}
+          style={{ ...alertStyle, ...props.styles }}
+          {...restProps}
+          onClick={onClick}
+          type={props.custom.alertType || AlertType.SUCEESS}
+          icon={
+            props.custom.icon && (
+              <img src={props.custom.icon} alt={props.custom.icon} />
+            )
+          }
+          showIcon={props.custom.showIcon} //it will show antd icon
+          message={props.custom.text}
+          description={props.custom.description}
+          closable={props.custom?.isClosable}
+          closeText={props.custom?.closeText}
+          closeIcon={
+            props.custom.closeIcon && (
+              <img src={props.custom.closeIcon} alt={props.custom.closeIcon} />
+            )
+          }
+        />
       </div>
     </>
   );
