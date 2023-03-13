@@ -650,6 +650,19 @@ export function createCanvasMachine(id: string) {
                                 parentElId =
                                   parentEl.getAttribute("data-atri-comp-id")!;
                               }
+                              if (context.probableParent !== parentElId) {
+                                setProbableParentToNull(context);
+                                callSubscribers(
+                                  "DROP_ZONE_DESTROYED",
+                                  context,
+                                  event
+                                );
+                              }
+                              // console.log(
+                              //   "probable parent",
+                              //   parentElId,
+                              //   context.probableParent
+                              // );
                               if (
                                 parentElId !== null &&
                                 parentElId !== context.probableParent
