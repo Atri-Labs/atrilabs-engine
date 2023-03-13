@@ -663,6 +663,23 @@ export function createCanvasMachine(id: string) {
                               }
                             }
                           },
+                          (context, event) => {
+                            const { target } = event.event;
+                            const currentEl = (target as HTMLElement).closest(
+                              "[data-atri-comp-id]"
+                            );
+                            if (
+                              context.repositionComponent ===
+                              currentEl?.getAttribute("data-atri-comp-id")!
+                            ) {
+                              setProbableParentToNull(context);
+                              callSubscribers(
+                                "DROP_ZONE_DESTROYED",
+                                context,
+                                event
+                              );
+                            }
+                          },
                         ],
                       },
                     ],
