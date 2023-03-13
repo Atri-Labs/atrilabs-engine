@@ -1,50 +1,38 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef } from "react";
+import { Breadcrumb as AntdBreadcrumb } from "antd";
 
 const Breadcrumb = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      divider: string;
+      separator?: string;
       items: {
-        // this will be visible
-        name: string;
-        // link
-        link: string;
+        title?: string;
+        href?: string;
+        icon: string;
       }[];
     };
     className?: string;
-    onClick: (item: { name: string; link: string }) => {};
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      console.log(props);
-    },
-    [props]
-  );
-  const { divider, items } = props.custom;
-  const contnet = items.map((element, index) => {
-    return (
-      <span key={element.name + index}>
-        <span>{element.name}</span>
-        {/* skip divider on the last element */}
-        <span style={{ margin: "0 0.25rem" }}>
-          {index !== items.length - 1 ? divider : ""}
-        </span>
-      </span>
-    );
-  });
   return (
-    <div
-      ref={ref}
-      className={props.className}
-      style={props.styles}
-      onClick={onClick}
-    >
-      {contnet}
+    <div ref={ref}>
+      <AntdBreadcrumb
+        className={props.className}
+        style={props.styles}
+        separator={props.custom.separator}
+      >
+        {props.custom.items.map((item, index: number) => (
+          <AntdBreadcrumb.Item key={index} href={item.href}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {item.icon ? <img src={item.icon} alt={item.icon} /> : undefined}
+              <span>{item.title}</span>
+            </div>
+          </AntdBreadcrumb.Item>
+        ))}
+      </AntdBreadcrumb>
     </div>
   );
 });
-
 export default Breadcrumb;

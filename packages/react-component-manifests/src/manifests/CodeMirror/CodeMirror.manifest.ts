@@ -22,36 +22,58 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    current: { type: "number" },
-    size : {type : "enum",options: ["default","small"]},
-    direction : {type : "enum",options: ["horizontal" , "vertical"]},
-    dotStyle :{type : "enum",options: ["","dot","withHover"]},
-    clickable:{ type: "boolean" } ,
-    type: {type : "enum",options: ["default" , "navigation" , "inline"]},
-    percent: {type : "number"},
-    labelPlacement:{type : "enum",options: ["horizontal" , "vertical" ]},
-    items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        { fieldName: "title", type: "text" },
-        { fieldName: "subTitle", type: "text" },
-        { fieldName: "description", type: "text" },
-        { fieldName: "icon", type: "static_asset" },
-        {
-          fieldName: "status",
-          type: "enum",
-          options: ["wait", "process", "finish", "error"],
-        },
-        { fieldName: "disabled", type: "boolean" },
+    extensions: {
+      type: "enum",
+      options: [
+        "css",
+        "html",
+        "java",
+        "javascript",
+        "php",
+        "json",
+        "rust",
+        "python",
+        "xml",
+        "sql",
       ],
     },
-   
+    value: { type: "large_text" },
+    theme: {
+      type: "enum",
+      options: ["light", "dark"],
+    },
+    autoFocus: { type: "boolean" },
+    editable: { type: "boolean" },
+    placeholder: { type: "text" },
+    lineNumbers: { type: "boolean" },
+    highlightActiveLineGutter: { type: "boolean" },
+    highlightSpecialChars: { type: "boolean" },
+    history: { type: "boolean" },
+    foldGutter: { type: "boolean" },
+    drawSelection: { type: "boolean" },
+    dropCursor: { type: "boolean" },
+    allowMultipleSelections: { type: "boolean" },
+    indentOnInput: { type: "boolean" },
+    syntaxHighlighting: { type: "boolean" },
+    bracketMatching: { type: "boolean" },
+    closeBrackets: { type: "boolean" },
+    autocompletion: { type: "boolean" },
+    rectangularSelection: { type: "boolean" },
+    crosshairCursor: { type: "boolean" },
+    highlightActiveLine: { type: "boolean" },
+    highlightSelectionMatches: { type: "boolean" },
+    closeBracketsKeymap: { type: "boolean" },
+    defaultKeymap: { type: "boolean" },
+    searchKeymap: { type: "boolean" },
+    historyKeymap: { type: "boolean" },
+    foldKeymap: { type: "boolean" },
+    completionKeymap: { type: "boolean" },
+    lintKeymap: { type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Step", category: "Basics" },
+  meta: { key: "CodeMirror", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -64,29 +86,10 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [
-            {
-              title: "Finished",
-              description: "description",
-            },
-            {
-              title: "In Progress",
-              description: "description",
-              subTitle: "Left 00:00:08",
-            },
-            {
-              title: "Waiting",
-              description: "description",
-            },
-            {
-              title: "Error",
-              description: "description",
-            },
-          ],
-          size : "default",
-          current : 1,
-          direction : "horizontal",
-          clickable: false,
+          lineNumbers: true,
+          editable: true,
+          placeholder: "// code",
+          extensions: "html",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -102,10 +105,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Step" } },
+  panel: { comp: "CommonIcon", props: { name: "CodeMirror" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Step", containerStyle: { padding: "1rem" } },
+    props: { name: "CodeMirror", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

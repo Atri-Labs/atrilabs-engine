@@ -8,7 +8,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -22,53 +22,41 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
-    description: { type: "text" },
-    alertType: {
+    type: {
       type: "enum",
-      options: ["success", "info", "warning", "error"],
+      options: ["card", "meta"],
     },
-    showIcon: { type: "boolean" },
-    icon: { type: "static_asset" },
-    isClosable: { type: "boolean" },
-    closeText: { type: "text" },
-    closeIcon: {type: "static_asset"},
-    banner: { type: "boolean" },  
-    successIcon: { type: "static_asset" },
-    infoIcon: { type: "static_asset" },
-    warningIcon: { type: "static_asset" },
-    errorIcon: { type: "static_asset" },  
+    text: { type: "text" },
+    description: { type: "large_text" },
+    size: {
+      type: "enum",
+      options: ["default", "small"],
+    },
+    hoverable: { type: "boolean" },
+    bordered: { type: "boolean" },
+    cover: { type: "static_asset" },
+    avatar: { type: "static_asset" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Alert", category: "Basics" },
+  meta: { key: "Card", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          paddingTop: "15px",
-          paddingLeft: "24px",
-          paddingBottom: "15px",
-          paddingRight: "15px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          columnGap: "10px",
-          justifyContent: "space-between",
-        },
+        initialValue: { width: 300 },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Alert Title",
-          description: "Alert Description",
-          isClosable: true,
-          showIcon:true,
+          text: "Card Title",
+          description: "Card content",
+          bordered: true,
+          type: "card",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -77,15 +65,17 @@ const compManifest: ReactComponentManifestSchema = {
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {},
+    defaultCallbackHandlers: {
+      onClick: [{ sendEventData: true }],
+    },
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Alert" } },
+  panel: { comp: "CommonIcon", props: { name: "Card" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Alert", containerStyle: { padding: "1rem" } },
+    props: { name: "Card", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

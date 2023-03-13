@@ -1,10 +1,10 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -19,36 +19,29 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    separator: {
-      type: "text",
-    },
-
-    items: {
+    checkable: { type: "boolean" },
+    showLine: { type: "boolean" },
+    multiple: { type: "boolean" },
+    defaultExpandAll: { type: "boolean" },
+    defaultExpandParent: { type: "boolean" },
+    treeData: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        {
-          fieldName: "title",
-          type: "text",
-        },
-        {
-          fieldName: "href",
-          type: "text",
-        },
-        {
-          fieldName: "icon",
-          type: "static_asset",
-        },
-        
+        { fieldName: "title", type: "text" },
+        { fieldName: "key", type: "text" },
+        { fieldName: "disabled", type: "boolean" },  
+        { fieldName: "children", type: "array" },   
       ],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Breadcrumb", category: "Basics" },
+  meta: { key: "Tree", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -61,23 +54,11 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          separator: "/",
-          items: [
+          treeData: [
             {
-              title: "Home",
-              href: "",
-            },
-            {
-              title: "Application Center",
-              href: "",
-            },
-            {
-              title: "Application List",
-              href: "",
-            },
-            {
-              title: "An Application",
-              href: "",
+              title: `0-0`,
+              key: `0-0`,
+              disabled: false,  
             },
           ],
         },
@@ -86,20 +67,21 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onCheck: [{ type: "controlled", selector: ["custom", "open"] }],
+      onExpand: [{ type: "controlled", selector: ["custom", "open"] }],
+      onRightClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onSelect: [{ type: "controlled", selector: ["custom", "open"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Breadcrumb" } },
+  panel: { comp: "CommonIcon", props: { name: "Tree" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "Breadcrumb",
+      name: "Tree",
       containerStyle: { padding: "1rem" },
     },
   },
