@@ -629,18 +629,50 @@ export function createCanvasMachine(id: string) {
                       {
                         target: repositionIdle,
                         cond: isInTheSameParent,
-                        actions: ["emitRepositionIdle"],
+                        actions: [
+                          "emitRepositionIdle",
+                          "setProbableParentToNull",
+                          "emitDropZoneDestroyed",
+                        ],
                       },
                       {
                         actions: [
                           "setRepositionTarget",
                           "emitRepositionActive",
+                          (context, event) => {
+                            const { target } = event.event;
+                            if (target !== null && "closest" in target) {
+                              const parentEl = (target as HTMLElement).closest(
+                                "[data-atri-parent]"
+                              );
+                              let parentElId: string | null = null;
+                              if (parentEl) {
+                                parentElId =
+                                  parentEl.getAttribute("data-atri-comp-id")!;
+                              }
+                              if (
+                                parentElId !== null &&
+                                parentElId !== context.probableParent
+                              ) {
+                                context.probableParent = parentElId;
+                                callSubscribers(
+                                  "DROP_ZONE_CREATED",
+                                  context,
+                                  event
+                                );
+                              }
+                            }
+                          },
                         ],
                       },
                     ],
                     [MOUSE_UP]: {
                       target: `#${id}.${ready}.${selected}`,
-                      actions: ["emitRepositionSuccess"],
+                      actions: [
+                        "emitRepositionSuccess",
+                        "setProbableParentToNull",
+                        "emitDropZoneDestroyed",
+                      ],
                     },
                   },
                 },
