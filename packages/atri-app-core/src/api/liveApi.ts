@@ -125,9 +125,19 @@ const socket: Socket<LiveApiServerToClientEvents, LiveapiClientToServerEvents> =
 socket.on("connect", () => {
   socket.emit("sendEvents", getActivePageRoute(), (incomingEvents) => {
     eventsToComponent(incomingEvents);
-    const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
-    canvasZoneIds.forEach((canvasZoneId) => {
-      callCanvasZoneSubscriber(canvasZoneId);
+    const state = getPageState();
+    const urlPath = getActivePageRoute();
+    const query = getQuery();
+    socket.emit("runSSR", { urlPath, state, query }, (delta) => {
+      const aliases = Object.keys(delta);
+      aliases.forEach((alias) => {
+        const compId = getComponentIdFromAlias(alias);
+        if (compId) mergeProps(compId, delta[alias], true);
+      });
+      const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
+      canvasZoneIds.forEach((canvasZoneId) => {
+        callCanvasZoneSubscriber(canvasZoneId);
+      });
     });
   });
 });
@@ -148,6 +158,10 @@ socket.on("newEvents", (urlPath, _incomingEvents) => {
 function getActivePageRoute() {
   // TODO: Get route from atri router instead
   return window.location.pathname;
+}
+
+function getQuery() {
+  return window.location.search;
 }
 
 function getComponentAlias(compId: string): string {
@@ -210,13 +224,19 @@ function mergeState(baseState: any, newState: any) {
   }
 }
 
-function mergeProps(id: string, propsDelta: any) {
+function mergeProps(
+  id: string,
+  propsDelta: any,
+  doNotCallUpdateSubscribers?: boolean
+) {
   const props = JSON.parse(
     JSON.stringify(componentStoreApi.getComponentProps(id))
   );
   mergeState(props, propsDelta);
   componentStoreApi.updateProps(id, props);
-  callComponentUpdateSubscribers(id);
+  if (doNotCallUpdateSubscribers !== true) {
+    callComponentUpdateSubscribers(id);
+  }
 }
 
 export const liveApi = {
@@ -224,6 +244,7 @@ export const liveApi = {
   updateProps,
   subscribeComponentUpdates,
   getActivePageRoute,
+  getQuery,
   getComponentAlias,
   getComponentCallbackHandlers,
   getPageState,

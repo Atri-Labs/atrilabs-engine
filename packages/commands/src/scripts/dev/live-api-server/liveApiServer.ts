@@ -14,6 +14,7 @@ import fs from "fs";
 import { watch } from "chokidar";
 import { PAGE_DIR } from "../../../consts";
 import { AnyEvent } from "@atrilabs/forest";
+import axios from "axios";
 
 function readEventsFromFile(urlPath: string) {
   const ir = routeObjectPathToIR(urlPath);
@@ -44,6 +45,33 @@ export function liveApiServer(server: Server) {
       } catch (err: any) {
         console.log(err);
         cb([]);
+      }
+    });
+
+    socket.on("runSSR", ({ urlPath, state, query }, cb) => {
+      try {
+        const apiEndpoint = process.env["ATRI_APP_API_ENDPOINT"];
+        if (apiEndpoint) {
+          axios
+            .post(`${apiEndpoint}/_atri/api/page`, {
+              route: urlPath,
+              state,
+              query,
+            })
+            .then((res) => {
+              cb(res.data);
+            })
+            .catch((err) => {
+              console.log(err);
+              cb({});
+            });
+        } else {
+          cb({});
+        }
+      } catch (err) {
+        console.log("The http request to controller server errored with error");
+        console.log(err);
+        cb({});
       }
     });
   });
