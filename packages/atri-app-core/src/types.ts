@@ -106,6 +106,10 @@ export interface LiveApiServerToClientEvents {
 
 export interface LiveapiClientToServerEvents {
   sendEvents(urlPath: string, callback: (events: AnyEvent[]) => void): void;
+  runSSR(
+    data: { urlPath: string; state: { [alias: string]: any }; query?: string },
+    callback: (state: { [alias: string]: any }) => void
+  ): void;
 }
 
 export interface LiveApiInterServerEvents {}
