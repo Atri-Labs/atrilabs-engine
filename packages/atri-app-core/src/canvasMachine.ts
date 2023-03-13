@@ -650,23 +650,20 @@ export function createCanvasMachine(id: string) {
                                 parentElId =
                                   parentEl.getAttribute("data-atri-comp-id")!;
                               }
-                              if (context.probableParent !== parentElId) {
-                                setProbableParentToNull(context);
+                              if (
+                                parentElId !== null &&
+                                parentElId !== context.probableParent
+                              ) {
+                                // Destroy a dropzone when the current and
+                                // previous parents do not match
+                                context.probableParent = null;
                                 callSubscribers(
                                   "DROP_ZONE_DESTROYED",
                                   context,
                                   event
                                 );
-                              }
-                              // console.log(
-                              //   "probable parent",
-                              //   parentElId,
-                              //   context.probableParent
-                              // );
-                              if (
-                                parentElId !== null &&
-                                parentElId !== context.probableParent
-                              ) {
+                                // Create a dropzone after the previous dropzone
+                                // is destroyed
                                 context.probableParent = parentElId;
                                 callSubscribers(
                                   "DROP_ZONE_CREATED",
