@@ -10,7 +10,7 @@ import { FilledLine } from "../components/FilledLine";
 
 const thickness = 2;
 
-export function useDropzoneAndRepositionHints() {
+export function useDropzoneHints() {
   const topLineHoverId = useRef<string | null>(null);
   const rightLineHoverId = useRef<string | null>(null);
   const bottomLineHoverId = useRef<string | null>(null);
