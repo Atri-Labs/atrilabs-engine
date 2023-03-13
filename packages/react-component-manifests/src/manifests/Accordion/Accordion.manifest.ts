@@ -22,13 +22,32 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    size: {
+      type: "enum",
+      options: ["middle", "large", "small"],
+    },
+    expandIconPosition: {
+      type: "enum",
+      options: ["start", "end"],
+    },
+    collapse: { type: "boolean" },
+    bordered: { type: "boolean" },
+    ghost: { type: "boolean" },
+    defaultActiveKey: { type: "number" },
+    expandIcon: { type: "static_asset" },
+
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
         { fieldName: "title", type: "text" },
         { fieldName: "description", type: "text" },
-        { fieldName: "open", type: "boolean" },
+        {
+          fieldName: "collapsible",
+          type: "enum",
+          options: ["header", "icon", "disabled"],
+        },
+        { fieldName: "showArrow", type: "boolean" },
       ],
     },
   },
@@ -48,17 +67,21 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [],
-          title: [],
-          description: [],
-          open: [],
+          items: [
+            {
+              title: `One`,
+              description: `Content of Accordion 1`,
+              collapsible: "header",
+              showArrow: true,
+            },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onChange: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
   },

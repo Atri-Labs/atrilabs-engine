@@ -1,10 +1,10 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -19,36 +19,31 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    separator: {
-      type: "text",
-    },
-
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        {
-          fieldName: "title",
-          type: "text",
-        },
-        {
-          fieldName: "href",
-          type: "text",
-        },
-        {
-          fieldName: "icon",
-          type: "static_asset",
-        },
-        
+        { fieldName: "children", type: "text" },
+        { fieldName: "label", type: "text" },
+        { fieldName: "color", type: "color" },
+        { fieldName: "dot", type: "static_asset" },
       ],
     },
+    mode: {
+      type: "enum",
+      options: ["left", "alternate", "right"],
+    },
+    pending: { type: "text" },
+    pendingDot: { type: "static_asset" },
+    reverse: { type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Breadcrumb", category: "Basics" },
+  meta: { key: "Timeline", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -61,45 +56,30 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          separator: "/",
           items: [
             {
-              title: "Home",
-              href: "",
-            },
-            {
-              title: "Application Center",
-              href: "",
-            },
-            {
-              title: "Application List",
-              href: "",
-            },
-            {
-              title: "An Application",
-              href: "",
+              children: `Create a services site 2015-09-01`,
+              label: `10:00 am`,
+              color: "orange",
             },
           ],
+          mode: "left",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
-    attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
-    },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    attachCallbacks: {},
+    defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Breadcrumb" } },
+  panel: { comp: "CommonIcon", props: { name: "Timeline" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "Breadcrumb",
+      name: "Timeline",
       containerStyle: { padding: "1rem" },
     },
   },

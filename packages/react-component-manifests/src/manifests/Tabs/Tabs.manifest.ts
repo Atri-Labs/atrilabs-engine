@@ -1,10 +1,13 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import {
+  ReactComponentManifestSchema,
+  AcceptsChildFunction,
+} from "@atrilabs/react-component-manifest-schema";
+import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -19,36 +22,43 @@ const cssTreeOptions: CSSTreeOptions = {
   backgroundOptions: true,
   miscellaneousOptions: true,
 };
+
+const acceptsChild: AcceptsChildFunction = (info: any) => {
+  return 1;
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    separator: {
-      type: "text",
+    centered: { type: "boolean" },
+    animated: { type: "boolean" },
+    addIcon: { type: "static_asset" },
+    tabPosition: {
+      type: "enum",
+      options: ["top", "bottom", "left", "right"],
     },
-
+    size: {
+      type: "enum",
+      options: ["large", "middle", "small"],
+    },
+    type: {
+      type: "enum",
+      options: ["line", "card"],
+    },
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        {
-          fieldName: "title",
-          type: "text",
-        },
-        {
-          fieldName: "href",
-          type: "text",
-        },
-        {
-          fieldName: "icon",
-          type: "static_asset",
-        },
-        
+        { fieldName: "key", type: "number" },
+        { fieldName: "label", type: "text" },
+        { fieldName: "children", type: "text" },
+        { fieldName: "disabled", type: "boolean" },
       ],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Breadcrumb", category: "Basics" },
+  meta: { key: "Tabs", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -61,23 +71,21 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          separator: "/",
           items: [
             {
-              title: "Home",
-              href: "",
+              key: "1",
+              label: `Tab 1`,
+              children: [],
             },
             {
-              title: "Application Center",
-              href: "",
+              key: "2",
+              label: `Tab 2`,
+              children: [],
             },
             {
-              title: "Application List",
-              href: "",
-            },
-            {
-              title: "An Application",
-              href: "",
+              key: "3",
+              label: `Tab 3`,
+              children: [],
             },
           ],
         },
@@ -86,20 +94,19 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
+    acceptsChild,
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Breadcrumb" } },
+  panel: { comp: "CommonIcon", props: { name: "Tabs" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "Breadcrumb",
+      name: "Tabs",
       containerStyle: { padding: "1rem" },
     },
   },

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-columns"  width="55" height="25" viewBox="0 0 55 25" stroke-width="1" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<rect width="55" height="25" rx="1" fill="#D1D5DB"/>
+  <line x1="5" y1="6" x2="15" y2="6" /> 
+  <line x1="22.5" y1="6" x2="32.5" y2="6" />
+  <line x1="40" y1="6" x2="50" y2="6" />
+</svg>
+
+
