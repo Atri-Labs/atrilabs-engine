@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from "react";
+import React, { forwardRef } from "react";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 
@@ -17,6 +17,7 @@ const Accordion = forwardRef<
         description?: string;
         collapsible?: CollapsibleTypes;
         showArrow?: boolean;
+        key?: string | number;
       }[];
       bordered?: boolean;
       collapse?: boolean;
@@ -44,7 +45,7 @@ const Accordion = forwardRef<
         className={props.className}
         size={props.custom?.size}
         bordered={props.custom.bordered}
-        defaultActiveKey={props.custom.defaultActiveKey}
+        defaultActiveKey={[props.custom.defaultActiveKey]}
         expandIcon={
           props.custom.expandIcon !== undefined
             ? customExpandIcon

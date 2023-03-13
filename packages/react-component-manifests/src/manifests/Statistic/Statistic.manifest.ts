@@ -22,40 +22,31 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    size: {
+    title: { type: "text" },
+    value: { type: "text" },
+    groupSeparator: { type: "text" },
+    decimalSeparator: { type: "text" },
+    precision: { type: "number" },
+    prefix: { type: "text" },
+    prefixIcon: { type: "static_asset" },
+    suffix: { type: "text" },
+    suffixIcon: { type: "static_asset" },
+    loading: { type: "boolean" },
+    countdown: { type: "boolean" },
+    format: {
       type: "enum",
-      options: ["middle", "large", "small"],
+      options: ["DD:HH:mm:ss", "HH:mm:ss", "mm:ss", "ss"],
     },
-    expandIconPosition: {
+    countdownValue: { type: "number" },
+    inputType: {
       type: "enum",
-      options: ["start", "end"],
-    },
-    collapse: { type: "boolean" },
-    bordered: { type: "boolean" },
-    ghost: { type: "boolean" },
-    defaultActiveKey: { type: "text" },
-    expandIcon: { type: "static_asset" },
-
-    items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        { fieldName: "title", type: "text" },
-        { fieldName: "description", type: "text" },
-        { fieldName: "key", type: "text" },
-        {
-          fieldName: "collapsible",
-          type: "enum",
-          options: ["header", "icon", "disabled"],
-        },
-        { fieldName: "showArrow", type: "boolean" },
-      ],
+      options: ["minute", "hour", "second"],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Accordion", category: "Basics" },
+  meta: { key: "Statistic", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -68,34 +59,34 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [
-            {
-              title: `One`,
-              description: `Content of Accordion 1`,
-              key: "1",
-              collapsible: "header",
-              showArrow: true,
-            },
-          ],
-          defaultActiveKey : "1",
+          title: "Account Balance (CNY)",
+          value: 112893,
+          precision: 2,
+          decimalSeparator: ".",
+          groupSeparator: ",",
+          loading: false,
+          countdown: false,
+          format: "HH:mm:ss",
+          countdownValue: 1,
+          inputType: "minute",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "open"] }],
+      onClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Accordion" } },
+  panel: { comp: "CommonIcon", props: { name: "Statistic" } },
   drag: {
     comp: "CommonIcon",
     props: {
-      name: "Accordion",
+      name: "Statistic",
       containerStyle: { padding: "1rem" },
     },
   },

@@ -1,10 +1,17 @@
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import type {
+  ReactComponentManifestSchema,
+  AcceptsChildFunction,
+} from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import {
+  flexRowSort,
+  flexColSort,
+} from "@atrilabs/react-component-manifest-schema";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -21,11 +28,33 @@ const cssTreeOptions: CSSTreeOptions = {
   miscellaneousOptions: true,
 };
 
+const acceptsChild: AcceptsChildFunction = (info: any) => {
+  if (info.childCoordinates.length === 0) {
+    return 0;
+  }
+  const display: "block" | "inline-block" | "table" =
+    info.props.styles["display"] || "block";
+  let index = 0;
+  // TODO: the logic is incorrect.
+  switch (display) {
+    case "inline-block":
+      index = flexRowSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "block" || "block":
+      index = flexColSort(info.loc, info.childCoordinates) || 0;
+      break;
+    default:
+      index = flexColSort(info.loc, info.childCoordinates) || 0;
+  }
+  return index;
+};
+
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    type: { type: "enum", options: ["disc", "circle", "square", "none"] },
-    titleColor: { type: "color" },
-    descriptionColor: { type: "color" },
+    size: { type: "enum", options: ["default", "large", "small"] },
+    itemLayout: { type: "enum", options: ["horizontal", "vertical"] },
+    bordered: { type: "boolean" },
+    split: { type: "boolean" },
     items: {
       type: "array_map",
       singleObjectName: "item",
@@ -44,6 +73,21 @@ const customTreeOptions: CustomPropsTreeOptions = {
         },
       ],
     },
+    actionAdd: { type: "boolean" },
+    actionUpdate: { type: "boolean" },
+    actionDelete: { type: "boolean" },
+    pagination: { type: "boolean" },
+    paginationPosition: { type: "enum", options: ["bottom", "top", "both"] },
+    paginationAlign: { type: "enum", options: ["end", "start", "center"] },
+    grid: { type: "boolean" },
+    gutter: { type: "number" },
+    column: { type: "number" },
+    xs: { type: "number" },
+    sm: { type: "number" },
+    md: { type: "number" },
+    lg: { type: "number" },
+    xl: { type: "number" },
+    xxl: { type: "number" },
   },
 };
 
@@ -61,10 +105,10 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          type: "none",
-          titleColor: "#000000d9",
-          descriptionColor: "#00000073",
-          items: [{ title: "Atri Labs" }],
+          size: "default",
+          itemLayout: "horizontal",
+          items: [{ title: "Atri Labs", description: "Atri Labs..." }],
+          split: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -76,6 +120,7 @@ const compManifest: ReactComponentManifestSchema = {
     defaultCallbackHandlers: {
       onClick: [{ sendEventData: true }],
     },
+    acceptsChild,
   },
 };
 
