@@ -7,7 +7,9 @@
   "license": "ISC",
   "main": "./src/manifest.config.js",
   "files": [
-    "src"
+    "src",
+    "dist/manifests.bundle.js",
+    "dist/manifests.bundle.js.map"
   ],
   "publishConfig": {
     "access": "public"

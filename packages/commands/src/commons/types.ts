@@ -20,3 +20,5 @@ export type CorePkgInfo = {
   // file that exposes all the block names collected from layers
   blockRegistryFile: string;
 };
+
+export type ComponentTypes = "normal" | "parent" | "repeating";

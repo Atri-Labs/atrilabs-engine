@@ -1,13 +1,36 @@
-const imports = `from typing import Any, Union
-from atri_core import AtriComponent`;
+import { ComponentTypes } from "../../commons/types";
 
-function createCustomClass(compKey: string, props: string[]) {
-  return `class ${compKey}CustomClass:
+function createImports(componentType: ComponentTypes) {
+  const importsFromTyping = new Set(["Any", "Union"]);
+  if (componentType === "repeating") {
+    importsFromTyping.add("TypeVar");
+    importsFromTyping.add("Generic");
+  }
+  const imports = `from typing import ${Array.from(importsFromTyping).join(
+    ", "
+  )}
+from atri_core import AtriComponent`;
+  return imports;
+}
+
+function createCustomClass(
+  compKey: string,
+  props: string[],
+  componentType: ComponentTypes
+) {
+  return `${componentType === "repeating" ? `T = TypeVar("T")` : ""}
+
+class ${compKey}CustomClass(${
+    componentType === "repeating" ? "Generic[T]" : ""
+  }):
 	def __init__(self, state: Union[Any, None]):
 		self._setter_access_tracker = {}
 		${props
       .map((prop) => {
-        return `self.${prop}: Union[str, None] = state["${prop}"] if state != None and "${prop}" in state else None`;
+        if (componentType === "repeating" && prop === "data") {
+          return `self.${prop}: Union[T, None] = state["${prop}"] if state != None and "${prop}" in state else []`;
+        }
+        return `self.${prop}: Union[Any, None] = state["${prop}"] if state != None and "${prop}" in state else None`;
       })
       .join("\n\t\t")}
 		self._setter_access_tracker = {}
@@ -76,10 +99,12 @@ export function createComponentClassFile(options: {
   nodePkg: string;
   callbacks: string[];
   customProps: string[];
+  componentType: ComponentTypes;
 }) {
-  return `${imports}\n\n${createCustomClass(
+  return `${createImports(options.componentType)}\n\n${createCustomClass(
     options.compKey,
-    options.customProps
+    options.customProps,
+    options.componentType
   )}\n\n${createComponentClass(
     options.compKey,
     options.nodePkg,
