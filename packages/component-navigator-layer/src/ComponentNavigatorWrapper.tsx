@@ -157,11 +157,22 @@ export function ComponentNavigatorWrapper(props: {
         if (
           !(
             oldParent.id === newParent.id &&
-            oldParent.index === newParent.index &&
             oldParent.canvasZoneId === newParent.canvasZoneId
           )
         ) {
           patchCb(draggedNode.id, newParent);
+        } else {
+          const nodes = componentApi.getActivePageComponentNodes();
+          const sortedRerverseMap = componentApi.createSortedParentChildMap(
+            nodes,
+            oldParent.id
+          );
+          const foundIndex = sortedRerverseMap[oldParent.id].findIndex(
+            (childId) => childId === draggedNode.id
+          );
+          if (foundIndex !== draggedNode.index) {
+            patchCb(draggedNode.id, newParent);
+          }
         }
       }
     });
