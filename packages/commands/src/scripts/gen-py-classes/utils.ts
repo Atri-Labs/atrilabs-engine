@@ -5,6 +5,7 @@ function createImports(componentType: ComponentTypes) {
   if (componentType === "repeating") {
     importsFromTyping.add("TypeVar");
     importsFromTyping.add("Generic");
+    importsFromTyping.add("List");
   }
   const imports = `from typing import ${Array.from(importsFromTyping).join(
     ", "
@@ -23,12 +24,15 @@ function createCustomClass(
 class ${compKey}CustomClass(${
     componentType === "repeating" ? "Generic[T]" : ""
   }):
-	def __init__(self, state: Union[Any, None]):
+	def __init__(self, state: Union[Any, None]${
+    componentType === "repeating" ? `, WrapperClass: T` : ""
+  }):
 		self._setter_access_tracker = {}
+		${componentType === "repeating" ? "self._WrapperClass = WrapperClass" : ""}
 		${props
       .map((prop) => {
         if (componentType === "repeating" && prop === "data") {
-          return `self.${prop}: Union[T, None] = state["${prop}"] if state != None and "${prop}" in state else []`;
+          return `self.${prop}: Union[List[T], None] = state["${prop}"] if state != None and "${prop}" in state else []`;
         }
         return `self.${prop}: Union[Any, None] = state["${prop}"] if state != None and "${prop}" in state else None`;
       })
@@ -38,6 +42,19 @@ class ${compKey}CustomClass(${
 
 	${props
     .map((prop) => {
+      if (componentType === "repeating" && prop === "data") {
+        return `@property
+\tdef data(self):
+\t\tself._getter_access_tracker["data"] = {}
+\t\treturn self._data
+\t@data.setter
+\tdef data(self, state):
+\t\tself._setter_access_tracker["data"] = {}
+\t\tif type(state) == "list":
+\t\t\tself._data = [self._WrapperClass(i) for i in state]
+\t\telse:
+\t\t\tself._data = []`;
+      }
       return `@property
 	def ${prop}(self):
 		self._getter_access_tracker["${prop}"] = {}
@@ -60,13 +77,19 @@ class ${compKey}CustomClass(${
 function createComponentClass(
   compKey: string,
   nodePkg: string,
-  callbacks: string[]
+  callbacks: string[],
+  componentType: ComponentTypes
 ) {
   return `
-class ${compKey}(AtriComponent):
-	def __init__(self, state: Union[Any, None]):
+class ${compKey}(AtriComponent${
+    componentType === "repeating" ? ", Generic[T]" : ""
+  }):
+	def __init__(self, state: Union[Any, None]${
+    componentType === "repeating" ? ", WrapperClass: T" : ""
+  }):
 		super().__init__(state)
 		self._setter_access_tracker = {}
+		${componentType === "repeating" ? "self._WrapperClass = WrapperClass" : ""}
 		self.compKey = "${compKey}"
 		self.nodePkg = "${nodePkg}"
 		${callbacks
@@ -85,7 +108,9 @@ class ${compKey}(AtriComponent):
 	@custom.setter
 	def custom(self, state):
 		self._setter_access_tracker["custom"] = {}
-		self._custom = ${compKey}CustomClass(state)
+		self._custom = ${compKey}CustomClass${
+    componentType === "repeating" ? "[T]" : ""
+  }(state${componentType === "repeating" ? ", self._WrapperClass" : ""})
 
 	def _to_json_fields(self):
 		return {
@@ -108,7 +133,8 @@ export function createComponentClassFile(options: {
   )}\n\n${createComponentClass(
     options.compKey,
     options.nodePkg,
-    options.callbacks
+    options.callbacks,
+    options.componentType
   )}`;
 }
 

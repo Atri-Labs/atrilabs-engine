@@ -10,7 +10,7 @@ import fs from "fs";
 import { AnyEvent, createForest, TreeNode } from "@atrilabs/forest";
 import { componentTreeDef, forestDef } from "../scripts/gen-py-app/forestDef";
 import { generatePythonPageModel } from "./generatePythonPageModel";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { ComponentTypes } from "./types";
 
 export function generatePythonModelForAPage(ir: PathIR) {

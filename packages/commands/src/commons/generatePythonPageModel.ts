@@ -53,6 +53,7 @@ ${childrenAlias
     return `\t\tself.${alias} = state["${alias}"] if "${alias}" in state else None`;
   })
   .join("\n")}
+
 	${childrenAlias
     .map((alias) => {
       const compKey = aliasMap[alias]!.compKey;
@@ -64,7 +65,17 @@ ${childrenAlias
 	def ${alias}(self, new_state):
 		self._${alias} = ${compKey}(new_state)`;
     })
-    .join("\n")}`;
+    .join("\n")}
+
+\tdef _to_json_fields(self):
+\t\treturn {
+${childrenAlias
+  .map((alias) => {
+    return `\t\t\t"${alias}": self._${alias}`;
+  })
+  .join(",\n")}
+\t\t\t}
+    `;
 })}
   
 class Page:

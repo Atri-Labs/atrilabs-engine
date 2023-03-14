@@ -4,7 +4,7 @@ import { extractParams } from "@atrilabs/commands-builder";
 import { buildManifests } from "./buildManifests";
 import fs from "fs";
 import path from "path";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import pkgUp from "pkg-up";
 import { createComponentClassFile, createInitPyFile } from "./utils";
 
