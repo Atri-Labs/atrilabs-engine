@@ -16,12 +16,13 @@ export default function Link(props: LinkProps) {
       event.preventDefault();
       if (matchRoutes(atriRouter.getRouter()!.routes, props.route) === null) {
         fetch(props.route).then(() => {
-          const moduleName =
-            "/static/js/src/pages" + props.route + ".bundle.js";
+          const moduleName = "/atri/js/pages" + props.route + ".js";
           const script = document.createElement("script");
           script.src = moduleName;
           document.body.appendChild(script);
-          navigate(props.route);
+          script.onload = () => {
+            atriRouter.setNavigateToWhenNewRouterLoaded(props.route);
+          };
         });
       } else {
         navigate(props.route);

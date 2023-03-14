@@ -1,5 +1,8 @@
 import { MainAppContext, AtriScriptsContext } from "@atrilabs/atri-app-core";
 import { renderToString } from "react-dom/server";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
+import { atriRouter } from "./atriRouter";
+import loadPage from "./loadPage";
 
 export function renderPageServerSide(options: {
   scriptSrcs: string[];
@@ -11,6 +14,9 @@ export function renderPageServerSide(options: {
 }) {
   const { manifestRegistrySrcs, scriptSrcs, AppFn, PageFn, DocFn, baseSrcs } =
     options;
+  atriRouter.setRouterFactory(createMemoryRouter);
+  // TODO: replace "/" with the routeObjectPath
+  loadPage(atriRouter, "/", AppFn, PageFn);
   return renderToString(
     <AtriScriptsContext.Provider
       value={{
@@ -21,11 +27,7 @@ export function renderPageServerSide(options: {
     >
       <MainAppContext.Provider
         value={{
-          App: (
-            <AppFn>
-              <PageFn />
-            </AppFn>
-          ),
+          App: <RouterProvider router={atriRouter.getRouter()!} />,
         }}
       >
         <DocFn />

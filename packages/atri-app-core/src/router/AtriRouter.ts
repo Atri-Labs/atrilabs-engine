@@ -8,6 +8,7 @@ export class AtriRouter {
   private router: Router | null = null;
   private createRouter: typeof createBrowserRouter | typeof createMemoryRouter =
     createBrowserRouter;
+  private navigateToWhenNewRouterLoaded: string | null = null;
 
   setRouterFactory(
     factory: typeof createBrowserRouter | typeof createMemoryRouter
@@ -47,5 +48,15 @@ export class AtriRouter {
         this.subs.splice(index, 1);
       }
     };
+  }
+
+  setNavigateToWhenNewRouterLoaded(urlPath: string) {
+    this.navigateToWhenNewRouterLoaded = urlPath;
+  }
+
+  removeNavigateToWhenNewRouterLoaded() {
+    const temp = this.navigateToWhenNewRouterLoaded;
+    this.navigateToWhenNewRouterLoaded = null;
+    return temp;
   }
 }
