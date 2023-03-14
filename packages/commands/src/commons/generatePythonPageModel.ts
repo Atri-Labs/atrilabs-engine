@@ -112,7 +112,9 @@ ${notARepeatingChildren
 		self._setter_access_tracker["${alias}"] = {}
 		self._${alias} = ${compKey}${
         componentType === "repeating" ? `[AtriRepeatingChildren${alias}]` : ""
-      }(new_state)`;
+      }(new_state${
+        componentType === "repeating" ? `, AtriRepeatingChildren${alias}` : ""
+      })`;
     })
     .join("\n")}
   
