@@ -108,13 +108,6 @@ type PROGRAMTIC_SELECT_EVENT = {
   type: typeof PROGRAMTIC_SELECT;
   id: string;
 };
-type DROP_ZONE_CREATED_EVENT = {
-  type: typeof DROP_ZONE_CREATED;
-  id: string;
-};
-type DROP_ZONE_DESTROYED_EVENT = {
-  type: typeof DROP_ZONE_DESTROYED;
-};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
