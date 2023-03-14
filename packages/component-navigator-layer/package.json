@@ -7,7 +7,7 @@
   "license": "ISC",
   "main": "src/index.tsx",
   "files": [
-    "lib"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
