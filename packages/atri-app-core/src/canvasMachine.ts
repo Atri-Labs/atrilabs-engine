@@ -28,6 +28,8 @@ const KEY_UP = "KEY_UP" as const;
 const KEY_DOWN = "KEY_DOWN" as const;
 const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
 const PROGRAMTIC_SELECT = "PROGRAMTIC_SELECT" as const;
+const DROP_ZONE_CREATED = "DROP_ZONE_CREATED" as const;
+const DROP_ZONE_DESTROYED = "DROP_ZONE_DESTROYED" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -174,6 +176,7 @@ type CanvasMachineContext = {
   } | null;
   repositionComponent: string | null;
   lastRewiredComponent: string | null;
+  probableParent: string | null;
 };
 
 // actions
@@ -270,6 +273,10 @@ function setEverythingToNull(context: CanvasMachineContext) {
   context.repositionComponent = null;
   context.mousePosition = null;
   context.lastDropped = null;
+}
+
+function setProbableParentToNull(context: CanvasMachineContext) {
+  context.probableParent = null;
 }
 
 // conds
@@ -427,7 +434,9 @@ type SubscribeStates =
   | typeof KEY_UP
   | typeof KEY_DOWN
   | "hoverWhileSelected"
-  | "hoverWhileSelectedEnd";
+  | "hoverWhileSelectedEnd"
+  | typeof DROP_ZONE_CREATED
+  | typeof DROP_ZONE_DESTROYED;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -456,6 +465,8 @@ export function createCanvasMachine(id: string) {
     [KEY_DOWN]: [],
     hoverWhileSelected: [],
     hoverWhileSelectedEnd: [],
+    [DROP_ZONE_CREATED]: [],
+    [DROP_ZONE_DESTROYED]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -508,6 +519,7 @@ export function createCanvasMachine(id: string) {
         repositionTarget: null,
         repositionComponent: null,
         lastRewiredComponent: null,
+        probableParent: null,
       },
       states: {
         [initial]: {
@@ -610,18 +622,77 @@ export function createCanvasMachine(id: string) {
                       {
                         target: repositionIdle,
                         cond: isInTheSameParent,
-                        actions: ["emitRepositionIdle"],
+                        actions: [
+                          "emitRepositionIdle",
+                          "setProbableParentToNull",
+                          "emitDropZoneDestroyed",
+                        ],
                       },
                       {
                         actions: [
                           "setRepositionTarget",
                           "emitRepositionActive",
+                          (context, event) => {
+                            const { target } = event.event;
+                            if (target !== null && "closest" in target) {
+                              const parentEl = (target as HTMLElement).closest(
+                                "[data-atri-parent]"
+                              );
+                              let parentElId: string | null = null;
+                              if (parentEl) {
+                                parentElId =
+                                  parentEl.getAttribute("data-atri-comp-id")!;
+                              }
+                              if (
+                                parentElId !== null &&
+                                parentElId !== context.probableParent
+                              ) {
+                                // Destroy a dropzone when the current and
+                                // previous parents do not match
+                                context.probableParent = null;
+                                callSubscribers(
+                                  "DROP_ZONE_DESTROYED",
+                                  context,
+                                  event
+                                );
+                                // Create a dropzone after the previous dropzone
+                                // is destroyed
+                                context.probableParent = parentElId;
+                                callSubscribers(
+                                  "DROP_ZONE_CREATED",
+                                  context,
+                                  event
+                                );
+                              }
+                            }
+                          },
+                          (context, event) => {
+                            const { target } = event.event;
+                            const currentEl = (target as HTMLElement).closest(
+                              "[data-atri-comp-id]"
+                            );
+                            if (
+                              context.repositionComponent ===
+                              currentEl?.getAttribute("data-atri-comp-id")!
+                            ) {
+                              setProbableParentToNull(context);
+                              callSubscribers(
+                                "DROP_ZONE_DESTROYED",
+                                context,
+                                event
+                              );
+                            }
+                          },
                         ],
                       },
                     ],
                     [MOUSE_UP]: {
                       target: `#${id}.${ready}.${selected}`,
-                      actions: ["emitRepositionSuccess"],
+                      actions: [
+                        "emitRepositionSuccess",
+                        "setProbableParentToNull",
+                        "emitDropZoneDestroyed",
+                      ],
                     },
                   },
                 },
@@ -806,15 +877,47 @@ export function createCanvasMachine(id: string) {
             [drag_in_progress_active]: {
               on: {
                 [MOUSE_MOVE]: {
-                  actions: ["setMousePosition", "emitMoveWhileDrag"],
+                  actions: [
+                    "setMousePosition",
+                    "emitMoveWhileDrag",
+                    (context, event) => {
+                      const { target } = event.event;
+                      if (target !== null && "closest" in target) {
+                        const parentEl = (target as HTMLElement).closest(
+                          "[data-atri-parent]"
+                        );
+                        let parentElId: string | null = null;
+                        if (parentEl) {
+                          parentElId =
+                            parentEl.getAttribute("data-atri-comp-id")!;
+                        }
+                        if (
+                          parentElId !== null &&
+                          parentElId !== context.probableParent
+                        ) {
+                          context.probableParent = parentElId;
+                          callSubscribers("DROP_ZONE_CREATED", context, event);
+                        }
+                      }
+                    },
+                  ],
                 },
                 [MOUSE_UP]: {
                   target: `#${id}.${ready}`,
-                  actions: ["setMousePosition", "emitUpWhileDrag"],
+                  actions: [
+                    "setMousePosition",
+                    "emitUpWhileDrag",
+                    "setProbableParentToNull",
+                    "emitDropZoneDestroyed",
+                  ],
                 },
                 [OUTSIDE_CANVAS]: {
                   target: drag_in_progress_idle,
-                  actions: ["emitOutsideCanvas"],
+                  actions: [
+                    "emitOutsideCanvas",
+                    "setProbableParentToNull",
+                    "emitDropZoneDestroyed",
+                  ],
                 },
               },
             },
@@ -827,6 +930,7 @@ export function createCanvasMachine(id: string) {
       actions: {
         setDragData,
         setMousePosition,
+        setProbableParentToNull,
         emitUpWhileDrag: callSubscribersFromAction("upWhileDrag"),
         emitMoveWhileDrag: callSubscribersFromAction("moveWhileDrag"),
         emitOutsideCanvas: callSubscribersFromAction("OUTSIDE_CANVAS"),
@@ -850,6 +954,7 @@ export function createCanvasMachine(id: string) {
         emitKeyUp: callSubscribersFromAction(KEY_UP),
         emitKeyDown: callSubscribersFromAction(KEY_DOWN),
         setEverythingToNull,
+        emitDropZoneDestroyed: callSubscribersFromAction(DROP_ZONE_DESTROYED),
       },
     }
   );

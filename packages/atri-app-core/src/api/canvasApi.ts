@@ -56,9 +56,6 @@ subscribeCanvasMachine("OUTSIDE_CANVAS", (_context, event) => {
     "*"
   );
 });
-subscribeCanvasMachine("moveWhileDrag", () => {
-  // TODO: detect catcher & call canvas overlay api
-});
 subscribeCanvasMachine("upWhileDrag", (context) => {
   const canvasZone = (context.mousePosition!.target as HTMLElement).closest(
     "[data-atri-canvas-id]"
