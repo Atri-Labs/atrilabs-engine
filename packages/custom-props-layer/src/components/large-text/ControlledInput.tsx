@@ -5,6 +5,19 @@ export type ControlledInputProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
+const styles: { [key: string]: React.CSSProperties } = {
+  inputBox: {
+    width: "100%",
+    resize: "vertical",
+    fontFamily: "Inter, sans-serif",
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: "14px",
+    lineHeight: "16px",
+    marginTop: "5px",
+  },
+};
+
 const ControlledInput: React.FC<ControlledInputProps> = ({
   value,
   onChange,
@@ -32,6 +45,7 @@ const ControlledInput: React.FC<ControlledInputProps> = ({
       value={value}
       onChange={(e) => handleChange(e)}
       rows={5}
+      style={styles.inputBox}
     />
   );
 };

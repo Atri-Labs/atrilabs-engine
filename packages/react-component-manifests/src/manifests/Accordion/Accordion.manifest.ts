@@ -33,7 +33,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     collapse: { type: "boolean" },
     bordered: { type: "boolean" },
     ghost: { type: "boolean" },
-    defaultActiveKey: { type: "number" },
+    defaultActiveKey: { type: "array_number" },
     expandIcon: { type: "static_asset" },
 
     items: {

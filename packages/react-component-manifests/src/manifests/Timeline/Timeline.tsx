@@ -1,10 +1,6 @@
 import React, { forwardRef, useMemo } from "react";
 import { Timeline as AntdTimeline } from "antd";
 
-export type CollapsibleTypes = "header" | "icon" | "disabled";
-export type ExpandIconPosition = "start" | "end";
-
-export type Size = "large" | "middle" | "small";
 export type Position = "left" | "right";
 
 const Timeline = forwardRef<
@@ -29,7 +25,7 @@ const Timeline = forwardRef<
 >((props, ref) => {
   const timelineItems = useMemo(() => {
     return props.custom.items.map((item) => {
-      if (typeof item.dot === "string") {
+      if ((typeof item.dot === "string" && item.dot !== "") || undefined) {
         return {
           ...item,
           dot: <img src={item.dot} alt={item.dot} />,

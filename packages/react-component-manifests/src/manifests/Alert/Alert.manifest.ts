@@ -32,12 +32,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
     icon: { type: "static_asset" },
     isClosable: { type: "boolean" },
     closeText: { type: "text" },
-    closeIcon: {type: "static_asset"},
-    banner: { type: "boolean" },  
-    successIcon: { type: "static_asset" },
-    infoIcon: { type: "static_asset" },
-    warningIcon: { type: "static_asset" },
-    errorIcon: { type: "static_asset" },  
+    closeIcon: { type: "static_asset" },
+    banner: { type: "boolean" },
   },
 };
 
@@ -68,7 +64,7 @@ const compManifest: ReactComponentManifestSchema = {
           text: "Alert Title",
           description: "Alert Description",
           isClosable: true,
-          showIcon:true,
+          showIcon: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

@@ -2,12 +2,6 @@ import React, { forwardRef } from "react";
 import { Tree as AntdTree } from "antd";
 import type { DataNode } from "antd/es/tree";
 
-export type CollapsibleTypes = "header" | "icon" | "disabled";
-export type ExpandIconPosition = "start" | "end";
-
-export type Size = "large" | "middle" | "small";
-export type Position = "left" | "right";
-
 const Tree = forwardRef<
   HTMLDivElement,
   {

@@ -50,6 +50,7 @@ const Form = forwardRef<
       target: string;
       autocomplete: string;
       showResetButton: boolean;
+      showSubmitButton: boolean;
       submitButtonBgColor?: string;
       submitButtonColor?: string;
       resetButtonBgColor?: string;
@@ -320,7 +321,7 @@ const Form = forwardRef<
             columnGap: "1em",
             alignItems: "baseline",
           }}
-        >
+        > {props.custom.showSubmitButton && (
           <button
             style={{
               padding: "4px 15px",
@@ -331,6 +332,7 @@ const Form = forwardRef<
           >
             Submit
           </button>
+           )}
           {props.custom.showResetButton && (
             <button
               style={{

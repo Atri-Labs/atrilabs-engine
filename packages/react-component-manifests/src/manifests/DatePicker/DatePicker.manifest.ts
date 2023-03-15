@@ -28,7 +28,10 @@ const customTreeOptions: CustomPropsTreeOptions = {
     },
     showTime: {
       type: "boolean",
-    }
+    },
+    disabled: {
+      type: "boolean",
+    },
   },
 };
 
@@ -55,7 +58,9 @@ const compManifest: ReactComponentManifestSchema = {
     attachCallbacks: {
       onClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
-    defaultCallbackHandlers: {},
+    defaultCallbackHandlers: {
+      onOpenChange :[{ sendEventData: true }],
+    },
   },
 };
 

@@ -54,6 +54,46 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     href: { type: "text" },
+    download: { type: "text" },
+    referrerPolicy: {
+      type: "enum",
+      options: [
+        "no-referrer",
+        "no-referrer-when-downgrade",
+        "origin",
+        "origin-when-cross-origin",
+        "same-origin",
+        "strict-origin-when-cross-origin",
+        "unsafe-url",
+      ],
+    },
+    rel: {
+      type: "enum",
+      options: [
+        "",
+        "alternate",
+        "author",
+        "bookmark",
+        "external",
+        "help",
+        "license",
+        "next",
+        "nofollow",
+        "noreferrer",
+        "noopener",
+        "prev",
+        "search",
+        "tag",
+      ],
+    },
+    target: {
+      type: "enum",
+      options: ["_blank", "_parent", "_self", "_top"],
+    },
+    hreflang: { type: "text" },
+    ping: { type: "text" },
+    type: { type: "text" },
+    disabled: { type: "boolean" },
   },
 };
 
@@ -70,7 +110,11 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {},
+        initialValue: {
+          referrerPolicy: "no-referrer-when-downgrade",
+          target: "_self",
+          disabled: true,
+        },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },

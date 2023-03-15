@@ -33,8 +33,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       attributes: [
         { fieldName: "title", type: "text" },
         { fieldName: "key", type: "text" },
-        { fieldName: "disabled", type: "boolean" },  
-        { fieldName: "children", type: "array" },   
+        { fieldName: "disabled", type: "boolean" },   
       ],
     },
   },

@@ -14,6 +14,7 @@ const Breadcrumb = forwardRef<
       }[];
     };
     className?: string;
+    onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLSpanElement>;
   }
 >((props, ref) => {
   return (
@@ -24,7 +25,11 @@ const Breadcrumb = forwardRef<
         separator={props.custom.separator}
       >
         {props.custom.items.map((item, index: number) => (
-          <AntdBreadcrumb.Item key={index} href={item.href}>
+          <AntdBreadcrumb.Item
+            key={index}
+            href={item.href}
+            onClick={props.onClick}
+          >
             <div style={{ display: "flex", alignItems: "center" }}>
               {item.icon ? <img src={item.icon} alt={item.icon} /> : undefined}
               <span>{item.title}</span>

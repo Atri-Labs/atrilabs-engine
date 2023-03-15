@@ -8,8 +8,8 @@ const DatePicker = forwardRef<
   {
     styles: React.CSSProperties;
     className?: string;
-    custom?: { picker?: PickerType; showTime?: boolean };
-    onClick: (event: { pageX: number; pageY: number }) => void;
+    custom: { picker?: PickerType; showTime?: boolean; disabled?: boolean };
+    onOpenChange?: (open: boolean) => void;
   }
 >((props, ref) => {
   // moved ref to div, as the Antd DatePicker doesnt provide ref for DatePicker
@@ -19,6 +19,8 @@ const DatePicker = forwardRef<
         picker={props.custom?.picker}
         showTime={props.custom?.showTime}
         style={props.styles}
+        disabled={props.custom?.disabled}
+        onOpenChange={props.onOpenChange}
       />
     </div>
   );
