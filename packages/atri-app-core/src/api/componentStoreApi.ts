@@ -260,6 +260,16 @@ function getAllComponentIds() {
   return Object.keys(componentStore);
 }
 
+function reset() {
+  Object.keys(componentStore).forEach((key) => delete componentStore[key]);
+  Object.keys(componentReverseMap).forEach(
+    (key) => delete componentReverseMap[key]
+  );
+  Object.keys(canvasZoneReverseMap).forEach(
+    (key) => delete canvasZoneReverseMap[key]
+  );
+}
+
 export const componentStoreApi = {
   createComponent,
   getComponent,
@@ -277,4 +287,5 @@ export const componentStoreApi = {
   // api for live view
   createLiveComponent,
   getAllComponentIds,
+  reset,
 };

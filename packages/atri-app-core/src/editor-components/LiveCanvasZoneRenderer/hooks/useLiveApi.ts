@@ -8,14 +8,13 @@ export function useLiveApi(canvasZoneId: string) {
     setDirectChildrenIds(
       componentStoreApi.getCanvasZoneChildrenId(canvasZoneId)
     );
-  }, []);
+  }, [canvasZoneId]);
   useEffect(() => {
     return liveApi.subscribeCanvasZone(canvasZoneId, () => {
-      console.log("canvas zone subscribedd");
       setDirectChildrenIds(
         componentStoreApi.getCanvasZoneChildrenId(canvasZoneId)
       );
     });
-  }, []);
+  }, [canvasZoneId]);
   return { directChildrenIds };
 }

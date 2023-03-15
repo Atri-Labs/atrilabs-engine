@@ -10,5 +10,6 @@ export default function App() {
       setRouter(atriRouter.getRouter());
     });
   }, [atriRouter]);
+
   return <>{router !== null ? <RouterProvider router={router} /> : null}</>;
 }

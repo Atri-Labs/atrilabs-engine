@@ -122,7 +122,8 @@ function updateProps(id: string, selector: string[], value: any) {
 // communicate over socket to fetch events
 const socket: Socket<LiveApiServerToClientEvents, LiveapiClientToServerEvents> =
   io({ path: "/_atri/socket.io", autoConnect: false });
-socket.on("connect", () => {
+
+function emitSendEvents() {
   socket.emit("sendEvents", getActivePageRoute(), (incomingEvents) => {
     eventsToComponent(incomingEvents);
     const state = getPageState();
@@ -140,7 +141,12 @@ socket.on("connect", () => {
       });
     });
   });
+}
+
+socket.on("connect", () => {
+  emitSendEvents();
 });
+
 if (
   typeof window !== "undefined" &&
   window.location === window.parent.location
@@ -239,6 +245,16 @@ function mergeProps(
   }
 }
 
+/**
+ * The reset function is used when the user
+ * moves from one page to another
+ */
+function reset() {
+  componentStoreApi.reset();
+  activeForest = null;
+  emitSendEvents();
+}
+
 export const liveApi = {
   subscribeCanvasZone,
   updateProps,
@@ -250,4 +266,5 @@ export const liveApi = {
   getPageState,
   getComponentIdFromAlias,
   mergeProps,
+  reset,
 };
