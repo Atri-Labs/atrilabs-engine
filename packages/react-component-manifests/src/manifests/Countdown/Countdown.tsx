@@ -23,24 +23,20 @@ const Countdown = forwardRef<
 >((props, ref) => {
   const { custom } = props;
   const { value, inputType } = custom;
-  // const items = useMemo(() => {
-  //   if (props.custom.items.length === 0)
-  //     return [{ text: "Sample Text", image: "" }];
-  //   return props.custom.items;
-  // }, [props.custom.items]);
+
   const countDownValue = useMemo(() => {
     return inputType === "second"
-          ? Date.now() + value * 1000
-          : inputType === "hour"
-          ? Date.now() + value * 3600000
-          : inputType === "minute"
-          ? Date.now() + value * 60000
-          : inputType === "day"
-          ? Date.now() + value * 3600000 * 24
-          : ""
+      ? Date.now() + value * 1000
+      : inputType === "hour"
+      ? Date.now() + value * 3600000
+      : inputType === "minute"
+      ? Date.now() + value * 60000
+      : inputType === "day"
+      ? Date.now() + value * 3600000 * 24
+      : "";
   }, [value, inputType]);
-  
-  // moved ref to div, as the Antd Statistic doesnt provide ref for Statistic
+
+  // moved ref to div, as the Antd Countdown doesnt provide ref for Countdown
   return (
     <div ref={ref}>
       <AntdCountdown

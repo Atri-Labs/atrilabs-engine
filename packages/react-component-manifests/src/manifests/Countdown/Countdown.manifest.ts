@@ -29,7 +29,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     },
     inputType: {
       type: "enum",
-      options: ["day", "hour", "minute", "second",],
+      options: ["day", "hour", "minute", "second"],
     },
     value: { type: "number" },
     prefix: { type: "text" },
