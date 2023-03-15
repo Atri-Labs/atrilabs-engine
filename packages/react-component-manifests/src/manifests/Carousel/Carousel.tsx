@@ -18,24 +18,18 @@ const Carousel = forwardRef<
             className?: string;
           };
       beforeChange?(currentSlide: number, nextSlide: number): void;
+      afterChange?(currentSlide: number): void;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
-
     className?: string;
   }
 >((props, ref) => {
   const { custom } = props;
-  const onChange = (currentSlide: number) => {
-    console.log(currentSlide);
-  };
-
   return (
     <div ref={ref}>
       <AntdCarousel
-        afterChange={onChange}
         className={props.className}
         {...custom}
-        beforeChange={props.custom.beforeChange}
       >
         {props.custom.items.map((item, index) => (
           <div key={index}>

@@ -9,7 +9,6 @@ const Repeating = forwardRef<
     children: React.ReactNode[];
   }
 >((props, ref) => {
-  console.log("props.styles", props.styles);
   return (
     <ul
       style={{

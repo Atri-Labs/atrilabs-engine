@@ -24,7 +24,7 @@ import { getAliasList } from "./utils";
 import { CssSummary } from "./components/cssSummary/CssSummary";
 import { Tree } from "@atrilabs/forest";
 import { BoxShadow } from "./components/box-shadow/BoxShadow";
-import {ListStyle} from "./components/list-style/ListStyle";
+import { ListStyle } from "./components/list-style/ListStyle";
 
 export type TabBodyProps = {
   alias: string;
@@ -198,7 +198,7 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
           colorValueArraySetter={props.colorValueArraySetter}
         />
       ) : null}
-        {props.treeOptions && props.treeOptions.listStyleOptions ? (
+      {props.treeOptions && props.treeOptions.listStyleOptions ? (
         <ListStyle
           styles={props.styles}
           patchCb={props.patchCb}

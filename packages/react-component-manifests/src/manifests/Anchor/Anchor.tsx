@@ -48,7 +48,6 @@ export const Anchor = forwardRef<
   }
 >((props, ref) => {
   const { custom } = props;
-  console.log("disabled is", props.custom.disabled);
 
   const onClickCb = useCallback(
     (e: React.MouseEvent) => {
@@ -57,7 +56,6 @@ export const Anchor = forwardRef<
         e.stopPropagation(); // stop event propagation
         return;
       } else {
-        console.log("else");
         const { x, y, width, height } = (
           e.nativeEvent.target as HTMLElement
         ).getBoundingClientRect();

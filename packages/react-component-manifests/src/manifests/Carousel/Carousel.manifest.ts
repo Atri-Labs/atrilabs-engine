@@ -85,10 +85,10 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
+      beforeChange: [{ type: "do_nothing" }],
+      afterChange: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {
-      beforeChange: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 

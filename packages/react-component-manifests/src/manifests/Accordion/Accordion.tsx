@@ -41,7 +41,6 @@ const Accordion = forwardRef<
     () => <img src={props.custom?.expandIcon} alt={props.custom?.expandIcon} />,
     [props.custom]
   );
-  console.log("items", props.custom.items);
   return (
     <div ref={ref}>
       <Collapse
