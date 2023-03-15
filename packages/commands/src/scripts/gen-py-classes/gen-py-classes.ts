@@ -4,7 +4,7 @@ import { extractParams } from "@atrilabs/commands-builder";
 import { buildManifests } from "./buildManifests";
 import fs from "fs";
 import path from "path";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import pkgUp from "pkg-up";
 import { createComponentClassFile, createInitPyFile } from "./utils";
 
@@ -100,6 +100,9 @@ async function main() {
     );
   }
 
+  // It's a standard for output file to be named manifests.bundle.js
+  params.outputFilename = "manifests.bundle.js";
+
   buildManifests({ params })
     .then(() => {
       const outputFilepath = path.resolve(
@@ -127,12 +130,18 @@ async function main() {
                 "dataTypes"
               ] || {}
             );
+            reactManifest.dev.isRepeating;
             return {
               content: createComponentClassFile({
                 compKey,
                 nodePkg,
                 callbacks,
                 customProps,
+                componentType: reactManifest.dev.isRepeating
+                  ? "repeating"
+                  : reactManifest.dev.acceptsChild
+                  ? "parent"
+                  : "normal",
               }),
               compKey,
             };

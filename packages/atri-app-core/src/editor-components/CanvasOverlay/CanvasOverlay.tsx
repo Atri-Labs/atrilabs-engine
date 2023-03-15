@@ -3,6 +3,7 @@ import {
   useSelectHints,
   useHoverHints,
   useDraggedOverlay,
+  useDropzoneHints,
 } from "./hooks";
 
 export function CanvasOverlay() {
@@ -10,6 +11,7 @@ export function CanvasOverlay() {
   useSelectHints();
   useHoverHints();
   useDraggedOverlay();
+  useDropzoneHints();
   return (
     <>
       {dragFC?.Comp && dragOverlayStyle ? (

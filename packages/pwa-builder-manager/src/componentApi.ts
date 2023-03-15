@@ -106,10 +106,15 @@ function getAncestors(id: string, ancestors: string[] = []) {
   return ancestors;
 }
 
+function getActivePageComponentNodes() {
+  return { ...BrowserForestManager.currentForest.tree(ComponentTreeId)!.nodes };
+}
+
 export const componentApi = {
   getComponentNode,
   getAncestors,
   createSortedParentChildMap,
   createReverseMap,
   getAllNodeIdsFromReverseMap,
+  getActivePageComponentNodes,
 };

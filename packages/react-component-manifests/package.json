@@ -1,13 +1,15 @@
 {
   "name": "@atrilabs/react-component-manifests",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "./src/manifest.config.js",
   "files": [
-    "src"
+    "src",
+    "dist/manifests.bundle.js",
+    "dist/manifests.bundle.js.map"
   ],
   "publishConfig": {
     "access": "public"
@@ -24,21 +26,12 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^1.0.0-alpha.7",
-    "@atrilabs/commands": "^1.0.0-alpha.7",
-    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.7",
-    "@atrilabs/design-system": "^1.0.0-alpha.7",
-    "@atrilabs/layer-types": "^1.0.0-alpha.7",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.7",
-    "@emotion/react": "^11.10.0",
-    "@emotion/styled": "^11.10.0",
-    "@mui/material": "^5.10.0",
-    "@mui/x-data-grid": "^5.15.2",
-    "antd": "^5.3.0",
-    "color": "^4.2.3",
-    "recharts": "^2.1.13",
-    "typescript": "^4.6.4",
-    "@uiw/react-codemirror": "^4.19.9",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.8",
+    "@atrilabs/commands": "^1.0.0-alpha.8",
+    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.8",
+    "@atrilabs/design-system": "^1.0.0-alpha.8",
+    "@atrilabs/layer-types": "^1.0.0-alpha.8",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.8",
     "@codemirror/lang-css": "^6.0.2",
     "@codemirror/lang-html": "^6.4.2",
     "@codemirror/lang-java": "^6.0.1",
@@ -48,7 +41,16 @@
     "@codemirror/lang-python": "^6.1.1",
     "@codemirror/lang-rust": "^6.0.1",
     "@codemirror/lang-sql": "^6.4.0",
-    "@codemirror/lang-xml": "^6.0.2"
+    "@codemirror/lang-xml": "^6.0.2",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@mui/material": "^5.10.0",
+    "@mui/x-data-grid": "^5.15.2",
+    "@uiw/react-codemirror": "^4.19.9",
+    "antd": "^5.3.0",
+    "color": "^4.2.3",
+    "recharts": "^2.1.13",
+    "typescript": "^4.6.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
