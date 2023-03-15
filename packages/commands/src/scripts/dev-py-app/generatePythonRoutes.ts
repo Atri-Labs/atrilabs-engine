@@ -11,11 +11,10 @@ export function generatePythonRoute(unixFilepath: string) {
   return `from .${path.basename(unixFilepath)}_model import Page
 from fastapi import Request, Response
 
-def init_state(at: Page):
+def handle_init_state(at: Page):
 	"""
-	This function is called everytime "Publish" button is hit in the editor.
-	The argument "at" is a dictionary that has initial values set from visual editor.
-	Changing values in this dictionary will modify the intial state of the app.
+	The argument "at" is a the model that has initial values set from visual editor.
+	Changing values in this "at" object will modify the intial state of the app.
 	"""
 	pass
 

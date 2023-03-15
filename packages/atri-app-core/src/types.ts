@@ -110,6 +110,10 @@ export interface LiveapiClientToServerEvents {
     data: { urlPath: string; state: { [alias: string]: any }; query?: string },
     callback: (state: { [alias: string]: any }) => void
   ): void;
+  runSSG(
+    data: { urlPath: string; state: { [alias: string]: any } },
+    callback: (state: { [alias: string]: any }) => void
+  ): void;
 }
 
 export interface LiveApiInterServerEvents {}

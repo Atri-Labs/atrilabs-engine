@@ -129,15 +129,22 @@ function emitSendEvents() {
     const state = getPageState();
     const urlPath = getActivePageRoute();
     const query = getQuery();
-    socket.emit("runSSR", { urlPath, state, query }, (delta) => {
+    socket.emit("runSSG", { urlPath, state }, (delta) => {
       const aliases = Object.keys(delta);
       aliases.forEach((alias) => {
         const compId = getComponentIdFromAlias(alias);
         if (compId) mergeProps(compId, delta[alias], true);
       });
-      const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
-      canvasZoneIds.forEach((canvasZoneId) => {
-        callCanvasZoneSubscriber(canvasZoneId);
+      socket.emit("runSSR", { urlPath, state, query }, (delta) => {
+        const aliases = Object.keys(delta);
+        aliases.forEach((alias) => {
+          const compId = getComponentIdFromAlias(alias);
+          if (compId) mergeProps(compId, delta[alias], true);
+        });
+        const canvasZoneIds = componentStoreApi.getActiveCanvasZoneIds();
+        canvasZoneIds.forEach((canvasZoneId) => {
+          callCanvasZoneSubscriber(canvasZoneId);
+        });
       });
     });
   });
