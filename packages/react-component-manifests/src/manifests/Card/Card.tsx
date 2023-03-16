@@ -21,6 +21,7 @@ const Card = forwardRef<
       size?: Size;
     };
     className?: string;
+    onTabChange?: (key: string) => void;
   }
 >((props, ref) => {
   return (
@@ -32,6 +33,7 @@ const Card = forwardRef<
       bordered={props.custom.bordered}
       size={props.custom.size}
       cover={<img src={props.custom.cover} alt={props.custom.cover} />}
+      onTabChange={props.onTabChange}
     >
       {props.custom.type === "card" && <p> {props.custom.description}</p>}
       {props.custom.type === "meta" && (

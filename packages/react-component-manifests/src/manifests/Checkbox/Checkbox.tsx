@@ -1,12 +1,13 @@
 import React, { forwardRef } from "react";
 import { Checkbox as AntdCheckbox } from "antd";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 
 const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
     custom: { checked: boolean; text: string[] };
-    onChange: (checked: boolean) => void;
+    onChange: (event: CheckboxChangeEvent) => void
     className?: string;
   }
 >((props, ref) => {
@@ -17,6 +18,7 @@ const Checkbox = forwardRef<
         className={props.className}
         style={props.styles}
         checked={props.custom.checked}
+        onChange={props.onChange}
       >
         {props.custom.text}
       </AntdCheckbox>

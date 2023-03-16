@@ -17,9 +17,14 @@ const DevAnchor: typeof Anchor = forwardRef((props, ref) => {
           ...props.styles,
         }
       : { ...props.styles };
-  // eslint-disable-next-line no-script-url
-  props.custom.href = "javascript:void(0)";
-  return <Anchor ref={ref} {...props} styles={overrideStyleProps} />;
+  return (
+    <Anchor
+      ref={ref}
+      {...props}
+      styles={overrideStyleProps}
+      custom={{ ...props.custom, disabled: true }}
+    />
+  );
 });
 
 export default DevAnchor;

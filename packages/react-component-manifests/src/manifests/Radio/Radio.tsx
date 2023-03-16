@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { Radio as AntdRadio } from "antd";
+import { Radio as AntdRadio, RadioChangeEvent } from "antd";
 
 const Radio = forwardRef<
   HTMLInputElement,
@@ -12,7 +12,7 @@ const Radio = forwardRef<
       radius?: string;
       options?: any;
     };
-    onChange: (checked: boolean) => void;
+    onChange: (event: RadioChangeEvent) => void;
     className?: string;
   }
 >((props, ref) => {
@@ -29,6 +29,7 @@ const Radio = forwardRef<
         className={props.className}
         checked={props.custom.checked}
         value={props.custom.text}
+        onChange={props.onChange}
       >
         {props.custom.text ? props.custom.text : "label"}
       </AntdRadio>

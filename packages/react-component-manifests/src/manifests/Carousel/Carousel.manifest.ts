@@ -22,11 +22,15 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    startTile: { type: "number" },
-    isIndicatorCircle: { type: "boolean" },
-    indicatorPosition: {
+    autoplay: { type: "boolean" },
+    dots: { type: "boolean" },
+    dotPosition: {
       type: "enum",
-      options: ["", "Top", "Bottom", "Left", "Right"],
+      options: ["Bottom", "top", "left", "right"],
+    },
+    effect: {
+      type: "enum",
+      options: ["scrollx", "fade"],
     },
     items: {
       type: "array_map",
@@ -47,8 +51,11 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          height: "300px",
-          width: "400px",
+          height: "160px",
+          color: "#fff",
+          lineHeight: "160px",
+          textAlign: "center",
+          background: "#364d79",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -56,9 +63,21 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          items: [],
-          startTile: 0,
-          isIndicatorCircle: false,
+          items: [
+            {
+              text: "1",
+            },
+            {
+              text: "2",
+            },
+            {
+              text: "3",
+            },
+            {
+              text: "4",
+            },
+          ],
+          dots: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -66,10 +85,10 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
+      beforeChange: [{ type: "do_nothing" }],
+      afterChange: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 

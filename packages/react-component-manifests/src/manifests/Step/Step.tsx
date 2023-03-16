@@ -58,7 +58,7 @@ const Step = forwardRef<
                 height: "32px",
               }}
             >
-              <img src={item.icon} width="100%" alt="" />
+              <img src={item.icon} width="100%" alt={item.icon}  />
             </div>
           ),
         };

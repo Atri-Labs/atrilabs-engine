@@ -18,6 +18,7 @@ const cssTreeOptions: CSSTreeOptions = {
   outlineOptions: true,
   backgroundOptions: true,
   miscellaneousOptions: true,
+  listStyleOptions : true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {

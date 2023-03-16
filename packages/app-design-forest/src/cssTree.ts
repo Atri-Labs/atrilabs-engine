@@ -16,6 +16,8 @@ export type CSSTreeOptions = {
   gridDisplayOptions?: boolean;
   // display values like inline, inline-block, content etc.
   css2DisplayOptions?: boolean;
+  //listStyle
+  listStyleOptions?:boolean;
 };
 
 export default function () {
