@@ -37,29 +37,7 @@ export function RepeatingComponentRenderer(
       const childId = children[0];
       const { acceptsChild, isRepeating } =
         componentStoreApi.getComponent(childId)!;
-      return acceptsChild ? (
-        isRepeating ? (
-          <RepeatingContext.Provider
-            value={{
-              indices: [...(repeatingContext?.indices || []), index],
-              lengths: [...(repeatingContext?.lengths || []), num],
-            }}
-            key={childId}
-          >
-            <RepeatingComponentRenderer id={childId} />
-          </RepeatingContext.Provider>
-        ) : (
-          <RepeatingContext.Provider
-            value={{
-              indices: [...(repeatingContext?.indices || []), index],
-              lengths: [...(repeatingContext?.lengths || []), num],
-            }}
-            key={childId}
-          >
-            <ParentComponentRenderer id={childId} />
-          </RepeatingContext.Provider>
-        )
-      ) : (
+      return (
         <RepeatingContext.Provider
           value={{
             indices: [...(repeatingContext?.indices || []), index],
@@ -67,7 +45,15 @@ export function RepeatingComponentRenderer(
           }}
           key={childId}
         >
-          <NormalComponentRenderer id={childId} />
+          {acceptsChild ? (
+            isRepeating ? (
+              <RepeatingComponentRenderer id={childId} />
+            ) : (
+              <ParentComponentRenderer id={childId} />
+            )
+          ) : (
+            <NormalComponentRenderer id={childId} />
+          )}
         </RepeatingContext.Provider>
       );
     });

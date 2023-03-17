@@ -6,11 +6,13 @@ import { LiveRepeatingComponentRenderer } from "../LiveRepeatingComponentRendere
 import { LiveNormalComponentRenderer } from "../LiveNormalComponentRenderer/LiveNormalComponentRenderer";
 import { useGetComponentProps } from "../live-component/hooks/useGetComponentProps";
 import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
+import { useGetComponentRef } from "../hooks/useGetComponentRef";
 
 export function LiveParentComponentRenderer(
   props: ParentComponentRendererProps
 ) {
-  const { comp: Comp, ref } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const ref = useGetComponentRef({ id: props.id });
   const children = componentStoreApi.getComponentChildrenId(props.id);
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });

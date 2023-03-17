@@ -1,17 +1,21 @@
 import { componentStoreApi } from "../../api";
 import { RepeatingComponentRendererProps } from "../../types";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { LiveParentComponentRenderer } from "../LiveParentComponentRenderer/LiveParentComponentRenderer";
 import { LiveNormalComponentRenderer } from "../LiveNormalComponentRenderer/LiveNormalComponentRenderer";
 import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
 import { useAssignComponentId } from "../hooks/useAssignComponentId";
 import { useGetComponentProps } from "../live-component/hooks/useGetComponentProps";
 import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
+import { useGetComponentRef } from "../hooks/useGetComponentRef";
+import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
 
 export function LiveRepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  const { comp: Comp, ref } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const ref = useGetComponentRef({ id: props.id });
+  const repeatingContext = useContext(RepeatingContext);
 
   const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
   const [num, setNum] = useState<number>(end - start);
@@ -23,18 +27,28 @@ export function LiveRepeatingComponentRenderer(
 
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
-    childrenNodes = Array.from(Array(num).keys()).map(() => {
+    childrenNodes = Array.from(Array(num).keys()).map((_, index) => {
       const childId = children[0];
       const { acceptsChild, isRepeating } =
         componentStoreApi.getComponent(childId)!;
-      return acceptsChild ? (
-        isRepeating ? (
-          <LiveRepeatingComponentRenderer id={childId} key={childId} />
-        ) : (
-          <LiveParentComponentRenderer id={childId} key={childId} />
-        )
-      ) : (
-        <LiveNormalComponentRenderer id={childId} key={childId} />
+      return (
+        <RepeatingContext.Provider
+          value={{
+            indices: [...(repeatingContext?.indices || []), index],
+            lengths: [...(repeatingContext?.lengths || []), num],
+          }}
+          key={childId}
+        >
+          {acceptsChild ? (
+            isRepeating ? (
+              <LiveRepeatingComponentRenderer id={childId} />
+            ) : (
+              <LiveParentComponentRenderer id={childId} />
+            )
+          ) : (
+            <LiveNormalComponentRenderer id={childId} />
+          )}
+        </RepeatingContext.Provider>
       );
     });
   }
