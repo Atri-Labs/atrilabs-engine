@@ -6,6 +6,7 @@ import { RouterContext } from "../contexts/RouterContext";
 type LinkProps = {
   children: React.ReactNode;
   route: string;
+  disabled?: boolean;
 };
 
 export default function Link(props: LinkProps) {
@@ -14,6 +15,9 @@ export default function Link(props: LinkProps) {
   const onClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
+      if (props.disabled) {
+        return;
+      }
       if (matchRoutes(atriRouter.getRouter()!.routes, props.route) === null) {
         fetch(props.route).then(() => {
           const moduleName = "/atri/js/pages" + props.route + ".js";

@@ -1,25 +1,9 @@
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
+import Link from "./Link";
 
-const DevLink = forwardRef<
-  HTMLDivElement,
-  {
-    styles: React.CSSProperties;
-    custom: { text: string; url: string };
-    onClick: () => void;
-  }
->((props, ref) => {
-  const onClick = useCallback(() => {
-    props.onClick();
-  }, [props]);
-  return (
-    <div
-      ref={ref}
-      style={{ display: "inline-block", ...props.styles }}
-      onClick={onClick}
-    >
-      {props.custom.text}
-    </div>
-  );
+const DevLink: typeof Link = forwardRef((props, ref) => {
+  props.custom.disabled = true;
+  return <Link {...props} ref={ref} />;
 });
 
 export default DevLink;

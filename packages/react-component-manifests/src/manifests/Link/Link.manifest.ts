@@ -24,6 +24,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     text: { type: "text" },
     url: { type: "internal_link" },
+    disabled: { type: "boolean" },
   },
 };
 

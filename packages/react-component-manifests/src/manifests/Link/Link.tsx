@@ -1,11 +1,11 @@
 import React, { forwardRef, useCallback } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { default as AtriLink } from "@atrilabs/atri-app-core/src/components/Link";
 
 export const Link = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    custom: { text: string; url: string };
+    custom: { text: string; url: string; disabled?: boolean };
     onClick: () => void;
     className?: string;
   }
@@ -20,7 +20,9 @@ export const Link = forwardRef<
       style={{ display: "inline-block", ...props.styles }}
       onClick={onClick}
     >
-      <RouterLink to={props.custom.url}>{props.custom.text}</RouterLink>
+      <AtriLink route={props.custom.url} disabled={props.custom.disabled}>
+        {props.custom.text}
+      </AtriLink>
     </div>
   );
 });
