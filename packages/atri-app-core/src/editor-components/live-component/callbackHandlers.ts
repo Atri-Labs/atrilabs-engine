@@ -2,19 +2,17 @@ import { liveApi } from "../../api";
 
 const API_ENDPOINT = process.env["ATRI_APP_API_ENDPOINT"];
 
-function handleRedirection(res: Response) {
-  if (res.headers.get("location")) {
-    const location = res.headers.get("location");
-    const locationTarget = (res.headers.get("location-target") ||
-      "_self") as any;
-    const locationType = res.headers.get("location-type") || "internal";
+function handleRedirection(headers: Response["headers"]) {
+  if (headers.get("x-location")) {
+    const location = headers.get("x-location");
+    const locationTarget = (headers.get("x-location-target") || "_self") as any;
+    const locationType = headers.get("x-location-type") || "internal";
     if (location && locationType === "external") {
       navigateExternally({ urlPath: location, target: locationTarget });
     } else if (location && locationType === "internal") {
       callInternalNavigationSubscribers({ urlPath: location });
     }
   }
-  return res;
 }
 
 function updatePropsFromDelta(delta: { [alias: string]: any }) {
@@ -50,19 +48,22 @@ export function sendEventDataFn(
       state: pageState,
     }),
   })
-    .then((res) => {
+    .then(async (res) => {
       try {
-        res.json();
+        return { json: await res.json(), headers: res.headers };
       } catch {}
-      return res;
+      return { json: undefined, headers: res.headers };
     })
     .then((res) => {
-      if (res) {
-        updatePropsFromDelta(res);
+      if (res.json) {
+        updatePropsFromDelta(res.json);
       }
       return res;
     })
-    .then((res) => handleRedirection(res));
+    .then((res) => {
+      handleRedirection(res.headers);
+      return res;
+    });
 }
 
 type InternalNavigationSubscriberCallback = (options: {

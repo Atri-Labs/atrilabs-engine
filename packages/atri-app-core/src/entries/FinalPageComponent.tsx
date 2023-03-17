@@ -18,7 +18,7 @@ export function FinalPageComponent(props: {
       navigate(route);
       liveApi.reset();
     }
-  }, [atriRouter.getRouter()]);
+  }, [atriRouter.getRouter(), navigate]);
   useEffect(() => {
     const callback = () => {
       liveApi.reset();
@@ -32,8 +32,9 @@ export function FinalPageComponent(props: {
   useEffect(() => {
     return subscribeInternalNavigation(({ urlPath }) => {
       navigate(urlPath);
+      liveApi.reset();
     });
-  }, []);
+  }, [navigate]);
   return (
     <PageWrapper>
       <Page />
