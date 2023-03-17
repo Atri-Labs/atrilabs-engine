@@ -1,6 +1,10 @@
 import { Callback } from "@atrilabs/react-component-manifest-schema";
 import { componentStoreApi, liveApi } from "../../api";
-import { sendEventDataFn } from "./callbackHandlers";
+import {
+  callInternalNavigationSubscribers,
+  navigateExternally,
+  sendEventDataFn,
+} from "./callbackHandlers";
 
 type NavigationCallbackHandlerDef = {
   type: "internal" | "external";
@@ -67,13 +71,18 @@ function callHandlers(id: string, callbackName: string, value: any) {
   if (jobs["sendFiles"]) {
     // TODO: send request with form data
   } else if (jobs["sendEventData"]) {
-    // TODO: send request to python
     const pageState = liveApi.getPageState();
     const pageRoute = liveApi.getActivePageRoute();
     const alias = liveApi.getComponentAlias(id);
     sendEventDataFn(alias, pageState, pageRoute, callbackName, value);
   } else if (jobs["navigate"]) {
-    // TODO: check headers for navigation
+    const options = {
+      urlPath: jobs["navigate"].navigate!.url,
+      target: jobs["navigate"].navigate!.target,
+    };
+    if (jobs["navigate"]!.navigate!.type === "internal")
+      callInternalNavigationSubscribers(options);
+    else navigateExternally(options);
   }
 }
 

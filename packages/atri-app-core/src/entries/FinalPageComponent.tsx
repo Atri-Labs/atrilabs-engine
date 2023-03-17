@@ -2,6 +2,7 @@ import { useEffect, useContext } from "react";
 import { RouterContext } from "../contexts/RouterContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { liveApi } from "../api/liveApi";
+import { subscribeInternalNavigation } from "../editor-components/live-component/callbackHandlers";
 
 export function FinalPageComponent(props: {
   PageWrapper: React.FC<any>;
@@ -26,6 +27,12 @@ export function FinalPageComponent(props: {
     return () => {
       window.removeEventListener("popstate", callback);
     };
+  }, []);
+  // handle events here, because we have access to RouteProvider here
+  useEffect(() => {
+    return subscribeInternalNavigation(({ urlPath }) => {
+      navigate(urlPath);
+    });
   }, []);
   return (
     <PageWrapper>
