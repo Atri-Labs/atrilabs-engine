@@ -1,5 +1,4 @@
-import Joi from 'joi';
-
+import Joi from "joi";
 export type SimpleCustomProp = {
   type:
     | "text"
@@ -42,7 +41,7 @@ export type ArrayMapCustomProp = {
 
 export type JSONCustomProp = {
   type: "json";
-  schema: Joi.ObjectSchema;
+  schema: Joi.ArraySchema; // tried AnySchema, ObjectSchema, ArraySchema from Joi
 };
 
 /**
