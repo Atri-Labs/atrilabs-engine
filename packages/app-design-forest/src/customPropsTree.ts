@@ -1,3 +1,5 @@
+import Joi from 'joi';
+
 export type SimpleCustomProp = {
   type:
     | "text"
@@ -36,6 +38,11 @@ export type ArrayMapCustomProp = {
   type: "array_map";
   singleObjectName?: string;
   attributes: MapCustomProp["attributes"];
+};
+
+export type JSONCustomProp = {
+  type: "json";
+  schema: Joi.ObjectSchema;
 };
 
 /**
@@ -77,7 +84,8 @@ export type CustomPropsTreeOptions = {
       | ArrayMapCustomProp
       | VariableKeyMapCustomProp
       | TypedMapCustomProp
-      | ArrayTypedMapCustomProp;
+      | ArrayTypedMapCustomProp
+      | JSONCustomProp;
   };
 };
 

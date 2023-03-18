@@ -22,8 +22,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    hover: { type: "boolean" },
-    rootOptions: { type: "array" },
+    placeholder : {type : "text"},
     options: {
       type: "array_map",
       singleObjectName: "option",
@@ -51,42 +50,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {
-          hover: false,
-          rootOptions: ["India", "USA", "France", "Canada"],
-          options: [
-            {
-              level: 1,
-              parent: "India",
-              children: ["Goa", "Maharashtra", "Delhi"],
-            },
-            {
-              level: 1,
-              parent: "USA",
-              children: ["California", "Washington DC", "Texas"],
-            },
-            {
-              level: 1,
-              parent: "France",
-              children: ["Corsica", "Brittany"],
-            },
-            {
-              level: 1,
-              parent: "Canada",
-              children: ["Ontario", "Montreal"],
-            },
-            {
-              level: 2,
-              parent: "Goa",
-              children: ["Mapusa", "Panaji", "Margao"],
-            },
-            {
-              level: 2,
-              parent: "California",
-              children: ["LA", "San Diego", "San Francisco"],
-            },
-          ],
-        },
+        initialValue: {},
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
