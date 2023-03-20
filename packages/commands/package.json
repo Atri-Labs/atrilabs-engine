@@ -14,7 +14,8 @@
     "gen-py-classes": "dist/gen-py-classes.js",
     "gen-py-app": "dist/gen-py-app.js",
     "dev-py-app": "dist/dev-py-app.js",
-    "build-editor": "dist/build-editor.js"
+    "build-editor": "dist/build-editor.js",
+    "build-atri-app": "dist/build-atri-app.js"
   },
   "files": [
     "dist",
@@ -36,7 +37,8 @@
     "build-gen-py-app": "build-node-app -e ./src/scripts/gen-py-app/gen-py-app.ts -f gen-py-app.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
     "build-dev-py-app": "build-node-app -e ./src/scripts/dev-py-app/dev-py-app.ts -f dev-py-app.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
     "build-build-editor": "build-node-app -e ./src/scripts/build-editor/build-editor.ts -f build-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
-    "build": "concurrently 'yarn build-app-dev' 'yarn build-dev-editor' 'yarn build-manifest-registry' 'yarn build-gen-py-classes' 'yarn build-gen-py-app' 'yarn build-dev-py-app' 'yarn build-build-editor' 'yarn build-create-atri-app'",
+    "build-build-atri-app": "build-node-app -e ./src/scripts/build-atri-app/build-atri-app.ts -f build-atri-app.js -n '../../node_modules' -i '@atrilabs/node-python-ipc' -a '@atrilabs/node-python-ipc'",
+    "build": "concurrently 'yarn build-app-dev' 'yarn build-dev-editor' 'yarn build-manifest-registry' 'yarn build-gen-py-classes' 'yarn build-gen-py-app' 'yarn build-dev-py-app' 'yarn build-build-editor' 'yarn build-create-atri-app' 'yarn build-build-atri-app'",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles",
     "prepublishOnly": "yarn build"
@@ -64,6 +66,7 @@
     "@atrilabs/commands-builder": "^1.0.0-alpha.8",
     "@atrilabs/core": "^1.0.0-alpha.8",
     "@atrilabs/design-system": "^1.0.0-alpha.8",
+    "@atrilabs/node-python-ipc": "^1.0.0-alpha.8",
     "@svgr/webpack": "^6.5.1",
     "axios": "^1.3.4",
     "bfj": "^7.0.2",

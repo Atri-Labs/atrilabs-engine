@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+import { runIPC } from "@atrilabs/node-python-ipc";
 /**
  *
  * 1. Create a temporary folder for the build inside dist/.
@@ -18,3 +20,4 @@
  * 8. Generate py-models from nodes.
  *
  */
+console.log("build-atri-app ran");
