@@ -1,45 +1,31 @@
-import React, { forwardRef, useMemo } from "react";
-import { Statistic } from "antd";
+import React, { forwardRef } from "react";
+import { Statistic as AntdStatistic } from "antd";
 
-const { Countdown: AntdCountdown } = Statistic;
-
-const Countdown = forwardRef<
+const Statistic = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     className?: string;
-    custom: {
+    custom?: {
       title?: string;
+      decimalSeparator?: string;
+      groupSeparator?: string;
+      value?: string | number;
+      loading?: boolean;
+      precision?: number;
       prefix?: string;
       prefixIcon?: string;
       suffix?: string;
       suffixIcon?: string;
-      format: "DD:HH:mm:ss" | "HH:mm:ss" | "mm:ss" | "ss";
-      value: number;
-      inputType: "minute" | "hour" | "second" | "day";
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
   const { custom } = props;
-  const { value, inputType } = custom;
-
-  const countDownValue = useMemo(() => {
-    return inputType === "second"
-      ? Date.now() + value * 1000
-      : inputType === "hour"
-      ? Date.now() + value * 3600000
-      : inputType === "minute"
-      ? Date.now() + value * 60000
-      : inputType === "day"
-      ? Date.now() + value * 3600000 * 24
-      : "";
-  }, [value, inputType]);
-
-  // moved ref to div, as the Antd Countdown doesnt provide ref for Countdown
+  // moved ref to div, as the Antd Statistic doesnt provide ref for Statistic
   return (
     <div ref={ref}>
-      <AntdCountdown
+      <AntdStatistic
         className={props.className}
         style={props.styles}
         {...custom}
@@ -64,11 +50,9 @@ const Countdown = forwardRef<
             props.custom?.suffix
           )
         }
-        format={props.custom?.format}
-        value={countDownValue}
       />
     </div>
   );
 });
 
-export default Countdown;
+export default Statistic;

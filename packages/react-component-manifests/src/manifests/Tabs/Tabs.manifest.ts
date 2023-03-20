@@ -44,6 +44,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["line", "card"],
     },
+    activeTabColor: { type: "color" },
     items: {
       type: "array_map",
       singleObjectName: "item",
@@ -94,7 +95,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onTitleClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onTabClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
     acceptsChild,

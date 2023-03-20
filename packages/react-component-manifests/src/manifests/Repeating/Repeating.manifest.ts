@@ -51,6 +51,7 @@ const cssTreeOptions: CSSTreeOptions = {
   outlineOptions: true,
   backgroundOptions: true,
   miscellaneousOptions: true,
+  listStyleOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
@@ -58,6 +59,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     data: { type: "array" },
     start: { type: "number" },
     end: { type: "number" },
+    image: { type: "static_asset" },
   },
 };
 

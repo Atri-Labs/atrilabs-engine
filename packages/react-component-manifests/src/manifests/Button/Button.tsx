@@ -22,20 +22,20 @@ const Button = forwardRef<
     custom: {
       text: string;
       icon?: string; //Set the icon component of button
+      type?: ButtonType; //Can be set to primary ghost dashed link text default
+      shape?: ButtonShape; //Can be set button shape
+      size?: ButtonSize; //Set the size of button
+      disabled?: boolean; //Disabled state of button
+      loading?: boolean | { delay: number }; //Set the loading status of button
+      block?: boolean; //Option to fit button width to its parent width
+      danger?: boolean; //Set the danger status of button
+      ghost?: boolean; //Make background transparent and invert text and border colors
+      href?: string; //Redirect url of link button
+      htmlType?: ButtonhtmlType; //Set the original html type of button, see: MDN
+      target?: string; //	Same as target attribute of a, works when href is specified
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
-    shape?: ButtonShape; //Can be set button shape
-    type?: ButtonType; //Can be set to primary ghost dashed link text default
-    size?: ButtonSize; //Set the size of button
-    disabled?: boolean; //Disabled state of button
-    loading?: boolean | { delay: number }; //Set the loading status of button
-    block?: boolean; //Option to fit button width to its parent width
-    danger?: boolean; //Set the danger status of button
-    ghost?: boolean; //Make background transparent and invert text and border colors
-    href?: string; //Redirect url of link button
-    htmlType?: ButtonhtmlType; //Set the original html type of button, see: MDN
-    target?: string; //	Same as target attribute of a, works when href is specified
   }
 >((props, ref) => {
   const onClick = useCallback(
@@ -44,9 +44,10 @@ const Button = forwardRef<
     },
     [props]
   );
+  const { custom } = props;
   return (
     <AntdButton
-      {...props}
+      {...custom}
       ref={ref}
       className={props.className}
       style={props.styles}

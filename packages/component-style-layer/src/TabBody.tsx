@@ -24,6 +24,7 @@ import { getAliasList } from "./utils";
 import { CssSummary } from "./components/cssSummary/CssSummary";
 import { Tree } from "@atrilabs/forest";
 import { BoxShadow } from "./components/box-shadow/BoxShadow";
+import { ListStyle } from "./components/list-style/ListStyle";
 
 export type TabBodyProps = {
   alias: string;
@@ -186,6 +187,19 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
       ) : null}
       {props.treeOptions && props.treeOptions.borderOptions ? (
         <Border
+          styles={props.styles}
+          patchCb={props.patchCb}
+          openAssetManager={props.openAssetManager}
+          openPalette={props.openPalette}
+          openPaletteWithoutEffect={props.openPaletteWithoutEffect}
+          compId={props.compId}
+          colorValue={props.colorValue}
+          setColorValue={props.setColorValue}
+          colorValueArraySetter={props.colorValueArraySetter}
+        />
+      ) : null}
+      {props.treeOptions && props.treeOptions.listStyleOptions ? (
+        <ListStyle
           styles={props.styles}
           patchCb={props.patchCb}
           openAssetManager={props.openAssetManager}

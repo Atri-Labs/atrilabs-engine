@@ -2,22 +2,29 @@ import React, { forwardRef, useCallback } from "react";
 import { Collapse } from "antd";
 const { Panel } = Collapse;
 
-export type CollapsibleTypes = "header" | "icon" | "disabled";
+export enum CollapsibleTypes {
+  HEADER = "header",
+  ICON = "icon",
+  DISABLED = "disabled",
+}
 export type ExpandIconPosition = "start" | "end";
 
 export type Size = "large" | "middle" | "small";
+
+export type AccordionItem = {
+  title: string;
+  description?: string;
+  key: string | number;
+  collapsible?: CollapsibleTypes;
+  showArrow?: boolean;
+};
 
 const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      items: {
-        title: string;
-        description?: string;
-        collapsible?: CollapsibleTypes;
-        showArrow?: boolean;
-      }[];
+      items: AccordionItem[];
       bordered?: boolean;
       collapse?: boolean;
       defaultActiveKey?: string[] | string | number[] | number;

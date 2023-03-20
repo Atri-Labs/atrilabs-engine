@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef } from "react";
 import { Tag as AntdTag } from "antd";
 import {
   CheckCircleOutlined,
@@ -41,12 +41,6 @@ const Tag = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      props.onClick({ pageX: e.pageX, pageY: e.pageY });
-    },
-    [props]
-  );
   const { custom, ...restProps } = props;
   const icon =
     props.custom.icon !== undefined || "" ? (
@@ -65,7 +59,7 @@ const Tag = forwardRef<
       ref={ref}
       className={props.className}
       style={props.styles}
-      onClick={onClick}
+      onClick={props.onClick}
       closable={props.custom?.closable}
       color={
         props.custom.color !== undefined || ""

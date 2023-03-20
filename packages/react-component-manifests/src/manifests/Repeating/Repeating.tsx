@@ -4,13 +4,20 @@ const Repeating = forwardRef<
   HTMLUListElement,
   {
     styles: React.CSSProperties;
-    custom: { start: number; end: number };
+    custom: { start: number; end: number; image?: string };
     className?: string;
     children: React.ReactNode[];
   }
 >((props, ref) => {
   return (
-    <ul style={{ ...props.styles }} ref={ref} className={props.className}>
+    <ul
+      style={{
+        ...props.styles,
+        padding: props.styles.padding || "revert",
+      }}
+      ref={ref}
+      className={props.className}
+    >
       {props.children
         .slice(props.custom.start, props.custom.end)
         .map((child, index) => {

@@ -16,9 +16,10 @@ const Tabs = forwardRef<
         key: string;
         label: React.ReactNode;
       }[];
+      activeTabColor?: string;
     };
     onChange: (activeKey: string) => void;
-    onTitleClick?: (
+    onTabClick?: (
       activeKey: string,
       e: React.KeyboardEvent | React.MouseEvent
     ) => void;
@@ -40,13 +41,27 @@ const Tabs = forwardRef<
 
   return (
     <div ref={ref} style={props.styles}>
+      {(props.custom.activeTabColor !== "" || undefined) && (
+        <style>
+          {`.ant-tabs-tab-active .ant-tabs-tab-btn {
+            color:${props.custom.activeTabColor} !important;
+          }
+          .ant-tabs-ink-bar {
+            background:${props.custom.activeTabColor} !important;
+          }
+          .ant-tabs-tab:hover{
+            color:${props.custom.activeTabColor} !important;
+          }
+        `}
+        </style>
+      )}
       <AntdTabs
         className={props.className}
         {...custom}
         {...restProps}
         items={tabItems}
         onChange={props.onChange}
-        onTabClick={props.onTitleClick}
+        tabBarStyle={props.styles}
       />
     </div>
   );

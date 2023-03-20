@@ -1,5 +1,4 @@
-import React, { forwardRef, useCallback, useMemo } from "react";
-import AlertStyles from "./AlertStyles";
+import React, { forwardRef, useCallback } from "react";
 import { Alert as AntdAlert } from "antd";
 
 const enum AlertType {
@@ -18,10 +17,6 @@ const Alert = forwardRef<
       text: string;
       description?: string;
       icon?: string;
-      successIcon?: string;
-      infoIcon?: string;
-      warningIcon?: string;
-      errorIcon?: string;
       isClosable: boolean;
       showIcon?: boolean;
       closeText?: string;
@@ -40,59 +35,13 @@ const Alert = forwardRef<
     [props]
   );
 
-  const alertStyle = useMemo(() => {
-    const alertType = AlertStyles[props.custom.alertType];
-    if (alertType === undefined)
-      return {
-        backgroundColor: AlertStyles["success"].backgroundColor,
-        border: `1px solid ${AlertStyles["success"].borderColor}`,
-        color: "#000000d9",
-      };
-    return {
-      backgroundColor: alertType.backgroundColor,
-      border: `1px solid ${alertType.borderColor}`,
-      color: "#000000d9",
-    };
-  }, [props.custom.alertType]);
-
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
-      <style>
-        {`#icon {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-          }
-
-          #icon-logo {
-            max-width: 1rem;
-          }
-
-          #information {
-            row-gap: 1rem;
-          }
-
-          #information {
-            font-size: 1rem;
-            font-weight: 700;
-          }
-
-          #description {
-            font-size: 0.8rem;
-            font-weight: 300;
-          }
-
-          #close-button {
-            border: none;
-            background-color: #00000000;
-          }
-        `}
-      </style>
       <div ref={ref}>
         <AntdAlert
           className={props.className}
-          style={{ ...alertStyle, ...props.styles }}
+          style={props.styles}
           {...restProps}
           onClick={onClick}
           type={props.custom.alertType || AlertType.SUCEESS}
