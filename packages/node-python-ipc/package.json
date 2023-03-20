@@ -1,0 +1,23 @@
+{
+  "name": "@atrilabs/node-python-ipc",
+  "version": "1.0.0-alpha.8",
+  "description": "> TODO: description",
+  "author": "cruxcode <swaroopshyam0@gmail.com>",
+  "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
+  "license": "ISC",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Atri-Labs/atrilabs-engine.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
+  }
+}
