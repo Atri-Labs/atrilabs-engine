@@ -22,15 +22,16 @@ export function runIPC(
     env?: typeof process.env;
     abortController?: AbortController;
   },
-  callbacks: {
+  callbacks?: {
     onClientSocketEnd?: (data: string) => void;
-    onStdOut?: (data: string) => void;
-    onStdError?: (data: string) => void;
+    onStdOut?: (data: any) => void;
+    onStdError?: (data: any) => void;
     onChildProcessClose?: (code: number | null) => void;
+    onServerListen?: (ipcPath: string) => void;
   }
 ) {
   const server = createIPCServer({
-    onClientSocketEnd: callbacks.onClientSocketEnd,
+    onClientSocketEnd: callbacks?.onClientSocketEnd,
   });
   const ATRI_IPC_PATH =
     process.platform === "win32"
@@ -39,6 +40,7 @@ export function runIPC(
   const extraEnv = { ATRI_IPC_PATH };
 
   server.listen(ATRI_IPC_PATH, () => {
+    callbacks?.onServerListen?.(ATRI_IPC_PATH);
     executeChildProcess(
       {
         cmd: options.cmd,
@@ -49,8 +51,8 @@ export function runIPC(
         },
         abortController: options.abortController,
       },
-      { onStdError: callbacks.onStdError, onStdOut: callbacks.onStdOut }
-    ).then(callbacks.onChildProcessClose);
+      { onStdError: callbacks?.onStdError, onStdOut: callbacks?.onStdOut }
+    ).then(callbacks?.onChildProcessClose);
   });
 
   return server;

@@ -16,8 +16,17 @@
     "type": "git",
     "url": "git+https://github.com/Atri-Labs/atrilabs-engine.git"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
   "bugs": {
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1"
   }
 }
