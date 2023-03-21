@@ -123,7 +123,8 @@ export interface LiveApiSocketData {}
 export type RepeatingContextData = { indices: number[]; lengths: number[] };
 
 export type ProdAppEntryOptions = {
-  routes: { path: string; PageFC: React.FC<any> }[];
+  routes: { path: string }[];
+  entryPageFC: React.FC<any>;
   entryRouteObjectPath: string;
   entryRouteStore: {
     custom: { [alias: string]: any };

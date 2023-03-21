@@ -1,6 +1,13 @@
 function atriPagesServerLoader() {
   const options = this.getOptions();
-  const { srcs, filepath, reactRouteObjectPath, routes, styles } = options;
+  const {
+    srcs,
+    filepath,
+    reactRouteObjectPath,
+    routes,
+    styles,
+    entryRouteStores,
+  } = options;
   if (srcs === undefined || filepath === undefined) {
     const err = Error();
     err.name = "ValueError";
@@ -14,9 +21,15 @@ function atriPagesServerLoader() {
   import { renderPageServerSide } from "@atrilabs/atri-app-core/src/prod-entries/renderPageServerSide";
   
   function renderPage(){
-    return renderPageServerSide({PageFn, PageWrapper, DocFn, srcs: ${JSON.stringify(
+    return renderPageServerSide({entryPageFC: PageFn, PageWrapper, DocFn, srcs: ${JSON.stringify(
       srcs
-    )}, routes, styles, reactRouteObjectPath})
+    )}, routes: ${routes.map((route) => {
+    return { path: route };
+  })}, styles: ${JSON.stringify(
+    styles
+  )}, reactRouteObjectPath: ${JSON.stringify(
+    reactRouteObjectPath
+  )}, entryRouteStores: ${JSON.stringify(entryRouteStores)}})
   }
 
   export default { renderPage };`;

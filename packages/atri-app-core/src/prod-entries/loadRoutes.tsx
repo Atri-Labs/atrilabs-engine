@@ -6,7 +6,7 @@ import React from "react";
 export function loadRoutes(
   props: Pick<
     ProdAppEntryOptions,
-    "PageWrapper" | "routes" | "styles" | "entryRouteObjectPath"
+    "PageWrapper" | "routes" | "styles" | "entryRouteObjectPath" | "entryPageFC"
   >,
   routerOpts: Parameters<typeof atriRouter.setPages>["1"]
 ) {
@@ -18,7 +18,7 @@ export function loadRoutes(
         element: (
           <FinalPageComponent
             PageWrapper={props.PageWrapper}
-            Page={route.PageFC}
+            Page={props.entryPageFC}
             styleStr={props.styles}
           />
         ),

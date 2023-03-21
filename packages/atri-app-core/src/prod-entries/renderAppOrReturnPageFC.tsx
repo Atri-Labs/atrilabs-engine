@@ -15,8 +15,14 @@ declare global {
 window.__APP_STATUS = "started";
 
 export default function renderAppOrReturnPageFC(options: ProdAppEntryOptions) {
-  const { PageWrapper, entryRouteStore, entryRouteObjectPath, routes, styles } =
-    options;
+  const {
+    PageWrapper,
+    entryRouteStore,
+    entryRouteObjectPath,
+    routes,
+    styles,
+    entryPageFC,
+  } = options;
   // add to store
   addPageToStore(entryRouteObjectPath, entryRouteStore);
   if (window.__APP_STATUS === "loaded") {
@@ -24,18 +30,14 @@ export default function renderAppOrReturnPageFC(options: ProdAppEntryOptions) {
     return (
       <FinalPageComponent
         PageWrapper={PageWrapper}
-        Page={
-          routes.find((curr) => {
-            return curr.path === entryRouteObjectPath;
-          })!.PageFC
-        }
+        Page={entryPageFC}
         styleStr={styles}
       />
     );
   } else {
     // configure rotues here
     loadRoutes(
-      { routes, PageWrapper, styles, entryRouteObjectPath },
+      { routes, PageWrapper, styles, entryRouteObjectPath, entryPageFC },
       { initialEntries: [entryRouteObjectPath], initialIndex: 0 }
     );
     window.__APP_STATUS = "loading";
