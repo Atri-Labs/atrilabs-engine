@@ -1,4 +1,9 @@
 import Joi from "joi";
+const JoiTypes = Joi.types();
+type JoiSchema<K = keyof typeof JoiTypes> = K extends keyof typeof JoiTypes
+  ? typeof JoiTypes[K]
+  : never;
+
 export type SimpleCustomProp = {
   type:
     | "text"
@@ -41,7 +46,7 @@ export type ArrayMapCustomProp = {
 
 export type JSONCustomProp = {
   type: "json";
-  schema: Joi.ArraySchema; // tried AnySchema, ObjectSchema, ArraySchema from Joi
+  schema: JoiSchema;
 };
 
 /**
@@ -63,6 +68,7 @@ export type TypedMapCustomProp = {
     | ArrayEnumCustomProp
     | MapCustomProp
     | ArrayMapCustomProp
+    | JSONCustomProp
   ))[];
   selectedOption?: string;
 };

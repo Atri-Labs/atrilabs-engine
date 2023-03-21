@@ -1,13 +1,13 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type {
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import {
   ReactComponentManifestSchema,
   AcceptsChildFunction,
 } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import {
   flexRowSort,
   flexColSort,
@@ -15,8 +15,7 @@ import {
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  css2DisplayOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -51,48 +50,28 @@ const acceptsChild: AcceptsChildFunction = (info: any) => {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    size: { type: "enum", options: ["default", "large", "small"] },
-    itemLayout: { type: "enum", options: ["horizontal", "vertical"] },
-    bordered: { type: "boolean" },
-    split: { type: "boolean" },
-    items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        {
-          fieldName: "title",
-          type: "text",
-        },
-        {
-          fieldName: "description",
-          type: "text",
-        },
-        {
-          fieldName: "icon",
-          type: "static_asset",
-        },
-      ],
+    title: { type: "text" },
+    count: { type: "text" },
+    countIcon: { type: "static_asset" },
+    color: { type: "color" },
+    text: { type: "text" },
+    size: { type: "enum", options: ["default", "small"] },
+    showZero: { type: "boolean" },
+    overflowCount: { type: "number" },
+    dot: { type: "boolean" },
+    status: {
+      type: "enum",
+      options: ["success", "processing", "default", "error", "warning"],
     },
-    actionAdd: { type: "boolean" },
-    actionUpdate: { type: "boolean" },
-    actionDelete: { type: "boolean" },
-    pagination: { type: "boolean" },
-    paginationPosition: { type: "enum", options: ["bottom", "top", "both"] },
-    paginationAlign: { type: "enum", options: ["end", "start", "center"] },
-    grid: { type: "boolean" },
-    gutter: { type: "number" },
-    column: { type: "number" },
-    xs: { type: "number" },
-    sm: { type: "number" },
-    md: { type: "number" },
-    lg: { type: "number" },
-    xl: { type: "number" },
-    xxl: { type: "number" },
+    ribbon: { type: "boolean" },
+    ribbonText: { type: "text" },
+    ribbonPlacement: { type: "enum", options: ["start", "end"] },
+    ribbonColor: { type: "color" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "UnorderedList", category: "Basics" },
+  meta: { key: "Badge", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -105,30 +84,32 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          size: "default",
-          itemLayout: "horizontal",
-          items: [{ title: "Atri Labs", description: "Atri Labs..." }],
-          split: true,
+          dot: false,
+          overflowCount: 99,
+          showZero: false,
+          ribbon: false,
+          ribbonPlacement: "end",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onClick: [{ type: "do_nothing" }],
+      onClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
-    defaultCallbackHandlers: {
-      onClick: [{ sendEventData: true }],
-    },
+    defaultCallbackHandlers: {},
     acceptsChild,
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "UnorderedList" } },
+  panel: { comp: "CommonIcon", props: { name: "Badge" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "UnorderedList", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "Badge",
+      containerStyle: { padding: "1rem" },
+    },
   },
   renderSchema: compManifest,
 };

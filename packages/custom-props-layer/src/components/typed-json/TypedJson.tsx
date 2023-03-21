@@ -36,18 +36,18 @@ export const TypedJson: React.FC<ComponentProps> = (props) => {
   ] as JSONCustomProp;
 
   const callPatchCb = useCallback(() => {
-   if (!validationError) {
-    props.patchCb({
-      property: {
-        custom: createObject(
-          props.customProps,
-          selector,
-          JSON.parse(jsonObject)
-        ),
-      },
-    });
-    setShowModal(false);
-   }
+    if (!validationError) {
+      props.patchCb({
+        property: {
+          custom: createObject(
+            props.customProps,
+            selector,
+            JSON.parse(jsonObject)
+          ),
+        },
+      });
+      setShowModal(false);
+    }
   }, [props, selector, jsonObject, validationError]);
 
   const jsonLinter = linter((view: EditorView) => {
@@ -156,7 +156,8 @@ export const TypedJson: React.FC<ComponentProps> = (props) => {
             <button
               className="pretty-button"
               onClick={() =>
-                !validationError && setJsonObject(JSON.stringify(JSON.parse(jsonObject), null, 2))
+                !validationError &&
+                setJsonObject(JSON.stringify(JSON.parse(jsonObject), null, 2))
               }
             >
               Beautify
