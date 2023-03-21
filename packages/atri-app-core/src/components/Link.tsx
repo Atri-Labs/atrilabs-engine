@@ -5,7 +5,7 @@ import { RouterContext } from "../contexts/RouterContext";
 
 type LinkProps = {
   children: React.ReactNode;
-  route: string;
+  href: string;
   disabled?: boolean;
 };
 
@@ -18,21 +18,26 @@ export default function Link(props: LinkProps) {
       if (props.disabled) {
         return;
       }
-      if (matchRoutes(atriRouter.getRouter()!.routes, props.route) === null) {
-        fetch(props.route).then(() => {
-          const moduleName = "/atri/js/pages" + props.route + ".js";
+      if (matchRoutes(atriRouter.getRouter()!.routes, props.href) === null) {
+        // TODO: href and route maybe different
+        fetch(props.href).then(() => {
+          const moduleName = "/atri/js/pages" + props.href + ".js";
           const script = document.createElement("script");
           script.src = moduleName;
           document.body.appendChild(script);
           script.onload = () => {
-            atriRouter.setNavigateToWhenNewRouterLoaded(props.route);
+            atriRouter.setNavigateToWhenNewRouterLoaded(props.href);
           };
         });
       } else {
-        navigate(props.route);
+        navigate(props.href);
       }
     },
     [props]
   );
-  return <a onClick={onClick}>{props.children}</a>;
+  return (
+    <a onClick={onClick} href={props.href}>
+      {props.children}
+    </a>
+  );
 }

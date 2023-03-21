@@ -20,7 +20,7 @@ export const Link = forwardRef<
       style={{ display: "inline-block", ...props.styles }}
       onClick={onClick}
     >
-      <AtriLink route={props.custom.url} disabled={props.custom.disabled}>
+      <AtriLink href={props.custom.url} disabled={props.custom.disabled}>
         {props.custom.text}
       </AtriLink>
     </div>

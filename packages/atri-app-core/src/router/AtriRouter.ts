@@ -28,6 +28,20 @@ export class AtriRouter {
     }
   }
 
+  /**
+   * setPages is used in production. addPage is used in development.
+   */
+  setPages(
+    routeObjects: RouteObject[],
+    routerOpts?: { initialEntries: string[]; initialIndex: number }
+  ) {
+    routeObjects.forEach((routeObject) => {
+      this.paths.add(routeObject.path);
+    });
+    this.routeObjects.push(...routeObjects);
+    this.router = this.createRouter(routeObjects, routerOpts);
+  }
+
   removePage(path: string) {
     this.routeObjects.filter((routeObject) => {
       routeObject.path !== path;

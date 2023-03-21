@@ -19,11 +19,7 @@ export function renderPageServerSide(options: {
   loadPage(atriRouter, "/", AppFn, PageFn);
   return renderToString(
     <AtriScriptsContext.Provider
-      value={{
-        pages: scriptSrcs,
-        manifestRegistry: manifestRegistrySrcs,
-        base: baseSrcs,
-      }}
+      value={[...scriptSrcs, ...manifestRegistrySrcs, ...baseSrcs]}
     >
       <MainAppContext.Provider
         value={{
