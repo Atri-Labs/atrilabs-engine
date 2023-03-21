@@ -14,6 +14,7 @@ export async function createServerEntry() {
       import: `atri-pages-server-loader?${stringify({
         filepath,
         srcs,
+        // TODO: add other options
       })}!`,
     };
   });

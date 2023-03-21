@@ -40,6 +40,14 @@ export async function buildServerSide(
 ) {
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
   const paths = { ...params.paths, outputDir: serverOutputDir };
+  const additionalInclude = params.additionalInclude || [];
+  additionalInclude.push(
+    // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
+    // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system"))
+  );
+  params.additionalInclude = additionalInclude;
   const allowlist = params.allowlist || [];
   allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
@@ -59,6 +67,14 @@ export async function buildServerSide(
     moduleFileExtensions,
     entry: createServerEntry,
     prepareConfig: (config) => {
+      config.resolve = {
+        alias: {
+          // @ts-ignore
+          "@atrilabs/canvas-zone": __non_webpack_require__.resolve(
+            "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx"
+          ),
+        },
+      };
       config.resolveLoader = {
         alias: {
           "atri-pages-server-loader": path.resolve(

@@ -1,20 +1,36 @@
 import { atriRouter } from "../entries/atriRouter";
 import { ProdAppEntryOptions } from "../types";
 import { FinalPageComponent } from "./FinalPageComponent";
+import React from "react";
 
 export function loadRoutes(
-  props: Pick<ProdAppEntryOptions, "PageWrapper" | "routes">,
+  props: Pick<
+    ProdAppEntryOptions,
+    "PageWrapper" | "routes" | "styles" | "entryRouteObjectPath"
+  >,
   routerOpts: Parameters<typeof atriRouter.setPages>["1"]
 ) {
   const routes = props.routes.map((route) => {
+    if (route.path === props.entryRouteObjectPath) {
+      return {
+        path: route.path,
+        // use import for non-entry/non-active routes
+        element: (
+          <FinalPageComponent
+            PageWrapper={props.PageWrapper}
+            Page={route.PageFC}
+            styleStr={props.styles}
+          />
+        ),
+      };
+    }
+    const Page = React.lazy(() => import(`/atri/js/${route.path}`));
     return {
       path: route.path,
-      // use import for non-entry/non-active routes
       element: (
-        <FinalPageComponent
-          PageWrapper={props.PageWrapper}
-          Page={route.PageFC}
-        />
+        <React.Suspense fallback={<>Loading...</>}>
+          <Page />
+        </React.Suspense>
       ),
     };
   });

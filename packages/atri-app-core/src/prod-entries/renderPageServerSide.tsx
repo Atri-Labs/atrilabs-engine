@@ -11,18 +11,17 @@ import { loadRoutes } from "./loadRoutes";
 export function renderPageServerSide(
   options: {
     srcs: string[];
-    AppFn: React.FC<any>;
     DocFn: React.FC;
-    entryUrlPath: string;
-  } & Pick<ProdAppEntryOptions, "PageWrapper" | "routes">
+    entryRouteObjectPath: string;
+  } & Pick<ProdAppEntryOptions, "PageWrapper" | "routes" | "styles">
 ) {
-  const { srcs, AppFn, DocFn, routes, entryUrlPath } = options;
+  const { srcs, PageWrapper, DocFn, routes, entryRouteObjectPath, styles } =
+    options;
   atriRouter.setRouterFactory(createMemoryRouter);
   loadRoutes(
-    { routes, PageWrapper: AppFn },
-    { initialEntries: [entryUrlPath], initialIndex: 0 }
+    { routes, PageWrapper, styles, entryRouteObjectPath },
+    { initialEntries: [entryRouteObjectPath], initialIndex: 0 }
   );
-  // TODO: find a way to add style tag
   return renderToString(
     <AtriScriptsContext.Provider value={srcs}>
       <MainAppContext.Provider
