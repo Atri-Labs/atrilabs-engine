@@ -14,18 +14,19 @@ declare global {
 window.__APP_STATUS = "started";
 
 export default function renderAppOrReturnPageFC(options: ProdAppEntryOptions) {
-  const { PageWrapper, entryRouteStore } = options;
+  const { PageWrapper, entryRouteStore, entryRouteObjectPath, routes } =
+    options;
   // add to store
   addPageToStore(entryRouteStore);
-  // add <style> tag to body
+  // add <style> tag to body (move this task to renderReactAppClientSide)
   if (window.__APP_STATUS === "loaded") {
     // return Page Component
     return (
       <FinalPageComponent
-        PageWrapper={options.PageWrapper}
+        PageWrapper={PageWrapper}
         Page={
-          options.routes.find((curr) => {
-            return curr.path === options.entryRouteObjectPath;
+          routes.find((curr) => {
+            return curr.path === entryRouteObjectPath;
           })!.PageFC
         }
       />

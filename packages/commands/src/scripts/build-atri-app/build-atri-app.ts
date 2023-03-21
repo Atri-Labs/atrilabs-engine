@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-import { runIPC } from "@atrilabs/node-python-ipc";
+import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
+import { buildServerSide } from "./buildServerSide";
 
 /**
  *
@@ -24,7 +25,10 @@ import path from "path";
  */
 
 async function main() {
+  const params = extractParams();
   const outputDir = path.resolve("dist", "app-build");
+  params.paths.outputDir = outputDir;
+  await buildServerSide(JSON.parse(JSON.stringify(params)));
 }
 
 main().catch(console.log);

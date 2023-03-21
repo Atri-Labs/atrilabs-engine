@@ -22,6 +22,7 @@ export function renderPageServerSide(
     { routes, PageWrapper: AppFn },
     { initialEntries: [entryUrlPath], initialIndex: 0 }
   );
+  // TODO: find a way to add style tag
   return renderToString(
     <AtriScriptsContext.Provider value={srcs}>
       <MainAppContext.Provider

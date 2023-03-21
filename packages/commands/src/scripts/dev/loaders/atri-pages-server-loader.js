@@ -7,7 +7,7 @@ function atriPagesServerLoader() {
   if (scriptSrcs === undefined || filepath === undefined) {
     const err = Error();
     err.name = "ValueError";
-    err.message = `Expected defined value for scriptSrc. Got ${routeObjectPath}, ${modulePath} respectively.`;
+    err.message = `Expected defined value for scriptSrc. Got ${scriptSrcs}, ${filepath} respectively.`;
     throw err;
   }
   const baseSrcs = ["/react.development.js", "/react-dom.development.js"];
