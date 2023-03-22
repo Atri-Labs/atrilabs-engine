@@ -1,13 +1,18 @@
 import { Entry } from "webpack";
-import { getAllPages } from "./utils";
+import { PageInfo } from "./types";
+import { createCssText, createStoreFromComponents } from "./utils";
 const { stringify } = require("querystring");
 
-export async function createServerEntry() {
+export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
   const entry: Entry = {
     _error: { import: "./pages/_error" },
   };
-  const pageInfo = await getAllPages();
-  pageInfo.forEach(({ pagePath, routeObjectPath }) => {
+  const { pageInfos } = options;
+  const routes = pageInfos.map(({ routeObjectPath }) => {
+    return { path: routeObjectPath };
+  });
+  for (let i = 0; i < pageInfos.length; i++) {
+    const { pagePath, routeObjectPath, components } = pageInfos[i]!;
     const entryName = pagePath.replace(/^\//, "");
     const srcs: string[] = [];
     entry[entryName] = {
@@ -15,14 +20,11 @@ export async function createServerEntry() {
         pagePath,
         srcs,
         reactRouteObjectPath: routeObjectPath,
-        routes: pageInfo.map(({ routeObjectPath }) => {
-          return { path: routeObjectPath };
-        }),
-        // TODO: add actual style & route stores
-        styles: "",
-        entryRouteStores: {},
+        routes,
+        styles: await createCssText(components),
+        entryRouteStores: createStoreFromComponents(components),
       })}!`,
     };
-  });
+  }
   return entry;
 }

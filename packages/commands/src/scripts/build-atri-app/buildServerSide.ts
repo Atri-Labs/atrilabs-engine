@@ -9,6 +9,7 @@ import {
 import webpack from "webpack";
 import path from "path";
 import { createServerEntry } from "./createServerEntry";
+import { PageInfo } from "./types";
 
 function startWebpackBuild(
   params: Parameters<typeof createNodeLibConfig>[0] & {
@@ -36,7 +37,7 @@ function startWebpackBuild(
 }
 
 export async function buildServerSide(
-  params: ReturnType<typeof extractParams>
+  params: ReturnType<typeof extractParams> & { pagesInfo: PageInfo[] }
 ) {
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
   const paths = { ...params.paths, outputDir: serverOutputDir };
@@ -65,7 +66,7 @@ export async function buildServerSide(
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,
-    entry: createServerEntry,
+    entry: await createServerEntry({ pageInfos: params.pagesInfo }),
     prepareConfig: (config) => {
       config.resolve = {
         alias: {

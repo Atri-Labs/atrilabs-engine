@@ -4,6 +4,8 @@ import {
   forestDef,
 } from "@atrilabs/atri-app-core/src/api/forestDef";
 import { createComponentFromNode } from "@atrilabs/atri-app-core/src/utils/createComponentFromNode";
+import postcss from "postcss";
+const cssjs = require("postcss-js");
 
 export function createForestFromEvents(events: AnyEvent[]) {
   const forest = createForest(forestDef);
@@ -27,7 +29,7 @@ export function getComponentsFromNodes(forest: Forest) {
       },
       forest
     )!;
-    return component;
+    return { ...component, alias: nodes[nodeId]!.state["alias"] as string };
   });
 }
 
@@ -36,3 +38,11 @@ export function getComponentsFromNodes(forest: Forest) {
  * from inside an atri app
  */
 export function mergeWithInitState() {}
+
+export function jssToCss(jss: React.CSSProperties) {
+  return postcss()
+    .process(jss, { parser: cssjs, from: undefined })
+    .then((code) => {
+      return code.css + ";";
+    });
+}
