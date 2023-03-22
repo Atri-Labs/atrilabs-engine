@@ -22,5 +22,10 @@ export function useHandleNewChild(props: { id: string }) {
     );
   });
 
+  useEffect(() => {
+    if (componentStoreApi.getComponentChildrenId(props.id))
+      setChildren([...componentStoreApi.getComponentChildrenId(props.id)]);
+  }, [props.id]);
+
   return { children };
 }

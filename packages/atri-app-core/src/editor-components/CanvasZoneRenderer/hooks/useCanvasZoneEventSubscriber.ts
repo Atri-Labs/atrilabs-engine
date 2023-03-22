@@ -27,5 +27,11 @@ export function useCanvasZoneEventSubscriber(params: { canvasZoneId: string }) {
       }
     );
   }, []);
+  useEffect(() => {
+    if (componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId))
+      setChildCompIds([
+        ...componentStoreApi.getCanvasZoneChildrenId(params.canvasZoneId),
+      ]);
+  }, [params.canvasZoneId]);
   return { childCompIds };
 }
