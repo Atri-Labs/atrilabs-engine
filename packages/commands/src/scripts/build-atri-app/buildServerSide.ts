@@ -57,6 +57,9 @@ export async function buildServerSide(
   allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
   allowlist.push("@atrilabs/atri-app-core/src/utils");
+  allowlist.push("@atrilabs/atri-app-core/src/contexts");
+  allowlist.push("@atrilabs/atri-app-core/src/components/Link");
+  allowlist.push("@atrilabs/atri-app-core/src/prod-entries");
   allowlist.push("@atrilabs/design-system");
   allowlist.push("@atrilabs/canvas-zone");
   startWebpackBuild({
@@ -93,6 +96,10 @@ export async function buildServerSide(
             "atri-pages-server-loader.js"
           ),
         },
+      };
+      config.cache = {
+        type: "filesystem",
+        cacheDirectory: path.resolve("node_modules", ".cache-build"),
       };
     },
     allowlist,

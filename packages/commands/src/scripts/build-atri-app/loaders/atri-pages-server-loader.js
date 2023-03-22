@@ -16,7 +16,7 @@ function atriPagesServerLoader() {
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
   import PageFn from "./pages${pagePath}";
-  import { renderPageServerSide } from "@atrilabs/atri-app-core/src/prod-entries/renderPageServerSide";
+  import { renderPageServerSide } from "@atrilabs/atri-app-core/src/prod-entries";
   
   function renderPage(){
     return renderPageServerSide({entryPageFC: PageFn, PageWrapper, DocFn, srcs: ${JSON.stringify(
