@@ -11,23 +11,21 @@ export type ExpandIconPosition = "start" | "end";
 
 export type Size = "large" | "middle" | "small";
 
-export type AccordionItem = {
-  title: string;
-  description?: string;
-  key: string | number;
-  collapsible?: CollapsibleTypes;
-  showArrow?: boolean;
-};
-
 const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
     custom: {
-      items: AccordionItem[];
+      items: {
+        title: string;
+        description?: string;
+        collapsible?: CollapsibleTypes;
+        showArrow?: boolean;
+        key: string | number;
+      }[];
       bordered?: boolean;
       collapse?: boolean;
-      defaultActiveKey?: string[] | string | number[] | number;
+      defaultActiveKey: string[] | string | number[] | number;
       expandIcon?: string;
       expandIconPosition?: ExpandIconPosition;
       ghost?: boolean;
@@ -62,7 +60,7 @@ const Accordion = forwardRef<
         {props.custom?.items?.map((item, index) => (
           <Panel
             header={item.title}
-            key={index}
+            key={item.key}
             collapsible={item.collapsible}
             showArrow={item.showArrow}
           >

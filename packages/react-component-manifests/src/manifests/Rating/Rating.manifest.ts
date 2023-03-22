@@ -22,8 +22,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    total: { type: "number" },
-    rating: { type: "number" },
+    allowHalf: { type: "boolean" },
+    defaultValue: { type: "number" },
+    disabled: { type: "boolean" },
+    allowClear: { type: "boolean" },
+    character: { type: "text" },
+    toolTipInfo: { type: "array" },
+    count: { type: "number" },
   },
 };
 const compManifest: ReactComponentManifestSchema = {
@@ -40,10 +45,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          total: 5,
-          rating: 3.5,
-          unratedColor: "#C4C4C4",
-          ratedColor: "#E5CF00",
+          defaultValue: 4,
+          count: 5,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

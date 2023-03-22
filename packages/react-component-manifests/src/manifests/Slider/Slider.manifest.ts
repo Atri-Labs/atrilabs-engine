@@ -22,9 +22,29 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    minValue: { type: "number" },
-    maxValue: { type: "number" },
-    value: { type: "number" },
+    range: { type: "boolean" },
+    value: { type: "array_number" },
+    min: { type: "number" },
+    max: { type: "number" },
+    defaultValue: { type: "array_number" },
+    disabled: { type: "boolean" },
+    vertical: { type: "boolean" },
+    draggableTrack: { type: "boolean" },
+    reverse: { type: "boolean" },
+    marks: {
+      type: "array_map",
+      singleObjectName: "mark",
+      attributes: [
+        {
+          fieldName: "value",
+          type: "number",
+        },
+        {
+          fieldName: "label",
+          type: "text",
+        },
+      ],
+    },
   },
 };
 
@@ -36,7 +56,7 @@ const compManifest: ReactComponentManifestSchema = {
       styles: {
         treeId: CSSTreeId,
         initialValue: {
-          width: "400px",
+          margin: "0 30px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
@@ -44,9 +64,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          minValue: 0,
-          maxValue: 100,
-          value: 50,
+          min: 0,
+          max: 100,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -54,7 +73,7 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onChange: [{ type: "controlled", selector: ["custom", "value"] }],
-      onFinish: [{ type: "do_nothing" }],
+      onAfterChange: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},
   },
