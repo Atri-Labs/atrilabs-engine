@@ -1,5 +1,6 @@
 import React, { forwardRef, ReactElement, useMemo } from "react";
 import ReactPlayer from "react-player";
+import { Config } from "react-player";
 
 interface SourceProps {
   media?: string;
@@ -34,6 +35,7 @@ const Video = forwardRef<
       stopOnUnmount?: boolean;
       light?: boolean | string | ReactElement;
       fallback?: ReactElement;
+      config?: Config;
       onReady?: (player: ReactPlayer) => void;
       onStart?: () => void;
       onPlay?: () => void;

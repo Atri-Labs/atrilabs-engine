@@ -5,6 +5,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import Joi from "joi";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -37,6 +38,59 @@ const customTreeOptions: CustomPropsTreeOptions = {
     pip: { type: "boolean" },
     stopOnUnmount: { type: "boolean" },
     fallback: { type: "static_asset" },
+    config: {
+      type: "json",
+      schema: Joi.object({
+        youtube: Joi.object({
+          playerVars: Joi.object({
+            showinfo: Joi.number().optional(),
+            autoplay: Joi.number().optional(),
+            controls: Joi.number().optional(),
+            modestbranding: Joi.number(),
+          }).optional(),
+          embedOptions: Joi.object({
+            host: Joi.string().uri().optional(),
+          }).optional(),
+          onUnstarted: Joi.func().optional(),
+        }).optional(),
+        facebook: Joi.object({
+          appId: Joi.string().optional(),
+          version: Joi.string().optional(),
+          playerId: Joi.string().optional(),
+          attributes: Joi.object({
+            "data-show-text": Joi.boolean().optional(),
+            "data-allowfullscreen": Joi.boolean().optional(),
+          }).optional(),
+        }).optional(),
+        dailymotion: Joi.object({
+          params: Joi.object({
+            autoplay: Joi.boolean().optional(),
+            mute: Joi.boolean().optional(),
+          }).optional(),
+          attributes: Joi.object({
+            "data-volume": Joi.number().optional(),
+            "data-quality": Joi.string().optional(),
+          }).optional(),
+        }).optional(),
+        file: Joi.object({
+          attributes: Joi.object({
+            preload: Joi.string().valid("none", "metadata", "auto").optional(),
+          }).optional(),
+          forceVideo: Joi.boolean().optional(),
+          forceAudio: Joi.boolean().optional(),
+          forceHLS: Joi.boolean().optional(),
+          forceSafariHLS: Joi.boolean().optional(),
+          forceDASH: Joi.boolean().optional(),
+          forceFLV: Joi.boolean().optional(),
+          hlsOptions: Joi.object({
+            startPosition: Joi.number().optional(),
+          }).optional(),
+          hlsVersion: Joi.string().optional(),
+          dashVersion: Joi.string().optional(),
+          flvVersion: Joi.string().optional(),
+        }).optional(),
+      }),
+    },
   },
 };
 
