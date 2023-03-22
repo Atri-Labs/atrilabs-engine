@@ -23,9 +23,8 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     defaultValue: { type: "text" },
-    value: { type: "text" },
     placeholder: { type: "text" },
-    isPasswordField: { type: "boolean" },
+    value: { type: "text" },
     size: { type: "enum", options: ["middle", "large", "small"] },
     addonAfter: { type: "text" },
     addonBefore: { type: "text" },
@@ -42,36 +41,20 @@ const customTreeOptions: CustomPropsTreeOptions = {
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Input", category: "Basics" },
+  meta: { key: "Search", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          boxSizing: "border-box",
-          fontVariant: "tabular-nums",
-          fontFeatureSettings: "tnum",
-          paddingTop: "4px",
-          paddingLeft: "11px",
-          paddingBottom: "4px",
-          paddingRight: "11px",
-          color: "#000000d9",
-          fontSize: "14px",
-          backgroundColor: "#fff",
-          backgroundImage: "none",
-          borderWidth: "1px",
-          borderStyle: "solid",
-          borderColor: "#d9d9d9",
-          borderRadius: "2px",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          placeholder: "Placeholder Text",
+          placeholder: "Search...",
           bordered: true,
         },
         treeOptions: customTreeOptions,
@@ -79,7 +62,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onSearch: [{ type: "controlled", selector: ["custom", "value"] }],
       onPressEnter: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},
@@ -87,10 +70,10 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Input" } },
+  panel: { comp: "CommonIcon", props: { name: "Search" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Input", containerStyle: { padding: "1rem" } },
+    props: { name: "Search", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
