@@ -1,3 +1,9 @@
+import Joi from "joi";
+const JoiTypes = Joi.types();
+type JoiSchema<K = keyof typeof JoiTypes> = K extends keyof typeof JoiTypes
+  ? typeof JoiTypes[K]
+  : never;
+
 export type SimpleCustomProp = {
   type:
     | "text"
@@ -38,6 +44,11 @@ export type ArrayMapCustomProp = {
   attributes: MapCustomProp["attributes"];
 };
 
+export type JSONCustomProp = {
+  type: "json";
+  schema: JoiSchema;
+};
+
 /**
  * This type represents a custom field that takes an object as a value.
  * This object does not have fixed keys unlike MapCustomProp.
@@ -57,6 +68,7 @@ export type TypedMapCustomProp = {
     | ArrayEnumCustomProp
     | MapCustomProp
     | ArrayMapCustomProp
+    | JSONCustomProp
   ))[];
   selectedOption?: string;
 };
@@ -77,7 +89,8 @@ export type CustomPropsTreeOptions = {
       | ArrayMapCustomProp
       | VariableKeyMapCustomProp
       | TypedMapCustomProp
-      | ArrayTypedMapCustomProp;
+      | ArrayTypedMapCustomProp
+      | JSONCustomProp;
   };
 };
 

@@ -3,6 +3,7 @@ import {
   ArrayMapCustomProp,
   CustomPropsTreeOptions,
   EnumCustomProp,
+  JSONCustomProp,
   MapCustomProp,
   SimpleCustomProp,
   TypedMapCustomProp,
@@ -55,6 +56,7 @@ export type AttributeType = {
     | ArrayMapCustomProp["type"]
     | VariableKeyMapCustomProp["type"]
     | TypedMapCustomProp["type"]
+    | JSONCustomProp["type"]
     | "none";
   fieldName: string;
   options?: string[];

@@ -5,6 +5,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
+import Joi from "joi";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -22,20 +23,29 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    treeData: {
+      type: "json",
+      schema: Joi.array()
+        .unique()
+        .items(
+          Joi.object({
+            title: Joi.string().required(),
+            key: Joi.string().required(),
+            children: Joi.link("#treeData"),
+            checkable: Joi.boolean(),
+            disableCheckbox: Joi.boolean(),
+            disabled: Joi.boolean(),
+            selectable: Joi.boolean(),
+            icon: Joi.string(),
+          })
+        )
+        .id("treeData"),
+    },
     checkable: { type: "boolean" },
     showLine: { type: "boolean" },
     multiple: { type: "boolean" },
     defaultExpandAll: { type: "boolean" },
     defaultExpandParent: { type: "boolean" },
-    treeData: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        { fieldName: "title", type: "text" },
-        { fieldName: "key", type: "text" },
-        { fieldName: "disabled", type: "boolean" },   
-      ],
-    },
   },
 };
 
@@ -57,7 +67,7 @@ const compManifest: ReactComponentManifestSchema = {
             {
               title: `0-0`,
               key: `0-0`,
-              disabled: false,  
+              disabled: false,
             },
           ],
         },
