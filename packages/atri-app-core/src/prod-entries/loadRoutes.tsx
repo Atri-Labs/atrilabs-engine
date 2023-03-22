@@ -10,6 +10,7 @@ export function loadRoutes(
   >,
   routerOpts: Parameters<typeof atriRouter.setPages>["1"]
 ) {
+  console.log("routerOpts", routerOpts);
   const routes = props.routes.map((route) => {
     if (route.path === props.entryRouteObjectPath) {
       return {

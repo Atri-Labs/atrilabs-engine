@@ -35,26 +35,26 @@ export function getComponentsFromEventsPath(eventsPath: string) {
 }
 
 export async function getPagesInfo(): Promise<PageInfo[]> {
-  const pagePaths = await readDirStructure(path.resolve("pages"));
+  const pagePaths = (await readDirStructure(path.resolve("pages"))).filter(
+    (pagePath) =>
+      !["/_app", "/_error", "/_document"].includes(
+        pagePath.replace(/(\.(js|ts)x?)$/, "")
+      )
+  );
   const irs = dirStructureToIR(pagePaths);
   const routeObjectPaths = pathsIRToRouteObjectPaths(irs);
-  return pagePaths
-    .filter(
-      (_, index) =>
-        !["/_app", "/_error", "/_document"].includes(routeObjectPaths[index]!)
-    )
-    .map((pagePath, index) => {
-      const eventsPath = getEventsFile(pagePath);
-      const components = eventsPath
-        ? getComponentsFromEventsPath(eventsPath)
-        : [];
-      return {
-        pagePath,
-        routeObjectPath: routeObjectPaths[index]!,
-        eventsPath: getEventsFile(pagePath),
-        components,
-      };
-    });
+  return pagePaths.map((pagePath, index) => {
+    const eventsPath = getEventsFile(pagePath);
+    const components = eventsPath
+      ? getComponentsFromEventsPath(eventsPath)
+      : [];
+    return {
+      pagePath,
+      routeObjectPath: routeObjectPaths[index]!,
+      eventsPath: getEventsFile(pagePath),
+      components,
+    };
+  });
 }
 
 export function createStoreFromComponents(

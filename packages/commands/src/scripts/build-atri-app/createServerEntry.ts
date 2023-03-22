@@ -18,11 +18,13 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
     entry[entryName] = {
       import: `atri-pages-server-loader?${stringify({
         pagePath,
-        srcs,
+        srcs: JSON.stringify(srcs || []),
         reactRouteObjectPath: routeObjectPath,
-        routes,
+        routes: JSON.stringify(routes || []),
         styles: await createCssText(components),
-        entryRouteStores: createStoreFromComponents(components),
+        entryRouteStores: JSON.stringify(
+          createStoreFromComponents(components) || {}
+        ),
       })}!`,
     };
   }

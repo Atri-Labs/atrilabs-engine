@@ -2,9 +2,9 @@ function atriPagesServerLoader() {
   const options = this.getOptions();
   const { pagePath, reactRouteObjectPath } = options;
   let { srcs, routes, entryRouteStores, styles } = options;
-  if (srcs === undefined) srcs = [];
-  if (routes === undefined) routes = [];
-  if (entryRouteStores === undefined) entryRouteStores = {};
+  if (srcs === undefined) srcs = "[]";
+  if (routes === undefined) routes = "[]";
+  if (entryRouteStores === undefined) entryRouteStores = "{}";
   if (styles === undefined) styles = "";
   if (pagePath === undefined) {
     const err = Error();
@@ -12,6 +12,9 @@ function atriPagesServerLoader() {
     err.message = `Expected defined value for srcs or pagePath. Got ${srcs}, ${pagePath} respectively.`;
     throw err;
   }
+  srcs = JSON.parse(srcs);
+  routes = JSON.parse(routes);
+  entryRouteStores = JSON.parse(entryRouteStores);
   return `
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
@@ -25,7 +28,7 @@ function atriPagesServerLoader() {
     routes.map((route) => {
       return { path: route };
     })
-  )}, styles: ${JSON.stringify(styles)}, reactRouteObjectPath: ${JSON.stringify(
+  )}, styles: ${JSON.stringify(styles)}, entryRouteObjectPath: ${JSON.stringify(
     reactRouteObjectPath
   )}, entryRouteStores: ${JSON.stringify(entryRouteStores)}})
   }
