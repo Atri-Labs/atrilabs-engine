@@ -2,7 +2,7 @@ import {
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
   readDirStructure,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import path from "path";
 import { PageInfo } from "./types";
 import fs from "fs";
@@ -38,18 +38,23 @@ export async function getPagesInfo(): Promise<PageInfo[]> {
   const pagePaths = await readDirStructure(path.resolve("pages"));
   const irs = dirStructureToIR(pagePaths);
   const routeObjectPaths = pathsIRToRouteObjectPaths(irs);
-  return pagePaths.map((pagePath, index) => {
-    const eventsPath = getEventsFile(pagePath);
-    const components = eventsPath
-      ? getComponentsFromEventsPath(eventsPath)
-      : [];
-    return {
-      pagePath,
-      routeObjectPath: routeObjectPaths[index]!,
-      eventsPath: getEventsFile(pagePath),
-      components,
-    };
-  });
+  return pagePaths
+    .filter(
+      (_, index) =>
+        !["/_app", "/_error", "/_document"].includes(routeObjectPaths[index]!)
+    )
+    .map((pagePath, index) => {
+      const eventsPath = getEventsFile(pagePath);
+      const components = eventsPath
+        ? getComponentsFromEventsPath(eventsPath)
+        : [];
+      return {
+        pagePath,
+        routeObjectPath: routeObjectPaths[index]!,
+        eventsPath: getEventsFile(pagePath),
+        components,
+      };
+    });
 }
 
 export function createStoreFromComponents(

@@ -193,6 +193,7 @@ async function main() {
   allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
   allowlist.push("@atrilabs/atri-app-core/src/editor-components");
+  allowlist.push("@atrilabs/atri-app-core/src/utils");
   allowlist.push("@atrilabs/design-system");
   allowlist.push("@atrilabs/canvas-zone");
   allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");

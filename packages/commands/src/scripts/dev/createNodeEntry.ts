@@ -1,6 +1,9 @@
 import { Entry } from "webpack";
 import { interpreter } from "./init";
-import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import {
+  IRToUnixFilePath,
+  routeObjectPathToIR,
+} from "@atrilabs/atri-app-core/src/utils";
 const { stringify } = require("querystring");
 
 export async function createNodeEntry() {

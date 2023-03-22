@@ -1,5 +1,5 @@
-import { AnyEvent } from "@atrilabs/forest";
-import { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
+import type { AnyEvent } from "@atrilabs/forest";
+import type { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
 
 export type DragData = {
   type: "component";

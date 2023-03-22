@@ -1,8 +1,8 @@
 import {
   MainAppContext,
   AtriScriptsContext,
-  ProdAppEntryOptions,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/contexts";
+import type { ProdAppEntryOptions } from "@atrilabs/atri-app-core/src/types";
 import { renderToString } from "react-dom/server";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { atriRouter } from "../entries/atriRouter";

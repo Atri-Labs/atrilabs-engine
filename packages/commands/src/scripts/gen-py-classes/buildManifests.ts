@@ -39,6 +39,7 @@ export function buildManifests(options: {
     params.allowlist.push(
       "@atrilabs/atri-app-core/src/editor-components/MissingIcon"
     );
+    params.allowlist.push("@atrilabs/atri-app-core/src/utils");
     params.allowlist.push("@atrilabs/design-system");
     params.allowlist.push("@atrilabs/manifest-registry");
     params.allowlist.push("@atrilabs/react-component-manifest-schema");

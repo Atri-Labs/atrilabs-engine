@@ -4,7 +4,7 @@ import {
   readDirStructure,
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import { matchRoutes } from "react-router-dom";
 import { AnyEvent } from "@atrilabs/forest";
 

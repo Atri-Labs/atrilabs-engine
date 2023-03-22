@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { dirStructureToIR } from "@atrilabs/atri-app-core";
+import { dirStructureToIR } from "@atrilabs/atri-app-core/src/utils";
 import { watch } from "chokidar";
 import {
   generatePythonModelForAPage,

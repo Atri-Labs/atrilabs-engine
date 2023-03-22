@@ -24,7 +24,10 @@ export function loadRoutes(
         ),
       };
     }
-    const Page = React.lazy(() => import(`/atri/js/${route.path}`));
+    const Page = React.lazy(() =>
+      // @ts-ignore
+      __non_webpack_require__(`/atri/js/${route.path}`)
+    );
     return {
       path: route.path,
       element: (

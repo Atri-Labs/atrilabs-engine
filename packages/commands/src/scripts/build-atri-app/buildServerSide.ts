@@ -41,17 +41,22 @@ export async function buildServerSide(
 ) {
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
   const paths = { ...params.paths, outputDir: serverOutputDir };
+  paths.appSrc = path.resolve("pages");
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/forest")),
+    // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system"))
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system")),
+    path.resolve("comps")
   );
   params.additionalInclude = additionalInclude;
   const allowlist = params.allowlist || [];
   allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
+  allowlist.push("@atrilabs/atri-app-core/src/utils");
   allowlist.push("@atrilabs/design-system");
   allowlist.push("@atrilabs/canvas-zone");
   startWebpackBuild({
@@ -68,13 +73,13 @@ export async function buildServerSide(
     moduleFileExtensions,
     entry: await createServerEntry({ pageInfos: params.pagesInfo }),
     prepareConfig: (config) => {
-      config.resolve = {
-        alias: {
-          // @ts-ignore
-          "@atrilabs/canvas-zone": __non_webpack_require__.resolve(
-            "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx"
-          ),
-        },
+      config.resolve = config.resolve ?? {};
+      config.resolve["alias"] = {
+        ...(config.resolve["alias"] || {}),
+        // @ts-ignore
+        "@atrilabs/canvas-zone": __non_webpack_require__.resolve(
+          "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx"
+        ),
       };
       config.resolveLoader = {
         alias: {
