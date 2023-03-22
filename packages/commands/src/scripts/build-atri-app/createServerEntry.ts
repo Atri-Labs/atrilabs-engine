@@ -9,7 +9,7 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
   };
   const { pageInfos } = options;
   const routes = pageInfos.map(({ routeObjectPath }) => {
-    return { path: routeObjectPath };
+    return routeObjectPath;
   });
   for (let i = 0; i < pageInfos.length; i++) {
     const { pagePath, routeObjectPath, components } = pageInfos[i]!;
