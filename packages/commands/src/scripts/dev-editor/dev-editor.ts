@@ -16,7 +16,10 @@ import { NETWORK_REQUEST } from "../dev/serverMachine";
 import { computeFSAndSend } from "./machine/computeFSAndSend";
 import { EditorAppServerPlugin } from "./webpack-plugins/EditorAppServerPlugins";
 import startManifestRegistryLibDevServer from "./startManifestRegistryLibDevServer";
-import { processManifestDirsString } from "../../commons/processManifestDirsString";
+import {
+  processDirsString,
+  processManifestDirsString,
+} from "../../commons/processManifestDirsString";
 
 function main() {
   // TODO: copy public folder if not already exists
@@ -32,6 +35,10 @@ function main() {
 
   computeFSAndSend(editorServerMachineInterpreter, manifestDirs).then(() => {
     const additionalInclude = params.additionalInclude || [];
+    const exclude = [
+      ...processDirsString(params.exclude),
+      path.resolve("node_modules"),
+    ];
     additionalInclude.push(
       path.dirname(
         // @ts-ignore
@@ -181,6 +188,7 @@ function main() {
 
     startDevServer({
       ...params,
+      exclude,
       prepareConfig: wrapPrepareConfig,
       middlewares: wrapMiddlewares,
       outputFilename: "editor/js/pages/[name].js",
@@ -215,6 +223,7 @@ function main() {
 
     startManifestRegistryLibDevServer({
       ...params,
+      exclude,
       babel: {
         plugins: [
           [

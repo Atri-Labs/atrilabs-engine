@@ -10,6 +10,7 @@ import webpack from "webpack";
 import path from "path";
 import { createServerEntry } from "./createServerEntry";
 import { PageInfo } from "./types";
+import { processDirsString } from "../../commons/processManifestDirsString";
 
 function startWebpackBuild(
   params: Parameters<typeof createNodeLibConfig>[0] & {
@@ -41,7 +42,11 @@ export async function buildServerSide(
 ) {
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
   const paths = { ...params.paths, outputDir: serverOutputDir };
-  paths.appSrc = path.resolve("pages");
+  paths.appSrc = process.cwd();
+  const exclude = [
+    ...processDirsString(params.exclude),
+    path.resolve("node_modules"),
+  ];
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -49,8 +54,7 @@ export async function buildServerSide(
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system")),
-    path.resolve("comps")
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system"))
   );
   params.additionalInclude = additionalInclude;
   const allowlist = params.allowlist || [];
@@ -71,6 +75,7 @@ export async function buildServerSide(
         __non_webpack_require__.resolve("@atrilabs/manifest-registry")
       ),
     ],
+    exclude,
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,

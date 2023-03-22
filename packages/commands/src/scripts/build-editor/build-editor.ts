@@ -2,7 +2,10 @@
 
 import { extractParams, PrepareConfig } from "@atrilabs/commands-builder";
 import { computeManifestIRsForDirs } from "../../commons/computeManifestIRs";
-import { processManifestDirsString } from "../../commons/processManifestDirsString";
+import {
+  processDirsString,
+  processManifestDirsString,
+} from "../../commons/processManifestDirsString";
 import path from "path";
 import { createEntry } from "./createEntry";
 import {
@@ -22,6 +25,10 @@ async function main() {
   ]);
   const irs = await computeManifestIRsForDirs(manifestDirs);
 
+  const exclude = [
+    ...processDirsString(params.exclude),
+    path.resolve("node_modules"),
+  ];
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     path.dirname(
@@ -156,6 +163,7 @@ async function main() {
 
   runBuild({
     ...params,
+    exclude,
     prepareConfig: wrapPrepareConfig,
     outputFilename: "editor/js/[name].js",
     customLoaders,

@@ -62,6 +62,12 @@ export function processArgs() {
       default: "",
       description: "List of manifest directories in #pkg:dir format",
     })
+    .option("x", {
+      alias: "exclude",
+      type: "string",
+      default: "",
+      description: "Directories to exclude for JSX/TSX compilation",
+    })
     .boolean("stats")
     .help().argv as {
     e: string;
@@ -76,6 +82,7 @@ export function processArgs() {
     i: string;
     a: string;
     d: string;
+    x: string;
   };
 }
 
@@ -185,6 +192,7 @@ export function extractParams() {
     return path.dirname(require.resolve(a));
   });
   const allowlist = args.a !== "" ? args.a.split(":") : [];
+  const exclude = args.a !== "" ? args.x.split(":") : [];
   const outputFilename = args.f;
   const manifestDirs: string[] = args.d !== "" ? args.d.split(":") : [];
 
@@ -262,6 +270,7 @@ export function extractParams() {
     additionalInclude: resolvedInclude,
     allowlist,
     manifestDirs,
+    exclude,
   };
 }
 

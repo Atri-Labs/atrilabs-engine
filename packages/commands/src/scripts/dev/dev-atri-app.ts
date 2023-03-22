@@ -20,7 +20,10 @@ import express from "express";
 import { watchManifestDirs } from "./machine/watchManifestDirs";
 import fs from "fs";
 import { computeFSAndSend } from "./machine/computeFSAndSend";
-import { processManifestDirsString } from "../../commons/processManifestDirsString";
+import {
+  processDirsString,
+  processManifestDirsString,
+} from "../../commons/processManifestDirsString";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -46,6 +49,10 @@ async function main() {
     computeFSAndSend(interpreter, manifestDirs),
   ]);
 
+  const exclude = [
+    ...processDirsString(params.exclude),
+    path.resolve("node_modules"),
+  ];
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -166,6 +173,7 @@ async function main() {
 
   startDevServer({
     ...params,
+    exclude,
     prepareConfig: wrapPrepareConfig,
     middlewares: wrapMiddlewares,
     outputFilename: "atri/js/pages/[name].js",
@@ -200,6 +208,7 @@ async function main() {
   allowlist.push("@atrilabs/manifest-registry");
   startNodeLibWatcher({
     ...params,
+    exclude,
     additionalInclude: [
       ...params.additionalInclude,
       path.dirname(

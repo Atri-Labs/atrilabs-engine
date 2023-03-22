@@ -114,6 +114,7 @@ export default function setJsxTsxLoaders(options: {
   hasJsxRuntime: boolean;
   removeReactRefresh?: boolean;
   additionalInclude: string[];
+  exclude: string[];
   babel?: {
     plugins?: [string, any][];
   };
@@ -127,11 +128,13 @@ export default function setJsxTsxLoaders(options: {
     removeReactRefresh,
     additionalInclude,
     babel,
+    exclude,
   } = options;
   return [
     {
       test: /\.(js|mjs|jsx|ts|tsx)$/,
       include: [appSrc, ...additionalInclude],
+      exclude,
       loader: require.resolve("babel-loader"),
       options: {
         babelrc: false,
