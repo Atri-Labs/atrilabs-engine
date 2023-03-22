@@ -10,7 +10,6 @@ export function loadRoutes(
   >,
   routerOpts: Parameters<typeof atriRouter.setPages>["1"]
 ) {
-  console.log("routerOpts", routerOpts);
   const routes = props.routes.map((route) => {
     if (route.path === props.entryRouteObjectPath) {
       return {
@@ -25,10 +24,13 @@ export function loadRoutes(
         ),
       };
     }
-    const Page = React.lazy(() =>
-      // @ts-ignore
-      __non_webpack_require__(`/atri/js/${route.path}`)
-    );
+    const Page = React.lazy(async () => {
+      return {
+        default: () => {
+          return <div>Lazy Component</div>;
+        },
+      };
+    });
     return {
       path: route.path,
       element: (
