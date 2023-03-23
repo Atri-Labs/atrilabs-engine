@@ -192,7 +192,7 @@ export function extractParams() {
     return path.dirname(require.resolve(a));
   });
   const allowlist = args.a !== "" ? args.a.split(":") : [];
-  const exclude = args.a !== "" ? args.x.split(":") : [];
+  const exclude = args.x !== "" ? args.x.split(":") : [];
   const outputFilename = args.f;
   const manifestDirs: string[] = args.d !== "" ? args.d.split(":") : [];
 
