@@ -33,15 +33,15 @@ const customTreeOptions: CustomPropsTreeOptions = {
     collapse: { type: "boolean" },
     bordered: { type: "boolean" },
     ghost: { type: "boolean" },
-    defaultActiveKey: { type: "array_number" },
+    defaultActiveKey: { type: "array" },
     expandIcon: { type: "static_asset" },
-
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
         { fieldName: "title", type: "text" },
         { fieldName: "description", type: "text" },
+        { fieldName: "key", type: "text" },
         {
           fieldName: "collapsible",
           type: "enum",
@@ -71,6 +71,7 @@ const compManifest: ReactComponentManifestSchema = {
             {
               title: `One`,
               description: `Content of Accordion 1`,
+              key: "1",
               collapsible: "header",
               showArrow: true,
             },

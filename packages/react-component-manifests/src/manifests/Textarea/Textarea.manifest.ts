@@ -22,8 +22,16 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "large_text" },
+    defaultValue: { type: "large_text" },
     placeholder: { type: "text" },
+    value: { type: "text" },
+    size: { type: "enum", options: ["middle", "large", "small"] },
+    allowClear: { type: "boolean" },
+    bordered: { type: "boolean" },
+    disabled: { type: "boolean" },
+    id: { type: "text" },
+    maxLength: { type: "number" },
+    showCount: { type: "boolean" },
   },
 };
 
@@ -41,8 +49,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "",
           placeholder: "Placeholder Text",
+          bordered: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

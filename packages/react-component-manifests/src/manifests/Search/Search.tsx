@@ -1,5 +1,6 @@
-import React, { forwardRef, ReactNode, ChangeEventHandler } from "react";
-import { Input as AntdInput } from "antd";
+import React, { forwardRef, ReactNode } from "react";
+import { Input } from "antd";
+const SearchInput = Input.Search;
 
 export enum InputSize {
   LARGE = "large",
@@ -12,17 +13,24 @@ export enum InputStatus {
   WARNING = "warning",
 }
 
-const Input = forwardRef<
+const Search = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
     className?: string;
     custom: {
+      enterButton?: boolean | ReactNode; //Whether to show an enter button after input. This property conflicts with the addonAfter property
+      loading?: boolean; //Search box with loading
+      onSearch: (
+        value: string,
+        event?:
+          | React.ChangeEvent<HTMLInputElement>
+          | React.MouseEvent<HTMLElement>
+          | React.KeyboardEvent<HTMLInputElement>
+      ) => void; //The callback function triggered when you click on the search-icon or press the Enter key
       value: string;
       placeholder: string;
       isPasswordField?: boolean;
-      onChange: ChangeEventHandler<HTMLElement>;
-      onPressEnter?: () => void;
       size?: InputSize; //The size of the input box. Note: in the context of a form, the middle size is used	large | middle | small
       addonAfter?: ReactNode; //The label text displayed after (on the right side of) the input field
       addonBefore?: ReactNode; //The label text displayed before (on the left side of) the input field
@@ -49,26 +57,16 @@ const Input = forwardRef<
   }
 >((props, ref) => {
   const { custom } = props;
-  const { isPasswordField, ...restCustomProps } = custom;
-
   return (
-    // moved ref to div, while changing isPasswordField props ref was not able assign twice to another input and the selection was not working without refreshing the editor
+    // moved ref to div, while passing prefix and suffix ref was losing focus and the selection was not working without refreshing the editor
     <div ref={ref}>
-      {isPasswordField === true ? (
-        <AntdInput.Password
-          {...restCustomProps}
-          className={props.className}
-          style={props.styles}
-        />
-      ) : (
-        <AntdInput
-          {...restCustomProps}
-          className={props.className}
-          style={props.styles}
-        />
-      )}
+      <SearchInput
+        style={props.styles}
+        className={props.className}
+        {...custom}
+      />
     </div>
   );
 });
 
-export default Input;
+export default Search;

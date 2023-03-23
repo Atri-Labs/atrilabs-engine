@@ -22,68 +22,58 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    range: { type: "boolean" },
-    value: { type: "array_number" },
-    min: { type: "number" },
-    max: { type: "number" },
-    defaultValue: { type: "array_number" },
+    defaultValue: { type: "text" },
+    placeholder: { type: "text" },
+    value: { type: "text" },
+    size: { type: "enum", options: ["middle", "large", "small"] },
+    addonAfter: { type: "text" },
+    addonBefore: { type: "text" },
+    allowClear: { type: "boolean" },
+    bordered: { type: "boolean" },
     disabled: { type: "boolean" },
-    vertical: { type: "boolean" },
-    draggableTrack: { type: "boolean" },
-    reverse: { type: "boolean" },
-    marks: {
-      type: "array_map",
-      singleObjectName: "mark",
-      attributes: [
-        {
-          fieldName: "value",
-          type: "number",
-        },
-        {
-          fieldName: "label",
-          type: "text",
-        },
-      ],
-    },
+    id: { type: "text" },
+    maxLength: { type: "number" },
+    showCount: { type: "boolean" },
+    status: { type: "enum", options: ["none", "error", "warning"] },
+    prefix: { type: "text" },
+    suffix: { type: "text" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Slider", category: "Basics" },
+  meta: { key: "Search", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          margin: "0 30px",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          min: 0,
-          max: 100,
+          placeholder: "Search...",
+          bordered: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
-      onAfterChange: [{ type: "do_nothing" }],
+      onSearch: [{ type: "controlled", selector: ["custom", "value"] }],
+      onPressEnter: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Slider" } },
+  panel: { comp: "CommonIcon", props: { name: "Search" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Slider", containerStyle: { padding: "1rem" } },
+    props: { name: "Search", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

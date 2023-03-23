@@ -22,9 +22,22 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    defaultValue: { type: "text" },
     value: { type: "text" },
     placeholder: { type: "text" },
     isPasswordField: { type: "boolean" },
+    size: { type: "enum", options: ["middle", "large", "small"] },
+    addonAfter: { type: "text" },
+    addonBefore: { type: "text" },
+    allowClear: { type: "boolean" },
+    bordered: { type: "boolean" },
+    disabled: { type: "boolean" },
+    id: { type: "text" },
+    maxLength: { type: "number" },
+    showCount: { type: "boolean" },
+    status: { type: "enum", options: ["none", "error", "warning"] },
+    prefix: { type: "text" },
+    suffix: { type: "text" },
   },
 };
 
@@ -58,8 +71,8 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          value: "",
           placeholder: "Placeholder Text",
+          bordered: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
