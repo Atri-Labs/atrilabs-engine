@@ -1,10 +1,10 @@
 function atriPagesServerLoader() {
   const options = this.getOptions();
   const { pagePath, reactRouteObjectPath } = options;
-  let { srcs, routes, entryRouteStores, styles } = options;
+  let { srcs, routes, entryRouteStore, styles } = options;
   if (srcs === undefined) srcs = "[]";
   if (routes === undefined) routes = "[]";
-  if (entryRouteStores === undefined) entryRouteStores = "{}";
+  if (entryRouteStore === undefined) entryRouteStore = "{}";
   if (styles === undefined) styles = "";
   if (pagePath === undefined) {
     const err = Error();
@@ -14,7 +14,7 @@ function atriPagesServerLoader() {
   }
   srcs = JSON.parse(srcs);
   routes = JSON.parse(routes);
-  entryRouteStores = JSON.parse(entryRouteStores);
+  entryRouteStore = JSON.parse(entryRouteStore);
   return `
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
@@ -30,7 +30,7 @@ function atriPagesServerLoader() {
     })
   )}, styles: ${JSON.stringify(styles)}, entryRouteObjectPath: ${JSON.stringify(
     reactRouteObjectPath
-  )}, entryRouteStores: ${JSON.stringify(entryRouteStores)}})
+  )}, entryRouteStore: ${JSON.stringify(entryRouteStore)}})
   }
 
   export default { renderPage };`;

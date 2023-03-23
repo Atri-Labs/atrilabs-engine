@@ -22,7 +22,7 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
         reactRouteObjectPath: routeObjectPath,
         routes: JSON.stringify(routes || []),
         styles: await createCssText(components),
-        entryRouteStores: JSON.stringify(
+        entryRouteStore: JSON.stringify(
           createStoreFromComponents(components) || {}
         ),
       })}!`,
