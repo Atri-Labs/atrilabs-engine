@@ -29,7 +29,7 @@ async function main() {
   const params = extractParams();
   const outputDir = path.resolve("dist", "app-build");
   params.paths.outputDir = outputDir;
-  const pagesInfo = await getPagesInfo();
+  const pagesInfo = await getPagesInfo({ manifestDirs: params.manifestDirs });
   await buildServerSide({ ...JSON.parse(JSON.stringify(params)), pagesInfo });
 }
 
