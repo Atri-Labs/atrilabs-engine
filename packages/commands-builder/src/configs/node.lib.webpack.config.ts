@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration, RuleSetRule } from "webpack";
 import { createNodeConfig } from "./node.webpack.config";
 
 export function createNodeLibConfig(options: {
@@ -41,6 +41,7 @@ export function createNodeLibConfig(options: {
     plugins?: [string, any][];
   };
   exclude?: string[];
+  customLoaders?: RuleSetRule[];
 }) {
   const baseConfig = createNodeConfig(options);
 

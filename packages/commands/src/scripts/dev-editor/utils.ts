@@ -1,5 +1,5 @@
 import fs from "fs";
-import type { LayerConfig, ToolConfig } from "@atrilabs/core";
+import type { LayerConfig, ToolConfig } from "@atrilabs/core/src/types";
 import { CorePkgInfo, ToolPkgInfo } from "../../commons/types";
 import path from "path";
 

@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration, RuleSetRule } from "webpack";
 import path from "path";
 import createEnvironmentHash from "./utils/createEnvironmentHash";
 import fs from "fs";
@@ -65,6 +65,7 @@ export function createNodeConfig(options: {
   babel?: {
     plugins?: [string, any][];
   };
+  customLoaders?: RuleSetRule[];
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -85,6 +86,7 @@ export function createNodeConfig(options: {
     allowlist,
     babel,
     exclude,
+    customLoaders,
   } = options;
   return {
     target: "node",
@@ -173,6 +175,7 @@ export function createNodeConfig(options: {
             ...setFileLoaders(),
           ],
         },
+        ...(customLoaders || []),
       ],
     },
     resolve: {

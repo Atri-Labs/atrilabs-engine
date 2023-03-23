@@ -12,9 +12,13 @@ import {
   getComponentsFromNodes,
   jssToCss,
 } from "../../commons/build-utils";
+import type { ToolConfig } from "@atrilabs/core/src/types";
 
 export function getEventsFile(pagePath: string) {
-  const eventsJSONFile = pagePath.replace(/(\.((js|ts)x?))$/, ".events.json");
+  const eventsJSONFile = path.resolve(
+    "pages",
+    pagePath.replace(/(\.((js|ts)x?))$/, ".events.json").replace(/^(\/)/, "")
+  );
   if (fs.existsSync(eventsJSONFile)) {
     return eventsJSONFile;
   }
@@ -78,4 +82,10 @@ export async function createCssText(
       cssObj[component.alias] = component.props["styles"];
   });
   return await jssToCss(cssObj);
+}
+
+export function readToolConfig(toolPkg: string) {
+  // @ts-ignore
+  const toolConfig = __non_webpack_require__(toolPkg);
+  return toolConfig as ToolConfig;
 }

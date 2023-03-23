@@ -68,6 +68,12 @@ export function processArgs() {
       default: "",
       description: "Directories to exclude for JSX/TSX compilation",
     })
+    .option("t", {
+      alias: "tool",
+      type: "string",
+      default: "",
+      description: "The package name of the tool.",
+    })
     .boolean("stats")
     .help().argv as {
     e: string;
@@ -83,6 +89,7 @@ export function processArgs() {
     a: string;
     d: string;
     x: string;
+    t: string;
   };
 }
 
@@ -198,6 +205,8 @@ export function extractParams() {
 
   const useTypeScript = fs.existsSync(path.resolve(appPath, "tsconfig.json"));
 
+  const tool = args.t;
+
   function resolveApp(p: string) {
     return path.resolve(appPath, p);
   }
@@ -271,6 +280,7 @@ export function extractParams() {
     allowlist,
     manifestDirs,
     exclude,
+    tool,
   };
 }
 
