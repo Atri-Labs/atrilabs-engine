@@ -16,9 +16,10 @@ const DatePicker = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <AntdDatePicker
+        className={props.className}
+        style={props.styles}
         picker={props.custom?.picker}
         showTime={props.custom?.showTime}
-        style={props.styles}
         disabled={props.custom?.disabled}
         onOpenChange={props.onOpenChange}
       />

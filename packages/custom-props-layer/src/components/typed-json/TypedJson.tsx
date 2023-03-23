@@ -16,6 +16,8 @@ export const TypedJson: React.FC<ComponentProps> = (props) => {
     return props.selector || [];
   }, [props]);
 
+  const { treeOptions, propName, attributes } = props;
+
   const propValue = useMemo(() => {
     let currentValue = props.customProps;
     for (let prop of selector) {
@@ -31,9 +33,18 @@ export const TypedJson: React.FC<ComponentProps> = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [validationError, setValidationError] = useState<string>("");
 
-  const propOptions = props.treeOptions.dataTypes[
-    props.propName
-  ] as JSONCustomProp;
+  const schema = useMemo(() => {
+    const propOptions = treeOptions.dataTypes[propName] as JSONCustomProp;
+
+    if (!propOptions?.schema && attributes?.length) {
+      const attritubteTypeObj = attributes.find(
+        (attribute) => attribute.fieldName === propName
+      ) as JSONCustomProp;
+      return attritubteTypeObj.schema;
+    }
+
+    return propOptions?.schema;
+  }, [treeOptions.dataTypes, propName, attributes]);
 
   const callPatchCb = useCallback(() => {
     if (!validationError) {
@@ -55,9 +66,7 @@ export const TypedJson: React.FC<ComponentProps> = (props) => {
     try {
       validationError && setValidationError("");
       JSON.parse(view.state.doc.toString());
-      const { error } = propOptions.schema.validate(
-        JSON.parse(view.state.doc.toString())
-      );
+      const { error } = schema.validate(JSON.parse(view.state.doc.toString()));
       if (error) {
         diagnostics.push({
           from: view.state.doc.lineAt(view.state.selection.main.from).number,

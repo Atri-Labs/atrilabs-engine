@@ -219,7 +219,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
                 alignItems: "center",
                 flexDirection: "column",
                 width: "100%",
-                height: "calc(100vh - 90.4px)",
               }}
             >
               {surelyReutrnArray(props.callbacks[callbackName]).length === 0 ? (

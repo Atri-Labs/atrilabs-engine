@@ -35,7 +35,7 @@ export type MapCustomProp = {
   type: "map";
   attributes: ({
     fieldName: string;
-  } & (SimpleCustomProp | EnumCustomProp))[];
+  } & (SimpleCustomProp | EnumCustomProp | JSONCustomProp))[];
 };
 
 export type ArrayMapCustomProp = {

@@ -8,7 +8,7 @@ import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -22,21 +22,33 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
-    listType: {
+    defaultValue: { type: "number" },
+    value: { type: "number" },
+    max: { type: "number" },
+    min: { type: "number" },
+    step: { type: "number" },
+    placeholder: { type: "text" },
+    size: {
       type: "enum",
-      options: ["text", "picture-card", "picture-circle"],
+      options: ["small", "middle", "large"],
     },
-    dragger: { type: "boolean" },
-    maxCount: { type: "number" },
-    multiple: { type: "boolean" },
+    bordered: { type: "boolean" },
     disabled: { type: "boolean" },
-    directory: { type: "boolean" },
+    status: {
+      type: "enum",
+      options: ["none", "error", "warning"],
+    },
+    addonAfter: { type: "text" },
+    addonBefore: { type: "text" },
+    prefix: { type: "text" },
+    suffix: { type: "text" },
+    keyboard: { type: "boolean" },
+    readOnly: { type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Upload", category: "Basics" },
+  meta: { key: "InputNumber", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -49,33 +61,31 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Click to Upload",
-          listType: "text",
-          dragger: false,
-          disabled: false,
-          directory: false,
+          size: "middle",
+          defaultValue: 0,
+          bordered: true,
+          keyboard: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "file_input", selector: ["io", "files"] }],
-      beforeUpload: [{ type: "do_nothing" }],
-      onDrop: [{ type: "do_nothing" }],
-      onPreview: [{ type: "do_nothing" }],
+      onChange: [{ type: "controlled", selector: ["custom", "value"] }],
+      onPressEnter: [{ type: "do_nothing" }],
+      onStep: [{ type: "do_nothing" }],
+      parser: [{ type: "do_nothing" }],
+      formatter: [{ type: "do_nothing" }],
     },
-    defaultCallbackHandlers: {
-      onChange: [{ sendFile: { self: true, props: ["io", "files"] } }],
-    },
+    defaultCallbackHandlers: {},
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Upload" } },
+  panel: { comp: "CommonIcon", props: { name: "InputNumber" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Upload", containerStyle: { padding: "1rem" } },
+    props: { name: "InputNumber", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };
