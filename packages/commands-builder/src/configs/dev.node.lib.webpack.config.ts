@@ -40,6 +40,7 @@ export function createDevNodeConfig(options: {
   babel?: {
     plugins?: [string, any][];
   };
+  exclude?: string[];
 }) {
   const baseConfig = createNodeLibConfig(options);
 

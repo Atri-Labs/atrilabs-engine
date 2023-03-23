@@ -2,7 +2,7 @@ import {
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
   readDirStructure,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import { PAGE_DIR } from "../../consts";
 import { FS_CHANGED, ROUTE_OBJECTS_UPDATED } from "./serverMachine";
 import { interpreter, pagesWatcher } from "./init";

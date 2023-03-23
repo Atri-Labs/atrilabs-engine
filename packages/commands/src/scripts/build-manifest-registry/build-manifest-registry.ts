@@ -4,11 +4,16 @@ import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
 import webpack from "webpack";
 import createManifestRegistryConfig from "../../commons/manifest-registry.webpack.config";
+import { processDirsString } from "../../commons/processManifestDirsString";
 import { getCorePkgInfo, readToolConfig } from "../dev-editor/utils";
 
 async function main() {
   const toolConfig = readToolConfig();
   const params = extractParams();
+  const exclude = [
+    ...processDirsString(params.exclude),
+    path.resolve("node_modules"),
+  ];
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     path.dirname(
@@ -69,6 +74,7 @@ async function main() {
 
   const webpackConfig = createManifestRegistryConfig({
     ...params,
+    exclude,
     babel: {
       plugins: [
         [

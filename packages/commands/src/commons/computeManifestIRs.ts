@@ -1,4 +1,4 @@
-import { readDirStructure } from "@atrilabs/atri-app-core";
+import { readDirStructure } from "@atrilabs/atri-app-core/src/utils";
 import { ManifestIR } from "@atrilabs/core";
 import pkgUp from "pkg-up";
 import path from "path";

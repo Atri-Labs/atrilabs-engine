@@ -2,7 +2,7 @@ import {
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
   readDirStructure,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import path from "path";
 import { PageInfo } from "./types";
 import fs from "fs";
@@ -35,7 +35,12 @@ export function getComponentsFromEventsPath(eventsPath: string) {
 }
 
 export async function getPagesInfo(): Promise<PageInfo[]> {
-  const pagePaths = await readDirStructure(path.resolve("pages"));
+  const pagePaths = (await readDirStructure(path.resolve("pages"))).filter(
+    (pagePath) =>
+      !["/_app", "/_error", "/_document"].includes(
+        pagePath.replace(/(\.(js|ts)x?)$/, "")
+      )
+  );
   const irs = dirStructureToIR(pagePaths);
   const routeObjectPaths = pathsIRToRouteObjectPaths(irs);
   return pagePaths.map((pagePath, index) => {

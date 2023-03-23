@@ -3,7 +3,7 @@ import {
   IRToUnixFilePath,
   PathIR,
   readDirStructure,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import { PAGE_DIR, ROUTES_DIR } from "../consts";
 import path from "path";
 import fs from "fs";

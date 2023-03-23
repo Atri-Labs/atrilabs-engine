@@ -60,6 +60,7 @@ export function createNodeConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   additionalInclude?: string[];
+  exclude?: string[];
   allowlist?: string[];
   babel?: {
     plugins?: [string, any][];
@@ -83,6 +84,7 @@ export function createNodeConfig(options: {
     additionalInclude,
     allowlist,
     babel,
+    exclude,
   } = options;
   return {
     target: "node",
@@ -159,6 +161,7 @@ export function createNodeConfig(options: {
               removeReactRefresh: true,
               additionalInclude: additionalInclude || [],
               babel,
+              exclude: exclude || [],
             }),
             ...setJsxLoaders({
               isEnvDevelopment,

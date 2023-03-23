@@ -61,6 +61,7 @@ export function createConfig(options: AppConfigOptions): WebpackConfiguration {
     outputFilename,
     customLoaders,
     babel,
+    exclude,
   } = options;
 
   return {
@@ -221,6 +222,7 @@ export function createConfig(options: AppConfigOptions): WebpackConfiguration {
               hasJsxRuntime: true,
               additionalInclude: additionalInclude || [],
               babel,
+              exclude: exclude || [],
             }),
             ...setJsxLoaders({
               isEnvDevelopment,

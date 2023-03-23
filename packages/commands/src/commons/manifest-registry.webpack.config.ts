@@ -41,6 +41,7 @@ export default function createManifestRegistryConfig(
     externals,
     toolConfig,
     corePkgInfo,
+    exclude,
   } = params;
 
   const outputFilename = "manifestRegistry.js";
@@ -60,6 +61,7 @@ export default function createManifestRegistryConfig(
     shouldInlineRuntimeChunk: true,
     useTypeScript,
     additionalInclude,
+    exclude,
     additionalNodeModules,
     outputFilename,
     customLoaders: [

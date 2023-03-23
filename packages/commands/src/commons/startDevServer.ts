@@ -58,6 +58,7 @@ export default function startDevServer(
     customLoaders,
     generateIndexHtml,
     babel,
+    exclude,
   } = params;
 
   return checkBrowsers(paths.appPath, isInteractive())
@@ -89,6 +90,7 @@ export default function startDevServer(
         customLoaders,
         generateIndexHtml,
         babel,
+        exclude,
       });
 
       if (prepareConfig && typeof prepareConfig === "function") {

@@ -42,6 +42,7 @@ export type AppConfigOptions = {
   generateIndexHtml?: boolean;
   additionalInclude?: string[];
   additionalNodeModules?: string[];
+  exclude?: string[];
   outputFilename: string;
   customLoaders?: RuleSetRule[];
   babel?: {

@@ -7,12 +7,17 @@ import { createManifestsEntry } from "./createManifestsEntry";
 import path from "path";
 import fs from "fs";
 import webpack from "webpack";
+import { processDirsString } from "../../commons/processManifestDirsString";
 
 export function buildManifests(options: {
   params: ReturnType<typeof extractParams>;
 }) {
   return new Promise<void>((resolve, reject) => {
     const { params } = options;
+    const exclude = [
+      ...processDirsString(params.exclude),
+      path.resolve("node_modules"),
+    ];
     params.additionalInclude = params.additionalInclude || [];
     params.additionalInclude.push(
       path.dirname(
@@ -39,6 +44,7 @@ export function buildManifests(options: {
     params.allowlist.push(
       "@atrilabs/atri-app-core/src/editor-components/MissingIcon"
     );
+    params.allowlist.push("@atrilabs/atri-app-core/src/utils");
     params.allowlist.push("@atrilabs/design-system");
     params.allowlist.push("@atrilabs/manifest-registry");
     params.allowlist.push("@atrilabs/react-component-manifest-schema");
@@ -53,6 +59,7 @@ export function buildManifests(options: {
 
     const conifg = createNodeLibConfig({
       ...params,
+      exclude,
       entry: createManifestsEntry,
       moduleFileExtensions,
       outputFilename: params.outputFilename,

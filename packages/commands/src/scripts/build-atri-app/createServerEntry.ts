@@ -9,7 +9,7 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
   };
   const { pageInfos } = options;
   const routes = pageInfos.map(({ routeObjectPath }) => {
-    return { path: routeObjectPath };
+    return routeObjectPath;
   });
   for (let i = 0; i < pageInfos.length; i++) {
     const { pagePath, routeObjectPath, components } = pageInfos[i]!;
@@ -18,11 +18,13 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
     entry[entryName] = {
       import: `atri-pages-server-loader?${stringify({
         pagePath,
-        srcs,
+        srcs: JSON.stringify(srcs || []),
         reactRouteObjectPath: routeObjectPath,
-        routes,
+        routes: JSON.stringify(routes || []),
         styles: await createCssText(components),
-        entryRouteStores: createStoreFromComponents(components),
+        entryRouteStores: JSON.stringify(
+          createStoreFromComponents(components) || {}
+        ),
       })}!`,
     };
   }

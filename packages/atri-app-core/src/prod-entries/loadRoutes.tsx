@@ -24,7 +24,13 @@ export function loadRoutes(
         ),
       };
     }
-    const Page = React.lazy(() => import(`/atri/js/${route.path}`));
+    const Page = React.lazy(async () => {
+      return {
+        default: () => {
+          return <div>Lazy Component</div>;
+        },
+      };
+    });
     return {
       path: route.path,
       element: (

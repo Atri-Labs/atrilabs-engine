@@ -4,11 +4,13 @@ import chalk from "chalk";
 import {
   LiveapiClientToServerEvents,
   LiveApiServerToClientEvents,
+} from "@atrilabs/atri-app-core";
+import {
   routeObjectPathToIR,
   IRToUnixFilePath,
   dirStructureToIR,
   pathIRToRouteObjectPath,
-} from "@atrilabs/atri-app-core";
+} from "@atrilabs/atri-app-core/src/utils";
 import path from "path";
 import fs from "fs";
 import { watch } from "chokidar";

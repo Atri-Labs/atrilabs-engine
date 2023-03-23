@@ -1,7 +1,10 @@
 import { Entry } from "webpack";
 import { interpreter } from "./init";
 const { stringify } = require("querystring");
-import { IRToUnixFilePath, routeObjectPathToIR } from "@atrilabs/atri-app-core";
+import {
+  IRToUnixFilePath,
+  routeObjectPathToIR,
+} from "@atrilabs/atri-app-core/src/utils";
 
 export async function createEntry() {
   const requestedRouteObjectPaths = Array.from(

@@ -3,7 +3,7 @@ import { getId } from "@atrilabs/core";
 import { gray300, gray900, smallText } from "@atrilabs/design-system";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
-import { DragComp, DragData } from "@atrilabs/atri-app-core";
+import type { DragComp, DragData } from "@atrilabs/atri-app-core";
 import { CommonIcon } from "@atrilabs/atri-app-core/src/editor-components/CommonIcon";
 
 const styles: { [key: string]: React.CSSProperties } = {
