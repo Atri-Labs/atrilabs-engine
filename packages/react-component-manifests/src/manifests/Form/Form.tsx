@@ -81,28 +81,23 @@ const Form = forwardRef<
         search: inputTypes;
         radio: {
           label?: string;
-          name?: string;
-          labels?: string[];
-          id?: string[];
-          value?: string[];
-          selectOptions?: any;
+          id?: string;
+          options?: any;
         };
         checkbox: {
           label?: string;
-          labels?: string[];
-          id?: string[];
-          value?: string[];
-          selectOptions?: any;
+          id?: string;
+          options?: any;
         };
         time: Pick<inputTypes, "id" | "label">;
         file: Pick<inputTypes, "id" | "label"> & {
           multiple?: boolean;
         };
         select: {
-          selectOptions?: Parameters<typeof Select>;
-          selectLabel?: string;
-          selectIdentifier?: string;
+          options?: Parameters<typeof Select>;
+          label?: string;
           multiple?: boolean;
+          id?: string;
         };
       }[];
       disabled?: boolean;
@@ -153,11 +148,19 @@ const Form = forwardRef<
                 <AntdForm.Item
                   label={
                     element[element.selectedOption]
-                      ? element[element.selectedOption].selectLabel
+                      ? element[element.selectedOption].label
+                      : ""
+                  }
+                  id ={
+                    element[element.selectedOption]
+                      ? element[element.selectedOption].id
                       : ""
                   }
                 >
-                  <Select options={element?.select?.selectOptions} />
+                  <Select
+                    options={element?.select?.options}
+                    mode={element?.select?.multiple ? "multiple" : undefined}
+                  />
                 </AntdForm.Item>
               )
             );
@@ -184,7 +187,7 @@ const Form = forwardRef<
                     : ""
                 }
               >
-                <Checkbox.Group options={element?.checkbox?.selectOptions} />
+                <Checkbox.Group options={element?.checkbox?.options} />
               </AntdForm.Item>
             );
           else if (element.selectedOption === "radio")
@@ -196,7 +199,7 @@ const Form = forwardRef<
                     : ""
                 }
               >
-                <Radio.Group options={element?.radio?.selectOptions} />
+                <Radio.Group options={element?.radio?.options} />
               </AntdForm.Item>
             );
           else if (element.selectedOption === "color")
@@ -321,18 +324,19 @@ const Form = forwardRef<
             columnGap: "1em",
             alignItems: "baseline",
           }}
-        > {props.custom.showSubmitButton && (
-          <button
-            style={{
-              padding: "4px 15px",
-              color: props.custom.submitButtonColor,
-              backgroundColor: props.custom.submitButtonBgColor,
-              border: "1px solid transparent",
-            }}
-          >
-            Submit
-          </button>
-           )}
+        >
+          {props.custom.showSubmitButton && (
+            <button
+              style={{
+                padding: "4px 15px",
+                color: props.custom.submitButtonColor,
+                backgroundColor: props.custom.submitButtonBgColor,
+                border: "1px solid transparent",
+              }}
+            >
+              Submit
+            </button>
+          )}
           {props.custom.showResetButton && (
             <button
               style={{
