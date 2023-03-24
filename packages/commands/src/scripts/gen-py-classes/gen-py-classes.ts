@@ -7,6 +7,7 @@ import path from "path";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import pkgUp from "pkg-up";
 import { createComponentClassFile, createInitPyFile } from "./utils";
+import { ManifestIR } from "@atrilabs/core";
 
 const atriPyPkgOutputDir = "atri-py-pkg";
 
@@ -113,11 +114,13 @@ async function main() {
       if (fs.existsSync(outputFilepath)) {
         // @ts-ignore
         const registry = __non_webpack_require__(outputFilepath).default as {
-          manifests: { [schema: string]: any };
+          fullManifest: { manifests: { [schema: string]: any } };
+          paths: ManifestIR; // a bit different from regular ManifestIR because it has relative paths
         }[];
         const ReactComponentManifestSchemaId =
           "@atrilabs/react-component-manifest-schema/src/index.ts";
-        const result = registry.map(({ manifests }) => {
+        const result = registry.map(({ fullManifest }) => {
+          const manifests = fullManifest.manifests;
           const reactManifest: ReactComponentManifestSchema | undefined =
             manifests[ReactComponentManifestSchemaId];
           if (reactManifest) {

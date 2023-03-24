@@ -7,7 +7,7 @@ import path from "path";
 import { ComponentManifests, PageInfo } from "./types";
 import fs from "fs";
 import { AnyEvent, createForest, Forest, TreeNode } from "@atrilabs/forest";
-import type { ToolConfig } from "@atrilabs/core/src/types";
+import type { ManifestIR, ToolConfig } from "@atrilabs/core/src/types";
 import { processManifestDirsString } from "../../commons/processManifestDirsString";
 import pkgUp from "pkg-up";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
@@ -65,10 +65,14 @@ function getComponentManifests(manifestDirs: string[]) {
     if (Array.isArray(manifestRegistry.default)) {
       manifestRegistry.default.forEach((fullManifest: any) => {
         const reactManifest: ReactComponentManifestSchema =
-          fullManifest["manifests"][
+          fullManifest["fullManifest"]["manifests"][
             "@atrilabs/react-component-manifest-schema/src/index.ts"
           ];
-        componentManifests[pkgName]![reactManifest.meta.key] = reactManifest;
+        const paths: ManifestIR = fullManifest["fullManifest"]["paths"];
+        componentManifests[pkgName]![reactManifest.meta.key] = {
+          manifest: reactManifest,
+          paths,
+        };
       });
     }
   });
@@ -150,9 +154,7 @@ function createComponentFromNode(
       `Manifest not found for manifest package ${pkg} for component key ${key}`
     );
   }
-  const manifest = componentManifests[pkg]![
-    key
-  ] as ReactComponentManifestSchema;
+  const manifest = componentManifests[pkg]![key]!.manifest;
   // use CanvasAPI to create component
   const props = createPropsFromManifestComponent(
     id,

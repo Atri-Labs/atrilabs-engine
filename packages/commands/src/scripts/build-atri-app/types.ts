@@ -1,3 +1,4 @@
+import { ManifestIR } from "@atrilabs/core";
 import type {
   Callback,
   ReactComponentManifestSchema,
@@ -28,6 +29,9 @@ export type PageInfo = {
 
 export type ComponentManifests = {
   [pkg: string]: {
-    [key: string]: ReactComponentManifestSchema;
+    [key: string]: {
+      manifest: ReactComponentManifestSchema;
+      paths: ManifestIR; // all the paths in this ManifestIR will be relative to package root dir
+    };
   };
 };
