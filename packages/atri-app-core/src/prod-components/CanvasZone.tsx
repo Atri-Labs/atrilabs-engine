@@ -1,4 +1,4 @@
-export function CanvasZone() {
+export function CanvasZone(props: { id: string }) {
   // TODO
   // useLocation to get location & route
   // use the route to get the data from store
