@@ -26,8 +26,6 @@ const Badge = forwardRef<
     onClick: (event: { pageX: number; pageY: number }) => void;
   }
 >((props, ref) => {
-  const { custom } = props;
-
   // moved ref to div, as the Antd Badge doesnt provide ref for Badge
   return (
     <div
@@ -51,7 +49,14 @@ const Badge = forwardRef<
         <AntdBadge
           className={props.className}
           style={props.styles}
-          {...custom}
+          showZero={props.custom?.showZero}
+          overflowCount={props.custom?.overflowCount}
+          dot={props.custom?.dot}
+          status={props.custom?.status}
+          color={props.custom?.color}
+          text={props.custom?.text}
+          size={props.custom?.size}
+          title={props.custom?.title}
           count={
             props.custom?.countIcon !== undefined ? (
               <img
@@ -62,7 +67,6 @@ const Badge = forwardRef<
               props.custom?.count
             )
           }
-          status={props.custom?.status}
         >
           {props.children}
         </AntdBadge>

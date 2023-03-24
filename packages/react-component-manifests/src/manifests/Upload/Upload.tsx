@@ -1,64 +1,97 @@
-import React, { forwardRef, useCallback, useRef } from "react";
-import type { IoProp } from "@atrilabs/react-component-manifest-schema";
-
-export const fileIoProp: IoProp = {
-  type: "files",
-  mode: "upload",
-};
+import React, { forwardRef } from "react";
+import { UploadOutlined, PlusOutlined, InboxOutlined } from "@ant-design/icons";
+import { Button, Upload as AntdUpload } from "antd";
+import type { RcFile, UploadFile } from "antd/es/upload/interface";
+export interface UploadChangeParam<T = UploadFile> {
+  file: T;
+  fileList: T[];
+  event?: {
+    percent: number;
+  };
+}
+const { Dragger } = AntdUpload;
 
 export const Upload = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: {
-      multiple: boolean;
-      showFilename: boolean;
-      text: string;
-      disabled: boolean;
-    };
-    onChange: (files: FileList) => void;
-    io: { files: FileList };
     className?: string;
+    custom: {
+      text: string;
+      listType?: "text" | "picture-card" | "picture-circle";
+      dragger?: boolean;
+      maxCount?: number;
+      multiple?: boolean;
+      disabled?: boolean;
+      directory?: boolean;
+      beforeUpload?: (
+        file: RcFile,
+        FileList: RcFile[]
+      ) =>
+        | void
+        | boolean
+        | string
+        | Blob
+        | File
+        | Promise<void | boolean | string | Blob | File>;
+      onChange?: (info: UploadChangeParam<UploadFile<any>>) => void;
+      onDrop?: (event: React.DragEvent) => void;
+      onPreview?: (file: UploadFile<any>) => void;
+    };
   }
 >((props, ref) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      if (e.target.files) props.onChange(e.target.files);
-    },
-    [props]
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ ...props.styles, marginTop: 8 }}>{props.custom.text}</div>
+    </div>
   );
-  const onClickCb = useCallback(() => {
-    const inputEl = inputRef.current;
-    if (inputEl && !props.custom.disabled) {
-      inputEl.click();
-    }
-  }, [props.custom.disabled]);
+
   return (
-    <div
-      ref={ref}
-      style={{
-        ...props.styles,
-        display: "inline-flex",
-      }}
-      onClick={onClickCb}
-      className={props.className}
-    >
-      <div>{props.custom.text}</div>
-      {props.custom.showFilename ? (
-        <div style={{ fontSize: "0.75em" }}>
-          {props.io && props.io.files && props.io.files[0]
-            ? props.io.files[0].name
-            : "No files selected"}
-        </div>
-      ) : null}
-      <input
-        ref={inputRef}
-        type={"file"}
-        multiple={props.custom.multiple}
-        onChange={onChange}
-        style={{ display: "none" }}
-      />
+    <div ref={ref}>
+      {props.custom.dragger === true ? (
+        <Dragger
+          style={props.styles}
+          className={props.className}
+          maxCount={props.custom.maxCount}
+          multiple={props.custom.multiple}
+          disabled={props.custom.disabled}
+          directory={props.custom.directory}
+          beforeUpload={props.custom.beforeUpload}
+          onChange={props.custom.onChange}
+          onDrop={props.custom.onDrop}
+          onPreview={props.custom.onPreview}
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">{props.custom.text}</p>
+        </Dragger>
+      ) : (
+        <>
+          <AntdUpload
+            style={props.styles}
+            className={props.className}
+            listType={props.custom.listType}
+            maxCount={props.custom.maxCount}
+            multiple={props.custom.multiple}
+            disabled={props.custom.disabled}
+            directory={props.custom.directory}
+            beforeUpload={props.custom.beforeUpload}
+            onChange={props.custom.onChange}
+            onDrop={props.custom.onDrop}
+            onPreview={props.custom.onPreview}
+          >
+            {props.custom.listType !== "text" ? (
+              uploadButton
+            ) : (
+              <Button style={props.styles} icon={<UploadOutlined />}>
+                {props.custom.text}
+              </Button>
+            )}
+          </AntdUpload>
+        </>
+      )}
     </div>
   );
 });

@@ -5,6 +5,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import Joi from "joi";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -33,8 +34,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "text",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "placeholder", type: "text" },
           ],
         },
@@ -42,8 +43,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "password",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "placeholder", type: "text" },
           ],
         },
@@ -51,53 +52,74 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "radio",
           type: "map",
           attributes: [
+            { fieldName: "id", type: "text" },
             { fieldName: "label", type: "text" },
-            { fieldName: "name", type: "text" },
-            { fieldName: "labels", type: "array" },
-            { fieldName: "id", type: "array" },
-            { fieldName: "value", type: "array" },
+            {
+              fieldName: "options",
+              type: "json",
+              schema: Joi.array()
+                .unique()
+                .items(
+                  Joi.object({
+                    value: Joi.string().required(),
+                    label: Joi.string().required(),
+                  })
+                )
+                .id("radio"),
+            },
           ],
         },
         {
           fieldName: "checkbox",
           type: "map",
           attributes: [
+            { fieldName: "id", type: "text" },
             { fieldName: "label", type: "text" },
-            { fieldName: "labels", type: "array" },
-            { fieldName: "id", type: "array" },
-            { fieldName: "value", type: "array" },
+            {
+              fieldName: "options",
+              type: "json",
+              schema: Joi.array()
+                .unique()
+                .items(
+                  Joi.object({
+                    value: Joi.string().required(),
+                    label: Joi.string().required(),
+                  })
+                )
+                .id("checkbox"),
+            },
           ],
         },
         {
           fieldName: "color",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
           ],
         },
         {
           fieldName: "date",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
           ],
         },
         {
           fieldName: "datetimeLocal",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
           ],
         },
         {
           fieldName: "email",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "placeholder", type: "text" },
           ],
         },
@@ -113,8 +135,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "url",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "placeholder", type: "text" },
           ],
         },
@@ -122,8 +144,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "search",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "placeholder", type: "text" },
           ],
         },
@@ -131,8 +153,8 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "file",
           type: "map",
           attributes: [
-            { fieldName: "label", type: "text" },
             { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "multiple", type: "boolean" },
           ],
         },
@@ -140,10 +162,22 @@ const customTreeOptions: CustomPropsTreeOptions = {
           fieldName: "select",
           type: "map",
           attributes: [
-            { fieldName: "selectLabel", type: "text" },
-            { fieldName: "selectIdentifier", type: "text" },
-            { fieldName: "selectOptions", type: "array" },
+            { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
             { fieldName: "multiple", type: "boolean" },
+            {
+              fieldName: "options",
+              type: "json",
+              schema: Joi.array()
+                .unique()
+                .items(
+                  Joi.object({
+                    value: Joi.string().required(),
+                    label: Joi.string().required(),
+                  })
+                )
+                .id("select"),
+            },
           ],
         },
       ],
@@ -244,9 +278,8 @@ const compManifest: ReactComponentManifestSchema = {
             {
               selectedOption: "select",
               select: {
-                selectLabel: "Select",
-                selectIdentifier: "text",
-                selectOptions: [
+                label: "Select",
+                options: [
                   { value: "one", label: "One" },
                   { value: "two", label: "Two" },
                   { value: "three", label: "Three" },
@@ -254,31 +287,22 @@ const compManifest: ReactComponentManifestSchema = {
                 multiple: false,
               },
             },
-
             {
               selectedOption: "checkbox",
               checkbox: {
                 label: "Checkbox",
-                labels: ["text", "text", "text"],
-                id: ["1", "2", "3"],
-                value: ["1", "2", "3"],
-                selectOptions: [
+                options: [
                   { value: "one", label: "One" },
                   { value: "two", label: "Two" },
                   { value: "three", label: "Three" },
                 ],
               },
             },
-
             {
               selectedOption: "radio",
               radio: {
                 label: "Radio",
-                name: "text",
-                labels: ["1", "2", "1"],
-                id: "selectid",
-                value: ["1", "1", "1"],
-                selectOptions: [
+                options: [
                   { value: "one", label: "One" },
                   { value: "two", label: "Two" },
                   { value: "three", label: "Three" },

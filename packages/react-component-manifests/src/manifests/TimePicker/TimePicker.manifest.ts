@@ -1,14 +1,14 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import { CSSTreeOptions } from "@atrilabs/app-design-forest";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
-  flexContainerOptions: true,
+  flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
   typographyOptions: true,
@@ -22,21 +22,27 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
-    listType: {
+    use12Hours: { type: "boolean" },
+    size: {
       type: "enum",
-      options: ["text", "picture-card", "picture-circle"],
+      options: ["small", "middle", "large"],
     },
-    dragger: { type: "boolean" },
-    maxCount: { type: "number" },
-    multiple: { type: "boolean" },
+    format: {
+      type: "enum",
+      options: ["HH:mm:ss", "HH:mm" ,"HH:mm:ss A","HH:mm:ss a","hh:mm A","hh:mm a"],
+    },
+    bordered: { type: "boolean" },
     disabled: { type: "boolean" },
-    directory: { type: "boolean" },
+    status:{
+      type: "enum",
+      options: ["none","error", "warning"],
+    },
+    range:{ type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Upload", category: "Basics" },
+  meta: { key: "TimePicker", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -48,34 +54,28 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {
-          text: "Click to Upload",
-          listType: "text",
-          dragger: false,
-          disabled: false,
-          directory: false,
-        },
+        initialValue: { size: "middle" , bordered : true },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onChange: [{ type: "file_input", selector: ["io", "files"] }],
-      beforeUpload: [{ type: "do_nothing" }],
-      onDrop: [{ type: "do_nothing" }],
-      onPreview: [{ type: "do_nothing" }],
+      onClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {
-      onChange: [{ sendFile: { self: true, props: ["io", "files"] } }],
+      onOpenChange: [{ sendEventData: true }],
     },
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Upload" } },
+  panel: { comp: "CommonIcon", props: { name: "TimePicker" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Upload", containerStyle: { padding: "1rem" } },
+    props: {
+      name: "TimePicker",
+      containerStyle: { padding: "1rem" },
+    },
   },
   renderSchema: compManifest,
 };

@@ -51,18 +51,18 @@ const acceptsChild: AcceptsChildFunction = (info: any) => {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     title: { type: "text" },
+    status: {
+      type: "enum",
+      options: ["error", "success", "default", "warning"],
+    },
+    color: { type: "color" },
+    dot: { type: "boolean" },
     count: { type: "text" },
     countIcon: { type: "static_asset" },
-    color: { type: "color" },
     text: { type: "text" },
     size: { type: "enum", options: ["default", "small"] },
     showZero: { type: "boolean" },
     overflowCount: { type: "number" },
-    dot: { type: "boolean" },
-    status: {
-      type: "enum",
-      options: ["success", "processing", "default", "error", "warning"],
-    },
     ribbon: { type: "boolean" },
     ribbonText: { type: "text" },
     ribbonPlacement: { type: "enum", options: ["start", "end"] },
