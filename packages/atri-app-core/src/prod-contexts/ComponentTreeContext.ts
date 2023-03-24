@@ -1,8 +1,5 @@
 import React from "react";
+import { ComponentTreeContextType } from "../types";
 
-export const ComponentTreeContext = React.createContext<{
-  [canvasZoneId: string]: {
-    [alias: string]: string[]; // sorted alias
-    topChildrenAlias: string[]; // sorted alias
-  };
-}>({});
+export const ComponentTreeContext =
+  React.createContext<ComponentTreeContextType>({});

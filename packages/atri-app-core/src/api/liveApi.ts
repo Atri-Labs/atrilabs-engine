@@ -7,6 +7,7 @@ import {
 import { componentStoreApi } from "./componentStoreApi";
 import { callbackTreeDef, componentTreeDef, forestDef } from "./forestDef";
 import { createComponentFromNode } from "../utils/createComponentFromNode";
+import { mergeState } from "../utils/mergeState";
 
 let activeForest: Forest | null = null;
 
@@ -212,28 +213,6 @@ function getComponentIdFromAlias(alias: string) {
     return nodeIds.find(
       (nodeId) => nodes[nodeId].state.alias === alias && alias !== undefined
     );
-  }
-}
-
-// unsafe merge state
-// and mew properties will added or existing properties will be changed
-// but the type of value of the property must not change
-function mergeState(baseState: any, newState: any) {
-  if (
-    typeof newState === "object" &&
-    !Array.isArray(newState) &&
-    newState !== null
-  ) {
-    const keys = Object.keys(newState);
-    keys.forEach((key) => {
-      // create a new key in base if not exists
-      if (!(key in baseState)) {
-        baseState[key] = {};
-      }
-      if (typeof newState[key] === "object" && !Array.isArray(newState[key]))
-        mergeState(baseState[key], newState[key]);
-      else baseState[key] = newState[key];
-    });
   }
 }
 
