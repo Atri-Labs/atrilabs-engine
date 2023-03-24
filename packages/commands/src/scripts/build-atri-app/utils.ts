@@ -140,8 +140,8 @@ function getComponentCallbackHandlers(compId: string, forest: Forest) {
   if (callbackTree) {
     const callbackNodeId = callbackTree.links[compId]?.childId;
     if (callbackNodeId) {
-      return callbackTree.nodes[callbackNodeId]?.state["property"]
-        ?.callbacks as CallbackHandler;
+      return (callbackTree.nodes[callbackNodeId]?.state["property"]
+        ?.callbacks || {}) as { [callbackName: string]: CallbackHandler };
     }
   }
   return;
@@ -191,6 +191,11 @@ function createComponentFromNode(
     acceptsChild: typeof manifest.dev.acceptsChild === "function",
     callbacks,
     meta: node.meta,
+    type: manifest.dev.isRepeating
+      ? ("repeating" as const)
+      : typeof manifest.dev.acceptsChild === "function"
+      ? ("parent" as const)
+      : ("normal" as const),
   };
 }
 
@@ -210,7 +215,7 @@ function getComponentsFromNodes(
       forest,
       componentManifests
     )!;
-    const handlers = getComponentCallbackHandlers(nodeId, forest);
+    const handlers = getComponentCallbackHandlers(nodeId, forest) || {};
     return {
       ...component,
       alias: nodes[nodeId]!.state["alias"] as string,

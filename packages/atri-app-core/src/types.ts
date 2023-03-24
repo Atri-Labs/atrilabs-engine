@@ -143,12 +143,10 @@ export type AliasCompMapContextType = {
     ref: React.RefObject<HTMLElement>;
     actions: { [callbackName: string]: Callback[] };
     handlers: { [callbackName: string]: CallbackHandler };
+    type?: "parent" | "repeating" | "normal";
   };
 };
 
 export type ComponentTreeContextType = {
-  [canvasZoneId: string]: {
-    [alias: string]: string[]; // sorted alias
-    topChildrenAlias: string[]; // sorted alias
-  };
+  [canvasZoneId: string]: { [alias: string]: string[] }; // sorted alias
 };

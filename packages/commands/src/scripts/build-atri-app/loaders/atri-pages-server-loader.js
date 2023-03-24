@@ -1,10 +1,13 @@
 function atriPagesServerLoader() {
   const options = this.getOptions();
   const { pagePath, reactRouteObjectPath } = options;
-  let { srcs, routes, entryRouteStore, styles } = options;
+  let { srcs, routes, entryRouteStore, styles, aliasCompMap, componentTree } =
+    options;
   if (srcs === undefined) srcs = "[]";
   if (routes === undefined) routes = "[]";
   if (entryRouteStore === undefined) entryRouteStore = "{}";
+  if (aliasCompMap === undefined) aliasCompMap = "{}";
+  if (componentTree === undefined) componentTree = "{}";
   if (styles === undefined) styles = "";
   if (pagePath === undefined) {
     const err = Error();
@@ -15,6 +18,7 @@ function atriPagesServerLoader() {
   srcs = JSON.parse(srcs);
   routes = JSON.parse(routes);
   entryRouteStore = JSON.parse(entryRouteStore);
+  aliasCompMap = JSON.parse(aliasCompMap);
   /**
    * @type {{[pkg: string]: {[key: string]: string}}}
    */
@@ -41,12 +45,29 @@ function atriPagesServerLoader() {
         .join("\n");
     })
     .join("\n");
+  const aliasCompMapStatement =
+    "const aliasCompMap = {" +
+    Object.keys(aliasCompMap)
+      .map((alias) => {
+        const { pkg, key, actions, handlers, type } = aliasCompMap[alias];
+        return `"${alias}": {Comp: ${
+          flatennedComponentMap[pkg][key]
+        }, ref: React.createRef(null), actions: ${JSON.stringify(
+          actions
+        )}, handlers: ${JSON.stringify(handlers)}, type: ${JSON.stringify(
+          type
+        )}}`;
+      })
+      .join(",") +
+    "}";
   return `
+  import React from "react";
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
   import PageFn from "./pages${pagePath}";
   import { renderPageServerSide } from "@atrilabs/atri-app-core/src/prod-entries";
   ${compImportStatements}
+  ${aliasCompMapStatement}
   
   function renderPage(){
     return renderPageServerSide({entryPageFC: PageFn, PageWrapper, DocFn, srcs: ${JSON.stringify(
@@ -57,7 +78,9 @@ function atriPagesServerLoader() {
     })
   )}, styles: ${JSON.stringify(styles)}, entryRouteObjectPath: ${JSON.stringify(
     reactRouteObjectPath
-  )}, entryRouteStore: ${JSON.stringify(entryRouteStore)}})
+  )}, entryRouteStore: ${JSON.stringify(
+    entryRouteStore
+  )}, aliasCompMap, componentTree: ${JSON.stringify(componentTree)}})
   }
 
   export default { renderPage };`;

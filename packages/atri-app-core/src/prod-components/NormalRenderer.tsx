@@ -22,5 +22,13 @@ export function NormalRenderer(props: {
       setAliasProps(getStoreForAlias(location.pathname, alias));
     });
   }, [location, alias]);
-  return <Comp ref={ref} {...callbacks} className={alias} {...aliasProps} />;
+  return (
+    <Comp
+      ref={ref}
+      {...callbacks}
+      className={alias}
+      {...aliasProps}
+      styles={aliasProps["styles"] || {}}
+    />
+  );
 }

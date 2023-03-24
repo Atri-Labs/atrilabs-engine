@@ -1,6 +1,7 @@
 import { ManifestIR } from "@atrilabs/core";
 import type {
   Callback,
+  CallbackHandler,
   ReactComponentManifestSchema,
 } from "@atrilabs/react-component-manifest-schema";
 
@@ -20,10 +21,12 @@ export type PageInfo = {
     };
     acceptsChild: boolean;
     callbacks: {
-      [key: string]: Callback[];
+      [callbackName: string]: Callback[];
     };
     meta: any;
     alias: string;
+    handlers: { [callbackName: string]: CallbackHandler };
+    type: "repeating" | "parent" | "normal";
   }[];
 };
 
