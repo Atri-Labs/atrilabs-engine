@@ -38,7 +38,7 @@ function jssToCss(jss: React.CSSProperties) {
  * bundled in dist/manifest.bundle.js.
  * @param manifestDirs
  */
-function getComponentManifests(manifestDirs: string[]) {
+export function getComponentManifests(manifestDirs: string[]) {
   const packageRoots = [
     ...processManifestDirsString(manifestDirs).map((fullPath) => {
       const packageJSONPath = pkgUp.sync({ cwd: path.dirname(fullPath) });
@@ -72,7 +72,7 @@ function getComponentManifests(manifestDirs: string[]) {
           fullManifest["fullManifest"]["manifests"][
             "@atrilabs/react-component-manifest-schema/src/index.ts"
           ];
-        const paths: ManifestIR = fullManifest["fullManifest"]["paths"];
+        const paths: ManifestIR = fullManifest["paths"];
         componentManifests[pkgName]![reactManifest.meta.key] = {
           manifest: reactManifest,
           paths,
@@ -252,9 +252,9 @@ function getComponentsFromEventsPath(
 }
 
 export async function getPagesInfo(options: {
-  manifestDirs: string[];
+  componentManifests: ComponentManifests;
 }): Promise<PageInfo[]> {
-  const { manifestDirs } = options;
+  const { componentManifests } = options;
   const pagePaths = (await readDirStructure(path.resolve("pages"))).filter(
     (pagePath) =>
       !["/_app", "/_error", "/_document"].includes(
@@ -263,7 +263,6 @@ export async function getPagesInfo(options: {
   );
   const irs = dirStructureToIR(pagePaths);
   const routeObjectPaths = pathsIRToRouteObjectPaths(irs);
-  const componentManifests = getComponentManifests(manifestDirs);
   return pagePaths.map((pagePath, index) => {
     const eventsPath = getEventsFile(pagePath);
     const components = eventsPath

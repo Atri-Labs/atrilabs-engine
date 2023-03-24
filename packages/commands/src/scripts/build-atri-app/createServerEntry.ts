@@ -3,16 +3,21 @@ import {
   CallbackHandler,
 } from "@atrilabs/react-component-manifest-schema";
 import { Entry } from "webpack";
-import { PageInfo } from "./types";
+import { ComponentManifests, PageInfo } from "./types";
 import { createCssText, createStoreFromComponents } from "./utils";
 const { stringify } = require("querystring");
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
+import pkgUp from "pkg-up";
+import path from "path";
 
-export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
+export async function createServerEntry(options: {
+  pageInfos: PageInfo[];
+  componentManifests: ComponentManifests;
+}) {
   const entry: Entry = {
     _error: { import: "./pages/_error" },
   };
-  const { pageInfos } = options;
+  const { pageInfos, componentManifests } = options;
   const routes = pageInfos.map(({ routeObjectPath }) => {
     return routeObjectPath;
   });
@@ -81,24 +86,59 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
             compTreeWithAlias[canvasZoneId] = {};
           }
 
-          if (
-            compTreeWithAlias[canvasZoneId]![compId] === undefined &&
-            compId === CANVAS_ZONE_ROOT_ID
-          ) {
-            compTreeWithAlias[canvasZoneId]![compId] = [];
-          } else if (
-            compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias] ===
-            undefined
-          ) {
-            compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias] = [];
+          if (compId === CANVAS_ZONE_ROOT_ID) {
+            if (compTreeWithAlias[canvasZoneId]![compId] === undefined) {
+              compTreeWithAlias[canvasZoneId]![compId] = [];
+            }
+            compTreeWithAlias[canvasZoneId]![compId]!.push(
+              idCompMap[childId]!.alias
+            );
+          } else {
+            if (
+              compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias] ===
+              undefined
+            ) {
+              compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias] = [];
+            }
+            compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias]!.push(
+              idCompMap[childId]!.alias
+            );
           }
-
-          compTreeWithAlias[canvasZoneId]![idCompMap[compId]!.alias]!.push(
-            idCompMap[childId]!.alias
-          );
         });
       });
     });
+    const processedComponentManifests: {
+      [pkg: string]: { [key: string]: string };
+    } = {};
+    Object.keys(componentManifests).reduce((prev, pkg) => {
+      Object.keys(componentManifests[pkg]!).reduce((prev, key) => {
+        console.log(pkg, key, componentManifests[pkg]![key]!);
+        if (prev[pkg] === undefined) prev[pkg] = {};
+        if (
+          componentManifests[pkg]![key]!.paths.component.startsWith(
+            "manifests/"
+          )
+        ) {
+          prev[pkg]![key] = path.resolve(
+            process.cwd(),
+            componentManifests[pkg]![key]!.paths.component
+          );
+        } else {
+          prev[pkg]![key] = path.resolve(
+            path.dirname(
+              pkgUp.sync({
+                // @ts-ignore
+                cwd: __non_webpack_require__.resolve(pkg),
+              })!
+            ),
+            componentManifests[pkg]![key]!.paths.component
+          );
+        }
+
+        return prev;
+      }, prev);
+      return prev;
+    }, processedComponentManifests);
     entry[entryName] = {
       import: `atri-pages-server-loader?${stringify({
         pagePath,
@@ -111,6 +151,7 @@ export async function createServerEntry(options: { pageInfos: PageInfo[] }) {
         ),
         aliasCompMap: JSON.stringify(aliasCompMap),
         compTree: JSON.stringify(compTreeWithAlias),
+        componentMap: JSON.stringify(processedComponentManifests),
       })}!`,
     };
   }

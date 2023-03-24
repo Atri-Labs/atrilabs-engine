@@ -1,13 +1,21 @@
 function atriPagesServerLoader() {
   const options = this.getOptions();
   const { pagePath, reactRouteObjectPath } = options;
-  let { srcs, routes, entryRouteStore, styles, aliasCompMap, componentTree } =
-    options;
+  let {
+    srcs,
+    routes,
+    entryRouteStore,
+    styles,
+    aliasCompMap,
+    componentTree,
+    componentMap,
+  } = options;
   if (srcs === undefined) srcs = "[]";
   if (routes === undefined) routes = "[]";
   if (entryRouteStore === undefined) entryRouteStore = "{}";
   if (aliasCompMap === undefined) aliasCompMap = "{}";
   if (componentTree === undefined) componentTree = "{}";
+  if (componentMap === undefined) componentMap = "{}";
   if (styles === undefined) styles = "";
   if (pagePath === undefined) {
     const err = Error();
@@ -22,7 +30,7 @@ function atriPagesServerLoader() {
   /**
    * @type {{[pkg: string]: {[key: string]: string}}}
    */
-  const componentMap = {};
+  componentMap = JSON.parse(componentMap);
   /**
    * @type {{[pkg: string]: {[key: string]: string}}}
    */
@@ -30,17 +38,19 @@ function atriPagesServerLoader() {
   let counter = 0;
   Object.keys(componentMap).reduce((prev, pkg) => {
     Object.keys(componentMap[pkg]).reduce((prev, key) => {
+      if (prev[pkg] === undefined) prev[pkg] = {};
       prev[pkg][key] = `Comp${counter}`;
       counter++;
       return prev;
     }, prev);
     return prev;
   }, flatennedComponentMap);
+  console.log(flatennedComponentMap);
   const compImportStatements = Object.keys(flatennedComponentMap)
     .map((pkg) => {
       return Object.keys(flatennedComponentMap[pkg])
         .map((key) => {
-          return `import ${flatennedComponentMap[pkg][key]} from ${componentMap[pkg][key]};`;
+          return `import ${flatennedComponentMap[pkg][key]} from "${componentMap[pkg][key]}";`;
         })
         .join("\n");
     })

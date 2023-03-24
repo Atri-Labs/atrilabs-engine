@@ -9,7 +9,7 @@ import {
 import webpack from "webpack";
 import path from "path";
 import { createServerEntry } from "./createServerEntry";
-import { PageInfo } from "./types";
+import { ComponentManifests, PageInfo } from "./types";
 import { processDirsString } from "../../commons/processManifestDirsString";
 
 function startWebpackBuild(
@@ -38,7 +38,10 @@ function startWebpackBuild(
 }
 
 export async function buildServerSide(
-  params: ReturnType<typeof extractParams> & { pagesInfo: PageInfo[] }
+  params: ReturnType<typeof extractParams> & {
+    pagesInfo: PageInfo[];
+    componentManifests: ComponentManifests;
+  }
 ) {
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
   const paths = { ...params.paths, outputDir: serverOutputDir };
@@ -79,7 +82,10 @@ export async function buildServerSide(
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,
-    entry: await createServerEntry({ pageInfos: params.pagesInfo }),
+    entry: await createServerEntry({
+      pageInfos: params.pagesInfo,
+      componentManifests: params.componentManifests,
+    }),
     prepareConfig: (config) => {
       config.resolve = config.resolve ?? {};
       config.resolve["alias"] = {

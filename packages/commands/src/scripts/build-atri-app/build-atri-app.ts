@@ -2,7 +2,7 @@
 import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
 import { buildServerSide } from "./buildServerSide";
-import { getPagesInfo } from "./utils";
+import { getComponentManifests, getPagesInfo } from "./utils";
 
 /**
  *
@@ -29,8 +29,13 @@ async function main() {
   const params = extractParams();
   const outputDir = path.resolve("dist", "app-build");
   params.paths.outputDir = outputDir;
-  const pagesInfo = await getPagesInfo({ manifestDirs: params.manifestDirs });
-  await buildServerSide({ ...JSON.parse(JSON.stringify(params)), pagesInfo });
+  const componentManifests = getComponentManifests(params.manifestDirs);
+  const pagesInfo = await getPagesInfo({ componentManifests });
+  await buildServerSide({
+    ...JSON.parse(JSON.stringify(params)),
+    pagesInfo,
+    componentManifests,
+  });
 }
 
 main().catch(console.log);
