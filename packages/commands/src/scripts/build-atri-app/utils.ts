@@ -10,9 +10,13 @@ import { AnyEvent, createForest, Forest, TreeNode } from "@atrilabs/forest";
 import type { ManifestIR, ToolConfig } from "@atrilabs/core/src/types";
 import { processManifestDirsString } from "../../commons/processManifestDirsString";
 import pkgUp from "pkg-up";
-import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import {
+  CallbackHandler,
+  ReactComponentManifestSchema,
+} from "@atrilabs/react-component-manifest-schema";
 import {
   componentTreeDef,
+  callbackTreeDef,
   forestDef,
 } from "@atrilabs/atri-app-core/src/api/forestDef";
 import { getEffectiveStyle } from "@atrilabs/atri-app-core/src/utils/getEffectiveStyle";
@@ -131,6 +135,18 @@ function createPropsFromManifestComponent(
   return props;
 }
 
+function getComponentCallbackHandlers(compId: string, forest: Forest) {
+  const callbackTree = forest.tree(callbackTreeDef.id);
+  if (callbackTree) {
+    const callbackNodeId = callbackTree.links[compId]?.childId;
+    if (callbackNodeId) {
+      return callbackTree.nodes[callbackNodeId]?.state["property"]
+        ?.callbacks as CallbackHandler;
+    }
+  }
+  return;
+}
+
 function createComponentFromNode(
   node: TreeNode,
   breakpoint: { min: number; max: number },
@@ -194,7 +210,12 @@ function getComponentsFromNodes(
       forest,
       componentManifests
     )!;
-    return { ...component, alias: nodes[nodeId]!.state["alias"] as string };
+    const handlers = getComponentCallbackHandlers(nodeId, forest);
+    return {
+      ...component,
+      alias: nodes[nodeId]!.state["alias"] as string,
+      handlers,
+    };
   });
 }
 
