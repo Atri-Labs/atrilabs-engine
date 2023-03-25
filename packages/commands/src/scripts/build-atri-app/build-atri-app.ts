@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
+import { buildClientSide } from "./buildClientSide";
 import { buildServerSide } from "./buildServerSide";
 import { getComponentManifests, getPagesInfo } from "./utils";
 
@@ -27,11 +28,21 @@ import { getComponentManifests, getPagesInfo } from "./utils";
 
 async function main() {
   const params = extractParams();
+  params.isEnvProduction = true;
+  params.isEnvDevelopment = false;
+  params.isEnvProductionProfile = false;
+  params.isEnvTest = false;
+  process.env["BABEL_ENV"] = "production";
   const outputDir = path.resolve("dist", "app-build");
   params.paths.outputDir = outputDir;
   const componentManifests = getComponentManifests(params.manifestDirs);
   const pagesInfo = await getPagesInfo({ componentManifests });
   await buildServerSide({
+    ...JSON.parse(JSON.stringify(params)),
+    pagesInfo,
+    componentManifests,
+  });
+  await buildClientSide({
     ...JSON.parse(JSON.stringify(params)),
     pagesInfo,
     componentManifests,

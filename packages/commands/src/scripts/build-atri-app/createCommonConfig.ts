@@ -53,9 +53,8 @@ export function createCommonConfig(params: {
   ];
   const resolveAlias = {
     // @ts-ignore
-    "@atrilabs/canvas-zone": __non_webpack_require__.resolve(
-      "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx"
-    ),
+    "@atrilabs/canvas-zone":
+      "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx",
   };
   return { appSrc, exclude, additionalInclude, allowlist, resolveAlias };
 }

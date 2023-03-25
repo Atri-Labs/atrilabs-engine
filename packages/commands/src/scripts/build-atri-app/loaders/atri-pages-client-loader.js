@@ -18,7 +18,7 @@ function atriPagesClientLoader() {
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
   import PageFn from "./pages${pagePath}";
-  import { renderAppOrReturnPageFC } from "@atrilabs/atri-app-core/src/prod-entries/renderAppOrReturnPageFC";
+  import renderAppOrReturnPageFC from "@atrilabs/atri-app-core/src/prod-entries/renderAppOrReturnPageFC";
   ${compImportStatements}
   ${aliasCompMapStatement}
   
@@ -34,8 +34,7 @@ function atriPagesClientLoader() {
     entryRouteStore
   )}, aliasCompMap, componentTree: ${JSON.stringify(componentTree)}})
 
-  if(typeof maybeReactComponent === "function")
-    export default maybeReactComponent;`;
+  export default maybeReactComponent;`;
 }
 
 module.exports = atriPagesClientLoader;

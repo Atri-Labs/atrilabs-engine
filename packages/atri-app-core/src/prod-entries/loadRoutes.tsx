@@ -2,8 +2,7 @@ import { atriRouter } from "../entries/atriRouter";
 import { ProdAppEntryOptions } from "../types";
 import { FinalPageComponent } from "./FinalPageComponent";
 import React from "react";
-import { AliasCompMapContext } from "../prod-contexts/AliasCompContext";
-import { ComponentTreeContext } from "../prod-contexts/ComponentTreeContext";
+import { AliasCompMapContext, ComponentTreeContext } from "../prod-contexts";
 
 export function loadRoutes(
   props: ProdAppEntryOptions,

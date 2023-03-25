@@ -30,7 +30,7 @@ export async function buildServerSide(
 
   allowlist.push(...(params.allowlist || []));
 
-  startNodeWebpackBuild({
+  return startNodeWebpackBuild({
     ...params,
     exclude,
     outputFilename: "[name].js",
@@ -74,7 +74,8 @@ export async function buildServerSide(
     .then(() => {
       process.exit(0);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       process.exit(1);
     });
 }

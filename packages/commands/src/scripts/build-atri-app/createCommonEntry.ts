@@ -24,7 +24,7 @@ export async function createCommonEntry(options: {
   });
   for (let i = 0; i < pageInfos.length; i++) {
     const { pagePath, routeObjectPath, components } = pageInfos[i]!;
-    const entryName = pagePath.replace(/^\//, "");
+    const entryName = pagePath.replace(/^\//, "").replace(/(\.(js|ts)x?)$/, "");
     const srcs: string[] = [];
     const aliasCompMap: {
       [alias: string]: {

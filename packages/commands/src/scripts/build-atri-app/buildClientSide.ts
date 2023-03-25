@@ -28,7 +28,7 @@ export async function buildClientSide(
     ...additionalInclude,
   ];
 
-  startWebpackBuild({
+  return startWebpackBuild({
     ...params,
     exclude,
     outputFilename: "[name].js",
@@ -73,7 +73,8 @@ export async function buildClientSide(
     .then(() => {
       process.exit(0);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       process.exit(1);
     });
 }

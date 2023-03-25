@@ -23,7 +23,7 @@ import { getEffectiveStyle } from "@atrilabs/atri-app-core/src/utils/getEffectiv
 import postcss from "postcss";
 import {
   collectWebpackMessages,
-  createLibConfig,
+  createConfig,
   createNodeLibConfig,
   PrepareConfig,
   reportWarningsOrSuccess,
@@ -351,11 +351,11 @@ export function startNodeWebpackBuild(
 }
 
 export function startWebpackBuild(
-  params: Parameters<typeof createLibConfig>[0] & {
+  params: Parameters<typeof createConfig>[0] & {
     prepareConfig?: PrepareConfig;
   }
 ) {
-  const webpackConfig = createLibConfig(params);
+  const webpackConfig = createConfig(params);
 
   if (typeof params.prepareConfig === "function") {
     params.prepareConfig(webpackConfig);
