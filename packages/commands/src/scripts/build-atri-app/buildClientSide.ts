@@ -4,23 +4,23 @@ import {
 } from "@atrilabs/commands-builder";
 import webpack from "webpack";
 import path from "path";
-import { createServerEntry } from "./createServerEntry";
 import { ComponentManifests, PageInfo } from "./types";
 import { createCommonConfig } from "./createCommonConfig";
-import { startNodeWebpackBuild } from "./utils";
+import { startWebpackBuild } from "./utils";
+import { createClientEntry } from "./createClientEntry";
 
-export async function buildServerSide(
+export async function buildClientSide(
   params: ReturnType<typeof extractParams> & {
     pagesInfo: PageInfo[];
     componentManifests: ComponentManifests;
   }
 ) {
-  const { appSrc, exclude, additionalInclude, allowlist, resolveAlias } =
+  const { appSrc, exclude, additionalInclude, resolveAlias } =
     createCommonConfig({
       exclude: params.exclude,
       componentManifests: params.componentManifests,
     });
-  const serverOutputDir = path.resolve(params.paths.outputDir, "server");
+  const serverOutputDir = path.resolve(params.paths.outputDir, "client");
   params.paths = { ...params.paths, outputDir: serverOutputDir, appSrc };
 
   params.additionalInclude = [
@@ -28,14 +28,12 @@ export async function buildServerSide(
     ...additionalInclude,
   ];
 
-  allowlist.push(...(params.allowlist || []));
-
-  startNodeWebpackBuild({
+  startWebpackBuild({
     ...params,
     exclude,
     outputFilename: "[name].js",
     moduleFileExtensions,
-    entry: await createServerEntry({
+    entry: await createClientEntry({
       pageInfos: params.pagesInfo,
       componentManifests: params.componentManifests,
     }),
@@ -47,20 +45,20 @@ export async function buildServerSide(
       };
       config.resolveLoader = {
         alias: {
-          "atri-pages-server-loader": path.resolve(
+          "atri-pages-client-loader": path.resolve(
             __dirname,
             "..",
             "src",
             "scripts",
             "build-atri-app",
             "loaders",
-            "atri-pages-server-loader.js"
+            "atri-pages-client-loader.js"
           ),
         },
       };
       config.cache = {
         type: "filesystem",
-        cacheDirectory: path.resolve("node_modules", ".cache-build", "server"),
+        cacheDirectory: path.resolve("node_modules", ".cache-build", "client"),
       };
       config.plugins = config.plugins || [];
       config.plugins.push(
@@ -69,7 +67,8 @@ export async function buildServerSide(
         })
       );
     },
-    allowlist,
+    imageInlineSizeLimit: 10,
+    shouldInlineRuntimeChunk: true,
   })
     .then(() => {
       process.exit(0);

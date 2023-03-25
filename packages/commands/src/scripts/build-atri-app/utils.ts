@@ -21,6 +21,14 @@ import {
 } from "@atrilabs/atri-app-core/src/api/forestDef";
 import { getEffectiveStyle } from "@atrilabs/atri-app-core/src/utils/getEffectiveStyle";
 import postcss from "postcss";
+import {
+  collectWebpackMessages,
+  createLibConfig,
+  createNodeLibConfig,
+  PrepareConfig,
+  reportWarningsOrSuccess,
+} from "@atrilabs/commands-builder";
+import webpack from "webpack";
 const cssjs = require("postcss-js");
 
 function jssToCss(jss: React.CSSProperties) {
@@ -311,3 +319,63 @@ export function readToolConfig(toolPkg: string) {
  * from inside an atri app
  */
 export function mergeWithInitState() {}
+
+export function startNodeWebpackBuild(
+  params: Parameters<typeof createNodeLibConfig>[0] & {
+    prepareConfig?: PrepareConfig;
+  }
+) {
+  const webpackConfig = createNodeLibConfig(params);
+
+  if (typeof params.prepareConfig === "function") {
+    params.prepareConfig(webpackConfig);
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    webpack(webpackConfig, async (err, stats) => {
+      try {
+        const messages = await collectWebpackMessages({
+          writeStats: false,
+          err,
+          stats,
+          outputDir: params.paths.outputDir,
+        });
+        reportWarningsOrSuccess(messages.warnings);
+        if (err || stats?.hasErrors()) reject();
+        else resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+}
+
+export function startWebpackBuild(
+  params: Parameters<typeof createLibConfig>[0] & {
+    prepareConfig?: PrepareConfig;
+  }
+) {
+  const webpackConfig = createLibConfig(params);
+
+  if (typeof params.prepareConfig === "function") {
+    params.prepareConfig(webpackConfig);
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    webpack(webpackConfig, async (err, stats) => {
+      try {
+        const messages = await collectWebpackMessages({
+          writeStats: false,
+          err,
+          stats,
+          outputDir: params.paths.outputDir,
+        });
+        reportWarningsOrSuccess(messages.warnings);
+        if (err || stats?.hasErrors()) reject();
+        else resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+}
