@@ -2,11 +2,7 @@ import {
   MainAppContext,
   AtriScriptsContext,
 } from "@atrilabs/atri-app-core/src/contexts";
-import type {
-  AliasCompMapContextType,
-  ComponentTreeContextType,
-  ProdAppEntryOptions,
-} from "@atrilabs/atri-app-core/src/types";
+import type { ProdAppEntryOptions } from "@atrilabs/atri-app-core/src/types";
 import { renderToString } from "react-dom/server";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { atriRouter } from "../entries/atriRouter";
@@ -18,17 +14,7 @@ export function renderPageServerSide(
   options: {
     srcs: string[];
     DocFn: React.FC;
-    aliasCompMap: AliasCompMapContextType;
-    componentTree: ComponentTreeContextType;
-  } & Pick<
-    ProdAppEntryOptions,
-    | "PageWrapper"
-    | "routes"
-    | "styles"
-    | "entryRouteStore"
-    | "entryRouteObjectPath"
-    | "entryPageFC"
-  >
+  } & ProdAppEntryOptions
 ) {
   const {
     srcs,
@@ -44,7 +30,16 @@ export function renderPageServerSide(
   } = options;
   atriRouter.setRouterFactory(createMemoryRouter);
   loadRoutes(
-    { routes, PageWrapper, styles, entryRouteObjectPath, entryPageFC },
+    {
+      routes,
+      PageWrapper,
+      styles,
+      entryRouteObjectPath,
+      entryPageFC,
+      entryRouteStore,
+      aliasCompMap,
+      componentTree,
+    },
     { initialEntries: [entryRouteObjectPath], initialIndex: 0 }
   );
   addPageToStore(entryRouteObjectPath, entryRouteStore);

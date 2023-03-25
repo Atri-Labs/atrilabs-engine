@@ -135,6 +135,8 @@ export type ProdAppEntryOptions = {
   };
   styles: string;
   PageWrapper: React.FC<any>;
+  aliasCompMap: AliasCompMapContextType;
+  componentTree: ComponentTreeContextType;
 };
 
 export type AliasCompMapContextType = {
