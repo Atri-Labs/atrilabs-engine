@@ -23,16 +23,21 @@ function startWebpackBuild(
     params.prepareConfig(webpackConfig);
   }
 
-  return new Promise<void>((resolve) => {
+  return new Promise<void>((resolve, reject) => {
     webpack(webpackConfig, async (err, stats) => {
-      const messages = await collectWebpackMessages({
-        writeStats: true,
-        err,
-        stats,
-        outputDir: params.paths.outputDir,
-      });
-      reportWarningsOrSuccess(messages.warnings);
-      resolve();
+      try {
+        const messages = await collectWebpackMessages({
+          writeStats: false,
+          err,
+          stats,
+          outputDir: params.paths.outputDir,
+        });
+        reportWarningsOrSuccess(messages.warnings);
+        if (err || stats?.hasErrors()) reject();
+        else resolve();
+      } catch (err) {
+        reject(err);
+      }
     });
   });
 }
@@ -50,6 +55,16 @@ export async function buildServerSide(
     ...processDirsString(params.exclude),
     path.resolve("node_modules"),
   ];
+  const manifestPkgDirs: { [dir: string]: string } = {};
+  Object.keys(params.componentManifests).forEach((pkg) => {
+    try {
+      const manifestDir = path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(`${pkg}/package.json`)
+      );
+      manifestPkgDirs[manifestDir] = pkg;
+    } catch {}
+  });
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -57,10 +72,12 @@ export async function buildServerSide(
     // @ts-ignore
     path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
     // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system"))
+    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system")),
+    ...Object.keys(manifestPkgDirs)
   );
   params.additionalInclude = additionalInclude;
-  const allowlist = params.allowlist || [];
+  const allowlist: (string | ((moduleName: string) => boolean) | RegExp)[] =
+    params.allowlist || [];
   allowlist.push("@atrilabs/forest");
   allowlist.push("@atrilabs/atri-app-core");
   allowlist.push("@atrilabs/atri-app-core/src/utils");
@@ -69,6 +86,13 @@ export async function buildServerSide(
   allowlist.push("@atrilabs/atri-app-core/src/prod-entries");
   allowlist.push("@atrilabs/design-system");
   allowlist.push("@atrilabs/canvas-zone");
+  allowlist.push((moduleName) => {
+    let found = false;
+    Object.keys(manifestPkgDirs).forEach((manifestPkgDir) => {
+      found = moduleName.startsWith(manifestPkgDir) || false;
+    });
+    return found;
+  });
   startWebpackBuild({
     ...params,
     additionalInclude: [
@@ -112,7 +136,19 @@ export async function buildServerSide(
         type: "filesystem",
         cacheDirectory: path.resolve("node_modules", ".cache-build"),
       };
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          React: "react",
+        })
+      );
     },
     allowlist,
-  });
+  })
+    .then(() => {
+      process.exit(0);
+    })
+    .catch(() => {
+      process.exit(1);
+    });
 }

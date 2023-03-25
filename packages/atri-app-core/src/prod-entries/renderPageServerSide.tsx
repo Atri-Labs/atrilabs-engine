@@ -48,8 +48,6 @@ export function renderPageServerSide(
     { initialEntries: [entryRouteObjectPath], initialIndex: 0 }
   );
   addPageToStore(entryRouteObjectPath, entryRouteStore);
-  console.log("aliasCompMap", aliasCompMap);
-  console.log("componentTree", componentTree);
   return renderToString(
     <AtriScriptsContext.Provider value={srcs}>
       <MainAppContext.Provider

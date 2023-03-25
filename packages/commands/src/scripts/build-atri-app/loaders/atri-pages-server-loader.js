@@ -27,6 +27,7 @@ function atriPagesServerLoader() {
   routes = JSON.parse(routes);
   entryRouteStore = JSON.parse(entryRouteStore);
   aliasCompMap = JSON.parse(aliasCompMap);
+  componentTree = JSON.parse(componentTree);
   /**
    * @type {{[pkg: string]: {[key: string]: string}}}
    */
@@ -45,7 +46,6 @@ function atriPagesServerLoader() {
     }, prev);
     return prev;
   }, flatennedComponentMap);
-  console.log(flatennedComponentMap);
   const compImportStatements = Object.keys(flatennedComponentMap)
     .map((pkg) => {
       return Object.keys(flatennedComponentMap[pkg])

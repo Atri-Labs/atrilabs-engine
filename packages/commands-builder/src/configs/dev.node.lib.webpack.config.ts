@@ -36,7 +36,7 @@ export function createDevNodeConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   additionalInclude?: string[];
-  allowlist?: string[];
+  allowlist?: (string | ((moduleName: string) => boolean) | RegExp)[];
   babel?: {
     plugins?: [string, any][];
   };

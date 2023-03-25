@@ -39,11 +39,16 @@ export function ParentRenderer(props: {
               alias={childAlias}
               aliasCompMap={aliasCompMap}
               componentTreeMap={componentTreeMap}
+              key={childAlias}
             />
           );
         } else {
           return (
-            <NormalRenderer alias={childAlias} aliasCompMap={aliasCompMap} />
+            <NormalRenderer
+              alias={childAlias}
+              aliasCompMap={aliasCompMap}
+              key={childAlias}
+            />
           );
         }
       })}

@@ -16,11 +16,16 @@ export function CanvasZone(props: { id: string }) {
               alias={childAlias}
               aliasCompMap={aliasCompMap}
               componentTreeMap={compTree}
+              key={childAlias}
             />
           );
         } else {
           return (
-            <NormalRenderer alias={childAlias} aliasCompMap={aliasCompMap} />
+            <NormalRenderer
+              alias={childAlias}
+              aliasCompMap={aliasCompMap}
+              key={childAlias}
+            />
           );
         }
       })}

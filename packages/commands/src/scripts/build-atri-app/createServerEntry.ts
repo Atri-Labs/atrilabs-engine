@@ -112,7 +112,6 @@ export async function createServerEntry(options: {
     } = {};
     Object.keys(componentManifests).reduce((prev, pkg) => {
       Object.keys(componentManifests[pkg]!).reduce((prev, key) => {
-        console.log(pkg, key, componentManifests[pkg]![key]!);
         if (prev[pkg] === undefined) prev[pkg] = {};
         if (
           componentManifests[pkg]![key]!.paths.component.startsWith(
@@ -150,7 +149,7 @@ export async function createServerEntry(options: {
           createStoreFromComponents(components) || {}
         ),
         aliasCompMap: JSON.stringify(aliasCompMap),
-        compTree: JSON.stringify(compTreeWithAlias),
+        componentTree: JSON.stringify(compTreeWithAlias),
         componentMap: JSON.stringify(processedComponentManifests),
       })}!`,
     };

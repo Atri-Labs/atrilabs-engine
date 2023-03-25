@@ -61,7 +61,7 @@ export function createNodeConfig(options: {
   outputFilename: string;
   additionalInclude?: string[];
   exclude?: string[];
-  allowlist?: string[];
+  allowlist?: (string | ((moduleName: string) => boolean) | RegExp)[];
   babel?: {
     plugins?: [string, any][];
   };

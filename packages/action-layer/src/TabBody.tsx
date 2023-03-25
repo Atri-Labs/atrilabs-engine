@@ -28,16 +28,16 @@ export type TabBodyProps = {
 };
 
 function callbackHandlerToText(handler: CallbackHandler["0"]) {
-  if ("sendFile" in handler && "self" in handler["sendFile"]) {
+  if ("sendFile" in handler && "self" in handler["sendFile"]!) {
     return `Send own file`;
   }
-  if ("sendFile" in handler && "alias" in handler["sendFile"]) {
+  if ("sendFile" in handler && "alias" in handler["sendFile"]!) {
     return `Send file from ${handler["sendFile"]["alias"]}`;
   }
-  if ("navigate" in handler && handler["navigate"].type === "internal") {
-    return `Navigate to ${handler.navigate.url}`;
+  if ("navigate" in handler && handler["navigate"]!.type === "internal") {
+    return `Navigate to ${handler.navigate!.url}`;
   }
-  if ("navigate" in handler && handler["navigate"].type === "external") {
+  if ("navigate" in handler && handler["navigate"]!.type === "external") {
     return `Navigate to external url`;
   }
   if ("sendEventData" in handler) {
