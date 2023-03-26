@@ -3,7 +3,12 @@ import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
 import { buildClientSide } from "./buildClientSide";
 import { buildServerSide } from "./buildServerSide";
-import { getComponentManifests, getPagesInfo } from "./utils";
+import {
+  getAssetDependencyGraph,
+  getComponentManifests,
+  getPagesInfo,
+} from "./utils";
+import fs from "fs";
 
 /**
  *
@@ -42,11 +47,16 @@ async function main() {
     pagesInfo,
     componentManifests,
   });
-  await buildClientSide({
+  const chunks = await buildClientSide({
     ...JSON.parse(JSON.stringify(params)),
     pagesInfo,
     componentManifests,
   });
+  const assetDependencyGraph = getAssetDependencyGraph(pagesInfo, chunks);
+  fs.writeFileSync(
+    path.resolve(`${params.paths.outputDir}`, "client", "asset-dep-graph.json"),
+    JSON.stringify(assetDependencyGraph, null, 2)
+  );
 }
 
 main().catch(console.log);

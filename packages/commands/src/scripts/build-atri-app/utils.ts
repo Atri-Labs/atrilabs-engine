@@ -361,7 +361,7 @@ export function startWebpackBuild(
     params.prepareConfig(webpackConfig);
   }
 
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<webpack.StatsChunk[]>((resolve, reject) => {
     webpack(webpackConfig, async (err, stats) => {
       try {
         const messages = await collectWebpackMessages({
@@ -371,11 +371,104 @@ export function startWebpackBuild(
           outputDir: params.paths.outputDir,
         });
         reportWarningsOrSuccess(messages.warnings);
+        fs.writeFileSync(
+          path.resolve(params.paths.outputDir, `webpack-stats.json`),
+          JSON.stringify(
+            stats?.toJson().chunks?.map((chunk) => {
+              return {
+                id: chunk.id,
+                parents: chunk.parents,
+                siblings: chunk.siblings,
+                files: chunk.files,
+                runtime: chunk.runtime,
+                children: chunk.children,
+                entry: chunk.entry,
+              };
+            })
+          )
+        );
         if (err || stats?.hasErrors()) reject(err || stats?.toJson().errors);
-        else resolve();
+        else resolve(stats?.toJson().chunks || []);
       } catch (err) {
         reject(err);
       }
     });
   });
+}
+
+export function getEntryNameFromPathPath(pagePath: string) {
+  const entryName = pagePath.replace(/^\//, "").replace(/(\.(js|ts)x?)$/, "");
+  return entryName;
+}
+
+export function getAssetDependencyGraph(
+  pagesInfo: PageInfo[],
+  chunks: webpack.StatsChunk[]
+) {
+  const entryNames = new Set<string>();
+  pagesInfo.forEach(({ pagePath }) => {
+    const entryName = getEntryNameFromPathPath(pagePath);
+    entryNames.add(entryName);
+  });
+
+  const entryChunkMap: { [entryName: string]: webpack.StatsChunk } = {};
+  chunks.forEach((chunk) => {
+    if (chunk.files) {
+      chunk.files.forEach((file) => {
+        const probableEntryName = file.replace(/(\.js)$/, "");
+        if (entryNames.has(probableEntryName))
+          entryChunkMap[probableEntryName] = chunk;
+      });
+    }
+  });
+
+  const idChunkMap: { [chunkId: string | number]: webpack.StatsChunk } = {};
+  chunks.forEach((chunk) => {
+    if (chunk.id) idChunkMap[chunk.id] = chunk;
+  });
+
+  const assetDependencyGraph: { [entryName: string]: string[] } = {};
+  entryNames.forEach((entryName) => {
+    const entryChunk = entryChunkMap[entryName];
+    const visited = new Set<string | number>([entryChunk!.id!]);
+    const concernedChunkIds = traverseForConcernedChunkIds(
+      entryChunk!.id!,
+      idChunkMap,
+      visited
+    );
+    const files = [
+      ...concernedChunkIds
+        .map((chunkId) => {
+          return idChunkMap[chunkId]?.files || [];
+        })
+        .flat(),
+      ...(entryChunk?.files || []),
+    ];
+    assetDependencyGraph[entryName] = Array.from(
+      new Set(["runtime.js", ...files])
+    );
+  });
+
+  return assetDependencyGraph;
+}
+
+function traverseForConcernedChunkIds(
+  id: string | number,
+  idChunkMap: {
+    [chunkId: string | number]: webpack.StatsChunk;
+  },
+  visited: Set<string | number>
+): (string | number)[] {
+  const chunk = idChunkMap[id];
+  const ownIds = [...(chunk?.parents || [])];
+  return [
+    ...ownIds
+      .map((ownId) => {
+        if (visited.has(ownId)) return [];
+        visited.add(ownId);
+        return traverseForConcernedChunkIds(ownId, idChunkMap, visited);
+      })
+      .flat(),
+    ...ownIds,
+  ];
 }

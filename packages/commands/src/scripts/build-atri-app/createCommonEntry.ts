@@ -4,7 +4,11 @@ import {
 } from "@atrilabs/react-component-manifest-schema";
 import { Entry } from "webpack";
 import { ComponentManifests, PageInfo } from "./types";
-import { createCssText, createStoreFromComponents } from "./utils";
+import {
+  createCssText,
+  createStoreFromComponents,
+  getEntryNameFromPathPath,
+} from "./utils";
 const { stringify } = require("querystring");
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 import pkgUp from "pkg-up";
@@ -24,7 +28,7 @@ export async function createCommonEntry(options: {
   });
   for (let i = 0; i < pageInfos.length; i++) {
     const { pagePath, routeObjectPath, components } = pageInfos[i]!;
-    const entryName = pagePath.replace(/^\//, "").replace(/(\.(js|ts)x?)$/, "");
+    const entryName = getEntryNameFromPathPath(pagePath);
     const srcs: string[] = [];
     const aliasCompMap: {
       [alias: string]: {
