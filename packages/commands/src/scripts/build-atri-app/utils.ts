@@ -371,7 +371,7 @@ export function startWebpackBuild(
           outputDir: params.paths.outputDir,
         });
         reportWarningsOrSuccess(messages.warnings);
-        if (err || stats?.hasErrors()) reject();
+        if (err || stats?.hasErrors()) reject(err || stats?.toJson().errors);
         else resolve();
       } catch (err) {
         reject(err);

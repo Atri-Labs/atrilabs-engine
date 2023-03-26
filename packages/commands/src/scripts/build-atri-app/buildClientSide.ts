@@ -66,15 +66,17 @@ export async function buildClientSide(
           React: "react",
         })
       );
+      config.optimization = {
+        ...(config.optimization || {}),
+        runtimeChunk: "single",
+        splitChunks: {
+          chunks: "all",
+        },
+      };
     },
     imageInlineSizeLimit: 10,
     shouldInlineRuntimeChunk: true,
-  })
-    .then(() => {
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
+  }).catch((err) => {
+    throw err;
+  });
 }
