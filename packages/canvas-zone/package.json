@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/canvas-zone",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "It provides CanvasZone component to external apps",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -30,6 +30,6 @@
     "prettier": "^2.6.2"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.10"
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.11"
   }
 }
