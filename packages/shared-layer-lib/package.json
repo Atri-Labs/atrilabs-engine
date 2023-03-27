@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/shared-layer-lib",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.9",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,7 +21,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/layer-types": "^1.0.0-alpha.8",
+    "@atrilabs/layer-types": "^1.0.0-alpha.9",
     "typescript": "4.6.3"
   },
   "devDependencies": {
