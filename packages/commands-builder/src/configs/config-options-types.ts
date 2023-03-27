@@ -42,7 +42,7 @@ export type AppConfigOptions = {
   generateIndexHtml?: boolean;
   additionalInclude?: string[];
   additionalNodeModules?: string[];
-  exclude?: string[];
+  exclude?: RuleSetRule["exclude"];
   outputFilename: string;
   customLoaders?: RuleSetRule[];
   babel?: {

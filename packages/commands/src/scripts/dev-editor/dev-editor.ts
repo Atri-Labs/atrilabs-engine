@@ -20,6 +20,7 @@ import {
   processDirsString,
   processManifestDirsString,
 } from "../../commons/processManifestDirsString";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 
 function main() {
   // TODO: copy public folder if not already exists
@@ -35,7 +36,7 @@ function main() {
 
   computeFSAndSend(editorServerMachineInterpreter, manifestDirs).then(() => {
     const additionalInclude = params.additionalInclude || [];
-    const exclude = [
+    const excludeDirs = [
       ...processDirsString(params.exclude),
       path.resolve("node_modules"),
     ];
@@ -87,6 +88,11 @@ function main() {
       })
     );
     params.additionalInclude = additionalInclude;
+
+    const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+      additionalInclude,
+      excludeDirs
+    );
 
     params.paths.appSrc = process.cwd();
 

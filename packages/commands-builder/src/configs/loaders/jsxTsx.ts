@@ -1,4 +1,5 @@
 import path from "path";
+import { RuleSetRule } from "webpack";
 
 export function babelPresetReactApp(
   _api: any,
@@ -114,11 +115,11 @@ export default function setJsxTsxLoaders(options: {
   hasJsxRuntime: boolean;
   removeReactRefresh?: boolean;
   additionalInclude: string[];
-  exclude: string[];
+  exclude: RuleSetRule["exclude"];
   babel?: {
     plugins?: [string, any][];
   };
-}) {
+}): RuleSetRule[] {
   const {
     appSrc,
     isEnvProduction,

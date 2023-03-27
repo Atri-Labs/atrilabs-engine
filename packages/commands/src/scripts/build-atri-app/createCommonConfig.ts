@@ -1,4 +1,6 @@
 import path from "path";
+import { RuleSetRule } from "webpack";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 import { processDirsString } from "../../commons/processManifestDirsString";
 import { ComponentManifests } from "./types";
 
@@ -7,7 +9,7 @@ export function createCommonConfig(params: {
   componentManifests: ComponentManifests;
 }) {
   const appSrc = process.cwd();
-  const exclude = [
+  const excludeDirs = [
     ...processDirsString(params.exclude),
     path.resolve("node_modules"),
   ];
@@ -34,6 +36,10 @@ export function createCommonConfig(params: {
     ),
     ...Object.keys(manifestPkgDirs),
   ];
+  const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+    additionalInclude,
+    excludeDirs
+  );
   const allowlist = [
     "@atrilabs/forest",
     "@atrilabs/atri-app-core",

@@ -15,6 +15,7 @@ import {
 } from "../dev-editor/utils";
 import { RuleSetRule } from "webpack";
 import { runBuild } from "./runBuild";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 
 async function main() {
   const toolConfig = readToolConfig();
@@ -25,7 +26,7 @@ async function main() {
   ]);
   const irs = await computeManifestIRsForDirs(manifestDirs);
 
-  const exclude = [
+  const excludeDirs = [
     ...processDirsString(params.exclude),
     path.resolve("node_modules"),
   ];
@@ -78,6 +79,11 @@ async function main() {
     })
   );
   params.additionalInclude = additionalInclude;
+
+  const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+    additionalInclude,
+    excludeDirs
+  );
 
   params.paths.appSrc = process.cwd();
 

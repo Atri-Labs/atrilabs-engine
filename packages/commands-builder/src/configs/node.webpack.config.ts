@@ -60,7 +60,7 @@ export function createNodeConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   additionalInclude?: string[];
-  exclude?: string[];
+  exclude?: RuleSetRule["exclude"];
   allowlist?: (string | ((moduleName: string) => boolean) | RegExp)[];
   babel?: {
     plugins?: [string, any][];

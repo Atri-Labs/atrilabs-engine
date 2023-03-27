@@ -24,6 +24,8 @@ import {
   processDirsString,
   processManifestDirsString,
 } from "../../commons/processManifestDirsString";
+import { RuleSetRule } from "webpack";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -49,10 +51,11 @@ async function main() {
     computeFSAndSend(interpreter, manifestDirs),
   ]);
 
-  const exclude = [
+  const excludeDirs = [
     ...processDirsString(params.exclude),
     path.resolve("node_modules"),
   ];
+
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -82,6 +85,11 @@ async function main() {
     ...manifestDirs
   );
   params.additionalInclude = additionalInclude;
+
+  const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+    additionalInclude,
+    excludeDirs
+  );
 
   params.paths.appSrc = process.cwd();
 

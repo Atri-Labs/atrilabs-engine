@@ -1,4 +1,4 @@
-import { Configuration } from "webpack";
+import { Configuration, RuleSetRule } from "webpack";
 import { createNodeLibConfig } from "./node.lib.webpack.config";
 
 export function createDevNodeConfig(options: {
@@ -40,7 +40,7 @@ export function createDevNodeConfig(options: {
   babel?: {
     plugins?: [string, any][];
   };
-  exclude?: string[];
+  exclude?: RuleSetRule["exclude"];
   disableNodeExternals?: boolean;
 }) {
   const baseConfig = createNodeLibConfig(options);

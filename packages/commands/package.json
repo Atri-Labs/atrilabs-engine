@@ -7,7 +7,7 @@
   "license": "ISC",
   "main": "src/index.ts",
   "bin": {
-    "create-atri-app": "dist/scripts/create-atri-app.js",
+    "create-atri-app": "dist/create-atri-app.js",
     "dev-atri-app": "dist/dev.js",
     "dev-editor": "dist/dev-editor.js",
     "build-manifest-registry": "dist/build-manifest-registry.js",

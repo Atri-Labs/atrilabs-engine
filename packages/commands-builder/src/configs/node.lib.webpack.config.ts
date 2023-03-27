@@ -40,7 +40,7 @@ export function createNodeLibConfig(options: {
   babel?: {
     plugins?: [string, any][];
   };
-  exclude?: string[];
+  exclude?: RuleSetRule["exclude"];
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
 }) {

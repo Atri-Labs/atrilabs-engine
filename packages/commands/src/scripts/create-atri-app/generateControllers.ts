@@ -10,6 +10,7 @@ function copyToControllers(dest: string, filename: string) {
     "scripts",
     "create-atri-app",
     "templates",
+    "controllers",
     filename
   );
   if (!fs.existsSync(path.dirname(outputFilename))) {

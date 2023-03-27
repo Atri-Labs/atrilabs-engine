@@ -8,12 +8,13 @@ import {
 import webpack, { RuleSetRule } from "webpack";
 
 export function runBuild(
-  params: ReturnType<typeof extractParams> & {
+  params: Omit<ReturnType<typeof extractParams>, "exclude"> & {
     customLoaders?: RuleSetRule[];
     generateIndexHtml?: boolean;
     babel?: {
       plugins?: [string, any][];
     };
+    exclude?: RuleSetRule["exclude"];
   }
 ) {
   const {
