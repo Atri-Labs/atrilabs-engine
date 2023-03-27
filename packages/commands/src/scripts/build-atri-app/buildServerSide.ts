@@ -32,6 +32,7 @@ export async function buildServerSide(
 
   return startNodeWebpackBuild({
     ...params,
+    disableNodeExternals: true,
     exclude,
     outputFilename: "[name].js",
     moduleFileExtensions,

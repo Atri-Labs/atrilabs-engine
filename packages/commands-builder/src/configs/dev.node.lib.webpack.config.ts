@@ -41,6 +41,7 @@ export function createDevNodeConfig(options: {
     plugins?: [string, any][];
   };
   exclude?: string[];
+  disableNodeExternals?: boolean;
 }) {
   const baseConfig = createNodeLibConfig(options);
 

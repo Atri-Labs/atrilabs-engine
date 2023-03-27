@@ -208,6 +208,7 @@ async function main() {
   allowlist.push("@atrilabs/manifest-registry");
   startNodeLibWatcher({
     ...params,
+    disableNodeExternals: true,
     exclude,
     additionalInclude: [
       ...params.additionalInclude,

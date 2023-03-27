@@ -42,6 +42,7 @@ export function createNodeLibConfig(options: {
   };
   exclude?: string[];
   customLoaders?: RuleSetRule[];
+  disableNodeExternals?: boolean;
 }) {
   const baseConfig = createNodeConfig(options);
 

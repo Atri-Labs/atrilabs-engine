@@ -56,11 +56,14 @@ function createPackageJSON(
       description: data.description,
       license: "ISC",
       scripts: {
-        dev: "dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils' -i '@atrilabs/utils'",
-        editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
-        "gen-py-app": "gen-py-app -i '@atrilabs/utils' -a '@atrilabs/utils'",
-        "gen-py-classes": "gen-py-classes",
+        dev: "ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link' -i '@atrilabs/utils:@atrilabs/atri-app-core'",
+        "gen-py-app": "gen-py-app",
         "dev-py-app": "dev-py-app",
+        "gen-py-classes":
+          "gen-py-classes -n ../../node_modules -i '@atrilabs/utils' -a '@atrilabs/utils'",
+        editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
+        build:
+          "NODE_ENV=production BABEL_ENV=production build-atri-app -d '#@atrilabs/react-component-manifests'",
       },
       // Update these versions on every release
       dependencies: {
