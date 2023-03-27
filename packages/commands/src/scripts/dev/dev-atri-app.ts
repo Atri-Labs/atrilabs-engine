@@ -82,6 +82,10 @@ async function main() {
         "@atrilabs/component-icon-manifest-schema"
       )
     ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/manifest-registry")
+    ),
     ...manifestDirs
   );
   params.additionalInclude = additionalInclude;
@@ -218,13 +222,6 @@ async function main() {
     ...params,
     disableNodeExternals: true,
     exclude,
-    additionalInclude: [
-      ...params.additionalInclude,
-      path.dirname(
-        // @ts-ignore
-        __non_webpack_require__.resolve("@atrilabs/manifest-registry")
-      ),
-    ],
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,
