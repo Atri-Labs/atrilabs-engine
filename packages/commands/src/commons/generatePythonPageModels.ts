@@ -62,12 +62,14 @@ export function generatePythonModelForAPage(ir: PathIR) {
         nodePkgManifestMap[nodePkg] = {};
         manifestsBundle.default.forEach(
           (obj: {
-            manifests: {
-              ["@atrilabs/react-component-manifest-schema/src/index.ts"]: ReactComponentManifestSchema;
+            fullManifest: {
+              manifests: {
+                ["@atrilabs/react-component-manifest-schema/src/index.ts"]: ReactComponentManifestSchema;
+              };
             };
           }) => {
             const componentManifest =
-              obj.manifests[
+              obj.fullManifest.manifests[
                 "@atrilabs/react-component-manifest-schema/src/index.ts"
               ];
             nodePkgManifestMap[nodePkg]![componentManifest.meta.key] =
