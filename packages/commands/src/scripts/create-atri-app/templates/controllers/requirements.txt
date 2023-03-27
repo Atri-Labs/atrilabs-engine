@@ -1,0 +1,4 @@
+fastapi
+click
+uvicorn
+python-multipart

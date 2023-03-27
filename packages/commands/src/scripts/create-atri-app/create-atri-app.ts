@@ -6,6 +6,7 @@ import fs from "fs";
 import * as ts from "typescript";
 import recursive from "recursive-readdir";
 import { v4 as uuidv4 } from "uuid";
+import { generateControllers } from "./generateControllers";
 
 process.on("unhandledRejection", (reason) => {
   console.log(chalk.red(`create-atri-app failed with reason\n ${reason}`));
@@ -252,6 +253,7 @@ function main() {
   copyDocument({ dest, useTypescript: args.typescript });
   copyError({ dest, useTypescript: args.typescript });
   createPublicDirectory({ dest });
+  generateControllers({ dest });
 }
 
 main();
