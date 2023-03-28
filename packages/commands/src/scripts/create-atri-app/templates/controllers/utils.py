@@ -30,8 +30,8 @@ def get_route_details(route: str, routes_dir: str):
         replaceWith = ".index"
     else:
         replaceWith = route.replace("/", ".")
-    modelPy = "." if __package__ != "" else "" + routes_dir + replaceWith + "_model"
-    entryPy = "." if __package__ != "" else "" + routes_dir + replaceWith
+    modelPy = ("." if __package__ != "" else "") + routes_dir + replaceWith + "_model"
+    entryPy = ("." if __package__ != "" else "") + routes_dir + replaceWith
     routeDetails = {"modelPy": modelPy, "entryPy": entryPy}
     return routeDetails
 
