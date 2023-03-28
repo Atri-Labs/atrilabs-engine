@@ -2,3 +2,5 @@ fastapi
 click
 uvicorn
 python-multipart
+atri-core
+atri-react
