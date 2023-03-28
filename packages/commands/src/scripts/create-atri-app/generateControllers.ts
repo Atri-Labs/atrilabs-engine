@@ -27,4 +27,5 @@ export function generateControllers(options: { dest: string }) {
   copyToControllers(dest, "main.py");
   copyToControllers(dest, "requirements.txt");
   copyToControllers(dest, "utils.py");
+  copyToControllers(dest, "app.py");
 }
