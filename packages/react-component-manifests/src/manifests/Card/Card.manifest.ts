@@ -32,6 +32,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["default", "small"],
     },
+    loading: { type: "boolean" },
     hoverable: { type: "boolean" },
     bordered: { type: "boolean" },
     cover: { type: "static_asset" },

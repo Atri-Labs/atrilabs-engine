@@ -5,6 +5,7 @@ const Modal = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    children?: React.ReactNode[];
     custom: {
       text?: string;
       content?: string;
@@ -21,30 +22,25 @@ const Modal = forwardRef<
       icon?: string;
       closeIcon?: string;
       open?: boolean;
+      confirmLoading?: boolean;
     };
     onCancel?: Function;
-    onOk?: Function;
     afterClose: Function;
     className?: string;
   }
 >((props, ref) => {
-  const handleOk = () => {
-    if (props.onOk) {
-      props.onOk();
-    }
-  };
-
   const handleCancel = () => {
     if (props.onCancel) {
       props.onCancel();
     }
   };
-
+  const { custom } = props;
   return (
     <div ref={ref}>
       <AntdModal
         style={props.styles}
         className={props.className}
+        {...custom}
         title={
           <div style={{ display: "flex", alignItems: "center" }}>
             {props.custom.icon && (
@@ -53,23 +49,13 @@ const Modal = forwardRef<
             <span>{props.custom.text}</span>
           </div>
         }
-        open={props.custom.open}
-        onOk={handleOk}
         onCancel={handleCancel}
-        cancelText={props.custom.cancelText}
-        okText={props.custom.okText}
-        centered={props.custom.centered}
-        closable={props.custom.closable}
-        destroyOnClose={props.custom.destroyOnClose}
-        keyboard={props.custom.keyboard}
-        mask={props.custom.mask}
-        maskClosable={props.custom.maskClosable}
-        zIndex={props.custom.zIndex}
         closeIcon={
           props.custom.closeIcon && (
             <img src={props.custom.closeIcon} alt={props.custom.closeIcon} />
           )
         }
+        footer={null}
       >
         {props.custom.icon !== undefined || "" ? (
           <div style={{ padding: "8px 0 0 32px" }}>{props.custom.content}</div>

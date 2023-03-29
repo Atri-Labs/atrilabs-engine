@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { forwardRef, useMemo } from "react";
 import { Steps, Popover } from "antd";
 import type { StepProps, StepsProps } from "antd";
 import type { ProgressDotRender } from "rc-steps/lib/Steps";
@@ -18,22 +18,12 @@ const Step = forwardRef<
       type?: "default" | "navigation" | "inline";
       percent?: number;
       labelPlacement?: "horizontal" | "vertical";
+      onChange?: (current: number) => void;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     className?: string;
   }
 >((props, ref) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const onChange = (value: number) => {
-    if (
-      props.custom.clickable === false ||
-      props.custom.clickable === undefined
-    ) {
-      return;
-    } else {
-      setCurrentStep(value);
-    }
-  };
   const customDot: StepsProps["progressDot"] = (dot, { status, index }) => (
     <Popover
       content={
@@ -58,7 +48,7 @@ const Step = forwardRef<
                 height: "32px",
               }}
             >
-              <img src={item.icon} width="100%" alt={item.icon}  />
+              <img src={item.icon} width="100%" alt={item.icon} />
             </div>
           ),
         };
@@ -73,7 +63,7 @@ const Step = forwardRef<
         <Steps
           style={props.styles}
           className={props.className}
-          onChange={onChange}
+          onChange={props.custom.onChange}
           progressDot={
             props.custom.dotStyle === ""
               ? false
@@ -82,9 +72,7 @@ const Step = forwardRef<
               : props.custom.dotStyle !== undefined && customDot
           }
           {...props.custom}
-          current={
-            props.custom.clickable === true ? currentStep : props.custom.current
-          }
+          current={props.custom.current}
           items={stepItems}
         />
       </div>

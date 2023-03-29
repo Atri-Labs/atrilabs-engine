@@ -5,6 +5,7 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import Joi from "joi";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -24,25 +25,20 @@ const customTreeOptions: CustomPropsTreeOptions = {
     separator: {
       type: "text",
     },
-
     items: {
-      type: "array_map",
-      singleObjectName: "item",
-      attributes: [
-        {
-          fieldName: "title",
-          type: "text",
-        },
-        {
-          fieldName: "href",
-          type: "text",
-        },
-        {
-          fieldName: "icon",
-          type: "static_asset",
-        },
-        
-      ],
+      type: "json",
+      schema: Joi.array()
+        .unique()
+        .items(
+          Joi.object({
+            title: Joi.string().required(),
+            href: Joi.string().optional(),
+            menu: Joi.object({
+              items: Joi.link("#breadcrumbData").optional()
+            }),
+          })  
+        )
+        .id("breadcrumbData"),
     },
   },
 };
@@ -65,19 +61,20 @@ const compManifest: ReactComponentManifestSchema = {
           items: [
             {
               title: "Home",
-              href: "",
+              href: "/index",
             },
             {
               title: "Application Center",
-              href: "",
+              href: "home",
             },
             {
               title: "Application List",
-              href: "",
+              href: "a",
             },
             {
-              title: "An Application",
-              href: "",
+              title: "Menu",
+              href: "a",
+              menu: { items:  [{title: 'Sub-Menu'}], },
             },
           ],
         },

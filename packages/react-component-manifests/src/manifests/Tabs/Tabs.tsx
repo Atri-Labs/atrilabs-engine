@@ -29,15 +29,11 @@ const Tabs = forwardRef<
   const { items } = custom;
 
   const tabItems = useMemo(() => {
-    if (children?.length) {
-      return items.map((item, index) => ({
-        ...item,
-        children: children[index] || "",
-      }));
-    } else {
-      return items;
-    }
-  }, [items, children]);
+    return items.map((item, index) => ({
+      ...item,
+      children: props.children,
+    }));
+  }, [items, props.children]);
 
   return (
     <div ref={ref} style={props.styles}>
