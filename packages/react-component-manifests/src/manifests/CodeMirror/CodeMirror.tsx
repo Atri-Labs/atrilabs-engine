@@ -21,7 +21,8 @@ export type ExtensionType =
   | "rust"
   | "python"
   | "xml"
-  | "sql";
+  | "sql"
+  | "typescript";
 export type ThemeType = "light" | "dark";
 
 const CodeMirror = forwardRef<
@@ -73,16 +74,18 @@ const CodeMirror = forwardRef<
   }
 >((props, ref) => {
   const languageExtensions = {
-    javascript: javascript(),
-    java: java(),
-    rust: rust(),
-    html: html(),
-    xml: xml(),
     css: css(),
-    python: python(),
-    sql: sql(),
-    php: php(),
+    html: html(),
+    java: java(),
+    javascript: javascript(),
     json: json(),
+    jsx: javascript({ jsx: true }),
+    php: php(),
+    python: python(),
+    rust: rust(),
+    sql: sql(),
+    typescript: javascript({ typescript: true }),
+    xml: xml(),
   };
 
   const onClick = useCallback(
