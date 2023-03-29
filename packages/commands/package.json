@@ -1,13 +1,13 @@
 {
   "name": "@atrilabs/commands",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.13",
   "description": "Commands and related utilities for Atri framework.",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
   "license": "ISC",
   "main": "src/index.ts",
   "bin": {
-    "create-atri-app": "dist/scripts/create-atri-app.js",
+    "create-atri-app": "dist/create-atri-app.js",
     "dev-atri-app": "dist/dev.js",
     "dev-editor": "dist/dev-editor.js",
     "build-manifest-registry": "dist/build-manifest-registry.js",
@@ -15,7 +15,8 @@
     "gen-py-app": "dist/gen-py-app.js",
     "dev-py-app": "dist/dev-py-app.js",
     "build-editor": "dist/build-editor.js",
-    "build-atri-app": "dist/build-atri-app.js"
+    "build-atri-app": "dist/build-atri-app.js",
+    "compute-init-state": "dist/compute-init-state.js"
   },
   "files": [
     "dist",
@@ -29,16 +30,17 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build-create-atri-app": "build-node-app -e ./src/scripts/create-atri-app.ts -f create-atri-app.js -n '../../node_modules'",
-    "build-app-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
-    "build-dev-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
+    "build-create-atri-app": "build-node-app -e ./src/scripts/create-atri-app/create-atri-app.ts -f create-atri-app.js -n '../../node_modules'",
+    "build-app-dev": "build-node-app -e ./src/scripts/dev/dev-atri-app.ts -f dev.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest:@atrilabs/node-python-ipc' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest:@atrilabs/node-python-ipc'",
+    "build-dev-editor": "build-node-app -e ./src/scripts/dev-editor/dev-editor.ts -f dev-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest:@atrilabs/node-python-ipc' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest:@atrilabs/node-python-ipc'",
     "build-manifest-registry": "build-node-app -e ./src/scripts/build-manifest-registry/build-manifest-registry.ts -f build-manifest-registry.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system'",
     "build-gen-py-classes": "build-node-app -e ./src/scripts/gen-py-classes/gen-py-classes.ts -f gen-py-classes.js -n '../../node_modules' -i '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/utils' -a '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/utils'",
     "build-gen-py-app": "build-node-app -e ./src/scripts/gen-py-app/gen-py-app.ts -f gen-py-app.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
     "build-dev-py-app": "build-node-app -e ./src/scripts/dev-py-app/dev-py-app.ts -f dev-py-app.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
     "build-build-editor": "build-node-app -e ./src/scripts/build-editor/build-editor.ts -f build-editor.js -n '../../node_modules' -i '@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest' -a '@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/forest'",
-    "build-build-atri-app": "build-node-app -e ./src/scripts/build-atri-app/build-atri-app.ts -f build-atri-app.js -n '../../node_modules' -i '@atrilabs/node-python-ipc:@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/core:@atrilabs/manifest-registry:@atrilabs/design-system' -a '@atrilabs/node-python-ipc:@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/manifest-registry:@atrilabs/design-system:@atrilabs/atri-app-core/src/api/forestDef:@atrilabs/atri-app-core/src/utils/getEffectiveStyle:@atrilabs/core/src/types'",
-    "build": "concurrently 'yarn build-app-dev' 'yarn build-dev-editor' 'yarn build-manifest-registry' 'yarn build-gen-py-classes' 'yarn build-gen-py-app' 'yarn build-dev-py-app' 'yarn build-build-editor' 'yarn build-create-atri-app' 'yarn build-build-atri-app'",
+    "build-build-atri-app": "build-node-app -e ./src/scripts/build-atri-app/build-atri-app.ts -f build-atri-app.js -n '../../node_modules' -i '@atrilabs/node-python-ipc:@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/core:@atrilabs/manifest-registry:@atrilabs/design-system' -a '@atrilabs/node-python-ipc:@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/manifest-registry:@atrilabs/design-system:@atrilabs/atri-app-core/src/api/forestDef:@atrilabs/atri-app-core/src/utils/getEffectiveStyle:@atrilabs/core/src/types:@atrilabs/atri-app-core/src/api/consts'",
+    "build-compute-init-state": "build-node-app -e ./src/scripts/compute-init-state/compute-init-state.ts -f compute-init-state.js -n '../../node_modules' -a '@atrilabs/node-python-ipc' -i '@atrilabs/node-python-ipc'",
+    "build": "concurrently 'yarn build-app-dev' 'yarn build-dev-editor' 'yarn build-manifest-registry' 'yarn build-gen-py-classes' 'yarn build-gen-py-app' 'yarn build-dev-py-app' 'yarn build-build-editor' 'yarn build-create-atri-app' 'yarn build-build-atri-app' 'yarn build-compute-init-state'",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles",
     "prepublishOnly": "yarn build"
@@ -55,18 +57,18 @@
     "@types/node": "^18.11.18",
     "@types/prompts": "^2.4.2",
     "@types/react": "^18.0.26",
-    "@types/yargs": "^17.0.19",
+    "@types/yargs": "^17.0.24",
     "babel-jest": "^29.3.1",
     "concurrently": "^7.6.0",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.5"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.8",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.8",
-    "@atrilabs/core": "^1.0.0-alpha.8",
-    "@atrilabs/design-system": "^1.0.0-alpha.8",
-    "@atrilabs/node-python-ipc": "^1.0.0-alpha.8",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.13",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.13",
+    "@atrilabs/core": "^1.0.0-alpha.13",
+    "@atrilabs/design-system": "^1.0.0-alpha.13",
+    "@atrilabs/node-python-ipc": "^1.0.0-alpha.13",
     "@svgr/webpack": "^6.5.1",
     "axios": "^1.3.4",
     "bfj": "^7.0.2",
@@ -96,6 +98,6 @@
     "webpack-dev-server": "^4.11.1",
     "webpack-manifest-plugin": "^5.0.0",
     "webpack-sources": "^3.2.3",
-    "yargs": "^17.6.2"
+    "yargs": "^17.7.1"
   }
 }

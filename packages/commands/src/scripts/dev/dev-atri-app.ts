@@ -24,6 +24,8 @@ import {
   processDirsString,
   processManifestDirsString,
 } from "../../commons/processManifestDirsString";
+import { RuleSetRule } from "webpack";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -49,10 +51,11 @@ async function main() {
     computeFSAndSend(interpreter, manifestDirs),
   ]);
 
-  const exclude = [
+  const excludeDirs = [
     ...processDirsString(params.exclude),
     path.resolve("node_modules"),
   ];
+
   const additionalInclude = params.additionalInclude || [];
   additionalInclude.push(
     // @ts-ignore
@@ -79,9 +82,18 @@ async function main() {
         "@atrilabs/component-icon-manifest-schema"
       )
     ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/manifest-registry")
+    ),
     ...manifestDirs
   );
   params.additionalInclude = additionalInclude;
+
+  const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+    additionalInclude,
+    excludeDirs
+  );
 
   params.paths.appSrc = process.cwd();
 
@@ -208,14 +220,8 @@ async function main() {
   allowlist.push("@atrilabs/manifest-registry");
   startNodeLibWatcher({
     ...params,
+    disableNodeExternals: true,
     exclude,
-    additionalInclude: [
-      ...params.additionalInclude,
-      path.dirname(
-        // @ts-ignore
-        __non_webpack_require__.resolve("@atrilabs/manifest-registry")
-      ),
-    ],
     paths,
     outputFilename: "[name].js",
     moduleFileExtensions,

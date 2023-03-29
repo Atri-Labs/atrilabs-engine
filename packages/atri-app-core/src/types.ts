@@ -1,5 +1,9 @@
 import type { AnyEvent } from "@atrilabs/forest";
-import type { AcceptsChildFunction } from "@atrilabs/react-component-manifest-schema";
+import type {
+  AcceptsChildFunction,
+  Callback,
+  CallbackHandler,
+} from "@atrilabs/react-component-manifest-schema";
 
 export type DragData = {
   type: "component";
@@ -127,9 +131,24 @@ export type ProdAppEntryOptions = {
   entryPageFC: React.FC<any>;
   entryRouteObjectPath: string;
   entryRouteStore: {
-    custom: { [alias: string]: any };
-    callbacks: { [alias: string]: any };
+    [alias: string]: { custom: any };
   };
   styles: string;
   PageWrapper: React.FC<any>;
+  aliasCompMap: AliasCompMapContextType;
+  componentTree: ComponentTreeContextType;
+};
+
+export type AliasCompMapContextType = {
+  [alias: string]: {
+    Comp: React.FC<any>;
+    ref: React.RefObject<HTMLElement>;
+    actions: { [callbackName: string]: Callback[] };
+    handlers: { [callbackName: string]: CallbackHandler };
+    type?: "parent" | "repeating" | "normal";
+  };
+};
+
+export type ComponentTreeContextType = {
+  [canvasZoneId: string]: { [alias: string]: string[] }; // sorted alias
 };

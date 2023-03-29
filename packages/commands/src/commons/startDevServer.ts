@@ -22,12 +22,13 @@ import Express from "express";
 import { liveApiServer } from "../scripts/dev/live-api-server/liveApiServer";
 
 export default function startDevServer(
-  params: ReturnType<typeof extractParams> & {
+  params: Omit<ReturnType<typeof extractParams>, "exclude"> & {
     customLoaders?: RuleSetRule[];
     generateIndexHtml?: boolean;
     babel?: {
       plugins?: [string, any][];
     };
+    exclude?: RuleSetRule["exclude"];
   }
 ) {
   const {

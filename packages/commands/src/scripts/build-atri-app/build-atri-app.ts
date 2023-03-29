@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 import { extractParams } from "@atrilabs/commands-builder";
 import path from "path";
+import { buildClientSide } from "./buildClientSide";
 import { buildServerSide } from "./buildServerSide";
-import { getPagesInfo } from "./utils";
+import {
+  getAssetDependencyGraph,
+  getComponentManifests,
+  getPagesInfo,
+} from "./utils";
+import fs from "fs";
 
 /**
  *
@@ -27,10 +33,30 @@ import { getPagesInfo } from "./utils";
 
 async function main() {
   const params = extractParams();
+  params.isEnvProduction = true;
+  params.isEnvDevelopment = false;
+  params.isEnvProductionProfile = false;
+  params.isEnvTest = false;
+  process.env["BABEL_ENV"] = "production";
   const outputDir = path.resolve("dist", "app-build");
   params.paths.outputDir = outputDir;
-  const pagesInfo = await getPagesInfo({ manifestDirs: params.manifestDirs });
-  await buildServerSide({ ...JSON.parse(JSON.stringify(params)), pagesInfo });
+  const componentManifests = getComponentManifests(params.manifestDirs);
+  const pagesInfo = await getPagesInfo({ componentManifests });
+  await buildServerSide({
+    ...JSON.parse(JSON.stringify(params)),
+    pagesInfo,
+    componentManifests,
+  });
+  const chunks = await buildClientSide({
+    ...JSON.parse(JSON.stringify(params)),
+    pagesInfo,
+    componentManifests,
+  });
+  const assetDependencyGraph = getAssetDependencyGraph(pagesInfo, chunks);
+  fs.writeFileSync(
+    path.resolve(`${params.paths.outputDir}`, "client", "asset-dep-graph.json"),
+    JSON.stringify(assetDependencyGraph, null, 2)
+  );
 }
 
 main().catch(console.log);

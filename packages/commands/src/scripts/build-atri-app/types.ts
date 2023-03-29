@@ -1,5 +1,7 @@
+import { ManifestIR } from "@atrilabs/core";
 import type {
   Callback,
+  CallbackHandler,
   ReactComponentManifestSchema,
 } from "@atrilabs/react-component-manifest-schema";
 
@@ -19,15 +21,20 @@ export type PageInfo = {
     };
     acceptsChild: boolean;
     callbacks: {
-      [key: string]: Callback[];
+      [callbackName: string]: Callback[];
     };
     meta: any;
     alias: string;
+    handlers: { [callbackName: string]: CallbackHandler };
+    type: "repeating" | "parent" | "normal";
   }[];
 };
 
 export type ComponentManifests = {
   [pkg: string]: {
-    [key: string]: ReactComponentManifestSchema;
+    [key: string]: {
+      manifest: ReactComponentManifestSchema;
+      paths: ManifestIR; // all the paths in this ManifestIR will be relative to package root dir
+    };
   };
 };

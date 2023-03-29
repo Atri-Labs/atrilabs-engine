@@ -129,6 +129,8 @@ export function collectWebpackMessages(options: {
         .write(outputDir + "/bundle-stats.json", stats.toJson())
         .then(() => resolve(resolveArgs))
         .catch((error: any) => reject(new Error(error)));
+    } else {
+      resolve(resolveArgs);
     }
   });
 }

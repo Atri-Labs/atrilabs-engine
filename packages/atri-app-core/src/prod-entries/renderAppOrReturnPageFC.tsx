@@ -5,6 +5,7 @@ import App from "./App";
 import { addPageToStore } from "./store";
 import { FinalPageComponent } from "./FinalPageComponent";
 import { loadRoutes } from "./loadRoutes";
+import { AliasCompMapContext, ComponentTreeContext } from "../prod-contexts";
 
 declare global {
   interface Window {
@@ -22,22 +23,37 @@ export default function renderAppOrReturnPageFC(options: ProdAppEntryOptions) {
     routes,
     styles,
     entryPageFC,
+    componentTree,
+    aliasCompMap,
   } = options;
   // add to store
   addPageToStore(entryRouteObjectPath, entryRouteStore);
   if (window.__APP_STATUS === "loaded") {
     // return Page Component
     return (
-      <FinalPageComponent
-        PageWrapper={PageWrapper}
-        Page={entryPageFC}
-        styleStr={styles}
-      />
+      <AliasCompMapContext.Provider value={aliasCompMap}>
+        <ComponentTreeContext.Provider value={componentTree}>
+          <FinalPageComponent
+            PageWrapper={PageWrapper}
+            Page={entryPageFC}
+            styleStr={styles}
+          />
+        </ComponentTreeContext.Provider>
+      </AliasCompMapContext.Provider>
     );
   } else {
     // configure rotues here
     loadRoutes(
-      { routes, PageWrapper, styles, entryRouteObjectPath, entryPageFC },
+      {
+        routes,
+        PageWrapper,
+        styles,
+        entryRouteObjectPath,
+        entryPageFC,
+        componentTree,
+        aliasCompMap,
+        entryRouteStore,
+      },
       { initialEntries: [entryRouteObjectPath], initialIndex: 0 }
     );
     window.__APP_STATUS = "loading";

@@ -10,7 +10,7 @@ import { createManifestRegistryLibEntry } from "./createManifestRegistryLibEntry
 import { CorePkgInfo } from "./types";
 
 export default function createManifestRegistryConfig(
-  params: ReturnType<typeof extractParams> & {
+  params: Omit<ReturnType<typeof extractParams>, "exclude"> & {
     customLoaders?: RuleSetRule[];
     generateIndexHtml?: boolean;
     babel?: {
@@ -20,6 +20,7 @@ export default function createManifestRegistryConfig(
     externals: Configuration["externals"];
     toolConfig: ToolConfig;
     corePkgInfo: CorePkgInfo;
+    exclude?: RuleSetRule["exclude"];
   }
 ) {
   const {

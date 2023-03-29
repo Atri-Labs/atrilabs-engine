@@ -36,12 +36,13 @@ export function createNodeLibConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   additionalInclude?: string[];
-  allowlist?: string[];
+  allowlist?: (string | ((moduleName: string) => boolean) | RegExp)[];
   babel?: {
     plugins?: [string, any][];
   };
-  exclude?: string[];
+  exclude?: RuleSetRule["exclude"];
   customLoaders?: RuleSetRule[];
+  disableNodeExternals?: boolean;
 }) {
   const baseConfig = createNodeConfig(options);
 

@@ -60,12 +60,13 @@ export function createNodeConfig(options: {
   additionalNodeModules?: string[];
   outputFilename: string;
   additionalInclude?: string[];
-  exclude?: string[];
-  allowlist?: string[];
+  exclude?: RuleSetRule["exclude"];
+  allowlist?: (string | ((moduleName: string) => boolean) | RegExp)[];
   babel?: {
     plugins?: [string, any][];
   };
   customLoaders?: RuleSetRule[];
+  disableNodeExternals?: boolean;
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -87,13 +88,18 @@ export function createNodeConfig(options: {
     babel,
     exclude,
     customLoaders,
+    disableNodeExternals,
   } = options;
   return {
     target: "node",
     externalsPresets: { node: true },
     externals: [
-      nodeExternals({ additionalModuleDirs: additionalNodeModules, allowlist }),
-    ],
+      !disableNodeExternals &&
+        nodeExternals({
+          additionalModuleDirs: additionalNodeModules,
+          allowlist,
+        }),
+    ].filter(Boolean),
     mode: isEnvProduction ? "production" : "development",
     stats: "errors-warnings",
     bail: isEnvProduction,

@@ -1,25 +1,26 @@
+const processOptions = require("./processOptions");
+
 function atriPagesServerLoader() {
   const options = this.getOptions();
-  const { pagePath, reactRouteObjectPath } = options;
-  let { srcs, routes, entryRouteStore, styles } = options;
-  if (srcs === undefined) srcs = "[]";
-  if (routes === undefined) routes = "[]";
-  if (entryRouteStore === undefined) entryRouteStore = "{}";
-  if (styles === undefined) styles = "";
-  if (pagePath === undefined) {
-    const err = Error();
-    err.name = "ValueError";
-    err.message = `Expected defined value for srcs or pagePath. Got ${srcs}, ${pagePath} respectively.`;
-    throw err;
-  }
-  srcs = JSON.parse(srcs);
-  routes = JSON.parse(routes);
-  entryRouteStore = JSON.parse(entryRouteStore);
+  const {
+    pagePath,
+    compImportStatements,
+    aliasCompMapStatement,
+    srcs,
+    routes,
+    styles,
+    reactRouteObjectPath,
+    entryRouteStore,
+    componentTree,
+  } = processOptions(options);
   return `
+  import React from "react";
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
   import PageFn from "./pages${pagePath}";
   import { renderPageServerSide } from "@atrilabs/atri-app-core/src/prod-entries";
+  ${compImportStatements}
+  ${aliasCompMapStatement}
   
   function renderPage(){
     return renderPageServerSide({entryPageFC: PageFn, PageWrapper, DocFn, srcs: ${JSON.stringify(
@@ -30,7 +31,9 @@ function atriPagesServerLoader() {
     })
   )}, styles: ${JSON.stringify(styles)}, entryRouteObjectPath: ${JSON.stringify(
     reactRouteObjectPath
-  )}, entryRouteStore: ${JSON.stringify(entryRouteStore)}})
+  )}, entryRouteStore: ${JSON.stringify(
+    entryRouteStore
+  )}, aliasCompMap, componentTree: ${JSON.stringify(componentTree)}})
   }
 
   export default { renderPage };`;

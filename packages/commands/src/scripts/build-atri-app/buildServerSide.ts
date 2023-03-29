@@ -1,93 +1,50 @@
 import {
-  createNodeLibConfig,
-  PrepareConfig,
-  collectWebpackMessages,
-  reportWarningsOrSuccess,
   extractParams,
   moduleFileExtensions,
 } from "@atrilabs/commands-builder";
 import webpack from "webpack";
 import path from "path";
 import { createServerEntry } from "./createServerEntry";
-import { PageInfo } from "./types";
-import { processDirsString } from "../../commons/processManifestDirsString";
-
-function startWebpackBuild(
-  params: Parameters<typeof createNodeLibConfig>[0] & {
-    prepareConfig?: PrepareConfig;
-  }
-) {
-  const webpackConfig = createNodeLibConfig(params);
-
-  if (typeof params.prepareConfig === "function") {
-    params.prepareConfig(webpackConfig);
-  }
-
-  return new Promise<void>((resolve) => {
-    webpack(webpackConfig, async (err, stats) => {
-      const messages = await collectWebpackMessages({
-        writeStats: true,
-        err,
-        stats,
-        outputDir: params.paths.outputDir,
-      });
-      reportWarningsOrSuccess(messages.warnings);
-      resolve();
-    });
-  });
-}
+import { ComponentManifests, PageInfo } from "./types";
+import { createCommonConfig } from "./createCommonConfig";
+import { startNodeWebpackBuild } from "./utils";
 
 export async function buildServerSide(
-  params: ReturnType<typeof extractParams> & { pagesInfo: PageInfo[] }
+  params: ReturnType<typeof extractParams> & {
+    pagesInfo: PageInfo[];
+    componentManifests: ComponentManifests;
+  }
 ) {
+  const { appSrc, exclude, additionalInclude, allowlist, resolveAlias } =
+    createCommonConfig({
+      exclude: params.exclude,
+      componentManifests: params.componentManifests,
+    });
   const serverOutputDir = path.resolve(params.paths.outputDir, "server");
-  const paths = { ...params.paths, outputDir: serverOutputDir };
-  paths.appSrc = process.cwd();
-  const exclude = [
-    ...processDirsString(params.exclude),
-    path.resolve("node_modules"),
+  params.paths = { ...params.paths, outputDir: serverOutputDir, appSrc };
+
+  params.additionalInclude = [
+    ...(params.additionalInclude || []),
+    ...additionalInclude,
   ];
-  const additionalInclude = params.additionalInclude || [];
-  additionalInclude.push(
-    // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/forest")),
-    // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/atri-app-core")),
-    // @ts-ignore
-    path.dirname(__non_webpack_require__.resolve("@atrilabs/design-system"))
-  );
-  params.additionalInclude = additionalInclude;
-  const allowlist = params.allowlist || [];
-  allowlist.push("@atrilabs/forest");
-  allowlist.push("@atrilabs/atri-app-core");
-  allowlist.push("@atrilabs/atri-app-core/src/utils");
-  allowlist.push("@atrilabs/atri-app-core/src/contexts");
-  allowlist.push("@atrilabs/atri-app-core/src/components/Link");
-  allowlist.push("@atrilabs/atri-app-core/src/prod-entries");
-  allowlist.push("@atrilabs/design-system");
-  allowlist.push("@atrilabs/canvas-zone");
-  startWebpackBuild({
+
+  allowlist.push(...(params.allowlist || []));
+
+  return startNodeWebpackBuild({
     ...params,
-    additionalInclude: [
-      ...params.additionalInclude,
-      path.dirname(
-        // @ts-ignore
-        __non_webpack_require__.resolve("@atrilabs/manifest-registry")
-      ),
-    ],
+    disableNodeExternals: true,
     exclude,
-    paths,
     outputFilename: "[name].js",
     moduleFileExtensions,
-    entry: await createServerEntry({ pageInfos: params.pagesInfo }),
+    entry: await createServerEntry({
+      pageInfos: params.pagesInfo,
+      componentManifests: params.componentManifests,
+    }),
     prepareConfig: (config) => {
       config.resolve = config.resolve ?? {};
       config.resolve["alias"] = {
         ...(config.resolve["alias"] || {}),
-        // @ts-ignore
-        "@atrilabs/canvas-zone": __non_webpack_require__.resolve(
-          "@atrilabs/atri-app-core/src/prod-components/CanvasZone.tsx"
-        ),
+        ...resolveAlias,
       };
       config.resolveLoader = {
         alias: {
@@ -104,9 +61,17 @@ export async function buildServerSide(
       };
       config.cache = {
         type: "filesystem",
-        cacheDirectory: path.resolve("node_modules", ".cache-build"),
+        cacheDirectory: path.resolve("node_modules", ".cache-build", "server"),
       };
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          React: "react",
+        })
+      );
     },
     allowlist,
+  }).catch((err) => {
+    throw err;
   });
 }

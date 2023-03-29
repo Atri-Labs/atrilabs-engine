@@ -59,13 +59,13 @@ export type NavigationCallbackHandler = {
  * CallbackHandler defines behavior with the backend whenever a callback is fired.
  * CallbackHandlers must be serializable because it is store in CallbackHandlerTree.
  */
-export type CallbackHandler = (
-  | {
-      sendFile: SendFileCallbackHandler;
-    }
-  | { sendEventData: SendEventCallbackHandler }
-  | { navigate: NavigationCallbackHandler }
-)[];
+export type CallbackHandler = {
+  navigate?: NavigationCallbackHandler;
+  sendFile?: ({ self: boolean } | { alias: string }) & {
+    props: string[];
+  };
+  sendEventData?: boolean;
+}[];
 
 export type AcceptsChildFunction = (info: {
   coords: ComponentCoordsWM;

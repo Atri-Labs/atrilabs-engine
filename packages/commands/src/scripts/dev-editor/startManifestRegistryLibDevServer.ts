@@ -6,7 +6,7 @@ import { CorePkgInfo } from "../../commons/types";
 import { ManifestRegistryLibPlugin } from "./webpack-plugins/ManifestRegistryLibPlugin";
 
 export default function startManifestRegistryLibDevServer(
-  params: ReturnType<typeof extractParams> & {
+  params: Omit<ReturnType<typeof extractParams>, "exclude"> & {
     customLoaders?: RuleSetRule[];
     generateIndexHtml?: boolean;
     babel?: {
@@ -16,6 +16,7 @@ export default function startManifestRegistryLibDevServer(
     externals: Configuration["externals"];
     toolConfig: ToolConfig;
     corePkgInfo: CorePkgInfo;
+    exclude?: RuleSetRule["exclude"];
   }
 ) {
   const webpackConfig = createManifestRegistryConfig(params);
