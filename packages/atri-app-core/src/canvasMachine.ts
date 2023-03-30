@@ -30,6 +30,8 @@ const PROGRAMTIC_HOVER = "PROGRAMTIC_HOVER" as const;
 const PROGRAMTIC_SELECT = "PROGRAMTIC_SELECT" as const;
 const DROP_ZONE_CREATED = "DROP_ZONE_CREATED" as const;
 const DROP_ZONE_DESTROYED = "DROP_ZONE_DESTROYED" as const;
+const COMPONENT_RENDERED_AFTER_PROPS_UPDATE =
+  "COMPONENT_RENDERED_AFTER_PROPS_UPDATE" as const;
 
 type IFRAME_DETECTED_EVENT = { type: typeof IFRAME_DETECTED };
 type TOP_WINDOW_DETECTED_EVENT = { type: typeof TOP_WINDOW_DETECTED };
@@ -108,6 +110,10 @@ type PROGRAMTIC_SELECT_EVENT = {
   type: typeof PROGRAMTIC_SELECT;
   id: string;
 };
+type COMPONENT_RENDERED_AFTER_PROPS_UPDATE_EVENT = {
+  type: typeof COMPONENT_RENDERED_AFTER_PROPS_UPDATE;
+  id: string;
+};
 
 type CanvasMachineEvent =
   | IFRAME_DETECTED_EVENT
@@ -130,7 +136,8 @@ type CanvasMachineEvent =
   | KEY_UP_EVENT
   | KEY_DOWN_EVENT
   | PROGRAMTIC_HOVER_EVENT
-  | PROGRAMTIC_SELECT_EVENT;
+  | PROGRAMTIC_SELECT_EVENT
+  | COMPONENT_RENDERED_AFTER_PROPS_UPDATE_EVENT;
 
 // states
 const initial = "initial" as const;
@@ -436,7 +443,8 @@ type SubscribeStates =
   | "hoverWhileSelected"
   | "hoverWhileSelectedEnd"
   | typeof DROP_ZONE_CREATED
-  | typeof DROP_ZONE_DESTROYED;
+  | typeof DROP_ZONE_DESTROYED
+  | typeof COMPONENT_RENDERED_AFTER_PROPS_UPDATE;
 
 export function createCanvasMachine(id: string) {
   const subscribers: { [key in SubscribeStates]: Callback[] } = {
@@ -467,6 +475,7 @@ export function createCanvasMachine(id: string) {
     hoverWhileSelectedEnd: [],
     [DROP_ZONE_CREATED]: [],
     [DROP_ZONE_DESTROYED]: [],
+    [COMPONENT_RENDERED_AFTER_PROPS_UPDATE]: [],
   };
   function subscribeCanvasMachine(state: SubscribeStates, cb: Callback) {
     subscribers[state].push(cb);
@@ -805,6 +814,9 @@ export function createCanvasMachine(id: string) {
             [PROPS_UPDATED]: {
               actions: ["emitPropsUpdated"],
             },
+            [COMPONENT_RENDERED_AFTER_PROPS_UPDATE]: {
+              actions: ["emitComponentRenderedAfterPropsUpdate"],
+            },
             [COMPONENT_RENDERED]: [
               {
                 target: `#${id}.${ready}.${selected}`,
@@ -951,6 +963,9 @@ export function createCanvasMachine(id: string) {
         emitComponentDeleted: callSubscribersFromAction(COMPONENT_DELETED),
         emitComponentRewired: callSubscribersFromAction(COMPONENT_REWIRED),
         emitPropsUpdated: callSubscribersFromAction(PROPS_UPDATED),
+        emitComponentRenderedAfterPropsUpdate: callSubscribersFromAction(
+          COMPONENT_RENDERED_AFTER_PROPS_UPDATE
+        ),
         emitKeyUp: callSubscribersFromAction(KEY_UP),
         emitKeyDown: callSubscribersFromAction(KEY_DOWN),
         setEverythingToNull,

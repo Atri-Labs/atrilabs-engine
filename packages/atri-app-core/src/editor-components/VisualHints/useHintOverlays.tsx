@@ -12,7 +12,7 @@ export const useHintOverlays = (canvasZoneId: string) => {
   const setNodesCb = useCallback(() => {
     const hintOverlays = getHintOverlays();
     const hintHoverlayIds = getHintOverlayIds(canvasZoneId);
-    const hintNodes = hintHoverlayIds.map((hoverlayId) => {
+    const hintNodes = Array.from(hintHoverlayIds).map((hoverlayId) => {
       const hintOverlay = hintOverlays[hoverlayId];
       return (
         <HintOverlayBox
