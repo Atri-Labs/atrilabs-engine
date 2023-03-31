@@ -10,6 +10,7 @@ const Select = forwardRef<
       placeholder?: string;
       defaultValue?: any;
       disabled: boolean;
+      dropdownStyle?: React.CSSProperties;
     };
     onChange: (checked: boolean) => void;
     className?: string;
@@ -17,7 +18,7 @@ const Select = forwardRef<
 >((props, ref) => {
   const { custom, ...restProps } = props;
 
-  // moved ref to div, as the Antd select doesnt provide ref for select
+  // moved ref to div, as the Antd select doesn't provide ref for select
   return (
     <div ref={ref} style={props.styles}>
       <AntdSelect
