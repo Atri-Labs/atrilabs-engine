@@ -92,8 +92,6 @@ const UnorderedList = forwardRef<
         size={props.custom.size}
         bordered={props.custom.bordered}
         dataSource={props.custom.items}
-        header={<div>Header {props.children}</div>}
-        footer={<div>Footer {props.children}</div>}
         split={props.custom.split}
         pagination={
           props.custom.pagination === true && {
@@ -116,11 +114,7 @@ const UnorderedList = forwardRef<
             : undefined
         }
         renderItem={(item, index) => (
-          <List.Item
-            key={item.title}
-            actions={actions(index)}
-            extra={<div>extra {props.children}</div>}
-          >
+          <List.Item key={item.title} actions={actions(index)}>
             <List.Item.Meta
               avatar={<img src={item.icon} alt={item.icon} />}
               title={item.title}

@@ -35,6 +35,7 @@ const Cascader = forwardRef<
       notFoundContent?: string;
       open?: boolean;
       options: Option[];
+      dropdownMenuColumnStyle?: React.CSSProperties;
       onChange?: (
         value: CascaderProps["value"],
         selectedOptions: CascaderProps["options"] | CascaderProps["options"][]
