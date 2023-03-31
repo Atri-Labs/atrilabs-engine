@@ -129,9 +129,6 @@ export function readEnvironmentVariables() {
         )}`
       )
     );
-  console.log(
-    `If this was unintentional, check that you haven't mistakenly set it in your shell.`
-  );
   console.log();
 
   const port =
