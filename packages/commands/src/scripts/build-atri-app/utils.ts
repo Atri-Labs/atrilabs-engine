@@ -401,6 +401,46 @@ export function getEntryNameFromPathPath(pagePath: string) {
   return entryName;
 }
 
+function traverseForConcernedChunkIds(
+  id: string | number,
+  idChunkMap: {
+    [chunkId: string | number]: webpack.StatsChunk;
+  },
+  visited: Set<string | number>
+): (string | number)[] {
+  const chunk = idChunkMap[id];
+  const ownIds = [...(chunk?.parents || [])];
+  return [
+    ...ownIds
+      .map((ownId) => {
+        if (visited.has(ownId)) return [];
+        visited.add(ownId);
+        return traverseForConcernedChunkIds(ownId, idChunkMap, visited);
+      })
+      .flat(),
+    ...ownIds,
+  ];
+}
+
+function startTraverse(
+  id: string | number,
+  idChunkMap: {
+    [chunkId: string | number]: webpack.StatsChunk;
+  }
+) {
+  const visited = new Set<string | number>([id]);
+  const concernedChunkIds = traverseForConcernedChunkIds(
+    id,
+    idChunkMap,
+    visited
+  );
+  return concernedChunkIds
+    .map((chunkId) => {
+      return idChunkMap[chunkId]?.files || [];
+    })
+    .flat();
+}
+
 export function getAssetDependencyGraph(
   pagesInfo: PageInfo[],
   chunks: webpack.StatsChunk[]
@@ -430,45 +470,25 @@ export function getAssetDependencyGraph(
   const assetDependencyGraph: { [entryName: string]: string[] } = {};
   entryNames.forEach((entryName) => {
     const entryChunk = entryChunkMap[entryName];
-    const visited = new Set<string | number>([entryChunk!.id!]);
-    const concernedChunkIds = traverseForConcernedChunkIds(
-      entryChunk!.id!,
-      idChunkMap,
-      visited
-    );
-    const files = [
-      ...concernedChunkIds
-        .map((chunkId) => {
-          return idChunkMap[chunkId]?.files || [];
-        })
-        .flat(),
-      ...(entryChunk?.files || []),
-    ];
+    const siblingChunkIds = entryChunk?.siblings || [];
+    const files = [...siblingChunkIds, entryChunk!.id!]
+      .map((chunkId) => {
+        return startTraverse(chunkId, idChunkMap);
+      })
+      .flat();
+
+    siblingChunkIds.forEach((siblingChunkId) => {
+      if (idChunkMap[siblingChunkId]?.files) {
+        files.push(...idChunkMap[siblingChunkId]!.files!);
+      }
+    });
+
+    if (entryChunk?.files) files.push(...entryChunk.files);
+
     assetDependencyGraph[entryName] = Array.from(
       new Set(["runtime.js", ...files])
     );
   });
 
   return assetDependencyGraph;
-}
-
-function traverseForConcernedChunkIds(
-  id: string | number,
-  idChunkMap: {
-    [chunkId: string | number]: webpack.StatsChunk;
-  },
-  visited: Set<string | number>
-): (string | number)[] {
-  const chunk = idChunkMap[id];
-  const ownIds = [...(chunk?.parents || [])];
-  return [
-    ...ownIds
-      .map((ownId) => {
-        if (visited.has(ownId)) return [];
-        visited.add(ownId);
-        return traverseForConcernedChunkIds(ownId, idChunkMap, visited);
-      })
-      .flat(),
-    ...ownIds,
-  ];
 }
