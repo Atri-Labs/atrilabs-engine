@@ -22,8 +22,28 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    checked: { type: "boolean" },
-    text:{type:"text"}
+    defaultValue: { type: "array" },
+    disabled: { type: "boolean" },
+    name: { type: "text" },
+    value: { type: "array" },
+    options: {
+      type: "array_map",
+      singleObjectName: "item",
+      attributes: [
+        {
+          fieldName: "label",
+          type: "text",
+        },
+        {
+          fieldName: "value",
+          type: "text",
+        },
+        {
+          fieldName: "disabled",
+          type: "boolean",
+        },
+      ],
+    },
   },
 };
 
@@ -41,8 +61,11 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          checked: false,
-          text:"Checkbox"
+          options: [
+            { value: "one", label: "One" },
+            { value: "two", label: "Two" },
+            { value: "three", label: "Three" },
+          ],
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

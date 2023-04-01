@@ -1,5 +1,14 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import { Breadcrumb as AntdBreadcrumb } from "antd";
+
+interface item {
+  title: string;
+  href?: string;
+  icon: string;
+  menu?: {
+    items: item[];
+  };
+}
 
 const Breadcrumb = forwardRef<
   HTMLDivElement,
@@ -7,36 +16,40 @@ const Breadcrumb = forwardRef<
     styles: React.CSSProperties;
     custom: {
       separator?: string;
-      items: {
-        title?: string;
-        href?: string;
-        icon: string;
-      }[];
+      items: item[];
     };
     className?: string;
     onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLSpanElement>;
   }
 >((props, ref) => {
+  const breadcrumbItems = useMemo(() => {
+    return props.custom.items.map((item) => {
+      if (item.menu) {
+        return {
+          title: <a href={item.title}>{item.title}</a>,
+          menu: {
+            items: item.menu.items.map((subItem: item) => ({
+              title: subItem.title,
+            })),
+          },
+        };
+      }
+      if (item.href) {
+        return {
+          title: <a href={item.href}> {item.title}</a>,
+        };
+      }
+      return item;
+    });
+  }, [props.custom.items]);
   return (
     <div ref={ref}>
       <AntdBreadcrumb
         className={props.className}
         style={props.styles}
         separator={props.custom.separator}
-      >
-        {props.custom.items.map((item, index: number) => (
-          <AntdBreadcrumb.Item
-            key={index}
-            href={item.href}
-            onClick={props.onClick}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {item.icon ? <img src={item.icon} alt={item.icon} /> : undefined}
-              <span>{item.title}</span>
-            </div>
-          </AntdBreadcrumb.Item>
-        ))}
-      </AntdBreadcrumb>
+        items={breadcrumbItems}
+      />
     </div>
   );
 });

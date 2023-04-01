@@ -24,14 +24,31 @@ const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     picker: {
       type: "enum",
-      options: ["", "week", "month", "quarter", "year"],
+      options: ["date", "week", "month", "quarter", "year"],
     },
     showTime: {
       type: "boolean",
     },
-    disabled: {
-      type: "boolean",
+    size: {
+      type: "enum",
+      options: ["small", "middle", "large"],
     },
+    placement: {
+      type: "enum",
+      options: ["bottomLeft", "bottomRight", "topLeft", "topRight"],
+    },
+    format: {
+      type: "enum",
+      options: ["YYYY-MM-DD", "MM-DD-YYYY", "DD-MM-YYYY"],
+    },
+    placeholder: { type: "array" },
+    bordered: { type: "boolean" },
+    disabled: { type: "boolean" },
+    status: {
+      type: "enum",
+      options: ["none", "error", "warning"],
+    },
+    range: { type: "boolean" },
   },
 };
 
@@ -48,9 +65,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: {
-          content: "I am Text",
-        },
+        initialValue: { bordered: true },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
@@ -59,7 +74,7 @@ const compManifest: ReactComponentManifestSchema = {
       onClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {
-      onOpenChange :[{ sendEventData: true }],
+      onOpenChange: [{ sendEventData: true }],
     },
   },
 };

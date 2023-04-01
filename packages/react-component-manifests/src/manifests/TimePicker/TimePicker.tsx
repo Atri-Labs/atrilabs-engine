@@ -19,6 +19,12 @@ const TimePicker = forwardRef<
       use12Hours?: boolean;
       bordered?: boolean;
       status?: "error" | "warning";
+      placement?:
+        | "bottomLeft"
+        | "bottomRight"
+        | "topLeft"
+        | "topRight"
+        | undefined;
       onOpenChange?: (open: boolean) => void;
       range?: boolean;
     };
@@ -35,7 +41,7 @@ const TimePicker = forwardRef<
   // moved ref to div, as the Antd TimePicker doesnt provide ref for TimePicker
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
-      {range === true ? (
+      {range ? (
         <AntdTimePicker.RangePicker
           className={props.className}
           style={props.styles}
