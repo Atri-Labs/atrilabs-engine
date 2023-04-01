@@ -19,6 +19,7 @@ const Card = forwardRef<
       avatar: string;
       description: ReactNode;
       size?: Size;
+      loading?: boolean;
     };
     className?: string;
     onTabChange?: (key: string) => void;
@@ -34,6 +35,7 @@ const Card = forwardRef<
       size={props.custom.size}
       cover={<img src={props.custom.cover} alt={props.custom.cover} />}
       onTabChange={props.onTabChange}
+      loading={props.custom.loading}
     >
       {props.custom.type === "card" && <p> {props.custom.description}</p>}
       {props.custom.type === "meta" && (

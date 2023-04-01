@@ -23,9 +23,6 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     text: { type: "text" },
-    closable: { type: "boolean" },
-    link: { type: "text" },
-    color: { type: "color" },
     variant: {
       type: "enum",
       options: ["default", "success", "processing", "error", "warning"],
@@ -42,7 +39,10 @@ const customTreeOptions: CustomPropsTreeOptions = {
         "processing",
       ],
     },
+    closable: { type: "boolean" },
     closeIcon: { type: "static_asset" },
+    link: { type: "text" },
+    color: { type: "color" },
   },
 };
 

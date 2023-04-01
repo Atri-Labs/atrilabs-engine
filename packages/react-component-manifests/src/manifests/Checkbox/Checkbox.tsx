@@ -1,27 +1,38 @@
 import React, { forwardRef } from "react";
 import { Checkbox as AntdCheckbox } from "antd";
-import { CheckboxChangeEvent } from "antd/es/checkbox";
+import type { CheckboxValueType } from "antd/es/checkbox/Group";
+
+interface Option {
+  label: string;
+  value: string;
+  disabled?: boolean;
+}
 
 const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: { checked: boolean; text: string[] };
-    onChange: (event: CheckboxChangeEvent) => void
+    custom: {
+      defaultValue: (string | number)[];
+      disabled?: boolean;
+      options: Option[];
+      name?: string;
+      value?: (string | number | boolean)[];
+    };
+    onChange?: (checkedValue: Array<CheckboxValueType>) => void;
     className?: string;
   }
 >((props, ref) => {
+  const { custom } = props;
   // moved ref to div, as the Antd Checkbox doesnt provide ref for Checkbox
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
-      <AntdCheckbox
+    <div ref={ref}>
+      <AntdCheckbox.Group
         className={props.className}
         style={props.styles}
-        checked={props.custom.checked}
+        {...custom}
         onChange={props.onChange}
-      >
-        {props.custom.text}
-      </AntdCheckbox>
+      />
     </div>
   );
 });

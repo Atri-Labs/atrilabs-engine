@@ -67,6 +67,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
+          bordered : true,
           items: [
             {
               title: `One`,

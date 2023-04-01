@@ -6,33 +6,35 @@ const Radio = forwardRef<
   {
     styles: React.CSSProperties;
     custom: {
-      name: string;
-      text: string[];
-      checked: boolean;
-      radius?: string;
-      options?: any;
+      disabled: boolean;
+      options?:
+        | string[]
+        | number[]
+        | Array<{ label: React.ReactNode; value: string; disabled?: boolean }>;
+      defaultValue?:
+        | string
+        | number
+        | Array<{ label: React.ReactNode; value: string; disabled?: boolean }>;
+      value?: string | number;
+      optionType?: "default" | "button";
+      size?: "large" | "middle" | "small";
+      name?: string;
+      buttonStyle?: "outline" | "solid";
     };
     onChange: (event: RadioChangeEvent) => void;
     className?: string;
   }
 >((props, ref) => {
-  // moved ref to div, as the Antd Radio doesnt provide ref for Radio
+  const { custom } = props;
+  // moved ref to div, as the Antd Radio doesn't provide ref for Radio
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
-      <AntdRadio
-        name={props.custom.name || "Name"}
-        style={{
-          ...props.styles,
-          height: props.custom.radius,
-          width: props.custom.radius,
-        }}
+      <AntdRadio.Group
+        style={props.styles}
         className={props.className}
-        checked={props.custom.checked}
-        value={props.custom.text}
         onChange={props.onChange}
-      >
-        {props.custom.text ? props.custom.text : "label"}
-      </AntdRadio>
+        {...custom}
+      />
     </div>
   );
 });

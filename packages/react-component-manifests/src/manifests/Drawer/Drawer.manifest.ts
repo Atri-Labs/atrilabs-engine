@@ -1,11 +1,43 @@
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
+import type {
+  ReactComponentManifestSchema,
+  AcceptsChildFunction,
+} from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import {
+  flexRowSort,
+  flexColSort,
+  flexRowReverseSort,
+  flexColReverseSort,
+} from "@atrilabs/react-component-manifest-schema";
 
+const acceptsChild: AcceptsChildFunction = (info: any) => {
+  if (info.childCoordinates.length === 0) {
+    return 0;
+  }
+  const flexDirection: "row" | "column" | "row-reverse" | "column-reverse" =
+    info.props.styles["flexDirection"] || "row";
+  let index = 0;
+  switch (flexDirection) {
+    case "row":
+      index = flexRowSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "column":
+      index = flexColSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "row-reverse":
+      index = flexRowReverseSort(info.loc, info.childCoordinates) || 0;
+      break;
+    case "column-reverse":
+      index = flexColReverseSort(info.loc, info.childCoordinates) || 0;
+      break;
+  }
+  return index;
+};
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
   flexContainerOptions: true,
@@ -23,23 +55,22 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     open: { type: "boolean" },
-    text: { type: "text" },
-    content: { type: "large_text" },
-    centered: { type: "boolean" },
-    icon: { type: "static_asset" },
+    title: { type: "text" },
+    placement: { type: "enum", options: ["left", "top", "right", "bottom"] },
+    size: { type: "enum", options: ["default", "large"] },
     closable: { type: "boolean" },
-    closeIcon: { type: "static_asset" },
     destroyOnClose: { type: "boolean" },
+    forceRender: { type: "boolean" },
+    autoFocus: { type: "boolean" },
     keyboard: { type: "boolean" },
     mask: { type: "boolean" },
     maskClosable: { type: "boolean" },
     zIndex: { type: "number" },
-    confirmLoading: { type: "boolean" },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Modal", category: "Basics" },
+  meta: { key: "Drawer", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -52,12 +83,13 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Modal Title",
-          content: "Modal content",
-          maskClosable: true,
-          closable: true,
+          title: "Title",
+          placement: "right",
+          autoFocus: true,
           keyboard: true,
           mask: true,
+          maskClosable: true,
+          closable: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -65,20 +97,21 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
-      onCancel: [{ type: "do_nothing" }],
-      afterClose: [{ type: "do_nothing" }],
+      onClose: [{ type: "do_nothing" }],
+      afterOpenChange: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
       onClick: [{ sendEventData: true }],
     },
+    acceptsChild,
   },
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Modal" } },
+  panel: { comp: "CommonIcon", props: { name: "Drawer" } },
   drag: {
     comp: "CommonIcon",
-    props: { name: "Modal", containerStyle: { padding: "1rem" } },
+    props: { name: "Drawer", containerStyle: { padding: "1rem" } },
   },
   renderSchema: compManifest,
 };

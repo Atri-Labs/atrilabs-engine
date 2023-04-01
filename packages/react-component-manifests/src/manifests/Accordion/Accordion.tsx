@@ -60,7 +60,11 @@ const Accordion = forwardRef<
         {props.custom?.items?.map((item, index) => (
           <Panel
             header={item.title}
-            key={item.key}
+            key={
+              item.key !== (undefined || "")
+                ? item.key
+                : Math.floor(Math.random() * 1000 + 1)
+            }
             collapsible={item.collapsible}
             showArrow={item.showArrow}
           >

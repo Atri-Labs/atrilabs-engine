@@ -26,7 +26,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     dots: { type: "boolean" },
     dotPosition: {
       type: "enum",
-      options: ["Bottom", "top", "left", "right"],
+      options: ["bottom", "top", "left", "right"],
     },
     effect: {
       type: "enum",

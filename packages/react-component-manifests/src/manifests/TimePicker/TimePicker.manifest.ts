@@ -27,17 +27,29 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["small", "middle", "large"],
     },
+    placement: {
+      type: "enum",
+      options: ["bottomLeft", "bottomRight", "topLeft", "topRight"],
+    },
     format: {
       type: "enum",
-      options: ["HH:mm:ss", "HH:mm" ,"HH:mm:ss A","HH:mm:ss a","hh:mm A","hh:mm a"],
+      options: [
+        "HH:mm:ss",
+        "HH:mm",
+        "HH:mm:ss A",
+        "HH:mm:ss a",
+        "hh:mm A",
+        "hh:mm a",
+      ],
     },
+    placeholder: { type: "array" },
     bordered: { type: "boolean" },
     disabled: { type: "boolean" },
-    status:{
+    status: {
       type: "enum",
-      options: ["none","error", "warning"],
+      options: ["none", "error", "warning"],
     },
-    range:{ type: "boolean" },
+    range: { type: "boolean" },
   },
 };
 
@@ -54,7 +66,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
       custom: {
         treeId: CustomTreeId,
-        initialValue: { size: "middle" , bordered : true },
+        initialValue: { size: "middle", bordered: true },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },

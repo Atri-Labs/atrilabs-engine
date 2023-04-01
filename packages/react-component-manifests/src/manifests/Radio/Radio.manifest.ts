@@ -22,10 +22,34 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    defaultValue: { type: "text" },
+    disabled: { type: "boolean" },
     name: { type: "text" },
-    label: { type: "text" },
-    checked: { type: "boolean" },
-    radius: { type: "number" },
+    value: { type: "array" },
+    optionType: { type: "enum", options: ["default", "button"] },
+    buttonStyle: { type: "enum", options: ["outline", "solid"] },
+    size: {
+      type: "enum",
+      options: ["middle", "large", "small"],
+    },
+    options: {
+      type: "array_map",
+      singleObjectName: "option",
+      attributes: [
+        {
+          fieldName: "label",
+          type: "text",
+        },
+        {
+          fieldName: "value",
+          type: "text",
+        },
+        {
+          fieldName: "disabled",
+          type: "boolean",
+        },
+      ],
+    },
   },
 };
 
@@ -36,21 +60,19 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          cursor: "pointer",
-          display: "inline-flex",
-          columnGap: "10px",
-          alignItems: "center",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          name: "",
-          label: "Radio",
-          checked: false,
+          options: [
+            { value: "one", label: "One" },
+            { value: "two", label: "Two" },
+            { value: "three", label: "Three" },
+          ],
+          size: "middle",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
