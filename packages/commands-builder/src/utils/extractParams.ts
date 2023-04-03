@@ -232,6 +232,7 @@ export function extractParams() {
     { dotenv: ".env" },
     {
       nodeEnv: envVars.nodeEnv,
+      babelEnv: envVars.babelEnv,
       sockPath: envVars.sockPath,
       sockHost: envVars.sockHost,
       sockPort: envVars.sockPort,
@@ -243,6 +244,7 @@ export function extractParams() {
     { dotenv: ".env" },
     {
       nodeEnv: envVars.nodeEnv,
+      babelEnv: envVars.babelEnv,
       sockPath: envVars.sockPath,
       sockHost: envVars.sockHost,
       sockPort: envVars.sockPort,

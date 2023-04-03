@@ -26,12 +26,13 @@ export function getClientEnvironment(
   paths: { dotenv: string },
   serverEnv: {
     nodeEnv: string;
+    babelEnv: string;
     sockPath?: string;
     sockHost?: string;
     sockPort?: string;
   }
 ) {
-  const { nodeEnv, sockHost, sockPath, sockPort } = serverEnv;
+  const { nodeEnv, babelEnv, sockHost, sockPath, sockPort } = serverEnv;
   // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
   const dotenvFiles = [
     `${paths.dotenv}.${nodeEnv}.local`,
@@ -65,6 +66,7 @@ export function getClientEnvironment(
         // Useful for determining whether we’re running in production mode.
         // Most importantly, it switches React into the correct mode.
         NODE_ENV: nodeEnv,
+        BABEL_ENV: babelEnv,
         // Useful for resolving the correct path to static assets in `public`.
         // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
         // This should only be used as an escape hatch. Normally you would put

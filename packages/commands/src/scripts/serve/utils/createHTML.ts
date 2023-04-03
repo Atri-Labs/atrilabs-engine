@@ -11,5 +11,5 @@ export function createHTML(reactString: string, assetDeps: string[]) {
     })
     .join("\n");
 
-  return reactString.replace("</head>", `${nodes}</head>`);
+  return reactString.replace("</head>", `${nodes}\n</head>`);
 }
