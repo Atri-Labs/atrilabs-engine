@@ -21,12 +21,21 @@ export async function createClientEntry(options: {
       import: "@atrilabs/atri-app-core/src/router/AtriRouter",
       dependOn: ["vendors"],
     };
+    entry["atri-fc-store"] = {
+      import: "@atrilabs/atri-app-core/src/prod-entries/AtriFCStore",
+      dependOn: ["vendors"],
+    };
     existingKeys.forEach((key) => {
       if (typeof entry[key] === "object" && !Array.isArray(entry[key])) {
         const currEntry = entry[key] as { import: string };
         entry[key] = {
           ...currEntry,
-          dependOn: ["vendors", "atri-router", "prod-contexts"],
+          dependOn: [
+            "vendors",
+            "atri-router",
+            "atri-fc-store",
+            "prod-contexts",
+          ],
         } as {
           import: string;
           dependOn: string[];

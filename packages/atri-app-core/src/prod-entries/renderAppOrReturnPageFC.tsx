@@ -30,17 +30,19 @@ export default function renderAppOrReturnPageFC(options: ProdAppEntryOptions) {
   addPageToStore(entryRouteObjectPath, entryRouteStore);
   if (window.__APP_STATUS === "loaded") {
     // return Page Component
-    return (
-      <AliasCompMapContext.Provider value={aliasCompMap}>
-        <ComponentTreeContext.Provider value={componentTree}>
-          <FinalPageComponent
-            PageWrapper={PageWrapper}
-            Page={entryPageFC}
-            styleStr={styles}
-          />
-        </ComponentTreeContext.Provider>
-      </AliasCompMapContext.Provider>
-    );
+    return () => {
+      return (
+        <AliasCompMapContext.Provider value={aliasCompMap}>
+          <ComponentTreeContext.Provider value={componentTree}>
+            <FinalPageComponent
+              PageWrapper={PageWrapper}
+              Page={entryPageFC}
+              styleStr={styles}
+            />
+          </ComponentTreeContext.Provider>
+        </AliasCompMapContext.Provider>
+      );
+    };
   } else {
     // configure rotues here
     loadRoutes(

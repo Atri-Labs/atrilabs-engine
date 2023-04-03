@@ -303,7 +303,7 @@ export async function createCssText(
   const cssObj: { [alias: string]: React.CSSProperties } = {};
   components.forEach((component) => {
     if (component.props["styles"])
-      cssObj[component.alias] = component.props["styles"];
+      cssObj[`.${component.alias}`] = component.props["styles"];
   });
   return await jssToCss(cssObj);
 }

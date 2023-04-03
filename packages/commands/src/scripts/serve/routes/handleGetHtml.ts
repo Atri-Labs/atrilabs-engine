@@ -20,7 +20,7 @@ export function handleGetHtml(router: Router) {
       const assetDeps = findAssetDeps(pageRoute, assetDepGraph);
       if (assetDeps) {
         const reactString = renderReactString(pageRoute);
-        const html = createHTML(reactString, assetDeps);
+        const html = createHTML(reactString, assetDeps, assetDepGraph);
         res.header("Content-Type", "text/html");
         res.send(html);
         return;
