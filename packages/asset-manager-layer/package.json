@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/asset-manager-layer",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -32,9 +32,9 @@
     "prettier": "^2.6.2"
   },
   "dependencies": {
-    "@atrilabs/core": "^1.0.0-alpha.13",
-    "@atrilabs/design-system": "^1.0.0-alpha.13",
-    "@atrilabs/layer-types": "^1.0.0-alpha.13",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.13"
+    "@atrilabs/core": "^1.0.0-alpha.14",
+    "@atrilabs/design-system": "^1.0.0-alpha.14",
+    "@atrilabs/layer-types": "^1.0.0-alpha.14",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.14"
   }
 }
