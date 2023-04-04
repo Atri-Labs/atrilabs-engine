@@ -1,3 +1,5 @@
+const upath = require("upath");
+
 function processOptions(options) {
   const { pagePath, reactRouteObjectPath } = options;
   let {
@@ -49,7 +51,7 @@ function processOptions(options) {
     .map((pkg) => {
       return Object.keys(flatennedComponentMap[pkg])
         .map((key) => {
-          return `import ${flatennedComponentMap[pkg][key]} from "${componentMap[pkg][key]}";`;
+          return `import ${flatennedComponentMap[pkg][key]} from "${upath.toUnix(componentMap[pkg][key])}";`;
         })
         .join("\n");
     })

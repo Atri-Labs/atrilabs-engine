@@ -1,4 +1,5 @@
 const processOptions = require("./processOptions");
+const upath = require("upath");
 
 function atriPagesClientLoader() {
   const options = this.getOptions();
@@ -20,7 +21,7 @@ function atriPagesClientLoader() {
   import React from "react";
   import DocFn from "./pages/_document";
   import PageWrapper from "./pages/_app";
-  import PageFn from "./pages${pagePath}";
+  import PageFn from "./pages${upath.toUnix(pagePath)}";
   import renderAppOrReturnPageFC from "@atrilabs/atri-app-core/src/prod-entries/renderAppOrReturnPageFC";
   import { AtriFCStore } from "@atrilabs/atri-app-core/src/prod-entries/AtriFCStore";
   ${compImportStatements}

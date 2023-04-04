@@ -19,7 +19,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "gen-py-classes -n ../../node_modules -i '@atrilabs/utils' -a '@atrilabs/utils'",
+    "build": "gen-py-classes -n ../../node_modules -i \"@atrilabs/utils\" -a \"@atrilabs/utils\"",
     "prepublishOnly": "yarn build"
   },
   "bugs": {

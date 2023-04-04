@@ -1,3 +1,5 @@
+const upath = require("upath");
+
 function atriPagesClientLoader() {
   const options = this.getOptions();
   const { routeObjectPath, modulePath } = options;
@@ -11,7 +13,7 @@ function atriPagesClientLoader() {
 
   return `
 	import PageWrapper from "./pages/_app";
-	import PageComponent from "${modulePath}";
+	import PageComponent from "${upath.toUnix(modulePath)}";
 
 	import renderPageOrApp from "@atrilabs/atri-app-core/src/entries/renderPageOrApp";
 

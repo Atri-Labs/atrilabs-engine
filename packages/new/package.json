@@ -17,7 +17,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/index.ts -f main.js -n '../../node_modules'",
+    "build": "build-node-app -e ./src/index.ts -f main.js -n \"../../node_modules\"",
     "prepublishOnly": "yarn build"
   },
   "bugs": {

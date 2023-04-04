@@ -21,7 +21,7 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands' -a '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands/src/commons/computeManifestIRs'",
+    "build": "build-node-app -e ./src/index.ts -f dev.js -n \"../../node_modules\" -i \"@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands\" -a \"@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands/src/commons/computeManifestIRs\"",
     "prepublishOnly": "yarn build"
   },
   "bugs": {
