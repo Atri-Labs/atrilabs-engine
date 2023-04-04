@@ -56,14 +56,13 @@ function createPackageJSON(
       description: data.description,
       license: "ISC",
       scripts: {
-        dev: "ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link' -i '@atrilabs/utils:@atrilabs/atri-app-core'",
+        "dev": "cross-env ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d \"#@atrilabs/react-component-manifests\" -a \"@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link\" -i \"@atrilabs/utils:@atrilabs/atri-app-core\"",
         "gen-py-app": "gen-py-app",
         "dev-py-app": "dev-py-app",
-        "gen-py-classes":
-          "gen-py-classes -n ../../node_modules -i '@atrilabs/utils' -a '@atrilabs/utils'",
-        editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
-        build:
-          "NODE_ENV=production BABEL_ENV=production build-atri-app -d '#@atrilabs/react-component-manifests'",
+        "gen-py-classes": "gen-py-classes -n ../../node_modules -i \"@atrilabs/utils\" -a \"@atrilabs/utils\"",
+        "editor": "cross-env APP_HOSTNAME=\"http://localhost:3000\" dev-atri-editor",
+        "build": "cross-env NODE_ENV=production BABEL_ENV=production build-atri-app -d \"#@atrilabs/react-component-manifests\"",
+        "serve": "serve"
       },
       // Update these versions on every release
       dependencies: {
@@ -77,6 +76,7 @@ function createPackageJSON(
         "@atrilabs/pwa-builder-server": "^1.0.0-alpha.13",
         "@atrilabs/react-component-manifests": "^1.0.0-alpha.13",
         "@atrilabs/utils": "^1.0.0-alpha.13",
+        "cross-env": "^7.0.3",
         "node-noop": "^1.0.0",
         react: "18.2.0",
         "react-dom": "18.2.0",
