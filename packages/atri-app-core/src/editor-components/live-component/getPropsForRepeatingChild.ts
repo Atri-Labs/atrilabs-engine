@@ -1,5 +1,6 @@
 import { RepeatingContextData } from "../../types";
 import { componentStoreApi, liveApi } from "../../api";
+import { mergeState } from "../../utils/mergeState";
 
 export function getPropsForRepeatingChild(
   compId: string,
@@ -24,10 +25,16 @@ export function getPropsForRepeatingChild(
           ];
       }
       const compAlias = liveApi.getComponentAlias(compId);
-      // TODO: merge with the default data from componentStoreApi
-      return currData[
-        repeatingContextData.indices[repeatingContextData.indices.length - 1]
-      ][compAlias];
+      const props = JSON.parse(
+        JSON.stringify(componentStoreApi.getComponentProps(compId))
+      );
+      mergeState(
+        props,
+        currData[
+          repeatingContextData.indices[repeatingContextData.indices.length - 1]
+        ][compAlias]
+      );
+      return props;
     } else {
       console.log(`data not found at ${repeatingContextData}`);
     }
