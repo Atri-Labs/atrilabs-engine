@@ -50,8 +50,8 @@ class ${compKey}CustomClass(${
 \t@data.setter
 \tdef data(self, state):
 \t\tself._setter_access_tracker["data"] = {}
-\t\tif type(state) == "list":
-\t\t\tself._data = [self._WrapperClass(i) for i in state]
+\t\tif type(state) == list:
+\t\t\tself._data = [self._WrapperClass(state[i]) for i in range(len(state))]
 \t\telse:
 \t\t\tself._data = []`;
       }
