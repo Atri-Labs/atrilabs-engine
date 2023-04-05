@@ -121,6 +121,9 @@ export const ListStyle: React.FC<CssProprtyComponentType> = (props) => {
               style={styles.inputBox}
               value={props.styles.listStyleType || undefined}
             >
+              <option style={styles.select} value="none">
+                none
+              </option>
               <option style={styles.select} value="disc">
                 disc
               </option>
