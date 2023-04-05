@@ -1,5 +1,36 @@
 import type { ComponentTypes } from "./types";
 
+/**
+ * Get all the descendants of a repeating component.
+ * The direct descendants of a repeating component doesn't
+ * include the descendants of a child repeating component.
+ * @param compAlias
+ * @param compDefMap
+ * @param repeatingComponentSet
+ * @returns
+ */
+function getAllDirectDescendants(
+  compAlias: string,
+  compDefMap: { [alias: string]: string[] },
+  repeatingComponentSet: Set<string>
+) {
+  const desecendants: string[] = [...compDefMap[compAlias]!];
+  let curr = 0;
+  while (curr < desecendants.length) {
+    // do not add desendants of a child repeating component
+    if (!repeatingComponentSet.has(desecendants[curr]!))
+      desecendants.push(
+        ...getAllDirectDescendants(
+          desecendants[curr]!,
+          compDefMap,
+          repeatingComponentSet
+        )
+      );
+    curr++;
+  }
+  return desecendants;
+}
+
 export function generatePythonPageModel(
   compDefs: {
     alias: string;
@@ -18,13 +49,27 @@ export function generatePythonPageModel(
     return def.componentType === "repeating";
   });
 
-  const repeatingChildrenAliasSet = new Set<string>();
+  const compDefMap: { [alias: string]: string[] } = {};
   compDefs.forEach((compDef) => {
-    compDef.childrenAlias.forEach((childAlias) => {
-      if (compDef.componentType === "repeating")
-        repeatingChildrenAliasSet.add(childAlias);
+    compDefMap[compDef.alias] = compDef.childrenAlias;
+  });
+  const repeatingChildrenAliasSet = new Set<string>();
+  const repeatingComponentSet = new Set(
+    repeatingComponentDefs.map((def) => def.alias)
+  );
+  repeatingComponentDefs.forEach((compDef) => {
+    const desecendants = getAllDirectDescendants(
+      compDef.alias,
+      compDefMap,
+      repeatingComponentSet
+    );
+    console.log("childrenAlias", desecendants);
+    desecendants.forEach((childAlias) => {
+      repeatingChildrenAliasSet.add(childAlias);
     });
   });
+
+  console.log("repeatingChildrenAliasSet", repeatingChildrenAliasSet);
 
   const aliasMap: { [alias: string]: typeof compDefs["0"] } = {};
   compDefs.forEach((compDef) => {
@@ -40,21 +85,26 @@ export function generatePythonPageModel(
   return `from typing import Union, Any
 ${Array.from(importSets).join("\n")}
 
-${repeatingComponentDefs.map(({ alias, childrenAlias }) => {
+${repeatingComponentDefs.map(({ alias }) => {
+  const desecendants = getAllDirectDescendants(
+    alias,
+    compDefMap,
+    repeatingComponentSet
+  );
   return `class AtriRepeatingChildren${alias}:
 	def __init__(self, state: Union[Any, None]):
 ${
-  childrenAlias.length === 0
+  desecendants.length === 0
     ? "\t\tpass"
     : "\t\t# children of repeating component"
 }
-${childrenAlias
+${desecendants
   .map((alias) => {
     return `\t\tself.${alias} = state["${alias}"] if "${alias}" in state else None`;
   })
   .join("\n")}
 
-	${childrenAlias
+	${desecendants
     .map((alias) => {
       const compKey = aliasMap[alias]!.compKey;
       return `
@@ -69,7 +119,7 @@ ${childrenAlias
 
 \tdef _to_json_fields(self):
 \t\treturn {
-${childrenAlias
+${desecendants
   .map((alias) => {
     return `\t\t\t"${alias}": self._${alias}`;
   })

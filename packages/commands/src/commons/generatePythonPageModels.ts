@@ -48,6 +48,9 @@ export function generatePythonModelForAPage(ir: PathIR) {
     const packageJSON = __non_webpack_require__(nodePkg + "/package.json");
     const pythonPkg = packageJSON["atriConfig"]["pythonPackageName"];
     // create reverseMap to create a list of children alias
+    if (alias === "Repeating3") {
+      console.log("reverseMap", reverseMap[compNode.id]);
+    }
     const childrenAlias: string[] = reverseMap[compNode.id]
       ? reverseMap[compNode.id]!.map((node) => node.state["alias"])
       : [];

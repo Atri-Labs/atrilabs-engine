@@ -67,11 +67,12 @@ class ${compKey}CustomClass(${
     .join("\n\t")}
 
 	def _to_json_fields(self):
-		return {\n${props
+    all_fields = {\n${props
       .map((prop) => {
         return `\t\t\t"${prop}": self._${prop}`;
       })
-      .join(",\n")}\n\t\t\t}`;
+      .join(",\n")}\n\t\t\t}
+    return {k: v for k, v in all_fields.items() if v is not None}`;
 }
 
 function createComponentClass(
@@ -113,10 +114,11 @@ class ${compKey}(AtriComponent${
   }(state${componentType === "repeating" ? ", self._WrapperClass" : ""})
 
 	def _to_json_fields(self):
-		return {
+    all_fields = {
 			"styles": self._styles,
 			"custom": self._custom,
-			}`;
+			}
+    return {k: v for k, v in all_fields.items() if v is not None}`;
 }
 
 export function createComponentClassFile(options: {

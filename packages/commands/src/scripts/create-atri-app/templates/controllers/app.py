@@ -51,9 +51,13 @@ async def handle_page_request(req: Request, res: Response):
     return res
 
 @app.post("/_atri/api/init")
-async def get_init_state(req: Request):
+async def get_init_state(req: Request, res: Response):
     req_dict = await req.json()
     route = req_dict["route"]
     incoming_state = req_dict["state"]
     routeDetails = get_route_details(route, "routes")
-    return compute_init_state(routeDetails, incoming_state)
+    delta = compute_init_state(routeDetails, incoming_state)
+    res.body = bytes(json.dumps(delta, cls=AtriEncoder), encoding="utf-8")
+    res.media_type = "application/json"
+    res.status_code = 200
+    return res
