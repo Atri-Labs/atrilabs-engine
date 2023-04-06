@@ -427,6 +427,26 @@ export interface ClientToServerEvents {
   subscribeResourceUpdates: (
     callback: (resource: ImportedResource) => void
   ) => void;
+
+  getTemplateList: (callback: (details: TemplateDetail[]) => void) => void;
+
+  getTemplateEvents: (
+    dir: string,
+    name: string,
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+
+  createTemplate: (
+      dir: string,
+      name: string,
+      events: AnyEvent[],
+      callback: (success: boolean) => void
+  ) => void;
+  deleteTemplate: (
+    dir: string,
+    name: string,
+    callback: (success: boolean) => void
+  ) => void;
 }
 
 export interface InterServerEvents {}

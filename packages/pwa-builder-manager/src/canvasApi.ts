@@ -1,4 +1,4 @@
-import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
+import {editorAppMachineInterpreter, subscribeEditorMachine} from "./init";
 import type {
   ClipboardPasteObjectWithParent,
   DragComp,
@@ -9,11 +9,11 @@ import {
   createEventsFromManifest,
   getReactManifest,
 } from "@atrilabs/core";
-import { api } from "./api";
+import {api} from "./api";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import { PatchEvent } from "@atrilabs/forest";
-import { aliasApi } from "./aliasApi";
-import { postPasteEvents } from "./copy-paste/postPasteEvents";
+import {PatchEvent} from "@atrilabs/forest";
+import {aliasApi} from "./aliasApi";
+import {postPasteEvents} from "./copy-paste/postPasteEvents";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -38,7 +38,7 @@ window.addEventListener("message", (ev) => {
       });
     }
     if (ev.data?.type === "DRAG_FAILED" && ev.source !== null) {
-      editorAppMachineInterpreter.send({ type: "DRAG_FAILED" });
+      editorAppMachineInterpreter.send({type: "DRAG_FAILED"});
     }
     if (
       ev.data?.type === "DRAG_SUCCESS" &&
@@ -51,7 +51,7 @@ window.addEventListener("message", (ev) => {
       });
     }
     if (ev.data?.type === "REDROP_FAILED" && ev.source !== null) {
-      editorAppMachineInterpreter.send({ type: "REDROP_FAILED" });
+      editorAppMachineInterpreter.send({type: "REDROP_FAILED"});
     }
     if (
       ev.data?.type === "REDROP_SUCCESSFUL" &&
@@ -77,9 +77,9 @@ window.addEventListener("message", (ev) => {
       });
     }
     if (ev.data?.type === "PASTE_EVENTS") {
-      const { parent, newTemplateRootId, events } =
+      const {parent, newTemplateRootId, events} =
         ev.data as ClipboardPasteObjectWithParent;
-      const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+      const {forestId, forestPkgId} = BrowserForestManager.currentForest;
       postPasteEvents({
         parent,
         newTemplateRootId,
@@ -110,7 +110,7 @@ subscribeEditorMachine("drag_in_progress", (context) => {
 
 subscribeEditorMachine("DRAG_FAILED", (context) => {
   // @ts-ignore
-  context.canvasWindow?.postMessage({ type: "drag_stopped" }, "*");
+  context.canvasWindow?.postMessage({type: "drag_stopped"}, "*");
 });
 
 subscribeEditorMachine("before_app_load", (context) => {
@@ -121,20 +121,20 @@ subscribeEditorMachine("before_app_load", (context) => {
 });
 
 function navigatePage(urlPath: string) {
-  editorAppMachineInterpreter.send({ type: "NAVIGATE_PAGE", urlPath });
+  editorAppMachineInterpreter.send({type: "NAVIGATE_PAGE", urlPath});
 }
 
 function mouseMoveListener(ev: MouseEvent) {
   editorAppMachineInterpreter.send({
     type: "MOUSE_MOVE",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
+    event: {pageX: ev.pageX, pageY: ev.pageY},
   });
 }
 
 function mouseUpListener(ev: MouseEvent) {
   editorAppMachineInterpreter.send({
     type: "MOUSE_UP",
-    event: { pageX: ev.pageX, pageY: ev.pageY },
+    event: {pageX: ev.pageX, pageY: ev.pageY},
   });
 }
 
@@ -150,7 +150,7 @@ function removeMouseListeners() {
 
 function startDrag(dragComp: DragComp, dragData: DragData) {
   attachMouseListeners();
-  editorAppMachineInterpreter.send({ type: "START_DRAG", dragData, dragComp });
+  editorAppMachineInterpreter.send({type: "START_DRAG", dragData, dragComp});
 }
 
 subscribeEditorMachine("DRAG_FAILED", () => {
@@ -160,9 +160,9 @@ subscribeEditorMachine("DRAG_FAILED", () => {
 subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
   removeMouseListeners();
   if (event.type === "DRAG_SUCCESS") {
-    const { pkg, key, id, manifestSchema } = context.dragData!.data;
-    const { parent } = event;
-    const fullManifest = getReactManifest({ pkg, key });
+    const {pkg, key, id, manifestSchema} = context.dragData!.data;
+    const {parent} = event;
+    const fullManifest = getReactManifest({pkg, key});
     if (fullManifest) {
       const events = createEventsFromManifest({
         manifest: fullManifest.manifest,
@@ -180,7 +180,7 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         {
           events,
           name: "NEW_DROP",
-          meta: { agent: "browser" },
+          meta: {agent: "browser"},
         },
         (success) => {
           if (success) {
@@ -189,7 +189,7 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
               id,
               postData: {
                 name: "NEW_DROP_ALIAS",
-                meta: { agent: "browser" },
+                meta: {agent: "browser"},
                 events: [],
               },
             });
@@ -202,8 +202,8 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
 
 subscribeEditorMachine("REDROP_SUCCESSFUL", (_context, event) => {
   if (event.type === "REDROP_SUCCESSFUL") {
-    const { parent, repositionComponent } = event;
-    const { forestId, forestPkgId } = BrowserForestManager.currentForest;
+    const {parent, repositionComponent} = event;
+    const {forestId, forestPkgId} = BrowserForestManager.currentForest;
     const patchEvent: PatchEvent = {
       type: `PATCH$$${ComponentTreeId}`,
       id: repositionComponent,
@@ -214,18 +214,18 @@ subscribeEditorMachine("REDROP_SUCCESSFUL", (_context, event) => {
     api.postNewEvents(forestPkgId, forestId, {
       events: [patchEvent],
       name: "REDROP",
-      meta: { agent: "browser" },
+      meta: {agent: "browser"},
     });
   }
 });
 
 function mouseUpInPlayground(event: { pageX: number; pageY: number }) {
-  editorAppMachineInterpreter.send({ type: "MOUSE_UP", event });
+  editorAppMachineInterpreter.send({type: "MOUSE_UP", event});
 }
 
 function raiseHoverEvent(compId: string) {
   editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
-    { type: "PROGRAMTIC_HOVER", id: compId },
+    {type: "PROGRAMTIC_HOVER", id: compId},
     // @ts-ignore
     "*"
   );
@@ -233,7 +233,7 @@ function raiseHoverEvent(compId: string) {
 
 function raiseSelectEvent(compId: string) {
   editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
-    { type: "PROGRAMTIC_SELECT", id: compId },
+    {type: "PROGRAMTIC_SELECT", id: compId},
     // @ts-ignore
     "*"
   );

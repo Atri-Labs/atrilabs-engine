@@ -1,4 +1,4 @@
-import { ImportedResource } from "@atrilabs/core";
+import {ImportedResource} from "@atrilabs/core";
 import * as csstree from "css-tree";
 import https from "https";
 import http from "http";
@@ -187,3 +187,8 @@ export async function fetchCSSFromFile(file: string) {
   const content = await fs.promises.readFile(file);
   return fetchCSSResource(content.toString());
 }
+
+export async function fetchJSONFromFile(file: string) {
+  return await fs.promises.readFile(file, 'utf8');
+}
+

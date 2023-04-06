@@ -1,4 +1,4 @@
-import { Server } from "socket.io";
+import {Server} from "socket.io";
 import express from "express";
 import http from "http";
 import type {
@@ -16,17 +16,17 @@ import {
   resolvePages,
   saveEventsForPage,
 } from "./utils";
-import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
+import {saveAssets, getAllAssetsInfo, PUBLIC_DIR} from "./handleAssets";
 import {
-  createCSSFile,
+  createCSSFile, createTemplateJSONFile,
   fetchCSSFromFile,
-  fetchCSSResource,
+  fetchCSSResource, fetchJSONFromFile,
   getResourceFiles,
 } from "./handle-resources";
 import pkgUp from "pkg-up";
 import path from "path";
 import yargs from "yargs";
-import { startDevServer } from "./dev-register-components/startDevServer";
+import {startDevServer} from "./dev-register-components/startDevServer";
 
 const app = express();
 const server = http.createServer(app);
@@ -36,7 +36,7 @@ const io = new Server<
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->(server, { cors: { origin: "*" }, maxHttpBufferSize: 1e8 });
+>(server, {cors: {origin: "*"}, maxHttpBufferSize: 1e8});
 
 io.on("connection", (socket) => {
   socket.on("getProjectInfo", (cb) => {
@@ -120,9 +120,34 @@ io.on("connection", (socket) => {
         cb([]);
       });
   });
+
+  socket.on("getTemplateList", (cb) => {
+    getResourceFiles()
+      .then((files) => {
+        const promises = files
+          .filter((file) => file.endsWith(".template.json"))
+          .map((file) => fetchJSONFromFile(file));
+        return Promise.all(promises);
+      })
+      .then((templates) => {
+        console.log(templates)
+      })
+      .catch((err) => {
+        console.log(err);
+        cb([]);
+      });
+  });
+
+  socket.on(
+    "createTemplate",
+    (relativeDir, templateName, events, callback) => {
+      createTemplateJSONFile(templateName, events);
+      callback(true);
+    }
+  );
 });
 
-const { nomanifests } = yargs.boolean("nomanifests").argv as {
+const {nomanifests} = yargs.boolean("nomanifests").argv as {
   nomanifests: boolean | undefined;
 };
 
@@ -140,7 +165,7 @@ if (typeof pwaBuilderPkgJSON === "string") {
       res.send(indexHtml);
     });
   } else {
-    const compiler = startDevServer({ app, appHtml: indexHtml });
+    const compiler = startDevServer({app, appHtml: indexHtml});
     app.use(
       // @ts-ignore
       __non_webpack_require__("webpack-dev-middleware")(compiler, {

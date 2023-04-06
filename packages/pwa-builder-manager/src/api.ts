@@ -1,24 +1,24 @@
-import { io, Socket } from "socket.io-client";
+import {io, Socket} from "socket.io-client";
 import {
   BrowserForestManager,
   ClientToServerEvents,
   ImportedResource,
-  ServerToClientEvents,
+  ServerToClientEvents, TemplateDetail,
 } from "@atrilabs/core";
-import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
-import { AnyEvent, EventMetaData } from "@atrilabs/forest";
+import {editorAppMachineInterpreter, subscribeEditorMachine} from "./init";
+import {AnyEvent, EventMetaData} from "@atrilabs/forest";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
 socket.on("connect", () => {
   socket.emit("getProjectInfo", (info) => {
-    editorAppMachineInterpreter.send({ type: "PROJECT_INFO_FETCHED", info });
+    editorAppMachineInterpreter.send({type: "PROJECT_INFO_FETCHED", info});
   });
   socket.emit("getAppInfo", (info) => {
-    editorAppMachineInterpreter.send({ type: "APP_INFO_FETCHED", info });
+    editorAppMachineInterpreter.send({type: "APP_INFO_FETCHED", info});
   });
   socket.emit("getPagesInfo", (info) => {
-    editorAppMachineInterpreter.send({ type: "PAGES_INFO_FETCHED", info });
+    editorAppMachineInterpreter.send({type: "PAGES_INFO_FETCHED", info});
   });
 });
 
@@ -44,7 +44,7 @@ subscribeEditorMachine("after_app_load", (context) => {
   forest?.handleEvents({
     events: context.events[context.currentUrlPath],
     name: "INIT_EVENTS",
-    meta: { agent: "server-sent" },
+    meta: {agent: "server-sent"},
   });
 });
 
@@ -61,7 +61,7 @@ function postNewEvents(
   const forest = BrowserForestManager.getForest(forestPkgId, routeObjectPath);
   if (forest) {
     forest.handleEvents(data);
-    const { events } = data;
+    const {events} = data;
     socket.emit("saveEvents", routeObjectPath, events, (success) => {
       if (!success) {
         console.log("Failed to send event to backend");
@@ -77,9 +77,11 @@ function importResource(
 ) {
   socket.emit("importResource", importStatement, callback);
 }
+
 function getResources(callback: (resources: ImportedResource[]) => void) {
   socket.emit("getResources", callback);
 }
+
 function subscribeResourceUpdates(
   callback: (resource: ImportedResource) => void
 ) {
@@ -87,6 +89,19 @@ function subscribeResourceUpdates(
   return () => {
     socket.off("newResource", callback);
   };
+}
+
+function getTemplateList(callback: (templateList: TemplateDetail[]) => void) {
+  socket.emit("getTemplateList", callback);
+}
+
+function createTemplate(
+  dir: string,
+  name: string,
+  events: AnyEvent[],
+  callback: (success: boolean) => void
+) {
+  socket.emit("createTemplate", dir, name, events, callback);
 }
 
 /**
@@ -104,10 +119,28 @@ function uploadAssets(
 ) {
   socket.emit("uploadAssets", files, callback);
 }
+
 function getAssetsInfo(
   callback: (assets: { [name: string]: { url: string; mime: string } }) => void
 ) {
   socket.emit("getAssetsInfo", callback);
+}
+
+
+function getTemplateEvents(
+  dir: string,
+  name: string,
+  callback: (events: AnyEvent[]) => void
+) {
+  socket.emit("getTemplateEvents", dir, name, callback);
+}
+
+function deleteTemplate(
+  dir: string,
+  name: string,
+  callback: (success: boolean) => void
+) {
+  socket.emit("deleteTemplate", dir, name, callback);
 }
 
 export const api = {
@@ -119,4 +152,9 @@ export const api = {
   // assets api
   uploadAssets,
   getAssetsInfo,
+  //template
+  getTemplateList,
+  createTemplate,
+  getTemplateEvents,
+  deleteTemplate
 };

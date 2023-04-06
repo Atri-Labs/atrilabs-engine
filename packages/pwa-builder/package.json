@@ -31,6 +31,7 @@
     "@atrilabs/action-layer": "^1.0.0-alpha.13",
     "@atrilabs/app-design-layer": "^1.0.0-alpha.13",
     "@atrilabs/app-page-layer": "^1.0.0-alpha.13",
+    "@atrilabs/app-template-layer": "^1.0.0-alpha.13",
     "@atrilabs/asset-manager-layer": "^1.0.0-alpha.13",
     "@atrilabs/base-layer": "^1.0.0-alpha.13",
     "@atrilabs/canvas-breakpoint-layer": "^1.0.0-alpha.13",

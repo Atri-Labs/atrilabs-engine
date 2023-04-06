@@ -78,7 +78,7 @@ function handleCopyPaste() {
         const events = createEventsThatCanBeCopied({
           compId,
           copyCallbacks: true,
-          copyDefaulCallbacks: false,
+          copyDefaultCallbacks: false,
         });
         putInClipboard({ events, copiedCompId: compId });
       }

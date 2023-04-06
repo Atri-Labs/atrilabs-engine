@@ -18,12 +18,12 @@ import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest
 export function createEventsThatCanBeCopied(params: {
   compId: string;
   copyCallbacks: boolean;
-  copyDefaulCallbacks: boolean;
+  copyDefaultCallbacks: boolean;
 }) {
   const componentTree =
     BrowserForestManager.currentForest.tree(ComponentTreeId)!;
   const callbackTree = BrowserForestManager.currentForest.tree(CallbackTreeId)!;
-  const { compId, copyCallbacks, copyDefaulCallbacks } = params;
+  const { compId, copyCallbacks, copyDefaultCallbacks } = params;
 
   function getComponentNode(nodeId: string) {
     return componentTree.nodes[nodeId];
@@ -150,7 +150,7 @@ export function createEventsThatCanBeCopied(params: {
   }
 
   // convert defaultCallbackHandlers to events
-  if (copyDefaulCallbacks) {
+  if (copyDefaultCallbacks) {
     allCapturedNodes.forEach((currNodeId) => {
       if (currNodeId === "body") {
         return;
