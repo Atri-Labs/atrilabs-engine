@@ -33,7 +33,13 @@ export function sendEventDataFn(
   // name of the callback that fired this event
   callbackName: string,
   // data passed in the callback
-  eventData: any
+  eventData: any,
+  repeating?: {
+    // repeating component alias name in sequence
+    comps: string[];
+    // data of component that was clicked and it's ancestor repeating component
+    data: any[];
+  }
 ) {
   return fetch(`${API_ENDPOINT}/_atri/api/event`, {
     method: "POST",
@@ -46,6 +52,7 @@ export function sendEventDataFn(
       callbackName,
       eventData,
       state: pageState,
+      repeating,
     }),
   })
     .then(async (res) => {

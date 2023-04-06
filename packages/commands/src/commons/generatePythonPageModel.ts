@@ -63,13 +63,10 @@ export function generatePythonPageModel(
       compDefMap,
       repeatingComponentSet
     );
-    console.log("childrenAlias", desecendants);
     desecendants.forEach((childAlias) => {
       repeatingChildrenAliasSet.add(childAlias);
     });
   });
-
-  console.log("repeatingChildrenAliasSet", repeatingChildrenAliasSet);
 
   const aliasMap: { [alias: string]: typeof compDefs["0"] } = {};
   compDefs.forEach((compDef) => {
@@ -147,8 +144,10 @@ ${notARepeatingChildren
 		self.event_data = event["event_data"]
 		self.event_alias = event["alias"]
 		callback_name = event["callback_name"]
-		comp = getattr(self, self.event_alias)
-		setattr(comp, callback_name, True)
+		if hasattr(self, self.event_alias):
+			comp = getattr(self, self.event_alias)
+			setattr(comp, callback_name, True)
+\t\tself.event_repeating = event["repeating"]
   
 	${notARepeatingChildren
     .map(({ alias, compKey, componentType }) => {

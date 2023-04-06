@@ -29,7 +29,8 @@ async def handle_event(req: Request, res: Response):
     event_data = req_dict["eventData"] if "eventData" in req_dict else None
     callback_name = req_dict["callbackName"]
     alias = req_dict["alias"]
-    event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
+    repeating = req_dict["repeating"] if "repeating" in req_dict else None
+    event = {"event_data": event_data, "callback_name": callback_name, "alias": alias, "repeating": repeating}
     routeDetails = get_route_details(route, "routes")
     delta = compute_new_state(routeDetails, state, event, req, res)
     res.body = bytes(json.dumps(delta, cls=AtriEncoder), encoding="utf-8")
