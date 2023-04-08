@@ -80,6 +80,7 @@ export function processArgs() {
       description: "size of image in KB",
     })
     .boolean("stats")
+    .boolean("useLAN")
     .help().argv as {
     e: string;
     o: string;
@@ -96,6 +97,7 @@ export function processArgs() {
     x: string;
     t: string;
     inlinesize: string;
+    useLAN: boolean;
   };
 }
 
@@ -290,6 +292,7 @@ export function extractParams() {
       typeof args.inlinesize === "number"
         ? args.inlinesize
         : parseFloat(args.inlinesize),
+    useLAN: args.useLAN,
   };
 }
 
