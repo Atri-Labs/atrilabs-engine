@@ -40,7 +40,7 @@ const Accordion = forwardRef<
     [props.custom]
   );
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <Collapse
         style={props.styles}
         className={props.className}

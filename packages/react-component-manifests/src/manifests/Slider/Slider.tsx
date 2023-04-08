@@ -3,9 +3,11 @@ import { Slider as AntdSlider } from "antd";
 import type { SliderProps as RcSliderProps } from "rc-slider";
 
 export type SliderMarks = RcSliderProps["marks"];
+
 interface SliderRange {
   draggableTrack?: boolean;
 }
+
 export interface SliderBaseProps {
   reverse?: boolean;
   min?: number;
@@ -20,6 +22,7 @@ export interface SliderBaseProps {
   keyboard?: boolean;
   vertical?: boolean;
 }
+
 export interface SliderSingleProps extends SliderBaseProps {
   range?: false;
   value?: number;
@@ -30,6 +33,7 @@ export interface SliderSingleProps extends SliderBaseProps {
   trackStyle?: React.CSSProperties;
   railStyle?: React.CSSProperties;
 }
+
 export interface SliderRangeProps extends SliderBaseProps {
   range: true | SliderRange;
   value?: [number, number];
@@ -69,7 +73,7 @@ const Slider = forwardRef<
   }, [props.custom.marks]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdSlider
         style={props.styles}
         className={props.className}

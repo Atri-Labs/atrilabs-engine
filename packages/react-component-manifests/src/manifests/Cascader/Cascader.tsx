@@ -52,7 +52,7 @@ const Cascader = forwardRef<
   const { custom } = props;
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdCascader
         {...custom}
         className={props.className}

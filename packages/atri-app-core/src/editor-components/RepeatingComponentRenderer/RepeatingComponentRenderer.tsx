@@ -17,7 +17,6 @@ export function RepeatingComponentRenderer(
 ) {
   const {
     comp: Comp,
-    props: compProps,
     callbacks,
   } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
@@ -29,7 +28,7 @@ export function RepeatingComponentRenderer(
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
-  usePropsUpdated({ id: props.id });
+  const compProps = usePropsUpdated({ id: props.id });
   const repeatingContext = useContext(RepeatingContext);
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {

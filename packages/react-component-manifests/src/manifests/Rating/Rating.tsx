@@ -1,5 +1,6 @@
 import React, { forwardRef, ReactNode, useState } from "react";
 import { Rate } from "antd";
+
 const Rating = forwardRef<
   HTMLDivElement,
   {
@@ -16,11 +17,10 @@ const Rating = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-
   const { custom } = props;
   const [value, setValue] = useState(props.custom.defaultValue);
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <Rate
         className={props.className}
         style={props.styles}

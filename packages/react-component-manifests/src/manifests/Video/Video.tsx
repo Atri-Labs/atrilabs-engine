@@ -7,6 +7,7 @@ interface SourceProps {
   src: string;
   type?: string;
 }
+
 export interface OnProgressProps {
   played: number;
   playedSeconds: number;
@@ -71,9 +72,9 @@ const Video = forwardRef<
     }
   }, [props.custom.controls]);
 
-  // moved ref to div, as the Antd ReactPlayer doesnt provide ref for ReactPlayer
+  // moved ref to div, as the Antd ReactPlayer doesn't provide ref for ReactPlayer
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <ReactPlayer
         className={props.className}
         style={props.styles}

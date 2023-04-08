@@ -57,11 +57,17 @@ const Input = forwardRef<
   const { custom } = props;
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdInputNumber
         {...custom}
         className={props.className}
-        style={props.styles}
+        style={{
+          ...props.styles,
+          animationDuration: "0s",
+          animationTimingFunction: "unset",
+          transitionDuration: "0s",
+          transitionTimingFunction: "unset",
+        }}
       />
     </div>
   );

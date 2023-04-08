@@ -48,7 +48,7 @@ const Menu = forwardRef<
   }, [items]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdMenu
         style={props.styles}
         className={props.className}

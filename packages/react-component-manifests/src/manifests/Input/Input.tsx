@@ -53,18 +53,30 @@ const Input = forwardRef<
 
   return (
     // moved ref to div, while changing isPasswordField props ref was not able assign twice to another input and the selection was not working without refreshing the editor
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       {isPasswordField === true ? (
         <AntdInput.Password
           {...restCustomProps}
           className={props.className}
-          style={props.styles}
+          style={{
+            ...props.styles,
+            animationDuration: "0s",
+            animationTimingFunction: "unset",
+            transitionDuration: "0s",
+            transitionTimingFunction: "unset",
+          }}
         />
       ) : (
         <AntdInput
           {...restCustomProps}
           className={props.className}
-          style={props.styles}
+          style={{
+            ...props.styles,
+            animationDuration: "0s",
+            animationTimingFunction: "unset",
+            transitionDuration: "0s",
+            transitionTimingFunction: "unset",
+          }}
         />
       )}
     </div>
