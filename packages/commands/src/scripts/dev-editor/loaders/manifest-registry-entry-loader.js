@@ -1,4 +1,5 @@
 const generateModuleId = require("./utils/generateModuleId");
+const upath = require("upath");
 
 /**
  *
@@ -12,7 +13,7 @@ function manifestRegistryEntryLoader(source) {
 
   const importStatements = manifestSchema
     .map((val, index) => {
-      return `import man_${index} from "${val.pkg}";`;
+      return `import man_${index} from "${upath.toUnix(val.pkg)}";`;
     })
     .join("\n");
 

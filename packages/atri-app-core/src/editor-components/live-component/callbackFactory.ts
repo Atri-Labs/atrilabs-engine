@@ -30,7 +30,17 @@ function callCallbacks(id: string, callbacks: Callback[], value: any) {
   });
 }
 
-function callHandlers(id: string, callbackName: string, value: any) {
+function callHandlers(
+  id: string,
+  callbackName: string,
+  value: any,
+  repeating?: {
+    // repeating component alias name in sequence
+    comps: string[];
+    // data of component that was clicked and it's ancestor repeating component
+    data: any[];
+  }
+) {
   /**
    * Either one sendEventData job or multiple sendFiles job can be performed.
    * Both cannot be performed in a single request.
@@ -74,7 +84,14 @@ function callHandlers(id: string, callbackName: string, value: any) {
     const pageState = liveApi.getPageState();
     const pageRoute = liveApi.getActivePageRoute();
     const alias = liveApi.getComponentAlias(id);
-    sendEventDataFn(alias, pageState, pageRoute, callbackName, value);
+    sendEventDataFn(
+      alias,
+      pageState,
+      pageRoute,
+      callbackName,
+      value,
+      repeating
+    );
   } else if (jobs["navigate"]) {
     const options = {
       urlPath: jobs["navigate"].navigate!.url,
@@ -86,7 +103,15 @@ function callHandlers(id: string, callbackName: string, value: any) {
   }
 }
 
-export function callbackFactory(props: { id: string }) {
+export function callbackFactory(props: {
+  id: string;
+  repeating?: {
+    // repeating component alias name in sequence
+    comps: string[];
+    // data of component that was clicked and it's ancestor repeating component
+    data: any[];
+  };
+}) {
   const callbackObject: { [callbackName: string]: Function } = {};
   const callbacks = componentStoreApi.getComponent(props.id)?.callbacks;
   if (callbacks) {
@@ -95,7 +120,7 @@ export function callbackFactory(props: { id: string }) {
       if (Array.isArray(callbacks[callbackName])) {
         callbackObject[callbackName] = (value: any) => {
           callCallbacks(props.id, callbacks[callbackName], value);
-          callHandlers(props.id, callbackName, value);
+          callHandlers(props.id, callbackName, value, props.repeating);
         };
       }
     });

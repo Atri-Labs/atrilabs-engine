@@ -42,6 +42,7 @@ export function RepeatingComponentRenderer(
           value={{
             indices: [...(repeatingContext?.indices || []), index],
             lengths: [...(repeatingContext?.lengths || []), num],
+            compIds: [...(repeatingContext?.compIds || []), props.id],
           }}
           key={childId}
         >

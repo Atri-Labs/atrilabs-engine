@@ -124,7 +124,11 @@ export interface LiveApiInterServerEvents {}
 
 export interface LiveApiSocketData {}
 
-export type RepeatingContextData = { indices: number[]; lengths: number[] };
+export type RepeatingContextData = {
+  indices: number[];
+  lengths: number[];
+  compIds: string[];
+};
 
 export type ProdAppEntryOptions = {
   routes: { path: string }[];

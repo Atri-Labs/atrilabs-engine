@@ -37,7 +37,6 @@ async function main() {
   params.isEnvDevelopment = false;
   params.isEnvProductionProfile = false;
   params.isEnvTest = false;
-  process.env["BABEL_ENV"] = "production";
   const outputDir = path.resolve("dist", "app-build");
   params.paths.outputDir = outputDir;
   const componentManifests = getComponentManifests(params.manifestDirs);
@@ -46,11 +45,13 @@ async function main() {
     ...JSON.parse(JSON.stringify(params)),
     pagesInfo,
     componentManifests,
+    shouldUseSourceMap: true,
   });
   const chunks = await buildClientSide({
     ...JSON.parse(JSON.stringify(params)),
     pagesInfo,
     componentManifests,
+    shouldUseSourceMap: true,
   });
   const assetDependencyGraph = getAssetDependencyGraph(pagesInfo, chunks);
   fs.writeFileSync(

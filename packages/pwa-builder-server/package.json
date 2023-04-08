@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/pwa-builder-server",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,17 +21,17 @@
     "url": "git+https://github.com/cruxcode/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "build-node-app -e ./src/index.ts -f dev.js -n '../../node_modules' -i '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands' -a '@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands/src/commons/computeManifestIRs'",
+    "build": "build-node-app -e ./src/index.ts -f dev.js -n \"../../node_modules\" -i \"@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands\" -a \"@atrilabs/forest:@atrilabs/atri-app-core:@atrilabs/atri-app-core/src/utils:@atrilabs/design-system:@atrilabs/manifest-registry:@atrilabs/commands/src/commons/computeManifestIRs\"",
     "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.13",
-    "@atrilabs/commands": "^1.0.0-alpha.13",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.13",
-    "@atrilabs/core": "^1.0.0-alpha.13",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.14",
+    "@atrilabs/commands": "^1.0.0-alpha.14",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.14",
+    "@atrilabs/core": "^1.0.0-alpha.14",
     "chokidar": "^3.5.3",
     "css-tree": "^2.3.1",
     "mime-types": "^2.1.35",

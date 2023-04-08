@@ -17,8 +17,7 @@ export function LiveRepeatingComponentRenderer(
   const ref = useGetComponentRef({ id: props.id });
   const repeatingContext = useContext(RepeatingContext);
 
-  const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
-  const [num, setNum] = useState<number>(end - start);
+  const { data } = componentStoreApi.getComponentProps(props.id).custom;
   const children = componentStoreApi.getComponentChildrenId(props.id);
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
@@ -26,8 +25,8 @@ export function LiveRepeatingComponentRenderer(
   const callbacks = useGetCallbacks({ id: props.id });
 
   let childrenNodes: React.ReactNode[] | null = null;
-  if (children.length === 1) {
-    childrenNodes = Array.from(Array(num).keys()).map((_, index) => {
+  if (children.length === 1 && Array.isArray(data)) {
+    childrenNodes = data.map((_, index) => {
       const childId = children[0];
       const { acceptsChild, isRepeating } =
         componentStoreApi.getComponent(childId)!;
@@ -35,7 +34,8 @@ export function LiveRepeatingComponentRenderer(
         <RepeatingContext.Provider
           value={{
             indices: [...(repeatingContext?.indices || []), index],
-            lengths: [...(repeatingContext?.lengths || []), num],
+            lengths: [...(repeatingContext?.lengths || []), data.length],
+            compIds: [...(repeatingContext?.compIds || []), props.id],
           }}
           key={childId}
         >

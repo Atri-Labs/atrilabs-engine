@@ -129,9 +129,6 @@ export function readEnvironmentVariables() {
         )}`
       )
     );
-  console.log(
-    `If this was unintentional, check that you haven't mistakenly set it in your shell.`
-  );
   console.log();
 
   const port =
@@ -235,6 +232,7 @@ export function extractParams() {
     { dotenv: ".env" },
     {
       nodeEnv: envVars.nodeEnv,
+      babelEnv: envVars.babelEnv,
       sockPath: envVars.sockPath,
       sockHost: envVars.sockHost,
       sockPort: envVars.sockPort,
@@ -246,6 +244,7 @@ export function extractParams() {
     { dotenv: ".env" },
     {
       nodeEnv: envVars.nodeEnv,
+      babelEnv: envVars.babelEnv,
       sockPath: envVars.sockPath,
       sockHost: envVars.sockHost,
       sockPort: envVars.sockPort,

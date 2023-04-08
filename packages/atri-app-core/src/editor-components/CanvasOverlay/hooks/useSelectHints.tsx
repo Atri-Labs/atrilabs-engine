@@ -132,4 +132,14 @@ export function useSelectHints() {
       compId.current = null;
     });
   }, []);
+
+  useEffect(() => {
+    return subscribeCanvasMachine(
+      "COMPONENT_RENDERED_AFTER_PROPS_UPDATE",
+      (context, event) => {
+        console.log("component rendered after props updated", event);
+        renderFn();
+      }
+    );
+  }, []);
 }

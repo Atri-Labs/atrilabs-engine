@@ -1,5 +1,7 @@
 const generateModuleId = require("./utils/generateModuleId");
 const fs = require("fs");
+const upath = require("upath");
+
 /**
  *
  * @param {string} source
@@ -18,7 +20,7 @@ function browserForestManagerEntryLoader(source) {
     .map((forestId, forestIndex) => {
       return trees[forestIndex]
         .map((tree, treeIndex) => {
-          return `import tree_${forestIndex}_${treeIndex} from "${tree}";`;
+          return `import tree_${forestIndex}_${treeIndex} from "${upath.toUnix(tree)}";`;
         })
         .join("\n");
     })

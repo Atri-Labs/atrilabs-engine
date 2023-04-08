@@ -22,7 +22,10 @@ export function subscribePropsUpdated(
   alias: string,
   cb: () => void
 ) {
-  if (AliasPropsUpdateSubscribers[urlPath]?.[alias]) {
+  if (!AliasPropsUpdateSubscribers[urlPath]) {
+    AliasPropsUpdateSubscribers[urlPath] = {};
+  }
+  if (!AliasPropsUpdateSubscribers[urlPath][alias]) {
     AliasPropsUpdateSubscribers[urlPath][alias] = [];
   }
   AliasPropsUpdateSubscribers[urlPath][alias].push(cb);

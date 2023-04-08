@@ -23,7 +23,7 @@ function atriPagesServerLoader() {
   return `
   import DocFn from "./pages/_document";
   import AppFn from "./pages/_app";
-  import PageFn from "./pages${filepath}";
+  import PageFn from "./pages${upath.toUnix(filepath)}";
   import { renderPageServerSide } from "@atrilabs/atri-app-core/src/entries/renderPageServerSide";
   
   function renderPage(){
