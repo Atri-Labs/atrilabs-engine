@@ -60,6 +60,7 @@ export default function startDevServer(
     generateIndexHtml,
     babel,
     exclude,
+    imageInlineSizeLimit,
   } = params;
 
   return checkBrowsers(paths.appPath, isInteractive())
@@ -82,7 +83,7 @@ export default function startDevServer(
         paths,
         publicUrlOrPath,
         moduleFileExtensions,
-        imageInlineSizeLimit: 10,
+        imageInlineSizeLimit,
         shouldInlineRuntimeChunk: true,
         useTypeScript,
         additionalInclude,

@@ -43,12 +43,14 @@ export function createNodeLibConfig(options: {
   exclude?: RuleSetRule["exclude"];
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
+  imageInlineSizeLimit: number;
 }) {
   const baseConfig = createNodeConfig(options);
 
   const { paths, outputFilename } = options;
 
   baseConfig["output"] = {
+    ...baseConfig["output"],
     path: paths.outputDir,
     filename: outputFilename,
     libraryTarget: "commonjs2",

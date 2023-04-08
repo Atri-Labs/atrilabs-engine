@@ -42,6 +42,7 @@ export function createDevNodeConfig(options: {
   };
   exclude?: RuleSetRule["exclude"];
   disableNodeExternals?: boolean;
+  imageInlineSizeLimit: number;
 }) {
   const baseConfig = createNodeLibConfig(options);
 
