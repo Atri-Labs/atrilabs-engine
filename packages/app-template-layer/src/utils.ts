@@ -3,5 +3,5 @@ export function formatPathname(fullName: string) {
 }
 
 export function formatTemplatename(templateName: string) {
-  return templateName.replace(".json", "");
+  return templateName.replace(".template.json", "");
 }

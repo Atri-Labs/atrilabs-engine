@@ -22,11 +22,6 @@ export function createCSSFile(content: string) {
   fs.writeFileSync(path.resolve(RESOURCES_DIR, filename), content);
 }
 
-export function createTemplateJSONFile(templateName: string, content: Array<object>) {
-  const filename = `${templateName}.template.json`;
-  fs.writeFileSync(path.resolve(RESOURCES_DIR, filename), JSON.stringify(content), 'utf-8');
-}
-
 export function getResourceFiles() {
   return recursive(RESOURCES_DIR);
 }

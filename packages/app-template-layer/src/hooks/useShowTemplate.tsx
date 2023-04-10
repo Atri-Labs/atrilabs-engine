@@ -2,7 +2,7 @@ import { TemplateDetail } from "@atrilabs/core";
 import { api } from "@atrilabs/pwa-builder-manager";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {getReactManifest} from "@atrilabs/core";
+import { getReactManifest } from "@atrilabs/core";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
@@ -17,6 +17,7 @@ import componentTree from "@atrilabs/app-design-forest/src/componentTree?id";
 function getComponentsFromTemplate(relativeDir: string, name: string) {
   return new Promise<TemplateComponents>((res) => {
     api.getTemplateEvents(relativeDir, name, (events) => {
+      console.log(events);
       const templateComps: PartialTemplateComponents = {};
       const propMap: { [propNodeId: string]: any } = {};
       const links: { [propNodeId: string]: string } = {};
@@ -24,17 +25,23 @@ function getComponentsFromTemplate(relativeDir: string, name: string) {
       events.forEach((event) => {
         const [eventType, eventTree] = event.type.split("$$");
         if (eventType === "CREATE" && eventTree === ComponentTreeId) {
-          console.log(event)
+          console.log(event);
           const createEvent = event as CreateEvent;
           const compId = createEvent.id;
           const { key, manifestSchemaId } = createEvent.meta;
           if (manifestSchemaId === ReactManifestSchemaId) {
-            const manifestComp = getReactManifest(key);
+            debugger;
+            const manifestComp = getReactManifest(createEvent.meta);
             // add FC
             templateComps[createEvent.id] = {
               ...templateComps[createEvent.id],
-              FC: manifestComp?.devComponent || manifestComp?.component || undefined,
-              acceptsChildren: manifestComp?.manifest.dev.acceptsChild ? true : false,
+              FC:
+                manifestComp?.devComponent ||
+                manifestComp?.component ||
+                undefined,
+              acceptsChildren: manifestComp?.manifest.dev.acceptsChild
+                ? true
+                : false,
             };
             // add to parent's children
             const parent = createEvent.state.parent;
@@ -102,6 +109,7 @@ function recursive(
   currentFetchedIndex: number,
   cb: (templateComps: TemplateComponents, fetchIndex: number) => void
 ) {
+  console.log(names, "gggg");
   if (currentFetchedIndex < names.length) {
     getComponentsFromTemplate(relativeDir, names[currentFetchedIndex]).then(
       (templateComps) => {
@@ -117,14 +125,15 @@ function recursive(
  * This hook doesn't create the nodes that have already been created when
  * the templateDetails change. In other words, it takes a diff between already
  * rendered template names and newly created templates. It also takes a diff between
- * already rendered template and recenlty deleted template. To achieve this, it maintains
+ * already rendered template and recently deleted template. To achieve this, it maintains
  * a fetchedNames ref as list of currently fetched nodes. It assumes templateDetails have
  * no duplicate entry.
  */
 export const useShowTemplate = (
   selectedDir: string | null,
-  templateDetails: TemplateDetail[]
+  templateDetails: string[]
 ) => {
+  console.log(templateDetails, "ffff");
   const [formattedData, setFormattedData] = useState<FormattedTemplateData>([]);
 
   // do not fetch already fetched names
@@ -137,33 +146,26 @@ export const useShowTemplate = (
   }, [selectedDir]);
 
   const filteredTemplateDetails = useMemo(() => {
-    return [...templateDetails]
+    return [...templateDetails];
   }, [templateDetails, selectedDir]);
 
   useEffect(() => {
-    if (selectedDir === null) return;
-    // new templates to add
-    const newNames: string[] = [];
-    filteredTemplateDetails.forEach(({ templateName }) => {
-      if (!(templateName in fetchedNames.current)) {
-        newNames.push(templateName);
-      }
-    });
+    if (!templateDetails.length) return;
 
     // add new templates
     let currentFetchedIndex = 0;
     recursive(
-      selectedDir,
-      newNames,
+      selectedDir || "",
+      templateDetails,
       currentFetchedIndex,
       (templateComps, fetchIndex) => {
         // update fetched name list
-        fetchedNames.current[newNames[fetchIndex]] = true;
+        fetchedNames.current[templateDetails[fetchIndex]] = true;
 
         setFormattedData((formattedData) => {
           const newFormattedData = [...formattedData];
           newFormattedData.push({
-            name: newNames[fetchIndex],
+            name: templateDetails[fetchIndex],
             components: templateComps,
           });
           return newFormattedData;
@@ -171,6 +173,6 @@ export const useShowTemplate = (
       }
     );
   }, [selectedDir, filteredTemplateDetails]);
-
+  console.log("formattedData...", formattedData);
   return { formattedData };
 };

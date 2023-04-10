@@ -19,7 +19,6 @@ function getNode(templateComponents: TemplateComponents, parentId: string) {
         : undefined;
       nodes.push(<FC {...props} key={id} children={children} />);
     });
-  console.log("nodes in template render",nodes)
   return nodes;
 }
 
@@ -42,6 +41,7 @@ export const TemplateRenderer: React.FC<{
     }
     return getNode(templateComponents, "templateRoot");
   }, [templateComponents]);
+  console.log("template render", nodes);
   return (
     <div
       style={{

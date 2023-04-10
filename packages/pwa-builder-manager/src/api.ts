@@ -1,24 +1,25 @@
-import {io, Socket} from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import {
   BrowserForestManager,
   ClientToServerEvents,
   ImportedResource,
-  ServerToClientEvents, TemplateDetail,
+  ServerToClientEvents,
+  TemplateDetail,
 } from "@atrilabs/core";
-import {editorAppMachineInterpreter, subscribeEditorMachine} from "./init";
-import {AnyEvent, EventMetaData} from "@atrilabs/forest";
+import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
+import { AnyEvent, EventMetaData } from "@atrilabs/forest";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
 socket.on("connect", () => {
   socket.emit("getProjectInfo", (info) => {
-    editorAppMachineInterpreter.send({type: "PROJECT_INFO_FETCHED", info});
+    editorAppMachineInterpreter.send({ type: "PROJECT_INFO_FETCHED", info });
   });
   socket.emit("getAppInfo", (info) => {
-    editorAppMachineInterpreter.send({type: "APP_INFO_FETCHED", info});
+    editorAppMachineInterpreter.send({ type: "APP_INFO_FETCHED", info });
   });
   socket.emit("getPagesInfo", (info) => {
-    editorAppMachineInterpreter.send({type: "PAGES_INFO_FETCHED", info});
+    editorAppMachineInterpreter.send({ type: "PAGES_INFO_FETCHED", info });
   });
 });
 
@@ -44,7 +45,7 @@ subscribeEditorMachine("after_app_load", (context) => {
   forest?.handleEvents({
     events: context.events[context.currentUrlPath],
     name: "INIT_EVENTS",
-    meta: {agent: "server-sent"},
+    meta: { agent: "server-sent" },
   });
 });
 
@@ -61,7 +62,7 @@ function postNewEvents(
   const forest = BrowserForestManager.getForest(forestPkgId, routeObjectPath);
   if (forest) {
     forest.handleEvents(data);
-    const {events} = data;
+    const { events } = data;
     socket.emit("saveEvents", routeObjectPath, events, (success) => {
       if (!success) {
         console.log("Failed to send event to backend");
@@ -91,7 +92,7 @@ function subscribeResourceUpdates(
   };
 }
 
-function getTemplateList(callback: (templateList: TemplateDetail[]) => void) {
+function getTemplateList(callback: (templateList: string[]) => void) {
   socket.emit("getTemplateList", callback);
 }
 
@@ -126,7 +127,6 @@ function getAssetsInfo(
   socket.emit("getAssetsInfo", callback);
 }
 
-
 function getTemplateEvents(
   dir: string,
   name: string,
@@ -156,5 +156,5 @@ export const api = {
   getTemplateList,
   createTemplate,
   getTemplateEvents,
-  deleteTemplate
+  deleteTemplate,
 };

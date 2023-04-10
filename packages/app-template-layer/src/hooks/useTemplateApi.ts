@@ -4,9 +4,7 @@ import { AnyEvent } from "@atrilabs/forest";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useTemplateApi = () => {
-  const [templateDetails, setTemplateDetails] = useState<
-    TemplateDetail[] | null
-  >(null);
+  const [templateDetails, setTemplateDetails] = useState<string[] | null>(null);
 
   const fetchTemplatesData = useCallback(() => {
     api.getTemplateList((templateDetails) => {
@@ -53,25 +51,24 @@ export const useTemplateApi = () => {
     [templateDetails, fetchTemplatesData]
   );
 
-  const relativeDirs = useMemo(() => {
+  /*const relativeDirs = useMemo(() => {
     const relativeDirs: { [relativeDir: string]: boolean } = {};
     if (templateDetails) {
       templateDetails.forEach((detail) => {
+        console.log("detail.relativeDir", detail.relativeDir);
         relativeDirs[detail.relativeDir] = true;
       });
     }
     return relativeDirs;
-  }, [templateDetails]);
+  }, [templateDetails]);*/
 
-  const sortedRelativeDirs = useMemo(() => {
-    return Object.keys(relativeDirs).sort();
-  }, [relativeDirs]);
+  /* const sortedRelativeDirs = useMemo(() => {
+     return Object.keys(relativeDirs).sort();
+   }, [relativeDirs]);*/
 
   return {
     templateDetails,
     callCreateTemplateApi,
     callDeleteTemplateApi,
-    relativeDirs,
-    sortedRelativeDirs,
   };
 };

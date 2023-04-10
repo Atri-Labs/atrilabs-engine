@@ -254,7 +254,7 @@ export type BrowserClient = {
     }) => void
   ) => void;
   /** template management api */
-  getTemplateList: (callback: (details: TemplateDetail[]) => void) => void;
+  getTemplateList: (callback: (details: string[]) => void) => void;
   createTemplate: (
     dir: string,
     name: string,
@@ -400,6 +400,7 @@ export interface ClientToServerEvents {
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
+
   /**
    *
    * @param files Each property of file is derived from the Web API File.
@@ -413,6 +414,7 @@ export interface ClientToServerEvents {
     }[],
     callback: (success: boolean, urls: string[]) => void
   ): void;
+
   getAssetsInfo: (
     callback: (assets: {
       [name: string]: { url: string; mime: string };
@@ -428,7 +430,7 @@ export interface ClientToServerEvents {
     callback: (resource: ImportedResource) => void
   ) => void;
 
-  getTemplateList: (callback: (details: TemplateDetail[]) => void) => void;
+  getTemplateList: (callback: (details: string[]) => void) => void;
 
   getTemplateEvents: (
     dir: string,
@@ -437,10 +439,10 @@ export interface ClientToServerEvents {
   ) => void;
 
   createTemplate: (
-      dir: string,
-      name: string,
-      events: AnyEvent[],
-      callback: (success: boolean) => void
+    dir: string,
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
   ) => void;
   deleteTemplate: (
     dir: string,

@@ -1,4 +1,4 @@
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import express from "express";
 import http from "http";
 import type {
@@ -16,17 +16,20 @@ import {
   resolvePages,
   saveEventsForPage,
 } from "./utils";
-import {saveAssets, getAllAssetsInfo, PUBLIC_DIR} from "./handleAssets";
+import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
 import {
-  createCSSFile, createTemplateJSONFile,
+  createCSSFile,
+  createTemplateJSONFile,
   fetchCSSFromFile,
-  fetchCSSResource, fetchJSONFromFile,
+  fetchCSSResource,
   getResourceFiles,
+  getTemplateEvents,
+  deleteTemplate,
 } from "./handle-resources";
 import pkgUp from "pkg-up";
 import path from "path";
 import yargs from "yargs";
-import {startDevServer} from "./dev-register-components/startDevServer";
+import { startDevServer } from "./dev-register-components/startDevServer";
 
 const app = express();
 const server = http.createServer(app);
@@ -36,7 +39,7 @@ const io = new Server<
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->(server, {cors: {origin: "*"}, maxHttpBufferSize: 1e8});
+>(server, { cors: { origin: "*" }, maxHttpBufferSize: 1e8 });
 
 io.on("connection", (socket) => {
   socket.on("getProjectInfo", (cb) => {
@@ -124,13 +127,13 @@ io.on("connection", (socket) => {
   socket.on("getTemplateList", (cb) => {
     getResourceFiles()
       .then((files) => {
-        const promises = files
-          .filter((file) => file.endsWith(".template.json"))
-          .map((file) => fetchJSONFromFile(file));
+        const promises = files.filter((file) =>
+          file.endsWith(".template.json")
+        );
         return Promise.all(promises);
       })
       .then((templates) => {
-        console.log(templates)
+        cb(templates.map((file) => path.basename(file)));
       })
       .catch((err) => {
         console.log(err);
@@ -138,16 +141,22 @@ io.on("connection", (socket) => {
       });
   });
 
-  socket.on(
-    "createTemplate",
-    (relativeDir, templateName, events, callback) => {
-      createTemplateJSONFile(templateName, events);
-      callback(true);
-    }
-  );
+  socket.on("createTemplate", (relativeDir, templateName, events, callback) => {
+    createTemplateJSONFile(relativeDir, templateName, events);
+    callback(true);
+  });
+
+  socket.on("deleteTemplate", (relativeDir, templateName, callback) => {
+    deleteTemplate(relativeDir, templateName);
+    callback(true);
+  });
+  socket.on("getTemplateEvents", (relativeDir, templateName, callback) => {
+    const events = getTemplateEvents(relativeDir, templateName);
+    callback(events || []);
+  });
 });
 
-const {nomanifests} = yargs.boolean("nomanifests").argv as {
+const { nomanifests } = yargs.boolean("nomanifests").argv as {
   nomanifests: boolean | undefined;
 };
 
@@ -165,7 +174,7 @@ if (typeof pwaBuilderPkgJSON === "string") {
       res.send(indexHtml);
     });
   } else {
-    const compiler = startDevServer({app, appHtml: indexHtml});
+    const compiler = startDevServer({ app, appHtml: indexHtml });
     app.use(
       // @ts-ignore
       __non_webpack_require__("webpack-dev-middleware")(compiler, {

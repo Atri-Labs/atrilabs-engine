@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {Menu, Container, TemplateDetail, getId} from "@atrilabs/core";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Menu, Container, TemplateDetail, getId } from "@atrilabs/core";
 import {
   amber300,
   gray300,
@@ -11,19 +11,18 @@ import {
   IconMenu,
   smallText,
 } from "@atrilabs/design-system";
-import {ReactComponent as OpenTemplateIcon} from "./assets/open-template.svg";
+import { ReactComponent as OpenTemplateIcon } from "./assets/open-template.svg";
 import "./styles.css";
-import {Cross} from "./assets/Cross";
-import {useTemplateApi} from "./hooks/useTemplateApi";
-import {useComponentSelected} from "./hooks/useComponentSelected";
-import {useCreateTemplate} from "./hooks/useCreateTemplate";
-import {ConfirmDelete} from "./components/ConfirmDelete";
-import {TemplateRenderer} from "./components/TemplateRenderer";
-import {useShowTemplate} from "./hooks/useShowTemplate";
-import {RelativeDirectorySelector} from "./components/RelativeDirectorySelector";
-import {canvasApi} from "@atrilabs/pwa-builder-manager";
-import {DragTemplateComp} from "./components/DragTemplateComp";
-
+import { Cross } from "./assets/Cross";
+import { useTemplateApi } from "./hooks/useTemplateApi";
+import { useComponentSelected } from "./hooks/useComponentSelected";
+import { useCreateTemplate } from "./hooks/useCreateTemplate";
+import { ConfirmDelete } from "./components/ConfirmDelete";
+import { TemplateRenderer } from "./components/TemplateRenderer";
+import { useShowTemplate } from "./hooks/useShowTemplate";
+import { RelativeDirectorySelector } from "./components/RelativeDirectorySelector";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
+import { DragTemplateComp } from "./components/DragTemplateComp";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -85,20 +84,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 export default function () {
-  const {
-    templateDetails,
-    callCreateTemplateApi,
-    callDeleteTemplateApi,
-    sortedRelativeDirs,
-  } = useTemplateApi();
+  const { templateDetails, callCreateTemplateApi, callDeleteTemplateApi } =
+    useTemplateApi();
 
   const createTemplate = useCreateTemplate();
-  const [selectedDir, setSelectedDir] = useState<string | null>(
-    sortedRelativeDirs.length > 0 ? sortedRelativeDirs[0] : null
-  );
-  const {selected} = useComponentSelected();
-  const {formattedData} = useShowTemplate(selectedDir, templateDetails || []);
-  // console.log("formattedData...",formattedData)
+  const [selectedDir, setSelectedDir] = useState<string | null>(null);
+  const { selected } = useComponentSelected();
+  const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
 
   const createTemplateInputRef = useRef<HTMLInputElement>(null);
   const createTemplateSelect = useRef<HTMLSelectElement>(null);
@@ -106,16 +98,6 @@ export default function () {
   const [showDropPanel, setShowDropContainer] = useState<boolean>(false);
   const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    if (
-      selectedDir === null &&
-      sortedRelativeDirs.length > 0 &&
-      sortedRelativeDirs[0] !== undefined
-    ) {
-      setSelectedDir(sortedRelativeDirs[0]);
-    }
-  }, [sortedRelativeDirs, selectedDir]);
 
   const onCreateTemplatePopupCrossClickCb = useCallback(() => {
     setShowCreateTemplatePopup(false);
@@ -133,10 +115,6 @@ export default function () {
     setShowCreateTemplatePopup(true);
   }, []);
 
-  const onRelativeDirSelect = useCallback((dir: string) => {
-    setSelectedDir(dir);
-  }, []);
-
   const [showDeleteDialog, setShowDeleteDialog] =
     useState<TemplateDetail | null>(null);
 
@@ -152,7 +130,6 @@ export default function () {
   const onCreateClickCb = useCallback(() => {
     if (
       selected &&
-      templateDetails &&
       createTemplateInputRef.current &&
       createTemplateSelect.current
     ) {
@@ -179,7 +156,7 @@ export default function () {
           className="tool-tip"
         >
           <IconMenu onClick={openDropContainer} active={false}>
-            <OpenTemplateIcon/>
+            <OpenTemplateIcon />
           </IconMenu>
         </div>
       </Menu>
@@ -191,7 +168,7 @@ export default function () {
               <h4 style={styles.dropContainerItemHeaderH4}>Select Template</h4>
               <div style={styles.icons}>
                 <span style={styles.iconsSpan} onClick={closeContainer}>
-                  <Cross/>
+                  <Cross />
                 </span>
               </div>
             </header>
@@ -203,66 +180,44 @@ export default function () {
                   flexDirection: "column",
                 }}
               >
-                {selectedDir ? (
-                  <>
-                    <div
-                      style={{
-                        backgroundColor: gray900,
-                        ...h4Heading,
-                        color: gray300,
-                      }}
-                    >
-                      <RelativeDirectorySelector
-                        seletecdDir={selectedDir}
-                        relativeDirs={sortedRelativeDirs}
-                        onRelativeDirSelect={onRelativeDirSelect}
-                      />
-                    </div>
-                    {formattedData.map(({name, components}) => {
-                      const onMouseDownCb = (e: React.MouseEvent) => {
-                        // CARE
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        // canvasApi.startDrag(
-                        //   { comp: DragTemplateComp, props: { text: name } },
-                        //   {
-                        //     type: "template",
-                        //     data: {
-                        //       dir: selectedDir,
-                        //       name: name,
-                        //       newTemplateRootId: getId(),
-                        //     },
-                        //   }
-                        // );
-                      };
-                      return (
-                        <div
-                          key={name}
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
+                <>
+                  <div
+                    style={{
+                      backgroundColor: gray900,
+                      ...h4Heading,
+                      color: gray300,
+                    }}
+                  ></div>
+                  {formattedData.map(({ name, components }) => {
+                    const onMouseDownCb = (e: React.MouseEvent) => {
+                      // CARE
+                      e.preventDefault();
+                      e.stopPropagation();
+                    };
+                    return (
+                      <div
+                        key={name}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <TemplateRenderer
+                          templateName={name}
+                          templateComponents={components}
+                          styles={{ height: "" }}
+                          onDeleteClicked={() => {
+                            setShowDeleteDialog({
+                              templateName: name,
+                              relativeDir: "",
+                            });
                           }}
-                        >
-                          <TemplateRenderer
-                            templateName={name}
-                            templateComponents={components}
-                            styles={
-                              selectedDir.match("basic") ? {height: ""} : {}
-                            }
-                            onDeleteClicked={() => {
-                              setShowDeleteDialog({
-                                templateName: name,
-                                relativeDir: selectedDir,
-                              });
-                            }}
-                            onMouseDown={onMouseDownCb}
-                          />
-                        </div>
-                      );
-                    })}
-                  </>
-                ) : null}
+                          onMouseDown={onMouseDownCb}
+                        />
+                      </div>
+                    );
+                  })}
+                </>
               </div>
             </div>
           </div>
@@ -302,7 +257,7 @@ export default function () {
                 >
                   <span>Create Template</span>
                   <span onClickCapture={onCreateTemplatePopupCrossClickCb}>
-                    <Cross/>
+                    <Cross />
                   </span>
                 </div>
                 <label htmlFor="templateCategory">Template Category</label>
@@ -321,7 +276,7 @@ export default function () {
                   })}
                 </select>
                 <label htmlFor="templateName">Template Name</label>
-                <input ref={createTemplateInputRef} id="templateName"/>
+                <input ref={createTemplateInputRef} id="templateName" />
                 <button
                   style={{
                     ...h4Heading,
