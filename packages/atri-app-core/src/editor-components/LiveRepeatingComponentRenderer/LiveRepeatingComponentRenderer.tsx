@@ -13,7 +13,7 @@ import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
 export function LiveRepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp, alias } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
   const repeatingContext = useContext(RepeatingContext);
 
@@ -59,6 +59,7 @@ export function LiveRepeatingComponentRenderer(
       ref={ref}
       {...callbacks}
       children={childrenNodes || []}
+      className={alias}
     ></Comp>
   );
 }
