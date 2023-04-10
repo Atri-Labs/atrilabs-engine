@@ -50,13 +50,7 @@ const Button = forwardRef<
       {...custom}
       ref={ref}
       className={props.className}
-      style={{
-        ...props.styles,
-        animationDuration: "0s",
-        animationTimingFunction: "unset",
-        transitionDuration: "0s",
-        transitionTimingFunction: "unset",
-      }}
+      style={props.styles}
       onClick={onClick}
       icon={
         props.custom.icon && (

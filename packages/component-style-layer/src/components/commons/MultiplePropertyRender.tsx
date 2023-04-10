@@ -76,9 +76,6 @@ function MultiplePropertyRender(props: {
       props.styleItems.forEach((styleItem) => {
         styles[styleItem] = props.styleArray[index];
       });
-      if (props.styleItems.includes("WebkitBackgroundClip")) {
-        console.log(styles);
-      }
       props.patchCb({
         property: {
           styles,
