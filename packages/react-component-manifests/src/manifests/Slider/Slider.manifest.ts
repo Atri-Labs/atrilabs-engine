@@ -57,6 +57,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {
           margin: "0 30px",
+          minWidth: "500px",
         },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },

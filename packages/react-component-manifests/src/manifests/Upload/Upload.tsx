@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import { UploadOutlined, PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import { Button, Upload as AntdUpload } from "antd";
 import type { RcFile, UploadFile } from "antd/es/upload/interface";
+
 export interface UploadChangeParam<T = UploadFile> {
   file: T;
   fileList: T[];
@@ -9,6 +10,7 @@ export interface UploadChangeParam<T = UploadFile> {
     percent: number;
   };
 }
+
 const { Dragger } = AntdUpload;
 
 export const Upload = forwardRef<
@@ -48,7 +50,7 @@ export const Upload = forwardRef<
   );
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       {props.custom.dragger === true ? (
         <Dragger
           style={props.styles}
@@ -70,7 +72,6 @@ export const Upload = forwardRef<
       ) : (
         <>
           <AntdUpload
-            style={props.styles}
             className={props.className}
             listType={props.custom.listType}
             maxCount={props.custom.maxCount}
@@ -85,7 +86,16 @@ export const Upload = forwardRef<
             {props.custom.listType !== "text" ? (
               uploadButton
             ) : (
-              <Button style={props.styles} icon={<UploadOutlined />}>
+              <Button
+                style={{
+                  ...props.styles,
+                  animationDuration: "0s",
+                  animationTimingFunction: "unset",
+                  transitionDuration: "0s",
+                  transitionTimingFunction: "unset",
+                }}
+                icon={<UploadOutlined />}
+              >
                 {props.custom.text}
               </Button>
             )}

@@ -24,7 +24,7 @@ const Statistic = forwardRef<
   const { custom } = props;
   // moved ref to div, as the Antd Statistic doesnt provide ref for Statistic
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdStatistic
         className={props.className}
         style={props.styles}

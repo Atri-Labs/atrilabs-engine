@@ -149,7 +149,7 @@ const CodeMirror = forwardRef<
       <div
         className={props.className}
         ref={ref}
-        style={{ position: "relative", ...props.styles }}
+        style={{ position: "relative", display: "inline-block", ...props.styles }}
         onClick={onClick}
       >
         <ReactCodeMirror

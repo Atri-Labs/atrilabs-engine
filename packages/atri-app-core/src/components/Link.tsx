@@ -7,6 +7,7 @@ type LinkProps = {
   children: React.ReactNode;
   href: string;
   disabled?: boolean;
+  styles: React.CSSProperties;
 };
 
 export default function Link(props: LinkProps) {
@@ -36,7 +37,7 @@ export default function Link(props: LinkProps) {
     [props]
   );
   return (
-    <a onClick={onClick} href={props.href}>
+    <a onClick={onClick} href={props.href} style={props.styles}>
       {props.children}
     </a>
   );

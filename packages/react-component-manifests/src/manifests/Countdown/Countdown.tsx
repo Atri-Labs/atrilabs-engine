@@ -36,9 +36,9 @@ const Countdown = forwardRef<
       : "";
   }, [value, inputType]);
 
-  // moved ref to div, as the Antd Countdown doesnt provide ref for Countdown
+  // moved ref to div, as the Antd Countdown doesn't provide ref for Countdown
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdCountdown
         className={props.className}
         style={props.styles}

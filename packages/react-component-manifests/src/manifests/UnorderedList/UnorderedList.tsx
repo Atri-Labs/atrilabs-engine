@@ -84,7 +84,7 @@ const UnorderedList = forwardRef<
   );
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <List
         className={props.className}
         style={{ ...props.styles }}

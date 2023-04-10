@@ -44,6 +44,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["line", "card"],
     },
+    inActiveTabColor: { type: "color" },
     activeTabColor: { type: "color" },
     items: {
       type: "array_map",

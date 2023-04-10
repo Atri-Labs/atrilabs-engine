@@ -42,7 +42,7 @@ const Tree = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdTree
         style={props.styles}
         className={props.className}
