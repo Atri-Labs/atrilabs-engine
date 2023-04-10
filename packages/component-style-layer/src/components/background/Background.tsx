@@ -132,6 +132,7 @@ export type backgroundTypeOptions = {
   clip: boolean;
   color: boolean;
   gradient: boolean;
+  size: boolean;
 };
 export const solidBackgroundOptions: backgroundTypeOptions = {
   image: false,
@@ -142,6 +143,7 @@ export const solidBackgroundOptions: backgroundTypeOptions = {
   clip: true,
   color: true,
   gradient: false,
+  size: false,
 };
 export const imageBackgroundOptions: backgroundTypeOptions = {
   image: true,
@@ -152,6 +154,7 @@ export const imageBackgroundOptions: backgroundTypeOptions = {
   clip: true,
   color: false,
   gradient: true,
+  size: true,
 };
 const backgroundTypes = [solidBackgroundOptions, imageBackgroundOptions];
 const backgroundRepeatValues = [
@@ -448,6 +451,20 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 Text
               </div>
             </MultiplePropertyRender>
+          )}
+          {/**Background Size */}
+          {backgroundTypes[selectedTypeIndex].size && (
+            <div style={styles.gridContainer}>
+              <div style={styles.optionName}>Size</div>
+              <div>
+                <SizeInputWithUnits
+                  styleItem="backgroundSize"
+                  styles={props.styles}
+                  patchCb={props.patchCb}
+                  defaultValue=""
+                />
+              </div>
+            </div>
           )}
           {/* Background gradient */}
           {backgroundTypes[selectedTypeIndex].gradient && (

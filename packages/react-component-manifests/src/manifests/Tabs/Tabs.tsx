@@ -16,6 +16,7 @@ const Tabs = forwardRef<
         key: string;
         label: React.ReactNode;
       }[];
+      inActiveTabColor?: string;
       activeTabColor?: string;
     };
     onChange: (activeKey: string) => void;
@@ -25,7 +26,7 @@ const Tabs = forwardRef<
     ) => void;
   } & TabsProps
 >((props, ref) => {
-  const { custom, children, ...restProps } = props;
+  const { custom, ...restProps } = props;
   const { items } = custom;
 
   const tabItems = useMemo(() => {
@@ -53,11 +54,13 @@ const Tabs = forwardRef<
       )}
       <AntdTabs
         className={props.className}
-        {...custom}
         {...restProps}
         items={tabItems}
         onChange={props.onChange}
-        tabBarStyle={props.styles}
+        tabBarStyle={{
+          ...props.styles,
+          color: `${props.custom.inActiveTabColor}`,
+        }}
       />
     </div>
   );
