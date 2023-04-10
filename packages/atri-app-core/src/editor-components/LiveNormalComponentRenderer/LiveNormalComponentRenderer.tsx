@@ -8,10 +8,10 @@ import { useGetComponentRef } from "../hooks/useGetComponentRef";
 export function LiveNormalComponentRenderer(
   props: NormalComponentRendererProps
 ) {
-  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp, alias } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
   const callbacks = useGetCallbacks({ id: props.id });
-  return <Comp {...compProps} ref={ref} {...callbacks} />;
+  return <Comp {...compProps} ref={ref} {...callbacks} className={alias} />;
 }

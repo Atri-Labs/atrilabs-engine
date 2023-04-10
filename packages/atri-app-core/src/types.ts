@@ -23,6 +23,7 @@ export type CanvasComponent = {
   callbacks: { [callbackName: string]: any };
   meta: { manifestSchemaId: string; pkg: string; key: string };
   isRepeating: boolean;
+  alias: string | undefined;
 };
 
 export type CanvasComponentStore = { [compId: string]: CanvasComponent };

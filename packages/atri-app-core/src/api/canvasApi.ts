@@ -25,6 +25,7 @@ type ComponentPayload = {
     [key: string]: any[];
   };
   meta: { key: string; pkg: string; manifestSchemaId: string };
+  alias: string;
 };
 
 canvasMachineInterpreter.start();
@@ -313,11 +314,12 @@ if (typeof window !== "undefined") {
         id: payload.id,
         props: payload.props,
         parent: payload.parent,
+        alias: payload.alias,
       });
     }
     if (ev.data?.type === "UPDATE_PROPS") {
       const payload = ev.data.payload as ComponentPayload;
-      componentStoreApi.updateProps(payload.id, payload.props);
+      componentStoreApi.updateProps(payload.id, payload.props, payload.alias);
     }
     if (ev.data?.type === "DELETE_COMPONENT") {
       const payload = ev.data.payload as DewireUpdate;

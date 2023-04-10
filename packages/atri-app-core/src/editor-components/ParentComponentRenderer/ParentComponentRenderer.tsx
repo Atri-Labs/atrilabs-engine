@@ -14,6 +14,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const {
     comp: Comp,
     callbacks,
+    alias,
   } = componentStoreApi.getComponent(props.id)!;
   const { children } = useHandleNewChild(props);
   useAssignParentMarker({ id: props.id });
@@ -23,7 +24,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   const compProps = usePropsUpdated({ id: props.id });
   const ref = useGetComponentRef({ id: props.id });
   return (
-    <Comp {...compProps} ref={ref} {...callbacks}>
+    <Comp {...compProps} ref={ref} {...callbacks} className={alias}>
       {children.map((childId) => {
         const { acceptsChild, isRepeating } =
           componentStoreApi.getComponent(childId)!;

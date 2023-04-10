@@ -18,6 +18,7 @@ export function RepeatingComponentRenderer(
   const {
     comp: Comp,
     callbacks,
+    alias,
   } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
 
@@ -65,6 +66,7 @@ export function RepeatingComponentRenderer(
       ref={ref}
       {...callbacks}
       children={childrenNodes || []}
+      className={alias}
     ></Comp>
   );
 }

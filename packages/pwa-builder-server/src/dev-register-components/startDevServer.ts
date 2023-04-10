@@ -29,6 +29,7 @@ export function startDevServer(options: {
     useTypeScript,
     prepareConfig,
     additionalNodeModules,
+    imageInlineSizeLimit,
   } = params;
 
   paths.appHtml = appHtml;
@@ -85,7 +86,7 @@ export function startDevServer(options: {
     paths,
     publicUrlOrPath,
     moduleFileExtensions,
-    imageInlineSizeLimit: 10,
+    imageInlineSizeLimit,
     shouldInlineRuntimeChunk: true,
     useTypeScript,
     additionalInclude,

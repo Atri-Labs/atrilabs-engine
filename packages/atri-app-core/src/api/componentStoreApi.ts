@@ -70,11 +70,12 @@ function createComponent(
     id: string;
     props: any;
     parent: { id: string; index: number; canvasZoneId: string };
+    alias: string;
   }
 ) {
   const fullManifest = searchComponentFromManifestRegistry(manifestData);
   if (fullManifest) {
-    const { id, props, parent } = componentData;
+    const { id, props, parent, alias } = componentData;
     const { devComponent, component } = fullManifest;
     const { decorators, acceptsChild, callbacks, isRepeating } =
       processManifest(fullManifest.manifest);
@@ -90,6 +91,7 @@ function createComponent(
       callbacks,
       meta: manifestData,
       isRepeating,
+      alias,
     };
     // update reverse map
     addToReverseMap(id, parent);
@@ -121,6 +123,7 @@ function createLiveComponent(
     id: string;
     props: any;
     parent: { id: string; index: number; canvasZoneId: string };
+    alias: string;
   }
 ) {
   createComponent(manifestData, componentData);
@@ -200,8 +203,9 @@ function getAllDescendants(compId: string) {
   return _getAllDescendants(compId);
 }
 
-function updateProps(compId: string, props: any) {
+function updateProps(compId: string, props: any, alias?: string) {
   componentStore[compId].props = props;
+  if (alias) componentStore[compId].alias = alias;
   canvasMachineInterpreter.send({ type: "PROPS_UPDATED", compId });
 }
 

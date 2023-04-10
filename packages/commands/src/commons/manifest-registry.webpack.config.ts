@@ -43,6 +43,7 @@ export default function createManifestRegistryConfig(
     toolConfig,
     corePkgInfo,
     exclude,
+    imageInlineSizeLimit,
   } = params;
 
   const outputFilename = "manifestRegistry.js";
@@ -58,7 +59,7 @@ export default function createManifestRegistryConfig(
     paths,
     publicUrlOrPath,
     moduleFileExtensions,
-    imageInlineSizeLimit: 10,
+    imageInlineSizeLimit,
     shouldInlineRuntimeChunk: true,
     useTypeScript,
     additionalInclude,

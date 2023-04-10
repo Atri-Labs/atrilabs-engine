@@ -82,6 +82,7 @@ export function createComponentFromNode(
       acceptsChild: typeof manifest.dev.acceptsChild === "function",
       callbacks,
       meta: node.meta,
+      alias: node.state.alias,
     };
   }
 }

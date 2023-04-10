@@ -11,7 +11,7 @@ import { useGetComponentRef } from "../hooks/useGetComponentRef";
 export function LiveParentComponentRenderer(
   props: ParentComponentRendererProps
 ) {
-  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp, alias } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
   const children = componentStoreApi.getComponentChildrenId(props.id);
   useAssignParentMarker({ id: props.id });
@@ -19,7 +19,7 @@ export function LiveParentComponentRenderer(
   const compProps = useGetComponentProps({ id: props.id });
   const callbacks = useGetCallbacks({ id: props.id });
   return (
-    <Comp {...compProps} ref={ref} {...callbacks}>
+    <Comp {...compProps} ref={ref} {...callbacks} className={alias}>
       {children.map((childId) => {
         const { acceptsChild, isRepeating } =
           componentStoreApi.getComponent(childId)!;

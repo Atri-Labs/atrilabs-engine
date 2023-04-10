@@ -35,6 +35,7 @@ function eventsToComponent(events: AnyEvent[]) {
       id: component.id,
       props: component.props,
       parent: component.parent,
+      alias: getComponentAlias(component.id),
     });
   });
 }

@@ -32,8 +32,8 @@ export function ParentRenderer(props: {
       {...aliasProps}
       styles={aliasProps["styles"] || {}}
     >
-      {componentTreeMap[alias].map((childAlias) => {
-        if (componentTreeMap[alias] !== undefined) {
+      {componentTreeMap[alias]?.map((childAlias) => {
+        if (aliasCompMap[alias].type !== "normal") {
           return (
             <ParentRenderer
               alias={childAlias}

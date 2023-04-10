@@ -74,7 +74,13 @@ export function processArgs() {
       default: "",
       description: "The package name of the tool.",
     })
+    .option("inlinesize", {
+      type: "number",
+      default: "10",
+      description: "size of image in KB",
+    })
     .boolean("stats")
+    .boolean("useLAN")
     .help().argv as {
     e: string;
     o: string;
@@ -90,6 +96,8 @@ export function processArgs() {
     d: string;
     x: string;
     t: string;
+    inlinesize: string;
+    useLAN: boolean;
   };
 }
 
@@ -280,6 +288,11 @@ export function extractParams() {
     manifestDirs,
     exclude,
     tool,
+    imageInlineSizeLimit:
+      typeof args.inlinesize === "number"
+        ? args.inlinesize
+        : parseFloat(args.inlinesize),
+    useLAN: args.useLAN,
   };
 }
 

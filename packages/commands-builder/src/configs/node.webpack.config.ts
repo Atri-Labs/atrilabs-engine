@@ -22,8 +22,8 @@ import {
   setJsxTsxLoaders,
   setNodeModuleSourceMapLoaders,
   setJsxLoaders,
+  setImageLoaders,
 } from "./loaders";
-import setFileLoaders from "./loaders/files";
 
 export function createNodeConfig(options: {
   isEnvDevelopment: boolean;
@@ -67,6 +67,7 @@ export function createNodeConfig(options: {
   };
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
+  imageInlineSizeLimit: number;
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -78,6 +79,7 @@ export function createNodeConfig(options: {
     serverEnv,
     modules,
     moduleFileExtensions,
+    imageInlineSizeLimit,
     useTypeScript,
     eslint,
     entry,
@@ -160,6 +162,7 @@ export function createNodeConfig(options: {
         ...setNodeModuleSourceMapLoaders({ shouldUseSourceMap }),
         {
           oneOf: [
+            ...setImageLoaders({ imageInlineSizeLimit }),
             ...setJsxTsxLoaders({
               appSrc: paths.appSrc,
               isEnvDevelopment,
@@ -178,7 +181,6 @@ export function createNodeConfig(options: {
               isEnvTest,
               hasJsxRuntime: true,
             }),
-            ...setFileLoaders(),
           ],
         },
         ...(customLoaders || []),
