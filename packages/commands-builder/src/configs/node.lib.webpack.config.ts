@@ -44,6 +44,7 @@ export function createNodeLibConfig(options: {
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
   imageInlineSizeLimit: number;
+  publicUrlOrPath: string;
 }) {
   const baseConfig = createNodeConfig(options);
 

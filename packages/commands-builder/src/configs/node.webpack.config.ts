@@ -68,6 +68,7 @@ export function createNodeConfig(options: {
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
   imageInlineSizeLimit: number;
+  publicUrlOrPath: string;
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -91,6 +92,7 @@ export function createNodeConfig(options: {
     exclude,
     customLoaders,
     disableNodeExternals,
+    publicUrlOrPath,
   } = options;
   return {
     target: "node",
@@ -126,6 +128,7 @@ export function createNodeConfig(options: {
         ? "static/js/[name].[contenthash:8].chunk.js"
         : "static/js/[name].chunk.js",
       assetModuleFilename: "static/media/[name].[hash][ext]",
+      publicPath: publicUrlOrPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
         ? (info: any) =>

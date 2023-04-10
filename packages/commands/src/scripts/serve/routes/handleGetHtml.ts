@@ -5,6 +5,7 @@ import path from "path";
 import { createHTML } from "../utils/createHTML";
 import { renderReactString } from "../utils/renderReactString";
 import { processRoute } from "../utils/processRoute";
+import { addResourcesToHTMLString } from "../../../commons/addResourcesToHTMLString";
 
 const assetDepGraph = JSON.parse(
   fs
@@ -23,11 +24,8 @@ export function handleGetHtml(router: Router) {
         if (assetDeps) {
           const reactString = renderReactString(pageRoute);
           const assetDepKey = processRoute(pageRoute).assetDepKey;
-          const html = await createHTML(
-            reactString,
-            assetDeps,
-            assetDepGraph,
-            assetDepKey
+          const html = await addResourcesToHTMLString(
+            await createHTML(reactString, assetDeps, assetDepGraph, assetDepKey)
           );
           res.header("Content-Type", "text/html");
           res.send(html);
