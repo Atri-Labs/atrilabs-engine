@@ -351,9 +351,10 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
               name="decoration"
               onChange={(e) => handleFontStyleChange(e, "textDecoration")}
               style={{ ...styles.inputBox, width: "80px" }}
-              value={props.styles.textDecoration || "none"}
+              value={props.styles.textDecoration || ""}
               className="scroll"
             >
+              <option style={styles.select} value=""></option>
               <option style={styles.select} value="auto">
                 auto
               </option>
