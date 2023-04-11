@@ -38,9 +38,8 @@ export const TextBox = forwardRef<
       className={props.className}
       style={props.styles}
       onClick={onClick}
-    >
-      {props.custom.text}
-    </div>
+      dangerouslySetInnerHTML={{ __html: props.custom.text }}
+    ></div>
   );
 });
 

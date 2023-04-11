@@ -1,7 +1,8 @@
 import Joi from "joi";
+
 const JoiTypes = Joi.types();
 type JoiSchema<K = keyof typeof JoiTypes> = K extends keyof typeof JoiTypes
-  ? typeof JoiTypes[K]
+  ? (typeof JoiTypes)[K]
   : never;
 
 export type SimpleCustomProp = {
@@ -18,7 +19,8 @@ export type SimpleCustomProp = {
     | "array_static_asset"
     | "internal_link"
     | "component_selector"
-    | "external_link";
+    | "external_link"
+    | "text_editor";
 };
 
 export type EnumCustomProp = {
