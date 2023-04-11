@@ -1,7 +1,10 @@
 const upath = require("upath");
 
 function processOptions(options) {
-  const { pagePath, reactRouteObjectPath } = options;
+  const parsedOptions = JSON.parse(
+    Buffer.from(options.options, "base64").toString()
+  );
+  const { pagePath, reactRouteObjectPath } = parsedOptions;
   let {
     srcs,
     routes,
@@ -10,7 +13,7 @@ function processOptions(options) {
     aliasCompMap,
     componentTree,
     componentMap,
-  } = options;
+  } = parsedOptions;
   if (srcs === undefined) srcs = "[]";
   if (routes === undefined) routes = "[]";
   if (entryRouteStore === undefined) entryRouteStore = "{}";
@@ -51,7 +54,9 @@ function processOptions(options) {
     .map((pkg) => {
       return Object.keys(flatennedComponentMap[pkg])
         .map((key) => {
-          return `import ${flatennedComponentMap[pkg][key]} from "${upath.toUnix(componentMap[pkg][key])}";`;
+          return `import ${
+            flatennedComponentMap[pkg][key]
+          } from "${upath.toUnix(componentMap[pkg][key])}";`;
         })
         .join("\n");
     })

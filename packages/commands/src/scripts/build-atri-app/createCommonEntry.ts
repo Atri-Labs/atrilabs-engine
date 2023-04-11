@@ -143,8 +143,8 @@ export async function createCommonEntry(options: {
       }, prev);
       return prev;
     }, processedComponentManifests);
-    entry[entryName] = {
-      import: `${loaderName}?${stringify({
+    const options = Buffer.from(
+      JSON.stringify({
         pagePath,
         srcs: JSON.stringify(srcs || []),
         reactRouteObjectPath: routeObjectPath,
@@ -156,6 +156,11 @@ export async function createCommonEntry(options: {
         aliasCompMap: JSON.stringify(aliasCompMap),
         componentTree: JSON.stringify(compTreeWithAlias),
         componentMap: JSON.stringify(processedComponentManifests),
+      })
+    ).toString("base64");
+    entry[entryName] = {
+      import: `${loaderName}?${stringify({
+        options: options,
       })}!`,
     };
   }
