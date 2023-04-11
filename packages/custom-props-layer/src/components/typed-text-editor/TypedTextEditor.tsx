@@ -71,7 +71,7 @@ export const TypedTextEditor: React.FC<ComponentProps> = (props) => {
             }}
           >
             <Editor
-              apiKey="no-api-key"
+              apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"
               value={value}
               onEditorChange={(value) => setValue(value)}
               init={{
