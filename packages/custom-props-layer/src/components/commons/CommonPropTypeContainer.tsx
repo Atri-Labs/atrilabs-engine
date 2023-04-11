@@ -19,6 +19,7 @@ import { EnumCustomProp } from "@atrilabs/app-design-forest";
 import { Enum } from "../enum/Enum";
 import { EnumList } from "../enum-list/EnumList";
 import { TypedJson } from "../typed-json/TypedJson";
+import { TypedTextEditor } from "../typed-text-editor/TypedTextEditor";
 
 export const CommonPropTypeContainer: React.FC<CommonPropTypeContainerTypes> = (
   props
@@ -172,6 +173,16 @@ export const CommonPropTypeContainer: React.FC<CommonPropTypeContainerTypes> = (
   if (propType === "json")
     return (
       <TypedJson
+        {...props}
+        propName={propName}
+        key={propName}
+        routes={routes}
+      />
+    );
+
+  if (propType === "text_editor")
+    return (
+      <TypedTextEditor
         {...props}
         propName={propName}
         key={propName}

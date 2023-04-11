@@ -31,6 +31,7 @@
     "@codemirror/language": "^6.6.0",
     "@codemirror/legacy-modes": "^6.3.1",
     "@codemirror/lint": "^6.0.0",
+    "@tinymce/tinymce-react": "^4.3.0",
     "@uiw/react-codemirror": "^4.19.9",
     "eslint-plugin-atrilabs": "^1.0.0-alpha.15",
     "joi": "^17.8.4",

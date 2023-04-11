@@ -22,7 +22,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "large_text" },
+    text: { type: "text_editor" },
   },
 };
 
