@@ -14,7 +14,6 @@ function atriPagesClientLoader() {
     entryRouteStore,
     componentTree,
   } = processOptions(options);
-  console.log(compImportStatements);
   const route = pagePath
     .replace(/(\.(js|ts)x?)$/, "")
     .replace(/^(\/index)$/, "/");
