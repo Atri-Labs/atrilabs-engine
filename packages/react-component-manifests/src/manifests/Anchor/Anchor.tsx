@@ -72,26 +72,15 @@ export const Anchor = forwardRef<
     [props]
   );
   return (
-    <>
-      <style>
-        {`.disabled {
-            background-color: lightgrey;
-            cursor: not-allowed;
-          }
-        `}
-      </style>
-      <a
-        ref={ref}
-        style={props.styles}
-        className={
-          props.custom.disabled === true ? "disabled" : props.className
-        }
-        {...custom}
-        onClick={onClickCb}
-      >
-        {props.children}
-      </a>
-    </>
+    <a
+      ref={ref}
+      style={props.styles}
+      className={props.custom.disabled === true ? "disabled" : props.className}
+      {...custom}
+      onClick={onClickCb}
+    >
+      {props.children}
+    </a>
   );
 });
 
