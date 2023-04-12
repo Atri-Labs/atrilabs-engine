@@ -16,4 +16,4 @@ export type PartialTemplateComponents = {
 export type FormattedTemplateData = {
   name: string;
   components: TemplateComponents;
-}[];
+};

@@ -47,6 +47,7 @@
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.0",
     "@mui/x-data-grid": "^5.15.2",
+    "@tinymce/tinymce-react": "^4.3.0",
     "@uiw/react-codemirror": "^4.19.9",
     "antd": "^5.3.0",
     "color": "^4.2.3",

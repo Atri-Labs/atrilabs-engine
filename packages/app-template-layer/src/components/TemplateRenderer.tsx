@@ -41,7 +41,7 @@ export const TemplateRenderer: React.FC<{
     }
     return getNode(templateComponents, "templateRoot");
   }, [templateComponents]);
-  console.log("template render", nodes);
+
   return (
     <div
       style={{

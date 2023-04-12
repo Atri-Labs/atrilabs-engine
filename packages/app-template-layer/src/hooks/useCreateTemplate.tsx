@@ -118,7 +118,6 @@ export const useCreateTemplate = () => {
             ...link,
           };
           events.push(linkEvent);
-
         });
       });
 
@@ -200,7 +199,7 @@ export const useCreateTemplate = () => {
         }
         events.push(event);
       });
-      console.log("events........",events)
+
       return events;
     },
     [componentTree, callbackTree]

@@ -97,12 +97,11 @@ function getTemplateList(callback: (templateList: string[]) => void) {
 }
 
 function createTemplate(
-  dir: string,
   name: string,
   events: AnyEvent[],
   callback: (success: boolean) => void
 ) {
-  socket.emit("createTemplate", dir, name, events, callback);
+  socket.emit("createTemplate", name, events, callback);
 }
 
 /**
@@ -128,19 +127,14 @@ function getAssetsInfo(
 }
 
 function getTemplateEvents(
-  dir: string,
   name: string,
   callback: (events: AnyEvent[]) => void
 ) {
-  socket.emit("getTemplateEvents", dir, name, callback);
+  socket.emit("getTemplateEvents", name, callback);
 }
 
-function deleteTemplate(
-  dir: string,
-  name: string,
-  callback: (success: boolean) => void
-) {
-  socket.emit("deleteTemplate", dir, name, callback);
+function deleteTemplate(name: string, callback: (success: boolean) => void) {
+  socket.emit("deleteTemplate", name, callback);
 }
 
 export const api = {

@@ -141,17 +141,17 @@ io.on("connection", (socket) => {
       });
   });
 
-  socket.on("createTemplate", (relativeDir, templateName, events, callback) => {
-    createTemplateJSONFile(relativeDir, templateName, events);
+  socket.on("createTemplate", (templateName, events, callback) => {
+    createTemplateJSONFile(templateName, events);
     callback(true);
   });
 
-  socket.on("deleteTemplate", (relativeDir, templateName, callback) => {
-    deleteTemplate(relativeDir, templateName);
+  socket.on("deleteTemplate", (templateName, callback) => {
+    deleteTemplate(templateName);
     callback(true);
   });
-  socket.on("getTemplateEvents", (relativeDir, templateName, callback) => {
-    const events = getTemplateEvents(relativeDir, templateName);
+  socket.on("getTemplateEvents", (templateName, callback) => {
+    const events = getTemplateEvents(templateName);
     callback(events || []);
   });
 });

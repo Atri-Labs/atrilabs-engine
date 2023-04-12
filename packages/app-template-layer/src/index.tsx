@@ -20,9 +20,7 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { TemplateRenderer } from "./components/TemplateRenderer";
 import { useShowTemplate } from "./hooks/useShowTemplate";
-import { RelativeDirectorySelector } from "./components/RelativeDirectorySelector";
-import { canvasApi } from "@atrilabs/pwa-builder-manager";
-import { DragTemplateComp } from "./components/DragTemplateComp";
+import * as htmlToImage from "html-to-image";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -86,18 +84,20 @@ const styles: { [key: string]: React.CSSProperties } = {
 export default function () {
   const { templateDetails, callCreateTemplateApi, callDeleteTemplateApi } =
     useTemplateApi();
-
   const createTemplate = useCreateTemplate();
-  const [selectedDir, setSelectedDir] = useState<string | null>(null);
   const { selected } = useComponentSelected();
-  const { formattedData } = useShowTemplate(selectedDir, templateDetails || []);
-
+  const { formattedData } = useShowTemplate(templateDetails || []);
   const createTemplateInputRef = useRef<HTMLInputElement>(null);
-  const createTemplateSelect = useRef<HTMLSelectElement>(null);
-
   const [showDropPanel, setShowDropContainer] = useState<boolean>(false);
   const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
     useState<boolean>(false);
+
+  ////////
+  const domEl = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<string | null>(null);
+  //console.log("index", formattedData);
+  const validName = formattedData.find((name) => formattedData);
+  ///////
 
   const onCreateTemplatePopupCrossClickCb = useCallback(() => {
     setShowCreateTemplatePopup(false);
@@ -128,27 +128,34 @@ export default function () {
   }, []);
 
   const onCreateClickCb = useCallback(() => {
-    if (
-      selected &&
-      createTemplateInputRef.current &&
-      createTemplateSelect.current
-    ) {
+    if (selected && createTemplateInputRef.current) {
       const templateEvents = createTemplate(selected, {
         copyCallbacks: true,
         copyDefaultCallbacks: false,
       });
       if (templateEvents.length > 0) {
         callCreateTemplateApi(templateEvents, {
-          relativeDir: createTemplateSelect.current.value,
           templateName: createTemplateInputRef.current.value,
         });
       }
     }
     setShowCreateTemplatePopup(false);
   }, [createTemplate, selected, templateDetails, callCreateTemplateApi]);
+  ////////////
+  const downloadImage = async (): Promise<void> => {
+    if (!domEl.current) return;
+    const dataUrl: string = await htmlToImage.toPng(domEl.current);
+    // download image
+    const link: HTMLAnchorElement = document.createElement("a");
+    console.log(link);
+    setData(dataUrl);
+  };
+  /////////
 
   return (
     <>
+      <button onClick={downloadImage}>Download Image</button>
+
       <Menu name="PageMenu" order={1}>
         <div
           style={styles.iconContainer}
@@ -209,7 +216,6 @@ export default function () {
                           onDeleteClicked={() => {
                             setShowDeleteDialog({
                               templateName: name,
-                              relativeDir: "",
                             });
                           }}
                           onMouseDown={onMouseDownCb}
@@ -223,7 +229,6 @@ export default function () {
           </div>
         </Container>
       ) : null}
-
       {/* Create Template*/}
       {selected ? (
         <Menu name="PublishMenu" order={0}>
@@ -260,21 +265,6 @@ export default function () {
                     <Cross />
                   </span>
                 </div>
-                <label htmlFor="templateCategory">Template Category</label>
-                <select ref={createTemplateSelect}>
-                  {Object.keys({
-                    //  ...relativeDirs,
-                    basics: true,
-                    layout: true,
-                    data: true,
-                  }).map((relativeDir) => {
-                    return (
-                      <option value={relativeDir} key={relativeDir}>
-                        {relativeDir}
-                      </option>
-                    );
-                  })}
-                </select>
                 <label htmlFor="templateName">Template Name</label>
                 <input ref={createTemplateInputRef} id="templateName" />
                 <button

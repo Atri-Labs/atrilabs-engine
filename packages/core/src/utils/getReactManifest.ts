@@ -5,7 +5,6 @@ import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id"
 export function getReactManifest(options: { pkg: string; key: string }) {
   const { pkg, key } = options;
   const registry = manifestRegistryController.readManifestRegistry();
-  debugger;
   return registry[ReactManifestSchemaId].manifests.find((curr) => {
     return curr.manifest.meta.key === key && curr.pkg === pkg;
   });

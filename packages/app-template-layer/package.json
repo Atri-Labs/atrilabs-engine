@@ -29,6 +29,7 @@
     "@atrilabs/design-system": "^1.0.0-alpha.13",
     "@atrilabs/layer-types": "^1.0.0-alpha.13",
     "eslint-plugin-atrilabs": "^1.0.0-alpha.13",
+    "html-to-image": "1.11.11",
     "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.13"
   }
 }

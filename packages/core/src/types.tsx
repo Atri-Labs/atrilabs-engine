@@ -175,7 +175,7 @@ export type EventSubscriber = (
 ) => void;
 
 // array of filenames without extension
-export type TemplateDetail = { relativeDir: string; templateName: string };
+export type TemplateDetail = { templateName: string };
 
 export type { ImportedResource } from "@atrilabs/atri-app-core";
 import type { ImportedResource } from "@atrilabs/atri-app-core";
@@ -256,7 +256,6 @@ export type BrowserClient = {
   /** template management api */
   getTemplateList: (callback: (details: string[]) => void) => void;
   createTemplate: (
-    dir: string,
     name: string,
     events: AnyEvent[],
     callback: (success: boolean) => void
@@ -267,13 +266,8 @@ export type BrowserClient = {
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
-  deleteTemplate: (
-    dir: string,
-    name: string,
-    callback: (success: boolean) => void
-  ) => void;
+  deleteTemplate: (name: string, callback: (success: boolean) => void) => void;
   getTemplateEvents: (
-    dir: string,
     name: string,
     callback: (events: AnyEvent[]) => void
   ) => void;
@@ -433,22 +427,16 @@ export interface ClientToServerEvents {
   getTemplateList: (callback: (details: string[]) => void) => void;
 
   getTemplateEvents: (
-    dir: string,
     name: string,
     callback: (events: AnyEvent[]) => void
   ) => void;
 
   createTemplate: (
-    dir: string,
     name: string,
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
-  deleteTemplate: (
-    dir: string,
-    name: string,
-    callback: (success: boolean) => void
-  ) => void;
+  deleteTemplate: (name: string, callback: (success: boolean) => void) => void;
 }
 
 export interface InterServerEvents {}
