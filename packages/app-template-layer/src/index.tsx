@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Menu, Container, TemplateDetail, getId } from "@atrilabs/core";
+import React, { useCallback, useRef, useState } from "react";
+import { Menu, Container, TemplateDetail } from "@atrilabs/core";
 import {
   amber300,
   gray300,
@@ -20,7 +20,6 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { TemplateRenderer } from "./components/TemplateRenderer";
 import { useShowTemplate } from "./hooks/useShowTemplate";
-import * as htmlToImage from "html-to-image";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -92,13 +91,6 @@ export default function () {
   const [showCreateTemplatePopup, setShowCreateTemplatePopup] =
     useState<boolean>(false);
 
-  ////////
-  const domEl = useRef<HTMLDivElement>(null);
-  const [data, setData] = useState<string | null>(null);
-  //console.log("index", formattedData);
-  const validName = formattedData.find((name) => formattedData);
-  ///////
-
   const onCreateTemplatePopupCrossClickCb = useCallback(() => {
     setShowCreateTemplatePopup(false);
   }, []);
@@ -141,21 +133,9 @@ export default function () {
     }
     setShowCreateTemplatePopup(false);
   }, [createTemplate, selected, templateDetails, callCreateTemplateApi]);
-  ////////////
-  const downloadImage = async (): Promise<void> => {
-    if (!domEl.current) return;
-    const dataUrl: string = await htmlToImage.toPng(domEl.current);
-    // download image
-    const link: HTMLAnchorElement = document.createElement("a");
-    console.log(link);
-    setData(dataUrl);
-  };
-  /////////
 
   return (
     <>
-      <button onClick={downloadImage}>Download Image</button>
-
       <Menu name="PageMenu" order={1}>
         <div
           style={styles.iconContainer}
