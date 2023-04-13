@@ -1,5 +1,16 @@
-import React, { forwardRef, useMemo } from "react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+
+const cssjs = require("postcss-js");
+const postcss = require("postcss");
+
+function jssToCss(jss: React.CSSProperties) {
+  return postcss()
+    .process(jss, { parser: cssjs, from: undefined })
+    .then((code) => {
+      return code.css + ";";
+    });
+}
 
 const TinyMCE = forwardRef<
   HTMLInputElement,
@@ -35,6 +46,8 @@ const TinyMCE = forwardRef<
     className?: string;
   }
 >((props, ref) => {
+  const [contentStyles, setContentStyles] = useState<string>("");
+
   const key = useMemo(() => {
     if (props.custom.menubar || props.custom.toolbar) {
       return Math.random();
@@ -55,6 +68,14 @@ const TinyMCE = forwardRef<
     return props.custom.toolbar.join(" | ");
   }, [props.custom.toolbar]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const css = await jssToCss(props.styles);
+      setContentStyles(css);
+    };
+    fetchData();
+  }, [props.styles]);
+
   return (
     <>
       <div ref={ref}>
@@ -73,10 +94,9 @@ const TinyMCE = forwardRef<
             className: props.className,
             contentEditable: props.custom.contentEditable,
             initOnMount: props.custom.initOnMount,
-            //content_style: `body { font-family:${props.styles.fontFamily}; font-size:14px }`,
+            content_style: `body {${contentStyles}}`,
             plugins: props.custom.plugins,
-            // toolbar: toolBarItems,
-            toolbar: "bullist numlist",
+            toolbar: toolBarItems,
             menubar: menuBarItems,
             statusbar: props.custom.statusbar,
             branding: props.custom.branding,
