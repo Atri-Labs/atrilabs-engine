@@ -6,9 +6,36 @@ import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-s
 import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import { createComponentFromNode } from "@atrilabs/core";
-import { breakpointApi } from "./breakpointApi";
 import { editorAppMachineInterpreter } from "./init";
+import { createComponentFromNode } from "@atrilabs/atri-app-core/src/utils/createComponentFromNode";
+
+function processComponentManifests() {
+  const componentManifests: {
+    [pkg: string]: {
+      [key: string]: { manifest: ReactComponentManifestSchema };
+    };
+  } = {};
+  const manifestRegistry = manifestRegistryController.readManifestRegistry();
+  manifestRegistry[
+    "@atrilabs/react-component-manifest-schema/src/index.ts"
+  ].manifests.forEach((manifest) => {
+    const pkg = manifest.pkg;
+    const key = manifest.manifest.meta.key;
+    if (componentManifests[pkg] === undefined) {
+      componentManifests[pkg] = {};
+    }
+    componentManifests[pkg][key] = {
+      manifest: componentManifests[pkg][key].manifest,
+    };
+  });
+  return componentManifests;
+}
+
+let componentManifests = processComponentManifests();
+
+manifestRegistryController.subscribe(() => {
+  componentManifests = processComponentManifests();
+});
 
 BrowserForestManager.currentForest.subscribeForest((update) => {
   const compTree = BrowserForestManager.currentForest.tree(ComponentTreeId)!;
@@ -24,7 +51,8 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
     const node = compTree.nodes[id]!;
     const createComponentPayload = createComponentFromNode(
       node,
-      breakpointApi.getActiveBreakpoint()
+      BrowserForestManager.currentForest,
+      componentManifests
     );
     if (createComponentPayload) {
       editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
@@ -76,7 +104,8 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
             const node = compTree.nodes[compId]!;
             const componentData = createComponentFromNode(
               node,
-              breakpointApi.getActiveBreakpoint()
+              BrowserForestManager.currentForest,
+              componentManifests
             );
             if (componentData?.props) {
               editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(
@@ -125,7 +154,8 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
       const node = compTree.nodes[compId]!;
       const componentData = createComponentFromNode(
         node,
-        breakpointApi.getActiveBreakpoint()
+        BrowserForestManager.currentForest,
+        componentManifests
       );
       if (componentData?.props) {
         editorAppMachineInterpreter.machine.context.canvasWindow?.postMessage(

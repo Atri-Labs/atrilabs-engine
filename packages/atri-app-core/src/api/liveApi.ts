@@ -8,8 +8,38 @@ import { componentStoreApi } from "./componentStoreApi";
 import { callbackTreeDef, componentTreeDef, forestDef } from "./forestDef";
 import { createComponentFromNode } from "../utils/createComponentFromNode";
 import { mergeState } from "../utils/mergeState";
+import { manifestRegistryController } from "@atrilabs/manifest-registry";
+import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 
 let activeForest: Forest | null = null;
+
+function processComponentManifests() {
+  const componentManifests: {
+    [pkg: string]: {
+      [key: string]: { manifest: ReactComponentManifestSchema };
+    };
+  } = {};
+  const manifestRegistry = manifestRegistryController.readManifestRegistry();
+  manifestRegistry[
+    "@atrilabs/react-component-manifest-schema/src/index.ts"
+  ].manifests.forEach((manifest) => {
+    const pkg = manifest.pkg;
+    const key = manifest.manifest.meta.key;
+    if (componentManifests[pkg] === undefined) {
+      componentManifests[pkg] = {};
+    }
+    componentManifests[pkg][key] = {
+      manifest: componentManifests[pkg][key].manifest,
+    };
+  });
+  return componentManifests;
+}
+
+let componentManifests = processComponentManifests();
+
+manifestRegistryController.subscribe(() => {
+  componentManifests = processComponentManifests();
+});
 
 // convert events to component
 function eventsToComponent(events: AnyEvent[]) {
@@ -25,11 +55,8 @@ function eventsToComponent(events: AnyEvent[]) {
   nodeIds.map((nodeId) => {
     const component = createComponentFromNode(
       nodes[nodeId],
-      {
-        max: window.innerWidth,
-        min: window.innerWidth,
-      },
-      forest
+      forest,
+      componentManifests
     )!;
     componentStoreApi.createLiveComponent(component.meta, {
       id: component.id,

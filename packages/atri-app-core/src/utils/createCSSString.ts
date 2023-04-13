@@ -30,22 +30,8 @@ async function createBreakpointString(
 }
 
 /**
- * const a = {
-              slice: {
-                breakpoints: {
-                  "1200": {
-                    property: {
-                      styles: {
-                        background:
-                          "linear-gradient(45deg, white 0%, red 100%)",
-                      },
-                    },
-                  },
-                },
-              },
-            };
- * @param styles 
- * @param breakpoints 
+ * @param styles
+ * @param breakpoints
  */
 export async function createCSSString(
   cssSelector: string,
@@ -60,18 +46,4 @@ export async function createCSSString(
   ]);
 
   return cssStrs;
-}
-
-export async function extractStylesFromStyleNode(cssNode: TreeNode) {
-  const breakpoints: { [breakpoint: string]: React.CSSProperties } = {};
-  if (cssNode.state["property"]?.["breakpoints"]) {
-    Object.keys(cssNode.state["property"]["breakpoints"]).forEach(
-      (breakpoint) => {
-        breakpoints[breakpoint] =
-          cssNode.state["property"]["breakpoints"]["property"]["styles"];
-      }
-    );
-  }
-
-  return { styles: cssNode.state["property"]?.["styles"] || {}, breakpoints };
 }
