@@ -5,7 +5,6 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import Joi from "joi";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -39,7 +38,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
         "undo redo",
         "bold italic underline",
         "alignleft aligncenter alignright alignjustify ",
-        "bullist numlist outdent indent",
+        "outdent indent",
         "removeformat ",
         "help",
         "hr",
@@ -47,17 +46,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     },
     menubar: {
       type: "array_enum",
-      options: [
-        "false",
-        "file",
-        "edit",
-        "view",
-        "insert",
-        "format",
-        "table",
-        "tools",
-        "help",
-      ],
+      options: ["false", "file", "edit", "view", "insert", "format"],
     },
     statusbar: { type: "boolean" },
     branding: { type: "boolean" },

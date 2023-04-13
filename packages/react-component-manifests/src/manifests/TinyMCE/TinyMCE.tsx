@@ -1,10 +1,5 @@
-import React, { forwardRef, useCallback, useMemo, useRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-
-interface ToolbarGroup {
-  name?: string;
-  items: string[];
-}
 
 const TinyMCE = forwardRef<
   HTMLInputElement,
@@ -21,8 +16,8 @@ const TinyMCE = forwardRef<
       initOnMount?: boolean;
       tinymceScriptSrc?: string;
       plugins?: string | string[];
-      toolbar?: boolean | string | string[] | Array<ToolbarGroup>;
-      menubar?: boolean | string;
+      toolbar?: string[];
+      menubar?: string[];
       statusbar?: boolean;
       branding?: boolean;
       resize?: boolean | "both";
@@ -40,32 +35,31 @@ const TinyMCE = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const editorRef = useRef(null);
   const key = useMemo(() => {
     if (props.custom.menubar || props.custom.toolbar) {
       return Math.random();
     }
   }, [props.custom.menubar, props.custom.toolbar]);
 
-  //const menuBarItems = props.custom.menubar && props.custom.menubar.join(" ");
   const menuBarItems = useMemo(() => {
-    return props.custom.menubar ? props.custom.menubar.join(" ") : true;
+    if (!props.custom.menubar?.length) {
+      return true;
+    }
+    return props.custom.menubar.join(" ");
   }, [props.custom.menubar]);
 
   const toolBarItems = useMemo(() => {
-    return props.custom.toolbar ? props.custom.toolbar.join(" | ") : true;
+    if (!props.custom.toolbar?.length) {
+      return true;
+    }
+    return props.custom.toolbar.join(" | ");
   }, [props.custom.toolbar]);
 
-  console.log(
-    `toolBarItems---, ${props.custom.menubar} toolbarItems---, ${typeof props
-      .custom.toolbar}`
-  );
   return (
     <>
       <div ref={ref}>
         <Editor
           key={key}
-          onInit={(evt, editor) => (editorRef.current = editor)}
           apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"
           initialValue={props.custom.initialValue}
           value={props.custom.value}
@@ -81,7 +75,8 @@ const TinyMCE = forwardRef<
             initOnMount: props.custom.initOnMount,
             //content_style: `body { font-family:${props.styles.fontFamily}; font-size:14px }`,
             plugins: props.custom.plugins,
-            toolbar: toolBarItems,
+            // toolbar: toolBarItems,
+            toolbar: "bullist numlist",
             menubar: menuBarItems,
             statusbar: props.custom.statusbar,
             branding: props.custom.branding,
