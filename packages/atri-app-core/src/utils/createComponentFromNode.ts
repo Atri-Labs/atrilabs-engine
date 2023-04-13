@@ -3,13 +3,11 @@ import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest
 
 function extractStylesFromStyleNode(cssNode: TreeNode) {
   const breakpoints: { [breakpoint: string]: React.CSSProperties } = {};
-  if (cssNode.state["property"]?.["breakpoints"]) {
-    Object.keys(cssNode.state["property"]["breakpoints"]).forEach(
-      (breakpoint) => {
-        breakpoints[breakpoint] =
-          cssNode.state["property"]["breakpoints"]["property"]["styles"];
-      }
-    );
+  if (cssNode.state["breakpoints"]) {
+    Object.keys(cssNode.state["breakpoints"]).forEach((breakpoint) => {
+      breakpoints[breakpoint] =
+        cssNode.state["breakpoints"][breakpoint]["property"]["styles"];
+    });
   }
 
   return { styles: cssNode.state["property"]?.["styles"] || {}, breakpoints };

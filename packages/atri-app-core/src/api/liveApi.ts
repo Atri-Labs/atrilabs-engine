@@ -29,13 +29,19 @@ function processComponentManifests() {
       componentManifests[pkg] = {};
     }
     componentManifests[pkg][key] = {
-      manifest: componentManifests[pkg][key].manifest,
+      manifest: manifest.manifest,
     };
   });
   return componentManifests;
 }
 
-let componentManifests = processComponentManifests();
+let componentManifests: {
+  [pkg: string]: {
+    [key: string]: {
+      manifest: ReactComponentManifestSchema;
+    };
+  };
+};
 
 manifestRegistryController.subscribe(() => {
   componentManifests = processComponentManifests();
@@ -43,6 +49,9 @@ manifestRegistryController.subscribe(() => {
 
 // convert events to component
 function eventsToComponent(events: AnyEvent[]) {
+  if (componentManifests === undefined) {
+    componentManifests = processComponentManifests();
+  }
   const forest = createForest(forestDef);
   forest.handleEvents({
     name: "events",

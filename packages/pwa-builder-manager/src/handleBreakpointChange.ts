@@ -22,7 +22,7 @@ function processComponentManifests() {
       componentManifests[pkg] = {};
     }
     componentManifests[pkg][key] = {
-      manifest: componentManifests[pkg][key].manifest,
+      manifest: manifest.manifest,
     };
   });
   return componentManifests;

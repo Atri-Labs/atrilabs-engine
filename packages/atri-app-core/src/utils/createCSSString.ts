@@ -1,4 +1,3 @@
-import type { TreeNode } from "@atrilabs/forest";
 import postcss from "postcss";
 const cssjs = require("postcss-js");
 
@@ -40,9 +39,11 @@ export async function createCSSString(
 ) {
   const cssStrs = Promise.all([
     createStyleString(cssSelector, styles),
-    ...Object.keys(breakpoints).map((breakpoint) =>
-      createBreakpointString(cssSelector, breakpoints[breakpoint], breakpoint)
-    ),
+    ...Object.keys(breakpoints)
+      .sort((a, b) => parseFloat(b) - parseFloat(a))
+      .map((breakpoint) =>
+        createBreakpointString(cssSelector, breakpoints[breakpoint], breakpoint)
+      ),
   ]);
 
   return cssStrs;
