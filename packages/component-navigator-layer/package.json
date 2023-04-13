@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/component-navigator-layer",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-alpha.18",
   "description": "component navigator for pwa-builder",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -23,6 +23,6 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/pwa-builder": "^1.0.0-alpha.15"
+    "@atrilabs/pwa-builder": "^1.0.0-alpha.18"
   }
 }
