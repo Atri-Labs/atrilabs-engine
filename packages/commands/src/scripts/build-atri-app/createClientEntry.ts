@@ -1,5 +1,6 @@
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import { createCommonEntry } from "./createCommonEntry";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export async function createClientEntry(options: {
   pageInfos: PageInfo[];

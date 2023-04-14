@@ -3,7 +3,7 @@ import {
   CallbackHandler,
 } from "@atrilabs/react-component-manifest-schema";
 import { Entry } from "webpack";
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import {
   createCssText,
   createStoreFromComponents,
@@ -13,6 +13,7 @@ const { stringify } = require("querystring");
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 import pkgUp from "pkg-up";
 import path from "path";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export async function createCommonEntry(options: {
   pageInfos: PageInfo[];

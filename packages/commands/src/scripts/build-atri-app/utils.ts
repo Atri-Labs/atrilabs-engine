@@ -21,7 +21,6 @@ import {
   callbackTreeDef,
   forestDef,
 } from "@atrilabs/atri-app-core/src/api/forestDef";
-import postcss from "postcss";
 import {
   collectWebpackMessages,
   createConfig,
@@ -30,15 +29,7 @@ import {
   reportWarningsOrSuccess,
 } from "@atrilabs/commands-builder";
 import webpack from "webpack";
-const cssjs = require("postcss-js");
-
-function jssToCss(jss: React.CSSProperties) {
-  return postcss()
-    .process(jss, { parser: cssjs, from: undefined })
-    .then((code) => {
-      return code.css + ";";
-    });
-}
+import { createCSSString } from "@atrilabs/atri-app-core/src/utils";
 
 /**
  * This function expects that all the packages have dist/manfiest.bundle.js.
@@ -203,12 +194,20 @@ export function createStoreFromComponents(
 export async function createCssText(
   components: ReturnType<typeof getComponentsFromNodes>
 ) {
-  const cssObj: { [alias: string]: React.CSSProperties } = {};
-  components.forEach((component) => {
-    if (component.props["styles"])
-      cssObj[`.${component.alias}`] = component.props["styles"];
+  // create a css string for each component
+  const promises = components.map(async (component) => {
+    if (component.props["styles"]) {
+      // strs is a combination of root style & breakpoint style
+      const strs = createCSSString(
+        `.${component.alias}`,
+        component.props["styles"].styles || {},
+        component.props["styles"].breakpoints || {}
+      );
+      return (await strs).join("\n");
+    }
+    return "";
   });
-  return await jssToCss(cssObj);
+  return (await Promise.all(promises)).join("\n");
 }
 
 export function readToolConfig(toolPkg: string) {

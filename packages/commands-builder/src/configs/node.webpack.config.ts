@@ -225,7 +225,7 @@ export function createNodeConfig(options: {
         new ModuleScopePlugin(paths.appSrc, [
           paths.appPackageJson,
           babelRuntimeEntry,
-          babelRuntimeEntryHelpers,
+          ...babelRuntimeEntryHelpers,
           babelRuntimeRegenerator,
         ]),
       ],
