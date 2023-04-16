@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/canvas-breakpoint-layer",
-  "version": "1.0.0-alpha.18",
+  "version": "1.0.0-alpha.19",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,12 +21,12 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^1.0.0-alpha.18",
-    "@atrilabs/design-system": "^1.0.0-alpha.18",
+    "@atrilabs/core": "^1.0.0-alpha.19",
+    "@atrilabs/design-system": "^1.0.0-alpha.19",
     "typescript": "4.6.3"
   },
   "devDependencies": {
-    "@atrilabs/layer-types": "^1.0.0-alpha.18",
+    "@atrilabs/layer-types": "^1.0.0-alpha.19",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
@@ -35,7 +35,7 @@
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.18",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.19",
     "prettier": "^2.6.2"
   },
   "peerDependencies": {
