@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createCSSString } from "../../utils/createCSSString";
 
 export function useStyleString(props: {
@@ -17,5 +17,11 @@ export function useStyleString(props: {
       });
     }
   }, [props.compProps, props.alias]);
-  return styleStr;
+  const styles = useMemo(() => {
+    const newStyles = { ...props.compProps.styles };
+    delete newStyles["styles"];
+    delete newStyles["breakpoints"];
+    return newStyles;
+  }, [props.compProps.styles]);
+  return { styleStr, styles };
 }

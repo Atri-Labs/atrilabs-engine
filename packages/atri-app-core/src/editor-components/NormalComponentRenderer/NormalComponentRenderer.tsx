@@ -18,12 +18,12 @@ export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
   const compProps = usePropsUpdated({ id: props.id });
-  const styleStr = useStyleString({ alias, compProps });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   return (
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles: {} }}
+        {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
         className={alias}

@@ -31,7 +31,7 @@ export function RepeatingComponentRenderer(
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
   const compProps = usePropsUpdated({ id: props.id });
-  const styleStr = useStyleString({ alias, compProps });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const repeatingContext = useContext(RepeatingContext);
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
@@ -66,7 +66,7 @@ export function RepeatingComponentRenderer(
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles: {} }}
+        {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
         children={childrenNodes || []}

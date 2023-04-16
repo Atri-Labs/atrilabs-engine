@@ -23,13 +23,13 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
   const compProps = usePropsUpdated({ id: props.id });
-  const styleStr = useStyleString({ alias, compProps });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const ref = useGetComponentRef({ id: props.id });
   return (
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles: {} }}
+        {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
         className={alias}

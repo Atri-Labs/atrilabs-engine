@@ -23,7 +23,7 @@ export function LiveRepeatingComponentRenderer(
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
-  const styleStr = useStyleString({ alias, compProps });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
 
   let childrenNodes: React.ReactNode[] | null = null;
@@ -59,7 +59,7 @@ export function LiveRepeatingComponentRenderer(
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles: {} }}
+        {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
         children={childrenNodes || []}

@@ -18,13 +18,13 @@ export function LiveParentComponentRenderer(
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
-  const styleStr = useStyleString({ alias, compProps });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
   return (
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles: {} }}
+        {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
         className={alias}
