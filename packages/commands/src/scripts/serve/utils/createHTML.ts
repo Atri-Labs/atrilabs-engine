@@ -1,5 +1,6 @@
 import path from "path";
 import recursive from "recursive-readdir";
+import fs from "fs";
 
 function readStaticCSSDirectory() {
   const staticCSSDir = path.resolve(
@@ -9,6 +10,9 @@ function readStaticCSSDirectory() {
     "static",
     "css"
   );
+  if (!fs.existsSync(staticCSSDir)) {
+    return Promise.resolve([]);
+  }
   return recursive(staticCSSDir).then((files) => {
     return files.map((file) => {
       return path.relative(staticCSSDir, file);
