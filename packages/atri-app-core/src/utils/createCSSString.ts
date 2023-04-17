@@ -38,12 +38,12 @@ export async function createCSSString(
   breakpoints: { [breakpoint: string]: React.CSSProperties }
 ) {
   const cssStrs = Promise.all([
+    createStyleString(cssSelector, styles),
     ...Object.keys(breakpoints)
       .sort((a, b) => parseFloat(b) - parseFloat(a))
       .map((breakpoint) =>
         createBreakpointString(cssSelector, breakpoints[breakpoint], breakpoint)
       ),
-    createStyleString(cssSelector, styles),
   ]);
 
   return cssStrs;
