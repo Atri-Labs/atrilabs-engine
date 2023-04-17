@@ -5,6 +5,7 @@ import { useFocusComponent } from "../hooks/useFocusComponent";
 import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 import { usePropsUpdated } from "../hooks/usePropsUpdated";
 import { useGetComponentRef } from "../hooks/useGetComponentRef";
+import { useStyleString } from "../hooks/useStyleString";
 
 export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   const {
@@ -17,5 +18,16 @@ export function NormalComponentRenderer(props: NormalComponentRendererProps) {
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
   const compProps = usePropsUpdated({ id: props.id });
-  return <Comp {...compProps} ref={ref} {...callbacks} className={alias} />;
+  const { styleStr, styles } = useStyleString({ alias, compProps });
+  return (
+    <>
+      <style>{styleStr}</style>
+      <Comp
+        {...{ ...compProps, styles }}
+        ref={ref}
+        {...callbacks}
+        className={alias}
+      />
+    </>
+  );
 }

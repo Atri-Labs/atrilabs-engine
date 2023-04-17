@@ -7,6 +7,7 @@ import { LiveNormalComponentRenderer } from "../LiveNormalComponentRenderer/Live
 import { useGetComponentProps } from "../live-component/hooks/useGetComponentProps";
 import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
 import { useGetComponentRef } from "../hooks/useGetComponentRef";
+import { useStyleString } from "../hooks/useStyleString";
 
 export function LiveParentComponentRenderer(
   props: ParentComponentRendererProps
@@ -17,22 +18,31 @@ export function LiveParentComponentRenderer(
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
   return (
-    <Comp {...compProps} ref={ref} {...callbacks} className={alias}>
-      {children.map((childId) => {
-        const { acceptsChild, isRepeating } =
-          componentStoreApi.getComponent(childId)!;
-        return acceptsChild ? (
-          isRepeating ? (
-            <LiveRepeatingComponentRenderer id={childId} key={childId} />
+    <>
+      <style>{styleStr}</style>
+      <Comp
+        {...{ ...compProps, styles }}
+        ref={ref}
+        {...callbacks}
+        className={alias}
+      >
+        {children.map((childId) => {
+          const { acceptsChild, isRepeating } =
+            componentStoreApi.getComponent(childId)!;
+          return acceptsChild ? (
+            isRepeating ? (
+              <LiveRepeatingComponentRenderer id={childId} key={childId} />
+            ) : (
+              <LiveParentComponentRenderer id={childId} key={childId} />
+            )
           ) : (
-            <LiveParentComponentRenderer id={childId} key={childId} />
-          )
-        ) : (
-          <LiveNormalComponentRenderer id={childId} key={childId} />
-        );
-      })}
-    </Comp>
+            <LiveNormalComponentRenderer id={childId} key={childId} />
+          );
+        })}
+      </Comp>
+    </>
   );
 }

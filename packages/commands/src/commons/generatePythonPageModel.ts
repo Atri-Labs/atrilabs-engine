@@ -42,7 +42,7 @@ export function generatePythonPageModel(
 ) {
   const importSets = new Set<string>();
   compDefs.forEach(({ compKey, pythonPkg }) => {
-    importSets.add(`from ${pythonPkg} import ${compKey}`);
+    importSets.add(`from ${pythonPkg}.${compKey} import ${compKey}`);
   });
 
   const repeatingComponentDefs = compDefs.filter((def) => {

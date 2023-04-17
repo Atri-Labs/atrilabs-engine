@@ -28,6 +28,11 @@ export const useManageCSS = (props: {
   // handle breakpoints
   const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(null);
   useEffect(() => {
+    try {
+      setBreakpoint(breakpointApi.getActiveBreakpoint());
+    } catch {}
+  }, []);
+  useEffect(() => {
     breakpointApi.subscribeBreakpointChange(() => {
       const breakpoint = breakpointApi.getActiveBreakpoint();
       setBreakpoint(breakpoint);
@@ -38,6 +43,7 @@ export const useManageCSS = (props: {
   const patchCb = useCallback(
     (slice: any) => {
       if (
+        breakpoint &&
         id &&
         compTree.nodes[id] &&
         compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
@@ -48,16 +54,16 @@ export const useManageCSS = (props: {
         if (cssNodeId) {
           const patchEvent: PatchEvent = {
             type: `PATCH$$${cssTreeId}`,
-            slice: breakpoint
-              ? {
+            slice: breakpointApi.isReferenceBreakpointActive()
+              ? slice
+              : {
                   // respects only max-width. If in future need arises for min-width
                   // or the combination of min-width and max-width we will add new fields
                   // to the state of css node in css tree.
                   breakpoints: {
                     [breakpoint.max]: slice,
                   },
-                }
-              : slice,
+                },
             id: cssNodeId.childId,
           };
           api.postNewEvents(forestPkgId, forestId, {

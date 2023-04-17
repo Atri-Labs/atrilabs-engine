@@ -46,6 +46,16 @@ function subscribeBreakpointChange(cb: () => void) {
     }
   };
 }
+function isReferenceBreakpointActive() {
+  return (
+    activeBreakpoint !== undefined &&
+    referenceBreakpoint !== undefined &&
+    activeBreakpoint !== null &&
+    referenceBreakpoint !== null &&
+    activeBreakpoint.max === referenceBreakpoint.max &&
+    activeBreakpoint.min === referenceBreakpoint.min
+  );
+}
 
 export const breakpointApi = {
   addBreakpoints,
@@ -55,4 +65,5 @@ export const breakpointApi = {
   getReferenceBreakpoint,
   setReferenceBreakpoint,
   subscribeBreakpointChange,
+  isReferenceBreakpointActive,
 };

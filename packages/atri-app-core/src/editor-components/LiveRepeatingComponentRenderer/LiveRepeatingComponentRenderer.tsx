@@ -9,6 +9,7 @@ import { useGetComponentProps } from "../live-component/hooks/useGetComponentPro
 import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
 import { useGetComponentRef } from "../hooks/useGetComponentRef";
 import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
+import { useStyleString } from "../hooks/useStyleString";
 
 export function LiveRepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
@@ -22,6 +23,7 @@ export function LiveRepeatingComponentRenderer(
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
 
   let childrenNodes: React.ReactNode[] | null = null;
@@ -54,12 +56,15 @@ export function LiveRepeatingComponentRenderer(
   }
 
   return (
-    <Comp
-      {...compProps}
-      ref={ref}
-      {...callbacks}
-      children={childrenNodes || []}
-      className={alias}
-    ></Comp>
+    <>
+      <style>{styleStr}</style>
+      <Comp
+        {...{ ...compProps, styles }}
+        ref={ref}
+        {...callbacks}
+        children={childrenNodes || []}
+        className={alias}
+      ></Comp>
+    </>
   );
 }
