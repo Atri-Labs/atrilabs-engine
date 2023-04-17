@@ -2,11 +2,9 @@ import {
   BrowserForestManager,
   getId,
   getReactManifest,
-  manifestRegistryController,
   useTree,
 } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import { useCallback } from "react";
 import {
   AnyEvent,
@@ -194,7 +192,7 @@ export const useCreateTemplate = () => {
         if (event.id === selectedId) {
           // JSONify to prevent overriding the original node
           event.state = JSON.parse(JSON.stringify(event.state));
-          event.state.parent.id = "templateRoot";
+          event.state.parent.id = "__atri_canvas_zone_root__";
           event.state.parent.index = 0;
         }
         events.push(event);

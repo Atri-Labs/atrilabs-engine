@@ -36,10 +36,10 @@ export const TemplateRenderer: React.FC<{
   onMouseDown,
 }) => {
   const nodes = useMemo(() => {
-    if (templateComponents["templateRoot"] === undefined) {
+    if (templateComponents["__atri_canvas_zone_root__"] === undefined) {
       return null;
     }
-    return getNode(templateComponents, "templateRoot");
+    return getNode(templateComponents, "__atri_canvas_zone_root__");
   }, [templateComponents]);
 
   return (

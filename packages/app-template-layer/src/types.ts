@@ -1,3 +1,5 @@
+import { AnyEvent } from "@atrilabs/forest";
+
 export type ComponentData = {
   FC: React.FC<any>;
   props: any;
@@ -16,4 +18,5 @@ export type PartialTemplateComponents = {
 export type FormattedTemplateData = {
   name: string;
   components: TemplateComponents;
+  events: AnyEvent[];
 };

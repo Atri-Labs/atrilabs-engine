@@ -145,6 +145,7 @@ subscribeCanvasMachine("select", (context) => {
 subscribeCanvasMachine("selectEnd", (context) => {
   window.parent?.postMessage({ type: "selectEnd", id: context.selected }, "*");
 });
+
 function stringifyEvent(e: KeyboardEvent) {
   const obj = {};
   for (let k in e) {
@@ -161,6 +162,7 @@ function stringifyEvent(e: KeyboardEvent) {
     " "
   );
 }
+
 subscribeCanvasMachine("KEY_DOWN", (context, event) => {
   if (event.type === "KEY_DOWN") {
     const keyEvent = event.event;
@@ -254,6 +256,7 @@ subscribeCanvasMachine("PROPS_UPDATED", (_context, event) => {
     );
   }
 });
+
 function subscribeCanvasZoneEvent(
   canvasZoneId: string,
   event: CanvasZoneEvent,
@@ -273,6 +276,7 @@ function subscribeCanvasZoneEvent(
     }
   };
 }
+
 function subscribeComponentEvent(
   compId: string,
   event: ComponentEvent,

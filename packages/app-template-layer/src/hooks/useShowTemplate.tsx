@@ -95,6 +95,7 @@ function getComponentsFromTemplate(name: string) {
       resolve({
         name,
         components: templateComps as TemplateComponents,
+        events,
       } as FormattedTemplateData);
     });
   });
@@ -115,7 +116,6 @@ export const useShowTemplate = (templateDetails: string[]) => {
 
   const mapFormattedTemplateData = useMemo(() => {
     const namesMap: { [name: string]: FormattedTemplateData } = {};
-    console.log("formattedData", formattedData);
     formattedData.forEach((data: FormattedTemplateData) => {
       namesMap[data.name.toString()] = data;
     });
@@ -124,7 +124,6 @@ export const useShowTemplate = (templateDetails: string[]) => {
 
   useEffect(() => {
     if (!templateDetails.length) return;
-
     const mappedFormatData = mapFormattedTemplateData;
     const data: any = templateDetails.map((name: string) => {
       // if already template fetched

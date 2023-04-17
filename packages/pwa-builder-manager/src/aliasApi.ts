@@ -1,12 +1,13 @@
 import { BrowserForestManager } from "@atrilabs/core";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import { subscribeEditorMachine } from "./init";
+
 const TrieSearch = require("trie-search");
 import { api } from "./api";
 
 const trie = new TrieSearch();
 
-async function createAliasFromPrefix(prefix: string) {
+function createAliasFromPrefix(prefix: string) {
   const results = trie.search(prefix);
   let largestNumber = 1;
   if (Array.isArray(results) && results.length > 0) {
@@ -45,7 +46,7 @@ async function assingAliasFromPrefix(options: {
   postData: Parameters<typeof api.postNewEvents>[2];
 }) {
   const { prefix, id, postData } = options;
-  const alias = await createAliasFromPrefix(prefix);
+  const alias = createAliasFromPrefix(prefix);
   const { forestPkgId, forestId } = BrowserForestManager.currentForest;
   postData.events.push({
     type: `PATCH$$${ComponentTreeId}`,

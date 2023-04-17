@@ -20,6 +20,9 @@ import { useCreateTemplate } from "./hooks/useCreateTemplate";
 import { ConfirmDelete } from "./components/ConfirmDelete";
 import { TemplateRenderer } from "./components/TemplateRenderer";
 import { useShowTemplate } from "./hooks/useShowTemplate";
+import { canvasApi } from "@atrilabs/pwa-builder-manager";
+import { getId } from "@atrilabs/core";
+import type { DragComp, DragData } from "@atrilabs/atri-app-core";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
@@ -81,6 +84,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 export default function () {
+  const startDragCb = useCallback((dragComp: DragComp, dragData: DragData) => {
+    canvasApi.startDrag(dragComp, dragData);
+  }, []);
+
   const { templateDetails, callCreateTemplateApi, callDeleteTemplateApi } =
     useTemplateApi();
   const createTemplate = useCreateTemplate();
@@ -175,12 +182,30 @@ export default function () {
                       color: gray300,
                     }}
                   ></div>
-                  {formattedData.map(({ name, components }) => {
-                    const onMouseDownCb = (e: React.MouseEvent) => {
+                  {formattedData.map(({ name, components, events }) => {
+                    const onMouseDown = (e: React.MouseEvent) => {
                       // CARE
                       e.preventDefault();
                       e.stopPropagation();
+                      startDragCb(
+                        {
+                          comp: "CommonIcon",
+                          props: {
+                            name: name.replace(".template.json", ""),
+                            containerStyle: { padding: "1rem" },
+                          },
+                        },
+                        {
+                          type: "template",
+                          data: {
+                            name: name.replace(".template.json", ""),
+                            newTemplateRootId: getId(),
+                            events: events,
+                          },
+                        }
+                      );
                     };
+
                     return (
                       <div
                         key={name}
@@ -198,7 +223,7 @@ export default function () {
                               templateName: name,
                             });
                           }}
-                          onMouseDown={onMouseDownCb}
+                          onMouseDown={onMouseDown}
                         />
                       </div>
                     );

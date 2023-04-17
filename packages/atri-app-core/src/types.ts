@@ -5,11 +5,19 @@ import type {
   CallbackHandler,
 } from "@atrilabs/react-component-manifest-schema";
 
-export type DragData = {
-  type: "component";
-  data: { pkg: string; key: string; manifestSchema: string; id: string };
-};
-
+export type DragData =
+  | {
+      type: "component";
+      data: { pkg: string; key: string; manifestSchema: string; id: string };
+    }
+  | {
+      type: "template";
+      data: {
+        name: string;
+        newTemplateRootId: string;
+        events: AnyEvent[];
+      };
+    };
 export type DragComp = { comp: "CommonIcon"; props: any };
 
 export type CanvasComponent = {
@@ -110,10 +118,12 @@ export interface LiveApiServerToClientEvents {
 
 export interface LiveapiClientToServerEvents {
   sendEvents(urlPath: string, callback: (events: AnyEvent[]) => void): void;
+
   runSSR(
     data: { urlPath: string; state: { [alias: string]: any }; query?: string },
     callback: (state: { [alias: string]: any }) => void
   ): void;
+
   runSSG(
     data: { urlPath: string; state: { [alias: string]: any } },
     callback: (state: { [alias: string]: any }) => void
