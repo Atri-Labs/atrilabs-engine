@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/pwa-builder-server",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -28,10 +28,10 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.20",
-    "@atrilabs/commands": "^1.0.0-alpha.20",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.20",
-    "@atrilabs/core": "^1.0.0-alpha.20",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.21",
+    "@atrilabs/commands": "^1.0.0-alpha.21",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.21",
+    "@atrilabs/core": "^1.0.0-alpha.21",
     "chokidar": "^3.5.3",
     "css-tree": "^2.3.1",
     "mime-types": "^2.1.35",
