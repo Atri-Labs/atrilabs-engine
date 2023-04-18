@@ -344,6 +344,62 @@ export const Typography: React.FC<CssProprtyComponentType> = (props) => {
             />
           </div>
         </div>
+        <div style={styles.option}>
+          <div style={styles.optionName}>Decoration</div>
+          <div>
+            <select
+              name="decoration"
+              onChange={(e) => handleFontStyleChange(e, "textDecoration")}
+              style={{ ...styles.inputBox, width: "80px" }}
+              value={props.styles.textDecoration || ""}
+              className="scroll"
+            >
+              <option style={styles.select} value=""></option>
+              <option style={styles.select} value="auto">
+                auto
+              </option>
+              <option style={styles.select} value="blink">
+                blink
+              </option>
+              <option style={styles.select} value="dashed">
+                dashed
+              </option>
+              <option style={styles.select} value="dotted">
+                dotted
+              </option>
+              <option style={styles.select} value="double">
+                double
+              </option>
+              <option style={styles.select} value="initial">
+                initial
+              </option>
+              <option style={styles.select} value="line-through">
+                line-through
+              </option>
+              <option style={styles.select} value="none">
+                none
+              </option>
+              <option style={styles.select} value="overline">
+                overline
+              </option>
+              <option style={styles.select} value="revert">
+                revert
+              </option>
+              <option style={styles.select} value="solid">
+                solid
+              </option>
+              <option style={styles.select} value="underline">
+                underline
+              </option>
+              <option style={styles.select} value="unset">
+                unset
+              </option>
+              <option style={styles.select} value="wavy">
+                wavy
+              </option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
   );

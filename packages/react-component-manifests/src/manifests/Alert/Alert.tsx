@@ -38,7 +38,7 @@ const Alert = forwardRef<
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
-      <div ref={ref}>
+      <div ref={ref} style={{ display: "inline-block" }}>
         <AntdAlert
           className={props.className}
           style={props.styles}

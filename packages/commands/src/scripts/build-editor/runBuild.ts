@@ -36,6 +36,7 @@ export function runBuild(
     customLoaders,
     generateIndexHtml,
     babel,
+    imageInlineSizeLimit,
   } = params;
 
   checkBrowsers(paths.appPath, isInteractive()).then(() => {
@@ -50,7 +51,7 @@ export function runBuild(
       paths,
       publicUrlOrPath,
       moduleFileExtensions,
-      imageInlineSizeLimit: 10,
+      imageInlineSizeLimit,
       shouldInlineRuntimeChunk: true,
       useTypeScript,
       additionalInclude,

@@ -1,11 +1,39 @@
-import React, { forwardRef, useCallback, useRef } from "react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+
+const cssjs = require("postcss-js");
+const postcss = require("postcss");
+
+function jssToCss(jss: React.CSSProperties) {
+  return postcss()
+    .process(jss, { parser: cssjs, from: undefined })
+    .then((code) => {
+      return code.css + ";";
+    });
+}
 
 const TinyMCE = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
-    custom: {};
+    custom: {
+      apiKey?: string;
+      initialValue?: string;
+      value?: string;
+      disabled?: boolean;
+      inline?: boolean;
+      id?: string;
+      contentEditable?: boolean;
+      initOnMount?: boolean;
+      tinymceScriptSrc?: string;
+      plugins?: string | string[];
+      toolbar?: string[];
+      menubar?: string[];
+      statusbar?: boolean;
+      branding?: boolean;
+      resize?: boolean | "both";
+      paste_data_images?: boolean;
+    };
     onClick: (event: {
       eventX: number;
       eventY: number;
@@ -14,63 +42,68 @@ const TinyMCE = forwardRef<
       width: number;
       height: number;
     }) => void;
-    onChange?(value: string): void;
+    onEditorChange: (a: string, editor: Editor) => void;
     className?: string;
   }
 >((props, ref) => {
-  const editorRef = useRef(null);
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-    }
-  };
+  const [contentStyles, setContentStyles] = useState<string>("");
 
-  const onClick = useCallback(
-    (e: React.MouseEvent) => {
-      const { x, y, width, height } = (
-        e.nativeEvent.target as HTMLElement
-      ).getBoundingClientRect();
-      props.onClick({
-        eventX: e.pageX,
-        eventY: e.pageY,
-        x,
-        y,
-        width,
-        height,
-      });
-    },
-    [props]
-  );
+  const key = useMemo(() => {
+    if (props.custom.menubar || props.custom.toolbar) {
+      return Math.random();
+    }
+  }, [props.custom.menubar, props.custom.toolbar]);
+
+  const menuBarItems = useMemo(() => {
+    if (!props.custom.menubar?.length) {
+      return true;
+    }
+    return props.custom.menubar.join(" ");
+  }, [props.custom.menubar]);
+
+  const toolBarItems = useMemo(() => {
+    if (!props.custom.toolbar?.length) {
+      return true;
+    }
+    return props.custom.toolbar.join(" | ");
+  }, [props.custom.toolbar]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const css = await jssToCss(props.styles);
+      setContentStyles(css);
+    };
+    fetchData();
+  }, [props.styles]);
 
   return (
     <>
-      <div
-        className={props.className}
-        ref={ref}
-        style={{
-          position: "relative",
-          display: "inline-block",
-          ...props.styles,
-        }}
-        onClick={onClick}
-      >
+      <div ref={ref}>
         <Editor
-          onInit={(evt, editor) => (editorRef.current = editor)}
-          initialValue="<p>This is the initial content of the editor.</p>"
+          key={key}
+          apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"
+          initialValue={props.custom.initialValue}
+          value={props.custom.value}
+          disabled={props.custom.disabled}
+          inline={props.custom.inline}
+          id={props.custom.id}
+          tinymceScriptSrc={props.custom.tinymceScriptSrc}
           init={{
-            height: 500,
-            menubar: false,
-            toolbar:
-              "undo redo " +
-              "bold italic backcolor | alignleft aligncenter " +
-              "alignright alignjustify | bullist numlist outdent indent | " +
-              "removeformat | help " +
-              "formatselect",
-            content_style:
-              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            height: props.styles.height,
+            width: props.styles.width,
+            className: props.className,
+            contentEditable: props.custom.contentEditable,
+            initOnMount: props.custom.initOnMount,
+            content_style: `body {${contentStyles}}`,
+            plugins: props.custom.plugins,
+            toolbar: toolBarItems,
+            menubar: menuBarItems,
+            statusbar: props.custom.statusbar,
+            branding: props.custom.branding,
+            resize: props.custom.resize,
+            paste_data_images: props.custom.paste_data_images,
           }}
         />
-        <button onClick={log}>Log editor content</button>
       </div>
     </>
   );

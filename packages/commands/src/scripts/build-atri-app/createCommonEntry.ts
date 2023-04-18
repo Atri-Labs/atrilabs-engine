@@ -3,7 +3,7 @@ import {
   CallbackHandler,
 } from "@atrilabs/react-component-manifest-schema";
 import { Entry } from "webpack";
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import {
   createCssText,
   createStoreFromComponents,
@@ -13,6 +13,7 @@ const { stringify } = require("querystring");
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 import pkgUp from "pkg-up";
 import path from "path";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export async function createCommonEntry(options: {
   pageInfos: PageInfo[];
@@ -23,13 +24,45 @@ export async function createCommonEntry(options: {
     _error: { import: "./pages/_error" },
   };
   const { pageInfos, componentManifests, loaderName } = options;
+  const processedComponentManifests: {
+    [pkg: string]: { [key: string]: string };
+  } = {};
+  Object.keys(componentManifests).reduce((prev, pkg) => {
+    Object.keys(componentManifests[pkg]!).reduce((prev, key) => {
+      if (prev[pkg] === undefined) prev[pkg] = {};
+      if (
+        componentManifests[pkg]![key]!.paths.component.startsWith("manifests/")
+      ) {
+        prev[pkg]![key] = path.resolve(
+          process.cwd(),
+          componentManifests[pkg]![key]!.paths.component
+        );
+      } else {
+        prev[pkg]![key] = path.resolve(
+          path.dirname(
+            pkgUp.sync({
+              // @ts-ignore
+              cwd: __non_webpack_require__.resolve(pkg),
+            })!
+          ),
+          componentManifests[pkg]![key]!.paths.component
+        );
+      }
+
+      return prev;
+    }, prev);
+    return prev;
+  }, processedComponentManifests);
+
   const routes = pageInfos.map(({ routeObjectPath }) => {
     return routeObjectPath;
   });
+
   for (let i = 0; i < pageInfos.length; i++) {
     const { pagePath, routeObjectPath, components } = pageInfos[i]!;
     const entryName = getEntryNameFromPathPath(pagePath);
     const srcs: string[] = [];
+
     const aliasCompMap: {
       [alias: string]: {
         pkg: string;
@@ -52,11 +85,13 @@ export async function createCommonEntry(options: {
         type: comp.type,
       };
     });
+
     const idCompMap: { [id: string]: typeof components["0"] } = {};
     components.reduce((prev, comp) => {
       prev[comp.id] = comp;
       return prev;
     }, idCompMap);
+
     const compTree: { [canvasZoneId: string]: { [compId: string]: string[] } } =
       {};
     components.forEach((comp) => {
@@ -81,6 +116,7 @@ export async function createCommonEntry(options: {
         );
       });
     });
+
     const compTreeWithAlias: {
       [canvasZoneId: string]: { [compId: string]: string[] };
     } = {};
@@ -112,39 +148,20 @@ export async function createCommonEntry(options: {
         });
       });
     });
-    const processedComponentManifests: {
-      [pkg: string]: { [key: string]: string };
-    } = {};
-    Object.keys(componentManifests).reduce((prev, pkg) => {
-      Object.keys(componentManifests[pkg]!).reduce((prev, key) => {
-        if (prev[pkg] === undefined) prev[pkg] = {};
-        if (
-          componentManifests[pkg]![key]!.paths.component.startsWith(
-            "manifests/"
-          )
-        ) {
-          prev[pkg]![key] = path.resolve(
-            process.cwd(),
-            componentManifests[pkg]![key]!.paths.component
-          );
-        } else {
-          prev[pkg]![key] = path.resolve(
-            path.dirname(
-              pkgUp.sync({
-                // @ts-ignore
-                cwd: __non_webpack_require__.resolve(pkg),
-              })!
-            ),
-            componentManifests[pkg]![key]!.paths.component
-          );
-        }
 
-        return prev;
-      }, prev);
-      return prev;
-    }, processedComponentManifests);
-    entry[entryName] = {
-      import: `${loaderName}?${stringify({
+    const requiredComponentMap: { [pkg: string]: { [key: string]: string } } =
+      {};
+    components.forEach((component) => {
+      const pkg = component.meta.pkg;
+      const key = component.meta.key;
+      if (requiredComponentMap[pkg] === undefined) {
+        requiredComponentMap[pkg] = {};
+      }
+      requiredComponentMap[pkg]![key] = processedComponentManifests[pkg]![key]!;
+    });
+
+    const options = Buffer.from(
+      JSON.stringify({
         pagePath,
         srcs: JSON.stringify(srcs || []),
         reactRouteObjectPath: routeObjectPath,
@@ -155,7 +172,12 @@ export async function createCommonEntry(options: {
         ),
         aliasCompMap: JSON.stringify(aliasCompMap),
         componentTree: JSON.stringify(compTreeWithAlias),
-        componentMap: JSON.stringify(processedComponentManifests),
+        componentMap: JSON.stringify(requiredComponentMap),
+      })
+    ).toString("base64");
+    entry[entryName] = {
+      import: `${loaderName}?${stringify({
+        options: options,
       })}!`,
     };
   }

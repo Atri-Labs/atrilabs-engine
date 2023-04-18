@@ -39,6 +39,7 @@ const Modal = forwardRef<
     <div ref={ref}>
       <AntdModal
         style={props.styles}
+        width={props.styles.width}
         className={props.className}
         {...custom}
         title={

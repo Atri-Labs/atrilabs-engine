@@ -7,6 +7,9 @@ import * as ts from "typescript";
 import recursive from "recursive-readdir";
 import { v4 as uuidv4 } from "uuid";
 import { generateControllers } from "./generateControllers";
+import { generateTSConfig } from "./generateTSFiles";
+import { generateTypeFile } from "./generateTSFiles";
+import { generateGitIgnoe } from "./generateGitIgnore";
 
 process.on("unhandledRejection", (reason) => {
   console.log(chalk.red(`create-atri-app failed with reason\n ${reason}`));
@@ -56,31 +59,38 @@ function createPackageJSON(
       description: data.description,
       license: "ISC",
       scripts: {
-        dev: "ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d '#@atrilabs/react-component-manifests' -a '@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link' -i '@atrilabs/utils:@atrilabs/atri-app-core'",
+        dev: 'cross-env ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d "#@atrilabs/react-component-manifests" -a "@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link" -i "@atrilabs/utils:@atrilabs/atri-app-core"',
         "gen-py-app": "gen-py-app",
         "dev-py-app": "dev-py-app",
         "gen-py-classes":
-          "gen-py-classes -n ../../node_modules -i '@atrilabs/utils' -a '@atrilabs/utils'",
-        editor: "APP_HOSTNAME='http://localhost:3000' dev-atri-editor",
+          'gen-py-classes -n ../../node_modules -i "@atrilabs/utils" -a "@atrilabs/utils"',
+        editor:
+          'cross-env APP_HOSTNAME="http://localhost:3000" dev-atri-editor',
         build:
-          "NODE_ENV=production BABEL_ENV=production build-atri-app -d '#@atrilabs/react-component-manifests'",
+          'cross-env NODE_ENV=production BABEL_ENV=production build-atri-app -d "#@atrilabs/react-component-manifests"',
+        serve: "serve",
       },
       // Update these versions on every release
       dependencies: {
-        "@atrilabs/atri-app-core": "^1.0.0-alpha.13",
-        "@atrilabs/canvas-zone": "^1.0.0-alpha.13",
-        "@atrilabs/commands": "^1.0.0-alpha.13",
-        "@atrilabs/commands-builder": "^1.0.0-alpha.13",
-        "@atrilabs/core": "^1.0.0-alpha.13",
-        "@atrilabs/design-system": "^1.0.0-alpha.13",
-        "@atrilabs/pwa-builder": "^1.0.0-alpha.13",
-        "@atrilabs/pwa-builder-server": "^1.0.0-alpha.13",
-        "@atrilabs/react-component-manifests": "^1.0.0-alpha.13",
-        "@atrilabs/utils": "^1.0.0-alpha.13",
+        "@atrilabs/atri-app-core": "^1.0.0-alpha.23",
+        "@atrilabs/canvas-zone": "^1.0.0-alpha.23",
+        "@atrilabs/commands": "^1.0.0-alpha.23",
+        "@atrilabs/commands-builder": "^1.0.0-alpha.23",
+        "@atrilabs/core": "^1.0.0-alpha.23",
+        "@atrilabs/design-system": "^1.0.0-alpha.23",
+        "@atrilabs/pwa-builder": "^1.0.0-alpha.23",
+        "@atrilabs/pwa-builder-server": "^1.0.0-alpha.23",
+        "@atrilabs/react-component-manifests": "^1.0.0-alpha.23",
+        "@atrilabs/utils": "^1.0.0-alpha.23",
+        "cross-env": "^7.0.3",
         "node-noop": "^1.0.0",
         react: "18.2.0",
         "react-dom": "18.2.0",
         xstate: "^4.35.2",
+      },
+      devDependencies: {
+        "@types/lodash": "^4.14.192",
+        "@types/uuid": "^9.0.1",
       },
       browserslist: {
         production: [">0.2%", "not dead", "not op_mini all"],
@@ -257,6 +267,9 @@ function main() {
   copyError({ dest, useTypescript: args.typescript });
   createPublicDirectory({ dest });
   generateControllers({ dest });
+  generateTSConfig({ dest });
+  if (args.typescript) generateTypeFile({ dest });
+  generateGitIgnoe({ dest, useTypescript: args.typescript });
 }
 
 main();

@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/atri-app-core",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.23",
   "description": "utility code for atri-app",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -24,7 +24,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.13",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.23",
     "react-router-dom": "^6.6.2",
     "recursive-readdir": "^2.2.3",
     "socket.io-client": "^4.5.0",

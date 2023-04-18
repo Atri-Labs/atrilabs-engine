@@ -1,4 +1,5 @@
 const path = require("path");
+const upath = require("upath");
 
 function registerComponentLoader() {
   /**
@@ -9,7 +10,7 @@ function registerComponentLoader() {
 	${irs
     .map((ir, index) => {
       return `
-	  import man_${index} from "${ir.manifest}";
+	  import man_${index} from "${upath.toUnix(ir.manifest)}";
 	  `;
     })
     .join("\n")}

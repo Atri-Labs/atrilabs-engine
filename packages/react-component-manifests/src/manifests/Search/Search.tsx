@@ -1,5 +1,6 @@
 import React, { forwardRef, ReactNode } from "react";
 import { Input } from "antd";
+
 const SearchInput = Input.Search;
 
 export enum InputSize {
@@ -59,7 +60,7 @@ const Search = forwardRef<
   const { custom } = props;
   return (
     // moved ref to div, while passing prefix and suffix ref was losing focus and the selection was not working without refreshing the editor
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <SearchInput
         style={props.styles}
         className={props.className}

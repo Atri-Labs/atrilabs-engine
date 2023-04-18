@@ -33,7 +33,7 @@ export default function () {
           // this div also acts as anchor to detect changes in sizes
           style={{
             ...styles["canvas-container"],
-            maxWidth: breakpoint.max,
+            maxWidth: breakpoint.min,
             width: "100%",
             margin: "0 auto",
           }}

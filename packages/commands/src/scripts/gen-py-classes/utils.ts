@@ -50,8 +50,8 @@ class ${compKey}CustomClass(${
 \t@data.setter
 \tdef data(self, state):
 \t\tself._setter_access_tracker["data"] = {}
-\t\tif type(state) == "list":
-\t\t\tself._data = [self._WrapperClass(i) for i in state]
+\t\tif type(state) == list:
+\t\t\tself._data = [self._WrapperClass(state[i]) for i in range(len(state))]
 \t\telse:
 \t\t\tself._data = []`;
       }
@@ -67,11 +67,12 @@ class ${compKey}CustomClass(${
     .join("\n\t")}
 
 	def _to_json_fields(self):
-		return {\n${props
-      .map((prop) => {
-        return `\t\t\t"${prop}": self._${prop}`;
-      })
-      .join(",\n")}\n\t\t\t}`;
+\t\tall_fields = {\n${props
+    .map((prop) => {
+      return `\t\t\t"${prop}": self._${prop}`;
+    })
+    .join(",\n")}\n\t\t\t}
+\t\treturn {k: v for k, v in all_fields.items() if v is not None}`;
 }
 
 function createComponentClass(
@@ -113,10 +114,11 @@ class ${compKey}(AtriComponent${
   }(state${componentType === "repeating" ? ", self._WrapperClass" : ""})
 
 	def _to_json_fields(self):
-		return {
+\t\tall_fields = {
 			"styles": self._styles,
 			"custom": self._custom,
-			}`;
+			}
+\t\treturn {k: v for k, v in all_fields.items() if v is not None}`;
 }
 
 export function createComponentClassFile(options: {

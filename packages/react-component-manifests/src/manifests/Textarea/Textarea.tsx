@@ -1,6 +1,8 @@
 import React, { forwardRef, ReactNode, ChangeEventHandler } from "react";
 import { Input as AntdInput } from "antd";
+
 const TextArea = AntdInput.TextArea;
+
 export enum InputStatus {
   ERROR = "error",
   WARNING = "warning",
@@ -38,12 +40,18 @@ const Textarea = forwardRef<
   }
 >((props, ref) => {
   const { custom } = props;
-  // moved ref to div, as the Antd TextArea doesnt provide ref for TextArea
+  // moved ref to div, as the Antd TextArea doesn't provide ref for TextArea
   return (
     <div ref={ref} style={{ display: "inline-block" }}>
       <TextArea
         className={props.className}
-        style={props.styles}
+        style={{
+          ...props.styles,
+          animationDuration: "0s",
+          animationTimingFunction: "unset",
+          transitionDuration: "0s",
+          transitionTimingFunction: "unset",
+        }}
         {...custom}
         value={props.custom.text}
       />

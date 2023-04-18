@@ -21,7 +21,8 @@ export function isPageRequest(req: Request) {
     !req.originalUrl.startsWith("/serviceWorker.js") &&
     !req.originalUrl.startsWith("/atri") &&
     !req.originalUrl.match("hot-update") &&
-    !req.originalUrl.match(".map")
+    !req.originalUrl.match(".map") &&
+    !req.originalUrl.match(/^(\/static)/)
   );
 }
 

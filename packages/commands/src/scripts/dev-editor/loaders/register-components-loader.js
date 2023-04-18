@@ -1,3 +1,5 @@
+const upath = require("upath");
+
 function registerComponentLoader() {
   /**
    * @type {import("@atrilabs/core").ManifestIR[]}
@@ -8,16 +10,16 @@ function registerComponentLoader() {
   ${irs
     .map((ir, index) => {
       return `
-    import man_${index} from "${ir.manifest}";
-    import comp_${index} from "${ir.component}";
+    import man_${index} from "${upath.toUnix(ir.manifest)}";
+    import comp_${index} from "${upath.toUnix(ir.component)}";
     import {ReactComponent as icon_${index}} from "${
         ir.icon
-          ? ir.icon
+          ? upath.toUnix(ir.icon)
           : "@atrilabs/atri-app-core/src/editor-components/MissingIcon"
       }";
     ${
       ir.devComponent
-        ? `import devComp_${index} from "${ir.devComponent}"`
+        ? `import devComp_${index} from "${upath.toUnix(ir.devComponent)}"`
         : `const devComp_${index} = undefined`
     };
     manifestRegistryController.writeManifestsFromDefaultExport({

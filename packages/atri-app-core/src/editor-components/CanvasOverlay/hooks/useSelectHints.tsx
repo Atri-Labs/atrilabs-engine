@@ -136,8 +136,7 @@ export function useSelectHints() {
   useEffect(() => {
     return subscribeCanvasMachine(
       "COMPONENT_RENDERED_AFTER_PROPS_UPDATE",
-      (context, event) => {
-      //  console.log("component rendered after props updated", event);
+      (_context, _event) => {
         renderFn();
       }
     );

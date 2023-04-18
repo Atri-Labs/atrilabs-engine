@@ -29,7 +29,8 @@ async def handle_event(req: Request, res: Response):
     event_data = req_dict["eventData"] if "eventData" in req_dict else None
     callback_name = req_dict["callbackName"]
     alias = req_dict["alias"]
-    event = {"event_data": event_data, "callback_name": callback_name, "alias": alias}
+    repeating = req_dict["repeating"] if "repeating" in req_dict else None
+    event = {"event_data": event_data, "callback_name": callback_name, "alias": alias, "repeating": repeating}
     routeDetails = get_route_details(route, "routes")
     delta = compute_new_state(routeDetails, state, event, req, res)
     res.body = bytes(json.dumps(delta, cls=AtriEncoder), encoding="utf-8")
@@ -51,9 +52,13 @@ async def handle_page_request(req: Request, res: Response):
     return res
 
 @app.post("/_atri/api/init")
-async def get_init_state(req: Request):
+async def get_init_state(req: Request, res: Response):
     req_dict = await req.json()
     route = req_dict["route"]
     incoming_state = req_dict["state"]
     routeDetails = get_route_details(route, "routes")
-    return compute_init_state(routeDetails, incoming_state)
+    delta = compute_init_state(routeDetails, incoming_state)
+    res.body = bytes(json.dumps(delta, cls=AtriEncoder), encoding="utf-8")
+    res.media_type = "application/json"
+    res.status_code = 200
+    return res

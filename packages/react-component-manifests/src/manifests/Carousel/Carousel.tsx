@@ -27,10 +27,7 @@ const Carousel = forwardRef<
   const { custom } = props;
   return (
     <div ref={ref}>
-      <AntdCarousel
-        className={props.className}
-        {...custom}
-      >
+      <AntdCarousel className={props.className} {...custom}>
         {props.custom.items.map((item, index) => (
           <div key={index}>
             <h3

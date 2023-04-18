@@ -60,6 +60,8 @@ export default function startDevServer(
     generateIndexHtml,
     babel,
     exclude,
+    imageInlineSizeLimit,
+    useLAN,
   } = params;
 
   return checkBrowsers(paths.appPath, isInteractive())
@@ -82,7 +84,7 @@ export default function startDevServer(
         paths,
         publicUrlOrPath,
         moduleFileExtensions,
-        imageInlineSizeLimit: 10,
+        imageInlineSizeLimit,
         shouldInlineRuntimeChunk: true,
         useTypeScript,
         additionalInclude,
@@ -128,9 +130,9 @@ export default function startDevServer(
         applyPlugins(compiler);
       }
 
-      if (urls.lanUrlForConfig === undefined) {
+      if (useLAN && urls.lanUrlForConfig === undefined) {
         throw TypeError(
-          "lanUrlForConfig is expected to be defined. Check if host, port is provided properly."
+          "lanUrlForConfig is expected to be defined. Check if you are connected to a LAN (WiFi) connection."
         );
       }
 
@@ -139,7 +141,9 @@ export default function startDevServer(
       }
 
       const devWebpackConfig = createDevConfig(
-        urls.lanUrlForConfig,
+        useLAN && urls.lanUrlForConfig
+          ? urls.lanUrlForConfig
+          : urls.localUrlForBrowser,
         {
           appPublic: paths.appPublic,
           publicUrlOrPath,

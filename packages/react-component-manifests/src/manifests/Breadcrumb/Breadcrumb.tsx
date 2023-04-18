@@ -43,7 +43,7 @@ const Breadcrumb = forwardRef<
     });
   }, [props.custom.items]);
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdBreadcrumb
         className={props.className}
         style={props.styles}

@@ -4,6 +4,7 @@ class AtriStyles:
 	def __init__(self, state: Union[Any, None]):
 		self._setter_access_tracker = {}
 		self._getter_access_tracker = {}
+		self._state_is_none = state == None
 
 		self.display: Union[str, None] = state["display"] if state != None and "display" in state else None
 		self.flexDirection: Union[str, None] = state["flexDirection"] if state != None and "flexDirection" in state else None
@@ -22,6 +23,7 @@ class AtriStyles:
 		self.marginRight: Union[str, None] = state["marginRight"] if state != None and "marginRight" in state else None
 		self.marginLeft: Union[str, None] = state["marginLeft"] if state != None and "marginLeft" in state else None
 		self.paddingTop: Union[str, None] = state["paddingTop"] if state != None and "paddingTop" in state else None
+		self.paddingBottom: Union[str, None] = state["paddingBottom"] if state != None and "paddingBottom" in state else None
 		self.paddingRight: Union[str, None] = state["paddingRight"] if state != None and "paddingRight" in state else None
 		self.paddingLeft: Union[str, None] = state["paddingLeft"] if state != None and "paddingLeft" in state else None
 		self.width: Union[str, None] = state["width"] if state != None and "width" in state else None
@@ -75,6 +77,8 @@ class AtriStyles:
 	@display.setter
 	def display(self, state):
 		self._setter_access_tracker["display"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._display = state
 	@property
 	def flexDirection(self):
@@ -83,6 +87,8 @@ class AtriStyles:
 	@flexDirection.setter
 	def flexDirection(self, state):
 		self._setter_access_tracker["flexDirection"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._flexDirection = state
 	@property
 	def alignItems(self):
@@ -91,6 +97,8 @@ class AtriStyles:
 	@alignItems.setter
 	def alignItems(self, state):
 		self._setter_access_tracker["alignItems"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._alignItems = state
 	@property
 	def justifyContent(self):
@@ -99,6 +107,8 @@ class AtriStyles:
 	@justifyContent.setter
 	def justifyContent(self, state):
 		self._setter_access_tracker["justifyContent"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._justifyContent = state
 	@property
 	def flexWrap(self):
@@ -107,6 +117,8 @@ class AtriStyles:
 	@flexWrap.setter
 	def flexWrap(self, state):
 		self._setter_access_tracker["flexWrap"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._flexWrap = state
 	@property
 	def alignContent(self):
@@ -115,6 +127,8 @@ class AtriStyles:
 	@alignContent.setter
 	def alignContent(self, state):
 		self._setter_access_tracker["alignContent"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._alignContent = state
 	@property
 	def rowGap(self):
@@ -123,6 +137,8 @@ class AtriStyles:
 	@rowGap.setter
 	def rowGap(self, state):
 		self._setter_access_tracker["rowGap"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._rowGap = state
 	@property
 	def columnGap(self):
@@ -131,6 +147,8 @@ class AtriStyles:
 	@columnGap.setter
 	def columnGap(self, state):
 		self._setter_access_tracker["columnGap"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._columnGap = state
 	@property
 	def alignSelf(self):
@@ -139,6 +157,8 @@ class AtriStyles:
 	@alignSelf.setter
 	def alignSelf(self, state):
 		self._setter_access_tracker["alignSelf"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._alignSelf = state
 	@property
 	def flexGrow(self):
@@ -147,6 +167,8 @@ class AtriStyles:
 	@flexGrow.setter
 	def flexGrow(self, state):
 		self._setter_access_tracker["flexGrow"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._flexGrow = state
 	@property
 	def flexShrink(self):
@@ -155,6 +177,8 @@ class AtriStyles:
 	@flexShrink.setter
 	def flexShrink(self, state):
 		self._setter_access_tracker["flexShrink"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._flexShrink = state
 	@property
 	def order(self):
@@ -163,6 +187,8 @@ class AtriStyles:
 	@order.setter
 	def order(self, state):
 		self._setter_access_tracker["order"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._order = state
 	@property
 	def marginTop(self):
@@ -171,6 +197,8 @@ class AtriStyles:
 	@marginTop.setter
 	def marginTop(self, state):
 		self._setter_access_tracker["marginTop"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._marginTop = state
 	@property
 	def marginBottom(self):
@@ -179,6 +207,8 @@ class AtriStyles:
 	@marginBottom.setter
 	def marginBottom(self, state):
 		self._setter_access_tracker["marginBottom"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._marginBottom = state
 	@property
 	def marginRight(self):
@@ -187,6 +217,8 @@ class AtriStyles:
 	@marginRight.setter
 	def marginRight(self, state):
 		self._setter_access_tracker["marginRight"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._marginRight = state
 	@property
 	def marginLeft(self):
@@ -195,6 +227,8 @@ class AtriStyles:
 	@marginLeft.setter
 	def marginLeft(self, state):
 		self._setter_access_tracker["marginLeft"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._marginLeft = state
 	@property
 	def paddingTop(self):
@@ -203,6 +237,8 @@ class AtriStyles:
 	@paddingTop.setter
 	def paddingTop(self, state):
 		self._setter_access_tracker["paddingTop"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._paddingTop = state
 	@property
 	def paddingBottom(self):
@@ -211,6 +247,8 @@ class AtriStyles:
 	@paddingBottom.setter
 	def paddingBottom(self, state):
 		self._setter_access_tracker["paddingBottom"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._paddingBottom = state
 	@property
 	def paddingRight(self):
@@ -219,6 +257,8 @@ class AtriStyles:
 	@paddingRight.setter
 	def paddingRight(self, state):
 		self._setter_access_tracker["paddingRight"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._paddingRight = state
 	@property
 	def paddingLeft(self):
@@ -227,6 +267,8 @@ class AtriStyles:
 	@paddingLeft.setter
 	def paddingLeft(self, state):
 		self._setter_access_tracker["paddingLeft"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._paddingLeft = state
 	@property
 	def width(self):
@@ -235,6 +277,8 @@ class AtriStyles:
 	@width.setter
 	def width(self, state):
 		self._setter_access_tracker["width"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._width = state
 	@property
 	def height(self):
@@ -243,6 +287,8 @@ class AtriStyles:
 	@height.setter
 	def height(self, state):
 		self._setter_access_tracker["height"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._height = state
 	@property
 	def minWidth(self):
@@ -251,6 +297,8 @@ class AtriStyles:
 	@minWidth.setter
 	def minWidth(self, state):
 		self._setter_access_tracker["minWidth"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._minWidth = state
 	@property
 	def minHeight(self):
@@ -259,6 +307,8 @@ class AtriStyles:
 	@minHeight.setter
 	def minHeight(self, state):
 		self._setter_access_tracker["minHeight"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._minHeight = state
 	@property
 	def maxWidth(self):
@@ -267,6 +317,8 @@ class AtriStyles:
 	@maxWidth.setter
 	def maxWidth(self, state):
 		self._setter_access_tracker["maxWidth"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._maxWidth = state
 	@property
 	def maxHeight(self):
@@ -275,6 +327,8 @@ class AtriStyles:
 	@maxHeight.setter
 	def maxHeight(self, state):
 		self._setter_access_tracker["maxHeight"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._maxHeight = state
 	@property
 	def overflow(self):
@@ -283,6 +337,8 @@ class AtriStyles:
 	@overflow.setter
 	def overflow(self, state):
 		self._setter_access_tracker["overflow"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._overflow = state
 	@property
 	def fontFamily(self):
@@ -291,6 +347,8 @@ class AtriStyles:
 	@fontFamily.setter
 	def fontFamily(self, state):
 		self._setter_access_tracker["fontFamily"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._fontFamily = state
 	@property
 	def fontWeight(self):
@@ -299,6 +357,8 @@ class AtriStyles:
 	@fontWeight.setter
 	def fontWeight(self, state):
 		self._setter_access_tracker["fontWeight"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._fontWeight = state
 	@property
 	def fontSize(self):
@@ -307,6 +367,8 @@ class AtriStyles:
 	@fontSize.setter
 	def fontSize(self, state):
 		self._setter_access_tracker["fontSize"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._fontSize = state
 	@property
 	def textAlign(self):
@@ -315,6 +377,8 @@ class AtriStyles:
 	@textAlign.setter
 	def textAlign(self, state):
 		self._setter_access_tracker["textAlign"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._textAlign = state
 	@property
 	def color(self):
@@ -323,6 +387,8 @@ class AtriStyles:
 	@color.setter
 	def color(self, state):
 		self._setter_access_tracker["color"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._color = state
 	@property
 	def opacity(self):
@@ -331,6 +397,8 @@ class AtriStyles:
 	@opacity.setter
 	def opacity(self, state):
 		self._setter_access_tracker["opacity"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._opacity = state
 	@property
 	def fontStyle(self):
@@ -339,6 +407,8 @@ class AtriStyles:
 	@fontStyle.setter
 	def fontStyle(self, state):
 		self._setter_access_tracker["fontStyle"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._fontStyle = state
 	@property
 	def borderRadius(self):
@@ -347,6 +417,8 @@ class AtriStyles:
 	@borderRadius.setter
 	def borderRadius(self, state):
 		self._setter_access_tracker["borderRadius"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._borderRadius = state
 	@property
 	def borderWidth(self):
@@ -355,6 +427,8 @@ class AtriStyles:
 	@borderWidth.setter
 	def borderWidth(self, state):
 		self._setter_access_tracker["borderWidth"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._borderWidth = state
 	@property
 	def borderStyle(self):
@@ -363,6 +437,8 @@ class AtriStyles:
 	@borderStyle.setter
 	def borderStyle(self, state):
 		self._setter_access_tracker["borderStyle"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._borderStyle = state
 	@property
 	def borderColor(self):
@@ -371,6 +447,8 @@ class AtriStyles:
 	@borderColor.setter
 	def borderColor(self, state):
 		self._setter_access_tracker["borderColor"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._borderColor = state
 	@property
 	def backgroundImage(self):
@@ -379,6 +457,8 @@ class AtriStyles:
 	@backgroundImage.setter
 	def backgroundImage(self, state):
 		self._setter_access_tracker["backgroundImage"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundImage = state
 	@property
 	def backgroundColor(self):
@@ -387,6 +467,8 @@ class AtriStyles:
 	@backgroundColor.setter
 	def backgroundColor(self, state):
 		self._setter_access_tracker["backgroundColor"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundColor = state
 	@property
 	def backgroundClip(self):
@@ -395,6 +477,8 @@ class AtriStyles:
 	@backgroundClip.setter
 	def backgroundClip(self, state):
 		self._setter_access_tracker["backgroundClip"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundClip = state
 	@property
 	def backgroundOrigin(self):
@@ -403,6 +487,8 @@ class AtriStyles:
 	@backgroundOrigin.setter
 	def backgroundOrigin(self, state):
 		self._setter_access_tracker["backgroundOrigin"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundOrigin = state
 	@property
 	def backgroundAttachment(self):
@@ -411,6 +497,8 @@ class AtriStyles:
 	@backgroundAttachment.setter
 	def backgroundAttachment(self, state):
 		self._setter_access_tracker["backgroundAttachment"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundAttachment = state
 	@property
 	def backgroundPositionX(self):
@@ -419,6 +507,8 @@ class AtriStyles:
 	@backgroundPositionX.setter
 	def backgroundPositionX(self, state):
 		self._setter_access_tracker["backgroundPositionX"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundPositionX = state
 	@property
 	def backgroundPositionY(self):
@@ -427,6 +517,8 @@ class AtriStyles:
 	@backgroundPositionY.setter
 	def backgroundPositionY(self, state):
 		self._setter_access_tracker["backgroundPositionY"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundPositionY = state
 	@property
 	def backgroundRepeat(self):
@@ -435,6 +527,8 @@ class AtriStyles:
 	@backgroundRepeat.setter
 	def backgroundRepeat(self, state):
 		self._setter_access_tracker["backgroundRepeat"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._backgroundRepeat = state
 	@property
 	def position(self):
@@ -443,6 +537,8 @@ class AtriStyles:
 	@position.setter
 	def position(self, state):
 		self._setter_access_tracker["position"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._position = state
 	@property
 	def float(self):
@@ -451,6 +547,8 @@ class AtriStyles:
 	@float.setter
 	def float(self, state):
 		self._setter_access_tracker["float"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._float = state
 	@property
 	def clear(self):
@@ -459,6 +557,8 @@ class AtriStyles:
 	@clear.setter
 	def clear(self, state):
 		self._setter_access_tracker["clear"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._clear = state
 	@property
 	def top(self):
@@ -467,6 +567,8 @@ class AtriStyles:
 	@top.setter
 	def top(self, state):
 		self._setter_access_tracker["top"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._top = state
 	@property
 	def left(self):
@@ -475,6 +577,8 @@ class AtriStyles:
 	@left.setter
 	def left(self, state):
 		self._setter_access_tracker["left"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._left = state
 	@property
 	def bottom(self):
@@ -483,6 +587,8 @@ class AtriStyles:
 	@bottom.setter
 	def bottom(self, state):
 		self._setter_access_tracker["bottom"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._bottom = state
 	@property
 	def right(self):
@@ -491,6 +597,8 @@ class AtriStyles:
 	@right.setter
 	def right(self, state):
 		self._setter_access_tracker["right"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._right = state
 	@property
 	def zIndex(self):
@@ -499,6 +607,8 @@ class AtriStyles:
 	@zIndex.setter
 	def zIndex(self, state):
 		self._setter_access_tracker["zIndex"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._zIndex = state
 	@property
 	def outlineStyle(self):
@@ -507,6 +617,8 @@ class AtriStyles:
 	@outlineStyle.setter
 	def outlineStyle(self, state):
 		self._setter_access_tracker["outlineStyle"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._outlineStyle = state
 	@property
 	def outlineColor(self):
@@ -515,6 +627,8 @@ class AtriStyles:
 	@outlineColor.setter
 	def outlineColor(self, state):
 		self._setter_access_tracker["outlineColor"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._outlineColor = state
 	@property
 	def outlineOffset(self):
@@ -523,6 +637,8 @@ class AtriStyles:
 	@outlineOffset.setter
 	def outlineOffset(self, state):
 		self._setter_access_tracker["outlineOffset"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._outlineOffset = state
 	@property
 	def outlineWidth(self):
@@ -531,6 +647,8 @@ class AtriStyles:
 	@outlineWidth.setter
 	def outlineWidth(self, state):
 		self._setter_access_tracker["outlineWidth"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._outlineWidth = state
 	@property
 	def cursor(self):
@@ -539,6 +657,8 @@ class AtriStyles:
 	@cursor.setter
 	def cursor(self, state):
 		self._setter_access_tracker["cursor"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._cursor = state
 	@property
 	def boxSizing(self):
@@ -547,8 +667,13 @@ class AtriStyles:
 	@boxSizing.setter
 	def boxSizing(self, state):
 		self._setter_access_tracker["boxSizing"] = {}
+		if self._state_is_none == True and state != None:
+			self._state_is_none = False
 		self._boxSizing = state
 	def _to_json_fields(self):
+		# if the provided state is none, return empty dict
+		if self._state_is_none == True:
+			return {}
 		return {
 			"display": self._display,
 			"flexDirection": self._flexDirection,

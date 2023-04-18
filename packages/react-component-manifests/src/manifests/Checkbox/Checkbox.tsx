@@ -26,7 +26,7 @@ const Checkbox = forwardRef<
   const { custom } = props;
   // moved ref to div, as the Antd Checkbox doesnt provide ref for Checkbox
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ display: "inline-block" }}>
       <AntdCheckbox.Group
         className={props.className}
         style={props.styles}

@@ -1,5 +1,6 @@
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import { createCommonEntry } from "./createCommonEntry";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export async function createClientEntry(options: {
   pageInfos: PageInfo[];
@@ -21,12 +22,21 @@ export async function createClientEntry(options: {
       import: "@atrilabs/atri-app-core/src/router/AtriRouter",
       dependOn: ["vendors"],
     };
+    entry["atri-fc-store"] = {
+      import: "@atrilabs/atri-app-core/src/prod-entries/AtriFCStore",
+      dependOn: ["vendors"],
+    };
     existingKeys.forEach((key) => {
       if (typeof entry[key] === "object" && !Array.isArray(entry[key])) {
         const currEntry = entry[key] as { import: string };
         entry[key] = {
           ...currEntry,
-          dependOn: ["vendors", "atri-router", "prod-contexts"],
+          dependOn: [
+            "vendors",
+            "atri-router",
+            "atri-fc-store",
+            "prod-contexts",
+          ],
         } as {
           import: string;
           dependOn: string[];

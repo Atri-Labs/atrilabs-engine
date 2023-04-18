@@ -3,6 +3,7 @@ import type {
   AcceptsChildFunction,
   Callback,
   CallbackHandler,
+  ReactComponentManifestSchema,
 } from "@atrilabs/react-component-manifest-schema";
 
 export type DragData =
@@ -31,6 +32,7 @@ export type CanvasComponent = {
   callbacks: { [callbackName: string]: any };
   meta: { manifestSchemaId: string; pkg: string; key: string };
   isRepeating: boolean;
+  alias: string | undefined;
 };
 
 export type CanvasComponentStore = { [compId: string]: CanvasComponent };
@@ -134,7 +136,11 @@ export interface LiveApiInterServerEvents {}
 
 export interface LiveApiSocketData {}
 
-export type RepeatingContextData = { indices: number[]; lengths: number[] };
+export type RepeatingContextData = {
+  indices: number[];
+  lengths: number[];
+  compIds: string[];
+};
 
 export type ProdAppEntryOptions = {
   routes: { path: string }[];
@@ -161,4 +167,26 @@ export type AliasCompMapContextType = {
 
 export type ComponentTreeContextType = {
   [canvasZoneId: string]: { [alias: string]: string[] }; // sorted alias
+};
+
+export type ManifestIR = {
+  // path to component file
+  component: string;
+  // path to optional devComponent file
+  devComponent?: string;
+  // path to manifest file
+  manifest: string;
+  // the package in which this manifest & component is located
+  pkg: string;
+  // path to icon
+  icon?: string;
+};
+
+export type ComponentManifests = {
+  [pkg: string]: {
+    [key: string]: {
+      manifest: ReactComponentManifestSchema;
+      paths: ManifestIR; // all the paths in this ManifestIR will be relative to package root dir
+    };
+  };
 };

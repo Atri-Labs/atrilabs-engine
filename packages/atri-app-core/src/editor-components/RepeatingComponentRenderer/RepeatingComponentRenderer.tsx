@@ -11,14 +11,15 @@ import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
 import { usePropsUpdated } from "../hooks/usePropsUpdated";
 import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
 import { useGetComponentRef } from "../hooks/useGetComponentRef";
+import { useStyleString } from "../hooks/useStyleString";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
   const {
     comp: Comp,
-    props: compProps,
     callbacks,
+    alias,
   } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
 
@@ -29,7 +30,8 @@ export function RepeatingComponentRenderer(
   useAssignComponentId({ id: props.id });
   useFocusComponent({ id: props.id });
   useHasComponentRendered({ id: props.id });
-  usePropsUpdated({ id: props.id });
+  const compProps = usePropsUpdated({ id: props.id });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const repeatingContext = useContext(RepeatingContext);
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
@@ -42,6 +44,7 @@ export function RepeatingComponentRenderer(
           value={{
             indices: [...(repeatingContext?.indices || []), index],
             lengths: [...(repeatingContext?.lengths || []), num],
+            compIds: [...(repeatingContext?.compIds || []), props.id],
           }}
           key={childId}
         >
@@ -60,11 +63,15 @@ export function RepeatingComponentRenderer(
   }
 
   return (
-    <Comp
-      {...compProps}
-      ref={ref}
-      {...callbacks}
-      children={childrenNodes || []}
-    ></Comp>
+    <>
+      <style>{styleStr}</style>
+      <Comp
+        {...{ ...compProps, styles }}
+        ref={ref}
+        {...callbacks}
+        children={childrenNodes || []}
+        className={alias}
+      ></Comp>
+    </>
   );
 }

@@ -22,8 +22,8 @@ import {
   setJsxTsxLoaders,
   setNodeModuleSourceMapLoaders,
   setJsxLoaders,
+  setImageLoaders,
 } from "./loaders";
-import setFileLoaders from "./loaders/files";
 
 export function createNodeConfig(options: {
   isEnvDevelopment: boolean;
@@ -67,6 +67,8 @@ export function createNodeConfig(options: {
   };
   customLoaders?: RuleSetRule[];
   disableNodeExternals?: boolean;
+  imageInlineSizeLimit: number;
+  publicUrlOrPath: string;
 }): Configuration {
   const {
     isEnvProductionProfile,
@@ -78,6 +80,7 @@ export function createNodeConfig(options: {
     serverEnv,
     modules,
     moduleFileExtensions,
+    imageInlineSizeLimit,
     useTypeScript,
     eslint,
     entry,
@@ -89,6 +92,7 @@ export function createNodeConfig(options: {
     exclude,
     customLoaders,
     disableNodeExternals,
+    publicUrlOrPath,
   } = options;
   return {
     target: "node",
@@ -124,6 +128,7 @@ export function createNodeConfig(options: {
         ? "static/js/[name].[contenthash:8].chunk.js"
         : "static/js/[name].chunk.js",
       assetModuleFilename: "static/media/[name].[hash][ext]",
+      publicPath: publicUrlOrPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
         ? (info: any) =>
@@ -160,6 +165,7 @@ export function createNodeConfig(options: {
         ...setNodeModuleSourceMapLoaders({ shouldUseSourceMap }),
         {
           oneOf: [
+            ...setImageLoaders({ imageInlineSizeLimit }),
             ...setJsxTsxLoaders({
               appSrc: paths.appSrc,
               isEnvDevelopment,
@@ -178,7 +184,6 @@ export function createNodeConfig(options: {
               isEnvTest,
               hasJsxRuntime: true,
             }),
-            ...setFileLoaders(),
           ],
         },
         ...(customLoaders || []),
@@ -220,7 +225,7 @@ export function createNodeConfig(options: {
         new ModuleScopePlugin(paths.appSrc, [
           paths.appPackageJson,
           babelRuntimeEntry,
-          babelRuntimeEntryHelpers,
+          ...babelRuntimeEntryHelpers,
           babelRuntimeRegenerator,
         ]),
       ],

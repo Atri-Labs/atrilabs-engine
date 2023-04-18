@@ -113,7 +113,6 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: {
           referrerPolicy: "no-referrer-when-downgrade",
           target: "_self",
-          disabled: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

@@ -74,7 +74,6 @@ export async function buildClientSide(
         },
       };
     },
-    imageInlineSizeLimit: 10,
     shouldInlineRuntimeChunk: true,
   }).catch((err) => {
     throw err;

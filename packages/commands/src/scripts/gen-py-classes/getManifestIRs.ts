@@ -21,7 +21,7 @@ export async function getManifestIRs() {
   }
   // @ts-ignore
   const main = __non_webpack_require__(pkgUp.sync())["main"];
-  if (main.endsWith("manifest.config.js")) {
+  if (main && main.endsWith("manifest.config.js")) {
     // @ts-ignore
     const dir = path.resolve(path.join(path.dirname(main), "manifests"));
     manifestDirs.push(dir);

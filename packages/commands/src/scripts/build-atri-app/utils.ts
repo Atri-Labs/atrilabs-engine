@@ -1,12 +1,14 @@
 import {
+  createComponentFromNode,
   dirStructureToIR,
   pathsIRToRouteObjectPaths,
   readDirStructure,
 } from "@atrilabs/atri-app-core/src/utils";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 import path from "path";
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import fs from "fs";
-import { AnyEvent, createForest, Forest, TreeNode } from "@atrilabs/forest";
+import { AnyEvent, createForest, Forest } from "@atrilabs/forest";
 import type { ManifestIR, ToolConfig } from "@atrilabs/core/src/types";
 import { processManifestDirsString } from "../../commons/processManifestDirsString";
 import pkgUp from "pkg-up";
@@ -19,8 +21,6 @@ import {
   callbackTreeDef,
   forestDef,
 } from "@atrilabs/atri-app-core/src/api/forestDef";
-import { getEffectiveStyle } from "@atrilabs/atri-app-core/src/utils/getEffectiveStyle";
-import postcss from "postcss";
 import {
   collectWebpackMessages,
   createConfig,
@@ -29,15 +29,7 @@ import {
   reportWarningsOrSuccess,
 } from "@atrilabs/commands-builder";
 import webpack from "webpack";
-const cssjs = require("postcss-js");
-
-function jssToCss(jss: React.CSSProperties) {
-  return postcss()
-    .process(jss, { parser: cssjs, from: undefined })
-    .then((code) => {
-      return code.css + ";";
-    });
-}
+import { createCSSString } from "@atrilabs/atri-app-core/src/utils";
 
 /**
  * This function expects that all the packages have dist/manfiest.bundle.js.
@@ -101,48 +93,6 @@ function createForestFromEvents(events: AnyEvent[]) {
   return forest;
 }
 
-function createPropsFromManifestComponent(
-  compId: string,
-  manifet: any,
-  breakpoint: { min: number; max: number },
-  forest: Forest
-) {
-  const propsKeys = Object.keys(manifet.dev.attachProps);
-  const props: { [key: string]: any } = {};
-  for (let i = 0; i < propsKeys.length; i++) {
-    const propKey = propsKeys[i]!;
-    const treeId = manifet.dev.attachProps[propKey].treeId;
-    const tree = forest.tree(treeId);
-    if (tree && tree.links[compId]) {
-      const link = tree.links[compId]!;
-      if (link.childId) {
-        const propNodeId = link.childId;
-        if (tree.nodes[propNodeId] === undefined) {
-          continue;
-        }
-        // convention that state.property field in tree contains the value
-        const value = tree.nodes[propNodeId]!.state["property"];
-        const breakpoints = tree.nodes[propNodeId]!.state["breakpoints"];
-        // temporary fix: handle breakpoint for styles prop only
-
-        if (value) {
-          if (breakpoints && propKey === "styles" && breakpoint) {
-            const styles = getEffectiveStyle(
-              breakpoint,
-              breakpoints,
-              value["styles"]
-            );
-            props[propKey] = styles;
-          } else {
-            props[propKey] = value[propKey];
-          }
-        }
-      }
-    }
-  }
-  return props;
-}
-
 function getComponentCallbackHandlers(compId: string, forest: Forest) {
   const callbackTree = forest.tree(callbackTreeDef.id);
   if (callbackTree) {
@@ -155,58 +105,6 @@ function getComponentCallbackHandlers(compId: string, forest: Forest) {
   return;
 }
 
-function createComponentFromNode(
-  node: TreeNode,
-  breakpoint: { min: number; max: number },
-  forest: Forest,
-  componentManifests: ComponentManifests
-) {
-  const id = node.id;
-  const meta = node.meta;
-  const pkg = meta.pkg;
-  const key = meta.key;
-  const parent = {
-    id: node.state.parent.id,
-    index: node.state.parent.index,
-    canvasZoneId: node.state.parent["canvasZoneId"],
-  };
-  if (
-    componentManifests[pkg] === undefined ||
-    componentManifests[pkg]![key] === undefined
-  ) {
-    throw Error(
-      `Manifest not found for manifest package ${pkg} for component key ${key}`
-    );
-  }
-  const manifest = componentManifests[pkg]![key]!.manifest;
-  // use CanvasAPI to create component
-  const props = createPropsFromManifestComponent(
-    id,
-    manifest,
-    breakpoint,
-    forest
-  );
-  const callbacks =
-    manifest.dev["attachCallbacks"] &&
-    typeof manifest.dev["attachCallbacks"] === "object" &&
-    !Array.isArray(manifest.dev["attachCallbacks"])
-      ? manifest.dev["attachCallbacks"]
-      : {};
-  return {
-    id,
-    props,
-    parent,
-    acceptsChild: typeof manifest.dev.acceptsChild === "function",
-    callbacks,
-    meta: node.meta,
-    type: manifest.dev.isRepeating
-      ? ("repeating" as const)
-      : typeof manifest.dev.acceptsChild === "function"
-      ? ("parent" as const)
-      : ("normal" as const),
-  };
-}
-
 function getComponentsFromNodes(
   forest: Forest,
   componentManifests: ComponentManifests
@@ -216,10 +114,6 @@ function getComponentsFromNodes(
   return nodeIds.map((nodeId) => {
     const component = createComponentFromNode(
       nodes[nodeId]!,
-      {
-        max: 1200,
-        min: 900,
-      },
       forest,
       componentManifests
     )!;
@@ -300,12 +194,20 @@ export function createStoreFromComponents(
 export async function createCssText(
   components: ReturnType<typeof getComponentsFromNodes>
 ) {
-  const cssObj: { [alias: string]: React.CSSProperties } = {};
-  components.forEach((component) => {
-    if (component.props["styles"])
-      cssObj[component.alias] = component.props["styles"];
+  // create a css string for each component
+  const promises = components.map(async (component) => {
+    if (component.props["styles"]) {
+      // strs is a combination of root style & breakpoint style
+      const strs = createCSSString(
+        `.${component.alias}`,
+        component.props["styles"].styles || {},
+        component.props["styles"].breakpoints || {}
+      );
+      return (await strs).join("\n");
+    }
+    return "";
   });
-  return await jssToCss(cssObj);
+  return (await Promise.all(promises)).join("\n");
 }
 
 export function readToolConfig(toolPkg: string) {

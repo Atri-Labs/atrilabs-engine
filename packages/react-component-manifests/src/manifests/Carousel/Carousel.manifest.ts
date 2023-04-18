@@ -52,6 +52,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {
           height: "160px",
+          width: "100%",
           color: "#fff",
           lineHeight: "160px",
           textAlign: "center",

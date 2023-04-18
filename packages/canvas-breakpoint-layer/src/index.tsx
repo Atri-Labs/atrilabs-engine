@@ -20,10 +20,10 @@ const styles: { [key: string]: React.CSSProperties } = {
 };
 
 const breakpoints = {
-  desktop: { min: 900, max: 1200 },
-  tablet: { min: 800, max: 991 },
-  landscape: { min: 550, max: 767 },
-  portrait: { min: 300, max: 478 },
+  desktop: { min: 993, max: 1200 },
+  tablet: { min: 769, max: 992 },
+  landscape: { min: 601, max: 768 },
+  portrait: { min: 320, max: 600 },
 };
 
 export default function () {

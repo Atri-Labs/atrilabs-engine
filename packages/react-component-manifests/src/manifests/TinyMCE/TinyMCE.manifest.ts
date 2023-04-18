@@ -21,7 +21,38 @@ const cssTreeOptions: CSSTreeOptions = {
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
-  dataTypes: {},
+  dataTypes: {
+    initialValue: { type: "text" },
+    value: { type: "text" },
+    disabled: { type: "boolean" },
+    inline: { type: "boolean" },
+    id: { type: "text" },
+    contentEditable: { type: "boolean" },
+    initOnMount: { type: "boolean" },
+    tinymceScriptSrc: { type: "text" },
+    plugins: { type: "array" },
+    toolbar: {
+      type: "array_enum",
+      options: [
+        "false",
+        "undo redo",
+        "bold italic underline",
+        "alignleft aligncenter alignright alignjustify ",
+        "outdent indent",
+        "removeformat ",
+        "help",
+        "hr",
+      ],
+    },
+    menubar: {
+      type: "array_enum",
+      options: ["false", "file", "edit", "view", "insert", "format"],
+    },
+    statusbar: { type: "boolean" },
+    branding: { type: "boolean" },
+    resize: { type: "boolean" },
+    paste_data_images: { type: "boolean" },
+  },
 };
 
 const compManifest: ReactComponentManifestSchema = {
@@ -31,17 +62,19 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { minHeight: "25px", width: "100%" },
+        initialValue: { height: "500px" },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          lineNumbers: true,
-          editable: true,
-          placeholder: "// code",
-          extensions: "html",
+          initialValue: "This is the initial content of the editor.",
+          statusbar: true,
+          resize: true,
+          branding: true,
+          paste_data_images: true,
+          contentEditable: true,
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
@@ -49,6 +82,7 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
+      onEditorChange: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
       onClick: [{ sendEventData: true }],

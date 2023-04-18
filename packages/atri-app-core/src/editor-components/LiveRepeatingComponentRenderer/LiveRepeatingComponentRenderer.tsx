@@ -9,25 +9,26 @@ import { useGetComponentProps } from "../live-component/hooks/useGetComponentPro
 import { useGetCallbacks } from "../live-component/hooks/useGetCallbacks";
 import { useGetComponentRef } from "../hooks/useGetComponentRef";
 import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
+import { useStyleString } from "../hooks/useStyleString";
 
 export function LiveRepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
 ) {
-  const { comp: Comp } = componentStoreApi.getComponent(props.id)!;
+  const { comp: Comp, alias } = componentStoreApi.getComponent(props.id)!;
   const ref = useGetComponentRef({ id: props.id });
   const repeatingContext = useContext(RepeatingContext);
 
-  const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
-  const [num, setNum] = useState<number>(end - start);
+  const { data } = componentStoreApi.getComponentProps(props.id).custom;
   const children = componentStoreApi.getComponentChildrenId(props.id);
   useAssignParentMarker({ id: props.id });
   useAssignComponentId({ id: props.id });
   const compProps = useGetComponentProps({ id: props.id });
+  const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
 
   let childrenNodes: React.ReactNode[] | null = null;
-  if (children.length === 1) {
-    childrenNodes = Array.from(Array(num).keys()).map((_, index) => {
+  if (children.length === 1 && Array.isArray(data)) {
+    childrenNodes = data.map((_, index) => {
       const childId = children[0];
       const { acceptsChild, isRepeating } =
         componentStoreApi.getComponent(childId)!;
@@ -35,7 +36,8 @@ export function LiveRepeatingComponentRenderer(
         <RepeatingContext.Provider
           value={{
             indices: [...(repeatingContext?.indices || []), index],
-            lengths: [...(repeatingContext?.lengths || []), num],
+            lengths: [...(repeatingContext?.lengths || []), data.length],
+            compIds: [...(repeatingContext?.compIds || []), props.id],
           }}
           key={childId}
         >
@@ -54,11 +56,15 @@ export function LiveRepeatingComponentRenderer(
   }
 
   return (
-    <Comp
-      {...compProps}
-      ref={ref}
-      {...callbacks}
-      children={childrenNodes || []}
-    ></Comp>
+    <>
+      <style>{styleStr}</style>
+      <Comp
+        {...{ ...compProps, styles }}
+        ref={ref}
+        {...callbacks}
+        children={childrenNodes || []}
+        className={alias}
+      ></Comp>
+    </>
   );
 }

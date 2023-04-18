@@ -29,6 +29,8 @@ function build(params: ReturnType<typeof extractParams>) {
     additionalNodeModules,
     additionalInclude,
     allowlist,
+    imageInlineSizeLimit,
+    publicUrlOrPath,
   } = params;
 
   const webpackConfig = createDevNodeConfig({
@@ -40,12 +42,14 @@ function build(params: ReturnType<typeof extractParams>) {
     useTypeScript,
     paths,
     serverEnv,
+    publicUrlOrPath,
     entry,
     moduleFileExtensions,
     outputFilename,
     additionalNodeModules,
     additionalInclude,
     allowlist,
+    imageInlineSizeLimit,
   });
 
   if (prepareConfig && typeof prepareConfig === "function") {

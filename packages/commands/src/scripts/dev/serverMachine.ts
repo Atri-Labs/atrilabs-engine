@@ -8,6 +8,7 @@ import {
 import { Compiler } from "webpack";
 import { intersection } from "lodash";
 import { ManifestIR } from "@atrilabs/core";
+import { addResourcesToHTMLString } from "../../commons/addResourcesToHTMLString";
 
 // states
 export const processing = "processing" as const;
@@ -201,7 +202,9 @@ async function _handleRequests(options: {
       const routeObjectPath = match![0]!.route.path;
       const ir = routeObjectPathToIR(routeObjectPath);
       const splices = IRToUnixFilePath(ir).split("/").splice(1);
-      const htmlString = getPageHtml(["pages", ...splices]);
+      const htmlString = await addResourcesToHTMLString(
+        getPageHtml(["pages", ...splices])
+      );
       pageRequest.res.send(`<!DOCTYPE html>\n${htmlString}`);
     }
   }
