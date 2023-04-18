@@ -6,15 +6,16 @@ import {
 import { createManifestsEntry } from "./createManifestsEntry";
 import path from "path";
 import fs from "fs";
-import webpack from "webpack";
+import webpack, { RuleSetRule } from "webpack";
 import { processDirsString } from "../../commons/processManifestDirsString";
+import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 
 export function buildManifests(options: {
   params: ReturnType<typeof extractParams>;
 }) {
   return new Promise<void>((resolve, reject) => {
     const { params } = options;
-    const exclude = [
+    const excludeDirs = [
       ...processDirsString(params.exclude),
       path.resolve("node_modules"),
     ];
@@ -56,6 +57,11 @@ export function buildManifests(options: {
         path.resolve("manifests"),
       ];
     }
+
+    const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
+      params.additionalInclude,
+      excludeDirs
+    );
 
     const conifg = createNodeLibConfig({
       ...params,

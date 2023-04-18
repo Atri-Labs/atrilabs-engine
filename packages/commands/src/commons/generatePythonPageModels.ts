@@ -12,6 +12,7 @@ import { componentTreeDef, forestDef } from "../scripts/gen-py-app/forestDef";
 import { generatePythonPageModel } from "./generatePythonPageModel";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { ComponentTypes } from "./types";
+import pkgUp from "pkg-up";
 
 export function generatePythonModelForAPage(ir: PathIR) {
   const unixFilepath = IRToUnixFilePath(ir).replace(/^\//, "");
@@ -38,14 +39,20 @@ export function generatePythonModelForAPage(ir: PathIR) {
   const nodePkgManifestMap: {
     [nodePkg: string]: { [compKey: string]: ReactComponentManifestSchema };
   } = {};
+  // @ts-ignore
+  const localPackageJSON = __non_webpack_require__(path.resolve(pkgUp.sync()!));
+  const localPkgName = localPackageJSON["name"];
   const compDefs = compNodes.map((compNode) => {
     // get alias, compKey and nodePkg
     const compKey = compNode.meta.key as string;
     const nodePkg = compNode.meta.pkg as string;
     const alias = compNode.state["alias"] as string;
+    const isLocalPkg = localPkgName === nodePkg;
     // read package.json of nodePkg to get pythonPkg
-    // @ts-ignore
-    const packageJSON = __non_webpack_require__(nodePkg + "/package.json");
+    const packageJSON = isLocalPkg
+      ? localPackageJSON
+      : // @ts-ignore
+        __non_webpack_require__(nodePkg + "/package.json");
     const pythonPkg = packageJSON["atriConfig"]["pythonPackageName"];
     // create reverseMap to create a list of children alias
     const childrenAlias: string[] = reverseMap[compNode.id]
@@ -54,10 +61,11 @@ export function generatePythonModelForAPage(ir: PathIR) {
     // read manifest to detect component type
     if (nodePkgManifestMap[nodePkg] === undefined) {
       try {
-        // @ts-ignore
-        const manifestsBundle = __non_webpack_require__(
-          nodePkg + "/dist/manifests.bundle.js"
-        );
+        const manifestsBundle = isLocalPkg
+          ? // @ts-ignore
+            __non_webpack_require__(path.resolve("dist", "manifests.bundle.js"))
+          : // @ts-ignore
+            __non_webpack_require__(nodePkg + "/dist/manifests.bundle.js");
 
         nodePkgManifestMap[nodePkg] = {};
         manifestsBundle.default.forEach(
