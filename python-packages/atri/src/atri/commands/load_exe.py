@@ -9,23 +9,15 @@ import sys
 from ..stats import collect_download_exe
 from ..utils.globals import globals
 
+system_str = {"Linux":"linux", "Darwin":"macos", "Windows":"win.exe"}
+
 def get_remote_filename():
-    if platform.system() == "Linux":
-        system_str = "linux"
-    if platform.system() == "Darwin":
-        system_str = "macos"
-    if platform.system() == "Windows":
-        system_str = "win.exe"
+    system_str = system_str[platform.system()]
     filename = "webapp-builder-" + system_str + ".zip"
     return filename
 
 def get_host_filename():
-    if platform.system() == "Linux":
-        system_str = "linux"
-    if platform.system() == "Darwin":
-        system_str = "macos"
-    if platform.system() == "Windows":
-        system_str = "win.exe"
+    system_str = system_str[platform.system()]
     filename = "webapp-builder-" + system_str + ".v" + __version__ + ".zip"
     return filename
 
@@ -55,22 +47,12 @@ def download_zip():
             sys.stdout.write("\033[K")
 
 def get_unzipped_remote_filename():
-    if platform.system() == "Linux":
-        system_str = "linux"
-    if platform.system() == "Darwin":
-        system_str = "macos"
-    if platform.system() == "Windows":
-        system_str = "win.exe"
+    system_str = system_str[platform.system()]
     filename = "webapp-builder-" + system_str
     return filename
 
 def get_unzipped_host_filename():
-    if platform.system() == "Linux":
-        system_str = "linux"
-    if platform.system() == "Darwin":
-        system_str = "macos"
-    if platform.system() == "Windows":
-        system_str = "win.exe"
+    system_str = system_str[platform.system()]
     filename = "webapp-builder-" + system_str + ".v" + __version__
     return filename
 
