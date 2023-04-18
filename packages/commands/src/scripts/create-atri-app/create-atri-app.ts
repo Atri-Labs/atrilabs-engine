@@ -63,7 +63,7 @@ function createPackageJSON(
         "gen-py-app": "gen-py-app",
         "dev-py-app": "dev-py-app",
         "gen-py-classes":
-          'gen-py-classes -n ../../node_modules -i "@atrilabs/utils" -a "@atrilabs/utils"',
+          'gen-py-classes -i "@atrilabs/utils" -a "@atrilabs/utils"',
         editor:
           'cross-env APP_HOSTNAME="http://localhost:3000" dev-atri-editor',
         build:
