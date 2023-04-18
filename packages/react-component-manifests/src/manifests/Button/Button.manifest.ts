@@ -18,7 +18,7 @@ const cssTreeOptions: CSSTreeOptions = {
   outlineOptions: true,
   backgroundOptions: true,
   miscellaneousOptions: true,
-  listStyleOptions : true,
+  listStyleOptions: true,
 };
 
 const customTreeOptions: CustomPropsTreeOptions = {
@@ -26,21 +26,22 @@ const customTreeOptions: CustomPropsTreeOptions = {
     text: { type: "text" },
     type: {
       type: "enum",
-      options: [ "default", "primary","ghost","dashed","link","text"],
+      options: ["default", "primary", "ghost", "dashed", "link", "text"],
     },
     block: { type: "boolean" },
     danger: { type: "boolean" },
     disabled: { type: "boolean" },
-    icon: {type : "static_asset"},
-    loading:{ type: "boolean" },
+    icon: { type: "static_asset" },
+    loading: { type: "boolean" },
     shape: {
       type: "enum",
       options: ["default", "circle", "round"],
     },
     size: {
       type: "enum",
-      options: [ "middle", "large","small"],
+      options: ["middle", "large", "small"],
     },
+    href: { type: "text" },
   },
 };
 

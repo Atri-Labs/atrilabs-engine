@@ -68,7 +68,7 @@ const compManifest: ReactComponentManifestSchema = {
     },
     defaultCallbackHandlers: {
       onClick: [{ sendEventData: true }],
-      onTabChange :[{ sendEventData: true }],
+      onTabChange: [{ sendEventData: true }],
     },
   },
 };

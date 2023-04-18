@@ -79,6 +79,8 @@ const Video = forwardRef<
         className={props.className}
         style={props.styles}
         {...custom}
+        height={props.styles.height}
+        width={props.styles.width}
         playIcon={
           props.custom.playIcon && typeof props.custom.playIcon === "string" ? (
             <img src={props.custom.playIcon} alt={props.custom.playIcon} />

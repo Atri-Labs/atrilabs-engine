@@ -4,11 +4,11 @@ import { gray500 } from "@atrilabs/design-system";
 
 const DevVideo: typeof Video = forwardRef((props, ref) => {
   const overrideStyleProps: React.CSSProperties =
-     props.custom.url === undefined
+    props.custom.url === undefined
       ? {
           // do not provide minHeight minWidth if user has provided height width
-          minHeight: props.styles.height ? "" : "100px",
-          minWidth: props.styles.width ? "" : "100px",
+          minHeight: props.styles.height ? "" : "1000px",
+          minWidth: props.styles.width ? "" : "1000px",
           borderWidth: `2px`,
           borderStyle: `dashed`,
           borderColor: `${gray500}`,
@@ -17,13 +17,7 @@ const DevVideo: typeof Video = forwardRef((props, ref) => {
           ...props.styles,
         }
       : { ...props.styles };
-  return (
-    <Video
-      ref={ref}
-      {...props}
-      styles={overrideStyleProps}
-    />
-  );
+  return <Video ref={ref} {...props} styles={overrideStyleProps} />;
 });
 
 export default DevVideo;

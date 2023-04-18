@@ -11,9 +11,10 @@ import {
 } from "@atrilabs/core";
 import { api } from "./api";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import { PatchEvent } from "@atrilabs/forest";
+import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import { aliasApi } from "./aliasApi";
 import { postPasteEvents } from "./copy-paste/postPasteEvents";
+import { getId } from "@atrilabs/core";
 
 window.addEventListener("message", (ev) => {
   if (
@@ -159,7 +160,8 @@ subscribeEditorMachine("DRAG_FAILED", () => {
 
 subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
   removeMouseListeners();
-  if (event.type === "DRAG_SUCCESS") {
+
+  if (event.type === "DRAG_SUCCESS" && context.dragData?.type === "component") {
     const { pkg, key, id, manifestSchema } = context.dragData!.data;
     const { parent } = event;
     const fullManifest = getReactManifest({ pkg, key });
@@ -172,6 +174,7 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         pkg,
         key,
       });
+
       const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
       const forestId = BrowserForestManager.currentForest.forestId;
       api.postNewEvents(
@@ -197,6 +200,69 @@ subscribeEditorMachine("DRAG_SUCCESS", (context, event) => {
         }
       );
     }
+  }
+  if (event.type === "DRAG_SUCCESS" && context.dragData?.type === "template") {
+    const { parent } = event;
+    const { name, newTemplateRootId } = context.dragData!.data;
+    const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
+    const forestId = BrowserForestManager.currentForest.forestId;
+    //change alias / id before sending it to postNewEvents
+    const oldAndNewIdMap: { [key: string]: string } = {};
+    context.dragData.data.events.forEach((event) => {
+      if (event.type.startsWith("CREATE$$")) {
+        const eventData: CreateEvent = event as CreateEvent;
+        oldAndNewIdMap[eventData.id] =
+          eventData.state.parent.id === "__atri_canvas_zone_root__"
+            ? newTemplateRootId
+            : getId();
+      }
+    });
+    const eventsModified = context.dragData.data.events.map(
+      (event: AnyEvent) => {
+        if (event.type.startsWith("CREATE$$")) {
+          let eventData = event as CreateEvent;
+          eventData.id = oldAndNewIdMap[eventData.id];
+          if (eventData.state.parent.id === "__atri_canvas_zone_root__") {
+            eventData.state.parent = { ...parent };
+          } else if (eventData.state.parent.id) {
+            eventData.state.parent.id =
+              oldAndNewIdMap[eventData.state.parent.id];
+          }
+          if (eventData.state.alias) {
+            const alias = aliasApi.createAliasFromPrefix(eventData.meta.key);
+            eventData.state.alias = alias;
+          }
+          return eventData;
+        } else if (event.type.startsWith("LINK$$")) {
+          let eventData = event as LinkEvent;
+          eventData.refId = oldAndNewIdMap[eventData.refId];
+          eventData.childId = oldAndNewIdMap[eventData.childId];
+          return eventData;
+        }
+      }
+    );
+    api.postNewEvents(
+      forestPkgId,
+      forestId,
+      {
+        events: eventsModified as AnyEvent[],
+        name: "NEW_DROP",
+        meta: { agent: "browser" },
+      },
+      (success) => {
+        if (success) {
+          aliasApi.assingAliasFromPrefix({
+            prefix: name,
+            id: newTemplateRootId,
+            postData: {
+              name: "NEW_DROP_ALIAS",
+              meta: { agent: "browser" },
+              events: [],
+            },
+          });
+        }
+      }
+    );
   }
 });
 

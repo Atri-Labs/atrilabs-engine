@@ -4,6 +4,7 @@ import {
   ClientToServerEvents,
   ImportedResource,
   ServerToClientEvents,
+  TemplateDetail,
 } from "@atrilabs/core";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
 import { AnyEvent, EventMetaData } from "@atrilabs/forest";
@@ -77,9 +78,11 @@ function importResource(
 ) {
   socket.emit("importResource", importStatement, callback);
 }
+
 function getResources(callback: (resources: ImportedResource[]) => void) {
   socket.emit("getResources", callback);
 }
+
 function subscribeResourceUpdates(
   callback: (resource: ImportedResource) => void
 ) {
@@ -87,6 +90,18 @@ function subscribeResourceUpdates(
   return () => {
     socket.off("newResource", callback);
   };
+}
+
+function getTemplateList(callback: (templateList: string[]) => void) {
+  socket.emit("getTemplateList", callback);
+}
+
+function createTemplate(
+  name: string,
+  events: AnyEvent[],
+  callback: (success: boolean) => void
+) {
+  socket.emit("createTemplate", name, events, callback);
 }
 
 /**
@@ -104,10 +119,22 @@ function uploadAssets(
 ) {
   socket.emit("uploadAssets", files, callback);
 }
+
 function getAssetsInfo(
   callback: (assets: { [name: string]: { url: string; mime: string } }) => void
 ) {
   socket.emit("getAssetsInfo", callback);
+}
+
+function getTemplateEvents(
+  name: string,
+  callback: (events: AnyEvent[]) => void
+) {
+  socket.emit("getTemplateEvents", name, callback);
+}
+
+function deleteTemplate(name: string, callback: (success: boolean) => void) {
+  socket.emit("deleteTemplate", name, callback);
 }
 
 export const api = {
@@ -119,4 +146,9 @@ export const api = {
   // assets api
   uploadAssets,
   getAssetsInfo,
+  //template
+  getTemplateList,
+  createTemplate,
+  getTemplateEvents,
+  deleteTemplate,
 };

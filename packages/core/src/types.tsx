@@ -175,7 +175,7 @@ export type EventSubscriber = (
 ) => void;
 
 // array of filenames without extension
-export type TemplateDetail = { relativeDir: string; templateName: string };
+export type TemplateDetail = { templateName: string };
 
 export type { ImportedResource } from "@atrilabs/atri-app-core";
 import type { ImportedResource } from "@atrilabs/atri-app-core";
@@ -254,9 +254,8 @@ export type BrowserClient = {
     }) => void
   ) => void;
   /** template management api */
-  getTemplateList: (callback: (details: TemplateDetail[]) => void) => void;
+  getTemplateList: (callback: (details: string[]) => void) => void;
   createTemplate: (
-    dir: string,
     name: string,
     events: AnyEvent[],
     callback: (success: boolean) => void
@@ -267,13 +266,8 @@ export type BrowserClient = {
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
-  deleteTemplate: (
-    dir: string,
-    name: string,
-    callback: (success: boolean) => void
-  ) => void;
+  deleteTemplate: (name: string, callback: (success: boolean) => void) => void;
   getTemplateEvents: (
-    dir: string,
     name: string,
     callback: (events: AnyEvent[]) => void
   ) => void;
@@ -400,6 +394,7 @@ export interface ClientToServerEvents {
     events: AnyEvent[],
     callback: (success: boolean) => void
   ) => void;
+
   /**
    *
    * @param files Each property of file is derived from the Web API File.
@@ -413,6 +408,7 @@ export interface ClientToServerEvents {
     }[],
     callback: (success: boolean, urls: string[]) => void
   ): void;
+
   getAssetsInfo: (
     callback: (assets: {
       [name: string]: { url: string; mime: string };
@@ -427,6 +423,20 @@ export interface ClientToServerEvents {
   subscribeResourceUpdates: (
     callback: (resource: ImportedResource) => void
   ) => void;
+
+  getTemplateList: (callback: (details: string[]) => void) => void;
+
+  getTemplateEvents: (
+    name: string,
+    callback: (events: AnyEvent[]) => void
+  ) => void;
+
+  createTemplate: (
+    name: string,
+    events: AnyEvent[],
+    callback: (success: boolean) => void
+  ) => void;
+  deleteTemplate: (name: string, callback: (success: boolean) => void) => void;
 }
 
 export interface InterServerEvents {}

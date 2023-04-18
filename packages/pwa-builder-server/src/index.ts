@@ -19,9 +19,12 @@ import {
 import { saveAssets, getAllAssetsInfo, PUBLIC_DIR } from "./handleAssets";
 import {
   createCSSFile,
+  createTemplateJSONFile,
   fetchCSSFromFile,
   fetchCSSResource,
   getResourceFiles,
+  getTemplateEvents,
+  deleteTemplate,
 } from "./handle-resources";
 import pkgUp from "pkg-up";
 import path from "path";
@@ -119,6 +122,37 @@ io.on("connection", (socket) => {
         console.log(err);
         cb([]);
       });
+  });
+
+  socket.on("getTemplateList", (cb) => {
+    getResourceFiles()
+      .then((files) => {
+        const promises = files.filter((file) =>
+          file.endsWith(".template.json")
+        );
+        return Promise.all(promises);
+      })
+      .then((templates) => {
+        cb(templates.map((file) => path.basename(file)));
+      })
+      .catch((err) => {
+        console.log(err);
+        cb([]);
+      });
+  });
+
+  socket.on("createTemplate", (templateName, events, callback) => {
+    createTemplateJSONFile(templateName, events);
+    callback(true);
+  });
+
+  socket.on("deleteTemplate", (templateName, callback) => {
+    deleteTemplate(templateName);
+    callback(true);
+  });
+  socket.on("getTemplateEvents", (templateName, callback) => {
+    const events = getTemplateEvents(templateName);
+    callback(events || []);
   });
 });
 
