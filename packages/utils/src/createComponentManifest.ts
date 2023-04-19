@@ -75,20 +75,35 @@ export type CreateManifestOptions = {
       // set default callback handlers
       sendEventData?: boolean;
       sendFile?: SendFileCallbackHandler;
+    } & {
+      doNothing: boolean;
+      sendEventData?: boolean;
+      sendFile?: SendFileCallbackHandler;
     };
   };
   acceptsChild?: boolean | "flex" | AcceptsChildFunction;
 };
 
 export function createComponentManifest(options: CreateManifestOptions) {
-  const callbackNames = Object.keys(options.callbacks || {});
+  if (!options.name) {
+    throw Error(`name is a required field - got ${options.name}`);
+  }
+  const name = options.name;
+  const custom = options.custom || {};
+  const styleTreeOptions = options.styles || {};
+  const initialStyles = options.initialStyles || {};
+  const category = options.category || "Basics";
+  const initalCustomValues = options.initalCustomValues || {};
+  const callbacks = options.callbacks || {};
+
+  const callbackNames = Object.keys(callbacks);
 
   const attachCallbacks: ReactComponentManifestSchema["dev"]["attachCallbacks"] =
     {};
   callbackNames.reduce((prev, curr) => {
     const attachCallbackValue: ReactComponentManifestSchema["dev"]["attachCallbacks"]["0"] =
       [];
-    const callback = options.callbacks![curr]!;
+    const callback = callbacks![curr]!;
     if (callback.updateFields) {
       if (
         Array.isArray(callback.updateFields) &&
@@ -127,6 +142,9 @@ export function createComponentManifest(options: CreateManifestOptions) {
         }
       }
     }
+    if (callback.doNothing) {
+      attachCallbackValue.push({ type: "do_nothing" });
+    }
     // update prev object
     prev[curr] = attachCallbackValue;
     return prev;
@@ -137,13 +155,13 @@ export function createComponentManifest(options: CreateManifestOptions) {
   callbackNames.reduce((prev, curr) => {
     const defaultCallbackHandler: ReactComponentManifestSchema["dev"]["defaultCallbackHandlers"]["0"] =
       [];
-    const callback = options.callbacks![curr]!;
+    const callback = callbacks![curr]!;
     if (callback.sendEventData) {
       defaultCallbackHandler.push({ sendEventData: true });
     }
     if (callback.sendFile) {
       defaultCallbackHandler.push({
-        sendFile: options.callbacks![curr].sendFile!,
+        sendFile: callbacks![curr].sendFile!,
       });
     }
     // update prev object
@@ -154,13 +172,13 @@ export function createComponentManifest(options: CreateManifestOptions) {
   const acceptsChild = extractAcceptsChild(options.acceptsChild);
 
   const compManifest: ReactComponentManifestSchema = {
-    meta: { key: options.name, category: options.category || "Basics" },
+    meta: { key: name, category: category },
     dev: {
       decorators: [],
       attachProps: {
         styles: {
           treeId: CSSTreeId,
-          initialValue: options.initialStyles || {},
+          initialValue: initialStyles,
           treeOptions: {
             boxShadowOptions: false,
             flexContainerOptions: false,
@@ -173,14 +191,14 @@ export function createComponentManifest(options: CreateManifestOptions) {
             outlineOptions: false,
             backgroundOptions: false,
             miscellaneousOptions: false,
-            ...options.initialStyles,
+            ...styleTreeOptions,
           },
           canvasOptions: { groupByBreakpoint: true },
         },
         custom: {
           treeId: CustomTreeId,
-          initialValue: options.initalCustomValues || {},
-          treeOptions: { dataTypes: options.custom },
+          initialValue: initalCustomValues,
+          treeOptions: { dataTypes: custom },
           canvasOptions: { groupByBreakpoint: false },
         },
       },
@@ -190,10 +208,10 @@ export function createComponentManifest(options: CreateManifestOptions) {
     },
   };
   const iconManifest = {
-    panel: { comp: "CommonIcon", props: { name: options.name } },
+    panel: { comp: "CommonIcon", props: { name: name } },
     drag: {
       comp: "CommonIcon",
-      props: { name: options.name, containerStyle: { padding: "1rem" } },
+      props: { name: name, containerStyle: { padding: "1rem" } },
     },
     renderSchema: compManifest,
   };
