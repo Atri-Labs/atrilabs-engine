@@ -4,10 +4,13 @@ import {
 } from "@atrilabs/commands-builder";
 import webpack from "webpack";
 import path from "path";
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import { createCommonConfig } from "./createCommonConfig";
 import { startWebpackBuild } from "./utils";
 import { createClientEntry } from "./createClientEntry";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
+import CompressionPlugin from "compression-webpack-plugin";
+import { compressionMap } from "../../commons/maps";
 
 export async function buildClientSide(
   params: ReturnType<typeof extractParams> & {
@@ -64,6 +67,11 @@ export async function buildClientSide(
       config.plugins.push(
         new webpack.ProvidePlugin({
           React: "react",
+        }),
+        new CompressionPlugin({
+          test: /\.js(\?.*)?$/i,
+          algorithm: compressionMap[params.compress],
+          filename: `[path][base].${params.compress}`,
         })
       );
       config.optimization = {

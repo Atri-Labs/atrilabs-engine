@@ -79,6 +79,11 @@ export function processArgs() {
       default: "10",
       description: "size of image in KB",
     })
+    .option("compress", {
+      describe: "choose a compression algorithm",
+      choices: ["gzip", "deflate", "br"],
+      default: "gzip",
+    })
     .boolean("stats")
     .boolean("useLAN")
     .help().argv as {
@@ -98,6 +103,7 @@ export function processArgs() {
     t: string;
     inlinesize: string;
     useLAN: boolean;
+    compress: "gzip" | "deflate" | "br";
   };
 }
 
@@ -259,6 +265,8 @@ export function extractParams() {
     }
   );
 
+  const compress = args.compress;
+
   return {
     ...envVars,
     entry,
@@ -293,6 +301,7 @@ export function extractParams() {
         ? args.inlinesize
         : parseFloat(args.inlinesize),
     useLAN: args.useLAN,
+    compress,
   };
 }
 
@@ -317,9 +326,11 @@ export function extractMultiParams() {
   const buildConfig = runBuildConfig();
 
   const appPath = fs.realpathSync(process.cwd());
+
   function resolveApp(p: string) {
     return path.resolve(appPath, p);
   }
+
   const appTsConfig = resolveApp("tsconfig.json");
   const appJsConfig = resolveApp("jsconfig.json");
   const appPackageJson = path.resolve(appPath, "package.json");
