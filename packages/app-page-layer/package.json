@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-page-layer",
-  "version": "1.0.0-alpha.24",
+  "version": "1.0.0-alpha.25",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,14 +21,14 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^1.0.0-alpha.24",
-    "@atrilabs/design-system": "^1.0.0-alpha.24",
-    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.24",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.24",
+    "@atrilabs/core": "^1.0.0-alpha.25",
+    "@atrilabs/design-system": "^1.0.0-alpha.25",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.25",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.25",
     "typescript": "4.6.3"
   },
   "devDependencies": {
-    "@atrilabs/layer-types": "^1.0.0-alpha.24",
+    "@atrilabs/layer-types": "^1.0.0-alpha.25",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
