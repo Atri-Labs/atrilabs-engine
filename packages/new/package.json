@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/new",
-  "version": "1.0.0-alpha.25",
+  "version": "1.0.0-alpha.26",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -24,8 +24,8 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/commands": "^1.0.0-alpha.25",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.25",
+    "@atrilabs/commands": "^1.0.0-alpha.26",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.26",
     "pkg-up": "^3.1.0",
     "prompts": "^2.4.2"
   }
