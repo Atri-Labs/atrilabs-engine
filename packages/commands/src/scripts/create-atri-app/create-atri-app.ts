@@ -95,6 +95,9 @@ function createPackageJSON(
       devDependencies: {
         "@types/lodash": "^4.14.192",
         "@types/uuid": "^9.0.1",
+        concurrently: "^7.6.0",
+        "eslint-plugin-react": "^7.27.1",
+        "eslint-plugin-react-hooks": "^4.3.0",
       },
       browserslist: {
         production: [">0.2%", "not dead", "not op_mini all"],
