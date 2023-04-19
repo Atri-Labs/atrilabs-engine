@@ -22,10 +22,18 @@ async function main() {
   // @ts-ignore
   const packageJSON = __non_webpack_require__(pkgUp.sync());
   if (
-    !packageJSON["atriConfig"] &&
+    !packageJSON["atriConfig"] ||
     !packageJSON["atriConfig"]["pythonPackageName"]
   ) {
-    throw Error("The package.json doesn't have valid atriConfig field.");
+    console.warn(
+      `The package.json doesn't have valid atriConfig field.\nThe spec for atriConfig field is shown below:\n${JSON.stringify(
+        { id: "string", pythonPackageName: "string" },
+        null,
+        2
+      )}`
+    );
+    console.log(`Skipping generating python classes for manifests directory.`);
+    process.exit(0);
   }
 
   const componentsDir = path.resolve(

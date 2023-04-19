@@ -2,7 +2,7 @@ import path from "path";
 import { RuleSetRule } from "webpack";
 import { excludeWithAdditionalModules } from "../../commons/excludeWithAdditionalInclude";
 import { processDirsString } from "../../commons/processManifestDirsString";
-import { ComponentManifests } from "./types";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export function createCommonConfig(params: {
   exclude: string[];

@@ -59,15 +59,19 @@ function createPackageJSON(
       description: data.description,
       license: "ISC",
       scripts: {
-        dev: 'cross-env ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d "#@atrilabs/react-component-manifests" -a "@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link" -i "@atrilabs/utils:@atrilabs/atri-app-core"',
-        "gen-py-app": "gen-py-app",
-        "dev-py-app": "dev-py-app",
-        "gen-py-classes":
-          'gen-py-classes -i "@atrilabs/utils" -a "@atrilabs/utils"',
+        "dev:app":
+          'cross-env ATRI_APP_API_ENDPOINT=http://localhost:4007 dev-atri-app -d "#@atrilabs/react-component-manifests" -a "@atrilabs/utils:@atrilabs/atri-app-core/src/components/Link" -i "@atrilabs/utils:@atrilabs/atri-app-core"',
+        "dev:pyapp": "dev-py-app",
         editor:
           'cross-env APP_HOSTNAME="http://localhost:3000" dev-atri-editor',
-        build:
+        dev: `concurrently "npm run dev:app" "npm run editor" "npm run dev:pyapp"`,
+        "build:pyapp": "gen-py-app",
+        "build:pyclasses":
+          'gen-py-classes -i "@atrilabs/utils" -a "@atrilabs/utils"',
+        "build:app":
           'cross-env NODE_ENV=production BABEL_ENV=production build-atri-app -d "#@atrilabs/react-component-manifests"',
+        build:
+          "npm run build:pyclasses && npm run build:pyapp && npm run build:app",
         serve: "serve",
       },
       // Update these versions on every release
