@@ -267,8 +267,10 @@ function main() {
   copyError({ dest, useTypescript: args.typescript });
   createPublicDirectory({ dest });
   generateControllers({ dest });
-  generateTSConfig({ dest });
-  if (args.typescript) generateTypeFile({ dest });
+  if (args.typescript) {
+    generateTSConfig({ dest });
+    generateTypeFile({ dest });
+  }
   generateGitIgnoe({ dest, useTypescript: args.typescript });
 }
 
