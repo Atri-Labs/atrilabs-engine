@@ -35,6 +35,7 @@
     "@atrilabs/base-layer": "^1.0.0-alpha.26",
     "@atrilabs/canvas-breakpoint-layer": "^1.0.0-alpha.26",
     "@atrilabs/commands": "^1.0.0-alpha.26",
+    "@atrilabs/component-attributes-layer": "^1.0.0-alpha.26",
     "@atrilabs/component-list-layer": "^1.0.0-alpha.26",
     "@atrilabs/component-style-layer": "^1.0.0-alpha.26",
     "@atrilabs/custom-props-layer": "^1.0.0-alpha.26",

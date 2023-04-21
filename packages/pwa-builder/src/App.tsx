@@ -12,6 +12,7 @@ import ResourceProcessLayer from "@atrilabs/resource-processor-layer";
 import CanvasLayer from "@atrilabs/pwa-canvas-layer";
 import ComponentNavigatorLayer from "@atrilabs/component-navigator-layer";
 import AppTemplateLayer from "@atrilabs/app-template-layer";
+import ComponentAttributesLayer from "@atrilabs/component-attributes-layer";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
       <CanvasLayer />
       <ComponentNavigatorLayer />
       <AppTemplateLayer />
+      <ComponentAttributesLayer />
     </>
   );
 }
