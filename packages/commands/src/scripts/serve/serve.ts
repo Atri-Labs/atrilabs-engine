@@ -28,4 +28,7 @@ async function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  console.log(`Server crashed with error\n`, err);
+  process.exit(1);
+});

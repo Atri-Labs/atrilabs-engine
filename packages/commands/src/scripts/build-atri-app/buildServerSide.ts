@@ -5,9 +5,10 @@ import {
 import webpack from "webpack";
 import path from "path";
 import { createServerEntry } from "./createServerEntry";
-import { ComponentManifests, PageInfo } from "./types";
+import { PageInfo } from "./types";
 import { createCommonConfig } from "./createCommonConfig";
 import { startNodeWebpackBuild } from "./utils";
+import type { ComponentManifests } from "@atrilabs/atri-app-core/src/types";
 
 export async function buildServerSide(
   params: ReturnType<typeof extractParams> & {

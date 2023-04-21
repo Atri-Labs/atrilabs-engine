@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/commands-builder",
-  "version": "1.0.0-alpha.24",
+  "version": "1.0.0-alpha.26",
   "description": "builds & provide utils for @atrilabs/commands",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",

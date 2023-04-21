@@ -31,6 +31,10 @@ import {
 import webpack from "webpack";
 import { createCSSString } from "@atrilabs/atri-app-core/src/utils";
 
+function checkIfCWD(dir: string) {
+  return dir === process.cwd();
+}
+
 /**
  * This function expects that all the packages have dist/manfiest.bundle.js.
  *
@@ -57,6 +61,20 @@ export function getComponentManifests(manifestDirs: string[]) {
       "dist",
       "manifests.bundle.js"
     );
+    if (checkIfCWD(packageRoot)) {
+      if (!fs.existsSync(manifestBundle)) {
+        console.log("Skipping reading manifests in this package.");
+        return;
+      }
+    } else {
+      if (!fs.existsSync(manifestBundle)) {
+        console.log(`Cannot find manifests at ${manifestBundle}`);
+        console.log(
+          `Please check if the required packages are installed properly.`
+        );
+        process.exit(1);
+      }
+    }
     // @ts-ignore
     const pkgName = __non_webpack_require__(
       path.resolve(packageRoot, "package.json")

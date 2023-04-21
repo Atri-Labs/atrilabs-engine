@@ -4,11 +4,14 @@ import { AliasCompMapContext, ComponentTreeContext } from "../prod-contexts";
 import { NormalRenderer } from "./NormalRenderer";
 import { ParentRenderer } from "./ParentRenderer";
 
-export function CanvasZone(props: { id: string }) {
+export function CanvasZone(props: {
+  id: string;
+  styles?: React.CSSProperties;
+}) {
   const aliasCompMap = useContext(AliasCompMapContext);
   const compTree = useContext(ComponentTreeContext)[props.id];
   return (
-    <div data-atri-canvas-id={props.id}>
+    <div data-atri-canvas-id={props.id} style={props.styles}>
       {compTree[CANVAS_ZONE_ROOT_ID]?.map((childAlias) => {
         if (aliasCompMap[childAlias].type !== "normal") {
           return (

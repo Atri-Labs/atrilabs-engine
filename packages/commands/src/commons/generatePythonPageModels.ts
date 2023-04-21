@@ -89,6 +89,7 @@ export function generatePythonModelForAPage(ir: PathIR) {
           "Error while importing manifests bundle for package",
           nodePkg
         );
+        console.error(err);
         process.exit(2);
       }
     }
@@ -105,6 +106,10 @@ export function generatePythonModelForAPage(ir: PathIR) {
 }
 
 export async function generatePythonPageModels() {
+  if (!fs.existsSync(PAGE_DIR)) {
+    console.log("Please create a pages directory.");
+    process.exit(1);
+  }
   const filePaths = await readDirStructure(PAGE_DIR);
   const irs = dirStructureToIR(filePaths);
   irs.map((ir) => {
