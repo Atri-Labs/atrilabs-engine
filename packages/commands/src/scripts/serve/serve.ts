@@ -4,7 +4,10 @@ import express from "express";
 import { runChecks } from "./runChecks";
 import { handleGetHtml } from "./routes/handleGetHtml";
 import { exposeStaticDirectories } from "./routes/exposeStaticDirectories";
-import { readClientDirectory } from "./utils/readClientDirectory";
+import {
+  readClientDirectory,
+  readStaticCSSFiles,
+} from "./utils/readClientDirectory";
 
 async function main() {
   runChecks();
@@ -13,11 +16,12 @@ async function main() {
   const port = params.port;
   const host = params.host;
   const clientDirectoryFiles = await readClientDirectory();
+  const staticCssFiles = await readStaticCSSFiles();
 
   const app = express();
 
   handleGetHtml(app);
-  exposeStaticDirectories(app, clientDirectoryFiles);
+  exposeStaticDirectories(app, clientDirectoryFiles, staticCssFiles);
 
   app.listen(port, host, () => {
     console.log(`Server is listening on ${host}:${port}`);

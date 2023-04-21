@@ -69,7 +69,7 @@ export async function buildClientSide(
           React: "react",
         }),
         new CompressionPlugin({
-          test: /\.js(\?.*)?$/i,
+          test: /\.(js|css)(\?.*)?$/i,
           algorithm: compressionMap[params.compress],
           filename: `[path][base].${params.compress}`,
         })

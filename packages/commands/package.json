@@ -61,6 +61,7 @@
     "@types/react": "^18.0.26",
     "@types/yargs": "^17.0.24",
     "babel-jest": "^29.3.1",
+    "compression-webpack-plugin": "^10.0.0",
     "concurrently": "^7.6.0",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.5"
