@@ -78,9 +78,8 @@ export const TypedTextEditor: React.FC<ComponentProps> = (props) => {
                 height: "100%",
                 menubar: false,
                 toolbar:
-                  "undo redo " +
-                  "bold italic backcolor | alignleft aligncenter " +
-                  "alignright alignjustify | bullist numlist outdent indent | " +
+                  "forecolor  backcolor | bold italic underline | alignleft aligncenter " +
+                  "alignright alignjustify  |  outdent indent | " +
                   "removeformat | help " +
                   "formatselect",
                 content_style:

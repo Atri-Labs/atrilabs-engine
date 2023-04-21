@@ -77,35 +77,33 @@ const TinyMCE = forwardRef<
   }, [props.styles]);
 
   return (
-    <>
-      <div ref={ref}>
-        <Editor
-          key={key}
-          apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"
-          initialValue={props.custom.initialValue}
-          value={props.custom.value}
-          disabled={props.custom.disabled}
-          inline={props.custom.inline}
-          id={props.custom.id}
-          tinymceScriptSrc={props.custom.tinymceScriptSrc}
-          init={{
-            height: props.styles.height,
-            width: props.styles.width,
-            className: props.className,
-            contentEditable: props.custom.contentEditable,
-            initOnMount: props.custom.initOnMount,
-            content_style: `body {${contentStyles}}`,
-            plugins: props.custom.plugins,
-            toolbar: toolBarItems,
-            menubar: menuBarItems,
-            statusbar: props.custom.statusbar,
-            branding: props.custom.branding,
-            resize: props.custom.resize,
-            paste_data_images: props.custom.paste_data_images,
-          }}
-        />
-      </div>
-    </>
+    <div ref={ref}>
+      <Editor
+        key={key}
+        apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"
+        initialValue={props.custom.initialValue}
+        value={props.custom.value}
+        disabled={props.custom.disabled}
+        inline={props.custom.inline}
+        id={props.custom.id}
+        tinymceScriptSrc={props.custom.tinymceScriptSrc}
+        init={{
+          height: props.styles.height,
+          width: props.styles.width,
+          className: props.className,
+          contentEditable: props.custom.contentEditable,
+          initOnMount: props.custom.initOnMount,
+          content_style: `body {${contentStyles}}`,
+          plugins: props.custom.plugins,
+          toolbar: toolBarItems,
+          menubar: menuBarItems,
+          statusbar: props.custom.statusbar,
+          branding: props.custom.branding,
+          resize: props.custom.resize,
+          paste_data_images: props.custom.paste_data_images,
+        }}
+      />
+    </div>
   );
 });
 

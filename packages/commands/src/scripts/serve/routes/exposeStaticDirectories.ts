@@ -3,7 +3,8 @@ import path from "path";
 
 export function exposeStaticDirectories(
   router: Router,
-  clientDirectoryFiles: Set<string>
+  clientDirectoryFiles: Set<string>,
+  cssFiles: Set<string>
 ) {
   router.use((req, res, next) => {
     if (req.originalUrl.match(/(\.js(\.map)?)$/)) {
@@ -20,6 +21,31 @@ export function exposeStaticDirectories(
               "app-build",
               "client",
               `${req.originalUrl.replace(/^\//, "")}.${compressExtension[i]}`
+            )
+          );
+          return;
+        }
+      }
+      next();
+    }
+
+    if (req.originalUrl.match(/^\/static\/css\/.*(\.css(\.map)?)$/)) {
+      const compressExtension = ["gzip", "deflate", "br"];
+      const originalUrlFileName = `${req.originalUrl
+        .replace(/^\/static\/css\//, "")
+        .replace(".map", "")}`;
+      for (let i = 0; i < compressExtension.length; i++) {
+        if (cssFiles.has(`/${originalUrlFileName}.${compressExtension[i]}`)) {
+          res.set("Content-Type", "text/css");
+          res.set("Content-Encoding", compressExtension[i]);
+          res.sendFile(
+            path.resolve(
+              "dist",
+              "app-build",
+              "client",
+              "static",
+              "css",
+              `${originalUrlFileName}.${compressExtension[i]}`
             )
           );
           return;

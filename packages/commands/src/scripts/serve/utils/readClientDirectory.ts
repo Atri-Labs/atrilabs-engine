@@ -13,3 +13,19 @@ export async function readClientDirectory() {
 
   return new Set(files);
 }
+
+export async function readStaticCSSFiles() {
+  const files = (
+    await recursiveReadDir(
+      path.resolve("dist", "app-build", "client", "static", "css")
+    )
+  ).map((fileName) =>
+    upath.toUnix(
+      fileName.replace(
+        path.resolve("dist", "app-build", "client", "static", "css"),
+        ""
+      )
+    )
+  );
+  return new Set(files);
+}

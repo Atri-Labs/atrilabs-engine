@@ -35,6 +35,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "array_enum",
       options: [
         "false",
+        "forecolor  backcolor",
         "undo redo",
         "bold italic underline",
         "alignleft aligncenter alignright alignjustify ",
