@@ -1,7 +1,7 @@
-export type attributesTreeOptions = {
+export type AttributesTreeOptions = {
   attrs: {
     id: string;
-    ariaLabelBy: string;
+    "aria-labelledby": string;
     class: string;
   };
 };

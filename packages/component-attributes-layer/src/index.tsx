@@ -1,19 +1,13 @@
-import { Tab } from "@atrilabs/core";
-import { useManageCustomProps } from "./hooks/useManageCustomProps";
-import { useShowTab } from "./hooks/useShowTab";
-import { TabBody } from "./TabBody";
-import { TabHeader } from "./TabHeader";
-import { useUploadAssetManager } from "@atrilabs/shared-layer-lib";
-import { useColorPicker } from "./hooks/useColorPicker";
+import {Tab} from "@atrilabs/core";
+import {useManageAttrs} from "./hooks/useManageAttrs";
+import {useShowTab} from "./hooks/useShowTab";
+import {TabBody} from "./TabBody";
+import {TabHeader} from "./TabHeader";
 
 export default function () {
-  const { showTab, id, treeOptions } = useShowTab();
-  const { patchCb, customProps } = useManageCustomProps(id);
-  const { openAssetManager } = useUploadAssetManager({
-    patchCb,
-    wrapInUrl: false,
-  });
-  const { openColorPicker } = useColorPicker();
+  const {showTab, id} = useShowTab();
+  const {patchCb, attrs} = useManageAttrs(id);
+  console.log("props in attributes",patchCb, attrs)
 
   return (
     <>
@@ -24,15 +18,12 @@ export default function () {
             <>
               <TabBody
                 patchCb={patchCb}
-                customProps={customProps}
-                treeOptions={treeOptions}
-                openAssetManager={openAssetManager}
-                openColorPicker={openColorPicker}
+                attrs={attrs}
               />
             </>
           }
-          header={<TabHeader />}
-          itemName={"custom"}
+          header={<TabHeader/>}
+          itemName={"attrs"}
         />
       ) : null}
     </>

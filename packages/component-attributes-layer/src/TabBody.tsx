@@ -1,16 +1,12 @@
-import { gray300, gray800, h1Heading } from "@atrilabs/design-system";
-import React, { useMemo } from "react";
-import { TabBodyProps } from "./types";
-import {
-  attributesTreeOptions,
-  ArrayTypedMapCustomProp,
-  TypedMapCustomProp,
-} from "@atrilabs/app-design-forest";
-import { CommonPropTypeContainer } from "./components/commons/CommonPropTypeContainer";
-import { usePageRoutes } from "./hooks/usePageRoutes";
-import { TypedMap } from "./components/typed-map/TypedMap";
-import { MapContainer } from "./components/commons/MapContainer";
-import { TypedMapList } from "./components/typed-map-list/TypedMapList";
+import {gray300, gray800, h1Heading, smallText} from "@atrilabs/design-system";
+import React, {useMemo} from "react";
+import {TabBodyProps} from "./types";
+import {Label} from "./components/commons/Label";
+import {TextInput} from "./components/commons/TextInput";
+import {PropertyContainer} from "./components/commons/PropertyContainer";
+import {usePageRoutes} from "./hooks/usePageRoutes";
+
+;
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -37,14 +33,30 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Higher Order Component to arrange different sections
 // such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
-  const propNames = useMemo(() => {
-    return Object.keys(props.treeOptions.dataTypes);
-  }, [props]);
-  console.log("propNames", props);
-  const { routes } = usePageRoutes();
+  // const propNames = useMemo(() => {
+  //   return Object.keys(props.treeOptions.dataTypes);
+  // }, [props]);
+  console.log("props in attrs", props);
+  const {routes} = usePageRoutes();
 
   return (
     <div style={styles.container}>
+      <PropertyContainer>
+        <Label name="id"/>
+        <TextInput value="attrs" onChange={() => {
+        }}/>
+      </PropertyContainer>
+      <PropertyContainer>
+        <Label name="aria-labelledby"/>
+        <TextInput value="attrs" onChange={() => {
+        }}/>
+      </PropertyContainer>
+      <PropertyContainer>
+        <Label name="class"/>
+        <TextInput value="attrs" onChange={() => {
+        }}/>
+      </PropertyContainer>
+
       {/*{propNames.map((propName) => {*/}
       {/*  const propType = props.treeOptions.dataTypes[propName].type;*/}
       {/*  if (propType === "map" || propType === "array_map") {*/}

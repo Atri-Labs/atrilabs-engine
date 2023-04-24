@@ -1,5 +1,6 @@
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { AttributesTreeOptions } from "@atrilabs/app-design-forest/src/attributesTree";
 import type {
   ReactComponentManifestSchema,
   SendFileCallbackHandler,
@@ -67,6 +68,7 @@ export type CreateManifestOptions = {
   styles?: Partial<CSSTreeOptions>;
   initialStyles?: React.CSSProperties;
   custom?: CustomPropsTreeOptions["dataTypes"];
+
   initalCustomValues?: any;
   callbacks?: {
     [callbackName: string]: {
@@ -82,6 +84,7 @@ export type CreateManifestOptions = {
     };
   };
   acceptsChild?: boolean | "flex" | AcceptsChildFunction;
+  attrs?: AttributesTreeOptions;
 };
 
 export function createComponentManifest(options: CreateManifestOptions) {
@@ -95,6 +98,7 @@ export function createComponentManifest(options: CreateManifestOptions) {
   const category = options.category || "Basics";
   const initalCustomValues = options.initalCustomValues || {};
   const callbacks = options.callbacks || {};
+  const attrs = options.attrs || {};
 
   const callbackNames = Object.keys(callbacks);
 
@@ -199,6 +203,12 @@ export function createComponentManifest(options: CreateManifestOptions) {
           treeId: CustomTreeId,
           initialValue: initalCustomValues,
           treeOptions: { dataTypes: custom },
+          canvasOptions: { groupByBreakpoint: false },
+        },
+        attrs: {
+          treeId: CustomTreeId,
+          initialValue: initalCustomValues,
+          treeOptions: { attrs },
           canvasOptions: { groupByBreakpoint: false },
         },
       },

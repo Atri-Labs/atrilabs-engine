@@ -1,15 +1,19 @@
 import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import CustomPropsTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
 import { PatchEvent } from "@atrilabs/forest";
 import { api } from "@atrilabs/pwa-builder-manager";
 
-export const useManageCustomProps = (id: string | null) => {
+
+export const useManageAttrs = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
-  const customPropsTree = useTree(CustomPropsTreeId);
-  const [customProps, setCustomProps] = useState<any>({});
+  console.log("comp tree in attri layer",compTree)
+  const attributesTree = useTree(AttributesTreeId);
+  console.log("attributesPropsTree", attributesTree, AttributesTreeId);
+
+  const [attrs, setAttrs] = useState<any>({});
   // callback to post patch event -> takes a slice
   const patchCb = useCallback(
     (slice: any) => {
@@ -20,25 +24,27 @@ export const useManageCustomProps = (id: string | null) => {
       ) {
         const forestPkgId = BrowserForestManager.currentForest.forestPkgId;
         const forestId = BrowserForestManager.currentForest.forestId;
-        const customPropsNodeId = customPropsTree.links[id];
-        if (customPropsNodeId) {
+        const attributesTreeNodeId = attributesTree.links[id];
+
+        if (attributesTreeNodeId) {
           const patchEvent: PatchEvent = {
-            type: `PATCH$$${CustomPropsTreeId}`,
+            type: `PATCH$$${AttributesTreeId}`,
             slice,
-            id: customPropsNodeId.childId,
+            id: attributesTreeNodeId.childId,
           };
           api.postNewEvents(forestPkgId, forestId, {
             events: [patchEvent],
             meta: {
               agent: "browser",
             },
-            name: "CHANGE_CUSTOM_PROPS",
+            name: "CHANGE_ATTRS",
           });
         }
       }
     },
-    [id, compTree, customPropsTree]
+    [id, compTree, attributesTree]
   );
+
   useEffect(() => {
     if (
       id &&
@@ -49,18 +55,19 @@ export const useManageCustomProps = (id: string | null) => {
       const currentForest = BrowserForestManager.currentForest;
       const unsub = currentForest.subscribeForest((update) => {
         if (update.type === "change") {
-          if (update.treeId === CustomPropsTreeId) {
-            const customPropsNodeLink = customPropsTree.links[id];
-            const customPropsNodeId = customPropsNodeLink.childId;
-            setCustomProps({
-              ...customPropsTree.nodes[customPropsNodeId].state.property.custom,
+          if (update.treeId === AttributesTreeId) {
+            const attrsNodeLink = attributesTree.links[id];
+            const attrsNodeId = attrsNodeLink.childId;
+            setAttrs({
+              ...attributesTree.nodes[attrsNodeId].state.property.attrs,
             });
           }
         }
       });
       return unsub;
     }
-  }, [id, compTree, customPropsTree]);
+  }, [id, compTree, attributesTree]);
+
   useEffect(() => {
     // fetch values everytime id changes
     if (
@@ -68,12 +75,13 @@ export const useManageCustomProps = (id: string | null) => {
       compTree.nodes[id] &&
       compTree.nodes[id].meta.manifestSchemaId === ReactManifestSchemaId
     ) {
-      const customNodeId = customPropsTree.links[id];
-      if (customNodeId)
-        setCustomProps(
-          customPropsTree.nodes[customNodeId.childId].state.property.custom
+      const attrsNodeId = attributesTree.links[id];
+      if (attrsNodeId)
+        setAttrs(
+          attributesTree.nodes[attrsNodeId.childId].state.property.attrs
         );
     }
-  }, [id, compTree, customPropsTree]);
-  return { patchCb, customProps };
+  }, [id, compTree, attributesTree]);
+  //
+   return { patchCb, attrs };
 };

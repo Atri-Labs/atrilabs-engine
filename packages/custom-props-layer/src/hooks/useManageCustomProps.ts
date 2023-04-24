@@ -8,6 +8,7 @@ import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useManageCustomProps = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
+  console.log("comp tree in style layer",compTree)
   const customPropsTree = useTree(CustomPropsTreeId);
   const [customProps, setCustomProps] = useState<any>({});
   // callback to post patch event -> takes a slice
