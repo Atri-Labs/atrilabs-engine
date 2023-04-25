@@ -7,17 +7,23 @@ const DevVideo: typeof Video = forwardRef((props, ref) => {
     props.custom.url === undefined
       ? {
           // do not provide minHeight minWidth if user has provided height width
-          minHeight: props.styles.height ? "" : "1000px",
-          minWidth: props.styles.width ? "" : "1000px",
+          height: props.styles.height ? props.styles.height : "350px",
+          width: props.styles.width ? props.styles.width : "350px",
           borderWidth: `2px`,
           borderStyle: `dashed`,
           borderColor: `${gray500}`,
           boxSizing: "border-box",
-          display: "inline-block",
           ...props.styles,
         }
       : { ...props.styles };
-  return <Video ref={ref} {...props} styles={overrideStyleProps} />;
+  return (
+    <Video
+      ref={ref}
+      {...props}
+      styles={overrideStyleProps}
+      className={props.className}
+    />
+  );
 });
 
 export default DevVideo;
