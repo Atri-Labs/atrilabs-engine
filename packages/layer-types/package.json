@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/layer-types",
-  "version": "1.0.0-alpha.27",
+  "version": "1.0.0-alpha.28",
   "description": "Contains types for globally available identifiers in a layer package",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
