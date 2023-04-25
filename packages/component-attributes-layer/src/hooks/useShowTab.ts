@@ -33,9 +33,9 @@ export const useShowTab = () => {
           if (fullManifest) {
             const manifest: ReactComponentManifestSchema =
               fullManifest.manifest;
-            if (manifest.dev.attachProps["custom"]) {
+            if (manifest.dev.attachProps["attrs"]) {
               const treeOptions =
-                manifest.dev.attachProps["custom"].treeOptions;
+                manifest.dev.attachProps["attrs"];
               setId(id);
               setShowTab(true);
               setTreeOptions(treeOptions);

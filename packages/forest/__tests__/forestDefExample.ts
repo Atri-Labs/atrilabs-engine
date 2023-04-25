@@ -64,8 +64,25 @@ export const customPropsTreeDef: TreeDef = {
   },
 };
 
+export const attributesTreeDef: TreeDef = {
+  id: "@atrilabs/app-design-forest/src/attributesTree",
+  modulePath: "@atrilabs/app-design-forest/src/attributesTree",
+  defFn: () => {
+    return {
+      validateCreate(_event) {
+        return true;
+      },
+      validatePatch(_event) {
+        return true;
+      },
+      onCreate(_event) {},
+    };
+  },
+};
+
+
 export const forestDef: ForestDef = {
   id: "forestId",
   pkg: "forestPkg",
-  trees: [componentTreeDef, cssTreeDef, callbackTreeDef, customPropsTreeDef],
+  trees: [componentTreeDef, cssTreeDef, callbackTreeDef, customPropsTreeDef,attributesTreeDef],
 };

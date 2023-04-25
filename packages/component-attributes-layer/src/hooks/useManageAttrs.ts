@@ -9,9 +9,7 @@ import { api } from "@atrilabs/pwa-builder-manager";
 
 export const useManageAttrs = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
-  console.log("comp tree in attri layer",compTree)
   const attributesTree = useTree(AttributesTreeId);
-  console.log("attributesPropsTree", attributesTree, AttributesTreeId);
 
   const [attrs, setAttrs] = useState<any>({});
   // callback to post patch event -> takes a slice
@@ -82,6 +80,6 @@ export const useManageAttrs = (id: string | null) => {
         );
     }
   }, [id, compTree, attributesTree]);
-  //
+
    return { patchCb, attrs };
 };

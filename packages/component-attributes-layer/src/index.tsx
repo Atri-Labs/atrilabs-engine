@@ -7,7 +7,7 @@ import {TabHeader} from "./TabHeader";
 export default function () {
   const {showTab, id} = useShowTab();
   const {patchCb, attrs} = useManageAttrs(id);
-  console.log("props in attributes",patchCb, attrs)
+
 
   return (
     <>

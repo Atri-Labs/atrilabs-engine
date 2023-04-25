@@ -1,9 +1,7 @@
 export type AttributesTreeOptions = {
-  attrs: {
-    id: string;
-    "aria-labelledby": string;
-    class: string;
-  };
+  id: string;
+  "aria-labelledby": string;
+  class: string;
 };
 
 export default function () {
@@ -16,5 +14,5 @@ export default function () {
   const onCreate = () => {
     return true;
   };
-  return { validateCreate, validatePatch, onCreate };
+  return {validateCreate, validatePatch, onCreate};
 }
