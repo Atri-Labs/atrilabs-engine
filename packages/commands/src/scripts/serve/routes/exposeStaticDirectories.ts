@@ -26,14 +26,14 @@ export function exposeStaticDirectories(
           return;
         }
       }
-      next();
     }
 
     if (req.originalUrl.match(/^\/static\/css\/.*(\.css(\.map)?)$/)) {
       const compressExtension = ["gzip", "deflate", "br"];
-      const originalUrlFileName = `${req.originalUrl
-        .replace(/^\/static\/css\//, "")
-        .replace(".map", "")}`;
+      const originalUrlFileName = `${req.originalUrl.replace(
+        /^\/static\/css\//,
+        ""
+      )}`;
       for (let i = 0; i < compressExtension.length; i++) {
         if (cssFiles.has(`/${originalUrlFileName}.${compressExtension[i]}`)) {
           res.set("Content-Type", "text/css");
@@ -51,7 +51,6 @@ export function exposeStaticDirectories(
           return;
         }
       }
-      next();
     }
     next();
   });
