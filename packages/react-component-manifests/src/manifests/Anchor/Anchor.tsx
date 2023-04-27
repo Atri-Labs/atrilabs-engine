@@ -79,7 +79,7 @@ export const Anchor = forwardRef<
       id={props.id}
       ref={ref}
       style={props.styles}
-      className={props.custom.disabled === true ? "disabled" : props.className}
+      className={props.custom.disabled === true ? "disabled" : {props.className}
       {...custom}
       onClick={onClickCb}
     >

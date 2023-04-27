@@ -22,11 +22,11 @@ const Select = forwardRef<
   }
 >((props, ref) => {
   const { custom, ...restProps } = props;
-
   // moved ref to div, as the Antd select doesn't provide ref for select
   return (
     <div ref={ref} style={props.styles} id={props.id}>
       <AntdSelect
+        aria-labelledby ={props.attrs["aria-labelledby"]}
         defaultValue={props.custom.defaultValue}
         {...restProps}
         {...custom}
@@ -35,6 +35,7 @@ const Select = forwardRef<
         onChange={props.onChange}
         options={props.custom.options}
         placeholder={props.custom.placeholder}
+
       />
     </div>
   );

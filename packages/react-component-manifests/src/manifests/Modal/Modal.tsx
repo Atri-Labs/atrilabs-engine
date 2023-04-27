@@ -5,9 +5,6 @@ const Modal = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
-    attrs: {
-      class: string;
-    }
     children?: React.ReactNode[];
     custom: {
       text?: string;

@@ -38,7 +38,6 @@ const Alert = forwardRef<
     },
     [props]
   );
-//console.log("id props",props)
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>

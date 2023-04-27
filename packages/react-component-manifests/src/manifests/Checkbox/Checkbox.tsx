@@ -34,6 +34,7 @@ const Checkbox = forwardRef<
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}
     >
       <AntdCheckbox.Group
+        aria-labelledby ={props.attrs["aria-labelledby"]}
         className={props.className}
         style={props.styles}
         {...custom}

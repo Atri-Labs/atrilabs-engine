@@ -92,7 +92,7 @@ const TinyMCE = forwardRef<HTMLInputElement,
         init={{
           height: props.styles.height,
           width: props.styles.width,
-          className: props.clssName,
+          className: props.className,
           contentEditable: props.custom.contentEditable,
           initOnMount: props.custom.initOnMount,
           content_style: `body {${contentStyles}}`,

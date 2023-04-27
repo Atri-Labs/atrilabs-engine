@@ -59,7 +59,6 @@ const Tabs = forwardRef<HTMLDivElement,
         </style>
       )}
       <AntdTabs
-        className={props.className}
         {...restProps}
         {...custom}
         className={props.className}

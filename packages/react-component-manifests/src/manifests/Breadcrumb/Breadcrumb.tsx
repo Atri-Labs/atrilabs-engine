@@ -1,5 +1,5 @@
-import React, { forwardRef, useMemo } from "react";
-import { Breadcrumb as AntdBreadcrumb } from "antd";
+import React, {forwardRef, useMemo} from "react";
+import {Breadcrumb as AntdBreadcrumb} from "antd";
 
 interface item {
   title: string;
@@ -10,8 +10,7 @@ interface item {
   };
 }
 
-const Breadcrumb = forwardRef<
-  HTMLDivElement,
+const Breadcrumb = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
@@ -24,8 +23,7 @@ const Breadcrumb = forwardRef<
     id?: string;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLSpanElement>;
-  }
->((props, ref) => {
+  }>((props, ref) => {
   const breadcrumbItems = useMemo(() => {
     return props.custom.items.map((item) => {
       if (item.menu) {

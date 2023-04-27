@@ -82,7 +82,6 @@ const Video = forwardRef<
       ref={ref}
       style={{ display: "inline-block" }}
       id={props.id}
-      className={props.className}
     >
       <ReactPlayer
         className={props.className}

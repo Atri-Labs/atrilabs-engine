@@ -38,6 +38,7 @@ const Radio = forwardRef<
         style={props.styles}
         className={props.className}
         onChange={props.onChange}
+        aria-labelledby ={props.attrs["aria-labelledby"]}
         {...custom}
       />
     </div>

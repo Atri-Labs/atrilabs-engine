@@ -1,7 +1,6 @@
-import React, { forwardRef, useCallback } from "react";
+import React, {forwardRef, useCallback} from "react";
 
-export const TextBox = forwardRef<
-  HTMLDivElement,
+export const TextBox = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
@@ -18,11 +17,10 @@ export const TextBox = forwardRef<
     }) => void;
     id?: string;
     className?: string;
-  }
->((props, ref) => {
+  }>((props, ref) => {
   const onClick = useCallback(
     (e: React.MouseEvent) => {
-      const { x, y, width, height } = (
+      const {x, y, width, height} = (
         e.nativeEvent.target as HTMLElement
       ).getBoundingClientRect();
       props.onClick({
