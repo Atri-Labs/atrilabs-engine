@@ -14,6 +14,10 @@ const Cascader = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       placeholder?: string;
       allowClear?: boolean;
@@ -53,10 +57,11 @@ const Cascader = forwardRef<
   const { custom } = props;
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}
+    >
       <AntdCascader
         {...custom}
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         expandIcon={
           props.custom.expandIcon && (

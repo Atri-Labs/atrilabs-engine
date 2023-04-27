@@ -19,6 +19,10 @@ const Button = forwardRef<
   HTMLButtonElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       text: string;
       icon?: string; //Set the icon component of button
@@ -49,7 +53,8 @@ const Button = forwardRef<
     <AntdButton
       {...custom}
       ref={ref}
-      className={props.className}
+      id={props.attrs.id}
+      className={`${props.className} ${props.attrs.class}`}
       style={props.styles}
       onClick={onClick}
       icon={

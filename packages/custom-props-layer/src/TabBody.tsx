@@ -40,7 +40,6 @@ export const TabBody: React.FC<TabBodyProps> = (props) => {
     return Object.keys(props.treeOptions.dataTypes);
   }, [props]);
   const { routes } = usePageRoutes();
-  console.log("propNames in setting", props);
 
   return (
     <div style={styles.container}>

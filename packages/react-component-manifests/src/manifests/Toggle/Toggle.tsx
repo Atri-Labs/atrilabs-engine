@@ -87,6 +87,10 @@ const Toggle = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: { active: boolean; activeColor: string; inactiveColor: string };
     onChange: (checked: boolean) => void;
     className?: string;
@@ -102,7 +106,8 @@ const Toggle = forwardRef<
     <div
       ref={ref}
       style={{ ...props.styles, display: "inline-flex" }}
-      className={props.className}
+      className={`${props.className} ${props.attrs.class}`}
+      id={props.attrs.id}
     >
       <ToggleHelper
         isOn={props.custom.active}

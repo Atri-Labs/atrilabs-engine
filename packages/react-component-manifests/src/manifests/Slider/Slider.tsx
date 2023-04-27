@@ -49,6 +49,10 @@ const Slider = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     className?: string;
     custom: SliderRangeProps | SliderSingleProps;
   }
@@ -73,10 +77,10 @@ const Slider = forwardRef<
   }, [props.custom.marks]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
       <AntdSlider
         style={props.styles}
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         {...props.custom}
         key={sliderKey}
         marks={marks}

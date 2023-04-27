@@ -16,6 +16,10 @@ const TinyMCE = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       apiKey?: string;
       initialValue?: string;
@@ -77,7 +81,7 @@ const TinyMCE = forwardRef<
   }, [props.styles]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref}  className={`${props.className} ${props.attrs.class}`} id={props.attrs.id}>
       <Editor
         key={key}
         apiKey="vbo3n4286tzeuhkofq29387ruvysf454vcs7hkm9gonqn017"

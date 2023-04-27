@@ -5,6 +5,10 @@ export const DataTable = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       rows: { [field: string]: string | number | null }[];
       cols: GridColDef[];
@@ -19,7 +23,7 @@ export const DataTable = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div className={props.className} ref={ref} style={props.styles}>
+    <div  className={`${props.className} ${props.attrs.class}`} ref={ref} style={props.styles} id={props.attrs.id}>
       <DataGrid
         autoHeight={props.custom.autoHeight}
         rowHeight={props.custom.rowHeight || 20}

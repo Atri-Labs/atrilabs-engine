@@ -3,6 +3,10 @@ export type AttributesTreeOptions = {
   "aria-labelledby": string;
   class: string;
 };
+export type AttributesTreeOptionsBoolean = {
+  basics: boolean;
+  ariaLabelledBy: boolean;
+};
 
 export default function () {
   const validateCreate = () => {

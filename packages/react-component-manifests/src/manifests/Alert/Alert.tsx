@@ -36,11 +36,10 @@ const Alert = forwardRef<HTMLDivElement,
     },
     [props]
   );
-console.log("props.attrs", props.attrs.class, "\n",props.attrs, `${props.className} ${props.attrs.class}`)
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
-      <div ref={ref} style={{display: "inline-block"}}>
+      <div ref={ref} style={{display: "inline-block"}} id={props.attrs.id}>
         <AntdAlert
           style={props.styles}
           {...restProps}

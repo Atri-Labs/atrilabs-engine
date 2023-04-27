@@ -12,6 +12,11 @@ const Checkbox = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+      "aria-labelledby": string;
+    }
     custom: {
       defaultValue: (string | number)[];
       disabled?: boolean;
@@ -26,9 +31,11 @@ const Checkbox = forwardRef<
   const { custom } = props;
   // moved ref to div, as the Antd Checkbox doesnt provide ref for Checkbox
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}
+    >
       <AntdCheckbox.Group
-        className={props.className}
+        aria-labelledby ={props.attrs["aria-labelledby"]}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         {...custom}
         onChange={props.onChange}

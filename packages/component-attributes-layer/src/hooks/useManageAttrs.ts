@@ -5,6 +5,7 @@ import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id"
 import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
 import { PatchEvent } from "@atrilabs/forest";
 import { api } from "@atrilabs/pwa-builder-manager";
+import {ReactComponentManifestSchema} from "@atrilabs/react-component-manifest-schema";
 
 
 export const useManageAttrs = (id: string | null) => {

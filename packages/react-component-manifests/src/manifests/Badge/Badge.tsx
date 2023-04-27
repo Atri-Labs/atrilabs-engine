@@ -5,6 +5,10 @@ const Badge = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     className?: string;
     children: React.ReactNode[];
     custom?: {
@@ -34,10 +38,11 @@ const Badge = forwardRef<
         minHeight: props.styles.height ? "" : "100px",
         minWidth: props.styles.width ? "" : "100px",
       }}
+      id={props.attrs.id}
     >
       {props.custom?.ribbon === true ? (
         <AntdBadge.Ribbon
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           text={props.custom.ribbonText}
           placement={props.custom.ribbonPlacement}
@@ -47,7 +52,7 @@ const Badge = forwardRef<
         </AntdBadge.Ribbon>
       ) : (
         <AntdBadge
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           showZero={props.custom?.showZero}
           overflowCount={props.custom?.overflowCount}

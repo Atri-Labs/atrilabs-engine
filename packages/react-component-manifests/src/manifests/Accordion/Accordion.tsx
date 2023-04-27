@@ -15,6 +15,10 @@ const Accordion = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       items: {
         title: string;
@@ -40,10 +44,10 @@ const Accordion = forwardRef<
     [props.custom]
   );
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
       <Collapse
         style={props.styles}
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         size={props.custom?.size}
         bordered={props.custom.bordered}
         defaultActiveKey={props.custom.defaultActiveKey}

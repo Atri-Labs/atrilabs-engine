@@ -27,6 +27,10 @@ const Tag = forwardRef<
   HTMLElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       text: string;
       closable?: boolean;
@@ -57,7 +61,8 @@ const Tag = forwardRef<
       {...restProps}
       {...custom}
       ref={ref}
-      className={props.className}
+      className={`${props.className} ${props.attrs.class}`}
+      id={props.attrs.id}
       style={props.styles}
       onClick={props.onClick}
       closable={props.custom?.closable}

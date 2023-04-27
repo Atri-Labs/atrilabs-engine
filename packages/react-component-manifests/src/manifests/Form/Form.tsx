@@ -46,6 +46,10 @@ const Form = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       target: string;
       autocomplete: string;
@@ -130,9 +134,9 @@ const Form = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={props.styles} id={props.attrs.id}>
       <AntdForm
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         //antd style
         labelCol={{ span: 8 }}

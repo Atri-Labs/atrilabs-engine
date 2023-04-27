@@ -4,6 +4,10 @@ const Overlay = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     children: React.ReactNode[];
     custom: {
       closeOverlayAfter?: number;
@@ -28,13 +32,14 @@ const Overlay = forwardRef<
   return (
     <div
       ref={ref}
-      className={props.className}
+      className={`${props.className} ${props.attrs.class}`}
       style={{
         display:
           open !== undefined ? (open ? "flex" : "none") : props.styles.display,
         zIndex: 2,
         ...props.styles,
       }}
+      id={props.attrs.id}
     >
       This component is a work in progress! This component needs to put a React
       portal.

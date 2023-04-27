@@ -14,6 +14,14 @@ import {
   flexRowReverseSort,
   flexColReverseSort,
 } from "@atrilabs/react-component-manifest-schema";
+import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
+import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
+
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -93,6 +101,12 @@ const compManifest: ReactComponentManifestSchema = {
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
+        canvasOptions: {groupByBreakpoint: false},
       },
     },
     attachCallbacks: {

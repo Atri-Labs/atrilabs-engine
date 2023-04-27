@@ -18,6 +18,10 @@ const Search = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     className?: string;
     custom: {
       enterButton?: boolean | ReactNode; //Whether to show an enter button after input. This property conflicts with the addonAfter property
@@ -60,10 +64,10 @@ const Search = forwardRef<
   const { custom } = props;
   return (
     // moved ref to div, while passing prefix and suffix ref was losing focus and the selection was not working without refreshing the editor
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
       <SearchInput
         style={props.styles}
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         {...custom}
       />
     </div>

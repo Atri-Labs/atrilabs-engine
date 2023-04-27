@@ -9,6 +9,10 @@ const Tabs = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     children: React.ReactNode[];
     className?: string;
     custom: {
@@ -37,7 +41,7 @@ const Tabs = forwardRef<
   }, [items, props.children]);
 
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={props.styles} id={props.attrs.id}>
       {(props.custom.activeTabColor !== "" || undefined) && (
         <style>
           {`.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -53,8 +57,8 @@ const Tabs = forwardRef<
         </style>
       )}
       <AntdTabs
-        className={props.className}
         {...restProps}
+        className={`${props.className} ${props.attrs.class}`}
         items={tabItems}
         onChange={props.onChange}
         tabBarStyle={{

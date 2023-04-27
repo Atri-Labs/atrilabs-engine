@@ -1,9 +1,9 @@
 import {gray300, gray800, h1Heading} from "@atrilabs/design-system";
-import React, {useMemo} from "react";
+import React from "react";
 import {TabBodyProps} from "./types";
 import {usePageRoutes} from "./hooks/usePageRoutes";
-import {Text} from "./components/text/Text";
-
+import {Basics} from "./components/basics/Basics";
+import {AriaLabelledBy} from "./components/ariaLabelledBy/AriaLabelledBy";
 
 const styles: { [key: string]: React.CSSProperties } = {
   // top level container
@@ -30,23 +30,24 @@ const styles: { [key: string]: React.CSSProperties } = {
 // This serves as a Higher Order Component to arrange different sections
 // such as Spacing, Layout, Typography etc. of styles panel.
 export const TabBody: React.FC<TabBodyProps> = (props) => {
-  const propNames = useMemo(() => {
-    return Object.keys(props.attrs);
-  }, [props]);
 
   const {routes} = usePageRoutes();
-
   return (
     <div style={styles.container}>
-      {propNames.map((propName) =>
-        <Text
+      {
+        props.treeOptions.basics &&
+        <Basics
           {...props}
-          selector={[propName]}
-          propName={propName}
           routes={routes}
-          key={propName}
-        />)}
-
+        />
+      }
+      {
+        props.treeOptions.ariaLabelledBy &&
+        <AriaLabelledBy
+          {...props}
+          routes={routes}
+        />
+      }
     </div>
   );
 };

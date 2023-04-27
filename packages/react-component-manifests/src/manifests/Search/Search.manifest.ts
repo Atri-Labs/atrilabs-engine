@@ -1,3 +1,4 @@
+import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
@@ -5,6 +6,12 @@ import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -59,6 +66,12 @@ const compManifest: ReactComponentManifestSchema = {
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
+        canvasOptions: {groupByBreakpoint: false},
       },
     },
     attachCallbacks: {

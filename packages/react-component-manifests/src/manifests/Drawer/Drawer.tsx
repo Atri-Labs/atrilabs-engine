@@ -5,6 +5,10 @@ const Drawer = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     children?: React.ReactNode[];
     custom: {
       open?: boolean;
@@ -40,9 +44,9 @@ const Drawer = forwardRef<
   };
 
   return (
-    <div ref={ref}>
+    <div ref={ref} id={props.attrs.id}>
       <AntdDrawer
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         headerStyle={props.styles}
         {...custom}

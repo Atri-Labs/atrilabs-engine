@@ -4,6 +4,10 @@ const Testimonial = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       startTile: number;
       intervalTime: number;
@@ -60,7 +64,8 @@ const Testimonial = forwardRef<
         columnGap: "1em",
       }}
       onClick={onClick}
-      className={props.className}
+      className={`${props.className} ${props.attrs.class}`}
+      id={props.attrs.id}
     >
       <button
         style={{

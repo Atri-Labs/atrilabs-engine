@@ -5,6 +5,10 @@ const TimePicker = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     className?: string;
     custom: {
       size?: "small" | "middle" | "large";
@@ -40,16 +44,16 @@ const TimePicker = forwardRef<
 
   // moved ref to div, as the Antd TimePicker doesnt provide ref for TimePicker
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
       {range ? (
         <AntdTimePicker.RangePicker
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           {...restprops}
         />
       ) : (
         <AntdTimePicker
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           {...restprops}
           key={key}

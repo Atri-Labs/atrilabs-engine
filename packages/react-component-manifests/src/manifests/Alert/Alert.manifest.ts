@@ -4,11 +4,14 @@ import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
 import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 import {CSSTreeOptions} from "@atrilabs/app-design-forest/src/cssTree";
 import {CustomPropsTreeOptions} from "@atrilabs/app-design-forest/src/customPropsTree";
-import {AttributesTreeOptions} from "@atrilabs/app-design-forest/src/attributesTree";
+import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
 import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
 
-
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -76,12 +79,8 @@ const compManifest: ReactComponentManifestSchema = {
       },
       attrs: {
         treeId: AttributesTreeId,
-        initialValue: {
-          id: "one",
-          "aria-labelledby": "attrs-area-labelledby",
-          class: "attrsClass",
-        },
-        treeOptions: {},
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
         canvasOptions: {groupByBreakpoint: false},
       },
     },

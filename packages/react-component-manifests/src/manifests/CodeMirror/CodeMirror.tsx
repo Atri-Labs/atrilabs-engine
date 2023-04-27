@@ -31,6 +31,10 @@ const CodeMirror = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     custom: {
       value: string;
       theme: ThemeType;
@@ -147,10 +151,11 @@ const CodeMirror = forwardRef<
         `}
       </style>
       <div
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         ref={ref}
         style={{ position: "relative", display: "inline-block", ...props.styles }}
         onClick={onClick}
+        id={props.attrs.id}
       >
         <ReactCodeMirror
           extensions={[languageExtensions[props.custom.extensions]]}

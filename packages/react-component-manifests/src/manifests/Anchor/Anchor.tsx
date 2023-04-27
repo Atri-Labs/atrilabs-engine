@@ -4,6 +4,10 @@ export const Anchor = forwardRef<
   HTMLAnchorElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     children: React.ReactNode[];
     onClick: (event: {
       eventX: number;
@@ -73,9 +77,10 @@ export const Anchor = forwardRef<
   );
   return (
     <a
+      id={props.attrs.id}
       ref={ref}
       style={props.styles}
-      className={props.custom.disabled === true ? "disabled" : props.className}
+      className={props.custom.disabled === true ? "disabled" : `${props.className} ${props.attrs.class}`}
       {...custom}
       onClick={onClickCb}
     >

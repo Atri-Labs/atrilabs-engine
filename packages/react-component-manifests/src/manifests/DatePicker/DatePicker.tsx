@@ -26,6 +26,10 @@ const DatePicker = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      id: string;
+      class: string;
+    }
     className?: string;
     custom: RangePickerProps | DatePickerProps;
     onOpenChange?: (open: boolean) => void;
@@ -41,10 +45,10 @@ const DatePicker = forwardRef<
 
   return (
     // moved ref to div, as the Antd DatePicker doesnt provide ref for DatePicker
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
       {range ? (
         <RangePicker
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           {...restprops}
           placeholder={props.custom.placeholder as [string, string]}
@@ -52,7 +56,7 @@ const DatePicker = forwardRef<
         />
       ) : (
         <AntdDatePicker
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           {...restprops}
           placeholder={props.custom.placeholder as string}
