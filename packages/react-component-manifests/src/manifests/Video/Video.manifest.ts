@@ -108,7 +108,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: { width: "50vw", height: "50vh" },
+        initialValue: { width: "350px", height: "350px" },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/react-component-manifests",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.28",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -26,13 +26,13 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^1.0.0-alpha.26",
-    "@atrilabs/commands": "^1.0.0-alpha.26",
-    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.26",
-    "@atrilabs/core": "^1.0.0-alpha.26",
-    "@atrilabs/design-system": "^1.0.0-alpha.26",
-    "@atrilabs/layer-types": "^1.0.0-alpha.26",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.26",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.28",
+    "@atrilabs/commands": "^1.0.0-alpha.28",
+    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.28",
+    "@atrilabs/core": "^1.0.0-alpha.28",
+    "@atrilabs/design-system": "^1.0.0-alpha.28",
+    "@atrilabs/layer-types": "^1.0.0-alpha.28",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.28",
     "@codemirror/lang-css": "^6.0.2",
     "@codemirror/lang-html": "^6.4.2",
     "@codemirror/lang-java": "^6.0.1",

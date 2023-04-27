@@ -78,7 +78,12 @@ const Video = forwardRef<
 
   // moved ref to div, as the Antd ReactPlayer doesn't provide ref for ReactPlayer
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div
+      ref={ref}
+      style={{ display: "inline-block" }}
+      id={props.attrs.id}
+      className={props.className}
+    >
       <ReactPlayer
         className={`${props.className} ${props.attrs.class}`}
         style={props.styles}

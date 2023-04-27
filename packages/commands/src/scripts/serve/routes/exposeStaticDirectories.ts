@@ -26,7 +26,31 @@ export function exposeStaticDirectories(
           return;
         }
       }
-      next();
+    }
+
+    if (req.originalUrl.match(/^\/static\/css\/.*(\.css(\.map)?)$/)) {
+      const compressExtension = ["gzip", "deflate", "br"];
+      const originalUrlFileName = `${req.originalUrl.replace(
+        /^\/static\/css\//,
+        ""
+      )}`;
+      for (let i = 0; i < compressExtension.length; i++) {
+        if (cssFiles.has(`/${originalUrlFileName}.${compressExtension[i]}`)) {
+          res.set("Content-Type", "text/css");
+          res.set("Content-Encoding", compressExtension[i]);
+          res.sendFile(
+            path.resolve(
+              "dist",
+              "app-build",
+              "client",
+              "static",
+              "css",
+              `${originalUrlFileName}.${compressExtension[i]}`
+            )
+          );
+          return;
+        }
+      }
     }
 
     if (req.originalUrl.match(/^\/static\/css\/.*(\.css(\.map)?)$/)) {
