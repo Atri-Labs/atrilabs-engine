@@ -3,13 +3,13 @@ import {
   manifestRegistryController,
 } from "@atrilabs/core";
 import React, { useCallback, useEffect, useState } from "react";
-import cssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { getEffectiveStyle, Breakpoint } from "@atrilabs/core";
 import { api, breakpointApi } from "@atrilabs/pwa-builder-manager";
-import CssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 
 export const useManageCSS = (props: {
   id: string | null;

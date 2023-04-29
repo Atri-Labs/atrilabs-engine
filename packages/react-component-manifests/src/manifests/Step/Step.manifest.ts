@@ -1,10 +1,10 @@
 import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -23,12 +23,12 @@ const cssTreeOptions: CSSTreeOptions = {
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
     current: { type: "number" },
-    size : {type : "enum",options: ["default","small"]},
-    direction : {type : "enum",options: ["horizontal" , "vertical"]},
-    dotStyle :{type : "enum",options: ["","dot","withHover"]},
-    type: {type : "enum",options: ["default" , "navigation" , "inline"]},
-    percent: {type : "number"},
-    labelPlacement:{type : "enum",options: ["horizontal" , "vertical" ]},
+    size: { type: "enum", options: ["default", "small"] },
+    direction: { type: "enum", options: ["horizontal", "vertical"] },
+    dotStyle: { type: "enum", options: ["", "dot", "withHover"] },
+    type: { type: "enum", options: ["default", "navigation", "inline"] },
+    percent: { type: "number" },
+    labelPlacement: { type: "enum", options: ["horizontal", "vertical"] },
     items: {
       type: "array_map",
       singleObjectName: "item",
@@ -45,7 +45,6 @@ const customTreeOptions: CustomPropsTreeOptions = {
         { fieldName: "disabled", type: "boolean" },
       ],
     },
-   
   },
 };
 
@@ -82,9 +81,9 @@ const compManifest: ReactComponentManifestSchema = {
               description: "description",
             },
           ],
-          size : "default",
-          current : 1,
-          direction : "horizontal",
+          size: "default",
+          current: 1,
+          direction: "horizontal",
         },
         treeOptions: customTreeOptions,
         canvasOptions: { groupByBreakpoint: false },

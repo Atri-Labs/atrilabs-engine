@@ -7,8 +7,8 @@ import {
   flexRowSort,
   flexColSort,
 } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {

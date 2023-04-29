@@ -15,3 +15,5 @@ export default function (): ManifestSchema {
   }
   return { validate };
 }
+
+export const Id = "@atrilabs/component-icon-manifest-schema/src/index.ts";

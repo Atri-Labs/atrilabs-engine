@@ -2,7 +2,7 @@ import {
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
-import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactComponentManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
 import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";

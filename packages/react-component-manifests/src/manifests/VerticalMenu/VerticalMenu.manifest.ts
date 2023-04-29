@@ -4,9 +4,9 @@ import {
   flexColSort,
   ReactComponentManifestSchema,
 } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
 
