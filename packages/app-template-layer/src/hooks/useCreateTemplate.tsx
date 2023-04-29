@@ -14,7 +14,7 @@ import {
   TreeNode,
 } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 
 export const useCreateTemplate = () => {
   const componentTree = useTree(ComponentTreeId);

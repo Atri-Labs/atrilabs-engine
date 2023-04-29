@@ -40,3 +40,5 @@ export default function () {
   };
   return { validateCreate, validatePatch, onCreate };
 }
+
+export const Id = "@atrilabs/app-design-forest/src/callbackHandlerTree";

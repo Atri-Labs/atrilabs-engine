@@ -1,7 +1,7 @@
 import { AnyEvent, CreateEvent, LinkEvent } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 import { getId } from "./getID";
 
 export function createEventsFromManifest(options: {

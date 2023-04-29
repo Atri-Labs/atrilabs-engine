@@ -1,5 +1,5 @@
 import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 import {
   BrowserForestManager,
   getId,

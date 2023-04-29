@@ -3,7 +3,7 @@ import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import React, { useEffect, useMemo, useState } from "react";
 import { getReactManifest } from "@atrilabs/core";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import {
   FormattedTemplateData,
