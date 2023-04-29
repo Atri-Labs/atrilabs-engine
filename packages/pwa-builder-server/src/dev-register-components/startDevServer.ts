@@ -64,6 +64,10 @@ export function startDevServer(options: {
     path.dirname(
       // @ts-ignore
       __non_webpack_require__.resolve("@atrilabs/utils")
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
     )
   );
 

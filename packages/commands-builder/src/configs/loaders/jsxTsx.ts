@@ -120,46 +120,60 @@ export default function setJsxTsxLoaders(options: {
     plugins?: [string, any][];
   };
 }): RuleSetRule[] {
-  const {
-    appSrc,
-    isEnvProduction,
-    isEnvDevelopment,
-    isEnvTest,
-    hasJsxRuntime,
-    removeReactRefresh,
-    additionalInclude,
-    babel,
-    exclude,
-  } = options;
+  const { appSrc, additionalInclude, exclude, removeReactRefresh } = options;
   return [
     {
-      test: /\.(js|mjs|jsx|ts|tsx)$/,
+      test: /\.(js|mjs)$/,
       include: [appSrc, ...additionalInclude],
       exclude,
-      loader: require.resolve("babel-loader"),
+      loader: require.resolve("swc-loader"),
       options: {
-        babelrc: false,
-        configFile: false,
-        cacheDirectory: true,
-        cacheCompression: false,
-        compact: isEnvProduction,
-        plugins: [
-          isEnvDevelopment &&
-            !removeReactRefresh &&
-            require.resolve("react-refresh/babel"),
-          ...(babel?.plugins || []),
-        ].filter(Boolean),
-        presets: [
-          [
-            babelPresetReactApp,
-            {
-              runtime: hasJsxRuntime ? "automatic" : "classic",
-              isEnvProduction,
-              isEnvDevelopment,
-              isEnvTest,
+        sync: true,
+        jsc: {
+          transform: {
+            react: {
+              runtime: "automatic",
+              refresh: removeReactRefresh ? false : true,
             },
-          ],
-        ],
+          },
+        },
+      },
+    },
+    {
+      test: /\.js(x?)$/,
+      include: [appSrc, ...additionalInclude],
+      exclude,
+      loader: require.resolve("swc-loader"),
+      options: {
+        sync: true,
+        jsc: {
+          parser: {
+            jsx: true,
+          },
+          transform: {
+            react: {
+              runtime: "automatic",
+              refresh: removeReactRefresh ? false : true,
+            },
+          },
+        },
+      },
+    },
+    {
+      test: /\.ts(x?)$/,
+      include: [appSrc, ...additionalInclude],
+      exclude,
+      loader: require.resolve("swc-loader"),
+      options: {
+        sync: true,
+        jsc: {
+          transform: {
+            react: {
+              runtime: "automatic",
+              refresh: removeReactRefresh ? false : true,
+            },
+          },
+        },
       },
     },
   ];
