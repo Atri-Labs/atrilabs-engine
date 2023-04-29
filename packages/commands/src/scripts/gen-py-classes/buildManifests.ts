@@ -37,8 +37,18 @@ export function buildManifests(options: {
           "@atrilabs/react-component-manifest-schema"
         )
       ),
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(
+          "@atrilabs/component-icon-manifest-schema"
+        )
+      ),
       // @ts-ignore
-      path.dirname(__non_webpack_require__.resolve("@atrilabs/forest"))
+      path.dirname(__non_webpack_require__.resolve("@atrilabs/forest")),
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+      )
     );
 
     params.allowlist = params.allowlist || [];
@@ -49,7 +59,13 @@ export function buildManifests(options: {
     params.allowlist.push("@atrilabs/design-system");
     params.allowlist.push("@atrilabs/manifest-registry");
     params.allowlist.push("@atrilabs/react-component-manifest-schema");
+    params.allowlist.push("@atrilabs/component-icon-manifest-schema");
     params.allowlist.push("@atrilabs/forest");
+    params.allowlist.push("@atrilabs/app-design-forest");
+    params.allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/cssTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/componentTree");
 
     if (fs.existsSync(path.resolve("manifests"))) {
       params.additionalInclude = [

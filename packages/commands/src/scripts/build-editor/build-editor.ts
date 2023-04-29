@@ -76,7 +76,11 @@ async function main() {
         // @ts-ignore
         __non_webpack_require__.resolve(pkg)
       );
-    })
+    }),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    )
   );
   params.additionalInclude = additionalInclude;
 

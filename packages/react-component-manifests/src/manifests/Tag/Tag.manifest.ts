@@ -1,4 +1,4 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
 import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";

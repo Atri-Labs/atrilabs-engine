@@ -86,7 +86,11 @@ async function main() {
       // @ts-ignore
       __non_webpack_require__.resolve("@atrilabs/manifest-registry")
     ),
-    ...manifestDirs
+    ...manifestDirs,
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    )
   );
   params.additionalInclude = additionalInclude;
 
@@ -218,6 +222,11 @@ async function main() {
   allowlist.push("@atrilabs/canvas-zone");
   allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");
   allowlist.push("@atrilabs/manifest-registry");
+  allowlist.push("@atrilabs/app-design-forest");
+  allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+  allowlist.push("@atrilabs/app-design-forest/src/cssTree");
+  allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+  allowlist.push("@atrilabs/app-design-forest/src/componentTree");
   startNodeLibWatcher({
     ...params,
     disableNodeExternals: true,

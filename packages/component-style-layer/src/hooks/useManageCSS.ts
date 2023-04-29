@@ -3,7 +3,6 @@ import {
   manifestRegistryController,
 } from "@atrilabs/core";
 import React, { useCallback, useEffect, useState } from "react";
-import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent, Tree } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
@@ -53,7 +52,7 @@ export const useManageCSS = (props: {
         const cssNodeId = cssTree.links[id];
         if (cssNodeId) {
           const patchEvent: PatchEvent = {
-            type: `PATCH$$${cssTreeId}`,
+            type: `PATCH$$${CSSTreeId}`,
             slice: breakpointApi.isReferenceBreakpointActive()
               ? slice
               : {
@@ -133,7 +132,7 @@ export const useManageCSS = (props: {
         const cssLink = cssTree.links[id];
         if (
           update.type === "change" &&
-          update.treeId === CssTreeId &&
+          update.treeId === CSSTreeId &&
           cssLink.childId === update.id
         ) {
           const styles = cssTree.nodes[update.id].state.property.styles;

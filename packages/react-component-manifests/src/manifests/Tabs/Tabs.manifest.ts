@@ -6,7 +6,7 @@ import {
 } from "@atrilabs/react-component-manifest-schema";
 import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
 
 const cssTreeOptions: CSSTreeOptions = {
