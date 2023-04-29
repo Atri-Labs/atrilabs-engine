@@ -4,7 +4,7 @@ import {
   PatchEvent,
   TreeNode,
 } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { CreateEvent, DeleteEvent } from "@atrilabs/forest";
 import { BrowserForestManager } from "@atrilabs/core";
 import { componentApi } from "../componentApi";

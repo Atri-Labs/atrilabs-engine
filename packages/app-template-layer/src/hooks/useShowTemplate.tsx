@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { getReactManifest } from "@atrilabs/core";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import {
   FormattedTemplateData,
   PartialTemplateComponents,

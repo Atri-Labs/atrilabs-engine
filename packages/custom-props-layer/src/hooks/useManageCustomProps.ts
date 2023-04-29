@@ -1,6 +1,6 @@
 import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import CustomPropsTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent } from "@atrilabs/forest";

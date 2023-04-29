@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BrowserForestManager, useTree } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent } from "@atrilabs/forest";
 import { api, subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";

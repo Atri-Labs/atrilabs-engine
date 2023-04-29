@@ -10,7 +10,7 @@ import {
   getReactManifest,
 } from "@atrilabs/core";
 import { api } from "./api";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import { aliasApi } from "./aliasApi";
 import { postPasteEvents } from "./copy-paste/postPasteEvents";

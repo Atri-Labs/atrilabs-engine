@@ -1,5 +1,5 @@
 import { useTree } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import CssTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
 
 export const useGetTrees = () => {

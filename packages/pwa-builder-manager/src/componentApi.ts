@@ -1,6 +1,6 @@
 import { TreeNode } from "@atrilabs/forest";
 import { BrowserForestManager } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
 
 export type ParentChildMap = { [parentId: string]: string[] };

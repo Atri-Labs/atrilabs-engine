@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { canvasApi } from "@atrilabs/pwa-builder-manager";
 import { useTree } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 
 export const useManualHover = () => {
   const compTree = useTree(ComponentTreeId);

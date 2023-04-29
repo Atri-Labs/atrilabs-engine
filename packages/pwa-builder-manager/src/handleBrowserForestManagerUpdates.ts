@@ -4,7 +4,7 @@ import {
 } from "@atrilabs/core";
 import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
 import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { editorAppMachineInterpreter } from "./init";
 import { createComponentFromNode } from "@atrilabs/atri-app-core/src/utils/createComponentFromNode";

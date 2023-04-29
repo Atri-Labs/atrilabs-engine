@@ -4,7 +4,7 @@ import {
   getReactManifest,
   useTree,
 } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { useCallback } from "react";
 import {
   AnyEvent,
