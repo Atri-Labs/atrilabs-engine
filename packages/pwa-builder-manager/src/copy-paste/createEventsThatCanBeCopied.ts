@@ -5,7 +5,7 @@ import {
   getId,
   manifestRegistryController,
 } from "@atrilabs/core";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import {
   AnyEvent,
   CreateEvent,

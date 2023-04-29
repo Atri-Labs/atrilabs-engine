@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BrowserForestManager } from "@atrilabs/core";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { Tree } from "@atrilabs/forest";
 import {
   subscribeEditorMachine,

@@ -2,7 +2,7 @@ import { api } from "@atrilabs/pwa-builder-manager";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import React, { useEffect, useMemo, useState } from "react";
 import { getReactManifest } from "@atrilabs/core";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import {

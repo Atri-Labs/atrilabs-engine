@@ -2,7 +2,7 @@ import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
 import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { CallbackHandler } from "@atrilabs/react-component-manifest-schema";
 import { PatchEvent } from "@atrilabs/forest";
 import { getComponentManifest } from "../utils";

@@ -1,6 +1,6 @@
 import { manifestRegistryController } from "@atrilabs/manifest-registry";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 
 export function getReactManifest(options: { pkg: string; key: string }) {
   const { pkg, key } = options;
