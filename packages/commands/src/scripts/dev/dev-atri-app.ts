@@ -149,6 +149,10 @@ async function main() {
       ...config.devServer,
       hot: true,
     };
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-dev", "client"),
+    };
   };
 
   const middlewares = params.middlewares;
@@ -239,6 +243,10 @@ async function main() {
       const plugins = config.plugins || [];
       plugins.push(new NodeLibPlugin());
       config.plugins = plugins;
+      config.cache = {
+        type: "filesystem",
+        cacheDirectory: path.resolve("node_modules", ".cache-dev", "node"),
+      };
       config.resolveLoader = {
         alias: {
           "atri-pages-server-loader": path.resolve(

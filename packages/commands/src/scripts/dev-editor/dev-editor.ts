@@ -155,6 +155,14 @@ function main() {
           ),
         },
       };
+      config.cache = {
+        type: "filesystem",
+        cacheDirectory: path.resolve(
+          "node_modules",
+          ".cache-dev-editor",
+          "client"
+        ),
+      };
       const plugins = config.plugins || [];
       plugins.push(new EditorAppServerPlugin());
       config.plugins = plugins;

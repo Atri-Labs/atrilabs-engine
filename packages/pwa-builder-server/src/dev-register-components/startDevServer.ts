@@ -159,6 +159,11 @@ export function startDevServer(options: {
     new webpack.HotModuleReplacementPlugin(),
   ];
 
+  webpackConfig.cache = {
+    type: "filesystem",
+    cacheDirectory: path.resolve("node_modules", ".pwa-builder-server"),
+  };
+
   const compiler = webpack(webpackConfig);
 
   function wrapMiddleware(app: Express.Application) {

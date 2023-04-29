@@ -100,6 +100,15 @@ async function main() {
     corePkgInfo,
   });
 
+  webpackConfig.cache = {
+    type: "filesystem",
+    cacheDirectory: path.resolve(
+      "node_modules",
+      ".cache-build-manifest-registry",
+      "client"
+    ),
+  };
+
   webpack(webpackConfig, (err, stats) => {
     if (err) {
       console.log(err);

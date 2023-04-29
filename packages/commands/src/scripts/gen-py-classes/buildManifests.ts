@@ -79,7 +79,7 @@ export function buildManifests(options: {
       excludeDirs
     );
 
-    const conifg = createNodeLibConfig({
+    const config = createNodeLibConfig({
       ...params,
       exclude,
       entry: createManifestsEntry,
@@ -102,7 +102,7 @@ export function buildManifests(options: {
         ],
       },
     });
-    conifg.resolveLoader = {
+    config.resolveLoader = {
       alias: {
         "register-components-loader": path.resolve(
           __dirname,
@@ -115,7 +115,11 @@ export function buildManifests(options: {
         ),
       },
     };
-    webpack(conifg, (err, stats) => {
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-build-editor"),
+    };
+    webpack(config, (err, stats) => {
       if (err) {
         console.log(err);
       }

@@ -142,6 +142,10 @@ async function main() {
         ),
       },
     };
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-build-editor"),
+    };
   };
 
   const corePkgInfo = getCorePkgInfo();
