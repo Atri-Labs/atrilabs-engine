@@ -24,16 +24,24 @@ socket.on("connect", () => {
 });
 
 subscribeEditorMachine("before_app_load", (context) => {
+  // delete the forest to start from scratch
+  BrowserForestManager.deleteForest(
+    BrowserForestManager.currentForest.forestPkgId,
+    context.currentRouteObjectPath
+  );
+  // create a new instance of forest and set it as current
+  BrowserForestManager.setCurrentForest(
+    BrowserForestManager.currentForest.forestPkgId,
+    context.currentRouteObjectPath
+  );
   // fetch only if not already fetched
-  if (context.events[context.currentUrlPath] === undefined) {
-    socket.emit("fetchEvents", context.currentUrlPath, (events) => {
-      editorAppMachineInterpreter.send({
-        type: "PAGE_EVENTS_FETCHED",
-        events,
-        urlPath: context.currentUrlPath,
-      });
+  socket.emit("fetchEvents", context.currentUrlPath, (events) => {
+    editorAppMachineInterpreter.send({
+      type: "PAGE_EVENTS_FETCHED",
+      events,
+      urlPath: context.currentUrlPath,
     });
-  }
+  });
 });
 
 subscribeEditorMachine("after_app_load", (context) => {

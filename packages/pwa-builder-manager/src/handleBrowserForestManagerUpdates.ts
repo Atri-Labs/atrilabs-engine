@@ -101,7 +101,6 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
             (key) => manfiest.dev.attachProps[key].treeId !== treeId
           );
           if (foundPropKey) {
-            const node = compTree.nodes[compId]!;
             const componentData = createComponentFromNode(
               node,
               BrowserForestManager.currentForest,
@@ -151,7 +150,10 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
         return;
       }
       const compId = link.refId;
-      const node = compTree.nodes[compId]!;
+      const node = compTree.nodes[compId];
+      if (node === undefined) {
+        return;
+      }
       const componentData = createComponentFromNode(
         node,
         BrowserForestManager.currentForest,

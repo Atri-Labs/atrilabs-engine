@@ -114,13 +114,6 @@ subscribeEditorMachine("DRAG_FAILED", (context) => {
   context.canvasWindow?.postMessage({ type: "drag_stopped" }, "*");
 });
 
-subscribeEditorMachine("before_app_load", (context) => {
-  BrowserForestManager.setCurrentForest(
-    BrowserForestManager.currentForest.forestPkgId,
-    context.currentRouteObjectPath
-  );
-});
-
 function navigatePage(urlPath: string) {
   editorAppMachineInterpreter.send({ type: "NAVIGATE_PAGE", urlPath });
 }
