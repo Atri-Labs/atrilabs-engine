@@ -5,7 +5,7 @@ import { DeleteEvent } from "@atrilabs/forest";
 import { createEventsThatCanBeCopied } from "./copy-paste/createEventsThatCanBeCopied";
 import { putInClipboard, readFromClipboard } from "./copy-paste/clipboard";
 import { editorAppMachineInterpreter, subscribeEditorMachine } from "./init";
-import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
+import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 import { componentApi } from "./componentApi";
 import { undo, redo } from "./undo-redo/postUndoRedoEvents";
 

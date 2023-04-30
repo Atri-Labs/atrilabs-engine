@@ -170,11 +170,6 @@ async function main() {
     },
   ];
 
-  params.isEnvDevelopment = false;
-  params.isEnvProduction = true;
-  params.isEnvProductionProfile = false;
-  params.isEnvTest = false;
-
   runBuild({
     ...params,
     exclude,

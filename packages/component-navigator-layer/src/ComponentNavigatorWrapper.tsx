@@ -12,7 +12,7 @@ import {
   subscribeWait,
   waitingForNodesToClose,
 } from "./dragDropMachine";
-import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
+import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 import { canvasApi, componentApi } from "@atrilabs/pwa-builder-manager";
 
 export function ComponentNavigatorWrapper(props: {

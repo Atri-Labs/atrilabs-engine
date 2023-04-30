@@ -3,7 +3,7 @@ import { Tree } from "@atrilabs/forest";
 import { componentApi } from "@atrilabs/pwa-builder-manager";
 import { NavigatorNode } from "./types";
 import type { MouseEvent } from "react";
-import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api";
+import { CANVAS_ZONE_ROOT_ID } from "@atrilabs/atri-app-core/src/api/consts";
 
 export function markAllNodesClosed(
   nodeIds: string[],
