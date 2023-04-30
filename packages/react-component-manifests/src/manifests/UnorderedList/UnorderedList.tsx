@@ -12,6 +12,9 @@ const UnorderedList = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     children: React.ReactNode[];
     custom: {
       items: Item[];
@@ -41,6 +44,7 @@ const UnorderedList = forwardRef<
       xxl?: number;
     };
     onClick: (event: { item: Item; index: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -84,7 +88,7 @@ const UnorderedList = forwardRef<
   );
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <List
         className={props.className}
         style={{ ...props.styles }}

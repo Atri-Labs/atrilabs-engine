@@ -4,12 +4,16 @@ export const Dropdown = forwardRef<
   HTMLSelectElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       selectedValue?: string;
       dropdownItems: { displayed: string; value: string }[];
       disabled?: boolean;
     };
     onChange: (selectedValue: string) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -27,6 +31,7 @@ export const Dropdown = forwardRef<
       className={props.className}
       style={props.styles}
       ref={ref}
+      id={props.id}
     >
       {props.custom.dropdownItems.map((dropdownItem, index) => {
         return (

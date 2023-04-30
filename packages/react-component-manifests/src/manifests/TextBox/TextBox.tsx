@@ -4,6 +4,9 @@ export const TextBox = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: { text: string };
     onClick: (event: {
       eventX: number;
@@ -13,6 +16,7 @@ export const TextBox = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -38,8 +42,9 @@ export const TextBox = forwardRef<
       className={props.className}
       style={props.styles}
       onClick={onClick}
-      dangerouslySetInnerHTML={{ __html: props.custom.text }}
-    ></div>
+      dangerouslySetInnerHTML={{__html: props.custom.text}}
+      id={props.id}
+    />
   );
 });
 

@@ -12,6 +12,9 @@ const Alert = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       alertType: AlertType;
       text: string;
@@ -23,6 +26,7 @@ const Alert = forwardRef<
       closeIcon?: string;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
     showIcon?: boolean;
   }
@@ -34,11 +38,11 @@ const Alert = forwardRef<
     },
     [props]
   );
-
+//console.log("id props",props)
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
-      <div ref={ref} style={{ display: "inline-block" }}>
+      <div ref={ref} style={{display: "inline-block"}} id={props.id}>
         <AntdAlert
           className={props.className}
           style={props.styles}

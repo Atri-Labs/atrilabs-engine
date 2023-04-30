@@ -4,6 +4,9 @@ const Testimonial = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       startTile: number;
       intervalTime: number;
@@ -15,6 +18,7 @@ const Testimonial = forwardRef<
       }[];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -61,6 +65,7 @@ const Testimonial = forwardRef<
       }}
       onClick={onClick}
       className={props.className}
+      id={props.id}
     >
       <button
         style={{

@@ -44,17 +44,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          paddingTop: "15px",
-          paddingLeft: "24px",
-          paddingBottom: "15px",
-          paddingRight: "15px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          columnGap: "10px",
-          justifyContent: "space-between",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },

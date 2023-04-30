@@ -1,20 +1,22 @@
-import React, { forwardRef, useMemo } from "react";
-import { Tabs as AntdTabs, TabsProps } from "antd";
+import React, {forwardRef, useMemo} from "react";
+import {Tabs as AntdTabs, TabsProps} from "antd";
 
-export type TabsType = "line" | "card" | "editable-card";
-export type TabPosition = "left" | "right" | "top" | "bottom";
-export type SizeType = "large" | "middle" | "small";
-
-const Tabs = forwardRef<
-  HTMLDivElement,
+const Tabs = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     children: React.ReactNode[];
+    id?: string;
     className?: string;
     custom: {
       items: {
         key: string;
         label: React.ReactNode;
+        children?: string; // update when accept child is added
+        icon?: string;
+        disabled?: boolean;
       }[];
       inActiveTabColor?: string;
       activeTabColor?: string;
@@ -24,20 +26,24 @@ const Tabs = forwardRef<
       activeKey: string,
       e: React.KeyboardEvent | React.MouseEvent
     ) => void;
-  } & TabsProps
->((props, ref) => {
-  const { custom, ...restProps } = props;
-  const { items } = custom;
+  } & TabsProps>((props, ref) => {
+  const {custom, ...restProps} = props;
+  const {items} = custom;
 
   const tabItems = useMemo(() => {
     return items.map((item, index) => ({
       ...item,
-      children: props.children,
+      label: (
+        <span style={{display: "flex", gap: "5px"}}>
+          {item.icon && <img style={{width: "18px"}} src={item?.icon} alt={item?.icon}/>}
+          {item.label}
+        </span>
+      ),
     }));
-  }, [items, props.children]);
+  }, [items]);
 
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={props.styles} id={props.id}>
       {(props.custom.activeTabColor !== "" || undefined) && (
         <style>
           {`.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -55,12 +61,15 @@ const Tabs = forwardRef<
       <AntdTabs
         className={props.className}
         {...restProps}
+        {...custom}
+        className={props.className}
         items={tabItems}
         onChange={props.onChange}
         tabBarStyle={{
           ...props.styles,
           color: `${props.custom.inActiveTabColor}`,
         }}
+
       />
     </div>
   );

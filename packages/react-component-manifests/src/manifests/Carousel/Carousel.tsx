@@ -8,6 +8,9 @@ const Carousel = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       items: { text: string; image?: string }[];
       effect?: CarouselEffect;
@@ -21,12 +24,14 @@ const Carousel = forwardRef<
       afterChange?(currentSlide: number): void;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
   const { custom } = props;
   return (
-    <div ref={ref}>
+    <div ref={ref} id={props.id}
+    >
       <AntdCarousel className={props.className} {...custom}>
         {props.custom.items.map((item, index) => (
           <div key={index}>

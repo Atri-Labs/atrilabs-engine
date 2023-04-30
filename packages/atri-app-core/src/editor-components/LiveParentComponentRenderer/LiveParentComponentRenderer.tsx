@@ -27,6 +27,7 @@ export function LiveParentComponentRenderer(
         {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
+        id={alias}
         className={alias}
       >
         {children.map((childId) => {

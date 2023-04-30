@@ -5,6 +5,10 @@ const Badge = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
+    id?: string;
     className?: string;
     children: React.ReactNode[];
     custom?: {
@@ -34,6 +38,7 @@ const Badge = forwardRef<
         minHeight: props.styles.height ? "" : "100px",
         minWidth: props.styles.width ? "" : "100px",
       }}
+      id={props.id}
     >
       {props.custom?.ribbon === true ? (
         <AntdBadge.Ribbon

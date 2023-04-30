@@ -26,6 +26,7 @@ export function NormalRenderer(props: {
     <Comp
       ref={ref}
       {...callbacks}
+      id={alias}
       className={alias}
       {...aliasProps}
       styles={aliasProps["styles"] || {}}

@@ -15,6 +15,7 @@ export function LiveNormalComponentRenderer(
   const compProps = useGetComponentProps({ id: props.id });
   const { styleStr, styles } = useStyleString({ alias, compProps });
   const callbacks = useGetCallbacks({ id: props.id });
+  console.log("alias...",alias)
   return (
     <>
       <style>{styleStr}</style>
@@ -22,6 +23,7 @@ export function LiveNormalComponentRenderer(
         {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
+        id={alias}
         className={alias}
       />
     </>

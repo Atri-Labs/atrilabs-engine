@@ -5,8 +5,12 @@ export const Link = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: { text: string; url: string; disabled?: boolean };
     onClick: () => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -19,6 +23,7 @@ export const Link = forwardRef<
       ref={ref}
       style={{ display: "inline-block", ...props.styles }}
       onClick={onClick}
+      id={props.id}
     >
       <AtriLink
         href={props.custom.url}

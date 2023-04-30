@@ -14,10 +14,14 @@ const Breadcrumb = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       separator?: string;
       items: item[];
     };
+    id?: string;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLSpanElement>;
   }
@@ -43,7 +47,8 @@ const Breadcrumb = forwardRef<
     });
   }, [props.custom.items]);
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{display: "inline-block"}} id={props.id}
+    >
       <AntdBreadcrumb
         className={props.className}
         style={props.styles}

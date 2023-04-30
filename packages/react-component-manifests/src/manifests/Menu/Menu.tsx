@@ -16,6 +16,9 @@ const Menu = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     children: React.ReactNode[];
     custom: {
       items: Item[];
@@ -32,6 +35,7 @@ const Menu = forwardRef<
     onClick: Function;
     onOpenChange: Function;
     onSelect: Function;
+    id?: string;
     className?: string;
   } & MenuProps
 >((props, ref) => {
@@ -48,7 +52,7 @@ const Menu = forwardRef<
   }, [items]);
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdMenu
         style={props.styles}
         className={props.className}

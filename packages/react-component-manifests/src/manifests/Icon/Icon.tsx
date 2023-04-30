@@ -4,6 +4,9 @@ const Icon = forwardRef<
   HTMLElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: { svg: string };
     onClick: (event: {
       eventX: number;
@@ -13,6 +16,7 @@ const Icon = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -36,6 +40,7 @@ const Icon = forwardRef<
     <i
       ref={ref}
       className={props.className}
+      id={props.id}
       style={props.styles}
       onClick={onClick}
       dangerouslySetInnerHTML={{ __html: props.custom.svg }}

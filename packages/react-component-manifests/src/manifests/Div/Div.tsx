@@ -4,6 +4,9 @@ export const Div = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     children: React.ReactNode[];
     onClick: (event: {
       eventX: number;
@@ -13,6 +16,7 @@ export const Div = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -38,6 +42,7 @@ export const Div = forwardRef<
       style={props.styles}
       onClick={onClickCb}
       className={props.className}
+      id={props.id}
     >
       {props.children}
     </div>

@@ -4,6 +4,9 @@ const Image = forwardRef<
   HTMLImageElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: { alt: string; src: string };
     onClick: (event: {
       eventX: number;
@@ -13,6 +16,7 @@ const Image = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -41,6 +45,7 @@ const Image = forwardRef<
       onClick={onClick}
       src={props.custom.src}
       alt={props.custom.alt}
+      id={props.id}
     />
   );
 });
