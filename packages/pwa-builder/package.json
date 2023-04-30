@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "dev-editor -i \"@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest:@atrilabs/utils\" -d \"../example-atri-app/manifests\"",
     "build-manifest-registry": "build-manifest-registry",
-    "build-editor": "build-editor -i \"@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest:@atrilabs/utils\"",
+    "build-editor": "cross-env-shell MODE=production build-editor -i \"@atrilabs/pwa-builder-manager:@atrilabs/design-system:@atrilabs/forest:@atrilabs/app-design-forest:@atrilabs/utils\"",
     "build": "concurrently \"yarn build-editor\" \"yarn build-manifest-registry\"",
     "prepublishOnly": "yarn build"
   },
