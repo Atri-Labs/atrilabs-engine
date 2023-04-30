@@ -5,7 +5,6 @@ const Icon = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: { svg: string };
@@ -17,6 +16,7 @@ const Icon = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -39,7 +39,7 @@ const Icon = forwardRef<
   return (
     <i
       ref={ref}
-      id={props.attrs.id}
+      id={props.id}
       className={`${props.className} ${props.attrs.class}`}
       style={props.styles}
       onClick={onClick}

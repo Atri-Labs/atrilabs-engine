@@ -8,7 +8,6 @@ const Step = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -25,6 +24,7 @@ const Step = forwardRef<
       onChange?: (current: number) => void;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -63,7 +63,7 @@ const Step = forwardRef<
 
   return (
     <>
-      <div ref={ref} id={props.attrs.id}>
+      <div ref={ref} id={props.id}>
         <Steps
           style={props.styles}
           className={`${props.className} ${props.attrs.class}`}

@@ -7,9 +7,9 @@ const Tree = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       treeData?: DataNode[];
@@ -46,7 +46,7 @@ const Tree = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdTree
         style={props.styles}
         className={`${props.className} ${props.attrs.class}`}

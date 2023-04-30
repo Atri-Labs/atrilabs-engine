@@ -6,9 +6,9 @@ const Badge = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     children: React.ReactNode[];
     custom?: {
@@ -38,7 +38,7 @@ const Badge = forwardRef<
         minHeight: props.styles.height ? "" : "100px",
         minWidth: props.styles.width ? "" : "100px",
       }}
-      id={props.attrs.id}
+      id={props.id}
     >
       {props.custom?.ribbon === true ? (
         <AntdBadge.Ribbon

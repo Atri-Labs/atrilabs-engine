@@ -1,7 +1,9 @@
-import React, { forwardRef, ReactNode } from "react";
-import { Cascader as AntdCascader } from "antd";
-import { CascaderProps } from "antd/lib/cascader";
-const { SHOW_CHILD, SHOW_PARENT } = AntdCascader;
+import React, {forwardRef, ReactNode} from "react";
+import {Cascader as AntdCascader} from "antd";
+import {CascaderProps} from "antd/lib/cascader";
+
+const {SHOW_CHILD, SHOW_PARENT} = AntdCascader;
+
 interface Option {
   value: string | number;
   label: string;
@@ -10,12 +12,10 @@ interface Option {
   children?: Option[];
 }
 
-const Cascader = forwardRef<
-  HTMLDivElement,
+const Cascader = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -51,13 +51,13 @@ const Cascader = forwardRef<
         selectedOptions: CascaderProps["options"] | CascaderProps["options"][]
       ) => ReactNode; //The render function of displaying selected options
     };
+    id?: string;
     className?: string;
-  }
->((props, ref) => {
-  const { custom } = props;
+  }>((props, ref) => {
+  const {custom} = props;
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}
+    <div ref={ref} style={{display: "inline-block"}} id={props.id}
     >
       <AntdCascader
         {...custom}
@@ -65,30 +65,30 @@ const Cascader = forwardRef<
         style={props.styles}
         expandIcon={
           props.custom.expandIcon && (
-            <img src={props.custom.expandIcon} alt={props.custom.expandIcon} />
+            <img src={props.custom.expandIcon} alt={props.custom.expandIcon}/>
           )
         }
         suffixIcon={
           props.custom.expandIcon && (
-            <img src={props.custom.suffixIcon} alt={props.custom.suffixIcon} />
+            <img src={props.custom.suffixIcon} alt={props.custom.suffixIcon}/>
           )
         }
         clearIcon={
           props.custom.expandIcon && (
-            <img src={props.custom.clearIcon} alt={props.custom.clearIcon} />
+            <img src={props.custom.clearIcon} alt={props.custom.clearIcon}/>
           )
         }
         removeIcon={
           props.custom.expandIcon && (
-            <img src={props.custom.removeIcon} alt={props.custom.removeIcon} />
+            <img src={props.custom.removeIcon} alt={props.custom.removeIcon}/>
           )
         }
         showCheckedStrategy={
           props.custom.showCheckedStrategy === "SHOW_CHILD"
             ? SHOW_CHILD
             : props.custom.showCheckedStrategy === "SHOW_PARENT"
-            ? SHOW_PARENT
-            : undefined
+              ? SHOW_PARENT
+              : undefined
         }
       />
     </div>

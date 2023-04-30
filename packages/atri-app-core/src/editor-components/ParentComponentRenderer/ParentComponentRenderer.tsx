@@ -32,6 +32,7 @@ export function ParentComponentRenderer(props: ParentComponentRendererProps) {
         {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
+        id={alias}
         className={alias}
       >
         {children.map((childId) => {

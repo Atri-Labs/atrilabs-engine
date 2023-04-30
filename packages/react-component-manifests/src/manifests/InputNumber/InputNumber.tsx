@@ -17,9 +17,9 @@ const Input = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       value: string;
@@ -61,7 +61,7 @@ const Input = forwardRef<
   const { custom } = props;
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdInputNumber
         {...custom}
         className={`${props.className} ${props.attrs.class}`}

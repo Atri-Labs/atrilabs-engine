@@ -6,7 +6,6 @@ const VerticalMenu = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -21,6 +20,7 @@ const VerticalMenu = forwardRef<
         }[];
       }[];
     };
+    id?: string;
     className?: string;
     onClick: (menuItem: { name: string }) => void;
   }
@@ -35,7 +35,7 @@ const VerticalMenu = forwardRef<
       ref={ref}
       style={{ ...props.styles, position: "relative" }}
       className={`${props.className} ${props.attrs.class}`}
-      id={props.attrs.id}
+      id={props.id}
     >
       <span
         style={{

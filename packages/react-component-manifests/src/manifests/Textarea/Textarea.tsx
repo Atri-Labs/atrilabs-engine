@@ -13,9 +13,9 @@ const Textarea = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       text: string;
@@ -46,7 +46,7 @@ const Textarea = forwardRef<
   const { custom } = props;
   // moved ref to div, as the Antd TextArea doesn't provide ref for TextArea
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <TextArea
         className={`${props.className} ${props.attrs.class}`}
         style={{

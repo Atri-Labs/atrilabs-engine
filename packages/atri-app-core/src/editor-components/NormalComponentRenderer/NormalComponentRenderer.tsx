@@ -26,6 +26,7 @@ export function NormalComponentRenderer(props: NormalComponentRendererProps) {
         {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
+        id={alias}
         className={alias}
       />
     </>

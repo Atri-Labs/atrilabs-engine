@@ -7,9 +7,9 @@ const Timeline = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       items: {
@@ -37,7 +37,7 @@ const Timeline = forwardRef<HTMLDivElement,
     });
   }, [props.custom.items]);
   return (
-    <div ref={ref} style={{display: "inline-block"}} id={props.attrs.id}>
+    <div ref={ref} style={{display: "inline-block"}} id={props.id}>
       <AntdTimeline
         style={props.styles}
         className={`${props.className} ${props.attrs.class}`}

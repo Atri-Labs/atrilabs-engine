@@ -5,7 +5,6 @@ export const Flex = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     children: React.ReactNode[];
@@ -17,6 +16,7 @@ export const Flex = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -42,7 +42,7 @@ export const Flex = forwardRef<
       style={props.styles}
       onClick={onClickCb}
       className={`${props.className} ${props.attrs.class}`}
-      id={props.attrs.id}
+      id={props.id}
     >
       {props.children}
     </div>

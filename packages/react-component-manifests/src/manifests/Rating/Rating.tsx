@@ -6,7 +6,6 @@ const Rating = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -18,13 +17,14 @@ const Rating = forwardRef<
       toolTipInfo?: string[];
       count?: number;
     };
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
   const { custom } = props;
   const [value, setValue] = useState(props.custom.defaultValue);
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <Rate
         className={`${props.className} ${props.attrs.class}`}
         style={props.styles}

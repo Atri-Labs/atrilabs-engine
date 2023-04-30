@@ -6,7 +6,6 @@ const Modal = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     children?: React.ReactNode[];
@@ -30,6 +29,7 @@ const Modal = forwardRef<
     };
     onCancel?: Function;
     afterClose: Function;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -40,7 +40,7 @@ const Modal = forwardRef<
   };
   const { custom } = props;
   return (
-    <div ref={ref} id={props.attrs.id}>
+    <div ref={ref} id={props.id}>
       <AntdModal
         style={props.styles}
         width={props.styles.width}

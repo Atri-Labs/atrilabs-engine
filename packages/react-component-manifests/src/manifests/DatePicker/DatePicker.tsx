@@ -1,6 +1,7 @@
-import React, { forwardRef, useMemo } from "react";
-import { DatePicker as AntdDatePicker } from "antd";
-const { RangePicker } = AntdDatePicker;
+import React, {forwardRef, useMemo} from "react";
+import {DatePicker as AntdDatePicker} from "antd";
+
+const {RangePicker} = AntdDatePicker;
 
 export type PickerType = "week" | "month" | "quarter" | "year";
 
@@ -15,28 +16,28 @@ export interface BasePickerProps {
   placement?: "bottomLeft" | "bottomRight" | "topLeft" | "topRight";
   range?: boolean;
 }
+
 export interface RangePickerProps extends BasePickerProps {
   placeholder?: [string, string];
 }
+
 export interface DatePickerProps extends BasePickerProps {
   placeholder?: string;
 }
 
-const DatePicker = forwardRef<
-  HTMLDivElement,
+const DatePicker = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: RangePickerProps | DatePickerProps;
     onOpenChange?: (open: boolean) => void;
-  }
->((props, ref) => {
-  const { custom } = props;
-  const { range, ...restprops } = custom;
+  }>((props, ref) => {
+  const {custom} = props;
+  const {range, ...restprops} = custom;
   const key = useMemo(() => {
     if (range) {
       return Math.random();
@@ -45,7 +46,7 @@ const DatePicker = forwardRef<
 
   return (
     // moved ref to div, as the Antd DatePicker doesnt provide ref for DatePicker
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{display: "inline-block"}} id={props.id}>
       {range ? (
         <RangePicker
           className={`${props.className} ${props.attrs.class}`}

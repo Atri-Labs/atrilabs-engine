@@ -4,7 +4,6 @@ export const TextBox = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: { text: string };
@@ -16,6 +15,7 @@ export const TextBox = forwardRef<HTMLDivElement,
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }>((props, ref) => {
   const onClick = useCallback(
@@ -41,7 +41,7 @@ export const TextBox = forwardRef<HTMLDivElement,
       style={props.styles}
       onClick={onClick}
       dangerouslySetInnerHTML={{__html: props.custom.text}}
-      id={props.attrs.id}
+      id={props.id}
     />
   );
 });

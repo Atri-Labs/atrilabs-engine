@@ -16,7 +16,6 @@ const Accordion = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -35,6 +34,7 @@ const Accordion = forwardRef<
       ghost?: boolean;
       size?: Size;
     };
+    id?: string;
     className?: string;
     onChange?: (key: string | string[]) => void;
   }
@@ -44,7 +44,7 @@ const Accordion = forwardRef<
     [props.custom]
   );
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <Collapse
         style={props.styles}
         className={`${props.className} ${props.attrs.class}`}

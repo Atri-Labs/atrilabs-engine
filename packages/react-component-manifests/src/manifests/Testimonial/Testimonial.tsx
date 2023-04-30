@@ -5,7 +5,6 @@ const Testimonial = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -19,6 +18,7 @@ const Testimonial = forwardRef<
       }[];
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -65,7 +65,7 @@ const Testimonial = forwardRef<
       }}
       onClick={onClick}
       className={`${props.className} ${props.attrs.class}`}
-      id={props.attrs.id}
+      id={props.id}
     >
       <button
         style={{

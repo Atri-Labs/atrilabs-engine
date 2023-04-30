@@ -13,7 +13,6 @@ const Checkbox = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
       "aria-labelledby": string;
     }
@@ -25,13 +24,14 @@ const Checkbox = forwardRef<
       value?: (string | number | boolean)[];
     };
     onChange?: (checkedValue: Array<CheckboxValueType>) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
   const { custom } = props;
   // moved ref to div, as the Antd Checkbox doesnt provide ref for Checkbox
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}
     >
       <AntdCheckbox.Group
         aria-labelledby ={props.attrs["aria-labelledby"]}

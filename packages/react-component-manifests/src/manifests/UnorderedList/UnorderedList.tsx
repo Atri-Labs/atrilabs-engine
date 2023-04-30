@@ -13,7 +13,6 @@ const UnorderedList = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     children: React.ReactNode[];
@@ -45,6 +44,7 @@ const UnorderedList = forwardRef<
       xxl?: number;
     };
     onClick: (event: { item: Item; index: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -88,7 +88,7 @@ const UnorderedList = forwardRef<
   );
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <List
         className={`${props.className} ${props.attrs.class}`}
         style={{ ...props.styles }}

@@ -1,5 +1,5 @@
-import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
-import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import {CSSTreeOptions} from "@atrilabs/app-design-forest/src/cssTree";
+import {CustomPropsTreeOptions} from "@atrilabs/app-design-forest/src/customPropsTree";
 import {
   ReactComponentManifestSchema,
   AcceptsChildFunction,
@@ -36,38 +36,39 @@ const acceptsChild: AcceptsChildFunction = (info: any) => {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    centered: { type: "boolean" },
-    animated: { type: "boolean" },
-    addIcon: { type: "static_asset" },
+    defaultActiveKey: {type: "text"},
+    centered: {type: "boolean"},
+    animated: {type: "boolean"},
     tabPosition: {
       type: "enum",
       options: ["top", "bottom", "left", "right"],
     },
     size: {
       type: "enum",
-      options: ["large", "middle", "small"],
+      options: ["middle", "large", "small"],
     },
     type: {
       type: "enum",
       options: ["line", "card"],
     },
-    inActiveTabColor: { type: "color" },
-    activeTabColor: { type: "color" },
+    inActiveTabColor: {type: "color"},
+    activeTabColor: {type: "color"},
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        { fieldName: "key", type: "number" },
-        { fieldName: "label", type: "text" },
-        { fieldName: "children", type: "text" },
-        { fieldName: "disabled", type: "boolean" },
+        {fieldName: "key", type: "number"},
+        {fieldName: "label", type: "text"},
+        {fieldName: "children", type: "text"},
+        {fieldName: "disabled", type: "boolean"},
+        {fieldName: "icon", type: "static_asset"},
       ],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: { key: "Tabs", category: "Basics" },
+  meta: {key: "Tabs", category: "Basics"},
   dev: {
     decorators: [],
     attachProps: {
@@ -75,7 +76,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {},
         treeOptions: cssTreeOptions,
-        canvasOptions: { groupByBreakpoint: true },
+        canvasOptions: {groupByBreakpoint: true},
       },
       custom: {
         treeId: CustomTreeId,
@@ -84,22 +85,22 @@ const compManifest: ReactComponentManifestSchema = {
             {
               key: "1",
               label: `Tab 1`,
-              children: [],
+              children: `Content of Tab Pane 1`,
             },
             {
               key: "2",
               label: `Tab 2`,
-              children: [],
+              children: `Content of Tab Pane 2`,
             },
             {
               key: "3",
               label: `Tab 3`,
-              children: [],
+              children: `Content of Tab Pane 3`,
             },
           ],
         },
         treeOptions: customTreeOptions,
-        canvasOptions: { groupByBreakpoint: false },
+        canvasOptions: {groupByBreakpoint: false},
       },
       attrs: {
         treeId: AttributesTreeId,
@@ -109,7 +110,7 @@ const compManifest: ReactComponentManifestSchema = {
       },
     },
     attachCallbacks: {
-      onTabClick: [{ type: "controlled", selector: ["custom", "open"] }],
+      onTabClick: [{type: "controlled", selector: ["custom", "open"]}],
     },
     defaultCallbackHandlers: {},
     acceptsChild,
@@ -117,12 +118,12 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: { comp: "CommonIcon", props: { name: "Tabs" } },
+  panel: {comp: "CommonIcon", props: {name: "Tabs"}},
   drag: {
     comp: "CommonIcon",
     props: {
       name: "Tabs",
-      containerStyle: { padding: "1rem" },
+      containerStyle: {padding: "1rem"},
     },
   },
   renderSchema: compManifest,

@@ -32,7 +32,6 @@ const CodeMirror = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -76,6 +75,7 @@ const CodeMirror = forwardRef<
       height: number;
     }) => void;
     onChange?(value: string, viewUpdate: ViewUpdate): void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -155,7 +155,7 @@ const CodeMirror = forwardRef<
         ref={ref}
         style={{ position: "relative", display: "inline-block", ...props.styles }}
         onClick={onClick}
-        id={props.attrs.id}
+        id={props.id}
       >
         <ReactCodeMirror
           extensions={[languageExtensions[props.custom.extensions]]}

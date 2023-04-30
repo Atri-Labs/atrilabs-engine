@@ -18,9 +18,9 @@ const Input = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       value: string;
@@ -58,7 +58,7 @@ const Input = forwardRef<
 
   return (
     // moved ref to div, while changing isPasswordField props ref was not able assign twice to another input and the selection was not working without refreshing the editor
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       {isPasswordField === true ? (
         <AntdInput.Password
           {...restCustomProps}

@@ -5,7 +5,6 @@ const Image = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: { alt: string; src: string };
@@ -17,6 +16,7 @@ const Image = forwardRef<
       width: number;
       height: number;
     }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -45,7 +45,7 @@ const Image = forwardRef<
       onClick={onClick}
       src={props.custom.src}
       alt={props.custom.alt}
-      id={props.attrs.id}
+      id={props.id}
     />
   );
 });

@@ -21,7 +21,6 @@ export const ShowCounter: React.FC<ShowCounterComponentTypes> = ({
 export type CountupProps = {
   styles: React.CSSProperties;
   attrs: {
-    id: string;
     class: string;
   }
   custom: {
@@ -32,12 +31,13 @@ export type CountupProps = {
       itemTitle: string;
     }[];
   };
+  id?: string;
   className?: string;
 };
 export const Countup = forwardRef<HTMLDivElement, CountupProps>(
   (props, ref) => {
     return (
-      <div ref={ref} style={{ display: "inline-flex", ...props.styles }} id={props.attrs.id}>
+      <div ref={ref} style={{ display: "inline-flex", ...props.styles }} id={props.id}>
         className={`${props.className} ${props.attrs.class}`}
         <CountUpAnimation
           value={props.custom.itemCount}

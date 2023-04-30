@@ -5,7 +5,6 @@ const Overlay = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     children: React.ReactNode[];
@@ -13,6 +12,7 @@ const Overlay = forwardRef<
       closeOverlayAfter?: number;
       open: boolean;
     };
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -39,7 +39,7 @@ const Overlay = forwardRef<
         zIndex: 2,
         ...props.styles,
       }}
-      id={props.attrs.id}
+      id={props.id}
     >
       This component is a work in progress! This component needs to put a React
       portal.

@@ -1,17 +1,17 @@
-import { componentStoreApi } from "../../api";
-import { RepeatingComponentRendererProps } from "../../types";
-import { useState, useContext } from "react";
-import { useHandleNewChild } from "../ParentComponentRenderer/hooks/useHandleNewChild";
-import { ParentComponentRenderer } from "../ParentComponentRenderer/ParentComponentRenderer";
-import { NormalComponentRenderer } from "../NormalComponentRenderer/NormalComponentRenderer";
-import { useAssignParentMarker } from "../hooks/useAssignParentMaker";
-import { useAssignComponentId } from "../hooks/useAssignComponentId";
-import { useFocusComponent } from "../hooks/useFocusComponent";
-import { useHasComponentRendered } from "../hooks/useHasComponentRendered";
-import { usePropsUpdated } from "../hooks/usePropsUpdated";
-import { RepeatingContext } from "../../editor-contexts/RepeatingContext";
-import { useGetComponentRef } from "../hooks/useGetComponentRef";
-import { useStyleString } from "../hooks/useStyleString";
+import {componentStoreApi} from "../../api";
+import {RepeatingComponentRendererProps} from "../../types";
+import {useState, useContext} from "react";
+import {useHandleNewChild} from "../ParentComponentRenderer/hooks/useHandleNewChild";
+import {ParentComponentRenderer} from "../ParentComponentRenderer/ParentComponentRenderer";
+import {NormalComponentRenderer} from "../NormalComponentRenderer/NormalComponentRenderer";
+import {useAssignParentMarker} from "../hooks/useAssignParentMaker";
+import {useAssignComponentId} from "../hooks/useAssignComponentId";
+import {useFocusComponent} from "../hooks/useFocusComponent";
+import {useHasComponentRendered} from "../hooks/useHasComponentRendered";
+import {usePropsUpdated} from "../hooks/usePropsUpdated";
+import {RepeatingContext} from "../../editor-contexts/RepeatingContext";
+import {useGetComponentRef} from "../hooks/useGetComponentRef";
+import {useStyleString} from "../hooks/useStyleString";
 
 export function RepeatingComponentRenderer(
   props: RepeatingComponentRendererProps
@@ -21,23 +21,23 @@ export function RepeatingComponentRenderer(
     callbacks,
     alias,
   } = componentStoreApi.getComponent(props.id)!;
-  const ref = useGetComponentRef({ id: props.id });
+  const ref = useGetComponentRef({id: props.id});
 
-  const { start, end } = componentStoreApi.getComponentProps(props.id).custom;
+  const {start, end} = componentStoreApi.getComponentProps(props.id).custom;
   const [num, setNum] = useState<number>(end - start);
-  const { children } = useHandleNewChild({ id: props.id });
-  useAssignParentMarker({ id: props.id });
-  useAssignComponentId({ id: props.id });
-  useFocusComponent({ id: props.id });
-  useHasComponentRendered({ id: props.id });
-  const compProps = usePropsUpdated({ id: props.id });
-  const { styleStr, styles } = useStyleString({ alias, compProps });
+  const {children} = useHandleNewChild({id: props.id});
+  useAssignParentMarker({id: props.id});
+  useAssignComponentId({id: props.id});
+  useFocusComponent({id: props.id});
+  useHasComponentRendered({id: props.id});
+  const compProps = usePropsUpdated({id: props.id});
+  const {styleStr, styles} = useStyleString({alias, compProps});
   const repeatingContext = useContext(RepeatingContext);
   let childrenNodes: React.ReactNode[] | null = null;
   if (children.length === 1) {
     childrenNodes = Array.from(Array(num).keys()).map((_, index) => {
       const childId = children[0];
-      const { acceptsChild, isRepeating } =
+      const {acceptsChild, isRepeating} =
         componentStoreApi.getComponent(childId)!;
       return (
         <RepeatingContext.Provider
@@ -50,12 +50,12 @@ export function RepeatingComponentRenderer(
         >
           {acceptsChild ? (
             isRepeating ? (
-              <RepeatingComponentRenderer id={childId} />
+              <RepeatingComponentRenderer id={childId}/>
             ) : (
-              <ParentComponentRenderer id={childId} />
+              <ParentComponentRenderer id={childId}/>
             )
           ) : (
-            <NormalComponentRenderer id={childId} />
+            <NormalComponentRenderer id={childId}/>
           )}
         </RepeatingContext.Provider>
       );
@@ -66,12 +66,13 @@ export function RepeatingComponentRenderer(
     <>
       <style>{styleStr}</style>
       <Comp
-        {...{ ...compProps, styles }}
+        {...{...compProps, styles}}
         ref={ref}
         {...callbacks}
         children={childrenNodes || []}
+        id={alias}
         className={alias}
-      ></Comp>
+      />
     </>
   );
 }

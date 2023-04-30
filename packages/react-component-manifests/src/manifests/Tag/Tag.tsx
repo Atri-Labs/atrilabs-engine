@@ -28,7 +28,6 @@ const Tag = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -42,6 +41,7 @@ const Tag = forwardRef<
       iconVariant?: IconVariant;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -62,7 +62,7 @@ const Tag = forwardRef<
       {...custom}
       ref={ref}
       className={`${props.className} ${props.attrs.class}`}
-      id={props.attrs.id}
+      id={props.id}
       style={props.styles}
       onClick={props.onClick}
       closable={props.custom?.closable}

@@ -5,10 +5,10 @@ const Repeating = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: { start: number; end: number; image?: string };
+    id?: string;
     className?: string;
     children: React.ReactNode[];
   }
@@ -21,7 +21,7 @@ const Repeating = forwardRef<
       }}
       ref={ref}
       className={`${props.className} ${props.attrs.class}`}
-      id={props.attrs.id}
+      id={props.id}
     >
       {props.children
         .slice(props.custom.start, props.custom.end)

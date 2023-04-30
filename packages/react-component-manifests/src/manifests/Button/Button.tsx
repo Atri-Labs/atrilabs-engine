@@ -20,7 +20,6 @@ const Button = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -39,6 +38,7 @@ const Button = forwardRef<
       target?: string; //	Same as target attribute of a, works when href is specified
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -53,7 +53,7 @@ const Button = forwardRef<
     <AntdButton
       {...custom}
       ref={ref}
-      id={props.attrs.id}
+      id={props.id}
       className={`${props.className} ${props.attrs.class}`}
       style={props.styles}
       onClick={onClick}

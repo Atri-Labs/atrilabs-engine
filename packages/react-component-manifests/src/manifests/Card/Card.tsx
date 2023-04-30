@@ -11,7 +11,6 @@ const Card = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
     custom: {
@@ -25,6 +24,7 @@ const Card = forwardRef<
       size?: Size;
       loading?: boolean;
     };
+    id?: string;
     className?: string;
     onTabChange?: (key: string) => void;
   }
@@ -32,7 +32,7 @@ const Card = forwardRef<
   return (
     <AntdCard
       ref={ref}
-      id={props.attrs.id}
+      id={props.id}
       className={props.custom.type === "card" ? `${props.className} ${props.attrs.class}` : undefined}
       style={props.styles}
       title={props.custom.type === "card" ? props.custom.text : undefined}

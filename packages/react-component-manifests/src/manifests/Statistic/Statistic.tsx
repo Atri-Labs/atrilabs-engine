@@ -6,9 +6,9 @@ const Statistic = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom?: {
       title?: string;
@@ -28,7 +28,7 @@ const Statistic = forwardRef<
   const { custom } = props;
   // moved ref to div, as the Antd Statistic doesnt provide ref for Statistic
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdStatistic
         className={`${props.className} ${props.attrs.class}`}
         style={props.styles}

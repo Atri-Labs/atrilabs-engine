@@ -18,9 +18,9 @@ export const Upload = forwardRef<
   {
     styles: React.CSSProperties;
     attrs: {
-      id: string;
       class: string;
     }
+    id?: string;
     className?: string;
     custom: {
       text: string;
@@ -54,7 +54,7 @@ export const Upload = forwardRef<
   );
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.attrs.id}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       {props.custom.dragger === true ? (
         <Dragger
           style={props.styles}
