@@ -5,7 +5,15 @@ import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
 import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
 
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
   flexContainerOptions: true,
@@ -44,17 +52,7 @@ const compManifest: ReactComponentManifestSchema = {
     attachProps: {
       styles: {
         treeId: CSSTreeId,
-        initialValue: {
-          paddingTop: "15px",
-          paddingLeft: "24px",
-          paddingBottom: "15px",
-          paddingRight: "15px",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          columnGap: "10px",
-          justifyContent: "space-between",
-        },
+        initialValue: {},
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
       },
@@ -67,6 +65,12 @@ const compManifest: ReactComponentManifestSchema = {
           showIcon: true,
         },
         treeOptions: customTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },

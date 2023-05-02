@@ -19,6 +19,9 @@ const Button = forwardRef<
   HTMLButtonElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       text: string;
       icon?: string; //Set the icon component of button
@@ -35,6 +38,7 @@ const Button = forwardRef<
       target?: string; //	Same as target attribute of a, works when href is specified
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -49,7 +53,8 @@ const Button = forwardRef<
     <AntdButton
       {...custom}
       ref={ref}
-      className={props.className}
+      id={props.id}
+      className={`${props.className} ${props.attrs.class}`}
       style={props.styles}
       onClick={onClick}
       icon={

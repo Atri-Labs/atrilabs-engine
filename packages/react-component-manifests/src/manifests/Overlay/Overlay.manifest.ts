@@ -14,6 +14,15 @@ import {
   flexRowReverseSort,
   flexColReverseSort,
 } from "@atrilabs/react-component-manifest-schema";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -86,6 +95,12 @@ const compManifest: ReactComponentManifestSchema = {
           open: true,
         },
         treeOptions: customTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },

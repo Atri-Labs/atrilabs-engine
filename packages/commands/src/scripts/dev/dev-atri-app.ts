@@ -230,7 +230,7 @@ async function main() {
   allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
   allowlist.push("@atrilabs/app-design-forest/src/cssTree");
   allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
-  allowlist.push("@atrilabs/app-design-forest/src/componentTree");
+  allowlist.push("@atrilabs/app-design-forest/src/attributesTree");
   startNodeLibWatcher({
     ...params,
     disableNodeExternals: true,

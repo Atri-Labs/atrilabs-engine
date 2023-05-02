@@ -26,6 +26,5 @@ export const useTree = (name: string) => {
       unsubscribe();
     };
   }, [name, setTree]);
-
   return tree;
 };

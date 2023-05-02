@@ -7,6 +7,9 @@ const Step = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       items: StepProps[];
       current: number;
@@ -21,6 +24,7 @@ const Step = forwardRef<
       onChange?: (current: number) => void;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -59,10 +63,10 @@ const Step = forwardRef<
 
   return (
     <>
-      <div ref={ref}>
+      <div ref={ref} id={props.id}>
         <Steps
           style={props.styles}
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           onChange={props.custom.onChange}
           progressDot={
             props.custom.dotStyle === ""

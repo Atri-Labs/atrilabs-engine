@@ -1,6 +1,7 @@
 import React, { forwardRef, ReactNode, ChangeEventHandler } from "react";
 import { Input as AntdInput } from "antd";
 
+
 export enum InputSize {
   LARGE = "large",
   MIDDLE = "middle",
@@ -16,6 +17,10 @@ const Input = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
+    id?: string;
     className?: string;
     custom: {
       value: string;
@@ -53,11 +58,11 @@ const Input = forwardRef<
 
   return (
     // moved ref to div, while changing isPasswordField props ref was not able assign twice to another input and the selection was not working without refreshing the editor
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       {isPasswordField === true ? (
         <AntdInput.Password
           {...restCustomProps}
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={{
             ...props.styles,
             animationDuration: "0s",
@@ -69,7 +74,7 @@ const Input = forwardRef<
       ) : (
         <AntdInput
           {...restCustomProps}
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={{
             ...props.styles,
             animationDuration: "0s",

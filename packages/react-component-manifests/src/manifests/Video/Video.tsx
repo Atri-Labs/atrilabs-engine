@@ -19,6 +19,10 @@ const Video = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
+    id?: string;
     className?: string;
     custom: {
       url?: string | string[] | SourceProps[] | MediaStream;
@@ -77,10 +81,10 @@ const Video = forwardRef<
     <div
       ref={ref}
       style={{ display: "inline-block" }}
-      className={props.className}
+      id={props.id}
     >
       <ReactPlayer
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         {...custom}
         height={props.styles.height}

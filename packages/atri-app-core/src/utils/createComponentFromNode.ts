@@ -52,6 +52,7 @@ export function createComponentFromNode(
     };
   }
 ) {
+
   const id = node.id;
   const meta = node.meta;
   const pkg = meta.pkg;

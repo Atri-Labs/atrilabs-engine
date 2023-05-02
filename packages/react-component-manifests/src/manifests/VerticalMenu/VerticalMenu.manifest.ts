@@ -9,6 +9,15 @@ import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -85,6 +94,12 @@ const compManifest: ReactComponentManifestSchema = {
           ],
         },
         treeOptions: customTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },

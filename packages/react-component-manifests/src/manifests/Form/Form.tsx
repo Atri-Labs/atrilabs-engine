@@ -46,6 +46,9 @@ const Form = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       target: string;
       autocomplete: string;
@@ -103,8 +106,8 @@ const Form = forwardRef<
       disabled?: boolean;
     };
     onClick: (buttonClicked: "Submit" | "Reset") => void;
+    id?: string;
     className?: string;
-
     colon?: boolean; //Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)
     disabled?: boolean; //Set form component disable, only available for antd components
     // component?:	ComponentType | false //Set the Form rendering element. Do not create a DOM node for false
@@ -130,9 +133,9 @@ const Form = forwardRef<
   }
 >((props, ref) => {
   return (
-    <div ref={ref} style={props.styles}>
+    <div ref={ref} style={props.styles} id={props.id}>
       <AntdForm
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         //antd style
         labelCol={{ span: 8 }}

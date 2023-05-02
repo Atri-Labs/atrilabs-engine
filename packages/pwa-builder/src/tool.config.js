@@ -14,6 +14,9 @@ const forests = {
     {
       modulePath: "@atrilabs/app-design-forest/src/callbackHandlerTree",
     },
+    {
+      modulePath: "@atrilabs/app-design-forest/src/attributesTree",
+    },
   ],
 };
 
@@ -44,6 +47,7 @@ const layers = [
   { pkg: "@atrilabs/pwa-canvas-layer" },
   { pkg: "@atrilabs/component-navigator-layer" },
   { pkg: "@atrilabs/app-template-layer" },
+  { pkg: "@atrilabs/component-attributes-layer" },
 ];
 
 const runtimes = [];

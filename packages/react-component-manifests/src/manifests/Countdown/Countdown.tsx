@@ -7,6 +7,10 @@ const Countdown = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
+    id?: string;
     className?: string;
     custom: {
       title?: string;
@@ -38,9 +42,9 @@ const Countdown = forwardRef<
 
   // moved ref to div, as the Antd Countdown doesn't provide ref for Countdown
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }}id={props.id}>
       <AntdCountdown
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         {...custom}
         valueStyle={props.styles}

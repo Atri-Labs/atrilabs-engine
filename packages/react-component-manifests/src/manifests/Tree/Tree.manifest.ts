@@ -6,6 +6,15 @@ import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsT
 import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
 import Joi from "joi";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,
@@ -72,6 +81,12 @@ const compManifest: ReactComponentManifestSchema = {
           ],
         },
         treeOptions: customTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
         canvasOptions: { groupByBreakpoint: false },
       },
     },

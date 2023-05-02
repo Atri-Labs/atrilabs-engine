@@ -10,6 +10,9 @@ const Card = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       type: type;
       text: string;
@@ -21,6 +24,7 @@ const Card = forwardRef<
       size?: Size;
       loading?: boolean;
     };
+    id?: string;
     className?: string;
     onTabChange?: (key: string) => void;
   }
@@ -28,7 +32,8 @@ const Card = forwardRef<
   return (
     <AntdCard
       ref={ref}
-      className={props.custom.type === "card" ? props.className : undefined}
+      id={props.id}
+      className={props.custom.type === "card" ? `${props.className} ${props.attrs.class}` : undefined}
       style={props.styles}
       title={props.custom.type === "card" ? props.custom.text : undefined}
       bordered={props.custom.bordered}
@@ -40,7 +45,7 @@ const Card = forwardRef<
       {props.custom.type === "card" && <p> {props.custom.description}</p>}
       {props.custom.type === "meta" && (
         <Meta
-          className={props.className}
+          className={`${props.className} ${props.attrs.class}`}
           style={props.styles}
           avatar={
             props.custom.avatar ? (

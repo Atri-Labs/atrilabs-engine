@@ -58,6 +58,7 @@ export function createCommonConfig(params: {
     "@atrilabs/app-design-forest/src/cssTree",
     "@atrilabs/app-design-forest/src/customPropsTree",
     "@atrilabs/app-design-forest/src/componentTree",
+    "@atrilabs/app-design-forest/src/attributesTree",
     (moduleName: string) => {
       let found = false;
       Object.keys(manifestPkgDirs).forEach((manifestPkgDir) => {

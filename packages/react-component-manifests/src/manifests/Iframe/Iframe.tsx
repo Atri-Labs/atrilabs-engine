@@ -15,6 +15,9 @@ const Iframe = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       id?: string;
       src?: string;
@@ -48,6 +51,7 @@ const Iframe = forwardRef<
         | "allow-top-navigation-to-custom-protocols";
       loading?: "eager" | "lazy";
     };
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
@@ -56,9 +60,9 @@ const Iframe = forwardRef<
   let allowValues = allow?.join("; ");
 
   return (
-    <div ref={ref}>
+    <div ref={ref} id={props.id}>
       <iframe
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         style={props.styles}
         {...restProps}
         allow={allowValues}

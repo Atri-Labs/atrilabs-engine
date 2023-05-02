@@ -66,7 +66,7 @@ export function buildManifests(options: {
     params.allowlist.push("@atrilabs/app-design-forest/src/cssTree");
     params.allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
     params.allowlist.push("@atrilabs/app-design-forest/src/componentTree");
-
+    params.allowlist.push("@atrilabs/app-design-forest/src/attributesTree");
     if (fs.existsSync(path.resolve("manifests"))) {
       params.additionalInclude = [
         ...params.additionalInclude,

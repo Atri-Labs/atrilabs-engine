@@ -12,6 +12,15 @@ import {
 import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
 import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
+
+const attributesTreeOptions: AttributesTreeOptionsBoolean = {
+  basics: true,
+  ariaLabelledBy: false,
+};
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -61,6 +70,12 @@ const compManifest: ReactComponentManifestSchema = {
         initialValue: { display: "flex" },
         treeOptions: cssTreeOptions,
         canvasOptions: { groupByBreakpoint: true },
+      },
+      attrs: {
+        treeId: AttributesTreeId,
+        initialValue: {},
+        treeOptions: attributesTreeOptions,
+        canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {

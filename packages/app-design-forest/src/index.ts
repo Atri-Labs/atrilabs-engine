@@ -19,3 +19,7 @@ export type {
   NavigationCallbackHandler,
 } from "./callbackHandlerTree";
 export type { ComponentTreeCreateEvent } from "./componentTree";
+export type {
+  AttributesTreeOptions,
+  AttributesTreeOptionsBoolean,
+} from "./attributesTree";

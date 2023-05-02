@@ -1,11 +1,18 @@
 import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { AttributesTreeOptions } from "@atrilabs/app-design-forest/src/attributesTree";
 import type {
   ReactComponentManifestSchema,
   SendFileCallbackHandler,
   AcceptsChildFunction,
 } from "@atrilabs/react-component-manifest-schema";
-import { reactSchemaId, iconSchemaId, CustomTreeId, CSSTreeId } from "./consts";
+import {
+  reactSchemaId,
+  iconSchemaId,
+  CustomTreeId,
+  CSSTreeId,
+  AttributesTreeId,
+} from "./consts";
 import {
   flexRowSort,
   flexColSort,
@@ -68,6 +75,7 @@ export type CreateManifestOptions = {
   initialStyles?: React.CSSProperties;
   custom?: CustomPropsTreeOptions["dataTypes"];
   initalCustomValues?: any;
+  initalAttributesValues?: any;
   callbacks?: {
     [callbackName: string]: {
       updateFields?: string[] | string[][]; // selector array for controlled field
@@ -82,6 +90,7 @@ export type CreateManifestOptions = {
     };
   };
   acceptsChild?: boolean | "flex" | AcceptsChildFunction;
+  attrs?: AttributesTreeOptions;
 };
 
 export function createComponentManifest(options: CreateManifestOptions) {
@@ -94,7 +103,9 @@ export function createComponentManifest(options: CreateManifestOptions) {
   const initialStyles = options.initialStyles || {};
   const category = options.category || "Basics";
   const initalCustomValues = options.initalCustomValues || {};
+  const initalAttributesValues = options.initalAttributesValues || {};
   const callbacks = options.callbacks || {};
+  const attrs = options.attrs || {};
 
   const callbackNames = Object.keys(callbacks);
 
@@ -199,6 +210,12 @@ export function createComponentManifest(options: CreateManifestOptions) {
           treeId: CustomTreeId,
           initialValue: initalCustomValues,
           treeOptions: { dataTypes: custom },
+          canvasOptions: { groupByBreakpoint: false },
+        },
+        attrs: {
+          treeId: AttributesTreeId,
+          initialValue: initalAttributesValues,
+          treeOptions: { attrs },
           canvasOptions: { groupByBreakpoint: false },
         },
       },

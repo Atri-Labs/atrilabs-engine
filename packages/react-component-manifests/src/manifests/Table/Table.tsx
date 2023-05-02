@@ -5,6 +5,9 @@ export const DataTable = forwardRef<
   HTMLDivElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+    }
     custom: {
       rows: { [field: string]: string | number | null }[];
       cols: GridColDef[];
@@ -15,11 +18,11 @@ export const DataTable = forwardRef<
       selection?: GridRowId[];
     };
     onSelectionChange?: (selection: GridRowId[]) => void;
-    className?: string;
+    id?: string;
   }
 >((props, ref) => {
   return (
-    <div className={props.className} ref={ref} style={props.styles}>
+    <div  className={props.attrs.class} ref={ref} style={props.styles} id={props.id}>
       <DataGrid
         autoHeight={props.custom.autoHeight}
         rowHeight={props.custom.rowHeight || 20}

@@ -5,6 +5,10 @@ const Radio = forwardRef<
   HTMLInputElement,
   {
     styles: React.CSSProperties;
+    attrs: {
+      class: string;
+      "aria-labelledby": string;
+    }
     custom: {
       disabled: boolean;
       options?:
@@ -22,17 +26,19 @@ const Radio = forwardRef<
       buttonStyle?: "outline" | "solid";
     };
     onChange: (event: RadioChangeEvent) => void;
+    id?: string;
     className?: string;
   }
 >((props, ref) => {
   const { custom } = props;
   // moved ref to div, as the Antd Radio doesn't provide ref for Radio
   return (
-    <div ref={ref} style={{ display: "inline-block" }}>
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdRadio.Group
         style={props.styles}
-        className={props.className}
+        className={`${props.className} ${props.attrs.class}`}
         onChange={props.onChange}
+        aria-labelledby ={props.attrs["aria-labelledby"]}
         {...custom}
       />
     </div>

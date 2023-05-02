@@ -22,6 +22,7 @@ export function LiveNormalComponentRenderer(
         {...{ ...compProps, styles }}
         ref={ref}
         {...callbacks}
+        id={alias}
         className={alias}
       />
     </>
