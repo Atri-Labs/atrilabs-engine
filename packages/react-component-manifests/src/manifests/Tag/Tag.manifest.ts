@@ -11,7 +11,7 @@ import {
 } from "@atrilabs/app-design-forest/src/attributesTree";
 const attributesTreeOptions: AttributesTreeOptionsBoolean = {
   basics: true,
-  ariaLabelledBy: true,
+  ariaLabelledBy: false,
 };
 
 const cssTreeOptions: CSSTreeOptions = {

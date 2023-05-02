@@ -189,7 +189,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
       index === gradientsArray.length - 1 ? gradientStr : gradientStr + ")"
     );
   }, [props.styles.background]);
-  console.log("gradientsin background", gradients)
 
   const [showProperties, setShowProperties] = useState<boolean>(true);
 

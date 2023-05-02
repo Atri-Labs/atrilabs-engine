@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo, useRef} from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import PropertyRender from "../commons/PropertyRender";
 import {
   gray200,
@@ -8,25 +8,23 @@ import {
   smallText,
   h5Heading,
 } from "@atrilabs/design-system";
-import {assign, createMachine} from "xstate";
-import {useMachine} from "@xstate/react";
-import {CssProprtyComponentType} from "../../types";
-import {ReactComponent as PR} from "../../assets/position/position/relative-icon.svg";
-import {ReactComponent as PA} from "../../assets/position/position/absolute-icon.svg";
-import {ReactComponent as PF} from "../../assets/position/position/fixed-icon.svg";
-import {ReactComponent as PS} from "../../assets/position/position/static-icon.svg";
-import {ReactComponent as FL} from "../../assets/position/float/left-icon.svg";
-import {ReactComponent as FR} from "../../assets/position/float/right-icon.svg";
-import {ReactComponent as FN} from "../../assets/position/float/none-icon.svg";
-import {ReactComponent as CL} from "../../assets/position/clear/left-icon.svg";
-import {ReactComponent as CR} from "../../assets/position/clear/right-icon.svg";
-import {ReactComponent as CN} from "../../assets/position/clear/none-icon.svg";
-import {ReactComponent as CB} from "../../assets/position/clear/both-icon.svg";
-import {Input} from "../commons/Input";
+import { assign, createMachine } from "xstate";
+import { useMachine } from "@xstate/react";
+import { CssProprtyComponentType } from "../../types";
+import { ReactComponent as PR } from "../../assets/position/position/relative-icon.svg";
+import { ReactComponent as PA } from "../../assets/position/position/absolute-icon.svg";
+import { ReactComponent as PF } from "../../assets/position/position/fixed-icon.svg";
+import { ReactComponent as PS } from "../../assets/position/position/static-icon.svg";
+import { ReactComponent as FL } from "../../assets/position/float/left-icon.svg";
+import { ReactComponent as FR } from "../../assets/position/float/right-icon.svg";
+import { ReactComponent as FN } from "../../assets/position/float/none-icon.svg";
+import { ReactComponent as CL } from "../../assets/position/clear/left-icon.svg";
+import { ReactComponent as CR } from "../../assets/position/clear/right-icon.svg";
+import { ReactComponent as CN } from "../../assets/position/clear/none-icon.svg";
+import { ReactComponent as CB } from "../../assets/position/clear/both-icon.svg";
+import { Input } from "../commons/Input";
 import PositionTrapezoid from "./PositionTrapezoid";
-import {ReactComponent as DropDownArrow} from "../../assets/layout-parent/dropdown-icon.svg";
-import {ReactComponent as AddButton} from "../../assets/add.svg";
-import {TransformSelector} from "./TransformSelector";
+import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 
 export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
@@ -64,23 +62,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: "25px",
     marginTop: "30px",
   },
-  optionSelect: {
-    display: "flex",
-    height: "25px",
-    alignItems: "center",
-    marginTop: "30px",
-    marginBottom: "25px",
-  },
   optionName: {
     ...smallText,
     textAlign: "left",
     color: "white",
     lineHeight: "25px",
-    width: "4rem",
-  },
-  optionNameSelect: {
-    ...smallText,
-    color: "white",
     width: "4rem",
   },
   gridContainer: {
@@ -158,17 +144,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     lineHeight: "10px",
   },
-  inputBox: {
-    ...smallText,
-    color: gray100,
-    backgroundColor: gray800,
-    outline: "none",
-    height: "28px",
-    border: "none",
-    borderRadius: "2px",
-  },
 };
-
 //ACTIONS
 const MOUSE_DOWN = "MOUSE_DOWN";
 const MOUSE_MOVE = "MOUSE_MOVE";
@@ -250,9 +226,9 @@ const dragMachine = createMachine({
     },
     [dragging]: {
       on: {
-        [MOUSE_MOVE]: {target: dragging, actions: [mouseMoveAction]},
-        [MOUSE_UP]: {target: "idle", actions: [resetAction]},
-        [MOUSE_LEAVE]: {target: "idle", actions: [resetAction]},
+        [MOUSE_MOVE]: { target: dragging, actions: [mouseMoveAction] },
+        [MOUSE_UP]: { target: "idle", actions: [resetAction] },
+        [MOUSE_LEAVE]: { target: "idle", actions: [resetAction] },
       },
     },
   },
@@ -293,10 +269,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   }, [positionBottomVal, positionLeftVal, positionRightVal, positionTopVal]);
 
   const [unit, setUnit] = useState<string>(prevCSSUNnit);
-  const [showTransform, setShowTransform] = useState<boolean>(false);
-  const closeTransform = useCallback(() => {
-    setShowTransform(false);
-  }, []);
+
   const onMouseDownPositionTop = useCallback(
     (event: React.MouseEvent) => {
       send({
@@ -344,10 +317,10 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   useEffect(() => {
     if (state.value === dragging) {
       const onMouseMove = (event: MouseEvent) => {
-        send({type: MOUSE_MOVE, event: event});
+        send({ type: MOUSE_MOVE, event: event });
       };
       const onMouseUp = () => {
-        send({type: MOUSE_UP});
+        send({ type: MOUSE_UP });
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
       };
@@ -366,7 +339,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
       props.styles[state.context["area"] as keyof React.CSSProperties];
     if (oldValue !== newValue)
       props.patchCb({
-        property: {styles: {[state.context["area"]]: newValue}},
+        property: { styles: { [state.context["area"]]: newValue } },
       });
   }, [state.context, state.value, props]);
 
@@ -374,7 +347,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const updatePosition = useCallback(
     (unit: string) => {
       setUnit(unit);
-
       function patchStyle(cssProperty: string, cssPropertyVal: string) {
         props.patchCb({
           property: {
@@ -387,7 +359,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           },
         });
       }
-
       if (positionTopVal) {
         patchStyle("positionTop", positionTopVal);
       }
@@ -416,7 +387,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
     let attrValue = event.target.value;
     props.patchCb({
       property: {
-        styles: {top: convertSizeWithUnitsToStringWithUnits(attrValue, unit)},
+        styles: { top: convertSizeWithUnitsToStringWithUnits(attrValue, unit) },
       },
     });
   };
@@ -456,33 +427,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   };
-  const handleTransformChange = useCallback(
-    (
-      e: React.ChangeEvent<HTMLSelectElement>,
-      fontItem: keyof React.CSSProperties
-    ) => {
-      props.patchCb({
-        property: {
-          styles: {
-            [fontItem]: e.target.value,
-          },
-        },
-      });
-    },
-    [props]
-  );
-console.log("props...",props)
-  //////////
-
-  const gradients = useMemo(() => {
-    const gradientsString = (props.styles.transform as string) || "";
-    const gradientsArray = gradientsString ? gradientsString.split("), ") : [];
-    return gradientsArray.map((gradientStr, index) =>
-      index === gradientsArray.length - 1 ? gradientStr : gradientStr + ")"
-    );
-  }, [props.styles.transform]);
-console.log("gradientsin position", gradients)
-//////
   return (
     <>
       <div style={styles.container}>
@@ -491,14 +435,14 @@ console.log("gradientsin position", gradients)
             onClick={() => setShowProperties(!showProperties)}
             style={
               !showProperties
-                ? {transform: "rotate(-90deg)"}
-                : {transform: "rotate(0deg)"}
+                ? { transform: "rotate(-90deg)" }
+                : { transform: "rotate(0deg)" }
             }
           />
           <div style={styles.header}>Position</div>
         </div>
         <div
-          style={showProperties ? {display: "block"} : {display: "none"}}
+          style={showProperties ? { display: "block" } : { display: "none" }}
         >
           <PropertyRender
             styleItem="position"
@@ -507,11 +451,11 @@ console.log("gradientsin position", gradients)
             patchCb={props.patchCb}
             styles={props.styles}
           >
-            <PS/>
-            <PR/>
-            <PA/>
-            <PF/>
-            <div style={{...smallText, color: gray200, cursor: "pointer"}}>
+            <PS />
+            <PR />
+            <PA />
+            <PF />
+            <div style={{ ...smallText, color: gray200, cursor: "pointer" }}>
               Sticky
             </div>
           </PropertyRender>
@@ -547,11 +491,11 @@ console.log("gradientsin position", gradients)
 
               <div
                 className="dropdown"
-                style={{position: "absolute", left: "95px", height: "19px"}}
+                style={{ position: "absolute", left: "95px", height: "19px" }}
               >
                 <button
                   className="dropbtn"
-                  style={{height: "19px", backgroundColor: "transparent"}}
+                  style={{ height: "19px", backgroundColor: "transparent" }}
                 >
                   {unit}
                 </button>
@@ -587,11 +531,11 @@ console.log("gradientsin position", gradients)
             </div>
           </div>
           <div
-            style={{display: "flex", flexDirection: "column", rowGap: "1rem"}}
+            style={{ display: "flex", flexDirection: "column", rowGap: "1rem" }}
           >
             <div style={styles.zindex}>
               <div style={styles.optionName}>z-index</div>
-              <div style={{width: "55px"}}>
+              <div style={{ width: "55px" }}>
                 <Input
                   styleItem="zIndex"
                   styles={props.styles}
@@ -608,9 +552,9 @@ console.log("gradientsin position", gradients)
               patchCb={props.patchCb}
               styles={props.styles}
             >
-              <FN/>
-              <FL/>
-              <FR/>
+              <FN />
+              <FL />
+              <FR />
             </PropertyRender>
             <PropertyRender
               styleItem="clear"
@@ -619,71 +563,13 @@ console.log("gradientsin position", gradients)
               patchCb={props.patchCb}
               styles={props.styles}
             >
-              <CN/>
-              <CL/>
-              <CR/>
-              <CB/>
+              <CN />
+              <CL />
+              <CR />
+              <CB />
             </PropertyRender>
           </div>
-
-          {/*<div style={styles.optionSelect}>*/}
-          {/*  <div style={styles.optionNameSelect}>Transform</div>*/}
-          {/*  <div>*/}
-          {/*    <select*/}
-          {/*      name="transform"*/}
-          {/*      onChange={(e) => handleTransformChange(e, "transform")}*/}
-          {/*      style={{...styles.inputBox, width: "80px"}}*/}
-          {/*      value={props.styles.transform || "none"}*/}
-          {/*      className="scroll"*/}
-          {/*    >*/}
-          {/*      <option style={styles.select} value="none">*/}
-          {/*        none*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="inherit">*/}
-          {/*        inherit*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="initial">*/}
-          {/*        initial*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="revert">*/}
-          {/*        revert*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="revert-layer">*/}
-          {/*        revert-layer*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="unset">*/}
-          {/*        unset*/}
-          {/*      </option>*/}
-          {/*    </select>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-
-          <div style={styles.optionSelect}>
-            <div style={styles.optionNameSelect}>Transform
-            </div>
-            <AddButton style={{...smallText, color: gray200, cursor: "pointer"}}
-                       onClick={() => setShowTransform(true)}/>
-          </div>
         </div>
-
-        {showTransform &&
-        <div
-            style={{
-              position: "absolute",
-              bottom: "0.2rem",
-              right: "15.2rem",
-            }}
-        >
-            <TransformSelector
-                {...props}
-                gradient={"dfsdf"}
-                index={5}
-                updateGradient={() => {
-                }}
-                closeTransformSelector={closeTransform}
-            />
-        </div>
-        }
       </div>
     </>
   );

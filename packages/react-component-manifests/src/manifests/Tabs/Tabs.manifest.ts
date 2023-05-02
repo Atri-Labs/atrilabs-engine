@@ -15,7 +15,7 @@ import {
 
 const attributesTreeOptions: AttributesTreeOptionsBoolean = {
   basics: true,
-  ariaLabelledBy: true,
+  ariaLabelledBy: false,
 };
 
 const cssTreeOptions: CSSTreeOptions = {
