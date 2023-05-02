@@ -40,6 +40,12 @@ export function createBrowserForestManager(defs: ForestDef[]) {
   let _currentForestSubscribers: ForestUpdateSubscriber[] = [];
   let _forestUnsubscriber: Unsubscribe;
 
+  function deleteForest(forestPkgId: string, forestId: string) {
+    if (forestMap[forestPkgId] && forestMap[forestPkgId]![forestId]) {
+      delete forestMap[forestPkgId]![forestId];
+    }
+  }
+
   function getForest(forestPkgId: string, forestId: string) {
     if (forestMap[forestPkgId] === undefined) {
       forestMap[forestPkgId] = {};
@@ -145,5 +151,5 @@ export function createBrowserForestManager(defs: ForestDef[]) {
     },
   };
 
-  return { getForest, setCurrentForest, currentForest };
+  return { deleteForest, getForest, setCurrentForest, currentForest };
 }
