@@ -1,7 +1,9 @@
 import { smallText, gray100, gray800 } from "@atrilabs/design-system";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
-//import { NumberList } from "../number-list/NumberList";
+import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
+import { ArrayLabel } from "../commons/ArrayLabel";
+import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 
 type GradientSelectorType = {
   transform: string;
@@ -18,7 +20,6 @@ type TransformType = {
   number: number;
   number2: number;
   number3: number;
-  matrix: number[];
 };
 
 const AngleSelector: React.FC<{
@@ -58,6 +59,7 @@ const AngleSelector: React.FC<{
           position: "relative",
           width: "5px",
           height: "18px",
+          transform: `translateZ(0px) rotate(${props.angle}deg)`,
         }}
       >
         <div
@@ -77,17 +79,18 @@ const AngleSelector: React.FC<{
 
 function createTransformObject(transformStr: string): TransformType {
   const transformObject: TransformType = {
-    transformType: "",
+    transformType: "none",
     transformAngle: 0,
     transformAngle2: 0,
     number: 1,
     number2: 1,
     number3: 1,
-    matrix: [1, 1, 1, 1, 1, 1],
   };
 
-  // transformStr = transformStr.replace("(", ",");
-  // transformStr = transformStr.replace(")", "");
+  transformStr = transformStr.replace("(", ",");
+  transformStr = transformStr.replace(")", "");
+
+  const [type, control, ...colors] = transformStr.split(",");
 
   return transformObject;
 }
@@ -100,8 +103,10 @@ function createTransformString(transformObject: TransformType): string {
     transformAngle2,
     number2,
     number3,
-    matrix,
   } = transformObject;
+
+  if (["none", "initial", "inherit"].includes(transformType))
+    return transformType;
 
   let transformStr = "";
   if (transformType === "rotate") transformStr += `rotate(${transformAngle}deg`;
@@ -126,9 +131,6 @@ function createTransformString(transformObject: TransformType): string {
     transformStr += `scale(${number}, ${number2}`;
   else if (transformType === "scale3d")
     transformStr += `scale3d(${number}, ${number2}, ${number3}`;
-  else if (transformType === "none") transformStr += `(none`;
-  else if (transformType === "initial") transformStr += `(initial`;
-  else if (transformType === "inherit") transformStr += `(inherit`;
   transformStr += ")";
   console.log("transform string...", transformStr);
   return transformStr || "";
@@ -177,44 +179,20 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
       attribute: "transformType" | "number" | "number2" | "number3",
       value: string
     ) => {
-      const prevGradientProperty = transformProperty;
+      const prevTransformProperty = transformProperty;
       if (
         attribute === "number" ||
         attribute === "number2" ||
         attribute === "number3"
       ) {
-        prevGradientProperty[attribute] = parseInt(value);
+        prevTransformProperty[attribute] = parseInt(value);
       } else {
-        prevGradientProperty[attribute] = value;
+        prevTransformProperty[attribute] = value;
       }
-      updateTransformCb(prevGradientProperty);
+      updateTransformCb(prevTransformProperty);
     },
     [transformProperty, updateTransformCb]
   );
-
-  // const setTransformAttribute = useCallback(
-  //   (
-  //     attribute: "transformType" | "number" | "number2" | "number3" | "matrix",
-  //     value: string | number[]
-  //   ) => {
-  //     const prevTransformProperty = transformProperty;
-  //     if (typeof value === "string") {
-  //       if (
-  //         attribute === "number" ||
-  //         attribute === "number2" ||
-  //         attribute === "number3"
-  //       ) {
-  //         prevTransformProperty[attribute] = parseInt(value);
-  //       }
-  //     } else if (attribute === "matrix" && Array.isArray(value)) {
-  //       //prevTransformProperty[attribute] = value.join(",");
-  //     } else {
-  //       prevTransformProperty[attribute] = value;
-  //     }
-  //     updateTransformCb(prevTransformProperty);
-  //   },
-  //   [transformProperty, updateTransformCb]
-  // );
 
   return (
     <>
@@ -225,7 +203,6 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
         #gradientType {border: none} 
         #gradientType:hover {border: 1px solid #fff}`}
       </style>
-
       <div
         style={{
           display: "flex",
@@ -860,59 +837,52 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
           </>
         )}
 
-        {/*{(scale === "scale" || scale === "scale3d") && (*/}
-        {/*<ArrayPropertyContainer>*/}
-        {/*  <ArrayLabel onAddClick={() => {}} name={scale} />*/}
-        {/*  <div*/}
-        {/*    style={{*/}
-        {/*      display: "flex",*/}
-        {/*      justifyContent: "space-between",*/}
-        {/*      alignItems: "center",*/}
-        {/*      paddingLeft: "1em",*/}
-        {/*      paddingRight: "1em",*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <input*/}
-        {/*      //  value={props.styles[scale] || ""}*/}
-        {/*      // value={scale}*/}
-        {/*      // onChange={(e) => {*/}
-        {/*      //   editValueCb(index, e.target.value);*/}
-        {/*      // }}*/}
-        {/*      type="number"*/}
-        {/*      style={{*/}
-        {/*        ...smallText,*/}
-        {/*        outline: "none",*/}
-        {/*        color: gray100,*/}
-        {/*        backgroundColor: gray800,*/}
-        {/*        height: "26px",*/}
-        {/*        width: "45px",*/}
-        {/*        border: "none",*/}
-        {/*        borderRadius: "2px 0 0 2px",*/}
-        {/*        paddingLeft: "6px",*/}
-        {/*        paddingRight: "6px",*/}
-        {/*        display: "flex",*/}
-        {/*        alignItems: "center",*/}
-        {/*      }}*/}
-        {/*    />*/}
-        {/*    <div*/}
-        {/*      style={{ display: "flex", alignItems: "center" }}*/}
-        {/*      // onClick={() => {*/}
-        {/*      //   deleteValueCb(index);*/}
-        {/*      // }}*/}
-        {/*    >*/}
-        {/*      <MinusIcon />*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</ArrayPropertyContainer>*/}
-        {/*)}*/}
+        {(scale === "scale" || scale === "scale3d") && (
+          <ArrayPropertyContainer>
+            <ArrayLabel onAddClick={() => {}} name={scale} />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingLeft: "1em",
+                paddingRight: "1em",
+              }}
+            >
+              <input
+                //  value={props.styles[scale] || ""}
+                // value={scale}
+                // onChange={(e) => {
+                //   editValueCb(index, e.target.value);
+                // }}
+                type="number"
+                style={{
+                  ...smallText,
+                  outline: "none",
+                  color: gray100,
+                  backgroundColor: gray800,
+                  height: "26px",
+                  width: "45px",
+                  border: "none",
+                  borderRadius: "2px 0 0 2px",
+                  paddingLeft: "6px",
+                  paddingRight: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              />
+              <div
+                style={{ display: "flex", alignItems: "center" }}
+                // onClick={() => {
+                //   deleteValueCb(index);
+                // }}
+              >
+                <MinusIcon />
+              </div>
+            </div>
+          </ArrayPropertyContainer>
+        )}
       </div>
-      {/*<NumberList*/}
-      {/*  values={transformProperty.matrix}*/}
-      {/*  updateValueCb={(values) => {*/}
-      {/*    setTransformAttribute("matrix", values);*/}
-      {/*  }}*/}
-      {/*  name={"matrix"}*/}
-      {/*/>*/}
     </>
   );
 };
