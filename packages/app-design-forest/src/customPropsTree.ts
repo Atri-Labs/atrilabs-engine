@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const JoiTypes = Joi.types();
 type JoiSchema<K = keyof typeof JoiTypes> = K extends keyof typeof JoiTypes
-  ? (typeof JoiTypes)[K]
+  ? typeof JoiTypes[K]
   : never;
 
 export type SimpleCustomProp = {
@@ -108,3 +108,5 @@ export default function () {
   };
   return { validateCreate, validatePatch, onCreate };
 }
+
+export const Id = "@atrilabs/app-design-forest/src/customPropsTree";

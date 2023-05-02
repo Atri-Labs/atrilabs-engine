@@ -62,7 +62,11 @@ export async function buildServerSide(
       };
       config.cache = {
         type: "filesystem",
-        cacheDirectory: path.resolve("node_modules", ".cache-build", "server"),
+        cacheDirectory: path.resolve(
+          "node_modules",
+          ".cache-build-atri-app",
+          "server"
+        ),
       };
       config.plugins = config.plugins || [];
       config.plugins.push(

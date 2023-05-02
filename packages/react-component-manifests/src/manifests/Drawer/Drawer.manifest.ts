@@ -1,27 +1,28 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type {
   ReactComponentManifestSchema,
   AcceptsChildFunction,
 } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 import {
   flexRowSort,
   flexColSort,
   flexRowReverseSort,
   flexColReverseSort,
 } from "@atrilabs/react-component-manifest-schema";
-import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
-import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
 
 const attributesTreeOptions: AttributesTreeOptionsBoolean = {
   basics: true,
   ariaLabelledBy: false,
 };
-
 
 const acceptsChild: AcceptsChildFunction = (info: any) => {
   if (info.childCoordinates.length === 0) {
@@ -106,7 +107,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: AttributesTreeId,
         initialValue: {},
         treeOptions: attributesTreeOptions,
-        canvasOptions: {groupByBreakpoint: false},
+        canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {

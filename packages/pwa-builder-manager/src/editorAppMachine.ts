@@ -1,4 +1,4 @@
-import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import type { DragComp, DragData } from "@atrilabs/atri-app-core/src/types";
 import { AnyEvent } from "@atrilabs/forest";
 import { createMachine, interpret } from "xstate";
 

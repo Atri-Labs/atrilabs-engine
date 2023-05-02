@@ -80,9 +80,14 @@ export const attributesTreeDef: TreeDef = {
   },
 };
 
-
 export const forestDef: ForestDef = {
   id: "forestId",
   pkg: "forestPkg",
-  trees: [componentTreeDef, cssTreeDef, callbackTreeDef, customPropsTreeDef,attributesTreeDef],
+  trees: [
+    componentTreeDef,
+    cssTreeDef,
+    callbackTreeDef,
+    customPropsTreeDef,
+    attributesTreeDef,
+  ],
 };

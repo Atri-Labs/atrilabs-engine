@@ -1,4 +1,4 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type {
   AcceptsChildFunction,
   ReactComponentManifestSchema,
@@ -7,15 +7,17 @@ import {
   flexRowSort,
   flexColSort,
 } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 import {
   CSSTreeOptions,
   CustomPropsTreeOptions,
 } from "@atrilabs/app-design-forest";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
-import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 
 const attributesTreeOptions: AttributesTreeOptionsBoolean = {
   basics: true,
@@ -128,7 +130,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: AttributesTreeId,
         initialValue: {},
         treeOptions: attributesTreeOptions,
-        canvasOptions: {groupByBreakpoint: false},
+        canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {

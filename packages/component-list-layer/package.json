@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/component-list-layer",
-  "version": "1.0.0-alpha.28",
+  "version": "1.0.0-alpha.31",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,16 +21,16 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.28",
-    "@atrilabs/core": "^1.0.0-alpha.28",
-    "@atrilabs/design-system": "^1.0.0-alpha.28",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.28",
-    "@atrilabs/react-component-manifests": "^1.0.0-alpha.28",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.28",
+    "@atrilabs/component-icon-manifest-schema": "^1.0.0-alpha.31",
+    "@atrilabs/core": "^1.0.0-alpha.31",
+    "@atrilabs/design-system": "^1.0.0-alpha.31",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.31",
+    "@atrilabs/react-component-manifests": "^1.0.0-alpha.31",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.31",
     "typescript": "4.6.3"
   },
   "devDependencies": {
-    "@atrilabs/layer-types": "^1.0.0-alpha.28",
+    "@atrilabs/layer-types": "^1.0.0-alpha.31",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
@@ -40,9 +40,5 @@
     "eslint": "^8.13.0",
     "eslint-config-react-app": "^7.0.1",
     "prettier": "^2.6.2"
-  },
-  "peerDependencies": {
-    "react": "18.0.0",
-    "react-dom": "18.0.0"
   }
 }

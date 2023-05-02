@@ -6,7 +6,13 @@ import type {
   SendFileCallbackHandler,
   AcceptsChildFunction,
 } from "@atrilabs/react-component-manifest-schema";
-import { reactSchemaId, iconSchemaId, CustomTreeId, CSSTreeId } from "./consts";
+import {
+  reactSchemaId,
+  iconSchemaId,
+  CustomTreeId,
+  CSSTreeId,
+  AttributesTreeId,
+} from "./consts";
 import {
   flexRowSort,
   flexColSort,
@@ -68,8 +74,8 @@ export type CreateManifestOptions = {
   styles?: Partial<CSSTreeOptions>;
   initialStyles?: React.CSSProperties;
   custom?: CustomPropsTreeOptions["dataTypes"];
-
   initalCustomValues?: any;
+  initalAttributesValues?: any;
   callbacks?: {
     [callbackName: string]: {
       updateFields?: string[] | string[][]; // selector array for controlled field
@@ -97,6 +103,7 @@ export function createComponentManifest(options: CreateManifestOptions) {
   const initialStyles = options.initialStyles || {};
   const category = options.category || "Basics";
   const initalCustomValues = options.initalCustomValues || {};
+  const initalAttributesValues = options.initalAttributesValues || {};
   const callbacks = options.callbacks || {};
   const attrs = options.attrs || {};
 
@@ -206,8 +213,8 @@ export function createComponentManifest(options: CreateManifestOptions) {
           canvasOptions: { groupByBreakpoint: false },
         },
         attrs: {
-          treeId: CustomTreeId,
-          initialValue: initalCustomValues,
+          treeId: AttributesTreeId,
+          initialValue: initalAttributesValues,
           treeOptions: { attrs },
           canvasOptions: { groupByBreakpoint: false },
         },

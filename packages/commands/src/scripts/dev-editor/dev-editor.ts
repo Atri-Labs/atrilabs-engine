@@ -85,7 +85,11 @@ function main() {
           // @ts-ignore
           __non_webpack_require__.resolve(pkg)
         );
-      })
+      }),
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+      )
     );
     params.additionalInclude = additionalInclude;
 
@@ -150,6 +154,14 @@ function main() {
             "register-components-loader.js"
           ),
         },
+      };
+      config.cache = {
+        type: "filesystem",
+        cacheDirectory: path.resolve(
+          "node_modules",
+          ".cache-dev-editor",
+          "client"
+        ),
       };
       const plugins = config.plugins || [];
       plugins.push(new EditorAppServerPlugin());

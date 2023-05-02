@@ -1,10 +1,10 @@
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
 import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
 import { CSSTreeOptions } from "@atrilabs/app-design-forest";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
 
 const cssTreeOptions: CSSTreeOptions = {
   boxShadowOptions: true,

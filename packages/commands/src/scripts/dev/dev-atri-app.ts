@@ -86,7 +86,11 @@ async function main() {
       // @ts-ignore
       __non_webpack_require__.resolve("@atrilabs/manifest-registry")
     ),
-    ...manifestDirs
+    ...manifestDirs,
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    )
   );
   params.additionalInclude = additionalInclude;
 
@@ -144,6 +148,10 @@ async function main() {
     config.devServer = {
       ...config.devServer,
       hot: true,
+    };
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-dev", "client"),
     };
   };
 
@@ -218,6 +226,11 @@ async function main() {
   allowlist.push("@atrilabs/canvas-zone");
   allowlist.push("@atrilabs/atri-app-core/src/entries/renderPageServerSide");
   allowlist.push("@atrilabs/manifest-registry");
+  allowlist.push("@atrilabs/app-design-forest");
+  allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+  allowlist.push("@atrilabs/app-design-forest/src/cssTree");
+  allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+  allowlist.push("@atrilabs/app-design-forest/src/attributesTree");
   startNodeLibWatcher({
     ...params,
     disableNodeExternals: true,
@@ -230,6 +243,10 @@ async function main() {
       const plugins = config.plugins || [];
       plugins.push(new NodeLibPlugin());
       config.plugins = plugins;
+      config.cache = {
+        type: "filesystem",
+        cacheDirectory: path.resolve("node_modules", ".cache-dev", "node"),
+      };
       config.resolveLoader = {
         alias: {
           "atri-pages-server-loader": path.resolve(

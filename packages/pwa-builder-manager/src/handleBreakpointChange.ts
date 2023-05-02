@@ -1,6 +1,6 @@
 import { BrowserForestManager } from "@atrilabs/core";
 import { breakpointApi } from "./breakpointApi";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { editorAppMachineInterpreter } from "./init";
 import { createComponentFromNode } from "@atrilabs/atri-app-core/src/utils/createComponentFromNode";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";

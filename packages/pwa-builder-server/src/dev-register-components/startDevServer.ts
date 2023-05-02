@@ -64,6 +64,10 @@ export function startDevServer(options: {
     path.dirname(
       // @ts-ignore
       __non_webpack_require__.resolve("@atrilabs/utils")
+    ),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
     )
   );
 
@@ -154,6 +158,11 @@ export function startDevServer(options: {
     ...(webpackConfig.plugins || []),
     new webpack.HotModuleReplacementPlugin(),
   ];
+
+  webpackConfig.cache = {
+    type: "filesystem",
+    cacheDirectory: path.resolve("node_modules", ".pwa-builder-server"),
+  };
 
   const compiler = webpack(webpackConfig);
 

@@ -1,8 +1,8 @@
 import { manifestRegistryController, useTree } from "@atrilabs/core";
 import { useEffect, useMemo, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { getComponentManifest, getFileUploadManifests } from "../utils";
-import ReactManifestId from "@atrilabs/react-component-manifests?id";
+const ReactManifestId = "@atrilabs/react-component-manifests";
 
 export const useFileUploadAliases = () => {
   const compTree = useTree(ComponentTreeId);

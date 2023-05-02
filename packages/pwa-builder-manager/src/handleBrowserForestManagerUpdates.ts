@@ -2,9 +2,9 @@ import {
   BrowserForestManager,
   manifestRegistryController,
 } from "@atrilabs/core";
-import ReactComponentManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactComponentManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import type { LinkUpdate, WireUpdate } from "@atrilabs/forest";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { editorAppMachineInterpreter } from "./init";
 import { createComponentFromNode } from "@atrilabs/atri-app-core/src/utils/createComponentFromNode";
@@ -101,7 +101,6 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
             (key) => manfiest.dev.attachProps[key].treeId !== treeId
           );
           if (foundPropKey) {
-            const node = compTree.nodes[compId]!;
             const componentData = createComponentFromNode(
               node,
               BrowserForestManager.currentForest,
@@ -151,7 +150,10 @@ BrowserForestManager.currentForest.subscribeForest((update) => {
         return;
       }
       const compId = link.refId;
-      const node = compTree.nodes[compId]!;
+      const node = compTree.nodes[compId];
+      if (node === undefined) {
+        return;
+      }
       const componentData = createComponentFromNode(
         node,
         BrowserForestManager.currentForest,

@@ -4,7 +4,7 @@ import {
   getReactManifest,
   useTree,
 } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { useCallback } from "react";
 import {
   AnyEvent,
@@ -14,7 +14,7 @@ import {
   TreeNode,
 } from "@atrilabs/forest";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 
 export const useCreateTemplate = () => {
   const componentTree = useTree(ComponentTreeId);

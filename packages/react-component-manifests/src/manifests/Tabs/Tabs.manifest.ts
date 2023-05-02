@@ -1,19 +1,21 @@
-import {CSSTreeOptions} from "@atrilabs/app-design-forest/src/cssTree";
-import {CustomPropsTreeOptions} from "@atrilabs/app-design-forest/src/customPropsTree";
+import { CSSTreeOptions } from "@atrilabs/app-design-forest/src/cssTree";
+import { CustomPropsTreeOptions } from "@atrilabs/app-design-forest/src/customPropsTree";
 import {
   ReactComponentManifestSchema,
   AcceptsChildFunction,
 } from "@atrilabs/react-component-manifest-schema";
-import CSSTreeId from "@atrilabs/app-design-forest/src/cssTree?id";
-import CustomTreeId from "@atrilabs/app-design-forest/src/customPropsTree?id";
-import reactSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import iconSchemaId from "@atrilabs/component-icon-manifest-schema?id";
-import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
-import {AttributesTreeOptionsBoolean} from "@atrilabs/app-design-forest/src/attributesTree";
+import { Id as CSSTreeId } from "@atrilabs/app-design-forest/src/cssTree";
+import { Id as CustomTreeId } from "@atrilabs/app-design-forest/src/customPropsTree";
+import { Id as reactSchemaId } from "@atrilabs/react-component-manifest-schema";
+import { Id as iconSchemaId } from "@atrilabs/component-icon-manifest-schema";
+import {
+  Id as AttributesTreeId,
+  AttributesTreeOptionsBoolean,
+} from "@atrilabs/app-design-forest/src/attributesTree";
 
 const attributesTreeOptions: AttributesTreeOptionsBoolean = {
   basics: true,
-  ariaLabelledBy: false,
+  ariaLabelledBy: true,
 };
 
 const cssTreeOptions: CSSTreeOptions = {
@@ -36,9 +38,9 @@ const acceptsChild: AcceptsChildFunction = (info: any) => {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    defaultActiveKey: {type: "text"},
-    centered: {type: "boolean"},
-    animated: {type: "boolean"},
+    defaultActiveKey: { type: "text" },
+    centered: { type: "boolean" },
+    animated: { type: "boolean" },
     tabPosition: {
       type: "enum",
       options: ["top", "bottom", "left", "right"],
@@ -51,24 +53,24 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["line", "card"],
     },
-    inActiveTabColor: {type: "color"},
-    activeTabColor: {type: "color"},
+    inActiveTabColor: { type: "color" },
+    activeTabColor: { type: "color" },
     items: {
       type: "array_map",
       singleObjectName: "item",
       attributes: [
-        {fieldName: "key", type: "number"},
-        {fieldName: "label", type: "text"},
-        {fieldName: "children", type: "text"},
-        {fieldName: "disabled", type: "boolean"},
-        {fieldName: "icon", type: "static_asset"},
+        { fieldName: "key", type: "number" },
+        { fieldName: "label", type: "text" },
+        { fieldName: "children", type: "text" },
+        { fieldName: "disabled", type: "boolean" },
+        { fieldName: "icon", type: "static_asset" },
       ],
     },
   },
 };
 
 const compManifest: ReactComponentManifestSchema = {
-  meta: {key: "Tabs", category: "Basics"},
+  meta: { key: "Tabs", category: "Basics" },
   dev: {
     decorators: [],
     attachProps: {
@@ -76,7 +78,7 @@ const compManifest: ReactComponentManifestSchema = {
         treeId: CSSTreeId,
         initialValue: {},
         treeOptions: cssTreeOptions,
-        canvasOptions: {groupByBreakpoint: true},
+        canvasOptions: { groupByBreakpoint: true },
       },
       custom: {
         treeId: CustomTreeId,
@@ -100,17 +102,17 @@ const compManifest: ReactComponentManifestSchema = {
           ],
         },
         treeOptions: customTreeOptions,
-        canvasOptions: {groupByBreakpoint: false},
+        canvasOptions: { groupByBreakpoint: false },
       },
       attrs: {
         treeId: AttributesTreeId,
         initialValue: {},
         treeOptions: attributesTreeOptions,
-        canvasOptions: {groupByBreakpoint: false},
+        canvasOptions: { groupByBreakpoint: false },
       },
     },
     attachCallbacks: {
-      onTabClick: [{type: "controlled", selector: ["custom", "open"]}],
+      onTabClick: [{ type: "controlled", selector: ["custom", "open"] }],
     },
     defaultCallbackHandlers: {},
     acceptsChild,
@@ -118,12 +120,12 @@ const compManifest: ReactComponentManifestSchema = {
 };
 
 const iconManifest = {
-  panel: {comp: "CommonIcon", props: {name: "Tabs"}},
+  panel: { comp: "CommonIcon", props: { name: "Tabs" } },
   drag: {
     comp: "CommonIcon",
     props: {
       name: "Tabs",
-      containerStyle: {padding: "1rem"},
+      containerStyle: { padding: "1rem" },
     },
   },
   renderSchema: compManifest,

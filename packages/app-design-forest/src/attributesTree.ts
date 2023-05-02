@@ -18,5 +18,6 @@ export default function () {
   const onCreate = () => {
     return true;
   };
-  return {validateCreate, validatePatch, onCreate};
+  return { validateCreate, validatePatch, onCreate };
 }
+export const Id = "@atrilabs/app-design-forest/src/attributesTree";

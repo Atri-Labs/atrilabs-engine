@@ -4,6 +4,7 @@ import webpack, { Configuration, RuleSetRule } from "webpack";
 import createManifestRegistryConfig from "../../commons/manifest-registry.webpack.config";
 import { CorePkgInfo } from "../../commons/types";
 import { ManifestRegistryLibPlugin } from "./webpack-plugins/ManifestRegistryLibPlugin";
+import path from "path";
 
 export default function startManifestRegistryLibDevServer(
   params: Omit<ReturnType<typeof extractParams>, "exclude"> & {
@@ -22,6 +23,15 @@ export default function startManifestRegistryLibDevServer(
   const webpackConfig = createManifestRegistryConfig(params);
 
   webpackConfig.watch = true;
+
+  webpackConfig.cache = {
+    type: "filesystem",
+    cacheDirectory: path.resolve(
+      "node_modules",
+      ".cache-dev-editor",
+      "manifestRegistry"
+    ),
+  };
 
   webpackConfig.plugins = [
     ...(webpackConfig.plugins || []),

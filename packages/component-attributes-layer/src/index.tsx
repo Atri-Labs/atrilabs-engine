@@ -1,14 +1,12 @@
-import {Tab} from "@atrilabs/core";
-import {useManageAttrs} from "./hooks/useManageAttrs";
-import {useShowTab} from "./hooks/useShowTab";
-import {TabBody} from "./TabBody";
-import {TabHeader} from "./TabHeader";
-
-
+import { Tab } from "@atrilabs/core";
+import { useManageAttrs } from "./hooks/useManageAttrs";
+import { useShowTab } from "./hooks/useShowTab";
+import { TabBody } from "./TabBody";
+import { TabHeader } from "./TabHeader";
 
 export default function () {
-  const {showTab, id, treeOptions} = useShowTab();
-  const {patchCb, attrs} = useManageAttrs(id);
+  const { showTab, id, treeOptions } = useShowTab();
+  const { patchCb, attrs } = useManageAttrs(id);
 
   return (
     <>
@@ -24,7 +22,7 @@ export default function () {
               />
             </>
           }
-          header={<TabHeader/>}
+          header={<TabHeader />}
           itemName={"attrs"}
         />
       ) : null}

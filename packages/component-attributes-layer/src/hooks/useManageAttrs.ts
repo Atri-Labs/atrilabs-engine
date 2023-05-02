@@ -1,12 +1,10 @@
 import { BrowserForestManager, useTree } from "@atrilabs/core";
 import { useCallback, useEffect, useState } from "react";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import AttributesTreeId from "@atrilabs/app-design-forest/src/attributesTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
+import { Id as AttributesTreeId } from "@atrilabs/app-design-forest/src/attributesTree";
 import { PatchEvent } from "@atrilabs/forest";
 import { api } from "@atrilabs/pwa-builder-manager";
-import {ReactComponentManifestSchema} from "@atrilabs/react-component-manifest-schema";
-
 
 export const useManageAttrs = (id: string | null) => {
   const compTree = useTree(ComponentTreeId);
@@ -52,7 +50,7 @@ export const useManageAttrs = (id: string | null) => {
     ) {
       // subscribe to forest
       const currentForest = BrowserForestManager.currentForest;
-      const unsub = currentForest.subscribeForest((update) => {
+      return currentForest.subscribeForest((update) => {
         if (update.type === "change") {
           if (update.treeId === AttributesTreeId) {
             const attrsNodeLink = attributesTree.links[id];
@@ -63,7 +61,6 @@ export const useManageAttrs = (id: string | null) => {
           }
         }
       });
-      return unsub;
     }
   }, [id, compTree, attributesTree]);
 
@@ -82,5 +79,5 @@ export const useManageAttrs = (id: string | null) => {
     }
   }, [id, compTree, attributesTree]);
 
-   return { patchCb, attrs };
+  return { patchCb, attrs };
 };

@@ -1,4 +1,4 @@
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { flattenNavigatorNodes, transformTreeToNavigatorNode } from "../utils";
 import { api, subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 import { BrowserForestManager } from "@atrilabs/core";

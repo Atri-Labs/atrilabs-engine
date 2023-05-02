@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { manifestRegistryController } from "@atrilabs/core";
-import ComponetIconManifestId from "@atrilabs/component-icon-manifest-schema?id";
+import { Id as ComponetIconManifestId } from "@atrilabs/component-icon-manifest-schema";
 
 export const useManifestRegistry = () => {
   const [fullManifests, setFullManifests] = useState(

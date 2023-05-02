@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
-import { CommonIcon } from "@atrilabs/atri-app-core/src/editor-components";
+import { CommonIcon } from "@atrilabs/atri-app-core/src/editor-components/CommonIcon";
 import { getRef } from "@atrilabs/core";
 import { getOverlayStyle } from "../utils";
 

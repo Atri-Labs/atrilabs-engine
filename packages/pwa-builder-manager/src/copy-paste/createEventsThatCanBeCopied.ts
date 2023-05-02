@@ -1,11 +1,11 @@
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
 import {
   BrowserForestManager,
   getId,
   manifestRegistryController,
 } from "@atrilabs/core";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import {
   AnyEvent,
   CreateEvent,

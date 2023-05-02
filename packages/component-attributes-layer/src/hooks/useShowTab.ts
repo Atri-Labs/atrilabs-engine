@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTree, manifestRegistryController } from "@atrilabs/core";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
 import { subscribeEditorMachine } from "@atrilabs/pwa-builder-manager";
 
@@ -34,8 +34,7 @@ export const useShowTab = () => {
             const manifest: ReactComponentManifestSchema =
               fullManifest.manifest;
             if (manifest.dev.attachProps["attrs"]) {
-              const treeOptions =
-                manifest.dev.attachProps["attrs"].treeOptions;
+              const treeOptions = manifest.dev.attachProps["attrs"].treeOptions;
               setId(id);
               setShowTab(true);
               setTreeOptions(treeOptions);

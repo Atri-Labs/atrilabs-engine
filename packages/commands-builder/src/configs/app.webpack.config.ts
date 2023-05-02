@@ -224,13 +224,7 @@ export function createConfig(options: AppConfigOptions): WebpackConfiguration {
               babel,
               exclude: exclude || [],
             }),
-            ...setJsxLoaders({
-              isEnvDevelopment,
-              isEnvProduction,
-              shouldUseSourceMap,
-              isEnvTest,
-              hasJsxRuntime: true,
-            }),
+            ...setJsxLoaders(),
             ...setStyleLoaders({
               isEnvDevelopment,
               isEnvProduction,

@@ -1,6 +1,6 @@
 import { manifestRegistryController } from "@atrilabs/core";
 import { ReactComponentManifestSchema } from "@atrilabs/react-component-manifest-schema";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
 
 export function getFileUploadManifests() {
   const fileUploadManifests: { pkg: string; key: string }[] = [];

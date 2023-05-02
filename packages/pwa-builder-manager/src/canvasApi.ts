@@ -10,7 +10,7 @@ import {
   getReactManifest,
 } from "@atrilabs/core";
 import { api } from "./api";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import { AnyEvent, CreateEvent, LinkEvent, PatchEvent } from "@atrilabs/forest";
 import { aliasApi } from "./aliasApi";
 import { postPasteEvents } from "./copy-paste/postPasteEvents";
@@ -112,13 +112,6 @@ subscribeEditorMachine("drag_in_progress", (context) => {
 subscribeEditorMachine("DRAG_FAILED", (context) => {
   // @ts-ignore
   context.canvasWindow?.postMessage({ type: "drag_stopped" }, "*");
-});
-
-subscribeEditorMachine("before_app_load", (context) => {
-  BrowserForestManager.setCurrentForest(
-    BrowserForestManager.currentForest.forestPkgId,
-    context.currentRouteObjectPath
-  );
 });
 
 function navigatePage(urlPath: string) {

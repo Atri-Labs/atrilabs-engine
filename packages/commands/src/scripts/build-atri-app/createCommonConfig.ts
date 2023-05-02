@@ -35,6 +35,10 @@ export function createCommonConfig(params: {
       __non_webpack_require__.resolve("@atrilabs/manifest-registry")
     ),
     ...Object.keys(manifestPkgDirs),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    ),
   ];
   const exclude: RuleSetRule["exclude"] = excludeWithAdditionalModules(
     additionalInclude,
@@ -49,6 +53,12 @@ export function createCommonConfig(params: {
     "@atrilabs/atri-app-core/src/prod-entries",
     "@atrilabs/design-system",
     "@atrilabs/canvas-zone",
+    "@atrilabs/app-design-forest",
+    "@atrilabs/app-design-forest/src/customPropsTree",
+    "@atrilabs/app-design-forest/src/cssTree",
+    "@atrilabs/app-design-forest/src/customPropsTree",
+    "@atrilabs/app-design-forest/src/componentTree",
+    "@atrilabs/app-design-forest/src/attributesTree",
     (moduleName: string) => {
       let found = false;
       Object.keys(manifestPkgDirs).forEach((manifestPkgDir) => {

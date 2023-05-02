@@ -37,8 +37,18 @@ export function buildManifests(options: {
           "@atrilabs/react-component-manifest-schema"
         )
       ),
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve(
+          "@atrilabs/component-icon-manifest-schema"
+        )
+      ),
       // @ts-ignore
-      path.dirname(__non_webpack_require__.resolve("@atrilabs/forest"))
+      path.dirname(__non_webpack_require__.resolve("@atrilabs/forest")),
+      path.dirname(
+        // @ts-ignore
+        __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+      )
     );
 
     params.allowlist = params.allowlist || [];
@@ -49,8 +59,14 @@ export function buildManifests(options: {
     params.allowlist.push("@atrilabs/design-system");
     params.allowlist.push("@atrilabs/manifest-registry");
     params.allowlist.push("@atrilabs/react-component-manifest-schema");
+    params.allowlist.push("@atrilabs/component-icon-manifest-schema");
     params.allowlist.push("@atrilabs/forest");
-
+    params.allowlist.push("@atrilabs/app-design-forest");
+    params.allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/cssTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/customPropsTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/componentTree");
+    params.allowlist.push("@atrilabs/app-design-forest/src/attributesTree");
     if (fs.existsSync(path.resolve("manifests"))) {
       params.additionalInclude = [
         ...params.additionalInclude,
@@ -63,7 +79,7 @@ export function buildManifests(options: {
       excludeDirs
     );
 
-    const conifg = createNodeLibConfig({
+    const config = createNodeLibConfig({
       ...params,
       exclude,
       entry: createManifestsEntry,
@@ -86,7 +102,7 @@ export function buildManifests(options: {
         ],
       },
     });
-    conifg.resolveLoader = {
+    config.resolveLoader = {
       alias: {
         "register-components-loader": path.resolve(
           __dirname,
@@ -99,7 +115,11 @@ export function buildManifests(options: {
         ),
       },
     };
-    webpack(conifg, (err, stats) => {
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-build-editor"),
+    };
+    webpack(config, (err, stats) => {
       if (err) {
         console.log(err);
       }

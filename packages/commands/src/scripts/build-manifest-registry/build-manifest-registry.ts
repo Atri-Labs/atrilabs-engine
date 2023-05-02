@@ -59,7 +59,11 @@ async function main() {
         // @ts-ignore
         __non_webpack_require__.resolve(pkg)
       );
-    })
+    }),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    )
   );
   params.additionalInclude = additionalInclude;
 
@@ -95,6 +99,15 @@ async function main() {
     toolConfig,
     corePkgInfo,
   });
+
+  webpackConfig.cache = {
+    type: "filesystem",
+    cacheDirectory: path.resolve(
+      "node_modules",
+      ".cache-build-manifest-registry",
+      "client"
+    ),
+  };
 
   webpack(webpackConfig, (err, stats) => {
     if (err) {

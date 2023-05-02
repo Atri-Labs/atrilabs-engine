@@ -17,7 +17,7 @@ export type CSSTreeOptions = {
   // display values like inline, inline-block, content etc.
   css2DisplayOptions?: boolean;
   //listStyle
-  listStyleOptions?:boolean;
+  listStyleOptions?: boolean;
 };
 
 export default function () {
@@ -32,3 +32,5 @@ export default function () {
   };
   return { validateCreate, validatePatch, onCreate };
 }
+
+export const Id = "@atrilabs/app-design-forest/src/cssTree";

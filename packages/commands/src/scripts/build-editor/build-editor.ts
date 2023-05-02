@@ -76,7 +76,11 @@ async function main() {
         // @ts-ignore
         __non_webpack_require__.resolve(pkg)
       );
-    })
+    }),
+    path.dirname(
+      // @ts-ignore
+      __non_webpack_require__.resolve("@atrilabs/app-design-forest")
+    )
   );
   params.additionalInclude = additionalInclude;
 
@@ -138,6 +142,10 @@ async function main() {
         ),
       },
     };
+    config.cache = {
+      type: "filesystem",
+      cacheDirectory: path.resolve("node_modules", ".cache-build-editor"),
+    };
   };
 
   const corePkgInfo = getCorePkgInfo();
@@ -161,11 +169,6 @@ async function main() {
       },
     },
   ];
-
-  params.isEnvDevelopment = false;
-  params.isEnvProduction = true;
-  params.isEnvProductionProfile = false;
-  params.isEnvTest = false;
 
   runBuild({
     ...params,

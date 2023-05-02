@@ -2,9 +2,9 @@ import { api } from "@atrilabs/pwa-builder-manager";
 import { CreateEvent, LinkEvent } from "@atrilabs/forest";
 import React, { useEffect, useMemo, useState } from "react";
 import { getReactManifest } from "@atrilabs/core";
-import ReactManifestSchemaId from "@atrilabs/react-component-manifest-schema?id";
-import CallbackTreeId from "@atrilabs/app-design-forest/src/callbackHandlerTree?id";
-import ComponentTreeId from "@atrilabs/app-design-forest/src/componentTree?id";
+import { Id as ReactManifestSchemaId } from "@atrilabs/react-component-manifest-schema";
+import { Id as CallbackTreeId } from "@atrilabs/app-design-forest/src/callbackHandlerTree";
+import { Id as ComponentTreeId } from "@atrilabs/app-design-forest/src/componentTree";
 import {
   FormattedTemplateData,
   PartialTemplateComponents,

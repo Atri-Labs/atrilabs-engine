@@ -22,7 +22,7 @@ import { TemplateRenderer } from "./components/TemplateRenderer";
 import { useShowTemplate } from "./hooks/useShowTemplate";
 import { canvasApi } from "@atrilabs/pwa-builder-manager";
 import { getId } from "@atrilabs/core";
-import type { DragComp, DragData } from "@atrilabs/atri-app-core";
+import type { DragComp, DragData } from "@atrilabs/atri-app-core/src/types";
 
 const styles: { [key: string]: React.CSSProperties } = {
   iconContainer: {
