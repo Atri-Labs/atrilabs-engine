@@ -92,7 +92,6 @@ export const TypedMapList: React.FC<ComponentProps> = (props) => {
     },
     [propValue, props, selector]
   );
-  console.log("TypedMapList", attributesMap);
   return (
     <ArrayPropertyContainer>
       <ArrayLabel
