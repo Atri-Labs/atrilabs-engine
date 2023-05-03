@@ -27,7 +27,6 @@ import PositionTrapezoid from "./PositionTrapezoid";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
 import { ReactComponent as AddButton } from "../../assets/add.svg";
 import { TransformSelector } from "./TransformSelector";
-import { GradientColorSelector } from "../background/GradientSelector";
 import { ReactComponent as MinusButton } from "../../assets/minus.svg";
 
 export const fillColor = "rgba(75, 85, 99, 0.4)";
@@ -486,7 +485,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   );
 
   const addTransform = useCallback(() => {
-    applyTransform([...transforms, "none"]);
+    applyTransform([...transforms, "(none)"]);
   }, [applyTransform, transforms]);
 
   const removeTransform = useCallback(
@@ -713,7 +712,11 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             >
               <div style={styles.optionName}>Transform</div>
               <AddButton
-                style={{ ...smallText, color: gray200, cursor: "pointer" }}
+                style={{
+                  ...smallText,
+                  color: gray200,
+                  cursor: "pointer",
+                }}
                 onClick={() => addTransform()}
               />
             </div>
@@ -730,18 +733,12 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
                     border: "1px solid #fff",
                     padding: "0.3em",
                     width: "110px",
+                    justifyContent: "center",
                   }}
                   onClick={() =>
                     setTransform({ transformStr: transform, index })
                   }
                 >
-                  <div
-                    style={{
-                      width: "1em",
-                      height: "1em",
-                      transform: `${transform}`,
-                    }}
-                  ></div>
                   <div
                     style={{
                       ...smallText,
@@ -750,13 +747,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
                     }}
                   >
                     {transform}
-                    {/*{(gradient[0] === "r" && gradient[10] === "l") ||*/}
-                    {/*gradient[0] === "l"*/}
-                    {/*  ? "Linear Gradient"*/}
-                    {/*  : (gradient[0] === "r" && gradient[10] === "r") ||*/}
-                    {/*  (gradient[0] === "r" && gradient[1] === "a")*/}
-                    {/*    ? "Radial Gradient"*/}
-                    {/*    : "Conic Gradient"}*/}
                   </div>
                 </div>
 
@@ -776,6 +766,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             ))}
           </div>
         </div>
+
         {transform && (
           <div
             style={{
