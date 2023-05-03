@@ -21,7 +21,7 @@ const Video = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -78,13 +78,9 @@ const Video = forwardRef<
 
   // moved ref to div, as the Antd ReactPlayer doesn't provide ref for ReactPlayer
   return (
-    <div
-      ref={ref}
-      style={{ display: "inline-block" }}
-      id={props.id}
-    >
+    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <ReactPlayer
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         {...custom}
         height={props.styles.height}

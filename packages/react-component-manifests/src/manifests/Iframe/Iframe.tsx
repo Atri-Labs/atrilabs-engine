@@ -17,7 +17,7 @@ const Iframe = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       id?: string;
       src?: string;
@@ -62,7 +62,7 @@ const Iframe = forwardRef<
   return (
     <div ref={ref} id={props.id}>
       <iframe
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         {...restProps}
         allow={allowValues}

@@ -12,7 +12,7 @@ const Card = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       type: type;
       text: string;
@@ -33,7 +33,11 @@ const Card = forwardRef<
     <AntdCard
       ref={ref}
       id={props.id}
-      className={props.custom.type === "card" ? `${props.className} ${props.attrs.class}` : undefined}
+      className={
+        props.custom.type === "card"
+          ? `${props.className} ${props.attrs?.class}`
+          : undefined
+      }
       style={props.styles}
       title={props.custom.type === "card" ? props.custom.text : undefined}
       bordered={props.custom.bordered}
@@ -45,7 +49,7 @@ const Card = forwardRef<
       {props.custom.type === "card" && <p> {props.custom.description}</p>}
       {props.custom.type === "meta" && (
         <Meta
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={props.styles}
           avatar={
             props.custom.avatar ? (

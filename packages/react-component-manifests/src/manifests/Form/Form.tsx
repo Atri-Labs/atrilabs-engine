@@ -187,7 +187,7 @@ const Form = forwardRef<
     <div ref={ref} style={props.styles} id={props.id}>
       <AntdForm
         form={form}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         //antd style
         labelCol={{ span: 8 }}

@@ -21,7 +21,7 @@ const Button = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       text: string;
       icon?: string; //Set the icon component of button
@@ -54,7 +54,7 @@ const Button = forwardRef<
       {...custom}
       ref={ref}
       id={props.id}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       style={props.styles}
       onClick={onClick}
       icon={

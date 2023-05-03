@@ -1,23 +1,24 @@
-import React, {forwardRef, useEffect, useMemo, useState} from "react";
-import {Editor} from "@tinymce/tinymce-react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 
 const cssjs = require("postcss-js");
 const postcss = require("postcss");
 
 function jssToCss(jss: React.CSSProperties) {
   return postcss()
-    .process(jss, {parser: cssjs, from: undefined})
+    .process(jss, { parser: cssjs, from: undefined })
     .then((code) => {
       return code.css + ";";
     });
 }
 
-const TinyMCE = forwardRef<HTMLInputElement,
+const TinyMCE = forwardRef<
+  HTMLInputElement,
   {
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       apiKey?: string;
       initialValue?: string;
@@ -46,7 +47,8 @@ const TinyMCE = forwardRef<HTMLInputElement,
     }) => void;
     onEditorChange: (a: string, editor: Editor) => void;
     id?: string;
-  }>((props, ref) => {
+  }
+>((props, ref) => {
   const [contentStyles, setContentStyles] = useState<string>("");
 
   const key = useMemo(() => {
@@ -91,7 +93,7 @@ const TinyMCE = forwardRef<HTMLInputElement,
         init={{
           height: props.styles.height,
           width: props.styles.width,
-          className: props.attrs.class,
+          className: props.attrs?.class,
           contentEditable: props.custom.contentEditable,
           initOnMount: props.custom.initOnMount,
           content_style: `body {${contentStyles}}`,

@@ -22,7 +22,7 @@ export type CountupProps = {
   styles: React.CSSProperties;
   attrs: {
     class: string;
-  }
+  };
   custom: {
     itemCount: number;
     duration: number;
@@ -37,8 +37,12 @@ export type CountupProps = {
 export const Countup = forwardRef<HTMLDivElement, CountupProps>(
   (props, ref) => {
     return (
-      <div ref={ref} style={{ display: "inline-flex", ...props.styles }} id={props.id}>
-        className={`${props.className} ${props.attrs.class}`}
+      <div
+        ref={ref}
+        style={{ display: "inline-flex", ...props.styles }}
+        id={props.id}
+      >
+        className={`${props.className} ${props.attrs?.class}`}
         <CountUpAnimation
           value={props.custom.itemCount}
           duration={props.custom.duration}

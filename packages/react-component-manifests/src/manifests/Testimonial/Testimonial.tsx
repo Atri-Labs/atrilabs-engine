@@ -6,7 +6,7 @@ const Testimonial = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       startTile: number;
       intervalTime: number;
@@ -64,7 +64,7 @@ const Testimonial = forwardRef<
         columnGap: "1em",
       }}
       onClick={onClick}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       id={props.id}
     >
       <button

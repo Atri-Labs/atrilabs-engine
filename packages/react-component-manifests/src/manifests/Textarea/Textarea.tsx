@@ -14,7 +14,7 @@ const Textarea = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -48,7 +48,7 @@ const Textarea = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <TextArea
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={{
           ...props.styles,
           animationDuration: "0s",

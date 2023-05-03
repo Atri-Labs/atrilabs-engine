@@ -7,7 +7,7 @@ export const Link = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: { text: string; url: string; disabled?: boolean };
     onClick: () => void;
     id?: string;
@@ -19,7 +19,7 @@ export const Link = forwardRef<
   }, [props]);
   return (
     <div
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       ref={ref}
       style={{ display: "inline-block", ...props.styles }}
       onClick={onClick}

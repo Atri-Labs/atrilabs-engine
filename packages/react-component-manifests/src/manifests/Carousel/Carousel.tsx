@@ -10,7 +10,7 @@ const Carousel = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       items: { text: string; image?: string }[];
       effect?: CarouselEffect;
@@ -30,9 +30,11 @@ const Carousel = forwardRef<
 >((props, ref) => {
   const { custom } = props;
   return (
-    <div ref={ref} id={props.id}
-    >
-      <AntdCarousel  className={`${props.className} ${props.attrs.class}`} {...custom}>
+    <div ref={ref} id={props.id}>
+      <AntdCarousel
+        className={`${props.className} ${props.attrs?.class}`}
+        {...custom}
+      >
         {props.custom.items.map((item, index) => (
           <div key={index}>
             <h3

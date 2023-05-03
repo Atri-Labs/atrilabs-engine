@@ -8,7 +8,7 @@ const Select = forwardRef<
     attrs: {
       class: string;
       "aria-labelledby": string;
-    }
+    };
     custom: {
       options?: any;
       placeholder?: string;
@@ -26,16 +26,15 @@ const Select = forwardRef<
   return (
     <div ref={ref} style={props.styles} id={props.id}>
       <AntdSelect
-        aria-labelledby ={props.attrs["aria-labelledby"]}
+        aria-labelledby={props.attrs["aria-labelledby"]}
         defaultValue={props.custom.defaultValue}
         {...restProps}
         {...custom}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         onChange={props.onChange}
         options={props.custom.options}
         placeholder={props.custom.placeholder}
-
       />
     </div>
   );

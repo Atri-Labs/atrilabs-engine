@@ -7,7 +7,7 @@ const Badge = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     children: React.ReactNode[];
@@ -42,7 +42,7 @@ const Badge = forwardRef<
     >
       {props.custom?.ribbon === true ? (
         <AntdBadge.Ribbon
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={props.styles}
           text={props.custom.ribbonText}
           placement={props.custom.ribbonPlacement}
@@ -52,7 +52,7 @@ const Badge = forwardRef<
         </AntdBadge.Ribbon>
       ) : (
         <AntdBadge
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={props.styles}
           showZero={props.custom?.showZero}
           overflowCount={props.custom?.overflowCount}

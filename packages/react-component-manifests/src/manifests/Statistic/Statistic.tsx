@@ -7,7 +7,7 @@ const Statistic = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom?: {
@@ -30,7 +30,7 @@ const Statistic = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdStatistic
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         {...custom}
         valueStyle={props.styles}

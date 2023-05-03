@@ -19,7 +19,7 @@ export const Upload = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -58,7 +58,7 @@ export const Upload = forwardRef<
       {props.custom.dragger === true ? (
         <Dragger
           style={props.styles}
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           maxCount={props.custom.maxCount}
           multiple={props.custom.multiple}
           disabled={props.custom.disabled}
@@ -76,7 +76,7 @@ export const Upload = forwardRef<
       ) : (
         <>
           <AntdUpload
-            className={`${props.className} ${props.attrs.class}`}
+            className={`${props.className} ${props.attrs?.class}`}
             listType={props.custom.listType}
             maxCount={props.custom.maxCount}
             multiple={props.custom.multiple}
