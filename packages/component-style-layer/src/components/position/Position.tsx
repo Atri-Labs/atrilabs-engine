@@ -455,7 +455,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
     [props]
   );
 
-  //////////
   const closeTransform = useCallback(() => {
     setTransform(undefined);
   }, []);
@@ -506,7 +505,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
     [applyTransform, transforms]
   );
 
-  //////
   return (
     <>
       <style>
