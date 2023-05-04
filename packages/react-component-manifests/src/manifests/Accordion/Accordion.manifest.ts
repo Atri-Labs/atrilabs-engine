@@ -30,6 +30,7 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    fontColor: { type: "color" },
     size: {
       type: "enum",
       options: ["middle", "large", "small"],

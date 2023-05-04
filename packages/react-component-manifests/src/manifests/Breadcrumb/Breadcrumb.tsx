@@ -20,6 +20,7 @@ const Breadcrumb = forwardRef<
     custom: {
       separator?: string;
       items: item[];
+      fontColor?: string;
     };
     id?: string;
     className?: string;
@@ -47,14 +48,23 @@ const Breadcrumb = forwardRef<
     });
   }, [props.custom.items]);
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
-      <AntdBreadcrumb
-        className={`${props.className} ${props.attrs?.class}`}
-        style={props.styles}
-        separator={props.custom.separator}
-        items={breadcrumbItems}
-      />
-    </div>
+    <>
+      <style>
+        {`.ant-breadcrumb a{
+            color:${props.custom.fontColor} !important;
+          }
+        `}
+      </style>
+
+      <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+        <AntdBreadcrumb
+          className={`${props.className} ${props.attrs?.class}`}
+          style={props.styles}
+          separator={props.custom.separator}
+          items={breadcrumbItems}
+        />
+      </div>
+    </>
   );
 });
 export default Breadcrumb;

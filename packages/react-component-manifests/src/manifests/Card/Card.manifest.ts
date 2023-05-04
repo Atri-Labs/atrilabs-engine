@@ -34,7 +34,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
       type: "enum",
       options: ["card", "meta"],
     },
-    text: { type: "text" },
+    title: { type: "text" },
+    titleFontSize: { type: "number" },
+    titleFontColor: { type: "color" },
     description: { type: "large_text" },
     size: {
       type: "enum",
@@ -62,7 +64,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Card Title",
+          title: "Card Title",
           description: "Card content",
           bordered: true,
           type: "card",

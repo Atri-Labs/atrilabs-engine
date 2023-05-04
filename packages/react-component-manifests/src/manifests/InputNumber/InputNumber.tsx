@@ -35,6 +35,7 @@ const Input = forwardRef<
       status?: InputStatus; //Set validation status	'error' | 'warning'
       prefix?: ReactNode; //The prefix icon for the Input
       suffix?: ReactNode; //The suffix icon for the Input
+      outerDivStyle?: React.CSSProperties;
       readOnly?: boolean;
       onChange?: (value: string | number | null) => void;
       onPressEnter?: React.KeyboardEventHandler<HTMLInputElement>;
@@ -59,11 +60,18 @@ const Input = forwardRef<
   }
 >((props, ref) => {
   const { custom } = props;
-
+  const { outerDivStyle, ...restProps } = custom;
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+    <div
+      ref={ref}
+      style={{
+        ...outerDivStyle,
+        width: "-webkit-fill-available",
+      }}
+      id={props.id}
+    >
       <AntdInputNumber
-        {...custom}
+        {...restProps}
         className={`${props.className} ${props.attrs?.class}`}
         style={{
           ...props.styles,
@@ -71,6 +79,7 @@ const Input = forwardRef<
           animationTimingFunction: "unset",
           transitionDuration: "0s",
           transitionTimingFunction: "unset",
+          width: "100%",
         }}
       />
     </div>

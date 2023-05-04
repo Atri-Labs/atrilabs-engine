@@ -30,7 +30,9 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    text: { type: "text" },
+    title: { type: "text" },
+    titleFontSize: { type: "number" },
+    titleFontColor: { type: "color" },
     description: { type: "text" },
     alertType: {
       type: "enum",
@@ -59,7 +61,7 @@ const compManifest: ReactComponentManifestSchema = {
       custom: {
         treeId: CustomTreeId,
         initialValue: {
-          text: "Alert Title",
+          title: "Alert Title",
           description: "Alert Description",
           isClosable: true,
           showIcon: true,

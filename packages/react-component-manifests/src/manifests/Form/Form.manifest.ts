@@ -32,12 +32,18 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
-    header: {
-      type: "enum",
-      options: ["cookies", "local-storage", "key-value"],
+    headers: {
+      type: "array_map",
+      attributes: [
+        {
+          fieldName: "source",
+          type: "enum",
+          options: ["", "cookies", "local-storage", "key-value"],
+        },
+        { fieldName: "key", type: "text" },
+        { fieldName: "value", type: "text" },
+      ],
     },
-    headerKey: { type: "text" },
-    headerValue: { type: "text" },
     url: { type: "text" },
     autocomplete: {
       type: "enum",
@@ -48,6 +54,15 @@ const customTreeOptions: CustomPropsTreeOptions = {
       attributes: [
         {
           fieldName: "text",
+          type: "map",
+          attributes: [
+            { fieldName: "id", type: "text" },
+            { fieldName: "label", type: "text" },
+            { fieldName: "placeholder", type: "text" },
+          ],
+        },
+        {
+          fieldName: "number",
           type: "map",
           attributes: [
             { fieldName: "id", type: "text" },
@@ -242,7 +257,7 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
-          colon: "true",
+          colon: true,
           form: [
             {
               selectedOption: "text",
@@ -250,6 +265,14 @@ const compManifest: ReactComponentManifestSchema = {
                 label: "Name",
                 id: "name",
                 placeholder: "Enter Your Name",
+              },
+            },
+            {
+              selectedOption: "number",
+              text: {
+                label: "Number",
+                id: "number",
+                placeholder: "Enter Number",
               },
             },
             {
@@ -284,15 +307,15 @@ const compManifest: ReactComponentManifestSchema = {
 
             {
               selectedOption: "time",
-              time: { label: "Time", id: "ids" },
+              time: { label: "Time", id: "time" },
             },
             {
               selectedOption: "date",
-              date: { label: "Date", id: "ids" },
+              date: { label: "Date", id: "datePicker" },
             },
             {
               selectedOption: "datetimeLocal",
-              datetimeLocal: { label: "Date time Local", id: "ids" },
+              datetimeLocal: { label: "Date time Local", id: "dateTime" },
             },
 
             {
