@@ -21,3 +21,8 @@ export type CssProprtyComponentType = {
   setColorValue: (color: string, index: number) => void;
   colorValueArraySetter: (colorValues: [string]) => void;
 };
+export type ComponentProps = {
+  values: number[];
+  updateValueCb: (values: number[]) => void;
+  name?: string;
+};

@@ -25,6 +25,9 @@ import { ReactComponent as CB } from "../../assets/position/clear/both-icon.svg"
 import { Input } from "../commons/Input";
 import PositionTrapezoid from "./PositionTrapezoid";
 import { ReactComponent as DropDownArrow } from "../../assets/layout-parent/dropdown-icon.svg";
+import { ReactComponent as AddButton } from "../../assets/add.svg";
+import { TransformSelector } from "./TransformSelector";
+import { ReactComponent as MinusButton } from "../../assets/minus.svg";
 
 export const fillColor = "rgba(75, 85, 99, 0.4)";
 const styles: { [key: string]: React.CSSProperties } = {
@@ -269,6 +272,13 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   }, [positionBottomVal, positionLeftVal, positionRightVal, positionTopVal]);
 
   const [unit, setUnit] = useState<string>(prevCSSUNnit);
+  const [transform, setTransform] = useState<
+    | {
+        transformStr: string;
+        index: number;
+      }
+    | undefined
+  >(undefined);
 
   const onMouseDownPositionTop = useCallback(
     (event: React.MouseEvent) => {
@@ -347,6 +357,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
   const updatePosition = useCallback(
     (unit: string) => {
       setUnit(unit);
+
       function patchStyle(cssProperty: string, cssPropertyVal: string) {
         props.patchCb({
           property: {
@@ -359,6 +370,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           },
         });
       }
+
       if (positionTopVal) {
         patchStyle("positionTop", positionTopVal);
       }
@@ -427,8 +439,85 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
       },
     });
   };
+  const handleTransformChange = useCallback(
+    (
+      e: React.ChangeEvent<HTMLSelectElement>,
+      fontItem: keyof React.CSSProperties
+    ) => {
+      props.patchCb({
+        property: {
+          styles: {
+            [fontItem]: e.target.value,
+          },
+        },
+      });
+    },
+    [props]
+  );
+
+  //////////
+  const closeTransform = useCallback(() => {
+    setTransform(undefined);
+  }, []);
+
+  const transforms = useMemo(() => {
+    const transformString = (props.styles.transform as string) || "";
+    const transformArray = transformString ? transformString.split("), ") : [];
+    return transformArray.map((transformStr, index) =>
+      index === transformArray.length - 1 ? transformStr : transformStr + ")"
+    );
+  }, [props.styles.transform]);
+
+  const applyTransform = useCallback(
+    (transforms: string[]) => {
+      let transformsString = "";
+      for (let i = 0; i < transforms.length; i++) {
+        if (transformsString !== "" && i > 0) transformsString += ", ";
+        transformsString += transforms[i];
+      }
+      props.patchCb({
+        property: {
+          styles: { transform: transformsString },
+        },
+      });
+    },
+    [props]
+  );
+
+  const addTransform = useCallback(() => {
+    applyTransform([...transforms, "(none)"]);
+  }, [applyTransform, transforms]);
+
+  const removeTransform = useCallback(
+    (index: number) => {
+      const transformsValues = [...transforms];
+      transformsValues.splice(index, 1);
+      applyTransform(transformsValues);
+    },
+    [applyTransform, transforms]
+  );
+
+  const updateTransform = useCallback(
+    (index: number, transform: string) => {
+      const transformValues = [...transforms];
+      transformValues.splice(index, 1, transform);
+      applyTransform(transformValues);
+    },
+    [applyTransform, transforms]
+  );
+
+  //////
   return (
     <>
+      <style>
+        {`
+           input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+            margin: 0;
+          }   
+        `}
+      </style>
       <div style={styles.container}>
         <div style={styles.drop}>
           <DropDownArrow
@@ -441,6 +530,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           />
           <div style={styles.header}>Position</div>
         </div>
+
         <div
           style={showProperties ? { display: "block" } : { display: "none" }}
         >
@@ -462,6 +552,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
           <div style={styles.mainContainer}>
             <div style={styles.positionTrapezoid}>
               <input
+                type="number"
                 value={parseFloat(positionTopVal) || ""}
                 onChange={handleChangePositionTop}
                 placeholder={convertSizeWithUnitsToString(positionTopVal)}
@@ -469,6 +560,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               />
 
               <input
+                type="number"
                 value={parseFloat(positionRightVal) || ""}
                 onChange={handleChangePositionRight}
                 placeholder={convertSizeWithUnitsToString(positionRightVal)}
@@ -476,6 +568,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               />
 
               <input
+                type="number"
                 value={parseFloat(positionBottomVal) || ""}
                 onChange={handleChangePositionBottom}
                 placeholder={convertSizeWithUnitsToString(positionBottomVal)}
@@ -483,6 +576,7 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               />
 
               <input
+                type="number"
                 value={parseFloat(positionLeftVal) || ""}
                 onChange={handleChangePositionLeft}
                 placeholder={convertSizeWithUnitsToString(positionLeftVal)}
@@ -569,7 +663,127 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
               <CB />
             </PropertyRender>
           </div>
+
+          {/*<div style={styles.optionSelect}>*/}
+          {/*  <div style={styles.optionNameSelect}>Transform</div>*/}
+          {/*  <div>*/}
+          {/*    <select*/}
+          {/*      name="transform"*/}
+          {/*      onChange={(e) => handleTransformChange(e, "transform")}*/}
+          {/*      style={{...styles.inputBox, width: "80px"}}*/}
+          {/*      value={props.styles.transform || "none"}*/}
+          {/*      className="scroll"*/}
+          {/*    >*/}
+          {/*      <option style={styles.select} value="none">*/}
+          {/*        none*/}
+          {/*      </option>*/}
+          {/*      <option style={styles.select} value="inherit">*/}
+          {/*        inherit*/}
+          {/*      </option>*/}
+          {/*      <option style={styles.select} value="initial">*/}
+          {/*        initial*/}
+          {/*      </option>*/}
+          {/*      <option style={styles.select} value="revert">*/}
+          {/*        revert*/}
+          {/*      </option>*/}
+          {/*      <option style={styles.select} value="revert-layer">*/}
+          {/*        revert-layer*/}
+          {/*      </option>*/}
+          {/*      <option style={styles.select} value="unset">*/}
+          {/*        unset*/}
+          {/*      </option>*/}
+          {/*    </select>*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              rowGap: "1em",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: "16px",
+              }}
+            >
+              <div style={styles.optionName}>Transform</div>
+              <AddButton
+                style={{
+                  ...smallText,
+                  color: gray200,
+                  cursor: "pointer",
+                }}
+                onClick={() => addTransform()}
+              />
+            </div>
+            {transforms.map((transform, index) => (
+              <div
+                key={index}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    columnGap: "1em",
+                    border: "1px solid #fff",
+                    padding: "0.3em",
+                    width: "110px",
+                    justifyContent: "center",
+                  }}
+                  onClick={() =>
+                    setTransform({ transformStr: transform, index })
+                  }
+                >
+                  <div
+                    style={{
+                      ...smallText,
+                      color: gray200,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {transform}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    color: gray200,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    userSelect: "none",
+                  }}
+                  onClick={() => removeTransform(index)}
+                >
+                  <MinusButton />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {transform && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0.2rem",
+              right: "15.2rem",
+            }}
+          >
+            <TransformSelector
+              {...props}
+              transform={transform.transformStr}
+              index={transform.index}
+              updateTransform={updateTransform}
+              closeTransformSelector={closeTransform}
+            />
+          </div>
+        )}
       </div>
     </>
   );
