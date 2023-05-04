@@ -58,17 +58,26 @@ const Search = forwardRef<
       prefix?: ReactNode; //The prefix icon for the Input
       suffix?: ReactNode; //The suffix icon for the Input
       type?: string; //The type of input, see: MDN( use Input.TextArea instead of type="textarea")
+      outerDivStyle?: React.CSSProperties;
     };
   }
 >((props, ref) => {
   const { custom } = props;
+  const { outerDivStyle, ...restProps } = custom;
   return (
     // moved ref to div, while passing prefix and suffix ref was losing focus and the selection was not working without refreshing the editor
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+    <div
+      ref={ref}
+      style={{
+        ...outerDivStyle,
+        width: "-webkit-fill-available",
+      }}
+      id={props.id}
+    >
       <SearchInput
         style={props.styles}
         className={`${props.className} ${props.attrs?.class}`}
-        {...custom}
+        {...restProps}
       />
     </div>
   );

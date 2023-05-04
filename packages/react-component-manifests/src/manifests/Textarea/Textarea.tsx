@@ -40,13 +40,22 @@ const Textarea = forwardRef<
             }) => ReactNode;
           }; //Whether show text count
       status?: InputStatus; //Set validation status	'error' | 'warning'
+      outerDivStyle?: React.CSSProperties;
     };
   }
 >((props, ref) => {
   const { custom } = props;
+  const { outerDivStyle, ...restProps } = custom;
   // moved ref to div, as the Antd TextArea doesn't provide ref for TextArea
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+    <div
+      ref={ref}
+      style={{
+        ...outerDivStyle,
+        width: "-webkit-fill-available",
+      }}
+      id={props.id}
+    >
       <TextArea
         className={`${props.className} ${props.attrs?.class}`}
         style={{
@@ -56,7 +65,7 @@ const Textarea = forwardRef<
           transitionDuration: "0s",
           transitionTimingFunction: "unset",
         }}
-        {...custom}
+        {...restProps}
         value={props.custom.text}
       />
     </div>

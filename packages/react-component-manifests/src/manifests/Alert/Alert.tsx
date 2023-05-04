@@ -17,13 +17,15 @@ const Alert = forwardRef<
     };
     custom: {
       alertType: AlertType;
-      text: string;
+      title: string;
       description?: string;
       icon?: string;
       isClosable: boolean;
       showIcon?: boolean;
       closeText?: string;
       closeIcon?: string;
+      titleFontSize?: number;
+      titleFontColor?: number;
     };
     onClick: (event: { pageX: number; pageY: number }) => void;
     id?: string;
@@ -41,6 +43,13 @@ const Alert = forwardRef<
   // moved ref to div, as the Alert select doesnt provide ref for Alert
   return (
     <>
+      <style>
+        {`.ant-alert-message {
+            font-size :${props.custom.titleFontSize}px !important;
+            color:${props.custom.titleFontColor}!important;
+          }
+        `}
+      </style>
       <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
         <AntdAlert
           style={props.styles}
@@ -54,7 +63,7 @@ const Alert = forwardRef<
             )
           }
           showIcon={props.custom.showIcon} //it will show antd icon
-          message={props.custom.text}
+          message={props.custom.title}
           description={props.custom.description}
           closable={props.custom?.isClosable}
           closeText={props.custom?.closeText}

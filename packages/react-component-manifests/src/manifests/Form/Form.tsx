@@ -9,6 +9,7 @@ import {
   Select,
   Checkbox,
   Radio,
+  InputNumber,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -43,15 +44,18 @@ interface FieldData {
   errors?: string[];
 }
 
-const Form = forwardRef<
-  HTMLDivElement,
+const Form = forwardRef<HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
       class: string;
     };
     custom: {
-      header?: "cookies" | "local-storage" | "key-value";
+      headers?: {
+        source?: "cookies" | "local-storage" | "key-value";
+        key: string;
+        value: string;
+      }[];
       headerKey?: string;
       headerValue?: string;
       url?: string;
@@ -81,7 +85,8 @@ const Form = forwardRef<
           | "checkbox"
           | "time"
           | "file"
-          | "select";
+          | "select"
+          | "number";
         text: inputTypes;
         password: inputTypes;
         color: Pick<inputTypes, "id" | "label">;
@@ -110,6 +115,7 @@ const Form = forwardRef<
           multiple?: boolean;
           id?: string;
         };
+        number: inputTypes;
       }[];
       disabled?: boolean;
     };
@@ -136,8 +142,7 @@ const Form = forwardRef<
     onFinishFailed?: Function; //	Trigger after submitting the form and verifying data failed
     onValuesChange?: Function; //Trigger when value updated
     onSuccess?: Function;
-  }
->((props, ref) => {
+  }>((props, ref) => {
   const [form] = AntdForm.useForm();
   const onReset = () => {
     form.resetFields();
@@ -145,7 +150,7 @@ const Form = forwardRef<
 
   const getCookie = (cookieName: string) => {
     let cookie: { [key: string]: string } = {};
-    document.cookie.split(";").forEach(function (el) {
+    document.cookie.split(";").forEach(function(el) {
       let [key, value] = el.split("=");
       cookie[key.trim()] = value as string;
     });
@@ -159,17 +164,20 @@ const Form = forwardRef<
       "Content-Type": "application/json",
     };
 
-    if (props.custom?.headerKey) {
-      if (props.custom.header === "cookies") {
-        headers[props.custom.headerKey] = getCookie(props.custom.headerKey);
-      } else if (props.custom.header === "local-storage") {
-        headers[props.custom.headerKey] = localStorage.getItem(
-          props.custom.headerKey
-        ) as string;
-      } else if (props.custom?.headerValue) {
-        headers[props.custom.headerKey] = props.custom.headerValue;
+    props.custom.headers?.forEach((header) => {
+      if (header?.source === "cookies" && getCookie(header.key)) {
+        headers[header.key] = getCookie(header.key);
+      } else if (
+        header.source === "local-storage" &&
+        localStorage.getItem(header?.key)
+      ) {
+        headers[header?.key] = localStorage.getItem(header?.key) as string;
+      } else if (header.source === "key-value" && header?.value) {
+        headers[header.key] = header?.value;
       }
-    }
+    });
+
+
     await fetch(url, {
       method: "POST",
       headers: headers,
@@ -203,7 +211,16 @@ const Form = forwardRef<
             return (
               element.selectedOption === "select" && (
                 <AntdForm.Item
-                  name={element[element.selectedOption].label}
+                  key={
+                    element[element.selectedOption]
+                      ? element[element.selectedOption].id
+                      : ""
+                  }
+                  name={
+                    element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""
+                  }
                   label={
                     <span style={formItemStyle}>
                       {element[element.selectedOption]
@@ -227,7 +244,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "file")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -244,7 +270,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "checkbox")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -259,7 +294,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "radio")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -274,7 +318,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "color")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -296,7 +349,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "date")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -311,7 +373,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "time")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -326,7 +397,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "datetimeLocal")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -338,10 +418,50 @@ const Form = forwardRef<
                 <DatePicker showTime />
               </AntdForm.Item>
             );
+          else if (element.selectedOption === "number")
+            return (
+              <AntdForm.Item
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
+                label={
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
+                }
+              >
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder={
+                    element[element.selectedOption]
+                      ? element[element.selectedOption].placeholder
+                      : ""
+                  }
+                />
+              </AntdForm.Item>
+            );
           else if (element.selectedOption === "search")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -362,7 +482,16 @@ const Form = forwardRef<
           else if (element.selectedOption === "password")
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -387,7 +516,16 @@ const Form = forwardRef<
           )
             return (
               <AntdForm.Item
-                name={element[element.selectedOption].label}
+                key={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].id
+                    : ""
+                }
+                name={
+                  element[element.selectedOption]
+                    ? element[element.selectedOption].label
+                    : ""
+                }
                 label={
                   <span style={formItemStyle}>
                     {element[element.selectedOption]
@@ -405,6 +543,7 @@ const Form = forwardRef<
                 />
               </AntdForm.Item>
             );
+
           return <div key={index}></div>;
         })}
         <div

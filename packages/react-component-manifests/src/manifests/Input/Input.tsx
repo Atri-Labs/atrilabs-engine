@@ -49,15 +49,23 @@ const Input = forwardRef<
       prefix?: ReactNode; //The prefix icon for the Input
       suffix?: ReactNode; //The suffix icon for the Input
       type?: string; //The type of input, see: MDN( use Input.TextArea instead of type="textarea")
+      outerDivStyle?: React.CSSProperties;
     };
   }
 >((props, ref) => {
   const { custom } = props;
-  const { isPasswordField, ...restCustomProps } = custom;
+  const { isPasswordField, outerDivStyle, ...restCustomProps } = custom;
 
   return (
     // moved ref to div, while changing isPasswordField props ref was not able assign twice to another input and the selection was not working without refreshing the editor
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+    <div
+      ref={ref}
+      style={{
+        ...props.custom?.outerDivStyle,
+        width: "-webkit-fill-available",
+      }}
+      id={props.id}
+    >
       {isPasswordField === true ? (
         <AntdInput.Password
           {...restCustomProps}

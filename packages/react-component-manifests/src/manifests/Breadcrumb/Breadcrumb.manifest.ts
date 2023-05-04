@@ -34,6 +34,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     separator: {
       type: "text",
     },
+    fontColor: { type: "color" },
     items: {
       type: "json",
       schema: Joi.array()
