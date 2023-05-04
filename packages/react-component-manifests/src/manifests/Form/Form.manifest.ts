@@ -32,6 +32,13 @@ const cssTreeOptions: CSSTreeOptions = {
 
 const customTreeOptions: CustomPropsTreeOptions = {
   dataTypes: {
+    header: {
+      type: "enum",
+      options: ["cookies", "local-storage", "key-value"],
+    },
+    headerKey: { type: "text" },
+    headerValue: { type: "text" },
+    url: { type: "text" },
     autocomplete: {
       type: "enum",
       options: ["on", "off"],
@@ -191,12 +198,15 @@ const customTreeOptions: CustomPropsTreeOptions = {
         },
       ],
     },
+    labelColor: { type: "color" },
+    labelFontSize: { type: "number" },
     showSubmitButton: { type: "boolean" },
     showResetButton: { type: "boolean" },
     submitButtonBgColor: { type: "color" },
     submitButtonColor: { type: "color" },
     resetButtonBgColor: { type: "color" },
     resetButtonColor: { type: "color" },
+    colon: { type: "boolean" },
     target: { type: "enum", options: ["_blank", "_self", "_parent", "_top"] },
     disabled: { type: "boolean" },
   },
@@ -232,11 +242,12 @@ const compManifest: ReactComponentManifestSchema = {
           submitButtonColor: "#fff",
           resetButtonBgColor: "#fff",
           resetButtonColor: "#000",
+          colon: "true",
           form: [
             {
               selectedOption: "text",
               text: {
-                label: "Name:",
+                label: "Name",
                 id: "name",
                 placeholder: "Enter Your Name",
               },
@@ -244,7 +255,7 @@ const compManifest: ReactComponentManifestSchema = {
             {
               selectedOption: "password",
               password: {
-                label: "Password:",
+                label: "Password",
                 id: "pwd",
                 placeholder: "Enter Your Password",
               },
@@ -336,6 +347,7 @@ const compManifest: ReactComponentManifestSchema = {
     },
     attachCallbacks: {
       onClick: [{ type: "do_nothing" }],
+      onSuccess: [{ type: "do_nothing" }],
     },
     defaultCallbackHandlers: {
       onClick: [{ sendEventData: true }],

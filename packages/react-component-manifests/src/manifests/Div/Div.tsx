@@ -6,7 +6,7 @@ export const Div = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children: React.ReactNode[];
     onClick: (event: {
       eventX: number;
@@ -41,7 +41,7 @@ export const Div = forwardRef<
       ref={ref}
       style={props.styles}
       onClick={onClickCb}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       id={props.id}
     >
       {props.children}

@@ -20,7 +20,7 @@ const Search = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -67,7 +67,7 @@ const Search = forwardRef<
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <SearchInput
         style={props.styles}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         {...custom}
       />
     </div>

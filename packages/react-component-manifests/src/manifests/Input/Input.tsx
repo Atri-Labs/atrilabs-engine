@@ -1,7 +1,6 @@
 import React, { forwardRef, ReactNode, ChangeEventHandler } from "react";
 import { Input as AntdInput } from "antd";
 
-
 export enum InputSize {
   LARGE = "large",
   MIDDLE = "middle",
@@ -19,7 +18,7 @@ const Input = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -62,7 +61,7 @@ const Input = forwardRef<
       {isPasswordField === true ? (
         <AntdInput.Password
           {...restCustomProps}
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={{
             ...props.styles,
             animationDuration: "0s",
@@ -74,7 +73,7 @@ const Input = forwardRef<
       ) : (
         <AntdInput
           {...restCustomProps}
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={{
             ...props.styles,
             animationDuration: "0s",

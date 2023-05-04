@@ -1,11 +1,12 @@
-import React, {forwardRef, useCallback} from "react";
+import React, { forwardRef, useCallback } from "react";
 
-export const TextBox = forwardRef<HTMLDivElement,
+export const TextBox = forwardRef<
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: { text: string };
     onClick: (event: {
       eventX: number;
@@ -17,10 +18,11 @@ export const TextBox = forwardRef<HTMLDivElement,
     }) => void;
     id?: string;
     className?: string;
-  }>((props, ref) => {
+  }
+>((props, ref) => {
   const onClick = useCallback(
     (e: React.MouseEvent) => {
-      const {x, y, width, height} = (
+      const { x, y, width, height } = (
         e.nativeEvent.target as HTMLElement
       ).getBoundingClientRect();
       props.onClick({
@@ -37,10 +39,10 @@ export const TextBox = forwardRef<HTMLDivElement,
   return (
     <div
       ref={ref}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       style={props.styles}
       onClick={onClick}
-      dangerouslySetInnerHTML={{__html: props.custom.text}}
+      dangerouslySetInnerHTML={{ __html: props.custom.text }}
       id={props.id}
     />
   );

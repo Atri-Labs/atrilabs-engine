@@ -18,7 +18,7 @@ const Menu = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children: React.ReactNode[];
     custom: {
       items: Item[];
@@ -55,7 +55,7 @@ const Menu = forwardRef<
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdMenu
         style={props.styles}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         mode={props.custom.mode}
         items={menuItems}
         multiple={props.custom.multiple}

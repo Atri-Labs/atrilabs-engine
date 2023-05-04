@@ -7,7 +7,7 @@ const TimePicker = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     id?: string;
     className?: string;
     custom: {
@@ -47,13 +47,13 @@ const TimePicker = forwardRef<
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       {range ? (
         <AntdTimePicker.RangePicker
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={props.styles}
           {...restprops}
         />
       ) : (
         <AntdTimePicker
-          className={`${props.className} ${props.attrs.class}`}
+          className={`${props.className} ${props.attrs?.class}`}
           style={props.styles}
           {...restprops}
           key={key}

@@ -6,7 +6,7 @@ const Icon = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: { svg: string };
     onClick: (event: {
       eventX: number;
@@ -40,7 +40,7 @@ const Icon = forwardRef<
     <i
       ref={ref}
       id={props.id}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       style={props.styles}
       onClick={onClick}
       dangerouslySetInnerHTML={{ __html: props.custom.svg }}

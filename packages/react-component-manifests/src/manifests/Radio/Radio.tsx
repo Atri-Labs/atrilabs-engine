@@ -8,7 +8,7 @@ const Radio = forwardRef<
     attrs: {
       class: string;
       "aria-labelledby": string;
-    }
+    };
     custom: {
       disabled: boolean;
       options?:
@@ -36,9 +36,9 @@ const Radio = forwardRef<
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <AntdRadio.Group
         style={props.styles}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         onChange={props.onChange}
-        aria-labelledby ={props.attrs["aria-labelledby"]}
+        aria-labelledby={props.attrs["aria-labelledby"]}
         {...custom}
       />
     </div>

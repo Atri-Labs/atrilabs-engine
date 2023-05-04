@@ -14,7 +14,7 @@ const UnorderedList = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children: React.ReactNode[];
     custom: {
       items: Item[];
@@ -90,7 +90,7 @@ const UnorderedList = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <List
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={{ ...props.styles }}
         itemLayout={props.custom.itemLayout}
         size={props.custom.size}

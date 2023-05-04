@@ -6,7 +6,7 @@ const Image = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: { alt: string; src: string };
     onClick: (event: {
       eventX: number;
@@ -39,7 +39,7 @@ const Image = forwardRef<
 
   return (
     <img
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       ref={ref}
       style={props.styles}
       onClick={onClick}

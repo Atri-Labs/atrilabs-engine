@@ -6,7 +6,7 @@ const Overlay = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children: React.ReactNode[];
     custom: {
       closeOverlayAfter?: number;
@@ -32,7 +32,7 @@ const Overlay = forwardRef<
   return (
     <div
       ref={ref}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       style={{
         display:
           open !== undefined ? (open ? "flex" : "none") : props.styles.display,

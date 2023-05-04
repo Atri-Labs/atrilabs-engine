@@ -6,7 +6,7 @@ export const Dropdown = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       selectedValue?: string;
       dropdownItems: { displayed: string; value: string }[];
@@ -28,7 +28,7 @@ export const Dropdown = forwardRef<
       value={props.custom.selectedValue}
       onChange={onChange}
       disabled={props.custom.disabled}
-      className={`${props.className} ${props.attrs.class}`}
+      className={`${props.className} ${props.attrs?.class}`}
       style={props.styles}
       ref={ref}
       id={props.id}

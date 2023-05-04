@@ -7,7 +7,7 @@ const Rating = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
       allowHalf?: boolean;
       defaultValue?: number;
@@ -26,7 +26,7 @@ const Rating = forwardRef<
   return (
     <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
       <Rate
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         {...custom}
         character={props.custom.character || undefined}

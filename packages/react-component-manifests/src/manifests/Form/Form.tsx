@@ -34,6 +34,7 @@ const enum ComponentSize {
   MIDDLE = "middle",
   LARGE = "large",
 }
+
 interface FieldData {
   name: string | number | (string | number)[];
   value?: any;
@@ -48,8 +49,12 @@ const Form = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     custom: {
+      header?: "cookies" | "local-storage" | "key-value";
+      headerKey?: string;
+      headerValue?: string;
+      url?: string;
       target: string;
       autocomplete: string;
       showResetButton: boolean;
@@ -58,6 +63,9 @@ const Form = forwardRef<
       submitButtonColor?: string;
       resetButtonBgColor?: string;
       resetButtonColor?: string;
+      labelColor: string;
+      labelFontSize: number;
+      colon?: boolean;
       form: {
         selectedOption:
           | "none"
@@ -108,11 +116,8 @@ const Form = forwardRef<
     onClick: (buttonClicked: "Submit" | "Reset") => void;
     id?: string;
     className?: string;
-    colon?: boolean; //Configure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)
-    disabled?: boolean; //Set form component disable, only available for antd components
     // component?:	ComponentType | false //Set the Form rendering element. Do not create a DOM node for false
     fields?: FieldData; //Control of form fields through state management (such as redux). Not recommended for non-strong demand. View example
-    //form?:
     initialValues?: object; //Set value by Form initialization or reset
     labelAlign?: LabelAlign; //The text align of label of all items left | right
     labelWrap?: boolean; //whether label can be wrap
@@ -130,12 +135,59 @@ const Form = forwardRef<
     onFinish?: Function; //	Trigger after submitting the form and verifying data successfully
     onFinishFailed?: Function; //	Trigger after submitting the form and verifying data failed
     onValuesChange?: Function; //Trigger when value updated
+    onSuccess?: Function;
   }
 >((props, ref) => {
+  const [form] = AntdForm.useForm();
+  const onReset = () => {
+    form.resetFields();
+  };
+
+  const getCookie = (cookieName: string) => {
+    let cookie: { [key: string]: string } = {};
+    document.cookie.split(";").forEach(function (el) {
+      let [key, value] = el.split("=");
+      cookie[key.trim()] = value as string;
+    });
+    return cookie[cookieName];
+  };
+
+  const onFinish = async (values: any) => {
+    const url = props.custom.url ? props.custom.url : "";
+    const data = { ...values };
+    const headers: { [key: string]: string } = {
+      "Content-Type": "application/json",
+    };
+
+    if (props.custom?.headerKey) {
+      if (props.custom.header === "cookies") {
+        headers[props.custom.headerKey] = getCookie(props.custom.headerKey);
+      } else if (props.custom.header === "local-storage") {
+        headers[props.custom.headerKey] = localStorage.getItem(
+          props.custom.headerKey
+        ) as string;
+      } else if (props.custom?.headerValue) {
+        headers[props.custom.headerKey] = props.custom.headerValue;
+      }
+    }
+    await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
+    });
+    props.onSuccess && props.onSuccess();
+  };
+
+  const formItemStyle = {
+    color: props.custom.labelColor,
+    fontSize: `${props.custom.labelFontSize}px`,
+  };
+
   return (
     <div ref={ref} style={props.styles} id={props.id}>
       <AntdForm
-        className={`${props.className} ${props.attrs.class}`}
+        form={form}
+        className={`${props.className} ${props.attrs?.class}`}
         style={props.styles}
         //antd style
         labelCol={{ span: 8 }}
@@ -143,18 +195,23 @@ const Form = forwardRef<
         target={props.custom.target}
         autoComplete={props.custom.autocomplete}
         disabled={props.custom.disabled}
+        onFinish={onFinish}
+        colon={props.custom?.colon}
       >
         {props.custom.form.map((element, index) => {
           if (element.selectedOption === "select")
             return (
               element.selectedOption === "select" && (
                 <AntdForm.Item
+                  name={element[element.selectedOption].label}
                   label={
-                    element[element.selectedOption]
-                      ? element[element.selectedOption].label
-                      : ""
+                    <span style={formItemStyle}>
+                      {element[element.selectedOption]
+                        ? element[element.selectedOption].label
+                        : ""}
+                    </span>
                   }
-                  id ={
+                  id={
                     element[element.selectedOption]
                       ? element[element.selectedOption].id
                       : ""
@@ -170,10 +227,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "file")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Upload>
@@ -184,10 +244,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "checkbox")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Checkbox.Group options={element?.checkbox?.options} />
@@ -196,10 +259,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "radio")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Radio.Group options={element?.radio?.options} />
@@ -208,10 +274,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "color")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <input
@@ -227,10 +296,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "date")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <DatePicker style={{ width: "100%" }} />
@@ -239,10 +311,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "time")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <TimePicker style={{ width: "100%" }} />
@@ -251,10 +326,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "datetimeLocal")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <DatePicker showTime />
@@ -263,10 +341,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "search")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Input.Search
@@ -281,10 +362,13 @@ const Form = forwardRef<
           else if (element.selectedOption === "password")
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Input.Password
@@ -303,10 +387,13 @@ const Form = forwardRef<
           )
             return (
               <AntdForm.Item
+                name={element[element.selectedOption].label}
                 label={
-                  element[element.selectedOption]
-                    ? element[element.selectedOption].label
-                    : ""
+                  <span style={formItemStyle}>
+                    {element[element.selectedOption]
+                      ? element[element.selectedOption].label
+                      : ""}
+                  </span>
                 }
               >
                 <Input
@@ -329,7 +416,8 @@ const Form = forwardRef<
           }}
         >
           {props.custom.showSubmitButton && (
-            <button
+            <Button
+              htmlType="submit"
               style={{
                 padding: "4px 15px",
                 color: props.custom.submitButtonColor,
@@ -338,19 +426,20 @@ const Form = forwardRef<
               }}
             >
               Submit
-            </button>
+            </Button>
           )}
           {props.custom.showResetButton && (
-            <button
+            <Button
               style={{
                 padding: "4px 15px",
                 color: props.custom.resetButtonColor,
                 backgroundColor: props.custom.resetButtonBgColor,
                 border: "1px solid #d9d9d9",
               }}
+              onClick={onReset}
             >
               Reset
-            </button>
+            </Button>
           )}
         </div>
       </AntdForm>

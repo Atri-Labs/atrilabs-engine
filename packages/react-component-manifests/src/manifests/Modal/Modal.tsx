@@ -7,7 +7,7 @@ const Modal = forwardRef<
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children?: React.ReactNode[];
     custom: {
       text?: string;
@@ -44,7 +44,7 @@ const Modal = forwardRef<
       <AntdModal
         style={props.styles}
         width={props.styles.width}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         {...custom}
         title={
           <div style={{ display: "flex", alignItems: "center" }}>

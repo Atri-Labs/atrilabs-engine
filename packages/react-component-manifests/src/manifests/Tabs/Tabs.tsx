@@ -1,12 +1,13 @@
-import React, {forwardRef, useMemo} from "react";
-import {Tabs as AntdTabs, TabsProps} from "antd";
+import React, { forwardRef, useMemo } from "react";
+import { Tabs as AntdTabs, TabsProps } from "antd";
 
-const Tabs = forwardRef<HTMLDivElement,
+const Tabs = forwardRef<
+  HTMLDivElement,
   {
     styles: React.CSSProperties;
     attrs: {
       class: string;
-    }
+    };
     children: React.ReactNode[];
     id?: string;
     className?: string;
@@ -26,16 +27,19 @@ const Tabs = forwardRef<HTMLDivElement,
       activeKey: string,
       e: React.KeyboardEvent | React.MouseEvent
     ) => void;
-  } & TabsProps>((props, ref) => {
-  const {custom, ...restProps} = props;
-  const {items} = custom;
+  } & TabsProps
+>((props, ref) => {
+  const { custom, ...restProps } = props;
+  const { items } = custom;
 
   const tabItems = useMemo(() => {
     return items.map((item, index) => ({
       ...item,
       label: (
-        <span style={{display: "flex", gap: "5px"}}>
-          {item.icon && <img style={{width: "18px"}} src={item?.icon} alt={item?.icon}/>}
+        <span style={{ display: "flex", gap: "5px" }}>
+          {item.icon && (
+            <img style={{ width: "18px" }} src={item?.icon} alt={item?.icon} />
+          )}
           {item.label}
         </span>
       ),
@@ -61,14 +65,13 @@ const Tabs = forwardRef<HTMLDivElement,
       <AntdTabs
         {...restProps}
         {...custom}
-        className={`${props.className} ${props.attrs.class}`}
+        className={`${props.className} ${props.attrs?.class}`}
         items={tabItems}
         onChange={props.onChange}
         tabBarStyle={{
           ...props.styles,
           color: `${props.custom.inActiveTabColor}`,
         }}
-
       />
     </div>
   );
