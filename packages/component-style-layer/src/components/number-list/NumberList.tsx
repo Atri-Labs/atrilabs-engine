@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ComponentProps } from "../../types";
 import { ReactComponent as MinusIcon } from "../../assets/minus.svg";
 import { ArrayLabel } from "../commons/ArrayLabel";
 import { ArrayPropertyContainer } from "../commons/ArrayPropertyContainer";
+import { gray100, gray800, smallText } from "@atrilabs/design-system";
 
 export const NumberList: React.FC<ComponentProps> = (props) => {
   const insertValueCb = useCallback(() => {
@@ -37,14 +38,35 @@ export const NumberList: React.FC<ComponentProps> = (props) => {
             return (
               <div
                 key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingLeft: "1em",
+                  paddingRight: "1em",
+                  paddingTop: "5px",
+                }}
               >
                 <input
+                  style={{
+                    ...smallText,
+                    outline: "none",
+                    color: gray100,
+                    backgroundColor: gray800,
+                    height: "26px",
+                    width: "75%",
+                    border: "none",
+                    borderRadius: "2px 0 0 2px",
+                    paddingLeft: "6px",
+                    paddingRight: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                  type="number"
                   value={value}
                   onChange={(e) => {
                     editValueCb(index, e.target.value);
                   }}
-                  type="number"
                 />
                 <div
                   style={{ display: "flex", alignItems: "center" }}
