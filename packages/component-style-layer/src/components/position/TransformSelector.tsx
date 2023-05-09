@@ -267,7 +267,9 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
               value={transformProperty.transformType}
             >
               {transformTypes.map((type) => (
-                <option value={type}>{type}</option>
+                <option value={type} key={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>

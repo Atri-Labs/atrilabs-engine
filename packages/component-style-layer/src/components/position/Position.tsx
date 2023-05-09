@@ -662,37 +662,6 @@ const Position: React.FC<CssProprtyComponentType> = (props) => {
             </PropertyRender>
           </div>
 
-          {/*<div style={styles.optionSelect}>*/}
-          {/*  <div style={styles.optionNameSelect}>Transform</div>*/}
-          {/*  <div>*/}
-          {/*    <select*/}
-          {/*      name="transform"*/}
-          {/*      onChange={(e) => handleTransformChange(e, "transform")}*/}
-          {/*      style={{...styles.inputBox, width: "80px"}}*/}
-          {/*      value={props.styles.transform || "none"}*/}
-          {/*      className="scroll"*/}
-          {/*    >*/}
-          {/*      <option style={styles.select} value="none">*/}
-          {/*        none*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="inherit">*/}
-          {/*        inherit*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="initial">*/}
-          {/*        initial*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="revert">*/}
-          {/*        revert*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="revert-layer">*/}
-          {/*        revert-layer*/}
-          {/*      </option>*/}
-          {/*      <option style={styles.select} value="unset">*/}
-          {/*        unset*/}
-          {/*      </option>*/}
-          {/*    </select>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <div
             style={{
               display: "flex",
