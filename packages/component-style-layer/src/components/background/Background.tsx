@@ -193,18 +193,20 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [showProperties, setShowProperties] = useState<boolean>(true);
 
   const onBackgroundImgeClickCb = useCallback(() => {
-    props.openAssetManager(["select", "upload"], "backgroundImage");
+    props.openAssetManager(["select", "upload"], "background");
   }, [props]);
 
   const onBackgroundImageClearClickCb = useCallback(() => {
     props.patchCb({
       property: {
-        styles: { backgroundImage: "" },
+        styles: { background: "" },
       },
     });
   }, [props]);
 
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(0);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(
+    props.styles.background?.toString().includes("url") ? 1 : 0
+  );
 
   const applyGradient = useCallback(
     (gradients: string[]) => {
@@ -225,6 +227,14 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const addGradient = useCallback(() => {
     applyGradient([...gradients, "linear-gradient(45deg, white 0%, red 100%)"]);
   }, [applyGradient, gradients]);
+
+  const addBackgroundImage = useCallback(() => {
+    props.patchCb({
+      property: {
+        styles: { background: `${props.styles.background}, url("")` },
+      },
+    });
+  }, [props]);
 
   const removeGradient = useCallback(
     (index: number) => {
@@ -248,6 +258,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     setGradient(undefined);
   }, []);
 
+  const images = useMemo(() => {
+    if (selectedTypeIndex === 1) {
+      const imagesString = (props.styles.background as string) || "";
+      return imagesString ? imagesString.split(",") : [""];
+    }
+  }, [props.styles.background, selectedTypeIndex]);
+  console.log("images", images);
   return (
     <>
       {gradient && (
@@ -314,6 +331,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
+                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(0);
                 }}
               >
@@ -332,6 +350,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
+                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(1);
                 }}
               >
@@ -342,12 +361,21 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           {/**Background Image */}
           {backgroundTypes[selectedTypeIndex].image && (
             <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={styles.optionName}>Image</span>
-              <AssetInputButton
-                onClick={onBackgroundImgeClickCb}
-                assetName={props.styles.backgroundImage || "Select Image"}
-                onClearClick={onBackgroundImageClearClickCb}
-              />
+              <span style={styles.optionName}>
+                Image
+                <AddButton onClick={() => addBackgroundImage()} />
+              </span>
+              <br />
+              {images?.map((image) => (
+                <>
+                  <br />
+                  <AssetInputButton
+                    onClick={onBackgroundImgeClickCb}
+                    assetName={image || "Select Image"}
+                    onClearClick={onBackgroundImageClearClickCb}
+                  />
+                </>
+              ))}
             </div>
           )}
           {/**Background Color */}
@@ -355,7 +383,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
             <div style={{ display: "flex", alignItems: "center" }}>
               <ColorComponent
                 name="Background Color"
-                styleItem="backgroundColor"
+                styleItem="background"
                 styles={props.styles}
                 patchCb={props.patchCb}
                 openPalette={props.openPalette}

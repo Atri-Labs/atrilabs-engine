@@ -14,6 +14,7 @@ export const AssetInputButton: React.FC<ButtonInputComboProps> = (props) => {
   const assetName = useMemo(() => {
     return props.assetName.replaceAll(/(^(url\(("|')?))|((("|')?\))$)/g, "");
   }, [props.assetName]);
+
   return (
     <div
       style={{

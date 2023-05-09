@@ -115,7 +115,8 @@ export const ColorInput: React.FC<InputProps> = (props) => {
     const propertyColorValue = String(styleItem);
     if (
       propertyColorValue === "undefined" ||
-      propertyColorValue === "transparent"
+      propertyColorValue === "transparent" ||
+      propertyColorValue === ""
     ) {
       setColorValue("");
     } else if (propertyColorValue.length === 5) {

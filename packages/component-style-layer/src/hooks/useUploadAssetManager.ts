@@ -4,7 +4,8 @@ import React, { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../types";
 
 export const useUploadAssetManager = (
-  patchCb: CssProprtyComponentType["patchCb"]
+  patchCb: CssProprtyComponentType["patchCb"],
+  styles: React.CSSProperties
 ) => {
   const [showAssetPanel, setShowAssetPanel] = useState<boolean>(false);
   const [modes, setModes] = useState<UploadMode[]>([]);
@@ -17,7 +18,9 @@ export const useUploadAssetManager = (
       patchCb({
         property: {
           styles: {
-            [styleItem]: `url("${url}")`,
+            [styleItem]: styles[styleItem]
+              ? `${styles[styleItem]}, url("${url}")`
+              : `url("${url}")`,
           },
         },
       });

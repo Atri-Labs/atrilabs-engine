@@ -285,7 +285,7 @@ export const ColorComponent: React.FC<ColorComponentProps> = (props) => {
                   backgroundColor: `${styleItem}`,
                 }
           }
-        ></div>
+        />
       </div>
       <div style={{ width: "55px", marginRight: "10px" }}>
         <ColorInput

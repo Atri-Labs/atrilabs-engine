@@ -158,7 +158,6 @@ function createGradientString(gradientObject: GradientType): string {
 export const GradientColorSelector: React.FC<GradientSelectorType> = (
   props
 ) => {
-  console.log("props in gradient", props)
   // Use gradientProperty only in UI, not for update
   const gradientProperty = useMemo(() => {
     return createGradientObject(props.gradient);
