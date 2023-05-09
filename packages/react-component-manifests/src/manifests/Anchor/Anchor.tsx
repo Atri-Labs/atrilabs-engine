@@ -7,6 +7,7 @@ export const Anchor = forwardRef<
     attrs: {
       class: string;
     };
+    className: string;
     children: React.ReactNode[];
     onClick: (event: {
       eventX: number;
@@ -79,9 +80,9 @@ export const Anchor = forwardRef<
       id={props.id}
       ref={ref}
       style={props.styles}
-      className={
-        props.custom.disabled === true ? "disabled" : props.attrs?.class
-      }
+      className={`${props.className} ${props.attrs?.class} ${
+        props.custom.disabled ? "disabled" : ""
+      }`}
       {...custom}
       onClick={onClickCb}
     >

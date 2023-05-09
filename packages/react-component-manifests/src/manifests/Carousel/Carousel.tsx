@@ -13,6 +13,7 @@ const Carousel = forwardRef<
     };
     custom: {
       items: { text: string; image?: string }[];
+      autoplay?: boolean;
       effect?: CarouselEffect;
       dotPosition?: DotPosition;
       dots?:
@@ -28,12 +29,14 @@ const Carousel = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  const { custom } = props;
   return (
     <div ref={ref} id={props.id}>
       <AntdCarousel
         className={`${props.className} ${props.attrs?.class}`}
-        {...custom}
+        autoplay={props.custom.autoplay}
+        dots={props.custom.dots}
+        dotPosition={props.custom.dotPosition}
+        effect={props.custom.effect}
       >
         {props.custom.items.map((item, index) => (
           <div key={index}>

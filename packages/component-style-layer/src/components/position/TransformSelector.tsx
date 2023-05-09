@@ -1,7 +1,7 @@
-import { smallText, gray100, gray800 } from "@atrilabs/design-system";
+import { gray100, gray800, smallText } from "@atrilabs/design-system";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Cross } from "../../icons/Cross";
-//import { NumberList } from "../number-list/NumberList";
+import { NumberList } from "../number-list/NumberList";
 
 type GradientSelectorType = {
   transform: string;
@@ -58,6 +58,7 @@ const AngleSelector: React.FC<{
           position: "relative",
           width: "5px",
           height: "18px",
+          transform: `translateZ(0px) rotate(${props.angle}deg)`,
         }}
       >
         <div
@@ -76,20 +77,15 @@ const AngleSelector: React.FC<{
 };
 
 function createTransformObject(transformStr: string): TransformType {
-  const transformObject: TransformType = {
+  return {
     transformType: "",
     transformAngle: 0,
     transformAngle2: 0,
     number: 1,
     number2: 1,
     number3: 1,
-    matrix: [1, 1, 1, 1, 1, 1],
+    matrix: [1, 1, 1, 1],
   };
-
-  // transformStr = transformStr.replace("(", ",");
-  // transformStr = transformStr.replace(")", "");
-
-  return transformObject;
 }
 
 function createTransformString(transformObject: TransformType): string {
@@ -126,21 +122,56 @@ function createTransformString(transformObject: TransformType): string {
     transformStr += `scale(${number}, ${number2}`;
   else if (transformType === "scale3d")
     transformStr += `scale3d(${number}, ${number2}, ${number3}`;
+  else if (transformType === "translateX")
+    transformStr += `translateX(${number}px`;
+  else if (transformType === "translateY")
+    transformStr += `translateY(${number}px`;
+  else if (transformType === "translateZ")
+    transformStr += `translateZ(${number}px`;
+  else if (transformType === "translate3d")
+    transformStr += `translate3d(${number}px, ${number2}px, ${number3}px`;
+  else if (transformType === "translate")
+    transformStr += `translate(${number}px, ${number2}px`;
+  else if (["matrix", "matrix3d"].includes(transformType))
+    transformStr += `${transformType}(${matrix.join(",")}`;
   else if (transformType === "none") transformStr += `(none`;
   else if (transformType === "initial") transformStr += `(initial`;
   else if (transformType === "inherit") transformStr += `(inherit`;
   transformStr += ")";
-  console.log("transform string...", transformStr);
   return transformStr || "";
 }
 
+const transformTypes: string[] = [
+  "none",
+  "matrix",
+  "matrix3d",
+  "translate",
+  "translate3d",
+  "translateX",
+  "translateY",
+  "translateZ",
+  "scale",
+  "scale3d",
+  "scaleX",
+  "scaleY",
+  "scaleZ",
+  "rotate",
+  "rotate3d",
+  "rotateX",
+  "rotateY",
+  "rotateZ",
+  "skew",
+  "skewX",
+  "skewY",
+  "perspective",
+  "initial",
+  "inherit",
+];
+
 export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
-  // Use gradientProperty only in UI, not for update
   const transformProperty = useMemo(() => {
     return createTransformObject(props.transform);
   }, [props.transform]);
-
-  const [scale, setScale] = useState<string>("");
 
   const updateTransformCb = useCallback(
     (update: Partial<TransformType>) => {
@@ -174,47 +205,24 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
 
   const setTransformAttribute = useCallback(
     (
-      attribute: "transformType" | "number" | "number2" | "number3",
-      value: string
+      attribute: "transformType" | "number" | "number2" | "number3" | "matrix",
+      value: string | number[]
     ) => {
-      const prevGradientProperty = transformProperty;
+      const prevTransformProperty = transformProperty;
       if (
-        attribute === "number" ||
-        attribute === "number2" ||
-        attribute === "number3"
+        typeof value === "string" &&
+        ["number", "number2", "number3"].includes(attribute)
       ) {
-        prevGradientProperty[attribute] = parseInt(value);
+        // @ts-ignore
+        prevTransformProperty[attribute] = parseInt(value);
       } else {
-        prevGradientProperty[attribute] = value;
+        // @ts-ignore
+        prevTransformProperty[attribute] = value;
       }
-      updateTransformCb(prevGradientProperty);
+      updateTransformCb(prevTransformProperty);
     },
     [transformProperty, updateTransformCb]
   );
-
-  // const setTransformAttribute = useCallback(
-  //   (
-  //     attribute: "transformType" | "number" | "number2" | "number3" | "matrix",
-  //     value: string | number[]
-  //   ) => {
-  //     const prevTransformProperty = transformProperty;
-  //     if (typeof value === "string") {
-  //       if (
-  //         attribute === "number" ||
-  //         attribute === "number2" ||
-  //         attribute === "number3"
-  //       ) {
-  //         prevTransformProperty[attribute] = parseInt(value);
-  //       }
-  //     } else if (attribute === "matrix" && Array.isArray(value)) {
-  //       //prevTransformProperty[attribute] = value.join(",");
-  //     } else {
-  //       prevTransformProperty[attribute] = value;
-  //     }
-  //     updateTransformCb(prevTransformProperty);
-  //   },
-  //   [transformProperty, updateTransformCb]
-  // );
 
   return (
     <>
@@ -258,30 +266,11 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
               }}
               value={transformProperty.transformType}
             >
-              <option value="none">none</option>
-              <option value="matrix">matrix</option>
-              <option value="matrix3d">matrix3d</option>
-              <option value="translate">translate</option>
-              <option value="translate3d">translate3d</option>
-              <option value="translateX">translateX</option>
-              <option value="translateY">translateY</option>
-              <option value="translateZ">translateZ</option>
-              <option value="scale">scale</option>
-              <option value="scale3d">scale3d</option>
-              <option value="scaleX">scaleX</option>
-              <option value="scaleY">scaleY</option>
-              <option value="scaleZ">scaleZ</option>
-              <option value="rotate">rotate</option>
-              <option value="rotate3d">rotate3d</option>
-              <option value="rotateX">rotateX</option>
-              <option value="rotateY">rotateY</option>
-              <option value="rotateZ">rotateZ</option>
-              <option value="skew">skew</option>
-              <option value="skewX">skewX</option>
-              <option value="skewY">skewY</option>
-              <option value="perspective">perspective</option>
-              <option value="initial">initial</option>
-              <option value="inherit">inherit</option>
+              {transformTypes.map((type) => (
+                <option value={type} key={type}>
+                  {type}
+                </option>
+              ))}
             </select>
           </div>
           <div
@@ -293,9 +282,14 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
           </div>
         </div>
 
-        {["scaleX", "scaleY", "scaleZ"].includes(
-          transformProperty.transformType
-        ) && (
+        {[
+          "scaleX",
+          "scaleY",
+          "scaleZ",
+          "translateX",
+          "translateY",
+          "translateZ",
+        ].includes(transformProperty.transformType) && (
           <div
             style={{
               display: "flex",
@@ -339,7 +333,7 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
           </div>
         )}
 
-        {["scale"].includes(transformProperty.transformType) && (
+        {["scale", "translate"].includes(transformProperty.transformType) && (
           <>
             <div
               style={{
@@ -426,7 +420,9 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
           </>
         )}
 
-        {["scale3d"].includes(transformProperty.transformType) && (
+        {["scale3d", "translate3d"].includes(
+          transformProperty.transformType
+        ) && (
           <>
             <div
               style={{
@@ -860,59 +856,16 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
           </>
         )}
 
-        {/*{(scale === "scale" || scale === "scale3d") && (*/}
-        {/*<ArrayPropertyContainer>*/}
-        {/*  <ArrayLabel onAddClick={() => {}} name={scale} />*/}
-        {/*  <div*/}
-        {/*    style={{*/}
-        {/*      display: "flex",*/}
-        {/*      justifyContent: "space-between",*/}
-        {/*      alignItems: "center",*/}
-        {/*      paddingLeft: "1em",*/}
-        {/*      paddingRight: "1em",*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <input*/}
-        {/*      //  value={props.styles[scale] || ""}*/}
-        {/*      // value={scale}*/}
-        {/*      // onChange={(e) => {*/}
-        {/*      //   editValueCb(index, e.target.value);*/}
-        {/*      // }}*/}
-        {/*      type="number"*/}
-        {/*      style={{*/}
-        {/*        ...smallText,*/}
-        {/*        outline: "none",*/}
-        {/*        color: gray100,*/}
-        {/*        backgroundColor: gray800,*/}
-        {/*        height: "26px",*/}
-        {/*        width: "45px",*/}
-        {/*        border: "none",*/}
-        {/*        borderRadius: "2px 0 0 2px",*/}
-        {/*        paddingLeft: "6px",*/}
-        {/*        paddingRight: "6px",*/}
-        {/*        display: "flex",*/}
-        {/*        alignItems: "center",*/}
-        {/*      }}*/}
-        {/*    />*/}
-        {/*    <div*/}
-        {/*      style={{ display: "flex", alignItems: "center" }}*/}
-        {/*      // onClick={() => {*/}
-        {/*      //   deleteValueCb(index);*/}
-        {/*      // }}*/}
-        {/*    >*/}
-        {/*      <MinusIcon />*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</ArrayPropertyContainer>*/}
-        {/*)}*/}
+        {["matrix", "matrix3d"].includes(transformProperty.transformType) && (
+          <NumberList
+            values={transformProperty.matrix}
+            updateValueCb={(values) => {
+              setTransformAttribute("matrix", values);
+            }}
+            name={"matrix"}
+          />
+        )}
       </div>
-      {/*<NumberList*/}
-      {/*  values={transformProperty.matrix}*/}
-      {/*  updateValueCb={(values) => {*/}
-      {/*    setTransformAttribute("matrix", values);*/}
-      {/*  }}*/}
-      {/*  name={"matrix"}*/}
-      {/*/>*/}
     </>
   );
 };
