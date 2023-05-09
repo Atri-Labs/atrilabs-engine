@@ -138,7 +138,6 @@ function createTransformString(transformObject: TransformType): string {
   else if (transformType === "initial") transformStr += `(initial`;
   else if (transformType === "inherit") transformStr += `(inherit`;
   transformStr += ")";
-  console.log("transform string...", transformStr);
   return transformStr || "";
 }
 
@@ -170,12 +169,9 @@ const transformTypes: string[] = [
 ];
 
 export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
-  // Use gradientProperty only in UI, not for update
   const transformProperty = useMemo(() => {
     return createTransformObject(props.transform);
   }, [props.transform]);
-
-  const [scale, setScale] = useState<string>("");
 
   const updateTransformCb = useCallback(
     (update: Partial<TransformType>) => {
@@ -206,26 +202,6 @@ export const TransformSelector: React.FC<GradientSelectorType> = (props) => {
     },
     [transformProperty, updateTransformCb]
   );
-
-  // const setTransformAttribute = useCallback(
-  //   (
-  //     attribute: "transformType" | "number" | "number2" | "number3",
-  //     value: string
-  //   ) => {
-  //     const prevGradientProperty = transformProperty;
-  //     if (
-  //       attribute === "number" ||
-  //       attribute === "number2" ||
-  //       attribute === "number3"
-  //     ) {
-  //       prevGradientProperty[attribute] = parseInt(value);
-  //     } else {
-  //       prevGradientProperty[attribute] = value;
-  //     }
-  //     updateTransformCb(prevGradientProperty);
-  //   },
-  //   [transformProperty, updateTransformCb]
-  // );
 
   const setTransformAttribute = useCallback(
     (
