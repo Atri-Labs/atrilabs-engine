@@ -29,9 +29,6 @@ const Carousel = forwardRef<
     className?: string;
   }
 >((props, ref) => {
-  // const { custom } = props;
-  // {...custom}
-  console.log("custom props in carousel", props.custom, "\n props...", props);
   return (
     <div ref={ref} id={props.id}>
       <AntdCarousel
