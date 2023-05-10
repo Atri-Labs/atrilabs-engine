@@ -191,10 +191,17 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   }, [props.styles.background]);
 
   const [showProperties, setShowProperties] = useState<boolean>(true);
-
-  const onBackgroundImgeClickCb = useCallback(() => {
-    props.openAssetManager(["select", "upload"], "background");
-  }, [props]);
+  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(
+    props.styles.background?.toString().includes("url") ? 1 : 0
+  );
+  console.log("props.styles.background...", props.styles.background);
+  const onBackgroundImageClickCb = useCallback(() => {
+    props.openAssetManager(
+      ["select", "upload"],
+      "background",
+      props.styles.background as string
+    );
+  }, [props, props.styles.background]);
 
   const onBackgroundImageClearClickCb = useCallback(() => {
     props.patchCb({
@@ -204,9 +211,21 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     });
   }, [props]);
 
-  const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(
-    props.styles.background?.toString().includes("url") ? 1 : 0
-  );
+  const addBackgroundImage = useCallback(() => {
+    props.patchCb({
+      property: {
+        styles: { background: `${props.styles.background}, ` },
+      },
+    });
+  }, [props]);
+
+  const images = useMemo(() => {
+    if (selectedTypeIndex === 1) {
+      const imagesString = (props.styles.background as string) || "";
+      console.log("imagesString", imagesString);
+      return imagesString ? imagesString.split(",") : [""];
+    }
+  }, [props.styles.background, selectedTypeIndex]);
 
   const applyGradient = useCallback(
     (gradients: string[]) => {
@@ -227,14 +246,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const addGradient = useCallback(() => {
     applyGradient([...gradients, "linear-gradient(45deg, white 0%, red 100%)"]);
   }, [applyGradient, gradients]);
-
-  const addBackgroundImage = useCallback(() => {
-    props.patchCb({
-      property: {
-        styles: { background: `${props.styles.background}, url("")` },
-      },
-    });
-  }, [props]);
 
   const removeGradient = useCallback(
     (index: number) => {
@@ -258,13 +269,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     setGradient(undefined);
   }, []);
 
-  const images = useMemo(() => {
-    if (selectedTypeIndex === 1) {
-      const imagesString = (props.styles.background as string) || "";
-      return imagesString ? imagesString.split(",") : [""];
-    }
-  }, [props.styles.background, selectedTypeIndex]);
-  console.log("images", images);
   return (
     <>
       {gradient && (
@@ -331,7 +335,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
-                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(0);
                 }}
               >
@@ -350,7 +353,6 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
-                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(1);
                 }}
               >
@@ -360,17 +362,31 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
           </div>
           {/**Background Image */}
           {backgroundTypes[selectedTypeIndex].image && (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={styles.optionName}>
-                Image
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{ ...smallText, color: gray200, cursor: "pointer" }}
+                >
+                  Image
+                </div>
                 <AddButton onClick={() => addBackgroundImage()} />
-              </span>
-              <br />
+              </div>
               {images?.map((image) => (
                 <>
                   <br />
                   <AssetInputButton
-                    onClick={onBackgroundImgeClickCb}
+                    onClick={onBackgroundImageClickCb}
                     assetName={image || "Select Image"}
                     onClearClick={onBackgroundImageClearClickCb}
                   />

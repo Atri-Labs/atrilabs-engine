@@ -7,7 +7,8 @@ export type CssProprtyComponentType = {
   patchCb: (slice: any) => void;
   openAssetManager: (
     modes: UploadMode[],
-    styleItem: keyof React.CSSProperties
+    styleItem: keyof React.CSSProperties,
+    styleValue: string
   ) => void;
   openPalette: (
     styleItem: keyof React.CSSProperties,

@@ -31,7 +31,7 @@ export default function () {
     onSelect,
     onUploadSuccess,
     showAssetPanel,
-  } = useUploadAssetManager(patchCb, styles);
+  } = useUploadAssetManager(patchCb);
   const {
     showColorPalette,
     linkColorPaletteToStyleItem,

@@ -4,8 +4,7 @@ import React, { useCallback, useState } from "react";
 import { CssProprtyComponentType } from "../types";
 
 export const useUploadAssetManager = (
-  patchCb: CssProprtyComponentType["patchCb"],
-  styles: React.CSSProperties
+  patchCb: CssProprtyComponentType["patchCb"]
 ) => {
   const [showAssetPanel, setShowAssetPanel] = useState<boolean>(false);
   const [modes, setModes] = useState<UploadMode[]>([]);
@@ -13,19 +12,24 @@ export const useUploadAssetManager = (
     keyof React.CSSProperties | null
   >(null);
 
+  const [linkAssetToStyleValue, setLinkAssetToStyleValue] = useState<
+    string | null
+  >(null);
+
   const callPatchCbWithUrl = useCallback(
     (styleItem: keyof React.CSSProperties, url: string) => {
+      console.log(linkAssetToStyleValue);
       patchCb({
         property: {
           styles: {
-            [styleItem]: styles[styleItem]
-              ? `${styles[styleItem]}, url("${url}")`
+            [styleItem]: linkAssetToStyleValue?.toString()?.includes("url")
+              ? `${linkAssetToStyleValue}url("${url}")`
               : `url("${url}")`,
           },
         },
       });
     },
-    [patchCb]
+    [patchCb, linkAssetToStyleValue, linkAssetToStyleItem]
   );
 
   const onCrossClicked = useCallback(() => {
@@ -36,10 +40,11 @@ export const useUploadAssetManager = (
 
   const openAssetManager = useCallback<
     CssProprtyComponentType["openAssetManager"]
-  >((modes, styleItem) => {
+  >((modes, styleItem, styleValue) => {
     setShowAssetPanel(true);
     setModes(modes);
     setLinkAssetToStyleItem(styleItem);
+    setLinkAssetToStyleValue(styleValue);
   }, []);
 
   const onUploadSuccess = useCallback<
