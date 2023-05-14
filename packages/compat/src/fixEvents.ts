@@ -57,7 +57,7 @@ export function fixEvents(options: { eventsFilepath: string }) {
   const compTree = forest.tree(componentTreeDef.id)!;
   const attrTree = forest.tree(attributesTreeDef.id)!;
 
-  const nodeIds = Object.keys(compTree);
+  const nodeIds = Object.keys(compTree.nodes);
 
   const newNonRootEvents: { linkEvent: LinkEvent; createEvent: CreateEvent }[] =
     [];
