@@ -148,6 +148,7 @@ async function main() {
     config.devServer = {
       ...config.devServer,
       hot: true,
+      compress: false,
     };
     config.cache = {
       type: "filesystem",

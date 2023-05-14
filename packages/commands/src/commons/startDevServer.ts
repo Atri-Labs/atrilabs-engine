@@ -155,7 +155,7 @@ export default function startDevServer(
       );
 
       const devServer = new WebpackDevServer(
-        { ...devWebpackConfig, host, port },
+        { ...devWebpackConfig, host, port, ...webpackConfig.devServer },
         compiler
       );
 
