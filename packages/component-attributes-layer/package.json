@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/component-attributes-layer",
-  "version": "1.0.0-alpha.34",
+  "version": "1.0.0-alpha.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,13 +21,13 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^1.0.0-alpha.34",
-    "@atrilabs/core": "^1.0.0-alpha.34",
-    "@atrilabs/design-system": "^1.0.0-alpha.34",
-    "@atrilabs/layer-types": "^1.0.0-alpha.34",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.34",
-    "@atrilabs/shared-layer-lib": "^1.0.0-alpha.34",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.34",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.35",
+    "@atrilabs/core": "^1.0.0-alpha.35",
+    "@atrilabs/design-system": "^1.0.0-alpha.35",
+    "@atrilabs/layer-types": "^1.0.0-alpha.35",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.35",
+    "@atrilabs/shared-layer-lib": "^1.0.0-alpha.35",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.35",
     "typescript": "4.6.3",
     "url": "^0.11.0"
   },

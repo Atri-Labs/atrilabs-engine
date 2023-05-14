@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-template-layer",
-  "version": "1.0.0-alpha.34",
+  "version": "1.0.0-alpha.35",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,15 +21,15 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "devDependencies": {
-    "@atrilabs/forest": "^1.0.0-alpha.34",
-    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.34"
+    "@atrilabs/forest": "^1.0.0-alpha.35",
+    "@atrilabs/react-component-manifest-schema": "^1.0.0-alpha.35"
   },
   "dependencies": {
-    "@atrilabs/core": "^1.0.0-alpha.34",
-    "@atrilabs/design-system": "^1.0.0-alpha.34",
-    "@atrilabs/layer-types": "^1.0.0-alpha.34",
-    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.34",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.34",
+    "@atrilabs/core": "^1.0.0-alpha.35",
+    "@atrilabs/design-system": "^1.0.0-alpha.35",
+    "@atrilabs/layer-types": "^1.0.0-alpha.35",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.35",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.35",
     "html-to-image": "1.11.11"
   }
 }
