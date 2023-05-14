@@ -16,7 +16,7 @@
   <h3 align="center">
     <a href="https://atrilabs.com">Website</a>
     <span> | </span>
-    <a href="https://docs.atrilabs.com/">Docs</a>
+    <a href="https://docs.atrilabs.com/next/highlights">Docs</a>
     <span> | </span>
     <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1otyguhy8-P4OQQRWFWcMUsKk7yp0FHQ">Community Slack</a>
     <span> | </span>
