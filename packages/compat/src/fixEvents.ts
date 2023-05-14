@@ -36,7 +36,7 @@ function createNonRootEvents(options: { treeId: string; compId: string }) {
       type: `CREATE$$${treeId}`,
       id: newNodeId,
       meta: {},
-      state: { parent: { id: "", index: 0 } },
+      state: { parent: { id: "", index: 0 }, property: { attrs: {} } },
     },
   };
 }
