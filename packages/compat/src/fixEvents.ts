@@ -88,9 +88,6 @@ export function fixEvents(options: { eventsFilepath: string }) {
 
   if (hasFixes) {
     console.log(`Overwriting ${absEventsFilepath}`);
-    console.log(nonRootCreateEvents === undefined);
-    console.log(rootCreateEvents === undefined);
-    console.log(linkEvents === undefined);
     fs.writeFileSync(
       options.eventsFilepath,
       JSON.stringify(
