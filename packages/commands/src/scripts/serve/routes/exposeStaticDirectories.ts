@@ -75,7 +75,6 @@ export function exposeStaticDirectories(
           return;
         }
       }
-      next();
     }
     next();
   });
