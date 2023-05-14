@@ -5,13 +5,13 @@
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
   "license": "ISC",
-  "main": "dist/index.js",
-  "directories": {
-    "lib": "dist",
-    "test": "__tests__"
+  "main": "src/index.ts",
+  "bin": {
+    "atri-compat": "dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -21,10 +21,16 @@
     "url": "git+https://github.com/Atri-Labs/atrilabs-engine.git"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "build-node-app -e ./src/cli.ts -f cli.js -i \"@atrilabs/forest:@atrilabs/atri-app-core\" -a \"@atrilabs/forest:@atrilabs/atri-app-core/src/utils/getId:@atrilabs/atri-app-core/src/api/forestDef\"",
     "prepublishOnly": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
+  },
+  "dependencies": {
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.32",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.32",
+    "@atrilabs/forest": "^1.0.0-alpha.32",
+    "yargs": "^17.7.2"
   }
 }

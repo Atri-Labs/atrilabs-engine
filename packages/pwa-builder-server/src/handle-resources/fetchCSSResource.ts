@@ -124,7 +124,7 @@ function fetchExternalCSS(url: string) {
     });
     request.on("error", (err) => {
       console.log("Unable to send request:", url);
-      console.log("Error\n", err);
+      console.error(err);
       reject();
     });
     request.end();

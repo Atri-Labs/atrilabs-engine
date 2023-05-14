@@ -1,1 +1,2 @@
-export * from "./fix-events";
+export * from "./compress";
+export * from "./fixEvents";
