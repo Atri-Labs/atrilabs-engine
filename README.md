@@ -1,4 +1,5 @@
-![banner](readme-assets/github_python_desc.png)
+# Atri framework
+### Seamless no-code and code in one tool
 
 <div align="center">
 
@@ -46,7 +47,7 @@ Atri framework is a full-stack web development framework for Python developers. 
 
 <div align="center">
 
-  [![Watch the video](https://img.youtube.com/vi/YokMeI23_iw/0.jpg)](https://youtu.be/YokMeI23_iw)
+  [![Watch the video](https://img.youtube.com/vi/mdPZUab2IlQ/0.jpg)](https://www.youtube.com/watch?v=mdPZUab2IlQ&t=52s)
     
 </div>
 
@@ -58,9 +59,13 @@ Atri is a general purpose framework that can be used to build everything from e-
 
 <div align="center">
 
-  [![Watch the video](https://img.youtube.com/vi/YWNe9S7khEU/0.jpg)](https://youtu.be/YWNe9S7khEU)
+  [![Watch the video](https://img.youtube.com/vi/mdPZUab2IlQ/0.jpg)](https://www.youtube.com/watch?v=mdPZUab2IlQ&t=52s)
   
 </div>
+
+### Apps built using Atri
+
+[Venture Copilot](https://www.venturecopilot.app/)
 
 The static instances of the web apps created using Atri have been deployed at the below URLs: 
 
@@ -78,27 +83,7 @@ Thus, Atri framework is extending the definition of full-stack to include non we
 
 ## Getting Started
 
-```shell
-pipenv install atri==0.0.78
-pipenv shell
-atri start
-```
-**Note: Python version should be >=3.8 & <=3.10.8**
-
-- The visual editor is available at http://localhost:4002. 
-- Once you click `Build and Run` in your visual editor, your website will start running at http://localhost:4005/. 
-- All the files for your website are being auto-generated in your local directory.
-- You can write the backend of your website at `controllers/routes/<page_name>/main.py`.
-
-You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9o8oY) or our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
-
-<div align="center">
-
-  [![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
-  
-</div>
-
-You can then follow our [video tutorials](https://docs.atrilabs.com/tutorials/bkg_swapper) to create full-stack apps.
+Please follow the [docs here](https://docs.atrilabs.com/next/highlights).
 
 ## How to contribute?
 
