@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/pwa-canvas-layer",
-  "version": "1.0.0-alpha.32",
+  "version": "1.0.0-alpha.33",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,7 +21,7 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/core": "^1.0.0-alpha.32",
-    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.32"
+    "@atrilabs/core": "^1.0.0-alpha.33",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.33"
   }
 }

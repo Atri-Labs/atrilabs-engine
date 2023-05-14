@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/compat",
-  "version": "1.0.0-alpha.32",
+  "version": "1.0.0-alpha.33",
   "description": "> TODO: description",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/Atri-Labs/atrilabs-engine#readme",
@@ -28,9 +28,9 @@
     "url": "https://github.com/Atri-Labs/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/atri-app-core": "^1.0.0-alpha.32",
-    "@atrilabs/commands-builder": "^1.0.0-alpha.32",
-    "@atrilabs/forest": "^1.0.0-alpha.32",
+    "@atrilabs/atri-app-core": "^1.0.0-alpha.33",
+    "@atrilabs/commands-builder": "^1.0.0-alpha.33",
+    "@atrilabs/forest": "^1.0.0-alpha.33",
     "yargs": "^17.7.2"
   }
 }
