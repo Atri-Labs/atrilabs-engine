@@ -41,8 +41,8 @@ export const Countup = forwardRef<HTMLDivElement, CountupProps>(
         ref={ref}
         style={{ display: "inline-flex", ...props.styles }}
         id={props.id}
-      >
         className={`${props.className} ${props.attrs?.class}`}
+      >
         <CountUpAnimation
           value={props.custom.itemCount}
           duration={props.custom.duration}

@@ -18,7 +18,6 @@ export const useUploadAssetManager = (
 
   const callPatchCbWithUrl = useCallback(
     (styleItem: keyof React.CSSProperties, url: string) => {
-      console.log(linkAssetToStyleValue);
       patchCb({
         property: {
           styles: {

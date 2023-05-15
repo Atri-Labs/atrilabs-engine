@@ -55,6 +55,7 @@ const customTreeOptions: CustomPropsTreeOptions = {
     },
     inActiveTabColor: { type: "color" },
     activeTabColor: { type: "color" },
+    tabFontSize: { type: "number" },
     items: {
       type: "array_map",
       singleObjectName: "item",

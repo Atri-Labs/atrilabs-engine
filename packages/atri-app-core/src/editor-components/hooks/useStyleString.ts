@@ -7,10 +7,21 @@ export function useStyleString(props: {
 }) {
   const [styleStr, setStyleStr] = useState("");
   useEffect(() => {
+    function replaceEmptyStringWithUnset(styles: { [key: string]: string }) {
+      const updatedStyles: { [key: string]: string } = {};
+      Object.entries(styles).forEach(([key, value]) => {
+        if (value === "") {
+          updatedStyles[key] = "unset";
+        } else {
+          updatedStyles[key] = value;
+        }
+      });
+      return updatedStyles;
+    }
     if (props.alias) {
       createCSSString(
         `.${props.alias}`,
-        props.compProps.styles.styles || {},
+        replaceEmptyStringWithUnset(props.compProps.styles.styles) || {},
         props.compProps.styles.breakpoints || {}
       ).then((strs) => {
         setStyleStr(strs.join("\n"));

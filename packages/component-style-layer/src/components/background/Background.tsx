@@ -183,7 +183,11 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   >(undefined);
 
   const gradients = useMemo(() => {
-    const gradientsString = (props.styles.background as string) || "";
+    const gradientsString = props.styles.background
+      ?.toString()
+      .includes("linear-gradient" || "conic-gradient" || "radial-gradient")
+      ? (props.styles.background as string)
+      : "";
     const gradientsArray = gradientsString ? gradientsString.split("), ") : [];
     return gradientsArray.map((gradientStr, index) =>
       index === gradientsArray.length - 1 ? gradientStr : gradientStr + ")"
@@ -194,7 +198,16 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
   const [selectedTypeIndex, setSelectedTypeIndex] = useState<number>(
     props.styles.background?.toString().includes("url") ? 1 : 0
   );
-  console.log("props.styles.background...", props.styles.background);
+
+  const images = useMemo(() => {
+    if (selectedTypeIndex === 1) {
+      const imagesString = props.styles.background?.toString().includes("url")
+        ? (props.styles.background as string)
+        : "";
+      return imagesString ? imagesString.split(",") : [""];
+    }
+  }, [props.styles.background, selectedTypeIndex]);
+
   const onBackgroundImageClickCb = useCallback(() => {
     props.openAssetManager(
       ["select", "upload"],
@@ -219,13 +232,25 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
     });
   }, [props]);
 
-  const images = useMemo(() => {
-    if (selectedTypeIndex === 1) {
-      const imagesString = (props.styles.background as string) || "";
-      console.log("imagesString", imagesString);
-      return imagesString ? imagesString.split(",") : [""];
-    }
-  }, [props.styles.background, selectedTypeIndex]);
+  const applyBackgroundImage = useCallback(
+    (images: string[]) => {
+      props.patchCb({
+        property: {
+          styles: { background: `${images}` },
+        },
+      });
+    },
+    [props, images]
+  );
+
+  const removeImage = useCallback(
+    (index: number) => {
+      const imageValues = [...(images as string[])];
+      imageValues.splice(index, 1);
+      applyBackgroundImage(imageValues);
+    },
+    [applyBackgroundImage, images]
+  );
 
   const applyGradient = useCallback(
     (gradients: string[]) => {
@@ -335,6 +360,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
+                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(0);
                 }}
               >
@@ -353,6 +379,7 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                       }
                 }
                 onClick={() => {
+                  onBackgroundImageClearClickCb();
                   setSelectedTypeIndex(1);
                 }}
               >
@@ -382,13 +409,13 @@ export const Background: React.FC<CssProprtyComponentType> = (props) => {
                 </div>
                 <AddButton onClick={() => addBackgroundImage()} />
               </div>
-              {images?.map((image) => (
+              {images?.map((image, index) => (
                 <>
                   <br />
                   <AssetInputButton
                     onClick={onBackgroundImageClickCb}
                     assetName={image || "Select Image"}
-                    onClearClick={onBackgroundImageClearClickCb}
+                    onClearClick={() => removeImage(index)}
                   />
                 </>
               ))}

@@ -21,6 +21,7 @@ const Tabs = forwardRef<
       }[];
       inActiveTabColor?: string;
       activeTabColor?: string;
+      tabFontSize?: number;
     };
     onChange: (activeKey: string) => void;
     onTabClick?: (
@@ -56,8 +57,12 @@ const Tabs = forwardRef<
           .ant-tabs-ink-bar {
             background:${props.custom.activeTabColor} !important;
           }
+          .ant-tabs-tab{
+            font-size :${props.custom.tabFontSize}px !important;
+          }
           .ant-tabs-tab:hover{
             color:${props.custom.activeTabColor} !important;
+            font-size :${props.custom.tabFontSize}px !important;
           }
         `}
         </style>
