@@ -1,4 +1,5 @@
-![banner](readme-assets/github_python_desc.png)
+# Atri framework
+### Seamless no-code and code in one tool
 
 <div align="center">
 
@@ -15,7 +16,7 @@
   <h3 align="center">
     <a href="https://atrilabs.com">Website</a>
     <span> | </span>
-    <a href="https://docs.atrilabs.com/">Docs</a>
+    <a href="https://docs.atrilabs.com/next/highlights">Docs</a>
     <span> | </span>
     <a href="https://join.slack.com/t/atricommunity/shared_invite/zt-1otyguhy8-P4OQQRWFWcMUsKk7yp0FHQ">Community Slack</a>
     <span> | </span>
@@ -39,14 +40,13 @@
 Atri framework is a full-stack web development framework for Python developers. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
 - Frontend development: Use our powerful visual builder to create frontend or write React code
-- Backend development: Write backend using our Python API that is inspired from Unity's game engine
 - Deployment support: Use our CLI to deploy at your platform of choice such as AWS, GitHub Pages, etc. or Atri cloud
 
 ## Watch the 1 min introduction video to Atri framework 👇
 
 <div align="center">
 
-  [![Watch the video](https://img.youtube.com/vi/YokMeI23_iw/0.jpg)](https://youtu.be/YokMeI23_iw)
+  [![Watch the video](https://img.youtube.com/vi/mdPZUab2IlQ/0.jpg)](https://www.youtube.com/watch?v=mdPZUab2IlQ&t=52s)
     
 </div>
 
@@ -58,9 +58,13 @@ Atri is a general purpose framework that can be used to build everything from e-
 
 <div align="center">
 
-  [![Watch the video](https://img.youtube.com/vi/YWNe9S7khEU/0.jpg)](https://youtu.be/YWNe9S7khEU)
+  [![Watch the video](https://img.youtube.com/vi/mdPZUab2IlQ/0.jpg)](https://www.youtube.com/watch?v=mdPZUab2IlQ&t=52s)
   
 </div>
+
+### Apps built using Atri
+
+[Venture Copilot](https://www.venturecopilot.app/)
 
 The static instances of the web apps created using Atri have been deployed at the below URLs: 
 
@@ -78,27 +82,7 @@ Thus, Atri framework is extending the definition of full-stack to include non we
 
 ## Getting Started
 
-```shell
-pipenv install atri==0.0.78
-pipenv shell
-atri start
-```
-**Note: Python version should be >=3.8 & <=3.10.8**
-
-- The visual editor is available at http://localhost:4002. 
-- Once you click `Build and Run` in your visual editor, your website will start running at http://localhost:4005/. 
-- All the files for your website are being auto-generated in your local directory.
-- You can write the backend of your website at `controllers/routes/<page_name>/main.py`.
-
-You can follow our [video tutorial 👇](https://www.youtube.com/watch?v=cNCUVF9o8oY) or our [written guide](https://docs.atrilabs.com/getting-started/create-app) to create your first Atri app. 
-
-<div align="center">
-
-  [![Watch the video](https://img.youtube.com/vi/cNCUVF9o8oY/0.jpg)](https://youtu.be/cNCUVF9o8oY)
-  
-</div>
-
-You can then follow our [video tutorials](https://docs.atrilabs.com/tutorials/bkg_swapper) to create full-stack apps.
+Please follow the [docs here](https://docs.atrilabs.com/next/highlights).
 
 ## How to contribute?
 
