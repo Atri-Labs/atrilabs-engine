@@ -1,6 +1,6 @@
 {
   "name": "@atrilabs/app-design-layer",
-  "version": "1.0.0-alpha.36",
+  "version": "1.0.0-alpha.37",
   "description": "allows for basic structure of design layer",
   "author": "cruxcode <swaroopshyam0@gmail.com>",
   "homepage": "https://github.com/cruxcode/atrilabs-engine#readme",
@@ -21,15 +21,15 @@
     "url": "https://github.com/cruxcode/atrilabs-engine/issues"
   },
   "dependencies": {
-    "@atrilabs/app-design-forest": "^1.0.0-alpha.36",
-    "@atrilabs/core": "^1.0.0-alpha.36",
-    "@atrilabs/design-system": "^1.0.0-alpha.36",
-    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.36",
-    "eslint-plugin-atrilabs": "^1.0.0-alpha.36",
+    "@atrilabs/app-design-forest": "^1.0.0-alpha.37",
+    "@atrilabs/core": "^1.0.0-alpha.37",
+    "@atrilabs/design-system": "^1.0.0-alpha.37",
+    "@atrilabs/pwa-builder-manager": "^1.0.0-alpha.37",
+    "eslint-plugin-atrilabs": "^1.0.0-alpha.37",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@atrilabs/layer-types": "^1.0.0-alpha.36",
+    "@atrilabs/layer-types": "^1.0.0-alpha.37",
     "@babel/core": "^7.17.9",
     "@babel/plugin-syntax-flow": "^7.16.7",
     "@babel/plugin-transform-react-jsx": "^7.17.3",
