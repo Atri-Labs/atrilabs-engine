@@ -76,6 +76,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("CREATE")) {
       const createEvent = event as CreateEvent;
       const treeId = createEvent.type.slice("CREATE$$".length);
+      if (treeMap[treeId] === undefined) {
+        return;
+      }
       if (defaultFnMap[treeId]!.validateCreate(createEvent)) {
         treeMap[treeId]!.nodes[createEvent.id] = {
           id: createEvent.id,
@@ -98,6 +101,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("PATCH")) {
       const patchEvent = event as PatchEvent;
       const treeId = patchEvent.type.slice("PATCH$$".length);
+      if (treeMap[treeId]?.nodes[patchEvent.id] === undefined) {
+        return;
+      }
       if (defaultFnMap[treeId]!.validatePatch(patchEvent)) {
         const stringified = JSON.stringify(
           tree(treeId)!.nodes[patchEvent.id]!["state"]
@@ -162,6 +168,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("DELETE")) {
       const delEvent = event as DeleteEvent;
       const treeId = delEvent.type.slice("DELETE$$".length);
+      if (treeMap[treeId]?.nodes[delEvent.id] === undefined) {
+        return;
+      }
       // find all children and add them to be delete array
       const nodesToBeDeleted = [delEvent.id];
       const reverseMap = createReverseMap(treeMap[treeId]!.nodes);
@@ -208,6 +217,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("LINK")) {
       const linkEvent = event as LinkEvent;
       const treeId = linkEvent.type.slice("LINK$$".length);
+      if (treeMap[treeId] === undefined) {
+        return;
+      }
       treeMap[treeId]!.links[linkEvent.refId] = linkEvent;
       // record all link events in the forest to process unlink
       // called as a result of deleting something in root tree
@@ -230,6 +242,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("UNLINK")) {
       const unlinkEvent = event as UnlinkEvent;
       const treeId = unlinkEvent.type.slice("UNLINK$$".length);
+      if (treeMap[treeId] === undefined) {
+        return;
+      }
       delete treeMap[treeId]!.links[unlinkEvent.refId];
       forestUpdateSubscribers.forEach((cb) => {
         cb(
@@ -247,6 +262,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("HARDPATCH")) {
       const patchEvent = event as HardPatchEvent;
       const treeId = patchEvent.type.slice("HARDPATCH$$".length);
+      if (treeMap[treeId]?.nodes[patchEvent.id] === undefined) {
+        return;
+      }
       const tree = treeMap[treeId]!;
       if (patchEvent.selector === undefined) {
         const patchEventHasParent = "parent" in patchEvent.state;
@@ -321,6 +339,9 @@ export function createForest(def: { trees: TreeDef[] }): Forest {
     if (event.type.startsWith("UNSET")) {
       const unsetEvent = event as UnsetEvent;
       const treeId = unsetEvent.type.slice("UNSET$$".length);
+      if (treeMap[treeId]?.nodes[unsetEvent.id] === undefined) {
+        return;
+      }
       const tree = treeMap[treeId]!;
       const selector = unsetEvent.selector;
       // store old state
