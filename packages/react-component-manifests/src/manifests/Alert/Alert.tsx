@@ -44,7 +44,7 @@ const Alert = forwardRef<
   return (
     <>
       <style>
-        {`.ant-alert-message {
+        {`.${props.className} .ant-alert-message {
             font-size :${props.custom.titleFontSize}px !important;
             color:${props.custom.titleFontColor}!important;
           }

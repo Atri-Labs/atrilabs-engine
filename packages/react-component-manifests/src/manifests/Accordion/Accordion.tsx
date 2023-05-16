@@ -49,13 +49,13 @@ const Accordion = forwardRef<
   return (
     <>
       <style>
-        {`   .ant-collapse-header-text  {
+        {`   .${props.className} .ant-collapse-header-text  {
                  color: ${props.custom.fontColor}!important
               }
-              .ant-collapse-expand-icon{
+              .${props.className} .ant-collapse-expand-icon{
                  color: ${props.custom.fontColor}!important
               }
-              .p-tag{
+              .${props.className} .p-tag{
                  color: ${props.custom.fontColor}!important
               }
         `}

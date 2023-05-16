@@ -50,7 +50,7 @@ const Breadcrumb = forwardRef<
   return (
     <>
       <style>
-        {`.ant-breadcrumb a{
+        {`.${props.className} .ant-breadcrumb a{
             color:${props.custom.fontColor} !important;
           }
         `}

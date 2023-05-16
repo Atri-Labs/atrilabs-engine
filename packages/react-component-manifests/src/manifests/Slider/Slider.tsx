@@ -29,9 +29,9 @@ export interface SliderSingleProps extends SliderBaseProps {
   defaultValue?: number;
   onChange?: (value: number) => void;
   onAfterChange?: (value: number) => void;
-  handleStyle?: React.CSSProperties;
-  trackStyle?: React.CSSProperties;
-  railStyle?: React.CSSProperties;
+  handleColor?: string;
+  trackColor?: string;
+  railColor?: string;
 }
 
 export interface SliderRangeProps extends SliderBaseProps {
@@ -40,9 +40,9 @@ export interface SliderRangeProps extends SliderBaseProps {
   defaultValue?: [number, number];
   onChange?: (value: [number, number]) => void;
   onAfterChange?: (value: [number, number]) => void;
-  handleStyle?: React.CSSProperties[];
-  trackStyle?: React.CSSProperties[];
-  railStyle?: React.CSSProperties;
+  handleColor?: string;
+  trackColor?: string;
+  railColor?: string;
 }
 
 const Slider = forwardRef<
@@ -75,17 +75,55 @@ const Slider = forwardRef<
       );
     }
   }, [props.custom.marks]);
+  const { custom } = props;
+  const { handleColor, trackColor, railColor, ...restProps } = custom;
 
   return (
-    <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
-      <AntdSlider
-        style={props.styles}
-        className={`${props.className} ${props.attrs?.class}`}
-        {...props.custom}
-        key={sliderKey}
-        marks={marks}
-      />
-    </div>
+    <>
+      <style>
+        {`  .${props.className} .ant-slider-handle::after,
+            .${props.className} .ant-slider-handle:active::after {
+              box-shadow: 0 0 0 2px ${handleColor} !important;
+            }
+            .${props.className} .ant-slider-handle:focus::after ,
+            .${props.className} .ant-slider-handle:hover::after{
+              box-shadow: 0 0 0 4px ${handleColor} !important;
+            }
+        `}
+      </style>
+      <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+        {restProps.range ? (
+          <AntdSlider
+            style={props.styles}
+            className={`${props.className} ${props.attrs?.class}`}
+            {...restProps}
+            key={sliderKey}
+            marks={marks}
+            trackStyle={[
+              { backgroundColor: trackColor },
+              { backgroundColor: trackColor },
+            ]}
+            railStyle={{ backgroundColor: railColor }}
+          />
+        ) : (
+          <AntdSlider
+            style={props.styles}
+            className={`${props.className} ${props.attrs?.class}`}
+            value={restProps.value as number}
+            defaultValue={restProps.defaultValue as number}
+            disabled={restProps.disabled}
+            reverse={restProps.reverse}
+            min={restProps.min}
+            max={restProps.max}
+            vertical={restProps.vertical}
+            key={sliderKey}
+            marks={marks}
+            trackStyle={{ backgroundColor: trackColor }}
+            railStyle={{ backgroundColor: railColor }}
+          />
+        )}
+      </div>
+    </>
   );
 });
 

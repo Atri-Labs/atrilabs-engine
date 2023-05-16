@@ -54,6 +54,9 @@ const customTreeOptions: CustomPropsTreeOptions = {
         },
       ],
     },
+    trackColor: { type: "color" },
+    railColor: { type: "color" },
+    handleColor: { type: "color" },
   },
 };
 

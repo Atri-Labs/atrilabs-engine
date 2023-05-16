@@ -35,7 +35,7 @@ const Card = forwardRef<
   return (
     <>
       <style>
-        {`.ant-card-head-title , .ant-card-meta-title {
+        {` .${props.className} .ant-card-head-title , .${props.className} .ant-card-meta-title {
             font-size :${props.custom.titleFontSize}px !important;
             color:${props.custom.titleFontColor}!important;
           }

@@ -28,7 +28,7 @@ const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: true,
   flexChildOptions: true,
   positionOptions: true,
-  typographyOptions: true,
+  typographyOptions: false,
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
