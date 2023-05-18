@@ -49,18 +49,29 @@ const Accordion = forwardRef<
   return (
     <>
       <style>
-        {`   .ant-collapse-header-text  {
+        {`   .${props.className} .ant-collapse-header-text  {
                  color: ${props.custom.fontColor}!important
               }
-              .ant-collapse-expand-icon{
+              .${props.className} .ant-collapse-expand-icon{
                  color: ${props.custom.fontColor}!important
               }
-              .p-tag{
+              .${props.className} .p-tag{
                  color: ${props.custom.fontColor}!important
+              }
+              .${props.className} .ant-collapse-header-text {
+                  flex: auto !important;
               }
         `}
       </style>
-      <div ref={ref} style={{ display: "inline-block" }} id={props.id}>
+      <div
+        ref={ref}
+        style={{
+          display: "inline-block",
+          padding: "0 20px",
+          wordBreak: "break-all",
+        }}
+        id={props.id}
+      >
         <Collapse
           style={props.styles}
           className={`${props.className} ${props.attrs?.class}`}
