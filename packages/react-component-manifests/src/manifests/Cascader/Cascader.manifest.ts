@@ -21,12 +21,12 @@ const cssTreeOptions: CSSTreeOptions = {
   flexContainerOptions: false,
   flexChildOptions: true,
   positionOptions: true,
-  typographyOptions: true,
+  typographyOptions: false,
   spacingOptions: true,
   sizeOptions: true,
   borderOptions: true,
   outlineOptions: true,
-  backgroundOptions: true,
+  backgroundOptions: false,
   miscellaneousOptions: true,
 };
 
