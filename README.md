@@ -37,7 +37,7 @@
 
 > **🔥 Listed as a "Hot JS Tool" for the week of Nov 6.** [Source](https://jstools.substack.com/p/hot-js-tools-45-612-november-2022)
 
-Atri framework is a full-stack web development framework for Python developers. [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
+Web framework that helps developers in creating drag-and-drop zones for no-code development in their applications [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20this%20new%20full-stack%20web%20development%20framework:%20&url=https://github.com/Atri-Labs/atrilabs-engine&via=atrilabs&hashtags=webframework,fullstack,react,python)
 
 - Frontend development: Use our powerful visual builder to create frontend or write React code
 - Deployment support: Use our CLI to deploy at your platform of choice such as AWS, GitHub Pages, etc. or Atri cloud
