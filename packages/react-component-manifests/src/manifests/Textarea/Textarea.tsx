@@ -18,7 +18,7 @@ const Textarea = forwardRef<
     id?: string;
     className?: string;
     custom: {
-      text: string;
+      value: string;
       placeholder: string;
       onChange: ChangeEventHandler<HTMLElement>;
       onPressEnter?: () => void;
@@ -66,7 +66,7 @@ const Textarea = forwardRef<
           transitionTimingFunction: "unset",
         }}
         {...restProps}
-        value={props.custom.text}
+        value={props.custom.value}
       />
     </div>
   );

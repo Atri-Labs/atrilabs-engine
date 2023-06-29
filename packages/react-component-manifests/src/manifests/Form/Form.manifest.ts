@@ -269,7 +269,7 @@ const compManifest: ReactComponentManifestSchema = {
             },
             {
               selectedOption: "number",
-              text: {
+              number: {
                 label: "Number",
                 id: "number",
                 placeholder: "Enter Number",
